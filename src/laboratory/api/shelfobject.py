@@ -674,19 +674,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             shelfobject = serializer.validated_data['shelf_object']
-            pre_status = shelfobject.status.description
+            pre_status = shelfobject.status.description if shelfobject.status else _("No status")
             shelfobject.status = serializer.validated_data['status']
             shelfobject.save()
-
-
-            ShelfObjectObservation.objects.create(action_taken=f'{_("Status Change of")} {pre_status} {_("to")} {shelfobject.status.description}',
+            ShelfObjectObservation.objects.create(action_taken=
+                                                  _("Status Change of %(pre_status)s of %(description)s")%{
+                                                      'pre_status': pre_status,
+                                                      'description': shelfobject.status.description
+                                                  },
                                                   description=serializer.validated_data['description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
             organilab_logentry(
                 request.user, shelfobject, CHANGE,
                 changed_data=['status'],
-                relobj=shelfobject
+                relobj=self.laboratory
             )
             return JsonResponse({"detail": _("The object status was updated successfully"),
                                  'shelfobject_status':shelfobject.status.description},

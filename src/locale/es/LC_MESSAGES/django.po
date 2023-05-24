@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-23 10:26-0600\n"
+"POT-Creation-Date: 2023-05-24 12:52-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: academic/api/serializers.py:62
 #: academic/templates/academic/substance/check_substances.html:67
@@ -335,7 +335,7 @@ msgstr "Observaciones"
 #: academic/templates/academic/step_modal.html:32
 #: academic/templates/academic/substance/detail.html:34
 #: laboratory/templates/laboratory/complete_inform.html:15
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:50
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:52
 msgid "Observations"
 msgstr "Observaciones"
 
@@ -750,7 +750,7 @@ msgstr "Continuar"
 #: laboratory/templates/laboratory/reservation_modal.html:147
 #: laboratory/templates/laboratory/serializers/shelfobject_actions.html:12
 #: laboratory/templates/laboratory/shelfobject/action_modal.html:9
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:58
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:60
 #: laboratory/templates/laboratory/sustance/list.html:24
 #: risk_management/templates/risk_management/riskzone_detail.html:33
 #: sga/templates/list_company.html:20 sga/templates/list_pictograms.html:18
@@ -2645,22 +2645,20 @@ msgid "Observation was created successfully."
 msgstr "Substraído exitosamente"
 
 #: laboratory/api/shelfobject.py:677
-msgid "Status Change"
-msgstr "Estado Cambiado"
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:35
+msgid "No status"
+msgstr "Sin estado"
 
-#: laboratory/api/shelfobject.py:670
-msgid "Status Change of"
-msgstr "Estado Cambiado de"
+#: laboratory/api/shelfobject.py:681
+#, python-format
+msgid "Status Change of %(pre_status)s of %(description)s"
+msgstr "Cambio de estado de %(pre_status)s a %(description)s"
 
-#: laboratory/api/shelfobject.py:670
-msgid "to"
-msgstr "a"
-
-#: laboratory/api/shelfobject.py:678
+#: laboratory/api/shelfobject.py:693
 msgid "The object status was updated successfully"
 msgstr "El estado del objecto fue actualizado correctamente"
 
-#: laboratory/api/shelfobject.py:749
+#: laboratory/api/shelfobject.py:755
 #, fuzzy
 #| msgid "The item was deleted successfully"
 msgid "The item was created successfully"
@@ -2837,8 +2835,11 @@ msgstr "Nombre del vendedor"
 
 #: laboratory/forms.py:587 laboratory/forms.py:662 laboratory/forms.py:730
 #: laboratory/forms.py:796 laboratory/forms.py:860 laboratory/forms.py:923
-msgid "Click here to create a new status"
-msgstr "Presione aquí para crear un nuevo estado"
+#: laboratory/forms.py:973
+#, fuzzy
+#| msgid "Status"
+msgid "New status"
+msgstr "Estado"
 
 #: laboratory/forms.py:604 laboratory/forms.py:748 laboratory/forms.py:878
 #: laboratory/views/shelfobject.py:129
@@ -2856,12 +2857,6 @@ msgid "The measurent unit is different of there shelf has %(measurement_unit)s"
 msgstr ""
 "La unidad de medida es diferente de la que tiene el estante "
 "%(measurement_unit)s"
-
-#: laboratory/forms.py:973
-#, fuzzy
-#| msgid "Status"
-msgid "New status"
-msgstr "Estado"
 
 #: laboratory/migrations/0034_group_perms.py:70
 #: laboratory/migrations/_migrations_run_python_code.py:58
@@ -2907,7 +2902,7 @@ msgstr "Nombres separados por comas"
 #: laboratory/models.py:75 laboratory/models.py:224 laboratory/models.py:293
 #: laboratory/templates/laboratory/search.html:67
 #: laboratory/templates/laboratory/shelfobject/shelf_availability_information.html:16
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:37
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:39
 #: report/views/furniture.py:38 report/views/furniture.py:53
 #: report/views/objects.py:169 report/views/objects.py:186
 #: report/views/objects.py:286 report/views/objects.py:303
@@ -4313,19 +4308,19 @@ msgid "Is discard"
 msgstr "Descartar"
 
 #: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:34
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:70
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:72
 #, fuzzy
 #| msgid "Update"
 msgid "Update Status"
 msgstr "Actualizar"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:58
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:60
 #, fuzzy
 #| msgid "Add observation"
 msgid "Add new Observation"
 msgstr "Agregar Observación"
 
-#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:66
+#: laboratory/templates/laboratory/shelfobject/shelfobject_observations.html:68
 #, fuzzy
 #| msgid "Observation"
 msgid "Object Observation"
@@ -6323,6 +6318,18 @@ msgstr "Crear Compañía"
 msgid "Edit Company"
 msgstr "Editar Compañía"
 
+#~ msgid "Status Change"
+#~ msgstr "Estado Cambiado"
+
+#~ msgid "Status Change of"
+#~ msgstr "Estado Cambiado de"
+
+#~ msgid "to"
+#~ msgstr "a"
+
+#~ msgid "Click here to create a new status"
+#~ msgstr "Presione aquí para crear un nuevo estado"
+
 #~ msgid "Reactive/Material/Equipment"
 #~ msgstr "Reactivo/Material/Equipo"
 
@@ -6563,9 +6570,8 @@ msgstr "Editar Compañía"
 #~ "            and pyEQL should be able to interpret it. Here are some "
 #~ "examples:"
 #~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera "
-#~ "\"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos "
-#~ "ejemplos:"
+#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
+#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Sodium Chloride - NaCl"
 #~ msgstr "Cloruro de sodio - NaCl"
@@ -6614,9 +6620,8 @@ msgstr "Editar Compañía"
 #~ "                            and pyEQL should be able to interpret it. "
 #~ "Here are some examples:"
 #~ msgstr ""
-#~ "En general, escriba la fórmula química de su soluto de la manera "
-#~ "\"normal\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos "
-#~ "ejemplos:"
+#~ "En general, escriba la fórmula química de su soluto de la manera \"normal"
+#~ "\" y pyEQL debería ser capaz de inerpretarla. Aquí hay algunos ejemplos:"
 
 #~ msgid "Editor"
 #~ msgstr "Editor"
