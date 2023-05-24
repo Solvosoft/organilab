@@ -9,8 +9,37 @@ from academic.api import serializers
 from academic.api.forms import ValidateReviewSubstanceForm, CommentProcedureStepForm
 from sga.models import ReviewSubstance
 from academic.models import CommentProcedureStep, ProcedureStep
-from .serializers import ProcedureStepCommentSerializer
+from .serializers import ProcedureStepCommentSerializer, ProcedureStepCommentDatatableSerializer, \
+    ProcedureStepCommentFilterSet
 from django.template.loader import render_to_string
+
+
+class ProcedureStepCommentTableView(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (SessionAuthentication,)
+    serializer_class = ProcedureStepCommentDatatableSerializer
+    queryset = CommentProcedureStep.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['comment', 'creator', 'creator_at', ]  # for the global search
+    filterset_class = ProcedureStepCommentFilterSet
+    ordering_fields = ['creator_at', ]
+    ordering = ('-creator_at',)  # default order
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        procedure_step = self.request.GET.get('procedure_step', None)
+        if procedure_step:
+            queryset = queryset.filter(procedure_step=procedure_step)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': queryset.count(),
+                    'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
 
 
 class ProcedureStepCommentAPI(viewsets.ModelViewSet):
@@ -28,7 +57,7 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
     def create(self, request):
         serializer = ProcedureStepCommentSerializer(data=request.data)
         if serializer.is_valid():
-            procedure_step = ProcedureStep.objects.filter(pk=request.data['step']).first()
+            procedure_step = ProcedureStep.objects.filter(pk=request.data['procedure_step']).first()
 
             CommentProcedureStep.objects.create(
                 creator=request.user,
