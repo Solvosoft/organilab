@@ -426,7 +426,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['get'])
     def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
-        Returns a Rendered Detail Modal from the specified Shelf Object
+        Returns all the data from the specified Shelf Object including the Relations Fields
         :param request: http request
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
