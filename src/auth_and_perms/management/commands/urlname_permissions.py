@@ -1836,6 +1836,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'Add Shelf Object Status',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_catalog'
         }
     ],
     'shelfobject_delete': [
