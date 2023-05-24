@@ -91,6 +91,16 @@
                 return data;
             }
         },
+        columnDefs: [
+            {
+                targets: 3,
+                data: null,
+                defaultContent: `<div class="text-end" style="top:0;">
+                    <i  class="fa fa-edit beditbtn"></i>
+                    <i  class="fa fa-trash deletebtn"></i></div>
+                <div>`,
+            }
+        ],
         buttons: [
             {
                 text: 'Add',
@@ -123,7 +133,7 @@
                                             add_translation['successfull'],
                                             "success"
                                         ).then(function(result) {
-                                            location.reload();
+                                            datatableelement.ajax.reload();
                                         })
                                     },
                                 });
@@ -137,6 +147,29 @@
             }
         ]
     }, addfilter=true);
+
+    $(document).ready(function() {
+      $('.dataTables_filter').addClass('w-100');
+      $('.dataTables_filter input').addClass('filter-input').css('width', '96%');
+      $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
+      $('.dataTables_paginate').removeClass('paging_full_numbers');
+      $('.dataTables_paginate').addClass('paging_simple_numbers');
+      $('#notificationdatatable').removeClass('dtr-inline');
+    });
+
+    $('#datatableelement tbody').on( 'click', 'i', function () {
+
+        var action = this.className;
+        var data = datatableelement.row( $(this).parents('tr') ).data();
+
+        if (action==="fa fa-edit beditbtn") {
+            edit_comment(data.id);
+        } else if (action=="fa fa-trash deletebtn") {
+            delete_comment(data.id);
+        }
+
+    } );
+
 
     $('.stepradio').on('change', function(e) {
         datatableelement.ajax.reload();

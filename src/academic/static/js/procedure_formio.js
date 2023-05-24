@@ -144,7 +144,9 @@ function update_comment(comment){
                     '',
                     update_translation['successfull'],
                     'success'
-                    )
+                ).then(function(result) {
+                    datatableelement.ajax.reload();
+                })
             },
         });
 }
@@ -171,7 +173,9 @@ function delete_comment(comment){
             success: (success) => {
                 Swal.fire(
                    remove_translation['successfull'],
-                    )
+                    ).then(function(result) {
+                    datatableelement.ajax.reload();
+                })
             },
         });
     }
