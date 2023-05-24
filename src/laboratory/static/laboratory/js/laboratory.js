@@ -303,37 +303,7 @@ function update_selects(id,data){
 
     }
 $(".add_status").click(function(){
-    url = document.url_status;
-    Swal.fire({
-        title: gettext('Create a new status'),
-        input: 'text',
-        inputAttributes: {required: 'true'},
-        showCancelButton: true,
-        CancelButtonText: gettext("Cancel"),
-        confirmButtonText: gettext("Send"),
-    }).then((result) => {
-      if(result.value){
-      $.ajax({
-      type: "POST",
-      url: url,
-      data: JSON.stringify({"description":result.value}),
-      headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
-      dataType: 'JSON',
-      success: function(data){
-      Swal.fire({
-        text: gettext('Saved the new shelfobject status'),
-          icon: 'success',
-      })
-      },
-      error: function(xhr, resp, text) {
-       Swal.fire({
-        title: text,
-          icon: 'error',
-    })
-      }
-    })
-    }
-});
+    add_status(document.url_status)
 });
 
 $(".check_limit").on('ifChanged', function(event){

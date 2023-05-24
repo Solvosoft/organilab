@@ -77,7 +77,9 @@ class MoveShelfObjectForm(GTForm):
                                        widget=AutocompleteSelect("furniture", attrs={
                                            'data-related': 'true',
                                            'data-pos': 1,
-                                           'data-groupname': 'moveshelfform'
+                                           'data-groupname': 'moveshelfform',
+                                           'data-s2filter-organization': '#id_organization',
+                                           'data-s2filter-laboratory': '#id_laboratory'
                                        })
                                        )
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), label=_("Shelf"),
@@ -85,7 +87,9 @@ class MoveShelfObjectForm(GTForm):
                                        'data-related': 'true',
                                        'data-pos': 2,
                                        'data-groupname': 'moveshelfform',
-                                       'data-s2filter-exclude_shelf': '#id_shelf'
+                                       'data-s2filter-exclude_shelf': '#id_shelf',
+                                       'data-s2filter-organization': '#id_organization',
+                                       'data-s2filter-laboratory': '#id_laboratory'
                                    })
                                    )
 
