@@ -42,9 +42,6 @@
                 <a class="btn btn-danger" href="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=procedure.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
               </tr>
 
-            <script>
-              console.log({{ procedure }})
-            </script>
             {% endfor %}
 
             </tbody>
