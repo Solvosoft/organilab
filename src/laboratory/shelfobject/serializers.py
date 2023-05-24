@@ -2,12 +2,13 @@ from datetime import datetime
 import logging
 
 from django.conf import settings
+from django.forms import model_to_dict
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
-from laboratory.models import Provider
+from laboratory.models import Provider, SustanceCharacteristics
 from laboratory.models import REQUESTED
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, ShelfObjectContainer, \
     TranferObject, ShelfObjectObservation
@@ -313,26 +314,52 @@ class ValidateShelfSerializer(serializers.Serializer):
         return attr
 
 
+class CatalogDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Catalog
+        fields = ['description']
+
+
+class SubstanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    iarc = CatalogDetailSerializer()
+    imdg = CatalogDetailSerializer()
+    precursor_type = CatalogDetailSerializer()
+    white_organ = CatalogDetailSerializer(many=True)
+    storage_class = CatalogDetailSerializer(many=True)
+    ue_code = CatalogDetailSerializer(many=True)
+    nfpa = CatalogDetailSerializer(many=True)
+    class Meta:
+        model = SustanceCharacteristics
+        fields = '__all__'
+
+
 class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
     object_detail = serializers.SerializerMethodField()
     object_name = serializers.SerializerMethodField()
     unit = serializers.SerializerMethodField()
     object_inst = serializers.SerializerMethodField()
     object_features = serializers.SerializerMethodField(required=False, allow_null=True)
+    substance_characteristics = serializers.SerializerMethodField(required=False, allow_null=True)
 
     class Meta:
         model = ShelfObject
         fields = '__all__'
+
+    def get_substance_characteristics(self, obj):
+        characteristics = SubstanceCharacteristicsDetailSerializer(obj.object.sustancecharacteristics)
+        return characteristics.data
 
     def get_object_detail(self, obj):
         return obj.get_object_detail()
 
     def get_object_features(self, obj):
         if obj.object.features.exists():
-            return obj.object.features.all()
+            return list(obj.object.features.all().values('name'))
 
     def get_object_inst(self, obj):
-        return obj.object
+        object_d = model_to_dict(obj.object)
+        del object_d['features']
+        return object_d
 
 
 class ShelfSerializer(serializers.ModelSerializer):
