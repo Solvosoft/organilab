@@ -487,7 +487,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         if attr:
             if attr.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f'MoveShelfObjectSerializer --> attr.laboratory ({attr.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                    f'MoveShelfObjectSerializer --> attr.laboratory_id ({attr.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
                 raise serializers.ValidationError(_("Laboratory room doesn't exists in this laboratory"))
         return attr
 
@@ -497,7 +497,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         if attr:
             if attr.labroom.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f'MoveShelfObjectSerializer --> attr.labroom.laboratory ({attr.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                    f'MoveShelfObjectSerializer --> attr.labroom.laboratory_id ({attr.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
                 raise serializers.ValidationError(_("Furniture doesn't exists in this laboratory"))
         return attr
 
@@ -507,7 +507,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         if attr:
             if attr.furniture.labroom.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f'MoveShelfObjectSerializer --> attr.furniture.labroom.laboratory ({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                    f'MoveShelfObjectSerializer --> attr.furniture.labroom.laboratory_id ({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
                 raise serializers.ValidationError(_("Shelf doesn't exists in this laboratory"))
         return attr
 
