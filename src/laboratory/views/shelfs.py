@@ -150,6 +150,7 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
     def clean_quantity(self):
         discard = self.cleaned_data['discard']
         quantity = self.cleaned_data['quantity']
+        infinity_quantity = self.cleaned_data['infinity_quantity']
         amount = quantity >= self.instance.get_total_refuse() #get_total_refuse return the amount that the shelf have about shelfobjects
         if discard:
             if amount and quantity > 0:
@@ -157,7 +158,7 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
             else:
                 self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
 
-        if amount or quantity==-1:
+        if amount or infinity_quantity:
             return quantity
         else:
             self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
