@@ -3,7 +3,6 @@ import json
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.http import JsonResponse, Http404
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
@@ -17,7 +16,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.api import serializers
@@ -40,8 +38,6 @@ from laboratory.shelfobject.serializers import TransferObjectDenySerializer, She
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
 from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject
 from laboratory.utils import organilab_logentry
-from presentation.models import QRModel
-from presentation.utils import update_qr_instance
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -643,7 +639,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer.validated_data['shelfobj'].delete()
         return JsonResponse({'detail': _('The item was deleted successfully')}, status=200)
 
-
     @action(detail=True, methods=['post'])
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
@@ -660,7 +655,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer_sho = CreateObservationShelfObjectSerializer(data=request.data)
         errors = {}
         if serializer_sho.is_valid():
-            serializer_sho.save(shelf_object=shelf_object, creator=request.user)
+            observation_instance = serializer_sho.save(shelf_object=shelf_object, creator=request.user)
+            utils.organilab_logentry(request.user, observation_instance, ADDITION, 'shelfobjectobservation', relobj=self.laboratory)
         else:
             errors = serializer_sho.errors
 
