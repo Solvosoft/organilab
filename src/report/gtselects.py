@@ -7,12 +7,10 @@ from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-import json
-
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.organization_utils import organization_can_change_laboratory
 from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory, Shelf
-from laboratory.shelfobject.forms import ExcludeShelfForm
+from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer
 from laboratory.utils import get_laboratories_from_organization
 from report.forms import RelOrganizationForm
 
@@ -105,8 +103,13 @@ class ShelfLookup(generics.RetrieveAPIView, BaseSelect2View):
         return queryset
 
     def list(self, request, *args, **kwargs):
-        if self.exclude_shelf is None:
-            form = ExcludeShelfForm(request.GET)
-            if form.is_valid():
-                self.exclude_shelf = form.cleaned_data['exclude_shelf']
-        return super().list(request, *args, **kwargs)
+        self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.exclude_shelf = self.serializer.validated_data['shelf'].pk
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
