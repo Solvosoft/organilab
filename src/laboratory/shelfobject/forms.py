@@ -26,6 +26,7 @@ class IncreaseShelfObjectForm(GTForm):
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
                                       widget=AutocompleteSelectMultiple("provider", attrs={
                                           'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
                                       })
                                       )
 
@@ -51,9 +52,6 @@ class DecreaseShelfObjectForm(GTForm):
                                 label=_('Amount'))
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
-
-class ValidateLaboratoryForm(GTForm):
-    laboratory = forms.IntegerField()
 
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
