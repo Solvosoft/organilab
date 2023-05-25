@@ -6,6 +6,8 @@ from django.forms import model_to_dict
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
 
@@ -598,3 +600,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
             raise serializers.ValidationError(_("Object can't be moved to same shelf"))
         return data
+
+
+class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
