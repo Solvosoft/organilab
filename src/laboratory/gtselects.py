@@ -3,17 +3,18 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from djgentelella.groute import register_lookups
+from rest_framework.response import Response
 
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.forms import ValidateShelfForm, ValidateShelfUnitForm
 from laboratory.models import Object, OrganizationStructure, Catalog, Shelf, Provider
 from auth_and_perms.models import Rol
 from django.contrib.auth.models import User
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from laboratory.shelfobject.forms import ValidateLaboratoryForm
 from laboratory.utils import get_pk_org_ancestors
 
 class GPaginatorMoreElements(GPaginator):
@@ -158,7 +159,7 @@ class ProviderLookup(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    laboratory = None
+    laboratory, serializer = None, None
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -168,8 +169,13 @@ class ProviderLookup(generics.RetrieveAPIView, BaseSelect2View):
         return result
 
     def list(self, request, *args, **kwargs):
-        if self.laboratory is None:
-            form = ValidateLaboratoryForm(request.GET)
-            if form.is_valid():
-                self.laboratory = form.cleaned_data['laboratory']
-        return super().list(request, *args, **kwargs)
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.laboratory = self.serializer.validated_data['laboratory']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
