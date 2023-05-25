@@ -82,13 +82,12 @@ class MoveShelfObjectForm(GTForm):
                                        'data-related': 'true',
                                        'data-pos': 2,
                                        'data-groupname': 'moveshelfform',
-                                       'data-s2filter-exclude_shelf': '#id_shelf',
+                                       'data-s2filter-shelf': '#id_shelf',
                                        'data-s2filter-organization': '#id_organization',
                                        'data-s2filter-laboratory': '#id_laboratory'
                                    })
                                    )
-class ExcludeShelfForm(GTForm):
-    exclude_shelf = forms.IntegerField()
+
 class ShelfObjectExtraFields(GTForm,forms.Form):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
     without_limit = forms.BooleanField(widget=genwidgets.CheckboxInput(attrs={'class':'check_limit'}), label=_('Unlimit'))
