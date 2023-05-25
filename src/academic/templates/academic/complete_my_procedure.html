@@ -28,23 +28,6 @@
                                 <div class="col">
                                     <input type="radio" class="stepradio" name="step" value="{{ step.pk }}">
                                 </div>
-                                <div id="right-col-{{ step.pk }}" class="d-none">
-                                    <div id="comment-panel-{{ step.pk }}" class="row">
-                                        <div class="col-sm-12">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <p class="float-start" style="color:red"><strong>{% trans 'List of comments' %}</strong></p>
-                                                    <button class="btn btn-success float-end" type="button" onclick="save_comment({{step.pk}})"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                                                    <div class="clearfix"></div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="row" id="comments-list-{{ step.pk }}" style="overflow-y: scroll; max-height:600px;">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -70,77 +53,49 @@
 {% endblock %}
 
 {% block js %}
-<script>
-    document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
-                 "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
-                 "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
-                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-
-    datatableelement=createDataTable('#datatableelement', '{% url "laboratory:api-procedure-comments-list" %}', {
-     columns: [
-            {data: "creator", name: "creator", title: "{% trans 'Creator' %}", type: "string", visible: true},
-            {data: "creator_at", name: "creator_at", title: "{% trans 'Creation date' %}", type: "date", visible: true, "dateformat":  "{% get_datetime_format %}"},
-            {data: "comment", name: "comment", title: "{% trans 'Comment' %}", type: "string", visible: true}
-        ],
-        ajax: {
-            url: '{% url "laboratory:api-procedure-comments-list" %}',
-            type: 'GET',
-            data: function(dataTableParams, settings) {
-                var data= formatDataTableParams(dataTableParams, settings);
-                data['procedure_step'] = $('.stepradio:checked').val();
-                data['my_procedure'] = {{ my_procedure.pk }};
-                return data;
-            }
-        },
-        columnDefs: [
-            {
-                targets: 3,
-                data: null,
-                defaultContent: `<div class="text-end" style="top:0;">
-                    <i  class="fa fa-edit beditbtn"></i>
-                    <i  class="fa fa-trash deletebtn"></i></div>
-                <div>`,
-            }
-        ],
-        buttons: [
-            {
-                text: 'Add',
-                action: function() {
-                    add_comment();
-                }
-            }
-        ]
-    }, addfilter=true);
-
-    $(document).ready(function() {
-      $('.dataTables_filter').addClass('w-100');
-      $('.dataTables_filter input').addClass('filter-input').css('width', '96%');
-      $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
-      $('.dataTables_paginate').removeClass('paging_full_numbers');
-      $('.dataTables_paginate').addClass('paging_simple_numbers');
-      $('#notificationdatatable').removeClass('dtr-inline');
-    });
-
-    $('#datatableelement tbody').on( 'click', 'i', function () {
-
-        var action = this.className;
-        var data = datatableelement.row( $(this).parents('tr') ).data();
-
-        if (action==="fa fa-edit beditbtn") {
-            edit_comment(data.id);
-        } else if (action=="fa fa-trash deletebtn") {
-            delete_comment(data.id);
-        }
-
-    } );
-
-
-    $('.stepradio').on('change', function(e) {
-        datatableelement.ajax.reload();
-    });
-</script>
-
 <script type="text/javascript">
+
+document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
+             "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
+             "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
+             "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+
+datatableelement=createDataTable('#datatableelement', '{% url "laboratory:api-procedure-comments-list" %}', {
+ columns: [
+        {data: "creator", name: "creator", title: "{% trans 'Creator' %}", type: "string", visible: true},
+        {data: "creator_at", name: "creator_at", title: "{% trans 'Creation date' %}", type: "date", visible: true, "dateformat":  "{% get_datetime_format %}"},
+        {data: "comment", name: "comment", title: "{% trans 'Comment' %}", type: "string", visible: true}
+    ],
+    ajax: {
+        url: '{% url "laboratory:api-procedure-comments-list" %}',
+        type: 'GET',
+        data: function(dataTableParams, settings) {
+            var data= formatDataTableParams(dataTableParams, settings);
+            data['procedure_step'] = $('.stepradio:checked').val();
+            data['my_procedure'] = {{ my_procedure.pk }};
+            return data;
+        }
+    },
+    columnDefs: [
+        {
+            targets: 3,
+            data: null,
+            defaultContent: `<div class="text-end" style="top:0;">
+                <i  class="fa fa-edit beditbtn"></i>
+                <i  class="fa fa-trash deletebtn"></i></div>
+            <div>`,
+        }
+    ],
+    buttons: [
+        {
+            text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+            action: function() {
+                add_comment();
+            }
+        }
+    ]
+}, addfilter=true);
+
 const urls ={
     edit:"{% url 'academic:complete_my_procedure' org_pk=org_pk lab_pk=laboratory pk=my_procedure.pk %}",
     list: "{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}",
@@ -158,10 +113,8 @@ const no_step_selected = {
     text: "{% trans 'You must select a step to add comments.' %}"
 }
 
-var schema = {{ schema | safe }};
 document.getElementById("form_name").textContent = "{{my_procedure.name}}";
 
-var components = { components: schema["components"] };
 const saved="{% trans 'Saved successfully' %}";
 
 let status = "{{my_procedure.status}}"
@@ -181,11 +134,8 @@ const remove_translation ={
     icon: "success",
     successfull:"{% trans 'Successfully deleted' %}"
 }
+
 const add_translation ={
-    title:"{% trans 'Add observation' %}",
-    accept :"{% trans 'Yes' %}",
-    deny :"{% trans 'No' %}",
-    icon: "success",
     successfull:"{% trans 'Saved successfully' %}"
 }
 
@@ -198,19 +148,9 @@ const update_translation ={
     successfull:"{% trans 'Successfully updated' %}"
 }
 
-function showComments(pk) {
-    let comments = document.querySelector('#right-col-' + pk)
-    if(comments.classList.contains("col")){
-        document.querySelector('#right-col-' + pk).classList="d-none"
-    }else{
-        document.querySelector('#right-col-' + pk).classList="col"
-    }
-}
-
 </script>
 <script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
 <script src="{% static 'js/complete_my_procedure.js' %}"></script>
-<script src="{% static 'js/procedure_formio.js'%}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
 
