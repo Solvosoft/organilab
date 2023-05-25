@@ -129,6 +129,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('recipientsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
                                       attrs={
                                           'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-laboratory': '#id_laboratory'
                                       }),
             label=_("Container"),
             help_text=_("Search by name")
@@ -182,6 +183,8 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('recipientsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
                                       attrs={
                                           'data-dropdownparent': "#reactive_refuse_form",
+                                          'data-s2filter-laboratory': '#id_laboratory'
+
                                       }),
             label=_("Container"),
             help_text=_("Search by name")
