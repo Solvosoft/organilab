@@ -1350,10 +1350,8 @@ msgstr "Objeto sustraído exitosamente"
 msgid "The amount to be subtracted is more than the shelf has"
 msgstr "La cantidad a sustraer es más que el estante tiene"
 
-#, fuzzy
-#| msgid "The creation was performed successfully."
 msgid "Reservation was performed successfully."
-msgstr "La creación se ha realizado con éxito."
+msgstr "La reservación se ha realizado con éxito."
 
 msgid ""
 "This value cannot be greater than the quantity available for the object."
@@ -1520,10 +1518,13 @@ msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
 msgid "Use dot like 0.344 on decimal"
-msgstr "Use coma ej. 0.34 en decimales"
+msgstr "Use punto ej. 0.34 en decimales"
 
 msgid "Expiration date"
 msgstr "Fecha de expiración"
+
+msgid "Describe the action"
+msgstr "Describe la acción realizada"
 
 msgid "Equipment or reactive or sustance"
 msgstr "Equipo o reactivo o sustancia"
@@ -1533,9 +1534,6 @@ msgstr "Numero de lote"
 
 msgid "Laboratory name"
 msgstr "Nombre del Laboratorio"
-
-msgid "Course name"
-msgstr "Nombre del curso"
 
 msgid "Shelf Object Url"
 msgstr "Url del objeto en el estante"
@@ -1742,16 +1740,13 @@ msgid "Unlimit"
 msgstr "Ilimitado"
 
 msgid "Minimum Limit"
-msgstr "Minimo Limite"
+msgstr "Límite mínimo"
 
 msgid "Maximum Limit"
-msgstr "Maximo Limite"
+msgstr "Límite Máximo"
 
 msgid "Search by name"
 msgstr "Buscar por nombre"
-
-msgid "Click here to create a new status"
-msgstr ""
 
 msgid "Final date can't be equal to initial date"
 msgstr "La fecha final no puede ser igual a la fecha inicial"
@@ -1777,18 +1772,14 @@ msgstr "Proveedor no existe en el laboratorio"
 msgid "Minimum limit can't be greater than maximum limit"
 msgstr "Límite mínimo no puede ser mayor al límite máximo"
 
-#, fuzzy
-#| msgid ""
-#| "The measurent unit is different of there shelf has %(measurement_unit)s"
 msgid "Measurement unit can't different than shelf measurement unit"
 msgstr ""
-"La unidad de medida es diferente de la que tiene el estante "
+"La unidad de medida es diferente a la que tiene el estante "
 "%(measurement_unit)s"
 
-#, fuzzy, python-format
-#| msgid "The quantity is much larger than the shelf limit %(limit)s"
+#, python-format
 msgid "Quantity can't greater than shelf quantity limit %(limit)s"
-msgstr "La cantidad es mucho mayor al limite del estante %(limit)s"
+msgstr "La cantidad es mucho mayor al límite del estante %(limit)s"
 
 msgid "Object does not exist in the laboratory."
 msgstr "El objeto seleccionado no pertenece al laboratorio."
@@ -2044,6 +2035,9 @@ msgstr "El estante no tiene objetos"
 
 msgid "Add Shelf"
 msgstr "Agregar estante"
+
+msgid "Mark as discard"
+msgstr "Marcar como desecho"
 
 msgid "List of discarded substances by shelf"
 msgstr "Listado de sustancias desechadas por Estante"
@@ -2405,7 +2399,7 @@ msgid "Enter whole numbers or with decimals"
 msgstr "Ingresar numeros enteros o con decimales"
 
 msgid "Transfer Out"
-msgstr "Transferir para"
+msgstr "Transferir hacia otro laboratorio"
 
 msgid "Log"
 msgstr "Bitácora"
@@ -2420,7 +2414,7 @@ msgid "Move to other shelf"
 msgstr "Mover a otro estante"
 
 msgid "Transfer In"
-msgstr "Transferir hacia"
+msgstr "Transferir desde otro laboratorio"
 
 msgid "Create Reactive"
 msgstr "Crear Reactivo"
@@ -3009,10 +3003,6 @@ msgstr "Use el siguiente enlace para reiniciar su contraseña en la plataforma"
 msgid "Here"
 msgstr "Aquí"
 
-#, fuzzy
-#| msgid ""
-#| "This email was send because someone try to reset your password, if you "
-#| "didn't request a reset, please delete this email and do not more actions\n"
 msgid ""
 "This email was send because someone try to reset your password, if you "
 "didn't request a reset, please delete this email and do not more actions\n"
@@ -3020,7 +3010,7 @@ msgid ""
 msgstr ""
 "Este correo ha sido enviado porque alguien trató de reiniciar su contraseña, "
 "si usted no fue por favor elimine este correo y no realice ninguna otra "
-"acción\n"
+"acción"
 
 msgid "Reset password"
 msgstr "Recuperar contraseña"
