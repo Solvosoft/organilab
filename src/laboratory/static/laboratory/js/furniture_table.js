@@ -67,6 +67,7 @@ function refresh_description(){
     setTimeout(function () {
         show_refuse_elements();
         show_refuse_elements_limit_only_objects();
+        hide_quantity();
         gt_find_initialize($("#shelfmodalbody"));
     }, 1000);
 
@@ -78,6 +79,7 @@ function processResponse(data) {
 	gt_find_initialize($("#shelfmodalbody"));
 	activemodal = $("#createshelfmodal").modal('show');
 	show_refuse_elements();
+	hide_quantity();
 	show_refuse_elements_limit_only_objects();
 
 }
@@ -225,7 +227,14 @@ function send_shelf_request(action_click){
             },
         });
 }
+function hide_quantity(){
+    if($("#id_shelf--infinity_quantity").is(':checked')){
+        $('#id_shelf--quantity').parent().parent().hide();
+    }else{
+        $('#id_shelf--quantity').parent().parent().show();
 
+    }
+}
 save_form();
 do_sortable();
 
@@ -239,4 +248,8 @@ $(document).on('ifChanged','#id_shelf--limit_only_objects', function(event){
 
 $(document).on('click','#cancel_modal', function(event){
     cancelRemoveShelfs()
+});
+
+$(document).on('ifChanged','#id_shelf--infinity_quantity', function(event){
+    hide_quantity();
 });
