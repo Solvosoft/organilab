@@ -598,7 +598,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return:
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "chart_graphic")
-
+ 
 
     @action(detail=True, methods=['post'])
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
