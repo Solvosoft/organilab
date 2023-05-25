@@ -87,20 +87,6 @@ def create_my_procedures(request, *args, **kwargs):
     return render(request, 'academic/procedure.html', context={'laboratory': laboratory, 'org_pk': org})
 
 
-@permission_required('academic.add_procedureobservations')
-def create_my_procedure_step_comment(request, *args, **kwargs):
-    org = kwargs.get('org_pk')
-    new_comment_text = request.GET.get("comment", None)
-    procedure_step_pk = request.GET.get("step_pk", None)
-    laboratory = kwargs.get('lab_pk')
-    if new_comment_text and procedure_step_pk:
-        procedure_step = ProcedureStep.objects.get(pk=procedure_step_pk)
-        new_comment = CommentProcedureStep(creator=request.user, comment=new_comment_text, procedure_step=procedure_step)
-        new_comment.save()
-
-    return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': laboratory, 'org_pk': org}))
-
-
 def update_my_procedure_data(item, data):
     if 'key' in item and 'defaultValue' in item:
         if item['key'] in data:

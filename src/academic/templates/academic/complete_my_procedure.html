@@ -88,6 +88,7 @@
             data: function(dataTableParams, settings) {
                 var data= formatDataTableParams(dataTableParams, settings);
                 data['procedure_step'] = $('.stepradio:checked').val();
+                data['my_procedure'] = {{ my_procedure.pk }};
                 return data;
             }
         },
@@ -105,44 +106,7 @@
             {
                 text: 'Add',
                 action: function() {
-                    var step_pk = $('.stepradio:checked').val();
-                    if (step_pk === undefined) {
-                        Swal.fire({
-                            title: no_step_selected['title'],
-                            text: no_step_selected['text'],
-                        });
-                    } else {
-                        var formmodal = BaseFormModal('#commentmodal');
-                        formmodal.addBtnForm = function(instance) {
-                            return function(event) {
-                                var dataAsString = convertToStringJson(instance.form, prefix=instance.prefix, extras=instance.data_extras);
-                                var dataAsJson = JSON.parse(dataAsString);
-
-                                $.ajax({
-                                    url: "{% url 'laboratory:api-my-procedure-list' %}",
-                                    type: "POST",
-                                    data: {'comment': dataAsJson.comment, 'procedure_step': step_pk},
-                                    headers: {
-                                        "X-Requested-With": "XMLHttpRequest",
-                                        "X-CSRFToken": getCookie("csrftoken"),
-                                    },
-                                    success: (success) => {
-                                        formmodal.hidemodal();
-                                        Swal.fire(
-                                            '',
-                                            add_translation['successfull'],
-                                            "success"
-                                        ).then(function(result) {
-                                            datatableelement.ajax.reload();
-                                        })
-                                    },
-                                });
-
-                            }
-                        }
-                        formmodal.init(this);
-                        formmodal.showmodal();
-                    }
+                    add_comment();
                 }
             }
         ]
@@ -184,6 +148,10 @@ const urls ={
     get_comment:"{% url 'laboratory:api-my-procedure-list' %}",
     delete_update_comment :"{% url 'laboratory:api-my-procedure-detail' 0 %}",
 };
+
+const my_procedure = {
+    pk: {{ my_procedure.pk }},
+}
 
 const no_step_selected = {
     title: "{% trans 'No step selected' %}",
@@ -240,8 +208,9 @@ function showComments(pk) {
 }
 
 </script>
-<script src="{% static 'js/procedure_formio.js'%}?v={% get_organilab_version %}"></script>
 <script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'js/complete_my_procedure.js' %}"></script>
+<script src="{% static 'js/procedure_formio.js'%}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
 

@@ -15,7 +15,7 @@ from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, ProcedureStepCreateView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
     delete_step, get_procedure, get_my_procedures, delete_procedure, generate_reservation, create_my_procedures, \
-    remove_my_procedure, complete_my_procedure, create_my_procedure_step_comment
+    remove_my_procedure, complete_my_procedure
 
 procedure_url =[
     re_path('add_steps_wrapper/(?P<pk>\d+)/', add_steps_wrapper, name='add_steps_wrapper'),
@@ -35,7 +35,6 @@ procedure_url =[
     re_path('remove_observation/(?P<pk>\d+)/', remove_observation, name='remove_observation'),
     re_path('generate_reservation', generate_reservation, name='generate_reservation'),
     re_path('get_list/', get_my_procedures, name='get_my_procedures'),
-    re_path('create_my_procedure_comment', create_my_procedure_step_comment, name='create_my_procedure_comment'),
     re_path('add_procedures/(?P<content_type>[^/]+)/(?P<model>[^/]+)/', create_my_procedures, name='add_my_procedures'),
     re_path('remove_procedure/(?P<pk>[0-9]+)/', remove_my_procedure, name='remove_my_procedure'),
     re_path('complete_procedure/(?P<pk>[0-9]+)/', complete_my_procedure, name="complete_my_procedure"),

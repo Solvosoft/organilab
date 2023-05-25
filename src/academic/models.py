@@ -73,6 +73,8 @@ class CommentProcedureStep(models.Model):
     comment = models.TextField(blank=True, verbose_name=_("Comment"))
     procedure_step = models.ForeignKey(ProcedureStep, blank=True, null=True, on_delete=models.CASCADE,
                                        verbose_name=_('Step'))
+    my_procedure = models.ForeignKey(MyProcedure, blank=True, null=True, on_delete=models.CASCADE,
+                                     verbose_name=_('My procedure'))
 
     def __str__(self):
         return f'{self.creator} - {self.creator_at}'

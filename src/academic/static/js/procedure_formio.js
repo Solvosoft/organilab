@@ -15,7 +15,7 @@ function saveForm(state) {
                 url: urls['edit'],
                 type: "POST",
                 dataType: "json",
-                data: $('#inform_form').serialize()+"&status="+state,
+                data: $('#procedure_form').serialize()+"&status="+state,
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                     "X-CSRFToken": getCookie("csrftoken"),
