@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from academic.api import serializers
 from academic.api.forms import ValidateReviewSubstanceForm, CommentProcedureStepForm
 from sga.models import ReviewSubstance
-from academic.models import CommentProcedureStep, ProcedureStep
+from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure
 from .serializers import ProcedureStepCommentSerializer, ProcedureStepCommentDatatableSerializer, \
     ProcedureStepCommentFilterSet
 from django.template.loader import render_to_string
@@ -29,8 +29,11 @@ class ProcedureStepCommentTableView(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         procedure_step = self.request.GET.get('procedure_step', None)
+        my_procedure = self.request.GET.get('my_procedure', None)
         if procedure_step:
-            queryset = queryset.filter(procedure_step=procedure_step)
+            queryset = queryset.filter(procedure_step=procedure_step, my_procedure=my_procedure)
+        else:
+            queryset = queryset.filter(my_procedure=my_procedure)
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -58,11 +61,13 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
         serializer = ProcedureStepCommentSerializer(data=request.data)
         if serializer.is_valid():
             procedure_step = ProcedureStep.objects.filter(pk=request.data['procedure_step']).first()
+            my_procedure = MyProcedure.objects.filter(pk=request.data['my_procedure']).first()
 
             CommentProcedureStep.objects.create(
                 creator=request.user,
                 comment=serializer.data['comment'],
-                procedure_step=procedure_step
+                procedure_step=procedure_step,
+                my_procedure=my_procedure
             )
 
             comments = self.get_queryset().filter(procedure_step=procedure_step).order_by('pk')
