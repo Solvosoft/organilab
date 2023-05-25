@@ -291,7 +291,6 @@ $(".check_limit").on('ifChanged', function(event){
 
 
 function show_hide_limits(e,prefix){
-    console.log(e)
     if($(e).is(":checked")){
         $(prefix+'minimum_limit').parent().parent().hide();
         $(prefix+'maximum_limit').parent().parent().hide();
