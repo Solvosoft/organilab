@@ -37,6 +37,7 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
     org_pk = None
     shelf = None
     shelfobjet_type=None
+    serializer=None
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -55,11 +56,11 @@ class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
 
-        form = ValidateUserAccessShelfTypeSerializer(request.GET, context={'user': request.user})
-        if form.is_valid():
-            self.shelf = form.validated_data['shelf']
-            self.shelfobjet_type=form.validated_data['objecttype']
-            self.org_pk=form.validated_data['organization']
+        self.serializer = ValidateUserAccessShelfTypeSerializer(data=request.GET, context={'user': request.user})
+        if self.serializer.is_valid():
+            self.shelf = self.serializer.validated_data['shelf']
+            self.shelfobjet_type=self.serializer.validated_data['objecttype']
+            self.org_pk=self.serializer.validated_data['organization']
             return super().list(request, *args, **kwargs)
         return Response({
                 'status': 'Bad request',
