@@ -125,10 +125,11 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
         self.fields['container'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('recipientsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+            widget=AutocompleteSelect('recipientsearch',
                                       attrs={
                                           'data-dropdownparent': "#reactive_form",
-                                          'data-s2filter-laboratory': '#id_laboratory'
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
                                       }),
             label=_("Container"),
             help_text=_("Search by name")
@@ -162,9 +163,11 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
         super().__init__(*args, **kwargs)
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('objectorgsearch', attrs={
                 'data-dropdownparent': "#reactive_refuse_form",
                 'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization',
                 'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
             label=_("Reactive"),
@@ -172,26 +175,30 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
         )
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('catalogunit', attrs={
                 'data-dropdownparent': "#reactive_refuse_form",
                 'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             label=_("Measurement unit"))
         self.fields['container'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('recipientsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
+            widget=AutocompleteSelect('recipientsearch',
                                       attrs={
                                           'data-dropdownparent': "#reactive_refuse_form",
-                                          'data-s2filter-laboratory': '#id_laboratory'
-
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
                                       }),
             label=_("Container"),
             help_text=_("Search by name")
         )
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('shelfobject_status_search', attrs={
                 'data-dropdownparent': "#reactive_refuse_form",
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
         label=_("Status"))
@@ -220,26 +227,32 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
         super().__init__(*args, **kwargs)
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
-            attrs={
-                'data-dropdownparent': "#material_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
-            }),
+            widget=AutocompleteSelect('objectorgsearch',
+                                      attrs={
+                                          'data-dropdownparent': "#material_form",
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+                                      }),
             label="Material")
 
         self.fields['course_name'].label = _("Description")
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('catalogunit', attrs={
                 'data-dropdownparent': "#material_form",
-                'data-s2filter-shelf': '#id_shelf'
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('shelfobject_status_search', attrs={
                 'data-dropdownparent': "#material_form",
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
@@ -262,9 +275,11 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
         super().__init__(*args, **kwargs)
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('objectorgsearch', attrs={
                 'data-dropdownparent': "#material_refuse_form",
                 'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization',
                 'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
             label="Material")
@@ -274,15 +289,19 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
         self.fields['limit_quantity'].initial=0
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('catalogunit', attrs={
                 'data-dropdownparent': "#material_refuse_form",
-                'data-s2filter-shelf': '#id_shelf'
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('shelfobject_status_search', attrs={
                 'data-dropdownparent': "#material_refuse_form",
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
@@ -305,26 +324,32 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
         super().__init__(*args, **kwargs)
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
-            attrs={
-                'data-dropdownparent': "#equipment_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
-            }),
+            widget=AutocompleteSelect('objectorgsearch',
+                                      attrs={
+                                          'data-dropdownparent': "#equipment_form",
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+                                      }),
             label=_("Equipment"))
         self.fields['course_name'].label = _("Description")
 
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('catalogunit', attrs={
                 'data-dropdownparent': "#equipment_form",
-                'data-s2filter-shelf': '#id_shelf'
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('shelfobject_status_search', attrs={
                 'data-dropdownparent': "#equipment_form",
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
@@ -346,9 +371,11 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
         super().__init__(*args, **kwargs)
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('objectorgsearch', attrs={
                 'data-dropdownparent': "#equipment_refuse_form",
                 'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization',
                 'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
             label=_("Equipment"))
@@ -356,15 +383,19 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
 
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('catalogunit', attrs={
                 'data-dropdownparent': "#equipment_refuse_form",
-                'data-s2filter-shelf': '#id_shelf'
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelect('shelfobject_status_search', attrs={
                 'data-dropdownparent': "#equipment_refuse_form",
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['marked_as_discard'].initial=True
@@ -395,7 +426,10 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}),
+            widget=AutocompleteSelect('shelfobject_status_search',attrs={
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
+            }),
             help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'%(_("New status")),label=_("Status"))
 
 
