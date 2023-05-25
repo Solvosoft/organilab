@@ -7,6 +7,8 @@ function shelf_action_modals(modalid){
     label_a.setAttribute("data-modalid", modalid)
     show_me_modal(label_a,null)
     form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
+    show_hide_limits($(`${document.prefix}without_limit`),document.prefix)
+
     return false;
 }
 const tableObject={
@@ -44,6 +46,7 @@ const tableObject={
             }
             document.prefix=id;
             shelf_action_modals(modalid)
+
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
@@ -283,8 +286,13 @@ $(".add_status").click(function(){
 });
 
 $(".check_limit").on('ifChanged', function(event){
-    prefix=document.prefix;
-    if($(this).is(":checked")){
+    show_hide_limits(this,document.prefix)
+})
+
+
+function show_hide_limits(e,prefix){
+    console.log(e)
+    if($(e).is(":checked")){
         $(prefix+'minimum_limit').parent().parent().hide();
         $(prefix+'maximum_limit').parent().parent().hide();
         $(prefix+'expiration_date').parent().parent().parent().hide();
@@ -293,4 +301,4 @@ $(".check_limit").on('ifChanged', function(event){
         $(prefix+'maximum_limit').parent().parent().show();
         $(prefix+'expiration_date').parent().parent().parent().show();
     }
-})
+}
