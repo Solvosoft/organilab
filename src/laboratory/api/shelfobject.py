@@ -100,6 +100,12 @@ class ShelfObjectCreateMethods:
                                          changed_data=['object','shelfobject'], relobj=self.context['laboratory'])
 
     def create_reactive(self, serializer, limits_serializer):
+        """
+        Create reactive type Shelfobject .
+        :param serializer:  ShelfObjectSerializer to create reactive tyope shelfobject
+        :param limits_serializer: Serializer with the data to create ShelfObjectLimits
+        :return: reactive type shelfobject was created
+        """
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -118,6 +124,12 @@ class ShelfObjectCreateMethods:
         return shelfobject
 
     def create_refuse_reactive(self, serializer, limits_serializer):
+        """
+        Create refuse reactive type Shelfobject.
+        :param serializer:  ShelfObjectSerializer to create reactive tyope shelfobject
+        :param limits_serializer: Serializer with the data to create ShelfObjectLimits
+        :return: Refuse reactive type shelfobject was created
+        """
         shelfobject = serializer.save(
             creator=self.context['request'].user,
             in_where_laboratory_id=self.context['laboratory']
@@ -136,6 +148,12 @@ class ShelfObjectCreateMethods:
         return shelfobject
 
     def create_material(self, serializer, limits_serializer):
+        """
+        Create material type Shelfobject .
+        :param serializer:  ShelfObjectSerializer to create material type shelfobject
+        :param limits_serializer: Serializer with the data to create ShelfObjectLimits
+        :return: material type shelfobject was created
+        """
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -151,6 +169,13 @@ class ShelfObjectCreateMethods:
         return shelfobject
 
     def create_refuse_material(self, serializer,limits_serializer):
+        """
+        Create refuse material type Shelfobject .
+        :param serializer:  ShelfObjectSerializer to create refuse material type shelfobject
+        :param limits_serializer: Serializer with the data to create ShelfObjectLimits
+        :return: refuse material type shelfobject was created
+        """
+
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -166,6 +191,13 @@ class ShelfObjectCreateMethods:
         return shelfobject
 
     def create_equipment(self, serializer,limits_serializer):
+        """
+        Create equipment type Shelfobject .
+        :param serializer:  ShelfObjectSerializer to create equipment type shelfobject
+        :param limits_serializer: Serializer with the data to create ShelfObjectLimits
+        :return: equipment type shelfobject was created
+        """
+
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -181,6 +213,13 @@ class ShelfObjectCreateMethods:
         return shelfobject
 
     def create_refuse_equipement(self, serializer,limits_serializer):
+        """
+        Create refuse equipment type Shelfobject .
+        :param serializer:  ShelfObjectSerializer to create refuse equipment type shelfobject
+        :param limits_serializer: Serializer with the data to create ShelfObjectLimits
+        :return: refuse equipment type shelfobject was created
+        """
+
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
@@ -240,6 +279,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         return obj
 
     def _get_create_shelfobject_serializer(self, request, org_pk, lab_pk):
+        """
+        Returns the shelfobject serializer and create function by the object type (Reactive, Material, Equipment) creating.
+        :param request: http request
+        :param org_pk: organization related user permissions
+        :param lab_pk: laboratory related to shelfobject and user permissions
+        :return: the sheobject serializer and the create function
+        """
         name = ""
         serializer=shelfobject_serializers.ValidateShelfSerializerCreate(data=request.data,
                                                                    context={"org_pk": org_pk, "lab_pk": lab_pk})
@@ -269,12 +315,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
-        Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Creates the request to create shelfobjects into the shelf
+        :param request: http request
+        :param org_pk: organization related user permissions
+        :param lab_pk: laboratory related to shelfobject and user permissions
+        :param kwargs: extra params
+        :return: increase shelf object quantity, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
         self.serializer_class, keyname = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
@@ -597,25 +643,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer.validated_data['shelfobj'].delete()
         return JsonResponse({'detail': _('The item was deleted successfully')}, status=200)
 
-    @action(detail=False, methods=['get'])
-    def chart_graphic(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Luis Z
-            def get(self, request):
-        queryset = ShelfObject.objects.filter(shelf__pk=request.GET['shelf'])
-        labels = []
-        data = []
-        if queryset:
-            self.show_chart = True
-            for obj in queryset:
-               data.append(obj.quantity)
-               labels.append(obj.object.name)
-
-        return Response({'labels':labels,'data':data})
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "chart_graphic")
-
 
     @action(detail=True, methods=['post'])
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
@@ -672,12 +699,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['put'])
     def update_status(self, request, org_pk, lab_pk,pk, **kwargs):
         """
-        Change the status of a shelfobject
+        Change the status of a shelf object
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
         :param kwargs: other extra params
-        :param pk: Of the shelfobject that change the status
-        :return: JsonReponse with the ingformation about status or shelfobject (success or error)
+        :param pk: Of the shelf object that change the status
+        :return: JsonReponse with the information about status or shelf object (success or error)
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
         self.serializer_class=UpdateShelfObjectStatusSerializer
@@ -777,13 +804,15 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def create_status(self, request, org_pk, lab_pk, **kwargs):
         """
-        Kendric
-        Create a shelfobject status
-        :param org_pk: pk of the organization being queried
-        :param lab_pk: pk of the laboratory that can receive the transfer in
-        :param kwargs: other extra params
-        :return: JsonReponse with the ingformation about shelfobject status (success or error)
+        Creates new status for shelobjects
+        :param request: http request
+        :param org_pk: organization related to reserved product and user permissions
+        :param lab_pk: laboratory related to reserved product and user permissions
+        :param kwargs: extra params
+        :return: save a status in it catalog, return success o error message
+
         """
+
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_status")
 
         self.serializer_class=ShelfObjectStatusSerializer
@@ -792,9 +821,3 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
             return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-"""
-- Búsqueda e interfaz gráfica Marta 
-- Kendric Edit shelf para poner el -1 como infinito
-
-"""

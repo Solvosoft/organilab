@@ -15,15 +15,14 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm, ShelfObjectRefuseEquimentForm, \
-    ShelfObjectEquimentForm, ShelfObjectReactiveForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
-    ShelfObjectRefuseMaterialForm
+from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
-from ..shelfobject.forms import SubstractShelfObjectForm, TransferOutShelfObjectForm, AddShelfObjectForm, \
-    ReserveShelfObjectForm, MoveShelfObjectForm
+from ..shelfobject.forms import SubstractShelfObjectForm, TransferOutShelfObjectForm, AddShelfObjectForm,\
+    MoveShelfObjectForm,  ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
+    ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
@@ -52,8 +51,6 @@ class LaboratoryRoomsList(ListView):
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
         return context
-
-
 
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
@@ -91,8 +88,6 @@ class LabroomCreate(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
-
-
 
 @method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
@@ -163,7 +158,6 @@ class LaboratoryRoomReportView(ListView):
             })
         })
         return context
-
 
 @permission_required('laboratory.change_laboratoryroom')
 def rebuild_laboratory_qr(request, org_pk, lab_pk):
