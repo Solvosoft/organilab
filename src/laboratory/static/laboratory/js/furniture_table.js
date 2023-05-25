@@ -230,7 +230,6 @@ function send_shelf_request(action_click){
 function hide_quantity(){
     if($("#id_shelf--infinity_quantity").is(':checked')){
         $('#id_shelf--quantity').parent().parent().hide();
-        $('#id_shelf--quantity').val(-1);
     }else{
         $('#id_shelf--quantity').parent().parent().show();
 
