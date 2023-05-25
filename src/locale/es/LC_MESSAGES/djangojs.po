@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-20 12:34-0600\n"
-"PO-Revision-Date: 2023-05-19 11:26-0600\n"
+"POT-Creation-Date: 2023-05-24 19:17-0600\n"
+"PO-Revision-Date: 2023-05-24 19:19-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,12 +16,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
-#: laboratory/static/laboratory/js/laboratory.js:215
+#: laboratory/static/laboratory/js/detail_modal_creation.js:21
+#: laboratory/static/laboratory/js/laboratory.js:168
 msgid "Name"
 msgstr "Nombre"
 
@@ -32,8 +33,8 @@ msgstr "Roles"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:7
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
-#: laboratory/static/laboratory/js/laboratory.js:219
-#: laboratory/static/laboratory/js/laboratory.js:276
+#: laboratory/static/laboratory/js/laboratory.js:172
+#: laboratory/static/laboratory/js/laboratory.js:236
 msgid "Actions"
 msgstr "Acciones"
 
@@ -104,38 +105,37 @@ msgstr "Objetos"
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
 
-#: laboratory/static/js/shelfobjectedit.js:9
+#: laboratory/static/js/shelfobjectedit.js:10
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
-#: laboratory/static/js/shelfobjectedit.js:13
+#: laboratory/static/js/shelfobjectedit.js:15
+#: laboratory/static/laboratory/js/laboratory.js:99
 msgid "Are you sure?"
 msgstr "¿Esta seguro?"
 
-#: laboratory/static/js/shelfobjectedit.js:15
+#: laboratory/static/js/shelfobjectedit.js:17
+#: laboratory/static/laboratory/js/laboratory.js:101
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: laboratory/static/js/shelfobjectedit.js:17
+#: laboratory/static/js/shelfobjectedit.js:19
+#: laboratory/static/laboratory/js/laboratory.js:103
+#: laboratory/static/laboratory/js/shelfobject_utils.js:6
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: laboratory/static/js/shelfobjectedit.js:30
-#: laboratory/static/laboratory/js/laboratory.js:79
+#: laboratory/static/js/shelfobjectedit.js:34
+#: laboratory/static/laboratory/js/base_modal_management.js:86
+#: laboratory/static/laboratory/js/laboratory.js:118
 msgid "Success"
 msgstr "Éxito"
 
-#: laboratory/static/js/shelfobjectedit.js:39
-#: laboratory/static/js/shelfobjectedit.js:58
-#: laboratory/static/laboratory/js/laboratory.js:97
-msgid "Error"
-msgstr "Error"
-
-#: laboratory/static/js/shelfobjectedit.js:59
-msgid "An error has occurred"
-msgstr "Ha ocurrido un error"
-
-#: laboratory/static/laboratory/js/laboratory.js:98
+#: laboratory/static/js/shelfobjectedit.js:42
+#: laboratory/static/laboratory/js/base_modal_management.js:101
+#: laboratory/static/laboratory/js/base_modal_management.js:122
+#: laboratory/static/laboratory/js/laboratory.js:126
+#: laboratory/static/laboratory/js/shelfobject_utils.js:24
 msgid ""
 "There was a problem performing your request. Please try again later or "
 "contact the administrator."
@@ -143,80 +143,217 @@ msgstr ""
 "Hubo un problema realizando su solicitud. Por favor intente mas tarde o "
 "contacte al administrador."
 
-#: laboratory/static/laboratory/js/laboratory.js:175
-msgid "No shelf selected"
-msgstr "No se ha seleccionado un estante"
+#: laboratory/static/js/shelfobjectedit.js:50
+#: laboratory/static/js/shelfobjectedit.js:69
+#: laboratory/static/laboratory/js/base_modal_management.js:100
+#: laboratory/static/laboratory/js/base_modal_management.js:121
+#: laboratory/static/laboratory/js/laboratory.js:134
+#: laboratory/static/laboratory/js/shelfobject_utils.js:32
+msgid "Error"
+msgstr "Error"
 
-#: laboratory/static/laboratory/js/laboratory.js:176
-msgid "You need to select a shelf before do this action"
-msgstr "Necesita seleccionar un estante antes de realizar esta acción"
+#: laboratory/static/js/shelfobjectedit.js:70
+msgid "An error has occurred"
+msgstr "Ha ocurrido un error"
 
-#: laboratory/static/laboratory/js/laboratory.js:213
-#: laboratory/static/laboratory/js/laboratory.js:270
-msgid "Id"
-msgstr ""
+#: laboratory/static/laboratory/js/detail_modal_creation.js:20
+msgid "Code"
+msgstr "Código"
 
-#: laboratory/static/laboratory/js/laboratory.js:214
-msgid "Type"
-msgstr ""
+#: laboratory/static/laboratory/js/detail_modal_creation.js:22
+msgid "Synonym"
+msgstr "Sinónimo"
 
-#: laboratory/static/laboratory/js/laboratory.js:216
-#: laboratory/static/laboratory/js/laboratory.js:272
-msgid "Quantity"
-msgstr ""
+#: laboratory/static/laboratory/js/detail_modal_creation.js:23
+#: laboratory/static/laboratory/js/shelfobject_management.js:9
+msgid "Description"
+msgstr "Descripción"
 
-#: laboratory/static/laboratory/js/laboratory.js:217
+#: laboratory/static/laboratory/js/detail_modal_creation.js:24
+msgid "Model"
+msgstr "Modelo"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:25
+msgid "Serie"
+msgstr "Serie"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:26
+msgid "Plaque"
+msgstr "Placa"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:29
+#: laboratory/static/laboratory/js/laboratory.js:170
 msgid "Unit"
 msgstr "Unidad"
 
-#: laboratory/static/laboratory/js/laboratory.js:218
+#: laboratory/static/laboratory/js/detail_modal_creation.js:30
+msgid "Features"
+msgstr "Características"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:43
+#: laboratory/static/laboratory/js/detail_modal_creation.js:49
+msgid "Download QR"
+msgstr "Descargar QR"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:63
+msgid "White Organs"
+msgstr "Órganos Blancos"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:64
+msgid "H Codes"
+msgstr "Códigos H"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:65
+msgid "UE Codes"
+msgstr "Códigos UE"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:66
+msgid "NFPA Codes"
+msgstr "Códigos NFPA"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:72
+msgid "Security Sheet"
+msgstr "Hoja de Seguridad"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:73
+msgid "Download"
+msgstr "Descargar"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:77
+msgid "Sustance Representation"
+msgstr "Representación de la sustancia"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:90
+msgid "Cas Number"
+msgstr "Número CAS"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:91
+msgid "Is Precursor"
+msgstr "Es precursor"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:95
+msgid "Precursor Type"
+msgstr "Tipo de Precursor"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:97
+msgid "IARC"
+msgstr "IARC"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:98
+msgid "IMDG"
+msgstr "IMDG"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:99
+msgid "Bio Accumulable"
+msgstr "Bio acumulable"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:100
+msgid "Is Seveso list III?"
+msgstr "Es Lista de Seveso III?"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:101
+msgid "Molecular Formula"
+msgstr "Formula Molecular"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:112
+msgid "Yes"
+msgstr "Sí"
+
+#: laboratory/static/laboratory/js/detail_modal_creation.js:113
+msgid "No"
+msgstr "No"
+
+#: laboratory/static/laboratory/js/laboratory.js:75
+msgid "No shelf selected"
+msgstr "No se ha seleccionado un estante"
+
+#: laboratory/static/laboratory/js/laboratory.js:76
+msgid "You need to select a shelf before performing this action."
+msgstr "Necesita seleccionar un estante antes de realizar esta acción."
+
+#: laboratory/static/laboratory/js/laboratory.js:95
+msgid "Are you sure you want to deny the transfer of"
+msgstr "¿Está seguro/a de que desea denegar la transferencia de"
+
+#: laboratory/static/laboratory/js/laboratory.js:166
+#: laboratory/static/laboratory/js/laboratory.js:230
+#: laboratory/static/laboratory/js/shelfobject_management.js:5
+msgid "Id"
+msgstr "Id"
+
+#: laboratory/static/laboratory/js/laboratory.js:167
+msgid "Type"
+msgstr "Tipo"
+
+#: laboratory/static/laboratory/js/laboratory.js:169
+#: laboratory/static/laboratory/js/laboratory.js:232
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: laboratory/static/laboratory/js/laboratory.js:171
 msgid "Container"
 msgstr "Contenedor"
 
-#: laboratory/static/laboratory/js/laboratory.js:225
-msgid "Clear Filters"
-msgstr "Limpiar Filtros"
-
-#: laboratory/static/laboratory/js/laboratory.js:231
+#: laboratory/static/laboratory/js/laboratory.js:178
 msgid "Create Equipment"
 msgstr "Crear Equipo"
 
-#: laboratory/static/laboratory/js/laboratory.js:237
+#: laboratory/static/laboratory/js/laboratory.js:188
 msgid "Create Material"
 msgstr "Crear Material"
 
-#: laboratory/static/laboratory/js/laboratory.js:243
+#: laboratory/static/laboratory/js/laboratory.js:197
 msgid "Create Substance"
 msgstr "Crear Sustancia"
 
-#: laboratory/static/laboratory/js/laboratory.js:249
+#: laboratory/static/laboratory/js/laboratory.js:207
 msgid "Transfer In"
-msgstr ""
+msgstr "Transferir aquí"
 
-#: laboratory/static/laboratory/js/laboratory.js:271
-#, fuzzy
-#| msgid "Objects"
+#: laboratory/static/laboratory/js/laboratory.js:231
 msgid "Object"
-msgstr "Objetos"
+msgstr "Objeto"
 
-#: laboratory/static/laboratory/js/laboratory.js:273
-#, fuzzy
-#| msgid "Laboratory by User"
+#: laboratory/static/laboratory/js/laboratory.js:233
 msgid "Laboratory Send"
-msgstr "Laboratorio por usuario"
+msgstr "Laboratorio enviado"
 
-#: laboratory/static/laboratory/js/laboratory.js:274
+#: laboratory/static/laboratory/js/laboratory.js:234
 msgid "Mark as Discard"
-msgstr ""
+msgstr "Marcar como descartado"
 
-#: laboratory/static/laboratory/js/laboratory.js:275
+#: laboratory/static/laboratory/js/laboratory.js:235
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
 msgstr "Cargando reporte esto puede tardar pocos minutos..."
 
 #: laboratory/static/laboratory/js/reports.js:93
+#: laboratory/static/laboratory/js/shelfobject_utils.js:7
 msgid "Send"
 msgstr "Enviar"
+
+#: laboratory/static/laboratory/js/shelfobject_management.js:6
+msgid "Creation Date"
+msgstr "Fecha de creación"
+
+#: laboratory/static/laboratory/js/shelfobject_management.js:7
+msgid "Creator"
+msgstr "Creador"
+
+#: laboratory/static/laboratory/js/shelfobject_management.js:8
+msgid "Action Taken"
+msgstr "Acción Tomada"
+
+#: laboratory/static/laboratory/js/shelfobject_utils.js:3
+msgid "New status"
+msgstr "Nuevo estado"
+
+#: laboratory/static/laboratory/js/shelfobject_utils.js:19
+msgid "Saved the new shelfobject status"
+msgstr "Estado de nuevos objetos de estante guardados"
+
+#~ msgid "Clear Filters"
+#~ msgstr "Limpiar Filtros"

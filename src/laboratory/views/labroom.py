@@ -15,15 +15,14 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm, ShelfObjectRefuseEquimentForm, \
-    ShelfObjectEquimentForm, ShelfObjectReactiveForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
-    ShelfObjectRefuseMaterialForm
+from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
 from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
-from ..shelfobject.forms import SubstractShelfObjectForm, TransferOutShelfObjectForm, AddShelfObjectForm, \
-    ReserveShelfObjectForm
+from ..shelfobject.forms import SubstractShelfObjectForm, TransferOutShelfObjectForm, AddShelfObjectForm,\
+    MoveShelfObjectForm,  ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
+    ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
@@ -42,6 +41,7 @@ class LaboratoryRoomsList(ListView):
         context['tranfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
         context['add_object_form'] = AddShelfObjectForm(lab=self.lab)
         context['subtract_object_form'] = SubstractShelfObjectForm()
+        context['move_object_form'] = MoveShelfObjectForm(prefix="move")
         context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='ef')
         context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='erf')
         context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype":0},org_pk=self.org, prefix="rf")
@@ -51,8 +51,6 @@ class LaboratoryRoomsList(ListView):
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
         return context
-
-
 
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')
 class LabroomCreate(CreateView):
@@ -90,8 +88,6 @@ class LabroomCreate(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
-
-
 
 @method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
 class LabroomUpdate(UpdateView):
@@ -180,7 +176,6 @@ class LaboratoryRoomReportView(ListView):
             })
         })
         return context
-
 
 @permission_required('laboratory.change_laboratoryroom')
 def rebuild_laboratory_qr(request, org_pk, lab_pk):

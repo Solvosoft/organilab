@@ -24,10 +24,11 @@ from laboratory.api.forms import CommentInformForm, ShelfObjectLabviewForm
 from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer, ShelfLabViewSerializer
-from laboratory.forms import ShelfObjectStatusForm, ObservationShelfObjectForm
+from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
     Laboratory, InformsPeriod, ShelfObject, Shelf, ShelfObjectObservation
 from laboratory.qr_utils import get_or_create_qr_shelf_object
+from laboratory.shelfobject.forms import ShelfObjectStatusForm
 from laboratory.utils import get_logentries_org_management
 from laboratory.views.djgeneric import ListView
 from reservations_management.models import ReservedProducts
