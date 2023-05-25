@@ -233,7 +233,7 @@ class Shelf(BaseCreationObj):
     limit_only_objects = models.BooleanField(default=False, verbose_name=_('Limit objects to be added'))
     available_objects_when_limit = models.ManyToManyField(Object,  related_name="limit_objects",
                                                           verbose_name=_('Only objects allowed in this shelf'))
-    infinity_quantity = models.BooleanField(default=False, verbose_name=_('Infinite amount'))
+    infinity_quantity = models.BooleanField(default=True, verbose_name=_('Infinite amount'))
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
