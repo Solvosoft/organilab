@@ -13,6 +13,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import DeleteView, CreateView, UpdateView
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.models import OrganizationStructure
 from ..forms import AddOrganizationForm
@@ -23,6 +24,17 @@ from ..utils import organilab_logentry
 class OrganizationDeleteView(DeleteView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().get(request, *args, **kwargs)
+
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         success_url = self.get_success_url()
@@ -51,6 +63,16 @@ class OrganizationUpdateView(UpdateView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
     form_class = AddOrganizationForm
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        user_is_allowed_on_organization(request.user, self.object)
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         response = super().form_valid(form)

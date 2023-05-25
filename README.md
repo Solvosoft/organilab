@@ -59,7 +59,7 @@ Run your development server
 
 Create translations 
 
-	$ django-admin makemessages --all
+	$ django-admin makemessages --all --no-location --no-obsolete
 
 Create javascript translations
 

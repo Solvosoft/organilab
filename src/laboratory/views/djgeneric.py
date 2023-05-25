@@ -5,7 +5,9 @@ Created on 26/12/2016
 @author: luisza
 '''
 import django_excel
+from django.conf import settings
 from django.http import Http404, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.utils import timezone
 from django.views.generic import DetailView as djDetailView
@@ -14,6 +16,9 @@ from django.views.generic.edit import DeleteView as djDeleteView
 from django.views.generic.edit import UpdateView as djUpdateView
 from django.views.generic.list import ListView as djListView
 from weasyprint import HTML
+
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import check_user_access_kwargs_org_lab
 
 
@@ -23,8 +28,14 @@ class CreateView(djCreateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djCreateView.get(self, request, *args, **kwargs)
@@ -34,8 +45,15 @@ class CreateView(djCreateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
+
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djCreateView.post(self, request, *args, **kwargs)
@@ -54,8 +72,14 @@ class UpdateView(djUpdateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djUpdateView.get(self, request, *args, **kwargs)
@@ -65,8 +89,14 @@ class UpdateView(djUpdateView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djUpdateView.post(self, request, *args, **kwargs)
@@ -84,8 +114,14 @@ class DeleteView(djDeleteView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                            pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djDeleteView.get(self, request, *args, **kwargs)
@@ -94,9 +130,15 @@ class DeleteView(djDeleteView):
         self.lab = None
         self.org = None
         if 'org_pk' in kwargs:
-            self.org= int(kwargs['org_pk'])
+            self.org = int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
-            self.lab= int(kwargs['lab_pk'])
+            self.lab = int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djDeleteView.post(self, request, *args, **kwargs)
@@ -133,8 +175,14 @@ class DetailView(djDetailView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
         return djDetailView.get(self, request, *args, **kwargs)
@@ -155,9 +203,14 @@ class ReportListView(djListView):
         self.org = None
         if 'org_pk' in kwargs:
             self.org = int(kwargs['org_pk'])
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=self.org)
+            user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab = int(kwargs['lab_pk'])
-
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                                pk=self.lab)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
         if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
             raise Http404()
 
