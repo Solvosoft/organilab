@@ -21,7 +21,7 @@ class ProcedureStepCommentTableView(viewsets.ModelViewSet):
     queryset = CommentProcedureStep.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['comment', 'creator', 'creator_at', ]  # for the global search
+    search_fields = ['comment', 'creator__username', 'creator_at', ]  # for the global search
     filterset_class = ProcedureStepCommentFilterSet
     ordering_fields = ['creator_at', ]
     ordering = ('-creator_at',)  # default order
