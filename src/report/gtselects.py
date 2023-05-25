@@ -8,7 +8,8 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory
+from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory, Shelf, ShelfObject
+from laboratory.shelfobject.forms import ExcludeShelfForm
 from laboratory.utils import get_laboratories_from_organization
 from report.forms import RelOrganizationForm
 
@@ -69,3 +70,28 @@ class FurnitureLookup(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+
+
+@register_lookups(prefix="shelf", basename="shelf")
+class ShelfLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = Shelf
+    fields = ['name']
+    ref_field = 'furniture'
+    ordering = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    exclude_shelf = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.exclude_shelf:
+            queryset = queryset.exclude(pk=self.exclude_shelf)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        if self.exclude_shelf is None:
+            form = ExcludeShelfForm(request.GET)
+            if form.is_valid():
+                self.exclude_shelf = form.cleaned_data['exclude_shelf']
+        return super().list(request, *args, **kwargs)
