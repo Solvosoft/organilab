@@ -113,7 +113,6 @@ function change_boolean_to_affirmation(data){
     let negative = gettext('No')
     data['is_precursor'] = data['is_precursor'] ? positive:negative
     data['seveso_list'] = data['seveso_list'] ? positive:negative
-    data['molecular_formula'] = data['molecular_formula'] ? positive:negative
     data['bioaccumulable'] = data['molecular_formula'] ? positive:negative
     return data
 }
