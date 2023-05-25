@@ -39,3 +39,25 @@ function add_status(url){
 });
 
 }
+
+function update_selects(id,data){
+    var select = $(id);
+    var url = $(select).data('url');
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      data: data,
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      traditional: true,
+      dataType: 'json',
+      success: function(data){
+                         $(select).find('option').remove();
+                        for(let x=0; x<data.results.length; x++){
+                            $(select).append(new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected))
+                        }
+                    },
+           });
+
+    }

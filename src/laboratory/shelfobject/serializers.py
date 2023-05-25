@@ -604,3 +604,11 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
 class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
+
+class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
+    OBJTYPE_CHOICES = (
+        ("0", 'Reactive'),
+        ("1", 'Material'),
+        ("2", 'Equipment'))
+    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
+    objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
