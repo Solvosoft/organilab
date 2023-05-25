@@ -347,7 +347,7 @@ class ShelfLabViewSerializer(serializers.Serializer):
         return value
 
 
-class ObservationShelfObservationSerializer(serializers.ModelSerializer):
+class CreateObservationShelfObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObjectObservation
         fields = ['action_taken', 'description']
