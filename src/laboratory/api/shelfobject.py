@@ -438,12 +438,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             changed_data = changed_data + list(serializer.validated_data.keys())
-            instance = serializer.save()
-            instance.laboratory = self.laboratory
-            instance.organization = self.organization
-            instance.user = request.user
-            instance.created_by = request.user
-            instance.save()
+
+            instance = serializer.save(
+            laboratory=self.laboratory,
+            organization = self.organization,
+            user = request.user,
+            created_by = request.user
+            )
+
             organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[self.laboratory, instance])
         else:
             errors = serializer.errors
