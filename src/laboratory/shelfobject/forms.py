@@ -90,7 +90,7 @@ class MoveShelfObjectForm(GTForm):
 
 class ShelfObjectExtraFields(GTForm,forms.Form):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
-    without_limit = forms.BooleanField(widget=genwidgets.CheckboxInput(attrs={'class':'check_limit'}), label=_('Unlimit'))
+    without_limit = forms.BooleanField(widget=genwidgets.CheckboxInput(attrs={'class':'check_limit'}), label=_('Unlimit'), initial=True)
     minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimum Limit"))
     maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximum Limit"))
     expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
