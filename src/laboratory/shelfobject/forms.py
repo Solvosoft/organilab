@@ -23,7 +23,7 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
             'amount_required': genwidgets.TextInput
         }
 class AddShelfObjectForm(GTForm):
-    amount = forms.FloatField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
+    amount = forms.FloatField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                               label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
@@ -39,7 +39,7 @@ class TransferOutShelfObjectForm(GTForm):
                                   help_text=_('Use dot like 0.344 on decimal'), required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.none(),
                                         label=_("Laboratory"), required=True)
-    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
+    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("Mark as discard"))
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
@@ -51,9 +51,9 @@ class TransferOutShelfObjectForm(GTForm):
 
         self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
 class SubstractShelfObjectForm(GTForm):
-    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
+    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                                   label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text=_('Describe the action'),
                                   label=_('Description'), required=False)
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
@@ -138,7 +138,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#reactive_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
         label=_("Status"))
 
     class Meta:
@@ -191,7 +191,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#reactive_refuse_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
         label=_("Status"))
         self.fields['course_name'].label = _("Description")
         self.fields['marked_as_discard'].initial=True
@@ -239,7 +239,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#material_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
 
     class Meta:
@@ -282,7 +282,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#material_refuse_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
     class Meta:
         model = ShelfObject
@@ -324,7 +324,7 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#equipment_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
 
     class Meta:
@@ -364,7 +364,7 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#equipment_refuse_form",
             }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("Click here to create a new status")),label=_("Status"))
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
 
@@ -379,10 +379,14 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'course_name': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
         }
+
+
 class ValidateShelfUnitForm(GTForm):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+
+
 class ShelfObjectStatusForm(GTForm, forms.ModelForm):
-    description = forms.CharField(widget=genwidgets.Textarea)
+    description = forms.CharField(widget=genwidgets.Textarea, label=_("Description"))
 
     def __init__(self, *args, **kwargs):
         org_pk=kwargs.pop('org_pk')

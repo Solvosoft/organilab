@@ -134,10 +134,10 @@ class ReservedModalForm(GTForm, ModelForm):
 
 class TransferObjectForm(GTForm):
     amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),
-                                  help_text='Use dot like 0.344 on decimal', required=True)
+                                  help_text=_('Use dot like 0.344 on decimal'), required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
                                         label=_("Laboratory"), required=True)
-    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
+    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Mark as discard"), required=False)
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
@@ -151,7 +151,7 @@ class TransferObjectForm(GTForm):
 
 
 class AddObjectForm(GTForm, forms.Form):
-    amount = forms.FloatField(widget=genwidgets.TextInput,  help_text='Use dot like 0.344 on decimal',
+    amount = forms.FloatField(widget=genwidgets.TextInput,  help_text=_('Use dot like 0.344 on decimal'),
                              label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
@@ -165,9 +165,9 @@ class AddObjectForm(GTForm, forms.Form):
 
 
 class SubtractObjectForm(GTForm):
-    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
+    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                                label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text=_('Describe the action'),
                                   label=_('Description'), required=False)
 
 

@@ -169,9 +169,9 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
     if unit != shelf_unit and shelf_unit:
         errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
     if total > shelf_quantity and not shelf_infinity:
-        errors.update({'quantity': _("Quantity can't greater than shelf quantity limit %(limit)s"%{
+        errors.update({'quantity': _("Quantity can't greater than shelf quantity limit %(limit)s")%{
             'limit': shelf_quantity,
-        })})
+        }})
     if errors:
         raise serializers.ValidationError(errors)
     return attr
