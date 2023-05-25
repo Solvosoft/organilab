@@ -3,12 +3,15 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+import json
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory, Shelf, ShelfObject
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
+from auth_and_perms.organization_utils import organization_can_change_laboratory
+from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory, Shelf
 from laboratory.shelfobject.forms import ExcludeShelfForm
 from laboratory.utils import get_laboratories_from_organization
 from report.forms import RelOrganizationForm
@@ -70,6 +73,18 @@ class FurnitureLookup(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer = None
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @register_lookups(prefix="shelf", basename="shelf")
