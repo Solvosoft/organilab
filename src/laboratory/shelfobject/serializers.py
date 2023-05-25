@@ -89,24 +89,19 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         shelf = shelf_object.shelf
         shelf_quantity = shelf.quantity
         amount = data['amount']
-        quantity_total_used = shelf.get_total_refuse()
+        total = shelf.get_total_refuse() + amount
+        check_measurement_unit = shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit
 
-        if shelf.discard:
-            new_total = quantity_total_used + amount
+        if check_measurement_unit:
+            logger.debug(
+                f'IncreaseShelfObjectSerializer --> shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit is'
+                f' ({check_measurement_unit})')
+            raise serializers.ValidationError({'shelf_object': _("Measurement unit can't different than shelf measurement unit")})
 
-            if shelf_quantity < new_total or shelf_quantity != settings.DEFAULT_SHELF_ULIMIT:
-                raise serializers.ValidationError({'amount': _('The quantity is much larger than the shelf limit %(limit)s')%{'limit': shelf_quantity}})
-        else:
-            check_measurement_unit = shelf.measurement_unit != shelf_object.measurement_unit
-
-            if shelf.measurement_unit or shelf_quantity != settings.DEFAULT_SHELF_ULIMIT or check_measurement_unit:
-                amount_error = serializers.ValidationError({'amount': _('The quantity is more than the shelf has')})
-
-                if check_measurement_unit:
-                    if (amount + quantity_total_used) > shelf_quantity:
-                        raise amount_error
-                else:
-                    raise amount_error
+        if total > shelf_quantity and not shelf.infinity_quantity:
+            raise serializers.ValidationError({'amount': _("Quantity can't greater than shelf quantity limit %(limit)s") % {
+                'limit': shelf_quantity,
+            }})
         return data
 
 
