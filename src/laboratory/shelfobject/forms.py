@@ -24,7 +24,7 @@ class IncreaseShelfObjectForm(GTForm):
     amount = forms.FloatField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal', label=_('Amount'))
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
-                                      widget=AutocompleteSelectMultiple("provider", attrs={
+                                      widget=AutocompleteSelect("provider", attrs={
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization',
                                       })
