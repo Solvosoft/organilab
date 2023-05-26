@@ -1,2 +1,5 @@
 */src/media
 src/media
+src/coverage.json
+src/auth_and_perms/management/commands/create_demo_organizations.py
+src/auth_and_perms/management/commands/update_profile.py
