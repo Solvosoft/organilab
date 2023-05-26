@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-4">
+      <h1 align="center">{% trans 'Organization Structure Management' %}</h1>
+      <form action=""
+            method="post">{% csrf_token %}
+        {{ form.as_horizontal }}
+        <input class="btn btn-info" type="submit" value="{% trans 'Save' %}">
+      </form>
+    </div>
+</div>
+  <br> <br>
+{% endblock %}
