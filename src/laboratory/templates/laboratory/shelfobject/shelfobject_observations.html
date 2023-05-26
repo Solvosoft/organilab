@@ -4,11 +4,14 @@
 {% load organilab_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
+    {% define_urlname_action 'shelfobject_edit' %}
 {% endblock %}
-
+{% block title %}{% trans 'Logs' %} {{object.object.name}}{% endblock %}
 
 {% block content %}
 <input type="hidden" name="shelf" id="id_shelf" value="{{object.shelf.pk}}">
+<input type="hidden" name="shelf" id="id_laboratory" value="{{laboratory}}">
+<input type="hidden" name="shelf" id="id_organization" value="{{org_pk}}">
 <div class="row">
     <div class=" mb-3 col-md-12">
       <div class="row g-0" >
@@ -30,7 +33,9 @@
     <div class="p-2 bd-highlight"><span class="fw-bold">{% trans "Quantity"%}:</span><br>
         {{object.quantity}} {{object.measurement_unit|default_if_none:"" }}</div>
     <div class="p-2 bd-highlight"><span class="fw-bold">{% trans 'Status' %}:</span>
-        <a class="btn btn-sm btn-secondary ms-2" onclick="return show_me_modal(this, event);" data-modalid="status_modal"><i class="fa fa-edit" title="{% trans 'Update Status' %}"></i></a> <br>{{object.status}}
+        <a class="btn btn-sm btn-secondary ms-2" onclick="return show_update_status_modal(this, event);" data-modalid="status_modal"><i class="fa fa-edit" title="{% trans 'Update Status' %}"></i></a> <br><p id="shelfobject_status">
+            {% trans "No status" as no_state %}
+            {{ object.status|default_if_none:no_state }}</p>
         </div>
 
     <div class="p-2 bd-highlight"><span class="fw-bold">{% trans 'Type' %}:</span><br>{{object.object.get_type_display}} </div>
@@ -65,7 +70,7 @@
 {% trans "Object Observation" as obj_title %}
 {% include 'modal_template.html' with id='observation_modal' form_id='observation_form' title=obj_title form=observation_form url=create_comments_url%}
 
-{% url 'laboratory:api-shelfobject-update-status' lab_pk=laboratory org_pk=org_pk  as update_status_url %}
+{% url 'laboratory:api-shelfobject-update-status' lab_pk=laboratory org_pk=org_pk pk=object.pk as update_status_url %}
 {% trans "Update Status" as obj_title %}
 {% include 'modal_template.html' with id='status_modal' form_id='status_form' title=obj_title form=status_form url=update_status_url %}
 
@@ -79,10 +84,12 @@
 document.urls={
     observation_table: '{% url 'laboratory:api-shelfobject-list-comments' org_pk=org_pk lab_pk=laboratory pk=pk %}',
     shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
+    change_status: '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}'
 
 };
 </script>
+<script type="text/javascript" src="{% static 'laboratory/js/shelfobject_utils.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'laboratory/js/shelfobject_management.js' %}?v={% get_organilab_version %}"></script>
 <script type="text/javascript" src="{% static 'laboratory/js/base_modal_management.js'%}?v={% get_organilab_version %}"></script>
-<script src="{% static 'laboratory/js/shelfobject_management.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock %}

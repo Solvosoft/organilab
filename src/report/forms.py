@@ -94,7 +94,9 @@ class LaboratoryRoomReportForm(ReportBase):
         widget=AutocompleteSelectMultiple("furniture", attrs={
         'data-related': 'true',
         'data-pos': 1,
-        'data-groupname': 'labroomreport'
+        'data-groupname': 'labroomreport',
+        'data-s2filter-organization': '#id_organization',
+        'data-s2filter-laboratory': '#id_laboratory',
     }),
    queryset=Furniture.objects.all(), label=_('Filter Furniture'), required=False)
 

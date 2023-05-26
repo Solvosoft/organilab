@@ -164,9 +164,9 @@ class ShelfObject(models.Model):
     measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
-    marked_as_discard = models.BooleanField(default=False)
+    marked_as_discard = models.BooleanField(default=False, verbose_name=_("Is discard"))
     laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
-    course_name = models.CharField(null=True, blank=True, verbose_name=_('Course name'), max_length=30)
+    course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'), on_delete=models.CASCADE)
@@ -225,7 +225,7 @@ class Shelf(BaseCreationObj):
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
     discard = models.BooleanField(default=False, verbose_name=_('Disposal'))
-    quantity = models.FloatField(default=-1, verbose_name=_('Quantity'), help_text='Use dot like 0.344 on decimal')
+    quantity = models.FloatField(default=0, verbose_name=_('Quantity'), help_text=_('Use dot like 0.344 on decimal'))
     measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
@@ -233,6 +233,7 @@ class Shelf(BaseCreationObj):
     limit_only_objects = models.BooleanField(default=False, verbose_name=_('Limit objects to be added'))
     available_objects_when_limit = models.ManyToManyField(Object,  related_name="limit_objects",
                                                           verbose_name=_('Only objects allowed in this shelf'))
+    infinity_quantity = models.BooleanField(default=True, verbose_name=_('Infinite amount'))
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)

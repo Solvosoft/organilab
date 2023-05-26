@@ -77,14 +77,13 @@ class IncidentReportTest(TestCase):
         incident=IncidentReport.objects.last()
         self.url_attr['pk']=incident.pk
 
-        response = self.client.get(reverse('riskmanagement:incident_detail',kwargs=self.url_attr))
-        self.assertTrue(incident.short_description==response.context['object'].short_description)
+        response = self.client.get(reverse('riskmanagement:incident_detail', kwargs=self.url_attr))
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(incident.short_description==response.context['object'].short_description)
+
     def test_detail_incident_fail(self):
-        self.url_attr['pk']=7
-
-        response = self.client.get(reverse('riskmanagement:incident_detail',kwargs=self.url_attr))
-
+        self.url_attr['pk'] = 7
+        response = self.client.get(reverse('riskmanagement:incident_detail', kwargs=self.url_attr))
         self.assertEqual(response.status_code, 404)
 
     def test_delete_incident_report(self):
