@@ -92,14 +92,14 @@ class ShelfLookup(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.exclude_shelf:
-            queryset = queryset.exclude(pk=self.exclude_shelf)
+            queryset = queryset.filter(measurement_unit=self.exclude_shelf.measurement_unit).exclude(pk=self.exclude_shelf.pk)
         return queryset
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
 
         if self.serializer.is_valid():
-            self.exclude_shelf = self.serializer.validated_data['shelf'].pk
+            self.exclude_shelf = self.serializer.validated_data['shelf']
             return super().list(request, *args, **kwargs)
 
         return Response({
