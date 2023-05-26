@@ -94,6 +94,7 @@ class ShelfObjectExtraFields(GTForm,forms.Form):
     minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimum Limit"))
     maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximum Limit"))
     expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
+
 class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
     container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True, label=_("Container"))
 
@@ -104,22 +105,28 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
-            attrs={
-                'data-dropdownparent': "#reactive_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
-            }),
+            widget=AutocompleteSelect('objectorgsearch',
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+                                      }),
             label=_("Reactive"),
             help_text=_("Search by name, code or CAS number")
         )
+
         self.fields['course_name'].label = _("Description")
 
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#reactive_form",
-                'data-s2filter-shelf': '#id_shelf'
+            widget=AutocompleteSelect('catalogunit',
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
             }),
             label=_("Measurement unit"))
 
@@ -136,11 +143,15 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
         )
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#reactive_form",
-            }),
+            widget=AutocompleteSelect('shelfobject_status_search',
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
+                                      }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
-        label=_("Status"))
+            label=_("Status")
+        )
 
     class Meta:
         model = ShelfObject
