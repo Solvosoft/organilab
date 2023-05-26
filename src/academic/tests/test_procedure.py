@@ -10,7 +10,7 @@ class AcademicTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        self.url_attr= {'lab_pk':1, 'org_pk':2}
+        self.url_attr= {'lab_pk':1, 'org_pk': 1}
         self.procedure = Procedure.objects.get(pk=10)
         self.client.force_login(self.user)
 
@@ -53,7 +53,7 @@ class AcademicTest(TestCase):
         response = self.client.post(reverse('academic:procedure_update',kwargs=url),data,follow=True)
         procedure = Procedure.objects.all().first()
 
-        self.assertEqual(data['description'],procedure.description)
+        self.assertEqual(data['description'], procedure.description)
         self.assertNotEquals(data['description'],self.procedure.description)
         self.assertEqual(response.status_code,200)
         self.assertRedirects(response, reverse('academic:procedure_list', kwargs=self.url_attr))
@@ -80,10 +80,10 @@ class AcademicTest(TestCase):
         redirect = self.client.get(reverse('academic:procedure_list', kwargs=self.url_attr), follow=True)
 
         """This is the default template_name of Procedure ListView"""
-        self.assertTemplateUsed(redirect,template_name='academic/procedure_list.html')
+        self.assertTemplateUsed(redirect, template_name='academic/procedure_list.html')
 
         """This is the template_name put in the Procedure ListView"""
-        self.assertTemplateNotUsed(redirect,template_name='academic/list.html')
+        self.assertTemplateNotUsed(redirect, template_name='academic/list.html')
         self.assertEqual(redirect.status_code,200)
 
     def test_delete_procedure(self):
@@ -149,11 +149,11 @@ class AcademicTest(TestCase):
             'description':'Testing to add step'
         }
 
-        response = self.client.post(reverse('academic:procedure_step', kwargs=url),data=data, follow=True)
-        steps=ProcedureStep.objects.filter(procedure=self.procedure)
+        response = self.client.post(reverse('academic:procedure_step', kwargs=url), data=data, follow=True)
+        steps = ProcedureStep.objects.filter(procedure=self.procedure)
 
-        self.assertNotEquals(early_step,steps.count())
-        self.assertEqual(response.status_code,200)
+        self.assertNotEquals(early_step, steps.count())
+        self.assertEqual(response.status_code, 200)
 
     def test_add_step_fail(self):
         self.client.force_login(self.user)

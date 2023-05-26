@@ -12,7 +12,7 @@ class RiskZoneTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        self.url_attr= {'org_pk':1}
+        self.url_attr= {'org_pk':1 }
         self.client.force_login(self.user)
 
     def test_get_risk_zone(self):
@@ -64,8 +64,9 @@ class RiskZoneTest(TestCase):
 
         risk=RiskZone.objects.get(pk=6)
         response = self.client.get(reverse('riskmanagement:riskzone_detail',kwargs=self.url_attr))
-        self.assertTrue(risk.name==response.context['object'].name)
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(risk.name==response.context['object'].name)
+
     def test_detail_risk_zone_fail(self):
         self.url_attr['pk']=7
 
