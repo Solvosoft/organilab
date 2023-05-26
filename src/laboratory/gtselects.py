@@ -166,7 +166,7 @@ class ShelfObject_StatusModelLookup(BaseSelect2View):
 
 
 @register_lookups(prefix="provider", basename="provider")
-class ProviderLookup(generics.RetrieveAPIView, BaseSelect2View):
+class ProviderLookup(BaseSelect2View):
     model = Provider
     fields = ['name']
     ordering = ['name']
@@ -188,3 +188,8 @@ class ProviderLookup(generics.RetrieveAPIView, BaseSelect2View):
         if self.serializer.is_valid():
             self.laboratory = self.serializer.validated_data['laboratory']
             return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)

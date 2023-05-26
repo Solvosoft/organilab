@@ -1,7 +1,7 @@
 from django.conf import settings
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -16,7 +16,7 @@ class GPaginatorMoreElements(GPaginator):
     page_size = 100
 
 @register_lookups(prefix="lab_room", basename="lab_room")
-class LabRoomLookup(generics.RetrieveAPIView, BaseSelect2View):
+class LabRoomLookup(BaseSelect2View):
     model = LaboratoryRoom
     fields = ['name']
     ordering = ['name']
@@ -56,7 +56,7 @@ class LabRoomLookup(generics.RetrieveAPIView, BaseSelect2View):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 @register_lookups(prefix="furniture", basename="furniture")
-class FurnitureLookup(generics.RetrieveAPIView, BaseSelect2View):
+class FurnitureLookup(BaseSelect2View):
     model = Furniture
     fields = ['name']
     ref_field = 'labroom'
@@ -79,7 +79,7 @@ class FurnitureLookup(generics.RetrieveAPIView, BaseSelect2View):
 
 
 @register_lookups(prefix="shelf", basename="shelf")
-class ShelfLookup(generics.RetrieveAPIView, BaseSelect2View):
+class ShelfLookup(BaseSelect2View):
     model = Shelf
     fields = ['name']
     ref_field = 'furniture'
@@ -87,7 +87,7 @@ class ShelfLookup(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    exclude_shelf = None
+    exclude_shelf, serializer = None, None
 
     def get_queryset(self):
         queryset = super().get_queryset()
