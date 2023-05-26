@@ -390,8 +390,9 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSe
         fields = '__all__'
 
     def get_substance_characteristics(self, obj):
-        characteristics = SubstanceCharacteristicsDetailSerializer(obj.object.sustancecharacteristics)
-        return characteristics.data
+        if hasattr(obj.object, 'sustancecharacteristics'):
+            characteristics = SubstanceCharacteristicsDetailSerializer(obj.object.sustancecharacteristics)
+            return characteristics.data
 
     def get_object_detail(self, obj):
         return obj.get_object_detail()
