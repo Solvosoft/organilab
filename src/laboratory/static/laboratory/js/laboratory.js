@@ -7,6 +7,8 @@ function shelf_action_modals(modalid){
     label_a.setAttribute("data-modalid", modalid)
     show_me_modal(label_a,null)
     form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
+    show_hide_limits($(`${document.prefix}without_limit`),document.prefix)
+
     return false;
 }
 const tableObject={
@@ -44,9 +46,7 @@ const tableObject={
             }
             document.prefix=id;
             shelf_action_modals(modalid)
-            update_selects(id+"object",datarequest)
-            update_selects(id+"status",datarequest)
-            update_selects(id+"measurement_unit",{'shelf':datarequest['shelf']})
+
     },
     addObject: function( e, dt, node, config ){
         let activeshelf=tableObject.get_active_shelf();
@@ -281,34 +281,17 @@ $(document).ready(function(){
     var jqTagify = $input.data('tagify');
 });
 
-function update_selects(id,data){
-    var select = $(id);
-    var url = $(select).data('url');
-
-    $.ajax({
-      type: "GET",
-      url: url,
-      data: data,
-      contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      traditional: true,
-      dataType: 'json',
-      success: function(data){
-                         $(select).find('option').remove();
-                        for(let x=0; x<data.results.length; x++){
-                            $(select).append(new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected))
-                        }
-                    },
-           });
-
-    }
 $(".add_status").click(function(){
     add_status(document.url_status)
 });
 
 $(".check_limit").on('ifChanged', function(event){
-    prefix=document.prefix;
-    if($(this).is(":checked")){
+    show_hide_limits(this,document.prefix)
+})
+
+
+function show_hide_limits(e,prefix){
+    if($(e).is(":checked")){
         $(prefix+'minimum_limit').parent().parent().hide();
         $(prefix+'maximum_limit').parent().parent().hide();
         $(prefix+'expiration_date').parent().parent().parent().hide();
@@ -317,4 +300,4 @@ $(".check_limit").on('ifChanged', function(event){
         $(prefix+'maximum_limit').parent().parent().show();
         $(prefix+'expiration_date').parent().parent().parent().show();
     }
-})
+}
