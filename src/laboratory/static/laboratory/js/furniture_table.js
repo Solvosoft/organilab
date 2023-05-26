@@ -132,11 +132,18 @@ function delete_shelf(id, url){
     })
 }
 function show_refuse_elements(){
+     let infinity_quantity=$('#id_shelf--infinity_quantity')
      if($('#id_shelf--discard').is(':checked')){
         $('#id_shelf--description').parent().parent().show();
+        $('#id_shelf--quantity').parent().parent().show();
+        $('#id_shelf--infinity_quantity').parent().parent().parent().hide();
+        if($(infinity_quantity).is(':checked')){
+            $(infinity_quantity).parent().removeClass('checked');
+            $(infinity_quantity).attr('checked', false)
+            }
      }else{
         $('#id_shelf--description').parent().parent().hide();
-
+        $('#id_shelf--infinity_quantity').parent().parent().parent().show();
       }
 }
 
@@ -232,7 +239,6 @@ function hide_quantity(){
         $('#id_shelf--quantity').parent().parent().hide();
     }else{
         $('#id_shelf--quantity').parent().parent().show();
-
     }
 }
 save_form();
