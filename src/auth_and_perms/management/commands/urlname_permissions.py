@@ -123,6 +123,11 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf Object',
             'permission': 'laboratory.delete_shelfobject'
         },
+        {
+            'name': 'List reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
+        }
     ],
     'list_provider': [
         {
@@ -846,6 +851,11 @@ URLNAME_PERMISSIONS = {
     ],
     'reservations_list': [
         {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
+        },
+        {
             'name': 'Change Reserved Products',
             'category': 'Reserved Products',
             'permission': 'reservations_management.change_reservedproducts'
@@ -886,6 +896,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reservations',
             'category': 'Reservations',
             'permission': 'reservations_management.view_reservations'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
     ],
     'rooms_list': [
@@ -901,8 +916,13 @@ URLNAME_PERMISSIONS = {
         },
         {
             'name': 'Add Reserved Products',
-            'category': 'Reserved Products',
+            'category': 'Reservations',
             'permission': 'reservations_management.add_reservedproducts'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
     ],
     'organizationManager': [
@@ -1246,6 +1266,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reservations',
             'category': 'Reservations',
             'permission': 'reservations_management.view_reservations'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
 
     ],
@@ -2499,6 +2524,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reserved Products',
             'category': 'Reserved Products',
             'permission': 'reservations_management.view_reservedproducts'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
     ],
     'increase_stock': [
