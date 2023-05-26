@@ -56,7 +56,7 @@ class ShelfForm(forms.ModelForm, GTForm):
         self.fields['available_objects_when_limit'] = forms.ModelMultipleChoiceField(
             queryset=Object.objects.all(),
             required=False,
-            widget=AutocompleteSelectMultiple('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelectMultiple('objectorgavailable', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#createshelfmodal"
             }))
 
@@ -107,7 +107,7 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
         self.fields['available_objects_when_limit'] = forms.ModelMultipleChoiceField(
             queryset=Object.objects.all(),
             required=False,
-            widget=AutocompleteSelectMultiple('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
+            widget=AutocompleteSelectMultiple('objectorgavailable', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
                 'data-dropdownparent': "#createshelfmodal"
             }))
 

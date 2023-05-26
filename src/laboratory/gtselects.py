@@ -160,3 +160,35 @@ class ShelfObject_StatusModelLookup(generics.RetrieveAPIView, BaseSelect2View):
                 'status': 'Bad request',
                 'errors': self.serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
+
+@register_lookups(prefix="objectorgavailable", basename="objectorgavailable")
+class ObjectAvailbeloLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = Object
+    fields = ['code', 'name']
+    org_pk = None
+    shelf = None
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.shelf and self.shelf.limit_only_objects:
+            return self.shelf.available_objects_when_limit.all()
+
+        queryset = super().get_queryset()
+        if self.org_pk:
+            organizations = get_pk_org_ancestors(self.org_pk.pk)
+            queryset = queryset.filter(organization__in=organizations)
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def retrieve(self, request, pk, **kwargs):
+
+        self.org_pk=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+        user_is_allowed_on_organization(request.user, self.org_pk)
+        form = ValidateShelfForm(request.GET)
+        if form.is_valid():
+            shelf = form.cleaned_data['shelf']
+            if organization_can_change_laboratory(shelf.furniture.labroom.laboratory, self.org_pk):
+                self.shelf=shelf
+        return self.list(request, pk, **kwargs)
