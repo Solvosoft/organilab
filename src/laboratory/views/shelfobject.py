@@ -613,15 +613,6 @@ def send_detail(request, *args, **kwargs):
     obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
 
-@method_decorator(permission_required('laboratory.view_tranferobject'), name='dispatch')
-class ListTransferObjects(ListView):
-    model = TranferObject
-    template_name = 'laboratory/transfer_objects.html'
-
-    def get_queryset(self):
-        return TranferObject.objects.filter(Q(laboratory_send__id=self.request.GET.get('lab')) |
-                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by(
-            'pk').reverse()
 
 @login_required()
 def get_shelf_list(request):
@@ -730,18 +721,8 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
 
 objects_transfer.lab_pk_field = 'lab_pk'
 
-@permission_required('laboratory.delete_tranferobject')
-def delete_transfer(request, pk):
-    try:
-        transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))
-        transfer.delete()
-        utils.organilab_logentry(request.user, transfer, DELETION, relobj=[transfer.laboratory_send, transfer.laboratory_received ])
-    except TranferObject.DoesNotExist:
-        return JsonResponse({'data': False})
-    return JsonResponse({'data': True})
 
 
-delete_transfer.lab_pk_field = 'pk'
 
 @login_required()
 @permission_required('laboratory.change_shelfobject')
