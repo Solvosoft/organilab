@@ -619,7 +619,13 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         if shelf.pk == shelf_object.shelf.pk:
             logger.debug(
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError(_("Object can't be moved to same shelf"))
+            raise serializers.ValidationError({'shelf': _("Object can't be moved to same shelf")})
+
+        if shelf.measurement_unit != shelf_object.measurement_unit:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
+            raise serializers.ValidationError({'shelf': _("Object can't be moved to shelf with different measurement unit")})
+
         return data
 
 

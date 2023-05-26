@@ -83,7 +83,7 @@ class MoveShelfObjectForm(GTForm):
                                        'data-s2filter-shelf': '#id_shelf',
                                        'data-s2filter-organization': '#id_organization',
                                        'data-s2filter-laboratory': '#id_laboratory'
-                                   })
+                                   }), help_text=_("This select only shows shelves with same measurement unit than current object")
                                    )
 
 class ShelfObjectExtraFields(GTForm, forms.Form):
