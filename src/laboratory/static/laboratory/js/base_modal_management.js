@@ -185,3 +185,10 @@ function show_update_status_modal(instance, event){
     return false;
 }
 
+$('#id_move-lab_room').on('change', function(){
+    $('#id_move-furniture').val(null).trigger('change');
+});
+
+$('#id_move-furniture').on('change', function(){
+    $('#id_move-shelf').val(null).trigger('change');
+});
