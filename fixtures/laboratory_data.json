@@ -443,7 +443,8 @@
       "name": "Investigadores SA",
       "position": 1,
       "level": 1,
-      "rol": []
+      "rol": [],
+      "users": [1]
     }
   },
   {
@@ -454,7 +455,8 @@
       "name": "Organization Testing",
       "position": 3,
       "level": 3,
-      "rol": []
+      "rol": [],
+      "users": [2]
     }
   },
   {
@@ -465,7 +467,8 @@
       "name": "Org MK",
       "position": 3,
       "level": 3,
-      "rol": []
+      "rol": [],
+      "users": [1]
     }
   },
   {
@@ -476,7 +479,8 @@
       "name": "Chec Org",
       "position": 4,
       "level": 4,
-      "rol": []
+      "rol": [],
+      "users": [1,2]
     }
   },
   {
@@ -554,6 +558,54 @@
       "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
+    {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+     "fields": {
+        "organization": 1,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 2,
+     "fields": {
+        "organization": 2,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
+{
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 3,
+     "fields": {
+        "organization": 3,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
+{
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 4,
+     "fields": {
+        "organization": 4,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
   {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
@@ -614,7 +666,10 @@
       "phone_number": "(506)2209-8765",
       "email": "karineproductos@cr.com",
       "legal_identity": "3-8764-8354",
-      "laboratory": 1
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -625,7 +680,10 @@
       "phone_number": "(506)2209-8765",
       "email": "lpcompany@cr.com",
       "legal_identity": "3-463-3423432",
-      "laboratory": 1
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -636,7 +694,10 @@
       "phone_number": "(506)2209-8765",
       "email": "alcomasa@cr.com",
       "legal_identity": "3-435-24432214",
-      "laboratory": 2
+      "laboratory": 2,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -647,7 +708,10 @@
       "phone_number": "(605)2222-2222",
       "email": "benka@gmail.com",
       "legal_identity": "3-34534-453532",
-      "laboratory": 1
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -658,7 +722,10 @@
       "phone_number": "(609)4534-3432",
       "email": "jakocm@hotmail.com",
       "legal_identity": "5-843849-4395348",
-      "laboratory": 2
+      "laboratory": 2,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -1299,7 +1366,10 @@
       "update_time": "2023-02-09T22:58:28.862Z",
       "state": true,
       "status": 0,
-      "mark_as_discard": false
+      "mark_as_discard": false,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -1313,7 +1383,10 @@
       "update_time": "2023-02-09T22:58:28.862Z",
       "state": true,
       "status": 0,
-      "mark_as_discard": false
+      "mark_as_discard": false,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
