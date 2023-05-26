@@ -12,6 +12,7 @@ from auth_and_perms.organization_utils import organization_can_change_laboratory
 from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory, Shelf
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer
 from laboratory.utils import get_laboratories_from_organization
+from report.api.serializers import ValidateUserAccessLabRoomSerializer
 from report.forms import RelOrganizationForm
 
 
@@ -26,41 +27,37 @@ class LabRoomLookup(generics.RetrieveAPIView, BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    organization, laboratory, lab_room, all_labs_org = None, None, None, False
+    organization, laboratory, lab_room, serializer, all_labs_org = None, None, None, None, False
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        result = queryset.none()
-        if self.organization:
-            laboratory= get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=self.laboratory)
-            org = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-                                    pk=self.organization)
 
-            has_permission=organization_can_change_laboratory(laboratory,org)
-            if has_permission:
-                if self.all_labs_org:
-                    labs_by_org = get_laboratories_from_organization(self.organization)
-                    result = LaboratoryRoom.objects.filter(laboratory__in=labs_by_org.filter(profile__user=self.request.user).using(settings.READONLY_DATABASE))
-                else:
-                    if self.laboratory:
-                        result = queryset.filter(laboratory=self.laboratory)
+        if self.all_labs_org:
+            labs_by_org = get_laboratories_from_organization(self.organization.pk)
+            queryset = LaboratoryRoom.objects.filter(laboratory__in=labs_by_org.filter(profile__user=self.request.user).using(settings.READONLY_DATABASE))
+        else:
+            if self.laboratory:
+                queryset = queryset.filter(laboratory=self.laboratory)
 
-                if self.lab_room:
-                    id_list = list(self.lab_room.values_list('pk', flat=True))
-                    self.selected = list(map(str, id_list))
-        return result
+        if self.lab_room:
+            id_list = [lab_room.pk for lab_room in self.lab_room]
+            self.selected = list(map(str, id_list))
+        return queryset
 
     def list(self, request, *args, **kwargs):
-        if self.organization is None:
-            form = RelOrganizationForm(request.GET)
-            if form.is_valid():
-                self.organization = form.cleaned_data['organization']
-                self.laboratory = form.cleaned_data['laboratory']
-                self.all_labs_org = form.cleaned_data['all_labs_org']
-                self.lab_room = form.cleaned_data['lab_room']
-        if self.organization is None:
-            raise Http404("Organization not found")
-        return super().list(request, *args, **kwargs)
+        self.serializer = ValidateUserAccessLabRoomSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.lab_room = self.serializer.validated_data['lab_room']
+            self.laboratory = self.serializer.validated_data['laboratory']
+            self.organization = self.serializer.validated_data['organization']
+            self.all_labs_org = self.serializer.validated_data['all_labs_org']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 @register_lookups(prefix="furniture", basename="furniture")
 class FurnitureLookup(generics.RetrieveAPIView, BaseSelect2View):
