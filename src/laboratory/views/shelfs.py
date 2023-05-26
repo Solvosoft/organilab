@@ -82,15 +82,21 @@ class ShelfForm(forms.ModelForm, GTForm):
         discard= self.cleaned_data['discard']
         quantity = self.cleaned_data['quantity']
         unit = self.cleaned_data['measurement_unit']
+        infinity = self.cleaned_data['infinity_quantity']
         if discard:
-            if unit is not None and quantity <= 0:
+            if unit is not None and quantity <= 0 and not infinity:
                 self.add_error('quantity', _("The quantity need to be greater than 0"))
+        elif unit is not None and quantity <= 0 and not infinity:
+            self.add_error('quantity', _("The quantity need to be greater than 0"))
+        elif quantity<0:
+            self.add_error('quantity', _("The quantity need to be greater than 0"))
 
     def clean_measurement_unit(self):
         discard = self.cleaned_data['discard']
         unit = self.cleaned_data['measurement_unit']
+        infinity = self.cleaned_data['infinity_quantity']
 
-        if unit is None and discard:
+        if unit is None and discard and not infinity:
             self.add_error('measurement_unit', _('When a shelf if discard you need to add a measurement unit'))
 
         return unit
