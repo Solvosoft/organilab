@@ -1241,6 +1241,7 @@
       "object": 1,
       "quantity": 23.0,
       "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
       "measurement_unit": 63,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
@@ -1256,6 +1257,7 @@
       "quantity": 23.0,
       "limit_quantity": 7.0,
       "measurement_unit": 63,
+      "in_where_laboratory": 1,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"
@@ -1268,6 +1270,7 @@
       "shelf": 1,
       "object": 2,
       "quantity": 2.0,
+      "in_where_laboratory": 2,
       "limit_quantity": 7.0,
       "measurement_unit": 63,
       "marked_as_discard": false,
@@ -1540,6 +1543,32 @@
     }
   },
   {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "iarc": null,
+      "imdg": null,
+      "bioaccumulable": false,
+      "molecular_formula": "CHO",
+      "cas_id_number": "7681-52-9",
+      "security_sheet": "security_sheets/test_characteristics.pdf",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "img_representation": "",
+      "white_organ": [],
+      "h_code": [
+        "H314",
+        "H400"
+      ],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
     "model": "sga.reviewsubstance",
     "pk": 1,
     "fields": {
@@ -1611,5 +1640,29 @@
             1
         ]
     }
-}
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 1,
+    "fields": {
+      "shelf_object": 1,
+      "action_taken": "Object Change",
+      "description": "Test observation 1",
+      "creator": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 2,
+    "fields": {
+      "shelf_object": 1,
+      "action_taken": "Object Change",
+      "description": "Test observation 2",
+      "creator": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  }
 ]
