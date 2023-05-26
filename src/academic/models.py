@@ -68,7 +68,7 @@ class ProcedureStep(models.Model, HTMLPresentation):
 
 
 class CommentProcedureStep(models.Model):
-    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
+    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_("Creator"))
     creator_at = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(blank=True, verbose_name=_("Comment"))
     procedure_step = models.ForeignKey(ProcedureStep, blank=True, null=True, on_delete=models.CASCADE,
