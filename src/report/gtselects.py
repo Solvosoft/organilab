@@ -1,6 +1,4 @@
 from django.conf import settings
-from django.http import Http404
-from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics, status
@@ -8,12 +6,10 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
-from auth_and_perms.organization_utils import organization_can_change_laboratory
-from laboratory.models import LaboratoryRoom, Furniture, OrganizationStructure, Laboratory, Shelf
+from laboratory.models import LaboratoryRoom, Furniture, Shelf
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer
 from laboratory.utils import get_laboratories_from_organization
 from report.api.serializers import ValidateUserAccessLabRoomSerializer
-from report.forms import RelOrganizationForm
 
 
 class GPaginatorMoreElements(GPaginator):
