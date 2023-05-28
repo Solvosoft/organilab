@@ -48,6 +48,7 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
             self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.organization)
         user_is_allowed_on_organization(self.request.user, self.organization)
         return super().list(request, *args, **kwargs)
+
     def get_queryset(self):
         queryset=super().get_queryset()
         return queryset.using(settings.READONLY_DATABASE)
@@ -110,13 +111,13 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                                 profilepermission__content_type__model= self.contenttypeobj._meta.model_name,
                                 profilepermission__object_id=self.contenttypeobj.pk)
                 queryset = queryset.exclude(profile__in=profiles)
-                return queryset.order_by('first_name')
+                return queryset.distinct().order_by('first_name')
             return queryset.none()
         return self.model.objects.none()
 
     def get_text_display(self, obj):
         if hasattr(obj, 'profile') and obj.profile:
-            return str(obj.profile)
+            return f"{obj.profile} ({obj.username})"
         return str(obj)
 
 @register_lookups(prefix="orguserbase", basename="orguserbase")
@@ -174,13 +175,25 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 @register_lookups(prefix="groupbase", basename="groupbase")
 class GroupS2(BaseSelect2View):
     model = Rol
-    fields = ['name']
+    fields = ['pk','name']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         return get_roles_by_user(user)
+
+    def get_text_display(self, obj):
+        org_str =''
+        for i, org in enumerate(obj.organizationstructure_set.all()):
+            if i:
+                org_str += " -- "
+            org_str += org.name
+
+        if self.fields:
+            fields = [self.get_field_value(obj, x, str) for x in self.fields]
+            return self.text_separator.join(fields) + " ("+org_str+")"
+        return str(obj)
 
 
 @register_lookups(prefix="relorgbase", basename="relorgbase")

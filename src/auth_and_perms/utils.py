@@ -11,6 +11,16 @@ def get_roles_by_user(user):
     return Rol.objects.filter(organizationstructure__in=orgs).distinct()
 
 
+def get_rol_name(rol):
+    org_str = ''
+    for i, org in enumerate(rol.organizationstructure_set.all()):
+        if i:
+            org_str += " -- "
+        org_str += org.name
+
+    return f"{rol.pk} {rol.name} ({org_str})"
+
+
 def get_roles_in_html(user, lab, org):
     profile = ProfilePermission.objects.filter(profile_id=user,
                                                content_type__app_label=lab._meta.app_label,
@@ -26,7 +36,7 @@ def get_roles_in_html(user, lab, org):
                 """<span class="applyasrole" onclick="applyasrole(%s, %s)" id="rol_%d" style="color: %s;" title="%s" %s>%s</span>""" % (
                     rol.pk, user, rol.pk,
                     rol.color.replace('[', '').replace(']', '').replace("'", '').strip(),
-                    rol.name,
+                    get_rol_name(rol),
                     datatext,
                     rol.name[0]
                 )
