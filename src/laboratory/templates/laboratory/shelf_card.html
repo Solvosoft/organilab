@@ -1,3 +1,5 @@
+{% load laboratory %}
+
 <div class="container" ><div class="row">
 
     {% for col in data %}
@@ -21,8 +23,11 @@
                             {% if item.measurement_unit %}
                             {{item.measurement_unit}}
                             {% endif %}
-                    <a href="#bingi" target="_blank"> <i class="fa fa-qrcode" aria-hidden="true"></i></a>
-                    <a href="#bingi" target="_blank"> <i class="fa fa-tags" aria-hidden="true"></i></a>
+
+                    {% get_laboratory_view_url laboratoryroom furniture item as itemurl %}
+                    {% get_qr_svg_img item organization=org_pk icon=True url=itemurl  %}
+
+                    <a href="#commingsoon" target="_blank"> <i class="fa fa-tags" aria-hidden="true"></i></a>
 
                   </div>
                     </div>
