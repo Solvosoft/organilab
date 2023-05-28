@@ -6,14 +6,7 @@
 {% load gtsettings timejs %}
 
 {% block pre_head %}
-    {% define_urlname_action 'organizationManager' %}
-    {% define_urlname_action 'addusersorganization' %}
-    {% define_urlname_action 'add_user' %}
-    {% define_urlname_action 'copy_rols' %}
-    {% define_urlname_action 'add_contenttype_to_org' %}
-    {% define_urlname_action 'update_organization' %}
-    {% define_urlname_action 'create_organization' %}
-    {% define_urlname_action 'delete_organization' %}
+    {% define_urlname_action 'org_administrator' %}
     {% define_true  "use_datatables" %}
 {% endblock %}
 {# CSS #}

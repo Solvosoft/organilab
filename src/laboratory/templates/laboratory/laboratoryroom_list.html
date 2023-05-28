@@ -7,21 +7,7 @@
 {% block pre_head %}
 
     {% define_true  "use_datatables" %}
-	{% define_urlname_action 'rooms_list' %}
-	{% define_urlname_action 'furniture_list' %}
-	{% define_urlname_action 'list_shelf' %}
-	{% define_urlname_action 'list_shelfobject' %}
-	{% define_urlname_action 'edit_object' %}
-	{% define_urlname_action 'get_object_detail' %}
-	{% define_urlname_action 'reports_shelf_objects' %}
-	{% define_urlname_action 'shelfobject_create' %}
-	{% define_urlname_action 'shelfobject_delete' %}
-	{% define_urlname_action 'shelfobject_edit' %}
-	{% define_urlname_action 'shelf_create' %}
-	{% define_urlname_action 'shelf_delete' %}
-	{% define_urlname_action 'shelf_edit' %}
-	{% define_urlname_action 'transfers' %}
-	{% define_urlname_action 'manage_disposal' %}
+    {% define_urlname_action 'laboratory_view_principal' %}
 
 {% endblock %}
 {% block title %}{% trans 'Laboratory rooms' %}{% endblock %}
