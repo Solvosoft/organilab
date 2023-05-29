@@ -1,3 +1,4 @@
+from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from auth_and_perms.models import Rol, ProfilePermission
 from laboratory.models import Laboratory, ShelfObjectObservation, ShelfObject
@@ -196,6 +197,10 @@ class ShelfObjectAPITest(TestCase):
         self.assertEqual(ShelfObjectObservation.objects.filter(shelf_object=1).count(), 3)
         self.assertEqual(observation_created.description, 'Test Comment for testing')
         self.assertEqual(observation_created.action_taken, 'Object Change')
+        log = LogEntry.objects.first()
+        self.assertEqual(log.object_id, str(observation_created.id))
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.action_flag, 1)
 
     def test_shelfobject_api_create_comments_wrong_content_type(self):
         """
@@ -305,6 +310,11 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.delete(delete_url, data={'shelfobj': 1}, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ShelfObjectObservation.objects.filter(shelf_object=1).count(), 0)
+        log = LogEntry.objects.first()
+        self.assertEqual(log.object_id, '1')
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.action_flag, 3)
+
 
     def test_shelfobject_api_delete_not_found(self):
         """
