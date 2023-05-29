@@ -73,9 +73,9 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_details_not_found(self):
         """
         Test for API details shelf object not found
-        pk = 5, Shelf Object that doesn't exist in the DB
+        pk = 115, Shelf Object that doesn't exist in the DB
         """
-        response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 5}))
+        response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 115}))
         self.assertEqual(response.status_code, 404)
 
     def test_shelfobject_api_details_shelfobject_not_in_laboratory(self):
@@ -137,10 +137,10 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_list_comments_not_found(self):
         """
         Test for API list_comments shelf object not found
-        pk = 5, Shelf Object that doesn't exist in the DB
+        pk = 115, Shelf Object that doesn't exist in the DB
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
-                                           kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 5}))
+                                           kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 115}))
         self.assertEqual(response.status_code, 404)
 
     def test_shelfobject_api_list_comments_shelfobject_not_in_laboratory(self):
@@ -238,12 +238,12 @@ class ShelfObjectAPITest(TestCase):
 
     def test_shelfobject_api_create_comments_not_found(self):
         """
-       Test for API create_comments shelf object not found
-        pk = 5, Shelf Object that doesn't exist in the DB
-       """
+        Test for API create_comments shelf object not found
+        pk = 115, Shelf Object that doesn't exist in the DB
+        """
         data = {'action_taken': 'Object Change', 'description': 'Test Comment for testing', 'prefix': ''}
         response = self.client.post(reverse('laboratory:api-shelfobject-create-comments',
-                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 5}),
+                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 115}),
                                     data=data,
                                     content_type='application/json')
         self.assertEqual(response.status_code, 404)
@@ -319,9 +319,10 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_delete_not_found(self):
         """
         Test for API delete shelf object not found
+        shelfobj = 115, Shelf Object that doesn't exist in the DB
         """
         delete_url = reverse('laboratory:api-shelfobject-delete', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
-        response = self.client.delete(delete_url, data={'shelfobj': 5}, content_type='application/json')
+        response = self.client.delete(delete_url, data={'shelfobj': 115}, content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     def test_shelfobject_api_delete_shelfobject_not_in_laboratory(self):
