@@ -524,11 +524,13 @@ class ShelfObjectObservationSerializer(serializers.ModelSerializer):
         fields = ['id', 'action_taken', 'description', 'creator_name', 'creation_date']
 
     def get_creator_name(self, obj):
-        name = obj.creator.get_full_name()
-        if name:
-            return name
-        else:
-            return obj.creator.username
+        if obj.creator:
+            name = obj.creator.get_full_name()
+            if name:
+                return name
+            else:
+                return obj.creator.username
+        return "No creator"
 
 
 
