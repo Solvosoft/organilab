@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% load gtsettings timejs %}
+{% block pre_head %}
+    {% define_urlname_action 'complete_my_procedure' %}
+    {% define_true  "use_datatables" %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 id="form_name" class="text-center"> </h1>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div id="left-col" class="col-md-8">
+            <form id="procedure_form">
+                {% csrf_token %}
+                <div id="steps-table">
+                    {% for step in steps %}
+                    <div id="step-{{ step.pk }}" class="pb-2">
+                        <label id="step-label-{{ step.pk }}" class="step-title" for="step-input-{{ step.pk }}">{{ step.title }}</label>
+                            <div class="row">
+                                <div class="col">
+                                    <div id="step-input-{{ step.pk }}" class="step-description">{{ step.description }}</div>
+                                    <div id="step-comment-{{ step.pk }}"></div>
+                                </div>
+                                <div class="col">
+                                    <input type="radio" class="stepradio" name="step" value="{{ step.pk }}">
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if my_procedure.status == 'Eraser' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
+                {% endif %}
+                {% if my_procedure.status == 'In Review' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
+                    <button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
+                {% endif %}
+                {% if my_procedure.status == 'Finalized' %}
+                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
+                {% endif %}
+            </form>
+        </div>
+        <div class="col-md-4">
+            <table id="datatableelement" class="table "> </table>
+        </div>
+    </div>
+</div>
+{% include 'modal_template.html' with form=form id="commentmodal" title="Add observation" form_id="commentform" url=api_my_procedure_list %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
+             "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
+             "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
+             "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+
+datatableelement=createDataTable('#datatableelement', '{% url "laboratory:api-procedure-comments-list" %}', {
+ columns: [
+        {data: "creator", name: "creator", title: "{% trans 'Creator' %}", type: "string", visible: true},
+        {data: "creator_at", name: "creator_at", title: "{% trans 'Creation date' %}", type: "date", visible: true, "dateformat":  "{% get_datetime_format %}"},
+        {data: "comment", name: "comment", title: "{% trans 'Comment' %}", type: "string", visible: true}
+    ],
+    ajax: {
+        url: '{% url "laboratory:api-procedure-comments-list" %}',
+        type: 'GET',
+        data: function(dataTableParams, settings) {
+            var data= formatDataTableParams(dataTableParams, settings);
+            data['procedure_step'] = $('.stepradio:checked').val();
+            data['my_procedure'] = {{ my_procedure.pk }};
+            return data;
+        }
+    },
+    columnDefs: [
+        {
+            targets: 3,
+            data: null,
+            defaultContent: `<div class="text-end" style="top:0;">
+                <i  class="fa fa-edit beditbtn"></i>
+                <i  class="fa fa-trash deletebtn"></i></div>
+            <div>`,
+        }
+    ],
+    buttons: [
+        {
+            text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+            action: function() {
+                add_comment();
+            }
+        }
+    ]
+}, addfilter=true);
+
+const urls ={
+    edit:"{% url 'academic:complete_my_procedure' org_pk=org_pk lab_pk=laboratory pk=my_procedure.pk %}",
+    list: "{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}",
+    add_comment:"{% url 'laboratory:api-my-procedure-list' %}",
+    get_comment:"{% url 'laboratory:api-my-procedure-list' %}",
+    delete_update_comment :"{% url 'laboratory:api-my-procedure-detail' 0 %}",
+};
+
+const my_procedure = {
+    pk: {{ my_procedure.pk }},
+}
+
+const no_step_selected = {
+    title: "{% trans 'No step selected' %}",
+    text: "{% trans 'You must select a step to add comments.' %}"
+}
+
+document.getElementById("form_name").textContent = "{{my_procedure.name}}";
+
+const saved="{% trans 'Saved successfully' %}";
+
+let status = "{{my_procedure.status}}"
+let title = status == 'Eraser'?"{% trans 'Do you want to send the report for review?' %}":"{% trans 'Do you want to finish the report?' %}";
+var message ={
+    title:title,
+    text: "{% trans 'Discarding cannot be undone.' %}",
+    icon: "warning",
+    deny: "{% trans 'Cancel' %}",
+    confirm: "{% trans 'Save' %}",
+    }
+const remove_translation ={
+    title:"{% trans 'Delete the observation' %}",
+    text: "{% trans 'Do you want to remove the observation?' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Successfully deleted' %}"
+}
+
+const add_translation ={
+    successfull:"{% trans 'Saved successfully' %}"
+}
+
+const update_translation ={
+    title:"{% trans 'Update the observation' %}",
+    text: "{% trans 'Do you want to update the observation?' %}",
+    accept :"{% trans 'Yes' %}",
+    deny :"{% trans 'No' %}",
+    icon: "success",
+    successfull:"{% trans 'Successfully updated' %}"
+}
+
+</script>
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'js/complete_my_procedure.js' %}"></script>
+
+{% endblock %}
+
+</html>
