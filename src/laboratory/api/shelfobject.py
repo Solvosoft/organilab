@@ -328,11 +328,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         serializer = self.serializer_class['serializer'](data=request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
         limit_serializer=ShelfObjectLimitsSerializer(data=request.data)
-
         errors={}
         if serializer.is_valid():
             if limit_serializer.is_valid(raise_exception=True):
-                self.serializer_class['method'](serializer, limit_serializer)
+                shelfobject=self.serializer_class['method'](serializer, limit_serializer)
+
+                comment=ShelfObjectObservation.objects.create(description=shelfobject.course_name, action_taken=_("Created Object"), shelf_object=shelfobject, creator=request.user)
+                utils.organilab_logentry(request.user, comment, ADDITION, 'shelfobjectobservation',
+                                         relobj=lab_pk)
                 return Response({"detail": _("The creation was performed successfully.")}, status=status.HTTP_201_CREATED)
             else:
                 errors.update(limit_serializer.errors)
