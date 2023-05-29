@@ -94,6 +94,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     rols = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
     action = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     def get_rols(self, obj):
         contenttypeobj = self.context['view'].contenttypeobj
@@ -112,6 +113,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return str(obj)
 
+    def get_email(self, obj):
+        return obj.user.email
+
     def get_action(self, obj):
         contenttypeobj = self.context['view'].contenttypeobj
         org = self.context['view'].organization
@@ -126,7 +130,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'rols', 'action']
+        fields = ['user', 'rols', 'action', 'email']
 
 
 class ProfileRolDataTableSerializer(serializers.Serializer):
