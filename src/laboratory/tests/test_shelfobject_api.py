@@ -27,9 +27,10 @@ class ShelfObjectAPITest(TestCase):
                                                               )
         profile_permission.rol.add(user2_role)
 
-    def test_shelfobject_api_details_with_substance_characteristics(self):
+    def test_shelfobject_api_details_with_substance_characteristics_and_features(self):
         """
-        Test for API details success case
+        Test for API details success case with substance characteristics and features
+        pk = 2 -> Shelf Object related to substance characteristics with pk = 1
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 2}))
         self.assertEqual(response.status_code, 200)
@@ -51,6 +52,7 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_details_without_substance_characteristics(self):
         """
         Test for API details success case without substance characteristics
+        Shelf Object with pk = 3 that doesn't have any features key
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 3}))
         self.assertEqual(response.status_code, 200)
@@ -59,7 +61,8 @@ class ShelfObjectAPITest(TestCase):
 
     def test_shelfobject_api_details_shelf_object_only_with_required_fields(self):
         """
-        Test for API details when an object with has no laboratory
+        Test for API details when an object with has no laboratory and only have required fields
+        Shelf Object with pk = 4 that only have the required fields
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-details',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 4}))
@@ -91,8 +94,6 @@ class ShelfObjectAPITest(TestCase):
         self.client.force_login(self.user2)
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_details_user_without_permissions_forbidden(self):
         """
@@ -103,8 +104,6 @@ class ShelfObjectAPITest(TestCase):
         self.client.force_login(self.user3)
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_details_anonymous_user_forbidden(self):
         """
@@ -113,11 +112,10 @@ class ShelfObjectAPITest(TestCase):
         self.client.logout()
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
         self.assertEqual(response.status_code, 403)
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_list_comments(self):
         """
-        Test for API list_comments
+        Test for API list_comments when all the data is given correctly
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
@@ -127,7 +125,7 @@ class ShelfObjectAPITest(TestCase):
 
     def test_shelfobject_api_list_comments_without_creator(self):
         """
-        Test for API list_comments
+        Test for API list_comments when the shelf object doesn't have a creator
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 2}))
@@ -159,8 +157,6 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_list_comments_user_without_permissions_forbidden(self):
         """
@@ -172,8 +168,6 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_list_comments_anonymous_user_forbidden(self):
         """
@@ -183,11 +177,10 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1}))
         self.assertEqual(response.status_code, 403)
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_create_comments(self):
         """
-        Test for API create_comments
+        Test for API create_comments when all the data is given correctly
         """
         data = {'action_taken': 'Object Change', 'description': 'Test Comment for testing', 'prefix': ''}
         response = self.client.post(reverse('laboratory:api-shelfobject-create-comments',
@@ -214,7 +207,7 @@ class ShelfObjectAPITest(TestCase):
 
     def test_shelfobject_api_create_comments_no_description(self):
         """
-        Test for API create_comments****************************
+        Test for API create_comments when description is None
         """
         data = {'action_taken': 'Object Change', 'description': '', 'prefix': ''}
         response = self.client.post(reverse('laboratory:api-shelfobject-create-comments',
@@ -225,7 +218,7 @@ class ShelfObjectAPITest(TestCase):
 
     def test_shelfobject_api_create_comments_no_action_taken(self):
         """
-        Test for API create_comments*************************
+        Test for API create_comments when action_taken is None
         """
         data = {'action_taken': '', 'description': 'Test Comment for testing', 'prefix': ''}
         response = self.client.post(reverse('laboratory:api-shelfobject-create-comments',
@@ -269,8 +262,6 @@ class ShelfObjectAPITest(TestCase):
                                     data=data,
                                     content_type='application/json')
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_create_comments_user_without_permissions_forbidden(self):
         """
@@ -285,8 +276,6 @@ class ShelfObjectAPITest(TestCase):
                                     data=data,
                                     content_type='application/json')
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_create_comments_anonymous_user_forbidden(self):
         """
@@ -303,7 +292,7 @@ class ShelfObjectAPITest(TestCase):
 
     def test_shelfobject_api_delete(self):
         """
-        Test for API delete
+        Test for API delete success case, where the data is correctly given
         """
         delete_url = reverse('laboratory:api-shelfobject-delete', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
         response = self.client.delete(delete_url, data={'shelfobj': 1}, content_type='application/json')
@@ -336,8 +325,6 @@ class ShelfObjectAPITest(TestCase):
         self.client.force_login(self.user2)
         response = self.client.delete(delete_url, data={'shelfobj': 1}, content_type='application/json')
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_delete_user_without_permissions_forbidden(self):
         """
@@ -349,8 +336,6 @@ class ShelfObjectAPITest(TestCase):
         self.client.force_login(self.user3)
         response = self.client.delete(delete_url, data={'shelfobj': 1}, content_type='application/json')
         self.assertEqual(response.status_code, 403)
-        self.client.logout()
-        self.client.force_login(self.user)
 
     def test_shelfobject_api_delete_anonymous_user_forbidden(self):
         """
@@ -379,19 +364,62 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.delete(delete_url, data={'shelfobj': 1})
         self.assertEqual(response.status_code, 415)
 
+    def test_shelfobject_observations_view_user_with_permissions_forbidden(self):
+        """
+        Test for Shelf Object Observation view when user have permissions in their organization
+        but don't have access to the specified laboratory/organization
+        """
+        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk':1})
+        self.client.logout()
+        self.client.force_login(self.user2)
+        response = self.client.get(view_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_shelfobject_observations_view_user_without_permissions_forbidden(self):
+        """
+        Test for Shelf Object Observation view when user don't have any permissions and
+        don't have access to the specified laboratory/organization
+        """
+        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk':1})
+        self.client.logout()
+        self.client.force_login(self.user3)
+        response = self.client.get(view_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_shelfobject_observations_view_anonymous_user_forbidden(self):
+        """
+        Test for Shelf Object Observation view when anonymous user tries to access
+        """
+        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk':1})
+        self.client.logout()
+        response = self.client.get(view_url)
+        self.assertEqual(response.status_code, 302)
+
     def test_shelfobject_observations_view_template(self):
+        """
+        Test for Shelf Object Observation view to check if template being loaded is the correct one
+        """
         view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk':1})
         response = self.client.get(view_url)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context[0].template_name, 'laboratory/shelfobject/shelfobject_observations.html')
 
     def test_shelfobject_observations_view_required_tables(self):
+        """
+        Test for Shelf Object Observation view to check if the html elements
+        for the tables and forms are in the template
+        """
         view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
         response = self.client.get(view_url)
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response=response, text='id="observationTable"')
         self.assertContains(response=response, text='data-modalid="status_modal"')
         self.assertContains(response=response, text='data-modalid="observation_modal"')
 
     def test_shelfobject_observations_view_urls (self):
+        """
+        Test for Shelf Object Observation view check if the urls of the objects are loaded correctly
+        """
         view_url = reverse('laboratory:get_shelfobject_log',
                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
         response = self.client.get(view_url)
@@ -404,11 +432,15 @@ class ShelfObjectAPITest(TestCase):
         observation_url = f"observation_table: '{observation_table_url}'"
         shelf_url = f"shelf_availability_information: '{shelf_availability_information}'"
         status_url = f"change_status: '{change_status}'"
+        self.assertEqual(response.status_code, 200)
         self.assertContains(response=response, text=observation_url)
         self.assertContains(response=response, text=shelf_url)
         self.assertContains(response=response, text=status_url)
 
     def test_shelfobject_observations_view_forms(self):
+        """
+        Test for Shelf Object Observation view to verify if the forms are loaded correctly into the template
+        """
         view_url = reverse('laboratory:get_shelfobject_log',
                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
         response = self.client.get(view_url)
