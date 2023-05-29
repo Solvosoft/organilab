@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from academic.presentation import HTMLPresentation
 from laboratory import catalog
 from laboratory.models import Object, Catalog
+from presentation.models import AbstractOrganizationRef
 
 
 class Procedure(models.Model, HTMLPresentation):
@@ -25,6 +26,31 @@ class Procedure(models.Model, HTMLPresentation):
         verbose_name_plural = _('Procedures')
 
 
+STATUS_CHOICES = (
+    (_('Eraser'), _('Eraser')),
+    (_('In Review'), _('In Review')),
+    (_('Finalized'), _('Finalized')),
+)
+
+
+class MyProcedure(AbstractOrganizationRef):
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name'))
+    custom_procedure = models.ForeignKey(Procedure, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Template'))
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    context_object = GenericForeignKey('content_type', 'object_id')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Eraser')
+    schema = models.JSONField(default=dict)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
+
+
 class ProcedureStep(models.Model, HTMLPresentation):
     procedure = models.ForeignKey(Procedure, verbose_name=_("Procedure"), on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=500, null=True)
@@ -39,6 +65,19 @@ class ProcedureStep(models.Model, HTMLPresentation):
         ordering = ('pk',)
         verbose_name = _('Procedure step')
         verbose_name_plural = _('Procedure steps')
+
+
+class CommentProcedureStep(models.Model):
+    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_("Creator"))
+    creator_at = models.DateTimeField(auto_now_add=True)
+    comment = models.TextField(blank=True, verbose_name=_("Comment"))
+    procedure_step = models.ForeignKey(ProcedureStep, blank=True, null=True, on_delete=models.CASCADE,
+                                       verbose_name=_('Step'))
+    my_procedure = models.ForeignKey(MyProcedure, blank=True, null=True, on_delete=models.CASCADE,
+                                     verbose_name=_('My procedure'))
+
+    def __str__(self):
+        return f'{self.creator} - {self.creator_at}'
 
 
 class ProcedureRequiredObject(models.Model):
