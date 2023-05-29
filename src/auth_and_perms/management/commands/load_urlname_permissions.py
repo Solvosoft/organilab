@@ -18,10 +18,20 @@ class Command(BaseCommand):
 
         return perm
 
+    def get_urlname_permission(self):
+        admin=[]
+        admin_perms=[]
+        for key, value in URLNAME_PERMISSIONS.items():
+            for item in value:
+                if item['permission'] not in admin_perms:
+                    admin.append(item)
+                    admin_perms.append(item['permission'])
+        URLNAME_PERMISSIONS['org_administrator'] = admin
+        return URLNAME_PERMISSIONS
+
     def load_urlname_permissions(self):
-
-        for url_name, item_list in URLNAME_PERMISSIONS.items():
-
+        urlnames=self.get_urlname_permission()
+        for url_name, item_list in urlnames.items():
             for obj in item_list:
                 perm = self.get_permission(obj['permission'])
 

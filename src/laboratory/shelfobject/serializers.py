@@ -23,7 +23,7 @@ logger = logging.getLogger('organilab')
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
     amount_required = serializers.FloatField(min_value=0.1)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
     initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
     final_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
 
@@ -51,7 +51,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
                 f'ReservedShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
     class Meta:
@@ -59,52 +59,73 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         fields = ['amount_required', 'shelf_object', 'initial_date', 'final_date']
 
 
-class AddShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField()
-    bill = serializers.CharField(required=False)
-    provider = serializers.IntegerField(required=False)
-    shelf_object = serializers.IntegerField()
-
-
 class IncreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False, allow_blank=True)
-    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.all(), required=False, allow_null=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE), required=False, allow_null=True)
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f'AddShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+                f'IncreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
     def validate_provider(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr:
-            if not attr.laboratory != source_laboratory_id:
+            if attr.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f'AddShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
-                raise serializers.ValidationError(_("Provider does not exist in the laboratory"))
+                    f'IncreaseShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != source_laboratory_id ({source_laboratory_id})')
+                raise serializers.ValidationError(_("Provider doesn't exists in this laboratory"))
         return attr
+
+    def validate(self, data):
+        shelf_object = data['shelf_object']
+        shelf = shelf_object.shelf
+        shelf_quantity = shelf.quantity
+        amount = data['amount']
+        total = shelf.get_total_refuse() + amount
+        check_measurement_unit = shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit
+
+        if check_measurement_unit:
+            logger.debug(
+                f'IncreaseShelfObjectSerializer --> shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit is'
+                f' ({check_measurement_unit})')
+            raise serializers.ValidationError({'shelf_object': _("Measurement unit can't different than shelf measurement unit")})
+
+        if total > shelf_quantity and not shelf.infinity_quantity:
+            raise serializers.ValidationError({'amount': _("Quantity can't greater than shelf quantity limit %(limit)s") % {
+                'limit': shelf_quantity,
+            }})
+        return data
 
 
 class DecreaseShelfObjectSerializer(serializers.Serializer):
-    discount = serializers.FloatField(min_value=0.1)
+    amount = serializers.FloatField(min_value=0.1)
     description = serializers.CharField(required=False, allow_blank=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f'SubstractShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+                f'DecreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
+
+    def validate(self, data):
+        amount = data['amount']
+        shelf_object = data['shelf_object']
+
+        if shelf_object.quantity < amount:
+            raise serializers.ValidationError({'amount': _("Substract amount can't be greater than available shelf amount")})
+        return data
 
 
 class ValidateShelfSerializerCreate(serializers.Serializer):
@@ -345,15 +366,15 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
 
 
 class ValidateShelfSerializer(serializers.Serializer):
-    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.all())
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
         if attr.furniture.labroom.laboratory_id != source_laboratory_id:
-            logger.debug(f'ValidateShelfSerializer --> attr.in_where_laboratory_id '
+            logger.debug(f'ValidateShelfSerializer --> attr.furniture.labroom.laboratory_id '
                          f'({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
-            raise serializers.ValidationError(_("Object does not exist in the laboratory"))
+            raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
 
@@ -599,7 +620,13 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         if shelf.pk == shelf_object.shelf.pk:
             logger.debug(
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError(_("Object can't be moved to same shelf"))
+            raise serializers.ValidationError({'shelf': _("Object can't be moved to same shelf")})
+
+        if shelf.measurement_unit != shelf_object.measurement_unit:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
+            raise serializers.ValidationError({'shelf': _("Object can't be moved to shelf with different measurement unit")})
+
         return data
 
 

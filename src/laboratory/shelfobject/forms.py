@@ -1,19 +1,16 @@
-from django.forms import ModelForm
-from djgentelella.forms.forms import GTForm
 from django import forms
-from djgentelella.widgets import core as genwidgets
+from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
-from djgentelella.widgets.selects import AutocompleteSelect
-
-from laboratory import utils
+from djgentelella.forms.forms import GTForm
+from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile
+from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture
 from reservations_management.models import ReservedProducts
 
-
 class ReserveShelfObjectForm(ModelForm, GTForm):
-
     class Meta:
         model = ReservedProducts
         fields = ['amount_required', 'initial_date', 'final_date']
@@ -22,21 +19,20 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
             'final_date': genwidgets.DateTimeInput,
             'amount_required': genwidgets.TextInput
         }
-class AddShelfObjectForm(GTForm):
-    amount = forms.FloatField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
-                              label=_('Amount'), required=True)
-    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
-    provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
-                                      label=_("Provider"), required=False)
 
-    def __init__(self, *args, **kwargs):
-        lab = kwargs.pop('lab')
-        super(AddShelfObjectForm, self).__init__(*args, **kwargs)
-        providers = Provider.objects.filter(laboratory__id=int(lab))
-        self.fields['provider'].queryset = providers
+class IncreaseShelfObjectForm(GTForm):
+    amount = forms.FloatField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'), label=_('Amount'))
+    bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
+    provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
+                                      widget=AutocompleteSelect("provider", attrs={
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                      })
+                                      )
+
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
-                                  help_text=_('Use dot like 0.344 on decimal'), required=True)
+                                          help_text=_('Use dot like 0.344 on decimal'), required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.none(),
                                         label=_("Laboratory"), required=True)
     mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("Mark as discard"))
@@ -50,11 +46,13 @@ class TransferOutShelfObjectForm(GTForm):
         orgs = utils.get_pk_org_ancestors_decendants(users, org)
 
         self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
-class SubstractShelfObjectForm(GTForm):
-    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
-                                  label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text=_('Describe the action'),
+
+class DecreaseShelfObjectForm(GTForm):
+    amount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
+                                label=_('Amount'))
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
+
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
     laboratory = forms.IntegerField(widget=forms.HiddenInput)
@@ -85,15 +83,17 @@ class MoveShelfObjectForm(GTForm):
                                        'data-s2filter-shelf': '#id_shelf',
                                        'data-s2filter-organization': '#id_organization',
                                        'data-s2filter-laboratory': '#id_laboratory'
-                                   })
+                                   }), help_text=_("This select only shows shelves with same measurement unit than current object")
                                    )
 
-class ShelfObjectExtraFields(GTForm,forms.Form):
+class ShelfObjectExtraFields(GTForm, forms.Form):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
-    without_limit = forms.BooleanField(widget=genwidgets.CheckboxInput(attrs={'class':'check_limit'}), label=_('Unlimit'), initial=True)
+    without_limit = forms.BooleanField(widget=genwidgets.CheckboxInput(attrs={'class': 'check_limit'}),
+                                       label=_('Unlimited'), initial=True)
     minimum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Minimum Limit"))
     maximum_limit = forms.FloatField(widget=genwidgets.TextInput, required=True, initial=0.0, label=_("Maximum Limit"))
-    expiration_date = forms.DateField(widget=genwidgets.DateInput,required=False, label=_("Expiration date"))
+    expiration_date = forms.DateField(widget=genwidgets.DateInput, required=False, label=_("Expiration date"))
+
 
 class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
     container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True, label=_("Container"))
@@ -165,6 +165,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             'batch': genwidgets.TextInput,
             'marked_as_discard': genwidgets.CheckboxInput,
         }
+
 class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
     container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True)
 
@@ -230,7 +231,8 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'batch': genwidgets.TextInput
 
         }
-class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
+
+class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -270,7 +272,8 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+                  "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
@@ -278,6 +281,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
+
 class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -327,6 +331,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'course_name': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
         }
+
 class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     def __init__(self, *args, **kwargs):
@@ -375,6 +380,7 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             'course_name': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
+
 class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -424,10 +430,8 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'marked_as_discard': forms.HiddenInput
         }
 
-
 class ValidateShelfUnitForm(GTForm):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
-
 
 class ShelfObjectStatusForm(GTForm, forms.ModelForm):
     description = forms.CharField(widget=genwidgets.Textarea, label=_("Description"))
