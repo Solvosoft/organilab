@@ -270,7 +270,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     def _get_shelfobject_with_check(self, pk, laboratory):
         obj=get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
-        if obj.in_where_laboratory.pk != laboratory:
+        if obj.in_where_laboratory is None or obj.in_where_laboratory.pk != laboratory:
             raise Http404
         return obj
 
