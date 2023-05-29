@@ -103,19 +103,9 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.change_shelfobject'
         },
         {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
             'name': 'Manage Disposal',
             'category': 'Shelf',
             'permission': 'laboratory.can_manage_disposal'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
         },
         {
             'name': 'Do Report',
@@ -123,44 +113,9 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.do_report'
         },
         {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'Add Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
             'name': 'Add Shelf Object Status',
             'category': 'Shelf Object',
             'permission': 'laboratory.add_catalog'
-        },
-        {
-            'name': 'Delete Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.delete_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'Change Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.change_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
         },
         {
             'name': 'View Shelf Object Observations',
@@ -178,19 +133,9 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.add_shelf'
         },
         {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        },
-        {
             'name': 'Delete Shelf',
             'category': 'Shelf',
             'permission': 'laboratory.delete_shelf'
-        },
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
         },
         {
             'name': 'Change Shelf',
@@ -198,19 +143,9 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.change_shelf'
         },
         {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        },
-        {
             'name': 'Add Transfer',
             'category': 'Transfer',
             'permission': 'laboratory.add_tranferobject'
-        },
-        {
-            'name': 'Manage Disposal',
-            'category': 'Shelf',
-            'permission': 'laboratory.can_manage_disposal'
         },
         {
             'name': 'View Disposal',
