@@ -72,6 +72,7 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_details_not_found(self):
         """
         Test for API details shelf object not found
+        pk = 5, Shelf Object that doesn't exist in the DB
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 5}))
         self.assertEqual(response.status_code, 404)
@@ -79,7 +80,7 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_details_shelfobject_not_in_laboratory(self):
         """
         Test for API details when shelf object doesn't belong to laboratory
-        lab_pk = PK that exists in the DB but doesn't contain the pk given
+        lab_pk = 3, PK that exists in the DB but doesn't contain the pk given
         pk = Shelf Object that belongs to lab_pk = 1
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-details', kwargs={'org_pk': self.org_pk, 'lab_pk': 3, 'pk': 1}))
@@ -135,6 +136,7 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_list_comments_not_found(self):
         """
         Test for API list_comments shelf object not found
+        pk = 5, Shelf Object that doesn't exist in the DB
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments',
                                            kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 5}))
@@ -143,6 +145,8 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_list_comments_shelfobject_not_in_laboratory(self):
         """
         Test for API list_comments when shelf object doesn't belong to laboratory
+        lab_pk = 3, PK that exists in the DB but doesn't contain the pk given
+        pk = Shelf Object that belongs to lab_pk = 1
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-list-comments', kwargs={'org_pk': self.org_pk, 'lab_pk': 3, 'pk': 1}))
         self.assertEqual(response.status_code, 404)
@@ -230,6 +234,7 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_create_comments_not_found(self):
         """
        Test for API create_comments shelf object not found
+        pk = 5, Shelf Object that doesn't exist in the DB
        """
         data = {'action_taken': 'Object Change', 'description': 'Test Comment for testing', 'prefix': ''}
         response = self.client.post(reverse('laboratory:api-shelfobject-create-comments',
@@ -241,6 +246,8 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_create_comments_shelfobject_not_in_laboratory(self):
         """
         Test for API create_comments when shelf object doesn't belong to laboratory
+        lab_pk = 3, PK that exists in the DB but doesn't contain the pk given
+        pk = Shelf Object that belongs to lab_pk = 1
         """
         data = {'action_taken': 'Object Change', 'description': 'Test Comment for testing', 'prefix': ''}
         response = self.client.post(reverse('laboratory:api-shelfobject-create-comments',
@@ -310,6 +317,8 @@ class ShelfObjectAPITest(TestCase):
     def test_shelfobject_api_delete_shelfobject_not_in_laboratory(self):
         """
         Test for API delete when shelf object doesn't belong to laboratory
+        lab_pk = 3, PK that exists in the DB but doesn't contain the pk given
+        pk = Shelf Object that belongs to lab_pk = 1
         """
         delete_url = reverse('laboratory:api-shelfobject-delete', kwargs={'org_pk': self.org_pk, 'lab_pk': 3})
         response = self.client.delete(delete_url, data={'shelfobj': 2}, content_type='application/json')
@@ -364,7 +373,7 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.delete(delete_url, data={'shelfobj': 1})
         self.assertEqual(response.status_code, 415)
 
-    def test_shelfobject_observations_view_user_with_permissions_forbidden(self):
+    def test_shelfobject_observations_view_user_with_permissions_redirect(self):
         """
         Test for Shelf Object Observation view when user have permissions in their organization
         but don't have access to the specified laboratory/organization
@@ -375,7 +384,7 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.get(view_url)
         self.assertEqual(response.status_code, 302)
 
-    def test_shelfobject_observations_view_user_without_permissions_forbidden(self):
+    def test_shelfobject_observations_view_user_without_permissions_redirect(self):
         """
         Test for Shelf Object Observation view when user don't have any permissions and
         don't have access to the specified laboratory/organization
@@ -386,7 +395,7 @@ class ShelfObjectAPITest(TestCase):
         response = self.client.get(view_url)
         self.assertEqual(response.status_code, 302)
 
-    def test_shelfobject_observations_view_anonymous_user_forbidden(self):
+    def test_shelfobject_observations_view_anonymous_user_redirect(self):
         """
         Test for Shelf Object Observation view when anonymous user tries to access
         """
