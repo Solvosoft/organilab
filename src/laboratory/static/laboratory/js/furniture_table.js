@@ -65,10 +65,10 @@ function refresh_description(){
     };
 
     setTimeout(function () {
-        show_refuse_elements();
         show_refuse_elements_limit_only_objects();
         hide_quantity();
         gt_find_initialize($("#shelfmodalbody"));
+        show_refuse_elements();
     }, 1000);
 
 }
@@ -137,10 +137,8 @@ function show_refuse_elements(){
         $('#id_shelf--description').parent().parent().show();
         $('#id_shelf--quantity').parent().parent().show();
         $('#id_shelf--infinity_quantity').parent().parent().parent().hide();
-        if($(infinity_quantity).is(':checked')){
-            $(infinity_quantity).parent().removeClass('checked');
-            $(infinity_quantity).attr('checked', false)
-            }
+        $(infinity_quantity).parent().removeClass('checked');
+        $(infinity_quantity).iCheck('uncheck');
      }else{
         $('#id_shelf--description').parent().parent().hide();
         $('#id_shelf--infinity_quantity').parent().parent().parent().show();
