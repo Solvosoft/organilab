@@ -3939,4 +3939,4 @@ msgid "Created Object"
 msgstr "Objeto creado"
 
 msgid "Unlimited"
-msgstr "inlimitado"
+msgstr "ilimitado"
