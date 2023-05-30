@@ -2,17 +2,17 @@
 
 {% url "laboratory:api-shelfobject-reserve" lab_pk=laboratory org_pk=org_pk as reserve_so_url %}
 {% trans 'Reserve' as reserve_so_tittle %}
-{% include 'modal_template.html' with form=modal_form_reservation id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
+{% include 'modal_template.html' with form=reserve_object_form id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
 
 
 {% url "laboratory:api-shelfobject-fill-increase-shelfobject" lab_pk=laboratory org_pk=org_pk as increase_so_url %}
 {% trans 'Add' as increase_so_tittle %}
-{% include 'modal_template.html' with form=add_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
+{% include 'modal_template.html' with form=increase_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
 
 
 {% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_so_url %}
 {% trans 'Substract' as decrease_so_tittle %}
-{% include 'modal_template.html' with form=subtract_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
+{% include 'modal_template.html' with form=decrease_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
 
 
 {% url "laboratory:api-shelfobject-move-shelfobject-to-shelf" lab_pk=laboratory org_pk=org_pk as move_so_url %}
