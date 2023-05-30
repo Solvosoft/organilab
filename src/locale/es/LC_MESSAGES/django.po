@@ -3940,3 +3940,6 @@ msgstr "Objeto creado"
 
 msgid "Unlimited"
 msgstr "ilimitado"
+
+msgid "Limit quantity of the shelf"
+msgstr "Cantidad límite del estante "
