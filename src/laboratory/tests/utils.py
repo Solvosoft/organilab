@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.urls import reverse
@@ -8,8 +8,8 @@ from djgentelella.models import ChunkedUpload
 from django.test import TestCase
 from django.test import Client
 
-from auth_and_perms.models import Rol
-from laboratory.models import OrganizationStructure, Laboratory
+from auth_and_perms.models import Rol, ProfilePermission
+from laboratory.models import OrganizationStructure, Laboratory, UserOrganization
 import base64
 
 from laboratory.tests.file_b64 import FILE_B64
@@ -114,3 +114,30 @@ class BaseSetUpDjangoRequest(BaseOrganizatonManageSetUpTest):
         super().setUp()
 
         self.org = self.org3
+
+class BaseShelfobjectStatusSetUpTest(BaseSetUpTest):
+    fixtures = ["laboratory_data.json"]
+
+    def setUp(self):
+        super().setUp()
+
+        self.client = Client()
+        self.user = User.objects.get(pk=2)
+        self.user1 = User.objects.get(pk=3)
+        self.org_pk = 1
+        self.lab = Laboratory.objects.first()
+        create_status_rol = Rol.objects.create(name="Test add status", color="#FFF")
+        permission = Permission.objects.filter(pk__in=[126,24])
+        create_status_rol.permissions.add(*permission)
+        profile_permission = ProfilePermission.objects.create(profile=self.user.profile,
+                                                              object_id=1,
+                                                              content_type=ContentType.objects.get(
+                                                                  app_label='laboratory',
+                                                                  model='organizationstructure')
+                                                              )
+        profile_permission.rol.add(create_status_rol)
+        org = OrganizationStructure.objects.get(pk=1)
+        user_org = UserOrganization.objects.create(organization=org, user=self.user, type_in_organization=1
+                                                   )
+        org.users.add(self.user)
+        self.client.force_login(self.user)
