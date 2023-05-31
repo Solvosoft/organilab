@@ -14,7 +14,7 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [83, 84, 85, 86]
+      "user_permissions": []
     }
   },
   {
@@ -93,56 +93,11 @@
     "model": "auth_and_perms.rol",
     "pk": 1,
     "fields": {
-        "name": "Gestión Laboratorio",
+        "name": "View Shelf",
         "color": "#337193",
-        "permissions": [1, 37, 38, 39]
+        "permissions": [18]
     }
-},
-  {
-    "model": "auth_and_perms.rol",
-    "pk": 2,
-    "fields": {
-        "name": "Gestión Informes",
-        "color": "#337193",
-        "permissions": [475, 472, 473, 474]
-    }
-},
-  {
-    "model": "auth_and_perms.rol",
-    "pk": 3,
-    "fields": {
-        "name": "Gestión Sustancias",
-        "color": "#337193",
-        "permissions": [26, 27, 28, 29]
-    }
-},
-  {
-    "model": "auth_and_perms.rol",
-    "pk": 4,
-    "fields": {
-        "name": "Gestión de reporte de zonas de riesgo",
-        "color": "#337193",
-        "permissions": [360, 359, 361, 358]
-    }
-},
-  {
-    "model": "auth_and_perms.rol",
-    "pk": 5,
-    "fields": {
-        "name": "Gestión de roles",
-        "color": "#337193",
-        "permissions": [83, 84, 85, 86]
-    }
-},
-  {
-    "model": "auth_and_perms.rol",
-    "pk": 6,
-    "fields": {
-        "name": "Reporte de zonas de riesgo",
-        "color": "#337193",
-        "permissions": [360, 359, 361, 358]
-    }
-},
+  },
   {
     "model": "laboratory.organizationstructure",
     "pk": 1,
@@ -151,7 +106,18 @@
       "name": "Organization 1",
       "position": 0,
       "level": 0,
-      "rol": [1, 2, 3, 5]
+      "rol": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization 2",
+      "position": 0,
+      "level": 0,
+      "rol": []
     }
   },
   {
@@ -163,17 +129,6 @@
       "position": 0,
       "level": 1,
       "rol": []
-    }
-  },
-  {
-    "model": "laboratory.organizationstructure",
-    "pk": 2,
-    "fields": {
-      "parent": null,
-      "name": "Organization 2",
-      "position": 0,
-      "level": 0,
-      "rol": [1]
     }
   },
   {
@@ -195,7 +150,7 @@
       "name": "Organization 3",
       "position": 0,
       "level": 0,
-      "rol": [1, 2, 3, 4, 5, 6]
+      "rol": []
     }
   },
   {
@@ -279,6 +234,43 @@
     }
   },
   {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de muestras",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 1",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[1],[]],[[],[],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+   {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "SH 1 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
@@ -340,90 +332,7 @@
         "profile": 1,
         "content_type": 1,
         "object_id": 1,
-        "rol": [2, 3]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 2,
-    "fields": {
-        "profile": 3,
-        "content_type": 1,
-        "object_id": 1,
-        "rol": [2]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 3,
-    "fields": {
-        "profile": 3,
-        "content_type": 30,
-        "object_id": 1,
-        "rol": []
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 4,
-    "fields": {
-        "profile": 2,
-        "content_type": 1,
-        "object_id": 4,
         "rol": [1]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 5,
-    "fields": {
-      "profile": 5,
-      "content_type": 1,
-      "object_id": 5,
-      "rol": [
-        2,
-        3
-      ]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 6,
-    "fields": {
-      "profile": 2,
-      "content_type": 30,
-      "object_id": 2,
-      "rol": [1, 5]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 7,
-    "fields": {
-      "profile": 4,
-      "content_type": 30,
-      "object_id": 2,
-      "rol": [1]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 8,
-    "fields": {
-      "profile": 1,
-      "content_type": 30,
-      "object_id": 1,
-      "rol": []
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 9,
-    "fields": {
-      "profile": 1,
-      "content_type": 30,
-      "object_id": 5,
-      "rol": [5]
     }
   },
   {
