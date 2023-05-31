@@ -79,6 +79,10 @@ def create_my_procedures(request, org_pk, lab_pk, *args, **kwargs):
 
 @permission_required('academic.delete_procedureobservations')
 def remove_my_procedure(request, org_pk, lab_pk, pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
     if my_procedure:
         organilab_logentry(request.user, my_procedure, DELETION, 'myprocedures', relobj=lab_pk)
@@ -113,6 +117,10 @@ def update_my_procedure_data(item, data):
 
 @permission_required('academic.change_procedurestep')
 def complete_my_procedure(request, org_pk, lab_pk, pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
     steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)
     comments = CommentProcedureStep.objects.filter(procedure_step__procedure=my_procedure.custom_procedure)
