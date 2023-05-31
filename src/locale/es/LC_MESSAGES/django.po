@@ -3934,3 +3934,12 @@ msgstr "Crear Compañía"
 
 msgid "Edit Company"
 msgstr "Editar Compañía"
+
+msgid "Unknown date and time"
+msgstr "Fecha y hora desconocida"
+
+msgid "No description"
+msgstr "Sin descripción"
+
+msgid "No registered comments"
+msgstr "No hay comentarios registrados"
