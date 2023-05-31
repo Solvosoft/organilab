@@ -210,6 +210,7 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
+    course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
 
     class Meta:
