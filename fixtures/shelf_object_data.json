@@ -1,0 +1,641 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "user1org1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user1org1",
+      "first_name": "User 1",
+      "last_name": "Org 1",
+      "email": "user1org1@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": [83, 84, 85, 86]
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "user2org2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user2org2",
+      "first_name": "User 2",
+      "last_name": "Org 2",
+      "email": "user2org2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "user3org1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user3org1",
+      "first_name": "User 3",
+      "last_name": "Org 1",
+      "email": "user3org1@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "user4org2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user4org2",
+      "first_name": "User 4",
+      "last_name": "Org 2",
+      "email": "user4org2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "user5org3pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user5org3",
+      "first_name": "User 5",
+      "last_name": "Org 3",
+      "email": "user5org3@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+        "name": "Gestión Laboratorio",
+        "color": "#337193",
+        "permissions": [1, 37, 38, 39]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+        "name": "Gestión Informes",
+        "color": "#337193",
+        "permissions": [475, 472, 473, 474]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+        "name": "Gestión Sustancias",
+        "color": "#337193",
+        "permissions": [26, 27, 28, 29]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 4,
+    "fields": {
+        "name": "Gestión de reporte de zonas de riesgo",
+        "color": "#337193",
+        "permissions": [360, 359, 361, 358]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 5,
+    "fields": {
+        "name": "Gestión de roles",
+        "color": "#337193",
+        "permissions": [83, 84, 85, 86]
+    }
+},
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 6,
+    "fields": {
+        "name": "Reporte de zonas de riesgo",
+        "color": "#337193",
+        "permissions": [360, 359, 361, 358]
+    }
+},
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Organization 1",
+      "position": 0,
+      "level": 0,
+      "rol": [1, 2, 3, 5]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": 1,
+      "name": "Child Organization 1",
+      "position": 0,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization 2",
+      "position": 0,
+      "level": 0,
+      "rol": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": 2,
+      "name": "Child Organization 2",
+      "position": 0,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 5,
+    "fields": {
+      "parent": null,
+      "name": "Organization 3",
+      "position": 0,
+      "level": 0,
+      "rol": [1, 2, 3, 4, 5, 6]
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Lab 1",
+      "phone_number": "88888888",
+      "location": "San José",
+      "geolocation": "9.895804362670006,-84.4325435324",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Lab 2",
+      "phone_number": "44444444",
+      "location": "San Miguel",
+      "geolocation": "9.32442142332,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 2,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 3,
+    "fields": {
+      "name": "Lab 3",
+      "phone_number": "33333333",
+      "location": "San Antonio",
+      "geolocation": "9.354352434334343,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 4,
+    "fields": {
+      "name": "Lab 4",
+      "phone_number": "22222222",
+      "location": "San Andres",
+      "geolocation": "9.895804362670006,-84.43434353455",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 4,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 5,
+    "fields": {
+      "name": "Lab 5",
+      "phone_number": "55555555",
+      "location": "Turrialba",
+      "geolocation": "9.895804362670006,-84.43434353455",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 5,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [1, 3, 5]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [2, 4]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "6666-6666",
+      "id_card": "0-0000-0000",
+      "job_position": "Student",
+      "laboratories": [1, 3]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone_number": "3333-3333",
+      "id_card": "0-0000-0000",
+      "job_position": "Student",
+      "laboratories": [2, 4]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "phone_number": "3333-3333",
+      "id_card": "0-0000-0000",
+      "job_position": "Admin",
+      "laboratories": [5]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "content_type": 1,
+        "object_id": 1,
+        "rol": [2, 3]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+        "profile": 3,
+        "content_type": 1,
+        "object_id": 1,
+        "rol": [2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+        "profile": 3,
+        "content_type": 30,
+        "object_id": 1,
+        "rol": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 4,
+    "fields": {
+        "profile": 2,
+        "content_type": 1,
+        "object_id": 4,
+        "rol": [1]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 5,
+    "fields": {
+      "profile": 5,
+      "content_type": 1,
+      "object_id": 5,
+      "rol": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 6,
+    "fields": {
+      "profile": 2,
+      "content_type": 30,
+      "object_id": 2,
+      "rol": [1, 5]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 7,
+    "fields": {
+      "profile": 4,
+      "content_type": 30,
+      "object_id": 2,
+      "rol": [1]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 8,
+    "fields": {
+      "profile": 1,
+      "content_type": 30,
+      "object_id": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 9,
+    "fields": {
+      "profile": 1,
+      "content_type": 30,
+      "object_id": 5,
+      "rol": [5]
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+        "organization": 1,
+        "user": 1,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 2,
+    "fields": {
+        "organization": 3,
+        "user": 1,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 3,
+    "fields": {
+        "organization": 1,
+        "user": 3,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 4,
+    "fields": {
+        "organization": 3,
+        "user": 3,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 5,
+    "fields": {
+        "organization": 2,
+        "user": 2,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 6,
+    "fields": {
+        "organization": 4,
+        "user": 2,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 7,
+    "fields": {
+        "organization": 2,
+        "user": 4,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 8,
+    "fields": {
+        "organization": 4,
+        "user": 4,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 9,
+    "fields": {
+        "organization": 5,
+        "user": 5,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 10,
+    "fields": {
+        "organization": 5,
+        "user": 1,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+   {
+    "model": "laboratory.userorganization",
+    "pk": 11,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+   {
+    "model": "laboratory.userorganization",
+    "pk": 12,
+    "fields": {
+      "organization": 1,
+      "user":  3,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 13,
+    "fields": {
+      "organization": 3,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 14,
+    "fields": {
+      "organization": 3,
+      "user":  3,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 15,
+    "fields": {
+      "organization": 2,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 16,
+    "fields": {
+      "organization": 2,
+      "user": 4,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 17,
+    "fields": {
+      "organization": 4,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 18,
+    "fields": {
+      "organization": 4,
+      "user":  4,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 19,
+    "fields": {
+      "organization": 5,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 20,
+    "fields": {
+      "organization": 5,
+      "user": 5,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 20,
+    "fields": {
+      "organization": 2,
+      "object_id": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ]
+    }
+  }
+]
