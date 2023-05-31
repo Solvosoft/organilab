@@ -122,6 +122,8 @@ msgstr "Confirmar"
 #: laboratory/static/js/shelfobjectedit.js:19
 #: laboratory/static/laboratory/js/laboratory.js:103
 #: laboratory/static/laboratory/js/shelfobject_utils.js:6
+#: academic/static/js/complete_my_procedure.js:54
+#: academic/static/js/complete_my_procedure.js:91
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -256,10 +258,14 @@ msgid "Molecular Formula"
 msgstr "Formula Molecular"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:112
+#: academic/static/js/complete_my_procedure.js:136
+#: academic/static/js/complete_my_procedure.js:179
 msgid "Yes"
 msgstr "Sí"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:113
+#: academic/static/js/complete_my_procedure.js:137
+#: academic/static/js/complete_my_procedure.js:180
 msgid "No"
 msgstr "No"
 
@@ -336,10 +342,12 @@ msgid "Send"
 msgstr "Enviar"
 
 #: laboratory/static/laboratory/js/shelfobject_management.js:6
+#: academic/static/js/complete_my_procedure.js:226
 msgid "Creation Date"
 msgstr "Fecha de creación"
 
 #: laboratory/static/laboratory/js/shelfobject_management.js:7
+#: academic/static/js/complete_my_procedure.js:225
 msgid "Creator"
 msgstr "Creador"
 
@@ -357,3 +365,63 @@ msgstr "Estado de nuevos objetos de estante guardados"
 
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
+
+#: academic/static/js/complete_my_procedure.js:1
+msgid "Do you want to send the report for review?"
+msgstr "¿Deseas enviar el reporte a Revisión?"
+
+#: academic/static/js/complete_my_procedure.js:1
+msgid "Do you want to finish the report?"
+msgstr "¿Deseas finalizar el reporte?"
+
+#: academic/static/js/complete_my_procedure.js:22
+msgid "Added"
+msgstr "Agregado"
+
+#: academic/static/js/complete_my_procedure.js:23
+#: academic/static/js/complete_my_procedure.js:73
+#: academic/static/js/complete_my_procedure.js:109
+msgid "Saved successfully"
+msgstr "Guardado satisfactoriamente"
+
+#: academic/static/js/complete_my_procedure.js:40
+msgid "No step selected"
+msgstr "Ningún paso seleccionado"
+
+#: academic/static/js/complete_my_procedure.js:41
+msgid "You must select a step to add comments."
+msgstr "Debes seleccionar un paso para agregar comentarios"
+
+#: academic/static/js/complete_my_procedure.js:51
+#: academic/static/js/complete_my_procedure.js:88
+msgid "Discarding cannot be undone."
+msgstr "El descarte no se puede deshacer."
+
+#: academic/static/js/complete_my_procedure.js:53
+#: academic/static/js/complete_my_procedure.js:90
+msgid "Save"
+msgstr "Guardar"
+
+#: academic/static/js/complete_my_procedure.js:134
+msgid "Update the observation"
+msgstr "Actualizar Observación"
+
+#: academic/static/js/complete_my_procedure.js:165
+msgid "Successfully updated"
+msgstr "Se actualizo correctamente"
+
+#: academic/static/js/complete_my_procedure.js:176
+msgid "Delete the observation"
+msgstr "Eliminar Observación"
+
+#: academic/static/js/complete_my_procedure.js:177
+msgid "Do you want to remove the observation?"
+msgstr "¿Deseas eliminar la observación?"
+
+#: academic/static/js/complete_my_procedure.js:195
+msgid "Successfully deleted"
+msgstr "Se elimino correctamente"
+
+#: academic/static/js/complete_my_procedure.js:227
+msgid "Comment"
+msgstr "Comentario"
