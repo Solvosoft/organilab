@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n laboratory static %}
+{% load static i18n %}
 {% load gtsettings %}
 {% load urlname_tags %}
 {% block pre_head %}
@@ -14,10 +14,10 @@
 <div class="row">
   <div class="offset-md-2 col-md-8">
     <div align="center">
-      <h3 class="heading-1" ><span> {% trans 'Templates of procedure' %}</span></h3>
+      <h3 class="heading-1" ><span> {% trans 'My procedures' %}</span></h3>
       <div class="card">
         <div class="card-header">
-          <h2 class="float-start">{% trans 'Templates of procedure' %}</h2>
+          <h2 class="float-start">{% trans 'My procedures' %}</h2>
            <a class="btn btn-success float-end create_btn"  data-bs-toggle="modal"
             data-bs-target="#add_my_procedures" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>  <ul class="nav navbar-right panel_toolbox"></ul>
           <div class="clearfix"></div>
@@ -56,7 +56,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" >{% trans 'Create Procedure' %}</h5>
+        <h5 class="modal-title" >{% trans 'Create procedure' %}</h5>
            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -74,9 +74,5 @@
 </div>
 {% endblock %}
 {% block js %}
-  <script>
-    $(document).ready(function() {
-      $('#my_procedures').DataTable();
-      });
-  </script>
+<script src="{% static 'js/procedure.js' %}"></script>
 {% endblock %}

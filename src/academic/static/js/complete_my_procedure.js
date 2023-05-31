@@ -82,42 +82,6 @@ function saveForm(state) {
         })
 }
 
-function Delete_Inform(id) {
-    Swal.fire({
-        title: message_title,
-        text: gettext("Discarding cannot be undone."),
-        icon: "warning",
-        confirmButtonText: gettext("Save"),
-        denyButtonText: gettext("Cancel"),
-        showDenyButton: true,
-        showCloseButton: true
-
-        }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: urls['edit'],
-                type: "POST",
-                dataType: "json",
-                data: {'id':id},
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-                    Swal.fire(
-                        '',
-                        gettext("Saved successfully"),
-                        'success'
-                        )
-                    location.href =urls['list'];
-                },
-            });
-
-        } else if (result.isDenied){
-        }
-        })
-}
-
 function edit_comment(pk){
     localStorage.setItem('comment', pk);
     let url = urls['get_comment']+pk;
@@ -202,19 +166,6 @@ function delete_comment(comment){
     });
 }
 
-$('#datatableelement tbody').on( 'click', 'i', function () {
-
-    var action = this.className;
-    var data = datatableelement.row( $(this).parents('tr') ).data();
-
-    if (action==="fa fa-edit beditbtn") {
-        edit_comment(data.id);
-    } else if (action=="fa fa-trash deletebtn") {
-        delete_comment(data.id);
-    }
-
-});
-
 document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
              "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
              "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
@@ -263,7 +214,20 @@ $(document).ready(function() {
     $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
     $('.dataTables_paginate').removeClass('paging_full_numbers');
     $('.dataTables_paginate').addClass('paging_simple_numbers');
-    $('#notificationdatatable').removeClass('dtr-inline');
+    $('#datatableelement').removeClass('dtr-inline');
+});
+
+$('#datatableelement tbody').on( 'click', 'i', function () {
+
+    var action = this.className;
+    var data = datatableelement.row( $(this).parents('tr') ).data();
+
+    if (action==="fa fa-edit beditbtn") {
+        edit_comment(data.id);
+    } else if (action=="fa fa-trash deletebtn") {
+        delete_comment(data.id);
+    }
+
 });
 
 

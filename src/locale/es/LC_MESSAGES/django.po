@@ -3943,3 +3943,9 @@ msgstr "Sin descripción"
 
 msgid "No registered comments"
 msgstr "No hay comentarios registrados"
+
+msgid "My procedures"
+msgstr "Mis procedimientos"
+
+msgid "Create procedure template"
+msgstr "Crear plantilla de procedimiento"
