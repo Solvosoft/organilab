@@ -4,10 +4,7 @@
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
-    {% define_urlname_action 'get_my_procedures' %}
-    {% define_urlname_action 'add_my_procedures' %}
-    {% define_urlname_action 'remove_my_procedure' %}
-    {% define_urlname_action 'complete_inform' %}
+    {% define_urlname_action 'my_procedure_list' %}
 {% endblock %}
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}

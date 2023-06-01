@@ -38,7 +38,7 @@ def add_steps_wrapper(request, *args, **kwargs):
     return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': kwargs['lab_pk'],'org_pk':kwargs['org_pk']}))
 
 
-@permission_required('academic.view_procedure')
+@permission_required('academic.view_myprocedure')
 def get_my_procedures(request, org_pk, lab_pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -56,7 +56,7 @@ def get_my_procedures(request, org_pk, lab_pk):
     return render(request, 'academic/procedure.html', context=context)
 
 
-@permission_required('academic.add_procedureobservations')
+@permission_required('academic.add_myprocedure')
 def create_my_procedures(request, org_pk, lab_pk, *args, **kwargs):
     form = MyProcedureForm(request.POST, org_pk=org_pk)
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
@@ -77,7 +77,7 @@ def create_my_procedures(request, org_pk, lab_pk, *args, **kwargs):
     return render(request, 'academic/procedure.html', context={'laboratory': lab_pk, 'org_pk': org_pk})
 
 
-@permission_required('academic.delete_procedureobservations')
+@permission_required('academic.delete_myprocedure')
 def remove_my_procedure(request, org_pk, lab_pk, pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -115,7 +115,7 @@ def update_my_procedure_data(item, data):
                 update_my_procedure_data(child,data)
 
 
-@permission_required('academic.change_procedurestep')
+@permission_required('academic.change_myprocedure')
 def complete_my_procedure(request, org_pk, lab_pk, pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)

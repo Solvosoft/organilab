@@ -141,7 +141,9 @@ class CompleteMyProcedureViewTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_no_query_if_not_logged_in(self):
-        response = self.api_client.get(reverse('laboratory:api-my-procedure-list') +
+        response = self.api_client.get(reverse('laboratory:api-my-procedure-list-comments',
+                                               kwargs={"lab_pk": self.lab.pk,
+                                                       "org_pk": self.organization.pk}) +
                                        "?format=datatables")
         result = response.json()
         expected = NotFound.default_detail
@@ -152,7 +154,9 @@ class CompleteMyProcedureViewTest(TestCase):
         self.client.force_login(self.first_user)
         search_script = '?offset=0&limit=10&draw=7&ordering=creator' \
                         '&my_procedure=1&_=1685373101914'
-        url = reverse('laboratory:api-procedure-comments-list') + search_script
+        url = reverse('laboratory:api-procedure-comments-list',
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         expected = 4
         result = response.json()
@@ -164,7 +168,9 @@ class CompleteMyProcedureViewTest(TestCase):
             "procedure_step": step.pk,
         }
         self.client.force_login(self.first_user)
-        url = reverse("laboratory:api-my-procedure-list")
+        url = reverse("laboratory:api-my-procedure-list-comments",
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk})
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("First test comment", json.loads(response.content)['data'])
@@ -178,7 +184,9 @@ class CompleteMyProcedureViewTest(TestCase):
             "comment": "This is a comment"
         }
         self.client.force_login(self.first_user)
-        url = reverse("laboratory:api-my-procedure-list")
+        url = reverse("laboratory:api-my-procedure-add-comment",
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk})
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn(data['comment'], json.loads(response.content)['data'])
@@ -187,7 +195,9 @@ class CompleteMyProcedureViewTest(TestCase):
         comment = CommentProcedureStep.objects.first()
         self.client.force_login(self.first_user)
         url = reverse("laboratory:api-my-procedure-detail",
-                      kwargs={"pk": comment.pk, })
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk,
+                              "pk": comment.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(comment.pk, json.loads(response.content)['id'])
@@ -200,8 +210,10 @@ class CompleteMyProcedureViewTest(TestCase):
             "comment": "Updating comment"
         }
         self.client.force_login(self.first_user)
-        url = reverse("laboratory:api-my-procedure-detail",
-                      kwargs={"pk": comment.pk, })
+        url = reverse("laboratory:api-my-procedure-update-comment",
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk,
+                              "pk": comment.pk})
         response = self.client.put(url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Refresh comment values
@@ -215,8 +227,10 @@ class CompleteMyProcedureViewTest(TestCase):
         total_comment = comments_list.count()
         comment = comments_list.last()
         self.client.force_login(self.first_user)
-        url = reverse("laboratory:api-my-procedure-detail",
-                      kwargs={"pk": comment.pk, })
+        url = reverse("laboratory:api-my-procedure-delete-comment",
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk,
+                              "pk": comment.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Refresh comments list
@@ -227,7 +241,9 @@ class CompleteMyProcedureViewTest(TestCase):
         self.client.force_login(self.first_user)
         search_script = '?offset=0&limit=10&draw=7&search=test&ordering=' \
                         'creator&procedure_step=24&my_procedure=1&_=1685373101914'
-        url = reverse('laboratory:api-procedure-comments-list') + search_script
+        url = reverse('laboratory:api-procedure-comments-list',
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         expected = 1
         result = response.json()
@@ -237,7 +253,9 @@ class CompleteMyProcedureViewTest(TestCase):
         self.client.force_login(self.first_user)
         search_script = '?offset=0&limit=10&draw=13&creator=seco&creator__' \
                         'icontains=seco&ordering=creator&procedure_step=24&my_procedure=1&_=1685373101920'
-        url = reverse('laboratory:api-procedure-comments-list') + search_script
+        url = reverse('laboratory:api-procedure-comments-list',
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         expected = 1
         result = response.json()
@@ -248,7 +266,9 @@ class CompleteMyProcedureViewTest(TestCase):
         search_script = '?offset=0&limit=10&draw=2&creator_at=05%2F14%2F2023%2000%3A00%20AM%20-' \
                         '%2005%2F16%2F2023%2023%3A59%20PM&ordering=creator&procedure_step=17&' \
                         'my_procedure=1&_=1685392101339'
-        url = reverse('laboratory:api-procedure-comments-list') + search_script
+        url = reverse('laboratory:api-procedure-comments-list',
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         expected = 1
         result = response.json()
@@ -258,7 +278,9 @@ class CompleteMyProcedureViewTest(TestCase):
         self.client.force_login(self.first_user)
         search_script = '?offset=0&limit=10&draw=28&comment=Standard%20comment&comment__icontains=Standard%20comment' \
                         '&ordering=creator&procedure_step=17&my_procedure=1&_=1685392745477'
-        url = reverse('laboratory:api-procedure-comments-list') + search_script
+        url = reverse('laboratory:api-procedure-comments-list',
+                      kwargs={"lab_pk": self.lab.pk,
+                              "org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         expected = 1
         result = response.json()
