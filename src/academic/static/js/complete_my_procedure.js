@@ -10,7 +10,7 @@ formmodal.addBtnForm = function(instance) {
         $.ajax({
             url: urls['add_comment'],
             type: "POST",
-            data: {'comment': dataAsJson.comment, 'procedure_step': step_pk = $('.stepradio:checked').val(), 'my_procedure': my_procedure['pk']},
+            data: {'comment': dataAsJson.comment, 'procedure_step': step_pk = $('.stepradio:checked').val(), 'my_procedure': procedure_info['pk']},
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": getCookie("csrftoken"),
@@ -84,7 +84,7 @@ function saveForm(state) {
 
 function edit_comment(pk){
     localStorage.setItem('comment', pk);
-    let url = urls['get_comment']+pk;
+    let url = urls['get_comment'].replace('0', pk);
     $.ajax({
     url: url,
         type: "GET",
@@ -104,15 +104,15 @@ function edit_comment(pk){
                 inputValue:success.comment
             }).then(function(result) {
                 if (result.isConfirmed) {
-                    update_comment(result.value)
+                    update_comment(result.value, pk)
                 }
             })
         }
     });
 }
 
-function update_comment(comment){
-     let url = urls['delete_update_comment'].replace('0',localStorage.getItem('comment'));
+function update_comment(comment, pk){
+     let url = urls['update_comment'].replace('0', pk);
      localStorage.removeItem('comment');
      $.ajax({
             url: url,
@@ -135,7 +135,7 @@ function update_comment(comment){
         });
 }
 function delete_comment(comment){
-    let url = urls['delete_update_comment'].replace('0',comment);
+    let url = urls['delete_comment'].replace('0',comment);
     Swal.fire({
     title: gettext("Delete the observation"),
     text: gettext("Do you want to remove the observation?"),

@@ -1,12 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from academic.api import serializers
 from academic.api.forms import ValidateReviewSubstanceForm, CommentProcedureStepForm
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import OrganizationStructure, Laboratory
+from organilab import settings
 from sga.models import ReviewSubstance
 from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure
 from .serializers import ProcedureStepCommentSerializer, ProcedureStepCommentDatatableSerializer, \
@@ -50,18 +56,30 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = CommentProcedureStep.objects.all()
     serializer_class = ProcedureStepCommentSerializer
+    permissions_by_endpoint = {
+        "add_comment": ["academic.view_procedure", "academic.view_procedurestep", "academic.add_commentprocedurestep"],
+        "list_comments": ["academic.view_procedure", "academic.view_procedurestep", "academic.view_commentprocedurestep"],
+        "update_comment": ["academic.view_procedure", "academic.view_procedurestep", "academic.change_commentprocedurestep"],
+        "delete_comment": ["academic.view_procedure", "academic.view_procedurestep", "academic.delete_commentprocedurestep"]
+    }
 
-    def get_comment(self, pk):
-        try:
-            return self.get_queryset().get(pk=pk)
-        except CommentProcedureStep.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+    def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
+        if request.user.has_perms(self.permissions_by_endpoint[method_name]):
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=org_pk)
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+            user_is_allowed_on_organization(request.user, self.organization)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
+        else:
+            raise PermissionDenied()
 
-    def create(self, request):
+    @action(detail=False, methods=['post'])
+    def add_comment(self, request, org_pk, lab_pk):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'add_comment')
         serializer = ProcedureStepCommentSerializer(data=request.data)
         if serializer.is_valid():
-            procedure_step = ProcedureStep.objects.filter(pk=request.data['procedure_step']).first()
-            my_procedure = MyProcedure.objects.filter(pk=request.data['my_procedure']).first()
+            procedure_step = get_object_or_404(ProcedureStep, pk=request.data['procedure_step'])
+            my_procedure = get_object_or_404(MyProcedure, pk=request.data['my_procedure'])
 
             CommentProcedureStep.objects.create(
                 creator=request.user,
@@ -76,7 +94,9 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request, *args, **kwargs):
+    @action(detail=False, methods=['get'])
+    def list_comments(self, request, org_pk, lab_pk):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'list_comments')
         queryset = self.get_queryset()
         comments = queryset.none()
 
@@ -89,13 +109,15 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
         template = render_to_string('academic/comment.html', {'comments': comments, 'user': request.user}, request)
         return Response({'data': template})
 
-    def update(self, request, pk=None):
+    @action(detail=True, methods=['put'])
+    def update_comment(self, request, org_pk, lab_pk, pk=None):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'update_comment')
         comment = None
 
         if pk:
             serializer = ProcedureStepCommentSerializer(data=request.data)
             if serializer.is_valid():
-                comment = CommentProcedureStep.objects.filter(pk=pk).first()
+                comment = get_object_or_404(CommentProcedureStep, pk=pk)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             if comment:
@@ -110,9 +132,11 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk=None):
+    @action(detail=True, methods=['delete'])
+    def delete_comment(self, request, org_pk, lab_pk, pk=None):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'delete_comment')
         if pk:
-            comment = self.get_comment(pk)
+            comment = get_object_or_404(CommentProcedureStep.objects.using(settings.READONLY_DATABASE), pk=pk)
             procedure_step = comment.procedure_step
             comment.delete()
             template = render_to_string('academic/comment.html', {'comments': self.get_queryset().filter(
