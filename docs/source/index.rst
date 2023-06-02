@@ -16,6 +16,7 @@ Contents:
    internationalization
    pdf_generation
    api_inform
+   my_procedure
 
 
 Indices and tables
