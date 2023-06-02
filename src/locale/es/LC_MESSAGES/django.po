@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 msgid "Approve"
 msgstr "Aprobar"
@@ -3934,6 +3934,12 @@ msgstr "Crear Compañía"
 
 msgid "Edit Company"
 msgstr "Editar Compañía"
+
+msgid "Created Object"
+msgstr "Objeto creado"
+
+msgid "Unlimited"
+msgstr "ilimitado"
 
 msgid "Unknown date and time"
 msgstr "Fecha y hora desconocida"
