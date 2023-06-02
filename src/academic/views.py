@@ -51,7 +51,7 @@ def get_my_procedures(request, org_pk, lab_pk):
         'form': MyProcedureForm(org_pk=org_pk),
         'laboratory': laboratory.pk,
         'org_pk': org_pk,
-
+        'reservation_form': ReservationForm
     }
     return render(request, 'academic/procedure.html', context=context)
 
