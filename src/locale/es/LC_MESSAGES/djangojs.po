@@ -123,7 +123,6 @@ msgstr "Confirmar"
 #: laboratory/static/laboratory/js/laboratory.js:103
 #: laboratory/static/laboratory/js/shelfobject_utils.js:6
 #: academic/static/js/complete_my_procedure.js:54
-#: academic/static/js/complete_my_procedure.js:91
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -258,14 +257,14 @@ msgid "Molecular Formula"
 msgstr "Formula Molecular"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:112
-#: academic/static/js/complete_my_procedure.js:136
-#: academic/static/js/complete_my_procedure.js:179
+#: academic/static/js/complete_my_procedure.js:100
+#: academic/static/js/complete_my_procedure.js:144
 msgid "Yes"
 msgstr "Sí"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:113
-#: academic/static/js/complete_my_procedure.js:137
-#: academic/static/js/complete_my_procedure.js:180
+#: academic/static/js/complete_my_procedure.js:101
+#: academic/static/js/complete_my_procedure.js:145
 msgid "No"
 msgstr "No"
 
@@ -342,12 +341,12 @@ msgid "Send"
 msgstr "Enviar"
 
 #: laboratory/static/laboratory/js/shelfobject_management.js:6
-#: academic/static/js/complete_my_procedure.js:226
+#: academic/static/js/complete_my_procedure.js:178
 msgid "Creation Date"
 msgstr "Fecha de creación"
 
 #: laboratory/static/laboratory/js/shelfobject_management.js:7
-#: academic/static/js/complete_my_procedure.js:225
+#: academic/static/js/complete_my_procedure.js:177
 msgid "Creator"
 msgstr "Creador"
 
@@ -380,7 +379,6 @@ msgstr "Agregado"
 
 #: academic/static/js/complete_my_procedure.js:23
 #: academic/static/js/complete_my_procedure.js:73
-#: academic/static/js/complete_my_procedure.js:109
 msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
@@ -393,36 +391,34 @@ msgid "You must select a step to add comments."
 msgstr "Debes seleccionar un paso para agregar comentarios"
 
 #: academic/static/js/complete_my_procedure.js:51
-#: academic/static/js/complete_my_procedure.js:88
 msgid "Discarding cannot be undone."
 msgstr "El descarte no se puede deshacer."
 
 #: academic/static/js/complete_my_procedure.js:53
-#: academic/static/js/complete_my_procedure.js:90
 msgid "Save"
 msgstr "Guardar"
 
-#: academic/static/js/complete_my_procedure.js:134
+#: academic/static/js/complete_my_procedure.js:98
 msgid "Update the observation"
 msgstr "Actualizar Observación"
 
-#: academic/static/js/complete_my_procedure.js:165
+#: academic/static/js/complete_my_procedure.js:129
 msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
 
-#: academic/static/js/complete_my_procedure.js:176
+#: academic/static/js/complete_my_procedure.js:141
 msgid "Delete the observation"
 msgstr "Eliminar Observación"
 
-#: academic/static/js/complete_my_procedure.js:177
+#: academic/static/js/complete_my_procedure.js:142
 msgid "Do you want to remove the observation?"
 msgstr "¿Deseas eliminar la observación?"
 
-#: academic/static/js/complete_my_procedure.js:195
+#: academic/static/js/complete_my_procedure.js:160
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
 
-#: academic/static/js/complete_my_procedure.js:227
+#: academic/static/js/complete_my_procedure.js:179
 msgid "Comment"
 msgstr "Comentario"
 

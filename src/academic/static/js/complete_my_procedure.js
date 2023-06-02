@@ -134,6 +134,7 @@ function update_comment(comment, pk){
             },
         });
 }
+
 function delete_comment(comment){
     let url = urls['delete_comment'].replace('0',comment);
     Swal.fire({
@@ -230,9 +231,7 @@ $('#datatableelement tbody').on( 'click', 'i', function () {
 
 });
 
-
 document.getElementById("form_name").textContent = procedure_info["name"];
-
 
 $('.stepradio').on('change', function(e) {
     datatableelement.ajax.reload();
