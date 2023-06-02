@@ -57,7 +57,7 @@ const urls ={
     edit: "{% url 'academic:complete_my_procedure' org_pk=org_pk lab_pk=laboratory pk=my_procedure.pk %}",
     list: "{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}",
     add_comment: "{% url 'laboratory:api-my-procedure-add-comment' org_pk=org_pk lab_pk=laboratory %}",
-    get_comment: "{% url 'laboratory:api-my-procedure-detail' org_pk=org_pk lab_pk=laboratory pk='0' %}",
+    get_comment: "{% url 'laboratory:api-my-procedure-detail' org_pk=org_pk lab_pk=laboratory pk=0 %}",
     update_comment: "{% url 'laboratory:api-my-procedure-update-comment' org_pk=org_pk lab_pk=laboratory pk=0 %}",
     delete_comment: "{% url 'laboratory:api-my-procedure-delete-comment' org_pk=org_pk lab_pk=laboratory pk=0 %}",
     get_datatable_info: "{% url 'laboratory:api-procedure-comments-list' org_pk=org_pk lab_pk=laboratory %}",
@@ -72,5 +72,4 @@ const procedure_info = {
 </script>
 <script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
 <script src="{% static 'js/complete_my_procedure.js' %}"></script>
-
 {% endblock %}
