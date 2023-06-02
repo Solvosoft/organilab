@@ -435,6 +435,7 @@ def step_three(request, org_pk, organilabcontext, template, substance):
         'complement': complement.pk,
         'sga_elements': complement,
         'step': 3,
+        'templateinstance': personaltemplateSGA.template,
         'template': personaltemplateSGA.pk,
         'label': personaltemplateSGA.label,
         'substance': personaltemplateSGA.label.substance.pk,
