@@ -36,7 +36,7 @@ from laboratory.shelfobject.serializers import ShelfSerializer, \
 from laboratory.shelfobject.serializers import TransferObjectDenySerializer, ShelfObjectContainerSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object, status_shelfobject
+from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import organilab_logentry
 
 
@@ -253,7 +253,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "list_comments": ["laboratory.view_shelfobjectobservation"],
         "create_status": ["laboratory.add_catalog"],
         "update_status": ["laboratory.change_shelfobject"],
-        "move_shelfobject_to_shelf": [],
+        "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
     }
     
@@ -270,7 +270,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     def _get_shelfobject_with_check(self, pk, laboratory):
         obj=get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
-        if obj.in_where_laboratory.pk != laboratory:
+        if obj.in_where_laboratory is None or obj.in_where_laboratory.pk != laboratory:
             raise Http404
         return obj
 
@@ -328,11 +328,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         serializer = self.serializer_class['serializer'](data=request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
         limit_serializer=ShelfObjectLimitsSerializer(data=request.data)
-
         errors={}
         if serializer.is_valid():
             if limit_serializer.is_valid(raise_exception=True):
-                self.serializer_class['method'](serializer, limit_serializer)
+                shelfobject=self.serializer_class['method'](serializer, limit_serializer)
+
+                comment=ShelfObjectObservation.objects.create(description=shelfobject.course_name, action_taken=_("Created Object"), shelf_object=shelfobject, creator=request.user)
+                utils.organilab_logentry(request.user, comment, ADDITION, 'shelfobjectobservation',
+                                         relobj=lab_pk)
                 return Response({"detail": _("The creation was performed successfully.")}, status=status.HTTP_201_CREATED)
             else:
                 errors.update(limit_serializer.errors)
@@ -359,36 +362,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_increase_shelfobject")
         self.serializer_class = IncreaseShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
         errors = {}
-        provider = None
 
         if serializer.is_valid():
-            shelfobject = serializer.validated_data['shelf_object']
-            shelf = shelfobject.shelf
-
-            if 'provider' in serializer.validated_data:
-                provider = serializer.validated_data['provider']
-
-            changed_data = list(serializer.validated_data.keys())
-            bill = serializer.validated_data.get('bill', '')
-            amount = serializer.validated_data['amount']
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-
-            if shelf.discard:
-                total = shelf.get_total_refuse()
-                new_total = total + amount
-                if shelf.quantity >= new_total or shelf.quantity == settings.DEFAULT_SHELF_ULIMIT:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
-                else:
-                    errors['amount'] = [_('The quantity is much larger than the shelf limit %(limit)s')%{'limit': shelf.quantity}]
-            else:
-                status_shelf_obj = status_shelfobject(shelfobject, shelf, amount)
-
-                if status_shelf_obj:
-                    save_shelf_object(shelfobject, request.user, shelfobject.pk, amount, provider, bill, changed_data, laboratory)
-                else:
-                    errors['amount'] = [_('The quantity is more than the shelf has')]
+            save_increase_decrease_shelf_object(request.user, serializer.validated_data, self.laboratory, is_increase_process=True)
         else:
             errors = serializer.errors
 
@@ -413,25 +391,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "fill_decrease_shelfobject")
         self.serializer_class = DecreaseShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
         errors = {}
 
         if serializer.is_valid():
-            shelfobject = serializer.validated_data['shelf_object']
-            old = shelfobject.quantity
-            discount = serializer.validated_data['discount']
-            description = serializer.validated_data.get('description', '')
-            changed_data = list(serializer.validated_data.keys())
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-
-            if old >= discount:
-                new = old - discount
-                shelfobject.quantity = new
-                shelfobject.save()
-                log_object_change(request.user, lab_pk, shelfobject, old, new, description, 2, "Substract", create=False)
-                organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=[laboratory, shelfobject])
-            else:
-                errors['discount'] = [_('The amount to be subtracted is more than the shelf has')]
+            save_increase_decrease_shelf_object(request.user, serializer.validated_data, self.laboratory)
         else:
             errors = serializer.errors
 
@@ -455,21 +419,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "reserve")
         self.serializer_class = ReserveShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
         errors = {}
         changed_data = ["laboratory", "organization", "user", "created_by"]
 
         if serializer.is_valid():
             changed_data = changed_data + list(serializer.validated_data.keys())
-            laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-            instance = serializer.save()
-            instance.laboratory = laboratory
-            instance.organization = organization
-            instance.user = request.user
-            instance.created_by = request.user
-            instance.save()
-            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[laboratory, instance])
+
+            instance = serializer.save(
+            laboratory=self.laboratory,
+            organization = self.organization,
+            user = request.user,
+            created_by = request.user
+            )
+
+            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[self.laboratory, instance])
         else:
             errors = serializer.errors
 
@@ -782,7 +746,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "shelf_availability_information")
         self.serializer_class = ValidateShelfSerializer
-        serializer = self.serializer_class(data=request.query_params, context={"source_laboratory_id": lab_pk})
+        serializer = self.serializer_class(data=request.query_params, context={"source_laboratory_id": self.laboratory.pk})
         errors, data = {}, {}
 
         if serializer.is_valid():

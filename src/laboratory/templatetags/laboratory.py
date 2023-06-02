@@ -4,6 +4,8 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django import template
+from django.conf import settings
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from academic.models import ProcedureStep, ProcedureRequiredObject
@@ -11,8 +13,8 @@ from laboratory.forms import ObjectSearchForm
 from django.shortcuts import get_object_or_404
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile, \
     get_user_laboratories
-from laboratory.models import Laboratory
-from presentation.utils import get_qr_by_instance
+from laboratory import models as laboratorymodels
+from presentation.utils import get_qr_by_instance, build_qr_instance
 
 register = template.Library()
 
@@ -42,7 +44,7 @@ def has_perms(context, codename, lab_pk=None):
             # Permit to redirect User to select form
             if not lab_pk:
                 return False
-            lab = get_object_or_404(Laboratory, pk=lab_pk)
+            lab = get_object_or_404(laboratorymodels.Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
             if check_lab_group_has_perm(
                     user, lab, codename,
                     filter_laboratorist_profile):
@@ -99,7 +101,7 @@ def get_user_labs(context):
 @register.simple_tag(takes_context=True)
 def show_laboratory_name(context):
     if 'laboratory' in context and context['laboratory']:
-        lab = Laboratory.objects.filter(pk=context['laboratory']).first()
+        lab = laboratorymodels.Laboratory.objects.filter(pk=context['laboratory']).first()
         if lab:
             return str(lab)
     return ''
@@ -130,11 +132,44 @@ def show_reserve_button(procedure):
 
 @register.simple_tag()
 def get_qr_svg_img(object, **kwargs):
-    qr = get_qr_by_instance(object, kwargs['organization'])
+    use_icon = kwargs.pop('icon', False)
+    url = kwargs.pop('url', None)
+    organization = kwargs['organization']
+    qr = get_qr_by_instance(object, organization)
+    if not qr and url:
+        qr = build_qr_instance(url, object, organization)
     if qr:
+        icon = '<i class="fa fa-qrcode" aria-hidden="true"></i>'
+        if not use_icon:
+            icon = """<img alt="" src="data:image/svg+xml;base64,%s" %s />"""%(
+                qr.b64_image, " ".join(['%s="%s"' % (key, value) for key, value in kwargs.items()])
+            )
+
         return mark_safe("""
-        <a class="imgqr" href="data:image/svg+xml;base64,%s" target="_blank" download="%s.svg">
-        <img alt="" src="data:image/svg+xml;base64,%s" %s /></a>
-        """%(qr.b64_image, str(object), qr.b64_image, " ".join([ '%s="%s"'%(key, value) for key, value in kwargs.items()])))
+        <a class="imgqr" href="data:image/svg+xml;base64,%s" target="_blank" download="%s.svg">%s</a>
+        """%(qr.b64_image, str(object), icon))
 
     return ""
+
+@register.simple_tag(takes_context=True)
+def get_laboratory_view_url(context, *objs_list, **kwargs):
+    laboratory=context['laboratory']
+    org_pk=context['org_pk']
+    request=context['request']
+    schema = request.scheme + "://"
+    domain = schema + request.get_host()
+    baseurl = domain + reverse('laboratory:rooms_list', kwargs={'lab_pk': laboratory, 'org_pk': org_pk})
+    url = '?'
+    url_parts=[]
+    for obj in objs_list:
+        if isinstance(obj, laboratorymodels.LaboratoryRoom):
+            url_parts.append('labroom=%d'%obj.pk)
+        elif isinstance(obj, laboratorymodels.Furniture):
+            url_parts.append('furniture=%d'%obj.pk)
+        elif isinstance(obj, laboratorymodels.Shelf):
+            url_parts.append('shelf=%d' % obj.pk)
+        elif isinstance(obj, laboratorymodels.ShelfObject):
+            url_parts.append('shelfobject=%d' % obj.pk)
+
+    url += "&".join(url_parts)
+    return baseurl + url
