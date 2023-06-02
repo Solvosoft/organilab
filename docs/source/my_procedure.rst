@@ -3,10 +3,9 @@ API
 ====
 
 There are 2 ModelViewSets implemented for the data management of Procedure Step Comments:
+
  - ProcedureStepCommentTableView: filters the information shown in the complete_my_procedure view's datatable.
- - ProcedureStepCommentAPI: works as a CRUD for the comments through ``action`` decorators. Every method has
-a permissions checker for ``user.has_perms`` (depending on the requested action), ``user_is_allowed_on_organization`` and ``organization_can_change_laboratory``
-through the ``_check_permission_on_laboratory`` method.
+ - ProcedureStepCommentAPI: works as a CRUD for the comments through ``action`` decorators. Every method has a permissions checker for ``user.has_perms`` (depending on the requested action), ``user_is_allowed_on_organization`` and ``organization_can_change_laboratory`` through the ``_check_permission_on_laboratory`` method.
 
 ============================================
 ProcedureStepCommentTableView functionality
@@ -23,7 +22,7 @@ associated to the ``ProcedureStepCommentAPI`` methods. For edition or deletion i
 MODELS
 =======
 
- - MyProcedure: entity that takes a ``Procedure`` object as its template and groups the users comments for each
-template's ``Procedure Step``.
- - CommentProcedureStep: has the information of its creator, the creation date, the referenced procedure step,
-the grouping ``My procedure`` and the comment.
+There are 2 models related to this funcionality:
+
+ - MyProcedure: entity that takes a ``Procedure`` object as its template and groups the users comments for each template's ``Procedure Step``.
+ - CommentProcedureStep: has the information of its creator, the creation date, the referenced procedure step, the grouping ``My procedure`` and the comment.
