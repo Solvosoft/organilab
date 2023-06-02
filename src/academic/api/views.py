@@ -43,9 +43,10 @@ class ProcedureStepCommentTableView(viewsets.ModelViewSet):
         return queryset
 
     def list(self, request, *args, **kwargs):
+        recordsTotal = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': queryset.count(),
+        response = {'data': data, 'recordsTotal': recordsTotal,
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
