@@ -425,3 +425,7 @@ msgstr "Se elimino correctamente"
 #: academic/static/js/complete_my_procedure.js:227
 msgid "Comment"
 msgstr "Comentario"
+
+#: laboratory/static/js/procedures.js:190
+msgid "Reserved"
+msgstr "Reservar"
