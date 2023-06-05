@@ -114,12 +114,6 @@
                 </li>
               {% endif %}
 
-              {% if perms.laboratory.view_tranferobject %}
-             <li class="list-group-item">
-                  <a href="{% url 'laboratory:transfer_objects' lab_pk=laboratory org_pk=org_pk %}?lab={{laboratory}}"><strong>{% trans 'Transfers' %}</strong></a>
-                </li>
-              {% endif %}
-
             {% if perms.laboratory.add_provider %}
             <li class="list-group-item">
                   <a href="{% url 'laboratory:list_provider' org_pk laboratory %}"><strong>{% trans 'Providers' %}</strong></a>

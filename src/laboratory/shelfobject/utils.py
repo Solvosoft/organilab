@@ -1,46 +1,38 @@
 from django.contrib.admin.models import CHANGE
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-
-from laboratory.logsustances import log_object_add_change
-from laboratory.models import ShelfObject, Provider
+from laboratory.logsustances import log_object_add_change, log_object_change
+from laboratory.models import ShelfObjectObservation
 from laboratory.utils import organilab_logentry
+from django.utils.translation import gettext_lazy as _
 
 
-def save_shelf_object(shelfobject, user, shelf_object, amount, provider, bill, changed_data):
+def save_increase_decrease_shelf_object(user, validated_data, laboratory, is_increase_process=False):
+    provider = None
+    if 'provider' in validated_data:
+        provider = validated_data['provider']
+
+    bill = validated_data.get('bill', '')
+    description = validated_data.get('description', '')
+    shelfobject = validated_data['shelf_object']
+    amount = validated_data['amount']
+
     old = shelfobject.quantity
-    new = old + amount
+    new = old - amount
+    action_taken = _("Object was decreased")
+
+    if is_increase_process:
+        new = old + amount
+        action_taken = _("Object was increased")
+        log_object_add_change(user, laboratory.pk, shelfobject, old, new, "Add", provider, bill, create=False)
+
+    else:
+        log_object_change(user, laboratory.pk, shelfobject, old, new, description, 2, "Substract", create=False)
+
     shelfobject.quantity = new
     shelfobject.save()
-    log_object_add_change(user, shelf_object, shelfobject, old, new, "Add", provider, bill, create=False)
-    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data)
-    return status.HTTP_201_CREATED
 
-def get_clean_shelfobject_data(serializer, changed_data, lab_pk):
-    provider = None
-    bill = serializer.data.get('bill', '')
-    amount = serializer.data['amount']
-    shelfobject = get_object_or_404(ShelfObject, pk=serializer.data['shelf_object'])
+    changed_data = list(validated_data.keys())
+    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data,relobj=[laboratory, shelfobject])
 
-    if bill:
-        changed_data.append("bill")
-
-    provider_obj = Provider.objects.filter(laboratory=lab_pk, pk=serializer.data['provider'])
-    if provider_obj.exists():
-        provider = provider_obj.first()
-        changed_data.append("provider")
-
-    return bill, amount, shelfobject, provider
-
-
-def status_shelfobject(shelfobject, shelf, amount):
-    status_shelf_obj = False
-    if shelf.measurement_unit == None:
-        status_shelf_obj = True
-    if shelf.measurement_unit == shelfobject.measurement_unit:
-        quantity = (amount + shelf.get_total_refuse()) <= shelf.quantity
-        if quantity:
-            status_shelf_obj = True
-    if shelf.measurement_unit == shelfobject.measurement_unit and shelf.quantity == 0:
-        status_shelf_obj = True
-    return status_shelf_obj
+    if not description:
+        description = _("Current available objects: %(amount)d") % {'amount': new}
+    ShelfObjectObservation.objects.create(action_taken=action_taken, description=description, shelf_object=shelfobject, creator=user)

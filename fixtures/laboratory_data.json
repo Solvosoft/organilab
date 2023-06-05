@@ -436,6 +436,24 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "testuserwithoutperms",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "tuwp",
+      "first_name": "Test",
+      "last_name": "User",
+      "email": "testuserwithoutperms@protonmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -443,7 +461,8 @@
       "name": "Investigadores SA",
       "position": 1,
       "level": 1,
-      "rol": []
+      "rol": [],
+      "users": [1]
     }
   },
   {
@@ -454,7 +473,8 @@
       "name": "Organization Testing",
       "position": 3,
       "level": 3,
-      "rol": []
+      "rol": [],
+      "users": [2]
     }
   },
   {
@@ -465,7 +485,8 @@
       "name": "Org MK",
       "position": 3,
       "level": 3,
-      "rol": []
+      "rol": [],
+      "users": [1]
     }
   },
   {
@@ -476,7 +497,8 @@
       "name": "Chec Org",
       "position": 4,
       "level": 4,
-      "rol": []
+      "rol": [],
+      "users": [1,2]
     }
   },
   {
@@ -554,6 +576,54 @@
       "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
+    {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+     "fields": {
+        "organization": 1,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 2,
+     "fields": {
+        "organization": 2,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
+{
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 3,
+     "fields": {
+        "organization": 3,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
+{
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 4,
+     "fields": {
+        "organization": 4,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
   {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
@@ -607,6 +677,17 @@
     }
   },
   {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "9999-9999",
+      "id_card": "1-1111-1111",
+      "job_position": "No perms",
+      "laboratories": [1, 2]
+    }
+  },
+  {
     "model": "laboratory.provider",
     "pk": 1,
     "fields": {
@@ -614,7 +695,10 @@
       "phone_number": "(506)2209-8765",
       "email": "karineproductos@cr.com",
       "legal_identity": "3-8764-8354",
-      "laboratory": 1
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -625,7 +709,10 @@
       "phone_number": "(506)2209-8765",
       "email": "lpcompany@cr.com",
       "legal_identity": "3-463-3423432",
-      "laboratory": 1
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -636,7 +723,10 @@
       "phone_number": "(506)2209-8765",
       "email": "alcomasa@cr.com",
       "legal_identity": "3-435-24432214",
-      "laboratory": 2
+      "laboratory": 2,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -647,7 +737,10 @@
       "phone_number": "(605)2222-2222",
       "email": "benka@gmail.com",
       "legal_identity": "3-34534-453532",
-      "laboratory": 1
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -658,7 +751,10 @@
       "phone_number": "(609)4534-3432",
       "email": "jakocm@hotmail.com",
       "legal_identity": "5-843849-4395348",
-      "laboratory": 2
+      "laboratory": 2,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -1174,6 +1270,7 @@
       "object": 1,
       "quantity": 23.0,
       "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
       "measurement_unit": 63,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
@@ -1189,6 +1286,7 @@
       "quantity": 23.0,
       "limit_quantity": 7.0,
       "measurement_unit": 63,
+      "in_where_laboratory": 1,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"
@@ -1201,11 +1299,25 @@
       "shelf": 1,
       "object": 2,
       "quantity": 2.0,
+      "in_where_laboratory": 1,
       "limit_quantity": 7.0,
       "measurement_unit": 63,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "creation_date": "2023-05-10T22:48:14.125Z",
+      "last_update": "2023-05-12T22:48:14.166Z"
     }
   },
   {
@@ -1299,7 +1411,10 @@
       "update_time": "2023-02-09T22:58:28.862Z",
       "state": true,
       "status": 0,
-      "mark_as_discard": false
+      "mark_as_discard": false,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -1313,7 +1428,10 @@
       "update_time": "2023-02-09T22:58:28.862Z",
       "state": true,
       "status": 0,
-      "mark_as_discard": false
+      "mark_as_discard": false,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
   {
@@ -1467,6 +1585,32 @@
     }
   },
   {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "iarc": null,
+      "imdg": null,
+      "bioaccumulable": false,
+      "molecular_formula": "CHO",
+      "cas_id_number": "7681-52-9",
+      "security_sheet": "security_sheets/test_characteristics.pdf",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "img_representation": "",
+      "white_organ": [],
+      "h_code": [
+        "H314",
+        "H400"
+      ],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
     "model": "sga.reviewsubstance",
     "pk": 1,
     "fields": {
@@ -1538,5 +1682,40 @@
             1
         ]
     }
-}
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 1,
+    "fields": {
+      "shelf_object": 1,
+      "action_taken": "Object Change",
+      "description": "Test observation 1",
+      "creator": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 2,
+    "fields": {
+      "shelf_object": 1,
+      "action_taken": "Object Change",
+      "description": "Test observation 2",
+      "creator": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 3,
+    "fields": {
+      "shelf_object": 2,
+      "action_taken": "Object Change",
+      "description": "Test observation 3",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  }
 ]

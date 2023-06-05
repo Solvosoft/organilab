@@ -11,7 +11,7 @@ from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api import shelfobject as ShelfObjectApi
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, ShelfObjectObservationView
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -80,9 +80,9 @@ shelf_object_urls = [
     path('detail/<int:pk>/', shelfobject.ShelfObjectDetail.as_view(), name="shelfobject_detail"),
     path('edit/<int:pk>/', shelfobject.ShelfObjectEdit.as_view(), name="shelfobject_edit"),
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
-    path('transfer_objects/', shelfobject.ListTransferObjects.as_view(), name="transfer_objects"),
     path('get_shelfobject_limit/<int:pk>/', shelfobject.edit_limit_object, name="get_shelfobject_limit"),
     path('download_shelfobject_qr/<int:pk>/', shelfobject.download_shelfobject_qr, name="download_shelfobject_qr"),
+    path('<int:pk>/log', ShelfObjectObservationView, name='get_shelfobject_log')
 ]
 
 lab_reports_urls = [
@@ -115,11 +115,7 @@ lab_features_urls = [
 
 edit_objects = [
     path('edit_object/<int:pk>/', shelfobject.add_object,  name="edit_object"),
-    path('get_object_detail', shelfobject.send_detail, name="get_object_detail"),
-    path('update_transfer/<int:transfer_pk>/<int:shelf_pk>', shelfobject.objects_transfer, name="update_transfer"),
-    path('shelfs_list/', shelfobject.get_shelf_list, name="get_shelfs"),
-    path('delete_transfer/<int:pk>/', shelfobject.delete_transfer, name="delete_transfer"),
-
+    path('get_object_detail', shelfobject.send_detail, name="get_object_detail")
 ]
 
 reports_all_lab = [
@@ -174,6 +170,7 @@ lab_protocols_urls = [
 catalogs_urls = [
     path('furniture/furniture_type', furniture.add_catalog,kwargs={'key': "furniture_type"}, name='add_furniture_type_catalog'),
     path('shelf/container_type', furniture.add_catalog, kwargs={'key': 'container_type'}, name='add_shelf_type_catalog'),
+    path('shelf/shelfobject_status', furniture.add_catalog, kwargs={'key': 'shelfobject_status'}, name='add_shelfobject_status')
 ]
 
 informs_period_urls=[

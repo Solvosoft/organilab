@@ -436,9 +436,22 @@
       "name": "Estudiantes Obsevadores",
       "position": 1,
       "level": 1,
-      "rol": []
+      "rol": [],
+      "users": [1]
     }
   },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+     "fields": {
+        "organization": 1,
+        "content_type": [
+          "laboratory",
+          "laboratory"
+        ],
+       "object_id": 1
+     }
+},
   {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
