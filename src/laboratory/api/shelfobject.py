@@ -36,7 +36,7 @@ from laboratory.shelfobject.serializers import ShelfSerializer, \
 from laboratory.shelfobject.serializers import TransferObjectDenySerializer, ShelfObjectContainerSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
-from laboratory.shelfobject.utils import save_shelf_object
+from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import organilab_logentry
 
 
@@ -270,7 +270,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     def _get_shelfobject_with_check(self, pk, laboratory):
         obj=get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
-        if obj.in_where_laboratory.pk != laboratory:
+        if obj.in_where_laboratory is None or obj.in_where_laboratory.pk != laboratory:
             raise Http404
         return obj
 
@@ -328,11 +328,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         serializer = self.serializer_class['serializer'](data=request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
         limit_serializer=ShelfObjectLimitsSerializer(data=request.data)
-
         errors={}
         if serializer.is_valid():
             if limit_serializer.is_valid(raise_exception=True):
-                self.serializer_class['method'](serializer, limit_serializer)
+                shelfobject=self.serializer_class['method'](serializer, limit_serializer)
+
+                comment=ShelfObjectObservation.objects.create(description=shelfobject.course_name, action_taken=_("Created Object"), shelf_object=shelfobject, creator=request.user)
+                utils.organilab_logentry(request.user, comment, ADDITION, 'shelfobjectobservation',
+                                         relobj=lab_pk)
                 return Response({"detail": _("The creation was performed successfully.")}, status=status.HTTP_201_CREATED)
             else:
                 errors.update(limit_serializer.errors)
@@ -361,16 +364,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class = IncreaseShelfObjectSerializer
         serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": self.laboratory.pk})
         errors = {}
-        provider = None
 
         if serializer.is_valid():
-            changed_data = list(serializer.validated_data.keys())
-            if 'provider' in serializer.validated_data:
-                provider = serializer.validated_data['provider']
-            bill = serializer.validated_data.get('bill', '')
-            amount = serializer.validated_data['amount']
-            shelfobject = serializer.validated_data['shelf_object']
-            save_shelf_object(shelfobject, request.user, amount, provider, bill, changed_data, self.laboratory)
+            save_increase_decrease_shelf_object(request.user, serializer.validated_data, self.laboratory, is_increase_process=True)
         else:
             errors = serializer.errors
 
@@ -399,16 +395,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
 
         if serializer.is_valid():
-            changed_data = list(serializer.validated_data.keys())
-            amount = serializer.validated_data['amount']
-            description = serializer.validated_data.get('description', '')
-            shelfobject = serializer.validated_data['shelf_object']
-            old = shelfobject.quantity
-            new = old - amount
-            shelfobject.quantity = new
-            shelfobject.save()
-            log_object_change(request.user, lab_pk, shelfobject, old, new, description, 2, "Substract", create=False)
-            organilab_logentry(request.user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data, relobj=[self.laboratory, shelfobject])
+            save_increase_decrease_shelf_object(request.user, serializer.validated_data, self.laboratory)
         else:
             errors = serializer.errors
 

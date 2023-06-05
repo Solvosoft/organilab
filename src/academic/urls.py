@@ -66,5 +66,5 @@ urlpatterns = [
     path('substance/update_prudence_advice/<int:pk>/', change_prudence_advice, name='update_prudence_advice'),
     path('substance/provider/', add_sga_provider, name='add_sga_provider'),
     path('substance/get_security_leaf/<int:substance>/', security_leaf_pdf, name='security_leaf_pdf'),
-    re_path(r'^(?P<lab_pk>\d+)/procedure/', include(procedure_url)),
+    path('<int:lab_pk>/procedure/', include(procedure_url)),
 ]

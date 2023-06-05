@@ -1,3 +1,4 @@
+let message_title = procedure_info['status'] == 'Eraser'? gettext("Do you want to send the report for review?") : gettext("Do you want to finish the report?");
 var formmodal = BaseFormModal('#commentmodal', {});
 
 formmodal.addBtnForm = function(instance) {
@@ -9,7 +10,7 @@ formmodal.addBtnForm = function(instance) {
         $.ajax({
             url: urls['add_comment'],
             type: "POST",
-            data: {'comment': dataAsJson.comment, 'procedure_step': step_pk = $('.stepradio:checked').val(), 'my_procedure': my_procedure['pk']},
+            data: {'comment': dataAsJson.comment, 'procedure_step': step_pk = $('.stepradio:checked').val(), 'my_procedure': procedure_info['pk']},
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": getCookie("csrftoken"),
@@ -18,8 +19,8 @@ formmodal.addBtnForm = function(instance) {
                 instance.hidemodal();
                 Swal.fire({
                     icon: 'success',
-                    title: gettext('Success'),
-                    text: add_translation['successfull'],
+                    title: gettext("Added"),
+                    text: gettext("Saved successfully"),
                 }).then(function() {
                     datatableelement.ajax.reload();
                 });
@@ -36,8 +37,8 @@ function add_comment() {
     step_pk = $('.stepradio:checked').val();
     if (step_pk === undefined) {
         Swal.fire({
-            title: no_step_selected['title'],
-            text: no_step_selected['text'],
+            title: gettext("No step selected"),
+            text: gettext("You must select a step to add comments."),
         });
     } else {
         formmodal.showmodal();
@@ -46,11 +47,11 @@ function add_comment() {
 
 function saveForm(state) {
    Swal.fire({
-        title: message['title'],
-        text: message['text'],
-        icon: message['icon'],
-        confirmButtonText: message['confirm'],
-        denyButtonText: message['deny'],
+        title: message_title,
+        text: gettext("Discarding cannot be undone."),
+        icon: "warning",
+        confirmButtonText: gettext("Save"),
+        denyButtonText: gettext("Cancel"),
         showDenyButton: true,
         showCloseButton: true
 
@@ -69,44 +70,8 @@ function saveForm(state) {
                 success: (success) => {
                     Swal.fire(
                         "",
-                        saved,
+                        gettext("Saved successfully"),
                         "success"
-                        )
-                    location.href =urls['list'];
-                },
-            });
-
-        } else if (result.isDenied){
-        }
-        })
-}
-
-function Delete_Inform(id) {
-    Swal.fire({
-        title: message['title'],
-        text: message['text'],
-        icon: message['icon'],
-        confirmButtonText: message['confirm'],
-        denyButtonText: message['deny'],
-        showDenyButton: true,
-        showCloseButton: true
-
-        }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: urls['edit'],
-                type: "POST",
-                dataType: "json",
-                data: {'id':id},
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                },
-                success: (success) => {
-                    Swal.fire(
-                        '',
-                        saved,
-                        'success'
                         )
                     location.href =urls['list'];
                 },
@@ -119,7 +84,7 @@ function Delete_Inform(id) {
 
 function edit_comment(pk){
     localStorage.setItem('comment', pk);
-    let url = urls['get_comment']+pk;
+    let url = urls['get_comment'].replace('0', pk);
     $.ajax({
     url: url,
         type: "GET",
@@ -130,24 +95,24 @@ function edit_comment(pk){
         },
         success: (success) => {
             Swal.fire({
-                title: update_translation['title'],
+                title: gettext("Update the observation"),
                 input: 'textarea',
-                confirmButtonText: update_translation['accept'],
-                denyButtonText: update_translation['deny'],
+                confirmButtonText: gettext("Yes"),
+                denyButtonText: gettext("No"),
                 showDenyButton: true,
                 showCloseButton: true,
                 inputValue:success.comment
             }).then(function(result) {
                 if (result.isConfirmed) {
-                    update_comment(result.value)
+                    update_comment(result.value, pk)
                 }
             })
         }
     });
 }
 
-function update_comment(comment){
-     let url = urls['delete_update_comment'].replace('0',localStorage.getItem('comment'));
+function update_comment(comment, pk){
+     let url = urls['update_comment'].replace('0', pk);
      localStorage.removeItem('comment');
      $.ajax({
             url: url,
@@ -161,7 +126,7 @@ function update_comment(comment){
             success: (success) => {
                 Swal.fire(
                     '',
-                    update_translation['successfull'],
+                    gettext("Successfully updated"),
                     'success'
                 ).then(function(result) {
                     datatableelement.ajax.reload();
@@ -169,14 +134,15 @@ function update_comment(comment){
             },
         });
 }
+
 function delete_comment(comment){
-    let url = urls['delete_update_comment'].replace('0',comment);
+    let url = urls['delete_comment'].replace('0',comment);
     Swal.fire({
-    title: remove_translation["title"],
-    text: remove_translation['text'],
+    title: gettext("Delete the observation"),
+    text: gettext("Do you want to remove the observation?"),
     icon: "error",
-    confirmButtonText: remove_translation['accept'],
-    denyButtonText: remove_translation['deny'],
+    confirmButtonText: gettext("Yes"),
+    denyButtonText: gettext("No"),
     showDenyButton: true,
     showCloseButton: true
     }).then((result) => {
@@ -191,7 +157,7 @@ function delete_comment(comment){
             },
             success: (success) => {
                 Swal.fire(
-                   remove_translation['successfull'],
+                   gettext("Successfully deleted"),
                     ).then(function(result) {
                     datatableelement.ajax.reload();
                 })
@@ -200,6 +166,57 @@ function delete_comment(comment){
     }
     });
 }
+
+document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
+             "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
+             "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
+             "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+
+datatableelement=createDataTable('#datatableelement', urls['get_datatable_info'], {
+ columns: [
+        {data: "creator", name: "creator", title: gettext("Creator"), type: "string", visible: true},
+        {data: "creator_at", name: "creator_at", title: gettext("Creation Date"), type: "date", visible: true, "dateformat":  urls['datetime_format']},
+        {data: "comment", name: "comment", title: gettext("Comment"), type: "string", visible: true}
+    ],
+    ajax: {
+        url: urls['get_datatable_info'],
+        type: 'GET',
+        data: function(dataTableParams, settings) {
+            var data = formatDataTableParams(dataTableParams, settings);
+            data['procedure_step'] = $('.stepradio:checked').val();
+            data['my_procedure'] = procedure_info["pk"];
+            return data;
+        }
+    },
+    columnDefs: [
+        {
+            targets: 3,
+            data: null,
+            defaultContent: `<div class="text-end" style="top:0;">
+                <i  class="fa fa-edit beditbtn"></i>
+                <i  class="fa fa-trash deletebtn"></i></div>
+            <div>`,
+        }
+    ],
+    buttons: [
+        {
+            text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+            action: function() {
+                add_comment();
+            }
+        }
+    ]
+}, addfilter=true);
+
+
+$(document).ready(function() {
+    $('.dataTables_filter').addClass('w-100');
+    $('.dataTables_filter input').addClass('filter-input').css('width', '96%');
+    $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
+    $('.dataTables_paginate').removeClass('paging_full_numbers');
+    $('.dataTables_paginate').addClass('paging_simple_numbers');
+    $('#datatableelement').removeClass('dtr-inline');
+});
 
 $('#datatableelement tbody').on( 'click', 'i', function () {
 
@@ -214,15 +231,7 @@ $('#datatableelement tbody').on( 'click', 'i', function () {
 
 });
 
-$(document).ready(function() {
-    $('.dataTables_filter').addClass('w-100');
-    $('.dataTables_filter input').addClass('filter-input').css('width', '96%');
-    $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
-    $('.dataTables_paginate').removeClass('paging_full_numbers');
-    $('.dataTables_paginate').addClass('paging_simple_numbers');
-    $('#notificationdatatable').removeClass('dtr-inline');
-});
-
+document.getElementById("form_name").textContent = procedure_info["name"];
 
 $('.stepradio').on('change', function(e) {
     datatableelement.ajax.reload();

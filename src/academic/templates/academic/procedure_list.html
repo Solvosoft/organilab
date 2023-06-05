@@ -40,11 +40,6 @@
                             <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
                         <a class="btn btn-success btn-block" href="{% url 'academic:add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
                             <i class="fa fa-plus"></i> {% trans 'New Step' %}</a>
-                            {% show_reserve_button procedure as show_reserve_btn  %}
-                            {% if show_reserve_btn  %}
-                                <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.pk}})">
-                                    <i class="fa fa-book"></i> {% trans 'Reserve' %}</a>
-                            {% endif %}
                         <a href="{% url 'academic:procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary btn-block">
                            <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
                         <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">
@@ -55,64 +50,11 @@
             {% endfor %}
         </tbody>
     </table>
-
-<div aria-hidden="true"  class="modal fade" id="reservation_modal" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title " id="model_reservation_form_title">{% trans 'Reservation' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button">
-
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center">
-                <label class="mb-2 " style="font-size: 20px; font-weight: bold;" id="procedure_title"></label>
-                 </div>
-                <form id="reservation_form">
-                    {% csrf_token %}
-                    {{ reservation_form.as_inline }}
-
-                    <input type="hidden" id="procedure" name="procedure" value="">
-                    <input type="hidden" id="lab" name="lab_pk" value="{{lab}}">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" data-bs-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div aria-hidden="true"  class="modal fade" id="error_reserved" role="dialog"
-     tabindex="-1">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title ">{% trans 'Error' %}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button"></button>
-            </div>
-            <div class="modal-body">
-                <label>{% trans 'The requested quantity of the material is not found in the inventory of the following materials:' %}</label>
-                <ul id="list_errors" class="list-group">
-                        <li class="list-group-item" title="{{feature.description}}">{{feature.name}}</li>
-                </ul>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-danger" data-bs-dismiss="modal" type="button"><i class="fa fa-times-circle-o" aria-hidden="true"></i> {% trans 'Close' %}</button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block js %}
 	{{block.super}}
 	<script>
-	    document.getProcedure="{% url 'academic:get_procedure' lab_pk=laboratory org_pk=org_pk %}"
-	    document.reservation="{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}"
 	    document.remove_procedure="{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
 		var table=$("#datatable").DataTable();
 		table.order( [ 0, 'desc' ] ).draw();
