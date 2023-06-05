@@ -62,17 +62,24 @@
 											{% endfor %}
 										</ul>
 									</div>
+
+									{% if perms.laboratory.view_furniture %}
 									<button type="button" class="btn btn-sm btn-outline-success"
 											data-bs-container="body" data-bs-toggle="popover"
 											data-content="f{{object.pk}}"
 											data-bs-html=true>
 										{{ object.furniture_set.count }}
 									</button>
+									{% endif %}
+
+									{% if perms.laboratory.add_furniture and perms.laboratory.change_furniture %}
 									<button type="button" class="btn btn-sm btn-outline-dark" title="{% trans 'Create Furniture' %}"
 											data-bs-toggle="modal" data-bs-target="#furnitureModal"
 											data-href="{% url 'laboratory:furniture_create' lab_pk=laboratory labroom=object.pk org_pk=org_pk %}">
 										+ <span  class="fa fa-bed" aria-hidden="true"></span>
 									</button>
+									{% endif %}
+
 								</div>
 							</div>
 						</div>
@@ -105,7 +112,8 @@
 	{% if perms.laboratory.change_laboratoryroom %}
 	<a class="btn btn-success mt-4" href="{% url 'laboratory:rebuild_laboratory_qr' lab_pk=laboratory org_pk=org_pk %}">{% trans 'Rebuild QR' %}</a>
 	{% endif %}
-	{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
+
+	{% if perms.laboratory.add_furniture and perms.laboratory.change_furniture %}
 		<div class="modal " id="furnitureModal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -142,7 +150,7 @@
 
 			$('[data-bs-toggle="popover"]').popover();
 
-			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratoryroom %}
+			{% if perms.laboratory.add_furniture and perms.laboratory.change_furniture %}
 
 				$('#furnitureModal').on('show.bs.modal', function (event) {
 					var button = $(event.relatedTarget) // Button that triggered the modal

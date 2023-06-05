@@ -57,7 +57,6 @@ class BaseLaboratoryTasksSetUpTest(BaseSetUpTest):
 
 
 class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
-    fixtures = ["organization_manage_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -92,13 +91,16 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
         self.lab4_org2 = Laboratory.objects.get(name="Lab 4")
 
         #INITIAL DATA
-        self.role_manage_lab = Rol.objects.get(name="Gestión Laboratorio")
+
         self.lab_contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
         self.org_contenttype = ContentType.objects.filter(app_label='laboratory', model='organizationstructure').first()
 
 class BaseSetUpAjaxRequest(BaseOrganizatonManageSetUpTest):
+    fixtures = ["organization_manage_data.json"]
     def setUp(self):
         super().setUp()
+
+        self.role_manage_lab = Rol.objects.get(name="Gestión Laboratorio")
 
         #CLIENT - LOGIN
         self.client1_org1 = Client()
@@ -113,4 +115,21 @@ class BaseSetUpDjangoRequest(BaseOrganizatonManageSetUpTest):
     def setUp(self):
         super().setUp()
 
+        self.role_manage_lab = Rol.objects.get(name="Gestión Laboratorio")
         self.org = self.org3
+
+
+class ShelfObjectSetUp(BaseOrganizatonManageSetUpTest):
+    fixtures = ["shelf_object_data.json"]
+
+    def setUp(self):
+        super().setUp()
+
+        self.client1_org1 = Client()
+        self.client2_org2 = Client()
+        self.client3_org1 = Client()
+        self.client4_org2 = Client()
+        self.client1_org1.force_login(self.user1_org1)
+        self.client2_org2.force_login(self.user2_org2)
+        self.client3_org1.force_login(self.user3_org1)
+        self.client4_org2.force_login(self.user4_org2)
