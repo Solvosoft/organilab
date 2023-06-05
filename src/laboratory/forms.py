@@ -16,7 +16,8 @@ from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
-from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR
+from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR, \
+    ShelfObjectLimits, ShelfObject, ShelfObjectObservation
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -133,10 +134,10 @@ class ReservedModalForm(GTForm, ModelForm):
 
 class TransferObjectForm(GTForm):
     amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),
-                                  help_text='Use dot like 0.344 on decimal', required=True)
+                                  help_text=_('Use dot like 0.344 on decimal'), required=True)
     laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
                                         label=_("Laboratory"), required=True)
-    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
+    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Mark as discard"), required=False)
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
@@ -150,7 +151,7 @@ class TransferObjectForm(GTForm):
 
 
 class AddObjectForm(GTForm, forms.Form):
-    amount = forms.FloatField(widget=genwidgets.TextInput,  help_text='Use dot like 0.344 on decimal',
+    amount = forms.FloatField(widget=genwidgets.TextInput,  help_text=_('Use dot like 0.344 on decimal'),
                              label=_('Amount'), required=True)
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
     provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
@@ -164,9 +165,9 @@ class AddObjectForm(GTForm, forms.Form):
 
 
 class SubtractObjectForm(GTForm):
-    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text='Use dot like 0.344 on decimal',
+    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                                label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
+    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text=_('Describe the action'),
                                   label=_('Description'), required=False)
 
 
@@ -517,9 +518,48 @@ class FurnitureLabRoomForm(forms.Form):
 
 class ValidateShelfForm(forms.Form):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+    objecttype = forms.ChoiceField(choices=(
+        ("0", _('Reactive')),
+        ("1", _('Material')),
+        ("2", _('Equipment'))
+    )
+, required=True)
+
 
 class ReservedProductsForm(forms.Form):
     obj = forms.IntegerField(required=True)
     user = forms.IntegerField(required=True)
     status = forms.IntegerField(required=True)
     initial_date = forms.DateTimeField(required=True)
+
+
+class ValidateShelfUnitForm(GTForm):
+    shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
+
+
+class ShelfObjectStatusForm(GTForm, forms.ModelForm):
+    description = forms.CharField(widget=genwidgets.Textarea)
+
+    def __init__(self, *args, **kwargs):
+        org_pk=kwargs.pop('org_pk')
+        super().__init__(*args, **kwargs)
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}),
+            help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
+
+    class Meta:
+        model = ShelfObject
+        fields = ['status']
+
+
+
+class ObservationShelfObjectForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model=ShelfObjectObservation
+        exclude=['shelf_object', 'creator']
+        widgets={
+            'action_taken': genwidgets.TextInput,
+            'description': genwidgets.Textarea
+        }

@@ -1,18 +1,21 @@
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
+from django.contrib.auth.models import User
+from django.db.models import Q
 from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory
+from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory, \
+    ShelfObjectObservation
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
 from django.utils.translation import gettext_lazy as _
 
-from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters
+from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters, BooleanFilter, CharFilter
 from djgentelella.fields.drfdatetime import DateRangeTextWidget, DateTimeRangeTextWidget
 from django_filters import FilterSet
 
@@ -96,20 +99,18 @@ class ProtocolDataTableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
-def find_username(request):
-    return None
-
 
 class LogEntryFilterSet(FilterSet):
     action_time = DateFromToRangeFilter(widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
-    #user = filters.ModelChoiceFilter(queryset=find_username)
+    user = CharFilter(field_name='user', method='filter_user')
+
+    def filter_user(self, queryset, name, value):
+        return queryset.filter(Q(user__first_name__icontains=value)|Q(user__last_name__icontains=value)|Q(user__username__icontains=value))
+
     class Meta:
         model = LogEntry
-        fields = {
-            'object_repr': ['icontains'],
-            'change_message': ['icontains'],
-            'action_flag': ['exact'],
-        }
+        fields =[ 'object_repr', 'change_message', 'action_flag', 'user']
+
 
 
 class LogEntryUserSerializer(serializers.ModelSerializer):
@@ -216,13 +217,11 @@ class InformFilterSet(FilterSet):
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
 
-class ShelfObjectFilterSet(FilterSet):
-    class Meta:
-        model = ShelfObject
-        fields = {'object__name': ['icontains'] }
-
 
 class BaseShelfObjectSerializer:
+
+    def get_object_type(self, obj):
+        return obj.object.get_type_display()
 
     def get_object_name(self, obj):
         return obj.object.name
@@ -238,6 +237,12 @@ class BaseShelfObjectSerializer:
             return str(obj.creator)
         else:
             return _('Unknown')
+
+    def get_container(self, obj):
+        obj_container = obj.shelfobjectcontainer_set.first()
+        if obj_container:
+            return obj_container.container.name
+        return ''
 
 
 class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerializer):
@@ -273,10 +278,12 @@ class ShelfPkList(serializers.Serializer):
 
 
 class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
+    object_type = serializers.SerializerMethodField()
     object_name = serializers.SerializerMethodField()
     unit = serializers.SerializerMethodField()
     last_update = serializers.SerializerMethodField()
     creator = serializers.SerializerMethodField()
+    container = serializers.SerializerMethodField()
     actions = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
@@ -294,7 +301,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
         pass
     class Meta:
         model = ShelfObject
-        fields = ['pk','object_name', 'unit','quantity','last_update','creator', 'actions']
+        fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','creator', 'container', 'actions']
 
 
 class ShelfObjectTableSerializer(serializers.Serializer):
@@ -338,3 +345,10 @@ class ShelfLabViewSerializer(serializers.Serializer):
             if self.laboratory != value['shelf'].furniture.labroom.laboratory:
                 raise ValidationError(detail="Shelf not found on Laboratory")
         return value
+
+
+class CreateObservationShelfObjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShelfObjectObservation
+        fields = ['action_taken', 'description']
+

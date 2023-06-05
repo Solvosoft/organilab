@@ -31,7 +31,8 @@ class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response_get, "Sala de inventario")
 
         data = {
-            "name": "Sala de inventario químico"
+            "name": "Sala de inventario químico",
+            "creator": 1
         }
         response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -41,9 +42,9 @@ class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
 
     def test_delete_laboratoryroom(self):
         room = LaboratoryRoom.objects.get(name="Sala de equipos de protección individual")
-        url = reverse("laboratory:rooms_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": room.pk})
-        response = self.client.post(url)
-        success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        url = reverse("laboratory:rooms_delete", kwargs={"org_pk": self.org.pk, "lab_pk": 2, "pk": room.pk})
+        response = self.client.post(url, follow=False)
+        success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": 2})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
 

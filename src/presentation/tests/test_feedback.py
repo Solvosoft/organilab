@@ -65,7 +65,7 @@ class FeedbackTest(TestCase):
         pre = FeedbackEntry.objects.count()
         response = self.client.post(reverse('feedback'), data=data, follow=True)
         pos = FeedbackEntry.objects.count()
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(pos>pre)
         self.assertRedirects(response, reverse('laboratory:labindex', kwargs={'lab_pk': 1, 'org_pk': 1}))
 

@@ -135,6 +135,7 @@ class ProcedureStepCreateView(FormView):
         success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':org, 'lab_pk': lab_pk,})
         return success_url
 
+
 @method_decorator(permission_required('academic.change_procedurestep'), name='dispatch')
 class ProcedureStepUpdateView(DJUpdateView):
     model = ProcedureStep

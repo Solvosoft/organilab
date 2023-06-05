@@ -70,12 +70,6 @@ class ReportObjectForm(ReportObjectsBaseForm):
 
         return list(laboratory.values_list('pk',flat=True))
 
-class RelOrganizationForm(GTForm):
-    organization = forms.IntegerField()
-    laboratory = forms.IntegerField()
-    lab_room = forms.ModelMultipleChoiceField(queryset=LaboratoryRoom.objects.all(), required=False)
-    all_labs_org = forms.BooleanField(required=False)
-
 class LaboratoryRoomReportForm(ReportBase):
     all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
         widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
@@ -94,7 +88,9 @@ class LaboratoryRoomReportForm(ReportBase):
         widget=AutocompleteSelectMultiple("furniture", attrs={
         'data-related': 'true',
         'data-pos': 1,
-        'data-groupname': 'labroomreport'
+        'data-groupname': 'labroomreport',
+        'data-s2filter-organization': '#id_organization',
+        'data-s2filter-laboratory': '#id_laboratory',
     }),
    queryset=Furniture.objects.all(), label=_('Filter Furniture'), required=False)
 

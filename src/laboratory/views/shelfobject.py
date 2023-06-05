@@ -11,6 +11,7 @@ from base64 import b64decode
 import cairosvg
 import base64
 from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
@@ -26,16 +27,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from djgentelella.forms.forms import CustomForm
+from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory import utils
 from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
     ShelfObjectListForm, ValidateShelfForm
 
 from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
 from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
+from presentation.models import QRModel
 from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
 from ..logsustances import log_object_change, log_object_add_change
 from ..utils import organilab_logentry
@@ -86,10 +89,11 @@ def list_shelfobject(request, *args, **kwargs):
     }
 
 
-class ShelfObjectForm(CustomForm, forms.ModelForm):
+class ShelfObjectForm(forms.ModelForm,GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
+        objecttype = kwargs.pop('objecttype', None)
 
         super(ShelfObjectForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
@@ -100,10 +104,10 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk},
             attrs={
-                'data-dropdownparent': "#object_create",
+                'data-dropdownparent': "#createshelfobjectform",
                 'data-s2filter-shelf': '#id_shelf'
             }),
-            label=_("Reactive/Material/Equipment"),
+            label=objecttype,
             help_text=_("Search by name, code or CAS number")
         )
 
@@ -132,18 +136,21 @@ class ShelfObjectForm(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','course_name','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
+        exclude =['laboratory_name','course_name','status','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
             'measurement_unit': core.Select,
+            'limits': core.SelectWithAdd(attrs={'add_url':reverse_lazy('laboratory:add_shelfobjectlimit')}),
 
         }
 
 class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
+        objecttype = kwargs.pop('objecttype', None)
+
         super(ShelfObjectRefuseForm, self).__init__(*args, **kwargs)
         initial = kwargs.get('initial')
         shelf = initial['shelf']
@@ -152,9 +159,9 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
         self.fields['object'] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
             widget=AutocompleteSelect('objectorgsearch', url_suffix='-detail', url_kwargs={'pk': org_pk}, attrs={
-                'data-dropdownparent': "#object_create"
+                'data-dropdownparent': "#createshelfobjectform"
             }),
-            label=_("Reactive/Material/Equipment"),
+            label=objecttype,
             help_text=_("Search by name, code or CAS number")
         )
         self.fields['marked_as_discard'].initial=True
@@ -172,8 +179,8 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
             if shelf.quantity>=new_total or not shelf.quantity:
                 return cleaned_data
             else:
-                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s"%{
-                    'limit': "%s"%(shelf.quantity,)}))
+                self.add_error('quantity',_("The quantity is much larger than the shelf limit %(limit)s")%{
+                    'limit': "%s"%(shelf.quantity,)})
         else:
             self.add_error('measurement_unit',
                            _("The measurent unit is different of there shelf has %(measurement_unit)s")%{
@@ -183,15 +190,17 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity']
-        exclude = ['creator',"laboratory_name"]
+        fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity','limits']
+        exclude = ['creator',"laboratory_name", "status"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
             'quantity': core.TextInput,
             'measurement_unit': core.Select,
             'course_name': core.TextInput,
-            'marked_as_discard': core.HiddenInput
+            'marked_as_discard': core.HiddenInput,
+            'limits': core.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
+
         }
 
 
@@ -604,15 +613,6 @@ def send_detail(request, *args, **kwargs):
     obj = ShelfObject.objects.get(pk=request.POST.get('shelf_object'))
     return JsonResponse({'obj': obj.get_object_detail()})
 
-@method_decorator(permission_required('laboratory.view_tranferobject'), name='dispatch')
-class ListTransferObjects(ListView):
-    model = TranferObject
-    template_name = 'laboratory/transfer_objects.html'
-
-    def get_queryset(self):
-        return TranferObject.objects.filter(Q(laboratory_send__id=self.request.GET.get('lab')) |
-                                            Q(laboratory_received__id=self.request.GET.get('lab'))).order_by(
-            'pk').reverse()
 
 @login_required()
 def get_shelf_list(request):
@@ -721,18 +721,8 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
 
 objects_transfer.lab_pk_field = 'lab_pk'
 
-@permission_required('laboratory.delete_tranferobject')
-def delete_transfer(request, pk):
-    try:
-        transfer = TranferObject.objects.get(pk=int(request.POST.get('id')))
-        transfer.delete()
-        utils.organilab_logentry(request.user, transfer, DELETION, relobj=[transfer.laboratory_send, transfer.laboratory_received ])
-    except TranferObject.DoesNotExist:
-        return JsonResponse({'data': False})
-    return JsonResponse({'data': True})
 
 
-delete_transfer.lab_pk_field = 'pk'
 
 @login_required()
 @permission_required('laboratory.change_shelfobject')
@@ -760,9 +750,17 @@ def edit_limit_object(request, *args, **kwargs):
 @login_required
 @permission_required('laboratory.view_shelfobject')
 def download_shelfobject_qr(request, org_pk, lab_pk, pk):
+    org = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, org)
+    lab = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+    organization_can_change_laboratory(lab, org)
     shelfobject = get_object_or_404(ShelfObject, pk=pk)
     try:
-        file = shelfobject.shelf_object_qr
+        qr = QRModel.objects.get(content_type__app_label=shelfobject._meta.app_label,
+                                 object_id=shelfobject.id,
+                                 organization=org_pk,
+                                 content_type__model=shelfobject._meta.model_name)
+        file = qr.qr_image
         response = HttpResponse(file, content_type='image/svg')
     except IOError:
         return HttpResponseNotFound()

@@ -21,6 +21,143 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_laboratory'
         },
     ],
+    'laboratory_view_principal': [
+        {
+            'name': 'View Laboratory',
+            'category': 'Laboratory',
+            'permission': 'laboratory.view_laboratory'
+        },
+        {
+            'name': 'View Laboratory Room',
+            'category': 'Laboratory Room',
+            'permission': 'laboratory.view_laboratoryroom'
+        },
+        {
+            'name': 'Add Reserved Products',
+            'category': 'Reservations',
+            'permission': 'reservations_management.add_reservedproducts'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
+        },
+        {
+            'name': 'Change Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.change_reservedproducts'
+        },
+        {
+            'name': 'View Reserved Products',
+            'category': 'Reserved Products',
+            'permission': 'reservations_management.view_reservedproducts'
+        },
+        {
+            'name': 'Change Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.change_reservations'
+        },
+        {
+            'name': 'View Reservations',
+            'category': 'Reservations',
+            'permission': 'reservations_management.view_reservations'
+        },
+        {
+            'name': 'Add Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.add_furniture'
+        },
+        {
+            'name': 'Change Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.change_furniture'
+        },
+        {
+            'name': 'View Furniture',
+            'category': 'Furniture',
+            'permission': 'laboratory.view_furniture'
+        },
+        {
+            'name': 'View Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.view_shelf'
+        },
+        {
+            'name': 'Add Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_shelfobject'
+        },
+        {
+            'name': 'Delete Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.delete_shelfobject'
+        },
+        {
+            'name': 'View Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'Change Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.change_shelfobject'
+        },
+        {
+            'name': 'Manage Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_manage_disposal'
+        },
+        {
+            'name': 'Do Report',
+            'category': 'Report',
+            'permission': 'laboratory.do_report'
+        },
+        {
+            'name': 'Add Shelf Object Status',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_catalog'
+        },
+        {
+            'name': 'View Shelf Object Observations',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobjectobservation'
+        },
+        {
+            'name': 'Add Shelf Object Observations',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_shelfobjectobservation'
+        },
+        {
+            'name': 'Add Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.add_shelf'
+        },
+        {
+            'name': 'Delete Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.delete_shelf'
+        },
+        {
+            'name': 'Change Shelf',
+            'category': 'Shelf',
+            'permission': 'laboratory.change_shelf'
+        },
+        {
+            'name': 'Add Transfer',
+            'category': 'Transfer',
+            'permission': 'laboratory.add_tranferobject'
+        },
+        {
+            'name': 'View Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_view_disposal'
+        },
+        {
+            'name': 'Add Disposal',
+            'category': 'Shelf',
+            'permission': 'laboratory.can_add_disposal'
+        },
+    ],
     'laboratory_update': [
         {
             'name': 'Change Laboratory',
@@ -94,6 +231,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'auth_and_perms.view_profile'
         },
         {
+            'name': 'Add Laboratory Room',
+            'category': 'Laboratory Room',
+            'permission': 'laboratory.add_laboratoryroom'
+        },
+        {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'
@@ -123,6 +265,11 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf Object',
             'permission': 'laboratory.delete_shelfobject'
         },
+        {
+            'name': 'List reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
+        }
     ],
     'list_provider': [
         {
@@ -846,6 +993,11 @@ URLNAME_PERMISSIONS = {
     ],
     'reservations_list': [
         {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
+        },
+        {
             'name': 'Change Reserved Products',
             'category': 'Reserved Products',
             'permission': 'reservations_management.change_reservedproducts'
@@ -886,6 +1038,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reservations',
             'category': 'Reservations',
             'permission': 'reservations_management.view_reservations'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
     ],
     'rooms_list': [
@@ -901,8 +1058,13 @@ URLNAME_PERMISSIONS = {
         },
         {
             'name': 'Add Reserved Products',
-            'category': 'Reserved Products',
+            'category': 'Reservations',
             'permission': 'reservations_management.add_reservedproducts'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
     ],
     'organizationManager': [
@@ -1246,6 +1408,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reservations',
             'category': 'Reservations',
             'permission': 'reservations_management.view_reservations'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
 
     ],
@@ -1836,6 +2003,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
+        },
+        {
+            'name': 'Add Shelf Object Status',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_catalog'
         }
     ],
     'shelfobject_delete': [
@@ -1860,7 +2032,17 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
-        }
+        },
+        {
+            'name': 'View Shelf Object Observations',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.view_shelfobjectobservation'
+        },
+        {
+            'name': 'Add Shelf Object Observations',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_shelfobjectobservation'
+        },
     ],
     'get_shelfobject_limit': [
         {
@@ -2484,6 +2666,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reserved Products',
             'category': 'Reserved Products',
             'permission': 'reservations_management.view_reservedproducts'
+        },
+        {
+            'name': 'List my reservations',
+            'category': 'Reservations',
+            'permission': 'djreservation.add_reservation'
         }
     ],
     'increase_stock': [

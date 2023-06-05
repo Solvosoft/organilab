@@ -18,11 +18,3 @@ def lab_index(request, org_pk, lab_pk):
                   {'laboratory': int(lab_pk),
                    'org_pk':org_pk})
 
-# def is_laboratory_admin(user):
-#     return bool(user.groups.filter(name='laboratory_admin'))
-#
-# def is_laboratory_student(user):
-#     return bool(user.groups.filter(name='laboratory_student'))
-#
-# def is_laboratory_teacher(user):
-#     return bool(user.groups.filter(name='laboratory_teacher'))

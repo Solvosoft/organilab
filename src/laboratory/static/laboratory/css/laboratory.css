@@ -45,7 +45,22 @@ ul, #ullabroom {
     margin-bottom: 0px;
 }
 
-#shelfobjecttable_filter{
-    display: none;
+
+.shelfobject_list_elem{
+    padding: 0;
 }
 
+.shelfobject_titles{
+    font-weight: bold;
+}
+
+#detail_modal_container{
+    margin: 0;
+}
+
+.qr_img{
+    width: 40%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

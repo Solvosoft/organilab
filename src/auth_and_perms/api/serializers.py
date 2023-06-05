@@ -5,8 +5,17 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
 
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
+from auth_and_perms.organization_utils import organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_in_html
 from laboratory.models import OrganizationStructure, Laboratory
+from django.utils.translation import gettext_lazy as _
+import logging
+
+from django.conf import settings
+
+from laboratory.utils import check_user_access_kwargs_org_lab
+
+logger = logging.getLogger('organilab')
 
 
 class RolSerializer(serializers.ModelSerializer):
@@ -85,6 +94,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     rols = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
     action = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
 
     def get_rols(self, obj):
         contenttypeobj = self.context['view'].contenttypeobj
@@ -103,6 +113,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return str(obj)
 
+    def get_email(self, obj):
+        return obj.user.email
+
     def get_action(self, obj):
         contenttypeobj = self.context['view'].contenttypeobj
         org = self.context['view'].organization
@@ -117,7 +130,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user', 'rols', 'action']
+        fields = ['user', 'rols', 'action', 'email']
 
 
 class ProfileRolDataTableSerializer(serializers.Serializer):
@@ -134,3 +147,26 @@ class DeleteUserFromContenttypeSerializer(serializers.Serializer):
     object_id = serializers.IntegerField()
     organization = serializers.PrimaryKeyRelatedField(many=False, queryset=OrganizationStructure.objects.all())
     disable_user = serializers.BooleanField(default=False)
+
+
+class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
+    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+    def validate(self, data):
+        laboratory = data['laboratory']
+        organization = data['organization']
+        user = self.context.get('user')
+        has_permission = organization_can_change_laboratory(laboratory, organization)
+        check_user_access = check_user_access_kwargs_org_lab(organization.pk, laboratory.pk, user)
+
+        if not has_permission:
+            logger.debug(
+                f'ValidateUserAccessOrgLabSerializer --> organization_can_change_laboratory is ({has_permission})')
+            raise serializers.ValidationError({'organization': _("Organization can't change this laboratory")})
+
+        if not check_user_access:
+            logger.debug(
+                f'ValidateUserAccessOrgLabSerializer --> check_user_access_kwargs_org_lab is ({check_user_access})')
+            raise serializers.ValidationError({'user': _("User doesn't have permissions")})
+        return data
