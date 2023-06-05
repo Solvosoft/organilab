@@ -1,23 +1,22 @@
 {% extends 'base.html' %}
 {% load i18n laboratory static %}
 {% load gtsettings %}
+{% load organilab_tags %}
 {% load urlname_tags %}
 {% block pre_head %}
     {% define_true  "use_datatables" %}
-    {% define_urlname_action 'get_my_procedures' %}
-    {% define_urlname_action 'add_my_procedures' %}
-    {% define_urlname_action 'remove_my_procedure' %}
-    {% define_urlname_action 'complete_inform' %}
+    {% define_urlname_action 'my_procedure_list' %}
+    {% define_urlname_action 'get_procedure' %}
 {% endblock %}
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}
 <div class="row">
   <div class="offset-md-2 col-md-8">
     <div align="center">
-      <h3 class="heading-1" ><span> {% trans 'Templates of procedure' %}</span></h3>
+      <h3 class="heading-1" ><span> {% trans 'My procedures' %}</span></h3>
       <div class="card">
         <div class="card-header">
-          <h2 class="float-start">{% trans 'Templates of procedure' %}</h2>
+          <h2 class="float-start">{% trans 'My procedures' %}</h2>
            <a class="btn btn-success float-end create_btn"  data-bs-toggle="modal"
             data-bs-target="#add_my_procedures" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>  <ul class="nav navbar-right panel_toolbox"></ul>
           <div class="clearfix"></div>
@@ -38,8 +37,14 @@
                 <td>{{procedure.name}}</td>
                 <td>{{procedure.custom_procedure.title}}</td>
                 <td>{% trans procedure.status %}</td>
-                <td><a class="btn btn-success" href="{% url 'academic:complete_my_procedure' lab_pk=laboratory org_pk=org_pk pk=procedure.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
-                <a class="btn btn-danger" href="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=procedure.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                <td>
+                  <a class="btn btn-success" href="{% url 'academic:complete_my_procedure' lab_pk=laboratory org_pk=org_pk pk=procedure.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                  {% show_reserve_button procedure.custom_procedure as show_reserve_btn  %}
+                  {% if show_reserve_btn  %}
+                      <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.custom_procedure.pk}})"><i class="fa fa-book"></i></a>
+                  {% endif %}
+                  <a class="btn btn-danger" href="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=procedure.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                </td>
               </tr>
 
             {% endfor %}
@@ -56,7 +61,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" >{% trans 'Create Procedure' %}</h5>
+        <h5 class="modal-title" >{% trans 'Create procedure' %}</h5>
            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -72,11 +77,62 @@
     </div>
   </div>
 </div>
+<div aria-hidden="true"  class="modal fade" id="reservation_modal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="model_reservation_form_title">{% trans 'Reservation' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button">
+
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                <label class="mb-2 " style="font-size: 20px; font-weight: bold;" id="procedure_title"></label>
+                 </div>
+                <form id="reservation_form">
+                    {% csrf_token %}
+                    {{ reservation_form.as_inline }}
+
+                    <input type="hidden" id="procedure" name="procedure" value="">
+                    <input type="hidden" id="lab" name="lab_pk" value="{{lab}}">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
+                <button class="btn btn-success" type="button" data-bs-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true"  class="modal fade" id="error_reserved" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title ">{% trans 'Error' %}</h5>
+                <button aria-label="{% trans 'Close' %}" class="btn-close float-end" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <label>{% trans 'The requested quantity of the material is not found in the inventory of the following materials:' %}</label>
+                <ul id="list_errors" class="list-group">
+                        <li class="list-group-item" title="{{feature.description}}">{{feature.name}}</li>
+                </ul>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-bs-dismiss="modal" type="button"><i class="fa fa-times-circle-o" aria-hidden="true"></i> {% trans 'Close' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block js %}
-  <script>
-    $(document).ready(function() {
-      $('#my_procedures').DataTable();
-      });
-  </script>
+<script>
+    document.getProcedure="{% url 'academic:get_procedure' lab_pk=laboratory org_pk=org_pk %}"
+    document.reservation="{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}"
+</script>
+<script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
+<script src="{% static 'js/procedure.js' %}"></script>
 {% endblock %}

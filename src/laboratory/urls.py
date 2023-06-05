@@ -200,8 +200,10 @@ router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_informs', InformViewSet, basename='api-informs')
-router.register('api_my_procedure', ProcedureStepCommentAPI, basename='api-my-procedure')
-router.register('api_procedure_comments', ProcedureStepCommentTableView, basename='api-procedure-comments')
+
+stepcommentsrouter = DefaultRouter()
+stepcommentsrouter.register('api_my_procedure', ProcedureStepCommentAPI, basename='api-my-procedure')
+stepcommentsrouter.register('api_procedure_comments', ProcedureStepCommentTableView, basename='api-procedure-comments')
 
 
 shelfobjectrouter = DefaultRouter()
@@ -236,5 +238,5 @@ urlpatterns += organization_urls + [
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
-
+    path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
 ]
