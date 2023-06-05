@@ -41,12 +41,9 @@
                height: 8
               }
         });
-
         let canvas = $("#editoriframe").contents().find("#canvas")[0];
         canvas.dispatchEvent(event);
         canvas.dispatchEvent(savepngevent);
-
-        //$("#formeditor").submit();
     });
 
     $("#editoriframe").ready(function(){
