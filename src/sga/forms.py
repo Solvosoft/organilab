@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
@@ -33,6 +34,20 @@ class SGAEditorForm(forms.ModelForm, GTForm):
             'danger_indication': AutocompleteSelect('dangersearch')
         }
 
+
+class PersonalEditorForm(forms.ModelForm, GTForm):
+    recipient_size = forms.ModelChoiceField(queryset=RecipientSize.objects.using(settings.READONLY_DATABASE),
+                                            widget=genwidgets.Select,
+                                            label=_("Recipient size"))
+
+    class Meta:
+        model = PersonalTemplateSGA
+        fields = ('name',  'json_representation', 'preview', 'recipient_size')
+        widgets = {
+            'name': genwidgets.TextInput,
+            'preview': genwidgets.HiddenInput,
+            'json_representation': genwidgets.HiddenInput
+        }
 
 class EditorForm(forms.ModelForm, GTForm):
     preview = forms.CharField(widget=forms.HiddenInput())
@@ -102,12 +117,13 @@ class PersonalFormAcademic(GTForm):
         self.fields['address'].widget.attrs['rows'] = 4
         self.fields['commercial_information'].widget.attrs['rows'] = 4
 
+
 class PersonalSGAForm(forms.ModelForm, GTForm):
     recipient_size = forms.ModelChoiceField(widget=genwidgets.Select, queryset=RecipientSize.objects.all(), required=True)
 
     class Meta:
         model = PersonalTemplateSGA
-        fields = ['name', 'json_representation', 'preview']
+        fields = ['name', 'json_representation', 'preview', 'recipient_size']
         widgets = {
             'name': genwidgets.TextInput,
             'preview': genwidgets.HiddenInput,

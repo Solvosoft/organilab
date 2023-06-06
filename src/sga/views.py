@@ -451,8 +451,7 @@ def sgalabel_step_two(request, org_pk, organilabcontext, pk):
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
         'complement': complement,
-        'form': SGAEditorForm(),
-        'editorform': PersonalSGAForm(instance=sgalabel, initial={'recipient_size': sgalabel.template.recipient_size}),
+        'editorform': PersonalSGAForm(instance=sgalabel),
         'org_pk': org_pk
     }
 
