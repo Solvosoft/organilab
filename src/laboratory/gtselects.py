@@ -11,7 +11,7 @@ from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Rol
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.forms import ValidateShelfForm
-from laboratory.models import Object, Catalog, Provider, OrganizationStructure
+from laboratory.models import Object, Catalog, Provider, OrganizationStructure, Laboratory
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
 from django.conf import settings
@@ -199,18 +199,14 @@ class ProviderLookup(BaseSelect2View):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 @register_lookups(prefix="objectorgavailable", basename="objectorgavailable")
-class ObjectAvailbeloLookup(generics.RetrieveAPIView, BaseSelect2View):
+class ObjectAvailbeloLookup(BaseSelect2View):
     model = Object
     fields = ['code', 'name']
     org_pk = None
-    shelf = None
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.shelf and self.shelf.limit_only_objects:
-            return self.shelf.available_objects_when_limit.all()
-
         queryset = super().get_queryset()
         if self.org_pk:
             organizations = get_pk_org_ancestors(self.org_pk.pk)
@@ -219,17 +215,15 @@ class ObjectAvailbeloLookup(generics.RetrieveAPIView, BaseSelect2View):
             queryset = queryset.none()
         return queryset
 
-    def retrieve(self, request, pk, **kwargs):
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
 
-        self.org_pk=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
-        user_is_allowed_on_organization(request.user, self.org_pk)
-        form = ValidateShelfForm(request.GET)
-        if form.is_valid():
-            shelf = form.cleaned_data['shelf']
-            if organization_can_change_laboratory(shelf.furniture.labroom.laboratory, self.org_pk):
-                self.shelf=shelf
-            return self.list(request, pk, **kwargs)
+        if self.serializer.is_valid():
+            self.org_pk = self.serializer.validated_data['organization']
+            return super().list(request, *args, **kwargs)
+
         return Response({
             'status': 'Bad request',
             'errors': self.serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
