@@ -305,12 +305,19 @@ def get_organizations_register_user(organization, lab_id, org_register_pk=None):
 
 
 def get_logentries_org_management(self, org):
+    in_org=org
     if not org:
         return self.queryset.none()
     else:
         org = OrganizationStructure.objects.filter(pk=org).first()
         if not org:
-            return self.queryset.none()
+            return LabOrgLogEntry.objects.filter(
+                     Q(
+                        content_type__app_label='laboratory',
+                        content_type__model='organizationstructure',
+                        object_id=in_org
+                    )
+                ).values_list('log_entry', flat=True)
     laboratories = list(get_laboratories_from_organization(org.pk).values_list('pk', flat=True))
 
     log_entries = LabOrgLogEntry.objects.filter(
