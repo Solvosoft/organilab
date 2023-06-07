@@ -152,8 +152,7 @@ class ShelfObjectLimits(models.Model):
 
 class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
-    object = models.ForeignKey('Object', verbose_name=_(
-        "Equipment or reactive or sustance"), on_delete=models.CASCADE)
+    object = models.ForeignKey('Object', verbose_name=_("Equipment or reactive or sustance"), on_delete=models.CASCADE)
     batch = models.CharField(max_length=250, default="0", verbose_name=_("Production batch"))
     status = catalog.GTForeignKey(Catalog, null=True, on_delete=models.DO_NOTHING, verbose_name=_('Status'),
                                 key_name="key", key_value='shelfobject_status')
@@ -173,6 +172,7 @@ class ShelfObject(models.Model):
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
     shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
+    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
     @staticmethod
     def get_units(unit):
@@ -815,11 +815,3 @@ class RegisterUserQR(models.Model):
 
     def __str__(self):
         return f"{self.url}"
-
-
-class ShelfObjectContainer(BaseCreationObj):
-    shelf_object = models.ForeignKey(ShelfObject, verbose_name=_("Shelf Object"), on_delete=models.CASCADE)
-    container = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name=_("Container")) #Object=Material
-
-    def __str__(self):
-        return f"{self.shelf_object} - {self.container}"

@@ -95,9 +95,9 @@ class ShelfObjectExtraFields(GTForm, forms.Form):
     expiration_date = forms.DateField(widget=genwidgets.DateInput, required=False, label=_("Expiration date"))
 
 
-class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
-    container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True, label=_("Container"))
-
+class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):    
+    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
+    
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -120,7 +120,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
         self.fields['course_name'].label = _("Description")
 
         self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
+            queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('catalogunit',
                                       attrs={
                                           'data-dropdownparent': "#reactive_form",
@@ -131,8 +131,8 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             label=_("Measurement unit"))
 
         self.fields['container'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('recipientsearch',
+            queryset=ShelfObject.objects.none(),
+            widget=AutocompleteSelect('available-container-search',
                                       attrs={
                                           'data-dropdownparent': "#reactive_form",
                                           'data-s2filter-laboratory': '#id_laboratory',
@@ -155,7 +155,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit","container", "course_name", "marked_as_discard", "batch", "objecttype"]
+        fields = ["object","shelf","status","quantity", "measurement_unit", "container", "course_name", "marked_as_discard", "batch", "objecttype"]
         exclude =['laboratory_name','creator', 'limit_quantity', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
@@ -167,7 +167,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
         }
 
 class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
-    container = forms.ModelChoiceField(queryset=Object.objects.all(),required=True)
+    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -186,7 +186,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             help_text=_("Search by name, code or CAS number")
         )
         self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
+            queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('catalogunit', attrs={
                 'data-dropdownparent': "#reactive_refuse_form",
                 'data-s2filter-shelf': '#id_shelf',
@@ -195,8 +195,8 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             }),
             label=_("Measurement unit"))
         self.fields['container'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('recipientsearch',
+            queryset=ShelfObject.objects.none(),
+            widget=AutocompleteSelect('available-container-search',
                                       attrs={
                                           'data-dropdownparent': "#reactive_refuse_form",
                                           'data-s2filter-laboratory': '#id_laboratory',
