@@ -13,6 +13,10 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
     def setUp(self):
         super().setUp()
+        self.org = self.org1
+        self.lab = self.lab1_org1
+        self.user = self.user1_org1
+        self.client = self.client1_org1
         self.shelf_object = ShelfObject.objects.get(pk=1)
         self.old_shelf = self.shelf_object.shelf
         self.new_shelf_3 = Shelf.objects.get(pk=3)
@@ -29,11 +33,11 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
             "shelf": self.new_shelf_4.pk,
             "shelf_object": self.shelf_object.pk
         }
-        self.url = reverse("laboratory:api-shelfobject-move-shelfobject-to-shelf", kwargs={"org_pk": self.org1.pk, "lab_pk": self.lab1_org1.pk})
+        self.url = reverse("laboratory:api-shelfobject-move-shelfobject-to-shelf", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
     def test_shelfobject_move_case1(self):
         """
-        #EXPECTED CASE(User in this organization with permissions try to move shelfobject to other shelf)
+        #EXPECTED CASE(User 1 in this organization with permissions try to move shelfobject to other shelf)
 
         CHECK TESTS
         1) Check response status code equal to 200.
@@ -43,64 +47,74 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         5) Check if pk shelfobject is not in old shelf.
         6) Check if pk shelfobject is in new shelf.
         """
-        response = self.client1_org1.post(self.url, data=self.data_shelf_3)
+        response = self.client.post(self.url, data=self.data_shelf_3)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user1_org1))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab1_org1.pk)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertEqual(self.shelf_object.measurement_unit.pk , self.new_shelf_3.measurement_unit.pk)
         self.assertNotIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
 
     def test_shelfobject_move_case2(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User to other organization without permissions try to move shelfobject to other shelf)
+        #UNEXPECTED CASE, BUT POSSIBLE(User 2 to other organization without permissions try to move shelfobject to other shelf)
 
         CHECK TESTS
         1) Check response status code equal to 403.
         2) Check if user doesn't have permission to access this organization and laboratory.
-        3) Check if pk shelfobject is in old shelf.
-        4) Check if pk shelfobject is not in new shelf.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk shelfobject is in old shelf.
+        5) Check if pk shelfobject is not in new shelf.
         """
-        response = self.client2_org2.post(self.url, data=self.data_shelf_3)
+        self.client = self.client2_org2
+        self.user = self.user2_org2
+        response = self.client.post(self.url, data=self.data_shelf_3)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user2_org2))
+        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
 
     def test_shelfobject_move_case3(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User in this organization with permissions try to move shelfobject to
+        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to move shelfobject to
          other shelf in other laboratory in this same organization)
 
         CHECK TESTS
         1) Check response status code equal to 400.
         2) Check if user has access permission to access this organization and laboratory.
-        3) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
-        4) Check if pk shelfobject is not in old shelf.
-        5) Check if pk shelfobject is in new shelf.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
+        5) Check if pk shelfobject is not in old shelf.
+        6) Check if pk shelfobject is in new shelf.
         """
-        response = self.client1_org1.post(self.url, data=self.data_shelf_4)
+        response = self.client.post(self.url, data=self.data_shelf_4)
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user1_org1))
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertNotEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.new_shelf_4.furniture.labroom.laboratory.pk)
         self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
 
     def test_shelfobject_move_case4(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User without permissions in this organization try to move shelfobject to
+        #UNEXPECTED CASE, BUT POSSIBLE(User 2 without permissions in this organization try to move shelfobject to
          other shelf in other laboratory in this same organization)
 
         CHECK TESTS
         1) Check response status code equal to 403.
         2) Check if user doesn't have permission to access this organization and laboratory.
-        3) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
-        4) Check if pk shelfobject is not in old shelf.
-        5) Check if pk shelfobject is in new shelf.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
+        5) Check if pk shelfobject is not in old shelf.
+        6) Check if pk shelfobject is in new shelf.
         """
-        response = self.client2_org2.post(self.url, data=self.data_shelf_4)
+        self.client = self.client2_org2
+        self.user = self.user2_org2
+        response = self.client.post(self.url, data=self.data_shelf_4)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user2_org2))
+        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertNotEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.new_shelf_4.furniture.labroom.laboratory.pk)
         self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
