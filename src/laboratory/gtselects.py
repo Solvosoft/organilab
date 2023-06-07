@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Rol
-from laboratory.models import Object, Catalog, Provider
+from laboratory.models import Object, Catalog, Provider, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
 
@@ -108,25 +108,31 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-@register_lookups(prefix="recipientsearch", basename="recipientsearch")
-class RecipientModelLookup(generics.RetrieveAPIView, BaseSelect2View):
-    model = Object
-    fields = ['code', 'name']
+@register_lookups(prefix="available-container-search", basename="available-container-search")
+class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = ShelfObject
+    fields = ['object__name', 'object__code']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
     org = None
     laboratory = None
+    
+    def get_text_display(self, obj):
+        return f"{obj.object.code} {obj.object.name}"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
         if self.org_pk and self.laboratory:
             organizations = get_pk_org_ancestors(self.org_pk.pk)
-            queryset = queryset.filter(organization__in=organizations, type=1,
-                                       shelfobject__in_where_laboratory=self.laboratory)
+            # TODO - this method needs to be updated to use the required utils method instead of hardcode the query here, since the query needs to be way better than this
+            # to return only the available and not all in the laboratory whether they are used or not
+            queryset = ShelfObject.objects.filter(
+                object__type = Object.MATERIAL,
+                object__organization__in=organizations,
+                in_where_laboratory=self.laboratory
+            )
         else:
-            queryset = queryset.none()
+            queryset = ShelfObject.objects.none()
         return queryset
 
     def list(self, request, *args, **kwargs):

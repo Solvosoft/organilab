@@ -33,9 +33,9 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
 from laboratory.shelfobject.serializers import ShelfObjectDetailSerializer
 from laboratory.shelfobject.serializers import ShelfSerializer, \
     ValidateShelfSerializer
-from laboratory.shelfobject.serializers import TransferObjectDenySerializer, ShelfObjectContainerSerializer, \
+from laboratory.shelfobject.serializers import TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ContainerShelfObjectSerializer
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import organilab_logentry
 
@@ -47,8 +47,8 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = ShelfObject.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'shelfobjectcontainer__container__name']  # for the global search
-    ordering_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'shelfobjectcontainer__container__name']
+    search_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'container__object__name']  # for the global search
+    ordering_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'container__object__name']
     ordering = ('-last_update',)  # default order
 
     def get_queryset(self):
@@ -88,13 +88,6 @@ class ShelfObjectCreateMethods:
         shelfobject.shelf_object_url = url
         return qr
 
-    def create_shelfobject_container(self, data):
-        serializer= ShelfObjectContainerSerializer(data=data)
-        if serializer.is_valid():
-            container = serializer.save(creator=self.context['request'].user)
-            utils.organilab_logentry(self.context['request'].user, container, ADDITION,
-                                         changed_data=['object','shelfobject'], relobj=self.context['laboratory'])
-
     def create_reactive(self, serializer, limits_serializer):
         """
         Create reactive type Shelfobject .
@@ -105,7 +98,7 @@ class ShelfObjectCreateMethods:
         shelfobject = serializer.save()
         shelfobject.creator = self.context['request'].user
         shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.limits= limits_serializer.save()
+        shelfobject.limits = limits_serializer.save()
         shelfobject.save()
         self._build_qr(shelfobject)
         shelfobject.save()
@@ -114,8 +107,6 @@ class ShelfObjectCreateMethods:
                           create=True)
         utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
                                  changed_data=None, relobj=self.context['laboratory'])
-        self.create_shelfobject_container(data={'shelf_object':shelfobject.pk,
-                                                'container': self.context['request'].data['container']})
 
         return shelfobject
 
@@ -138,8 +129,6 @@ class ShelfObjectCreateMethods:
                           create=True)
         utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
                                  changed_data=None, relobj=self.context['laboratory'])
-        self.create_shelfobject_container(data={'shelf_object': shelfobject.pk,
-                                                'container': self.context['request'].data['container']})
 
         return shelfobject
 
@@ -208,7 +197,7 @@ class ShelfObjectCreateMethods:
                                  changed_data=None, relobj=self.context['laboratory'])
         return shelfobject
 
-    def create_refuse_equipement(self, serializer,limits_serializer):
+    def create_refuse_equipment(self, serializer,limits_serializer):
         """
         Create refuse equipment type Shelfobject .
         :param serializer:  ShelfObjectSerializer to create refuse equipment type shelfobject
@@ -236,11 +225,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     permissions_by_endpoint = {
         "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject", "laboratory.change_shelfobject"], 
-        "transfer_in": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", "laboratory.view_shelfobject",
-                        "laboratory.change_tranferobject", "laboratory.view_tranferobject"],
+        "transfer_in_accept": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", "laboratory.view_shelfobject",
+                               "laboratory.change_tranferobject", "laboratory.view_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
         "transfer_in_deny": ["laboratory.view_tranferobject", "laboratory.delete_tranferobject"],
-         "create_shelfobject": ["laboratory.add_shelfobject"],
+        "create_shelfobject": ["laboratory.add_shelfobject"],
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
         "reserve": ["reservations_management.add_reservedproducts"],
@@ -283,11 +272,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: the sheobject serializer and the create function
         """
         name = ""
-        serializer=shelfobject_serializers.ValidateShelfSerializerCreate(data=request.data,
+        serializer = shelfobject_serializers.ValidateShelfSerializerCreate(data=request.data,
                                                                    context={"org_pk": org_pk, "lab_pk": lab_pk})
         serializer.is_valid(raise_exception=True)
-        key_name=serializer.get_key_descriptor()
-        methods_class=ShelfObjectCreateMethods(context={
+        key_name = serializer.get_key_descriptor()
+        methods_class = ShelfObjectCreateMethods(context={
             "organization": org_pk,
             "laboratory": lab_pk,
             "request": request
@@ -304,9 +293,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "equipment": {'serializer': shelfobject_serializers.EquipmentShelfObjectSerializer,
                  'method': methods_class.create_equipment},
             "equipment_refuse": {'serializer': shelfobject_serializers.EquipmentRefuseShelfObjectSerializer,
-                 'method': methods_class.create_refuse_equipement},
+                 'method': methods_class.create_refuse_equipment},
         }
-        return serializers_class[key_name], key_name
+        return serializers_class[key_name]
 
     @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
@@ -319,12 +308,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: increase shelf object quantity, return success o error message
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "create_shelfobject")
-        self.serializer_class, keyname = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
-
-        if keyname in ['reactive', 'reactive_refuse']:
-            serializercontainer=ContainerShelfObjectSerializer(data=request.data)
-            if not serializercontainer.is_valid():
-                return JsonResponse({"errors": serializercontainer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk, lab_pk)
 
         serializer = self.serializer_class['serializer'](data=request.data, context={"org_pk": org_pk, "lab_pk": lab_pk})
         limit_serializer=ShelfObjectLimitsSerializer(data=request.data)
@@ -487,7 +471,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_out")
         self.serializer_class = TransferOutShelfObjectSerializer
-        serializer = self.serializer_class(data=request.data, context={"source_laboratory_id": lab_pk})
+        serializer = self.get_serializer(data=request.data, context={"source_laboratory_id": lab_pk})
         errors = {}
 
         if serializer.is_valid():
@@ -519,18 +503,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         
         return JsonResponse({"detail": _("The transfer out was performed successfully.")}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'])
-    def transfer_in(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Marta
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in")
-
     @action(detail=False, methods=['get'])
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
         """
@@ -541,7 +513,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: JsonResponse with the transfer request information and the number of records
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_available_list")
-        
         self.serializer_class = TransferObjectDataTableSerializer
         self.pagination_class = LimitOffsetPagination
         self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
@@ -567,11 +538,31 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: JsonResponse with result information (success or error info) 
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_deny")
-        serializer = TransferObjectDenySerializer(data=request.data, context={"laboratory_id": lab_pk})
+        self.serializer_class = TransferInSerializer
+        serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk})
         serializer.is_valid(raise_exception=True)
         utils.organilab_logentry(self.request.user, serializer.validated_data['transfer_object'], DELETION, relobj=self.laboratory)
         serializer.validated_data['transfer_object'].delete()
         return JsonResponse({'detail': _('The transfer in was denied successfully.')}, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'])
+    def transfer_in_accept(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Marta
+        :param request:
+        :param org_pk:
+        :param lab_pk:
+        :param kwargs:
+        :return:
+        """
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_accept")
+        self.serializer_class = TransferInSerializer
+        serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk})
+        
+        if serializer.is_valid():
+            pass
+        else:
+           errors = serializer.errors 
         
         
     @action(detail=False, methods=['get'])
