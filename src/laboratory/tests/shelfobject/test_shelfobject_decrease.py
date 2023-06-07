@@ -27,7 +27,7 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
 
         CHECK TESTS
         1) Check response status code equal to 200.
-        2) Check if user has access permission to request and decrease this shelfobject.
+        2) Check if user has permission to access this organization and laboratory.
         3) Check if new quantity is equal to (old quantity - amount)
         4) Check if new quantity is not equal to old quantity
         """
@@ -46,7 +46,7 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
 
         CHECK TESTS
         1) Check response status code equal to 403.
-        2) Check if user doesn't have access permission to request and decrease this shelfobject.
+        2) Check if user doesn't have permission to access this organization and laboratory.
         3) Check if new quantity is not equal to (old quantity - amount)
         4) Check if new quantity is equal to old quantity
         """
