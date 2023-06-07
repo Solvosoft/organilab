@@ -79,11 +79,15 @@ class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
 
     def setUp(self):
         super().setUp()
+        self.org = self.org1
+        self.lab = self.lab1_org1
+        self.user = self.user1_org1
+        self.client = self.client1_org1
         self.shelf = Shelf.objects.get(pk=1)
         self.data = {
             "shelf": self.shelf.pk
         }
-        self.url = reverse("laboratory:api-shelfobject-shelf-availability-information", kwargs={"org_pk": self.org1.pk, "lab_pk": self.lab1_org1.pk})
+        self.url = reverse("laboratory:api-shelfobject-shelf-availability-information", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
 
     def test_shelf_availability_information_case1(self):
@@ -96,16 +100,16 @@ class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
         3) Check if shelf name is equal to returned name in response content.
         4) Check if pk laboratory related to this shelf is equal to declared pk laboratory in url.
         """
-        response = self.client1_org1.get(self.url, data=self.data)
+        response = self.client.get(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user1_org1))
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertIn(self.shelf.name, json.loads(response.content)['name'])
-        self.assertEqual(self.shelf.furniture.labroom.laboratory.pk, self.lab1_org1.pk)
+        self.assertEqual(self.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
 
 
     def test_get_shelf_availability_information_user_without_permissions(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User without permissions to other organization try to get shelf information)
+        #UNEXPECTED CASE, BUT POSSIBLE(User 2 without permissions to other organization try to get shelf information)
 
         CHECK TESTS
         1) Check response status code equal to 403.
@@ -113,8 +117,10 @@ class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
         3) Check if response content return an error detail.
         4) Check if pk laboratory related to this shelf is in laboratories list by user.
         """
-        response = self.client2_org2.get(self.url, data=self.data)
+        self.client = self.client2_org2
+        self.user = self.user2_org2
+        response = self.client.get(self.url, data=self.data)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user2_org2))
+        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertIn('detail', json.loads(response.content))
-        self.assertNotIn(self.shelf.furniture.labroom.laboratory.pk, get_laboratories_by_user_profile(self.user2_org2, self.org1.pk))
+        self.assertNotIn(self.shelf.furniture.labroom.laboratory.pk, get_laboratories_by_user_profile(self.user, self.org.pk))

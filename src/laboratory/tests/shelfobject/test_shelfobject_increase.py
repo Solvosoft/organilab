@@ -13,6 +13,10 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
 
     def setUp(self):
         super().setUp()
+        self.org = self.org1
+        self.lab = self.lab1_org1
+        self.user = self.user1_org1
+        self.client = self.client1_org1
         self.shelf_object = ShelfObject.objects.get(pk=1)
         self.shelf = self.shelf_object.shelf
         self.provider = Provider.objects.get(pk=1)
@@ -24,11 +28,11 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             "shelf_object": self.shelf_object.pk
         }
         self.total = self.shelf.get_total_refuse() + self.data["amount"]
-        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject", kwargs={"org_pk": self.org1.pk, "lab_pk": self.lab1_org1.pk})
+        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
     def test_shelfobject_increase_case1(self):
         """
-        #EXPECTED CASE(User in this organization with permissions try to increase shelfobject)
+        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
 
         CHECK TESTS
         1) Check response status code equal to 200.
@@ -38,9 +42,9 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         5) Check if new quantity is not equal to old quantity
         """
 
-        response = self.client1_org1.post(self.url, data=self.data)
+        response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user1_org1))
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertTrue(self.total <= self.shelf.quantity)
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
@@ -50,7 +54,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
 
     def test_shelfobject_increase_case2(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User to other organization without permissions try to increase shelfobject)
+        #UNEXPECTED CASE, BUT POSSIBLE(User 2 to other organization without permissions try to increase shelfobject)
 
         CHECK TESTS
         1) Check response status code equal to 403.
@@ -59,10 +63,11 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         4) Check if new quantity is not equal to (old quantity + amount)
         5) Check if new quantity is equal to old quantity
         """
-
-        response = self.client2_org2.post(self.url, data=self.data)
+        self.client = self.client2_org2
+        self.user = self.user2_org2
+        response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user2_org2))
+        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertTrue(self.total <= self.shelf.quantity)
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
@@ -72,7 +77,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
 
     def test_shelfobject_increase_case3(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User with permissions in this organization try to increase shelfobject
+        #UNEXPECTED CASE, BUT POSSIBLE(User 1 with permissions in this organization try to increase shelfobject
          with provider related to other laboratory)
 
         CHECK TESTS
@@ -84,9 +89,9 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         """
         self.provider = Provider.objects.get(pk=2)
         self.data['provider'] = self.provider.pk
-        response = self.client1_org1.post(self.url, data=self.data)
+        response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user1_org1))
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertTrue(self.total <= self.shelf.quantity)
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
