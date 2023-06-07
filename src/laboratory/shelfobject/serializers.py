@@ -183,6 +183,8 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
     errors = {}
     quantity = attr['quantity']
     total = attr['shelf'].get_total_refuse() + quantity
+    shelf= attr['shelf']
+    obj= attr['object']
     shelf_quantity = attr['shelf'].quantity
     unit = attr['measurement_unit']
     shelf_unit = attr['shelf'].measurement_unit
@@ -195,6 +197,11 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
         errors.update({'quantity': _("Quantity can't greater than shelf quantity limit %(limit)s")%{
             'limit': shelf_quantity,
         }})
+    if shelf.limit_only_objects:
+        if shelf.available_objects_when_limit.filter(pk=obj.pk).exists()==False:
+            errors.update({'object': _("Object is not available in these shelf")})
+
+
     if errors:
         raise serializers.ValidationError(errors)
     return attr
