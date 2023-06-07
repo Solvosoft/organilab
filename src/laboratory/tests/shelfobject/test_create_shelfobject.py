@@ -560,5 +560,71 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code,400)
+
         self.assertTrue(json.loads(response.content)['objecttype'][0], _("This field is required."))
         self.assertTrue(poscount==precount)
+
+    def test_create_shelfobject_object_no_available_in_shelf(self):
+        """
+        Test for API create_shelfobject when the shelf limit_only_object is True and the object is receiving
+        not is available for that shelf
+        """
+        shelf=Shelf.objects.get(pk=13)
+        shelf.limit_only_objects=True
+        obj=Object.objects.get(pk=2)
+        shelf.available_objects_when_limit.add(obj)
+        shelf.save()
+        data = {
+                "shelf": 13,
+                "object": 1,
+                "status": 1,
+                "objecttype": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "measurement_unit": 59,
+                "course_name": "A reactive product",
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+            }
+        precount = ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",
+                      kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount = ShelfObject.objects.filter(shelf=13).count()
+        self.assertEqual(response.status_code,400)
+        self.assertTrue(json.loads(response.content)["errors"]['object'][0]==_("Object is not available in these shelf"))
+        self.assertTrue(poscount==precount)
+
+    def test_create_shelfobject_object_available_in_shelf(self):
+        """
+        Test for API create_shelfobject when the shelf limit_only_object is True and the object is receiving
+        is available for that shelf
+        """
+        shelf=Shelf.objects.get(pk=13)
+        shelf.limit_only_objects=True
+        obj=Object.objects.get(pk=1)
+        shelf.available_objects_when_limit.add(obj)
+        shelf.save()
+        data = {
+                "shelf": 13,
+                "object": 1,
+                "status": 1,
+                "objecttype": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "measurement_unit": 59,
+                "course_name": "A reactive product",
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+            }
+        precount = ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",
+                      kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount = ShelfObject.objects.filter(shelf=13).count()
+        self.assertEqual(response.status_code,201)
+        self.assertTrue(poscount>precount)
