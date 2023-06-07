@@ -5,13 +5,13 @@ from laboratory.tests.utils import ShelfObjectSetUp
 from laboratory.utils import check_user_access_kwargs_org_lab
 
 
-class MoveShelfObjectViewTest(ShelfObjectSetUp):
+class ShelfObjectMoveViewTest(ShelfObjectSetUp):
     """
     This test does move shelfobject to other shelf request by post method and action 'move_shelfobject_to_shelf'
         located in laboratory/api/shelfobject.py --> ShelfObjectViewSet generic view set class.
     """
 
-    def test_move_object_case1(self):
+    def test_shelfobject_move_case1(self):
         """
         #EXPECTED CASE(User in this organization with permissions try to move shelfobject to other shelf)
 
@@ -41,7 +41,7 @@ class MoveShelfObjectViewTest(ShelfObjectSetUp):
         self.assertNotIn(shelf_object.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertIn(shelf_object.pk, list(new_shelf.get_objects().values_list('pk', flat=True)))
 
-    def test_move_object_case2(self):
+    def test_shelfobject_move_case2(self):
         """
         #UNEXPECTED CASE, BUT POSSIBLE(User to other organization without permissions try to move shelfobject to other shelf)
 
@@ -67,8 +67,7 @@ class MoveShelfObjectViewTest(ShelfObjectSetUp):
         self.assertIn(shelf_object.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(shelf_object.pk, list(new_shelf.get_objects().values_list('pk', flat=True)))
 
-
-    def test_move_object_case3(self):
+    def test_shelfobject_move_case3(self):
         """
         #UNEXPECTED CASE, BUT POSSIBLE(User in this organization with permissions try to move shelfobject to
          other shelf in other laboratory in this same organization)
@@ -95,7 +94,7 @@ class MoveShelfObjectViewTest(ShelfObjectSetUp):
         self.assertIn(shelf_object.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(shelf_object.pk, list(new_shelf.get_objects().values_list('pk', flat=True)))
 
-    def test_move_object_case4(self):
+    def test_shelfobject_move_case4(self):
         """
         #UNEXPECTED CASE, BUT POSSIBLE(User without permissions in this organization try to move shelfobject to
          other shelf in other laboratory in this same organization)
