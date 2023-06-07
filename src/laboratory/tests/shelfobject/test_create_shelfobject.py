@@ -66,6 +66,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertTrue(poscount>precount)
         obs=ShelfObjectObservation.objects.last()
         self.assertTrue(obs.description==data['course_name'])
+
     def test_create_shelfobject_equipment(self):
         """
         Test for API create_shelfobject when the objecttype is 2 and all the data is given correctly
@@ -536,3 +537,28 @@ class CreateShelfobjectTest(TestCase):
         self.assertTrue(precount == poscount)
         self.assertTrue(json.loads(response.content)['detail'] == _("Authentication credentials were not provided."))
 
+    def test_create_shelfobject_no_objecttype(self):
+        """
+        Test for API create_shelfobject when don't have objecttype
+        """
+        data = {
+                "shelf": 13,
+                "object": 1,
+                "status": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "measurement_unit": 59,
+                "course_name": "A reactive product",
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+            }
+        precount = ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",
+                      kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount = ShelfObject.objects.filter(shelf=13).count()
+        self.assertEqual(response.status_code,400)
+        self.assertTrue(json.loads(response.content)['objecttype'][0], _("This field is required."))
+        self.assertTrue(poscount==precount)
