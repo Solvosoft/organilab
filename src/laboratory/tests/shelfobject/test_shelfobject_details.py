@@ -42,7 +42,7 @@ class ShelfObjectDetailsTest(ShelfObjectAPITest):
         Shelf Object with pk = 4 that only have the required fields
         """
         response = self.client.get(reverse('laboratory:api-shelfobject-details',
-                                           kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 4}))
+                                           kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 5}))
         self.assertEqual(response.status_code, 404)
         pass
 
