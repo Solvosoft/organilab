@@ -108,6 +108,15 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+        "name": "Add Reserved Product",
+        "color": "#337193",
+        "permissions": [415]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -115,7 +124,7 @@
       "name": "Organization 1",
       "position": 0,
       "level": 0,
-      "rol": [1, 2]
+      "rol": [1, 2, 3]
     }
   },
   {
@@ -465,7 +474,7 @@
         "profile": 1,
         "content_type": 1,
         "object_id": 1,
-        "rol": [1, 2]
+        "rol": [1, 2, 3]
     }
   },
   {
