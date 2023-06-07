@@ -37,7 +37,7 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
         CHECK TESTS
         1) Check response status code equal to 200.
-        2) Check if user has access permission to request and move this shelfobject to other shelf.
+        2) Check if user has permission to access this organization and laboratory.
         3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
         4) Check if pk measurement unit related to this shelfobject is equal to measurement unit related to new shelf.
         5) Check if pk shelfobject is not in old shelf.
@@ -57,7 +57,7 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
         CHECK TESTS
         1) Check response status code equal to 403.
-        2) Check if user doesn't have access permission to request and move this shelfobject to other shelf.
+        2) Check if user doesn't have permission to access this organization and laboratory.
         3) Check if pk shelfobject is in old shelf.
         4) Check if pk shelfobject is not in new shelf.
         """
@@ -74,12 +74,14 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
         CHECK TESTS
         1) Check response status code equal to 400.
-        2) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
-        3) Check if pk shelfobject is not in old shelf.
-        4) Check if pk shelfobject is in new shelf.
+        2) Check if user has access permission to access this organization and laboratory.
+        3) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
+        4) Check if pk shelfobject is not in old shelf.
+        5) Check if pk shelfobject is in new shelf.
         """
         response = self.client1_org1.post(self.url, data=self.data_shelf_4)
         self.assertEqual(response.status_code, 400)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user1_org1))
         self.assertNotEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.new_shelf_4.furniture.labroom.laboratory.pk)
         self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
@@ -91,12 +93,14 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
         CHECK TESTS
         1) Check response status code equal to 403.
-        2) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
-        3) Check if pk shelfobject is not in old shelf.
-        4) Check if pk shelfobject is in new shelf.
+        2) Check if user doesn't have permission to access this organization and laboratory.
+        3) Check if pk laboratoryrelated to this shelfobject is not equal to pk laboratory related to new shelf.
+        4) Check if pk shelfobject is not in old shelf.
+        5) Check if pk shelfobject is in new shelf.
         """
         response = self.client2_org2.post(self.url, data=self.data_shelf_4)
         self.assertEqual(response.status_code, 403)
+        self.assertFalse(check_user_access_kwargs_org_lab(self.org1.pk, self.lab1_org1.pk, self.user2_org2))
         self.assertNotEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.new_shelf_4.furniture.labroom.laboratory.pk)
         self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
