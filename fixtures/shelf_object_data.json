@@ -716,5 +716,53 @@
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 1,
+    "fields": {
+      "title": "Prácticas Estudiantiles S2 2023",
+      "description": "Prácticas estudiantiles del segundo semestre en 2023",
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 1,
+    "fields": {
+      "procedure": 1,
+      "title": "Paso 1",
+      "description": "El paso 1 se compone de ..."
+    }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 2,
+    "fields": {
+      "title": "Prácticas Estudiantiles S1 2023",
+      "description": "Prácticas estudiantiles del primer semestre en 2023",
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 2,
+    "fields": {
+      "procedure": 2,
+      "title": "Paso 1",
+      "description": "El paso 1 se compone de ..."
+    }
+  },
+  {
+    "model": "academic.procedurerequiredobject",
+    "pk": 1,
+    "fields": {
+      "step": 2,
+      "object": 1,
+      "quantity": 0,
+      "measurement_unit": 62
+    }
   }
 ]
