@@ -259,12 +259,14 @@ msgstr "Formula Molecular"
 #: laboratory/static/laboratory/js/detail_modal_creation.js:112
 #: academic/static/js/complete_my_procedure.js:100
 #: academic/static/js/complete_my_procedure.js:144
+#: academic/static/js/procedure.js:11
 msgid "Yes"
 msgstr "Sí"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:113
 #: academic/static/js/complete_my_procedure.js:101
 #: academic/static/js/complete_my_procedure.js:145
+#: academic/static/js/procedure.js:12
 msgid "No"
 msgstr "No"
 
@@ -425,3 +427,11 @@ msgstr "Comentario"
 #: laboratory/static/js/procedures.js:190
 msgid "Reserved"
 msgstr "Reservar"
+
+#: academic/static/js/procedure.js:8
+msgid "Delete procedure"
+msgstr "Eliminar procedimiento"
+
+#: academic/static/js/procedure.js:9
+msgid "Do you want to remove the procedure?"
+msgstr "¿Desea eliminar el procedimiento?"
