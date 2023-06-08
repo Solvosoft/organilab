@@ -8,7 +8,7 @@
 from django.urls import path, re_path
 
 from . import views
-from .views import index_sga, template, editor
+from .views import index_sga, template, editor, render_editor_sga
 
 # SGA
 app_name = 'sga'
@@ -17,6 +17,7 @@ app_name = 'sga'
 urlpatterns = [
     # sga/index_sga/
     path('index_sga', index_sga, name='index_sga'),
+    path('editor_sga', render_editor_sga, name='index_editor'),
     path('barcode/<str:code>/', views.get_barcode_from_number, name='barcode_from_number'),
     path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
     # sga/editor

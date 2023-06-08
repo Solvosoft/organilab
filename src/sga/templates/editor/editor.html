@@ -1,0 +1,113 @@
+{% load static %}
+{% load organilab_tags %}
+<html>
+<head>
+<link href="{% static 'sga/css/pictogram_editor.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
+<style>
+#diagram {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    user-select: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: rgb(73, 80, 87);
+    outline: none;
+}
+</style>
+</head>
+
+<body>
+<ap-menu id="menu"></ap-menu>
+<ap-menu-shape id="menu-shape"></ap-menu-shape>
+<svg id="diagram" tabindex="0" style="touch-action: none; background-color: #fff; display:block; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; pointer-events: unset;">
+    <style type="text/css">
+        @import url("https://fonts.cdnfonts.com/css/carlito");
+        @import url("https://fonts.cdnfonts.com/css/paciencia");
+        @import url('https://fonts.cdnfonts.com/css/cousine');
+        @import url('https://fonts.cdnfonts.com/css/dejavu-sans');
+
+        text {
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+        }
+
+        textarea {
+            text-align: center;
+            border: none;;
+            padding: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            background-color: transparent;
+            color: transparent;
+            outline: none;
+            overflow: hidden;
+            resize: none;
+            line-height: 1em;
+            caret-color: dimgray;
+        }
+
+        [data-shape-resize],
+        [data-path-resize] {
+            display: none;
+        }
+
+        .select path[data-key="highlight"] {
+            display: unset;
+            opacity: 0.51;
+            stroke: rgb(108 187 247);
+            fill: none;
+        }
+
+        .select [data-shape-resize],
+        .select [data-path-resize] {
+            display: unset;
+            opacity: 0.8;
+            fill: darkslateblue;
+        }
+
+        .select [data-key="highlight"]{
+            paint-order: stroke;
+            stroke: rgb(108 187 247 / 51%);
+        }
+
+        .shpath [data-key="end"] .path,
+        .shpath [data-key="start"] .path { display: none;}
+        .shpath.arw-e [data-key="end"] .path,
+        .shpath.arw-s [data-key="start"] .path { display: unset;}
+        .shpath.dash [data-key="path"] { stroke-dasharray:5; }
+
+        @media (pointer: coarse) {
+            .ative-elem {
+                stroke: rgb(108 187 247 / 51%);
+                stroke-width: 70px;
+            }
+        }
+
+        /* shapes text align */
+        .ta-1 text { text-anchor: start; }
+        .ta-2 text { text-anchor: middle; }
+        .ta-3 text { text-anchor: end; }
+        .ta-1 textarea { text-align: left; }
+        .ta-2 textarea { text-align: center; }
+        .ta-3 textarea { text-align: right; }
+
+        /* shapes text styles */
+        .ts-bold text, .ts-bold textarea { font-weight: bold; }
+        .ts-italic text, .ts-italic textarea { font-style: italic; }
+        .ts-underline text, .ts-underline textarea { text-decoration: underline; }
+
+        /* text shape */
+        .shtxt textarea { caret-color: rgb(73, 80, 87); }
+        .shtxt text { fill:rgb(73, 80, 87); }
+        .shtxt [data-key="main"] { fill: transparent; stroke: transparent; }
+        .shtxt.select [data-key="main"] { stroke: rgb(108 187 247 / 51%); stroke-width: 1px; }
+
+    </style>
+    <g id="canvas" data-pictogrampath="/static/pictograms/">
+        <defs data-key="pictogram-patterns"></defs>
+    </g>
+</svg>
+<script src="{% static 'sga/js/pictogram_editor.js' %}" ></script>
+</body>
