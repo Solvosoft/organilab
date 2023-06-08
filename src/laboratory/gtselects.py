@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics, status
@@ -8,9 +9,11 @@ from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Rol
-from laboratory.models import Object, Catalog, Provider, ShelfObject
+from laboratory.forms import ValidateShelfForm
+from laboratory.models import Object, Catalog, Provider, OrganizationStructure, Laboratory, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
+from django.conf import settings
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -196,6 +199,36 @@ class ProviderLookup(BaseSelect2View):
             return super().list(request, *args, **kwargs)
 
         return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+@register_lookups(prefix="objectorgavailable", basename="objectorgavailable")
+class ObjectAvailbeloLookup(BaseSelect2View):
+    model = Object
+    fields = ['code', 'name']
+    org_pk = None
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.org_pk:
+            organizations = get_pk_org_ancestors(self.org_pk.pk)
+            queryset = queryset.filter(organization__in=organizations)
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.org_pk = self.serializer.validated_data['organization']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
             'status': 'Bad request',
             'errors': self.serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+

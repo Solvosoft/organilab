@@ -99,6 +99,24 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+        "name": "Change Shelf Object",
+        "color": "#337193",
+        "permissions": [24]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+        "name": "Add Reserved Product",
+        "color": "#337193",
+        "permissions": [415]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -106,7 +124,7 @@
       "name": "Organization 1",
       "position": 0,
       "level": 0,
-      "rol": [1]
+      "rol": [1, 2, 3]
     }
   },
   {
@@ -244,6 +262,16 @@
     }
   },
   {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de exp",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 3
+    }
+  },
+  {
     "model": "laboratory.furniture",
     "pk": 1,
     "fields": {
@@ -256,7 +284,20 @@
       "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
-   {
+  {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 2",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[3],[]],[[],[],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
     "model": "laboratory.shelf",
     "pk": 1,
     "fields": {
@@ -267,7 +308,108 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-      "discard": false
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 2,
+    "fields": {
+      "furniture": 1,
+      "name": "SH 2 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 3,
+    "fields": {
+      "furniture": 1,
+      "name": "SH 3 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 2,
+      "name": "SH 4 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Reactivo",
+      "description": "Es un reactivo en la industria química."
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "CA777",
+      "name": "Cal 100 gr",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1]
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 2,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
     }
   },
   {
@@ -332,7 +474,7 @@
         "profile": 1,
         "content_type": 1,
         "object_id": 1,
-        "rol": [1]
+        "rol": [1, 2, 3]
     }
   },
   {
@@ -545,6 +687,34 @@
         "laboratory",
         "laboratory"
       ]
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "name": "Karine Products",
+      "phone_number": "(506)2209-8765",
+      "email": "karineproductos@cr.com",
+      "legal_identity": "3-8764-8354",
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "name": "LP Company",
+      "phone_number": "(506)2209-8765",
+      "email": "lpcompany@cr.com",
+      "legal_identity": "3-463-3423432",
+      "laboratory": 2,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
     }
   }
 ]

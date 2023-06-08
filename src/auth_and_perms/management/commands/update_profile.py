@@ -21,6 +21,7 @@ class Command(BaseCommand):
 
     def clean_userpass(self):
         for user in User.objects.all():
+            print(user.username)
             user.set_password('Admin12345')
             user.save()
 

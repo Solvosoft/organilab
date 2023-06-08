@@ -28,12 +28,7 @@ from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
     ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
-    MoveShelfObjectSerializer
-
-from laboratory.shelfobject.serializers import ShelfObjectDetailSerializer
-from laboratory.shelfobject.serializers import ShelfSerializer, \
-    ValidateShelfSerializer
-from laboratory.shelfobject.serializers import TransferInSerializer, \
+    MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
@@ -235,7 +230,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "reserve": ["reservations_management.add_reservedproducts"],
         "detail": ["laboratory.view_shelfobject"],
         "tag": [],
-        "detail_pdf": [],
         "delete": ["laboratory.delete_shelfobject"],
         "chart_graphic": [],
         "create_comments": ["laboratory.add_shelfobjectobservation"],
@@ -258,6 +252,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             raise PermissionDenied()
 
     def _get_shelfobject_with_check(self, pk, laboratory):
+        """
+        Validates if the laboratory relataed to shefobject is the same laboratory is working
+        :param pk: Pk of the Shelfobject is creating o updating
+        :param laboratory: laboratory was sended in the request
+        :return: the sheobject serializer and the create function
+        """
         obj=get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
         if obj.in_where_laboratory is None or obj.in_where_laboratory.pk != laboratory:
             raise Http404
@@ -300,7 +300,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def create_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
-        Creates the request to create shelfobjects into the shelf
+        This action allows the creates shelfobjects into the shelves, also user needs to have required access permission
+        to do this action,futhermore the serializer validate that the quantity adding is less or equal than the shelfs
+        quantity,the only moment permit a shelfobject quantity greater than shelf quantity is when the shelf is quantity
+        unlimit, also the serializer validates shelfobject measurement unit need to be similar than shelf measurement
+        unit, the only form to add a shelfobjects with different unit is when the shelf don't have measurement unit
         :param request: http request
         :param org_pk: organization related user permissions
         :param lab_pk: laboratory related to shelfobject and user permissions
@@ -544,6 +548,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         utils.organilab_logentry(self.request.user, serializer.validated_data['transfer_object'], DELETION, relobj=self.laboratory)
         serializer.validated_data['transfer_object'].delete()
         return JsonResponse({'detail': _('The transfer in was denied successfully.')}, status=status.HTTP_200_OK)
+
     
     @action(detail=False, methods=['post'])
     def transfer_in_accept(self, request, org_pk, lab_pk, **kwargs):
@@ -564,18 +569,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         else:
            errors = serializer.errors 
         
-        
-    @action(detail=False, methods=['get'])
-    def detail_pdf(self, request, org_pk, lab_pk, **kwargs):
-        """
-        Kendric
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
-        """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail_pdf")
 
     @action(detail=False, methods=['delete'])
     def delete(self, request, org_pk, lab_pk, **kwargs):
@@ -650,13 +643,15 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=True, methods=['put'])
     def update_status(self, request, org_pk, lab_pk,pk, **kwargs):
         """
-        Change the status of a shelf object
-        :param org_pk: pk of the organization being queried
-        :param lab_pk: pk of the laboratory that can receive the transfer in
+        This action allows the change of shelfobject status, also user needs to have required access permission to do this action to change the state.
+        Changes the status for a specific shelf object
+        :param org_pk: pk of the organization
+        :param lab_pk: pk of the laboratory from which the shelf object is located
         :param kwargs: other extra params
-        :param pk: Of the shelf object that change the status
-        :return: JsonReponse with the information about status or shelf object (success or error)
+        :param pk: pk of the shelf object that is changing the status
+        :return: JsonReponse with the description and detail of the shelfobejct status if is a success or only the detail when is an error
         """
+
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
         self.serializer_class=UpdateShelfObjectStatusSerializer
         data ={'shelf_object':pk}
