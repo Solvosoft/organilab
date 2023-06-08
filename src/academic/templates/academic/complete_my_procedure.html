@@ -18,17 +18,19 @@
                 {% csrf_token %}
                 <div id="steps-table">
                     {% for step in steps %}
+                    {% if step.title %}
                     <div id="step-{{ step.pk }}" class="pb-2">
                         <label id="step-title-{{ step.pk }}" class="step-title" for="step-description-{{ step.pk }}">{{ step.title|safe }}</label>
                             <div class="row">
-                                <div class="col">
+                                <div class="col-md-11">
                                     <div id="step-description-{{ step.pk }}" class="step-description">{{ step.description|safe }}</div>
                                 </div>
-                                <div class="col">
+                                <div class="col-md-1">
                                     <input type="radio" class="stepradio" name="step" value="{{ step.pk }}">
                                 </div>
                             </div>
                         </div>
+                    {% endif %}
                     {% endfor %}
                 </div>
                 {% if my_procedure.status == 'Eraser' %}
@@ -48,7 +50,8 @@
         </div>
     </div>
 </div>
-{% include 'modal_template.html' with form=form id="commentmodal" title="Add observation" form_id="commentform" url=api_my_procedure_list %}
+{% trans 'Add observation' as modaltitle %}
+{% include 'modal_template.html' with form=form id="commentmodal" title=modaltitle form_id="commentform" url=api_my_procedure_list %}
 {% endblock %}
 
 {% block js %}
