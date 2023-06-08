@@ -71,8 +71,8 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
 
         reserved_products = ReservedProducts.objects.filter(
-            initial_date=self.initial_date,
-            final_date=self.final_date,
+            initial_date__date=self.initial_date.date(),
+            final_date__date=self.final_date.date(),
             amount_required=self.data['amount_required'],
             shelf_object=self.data['shelf_object']
         )
