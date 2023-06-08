@@ -1195,6 +1195,24 @@
     }
   },
   {
+    "model": "laboratory.shelf",
+    "pk": 13,
+    "fields": {
+      "furniture": 2,
+      "name": "Estante 12",
+      "container_shelf": null,
+      "type": 74,
+      "infinity_quantity": false,
+      "quantity": 40,
+      "limit_only_objects": false,
+      "measurement_unit": 59,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
     "model": "reservations_management.reservations",
     "pk": 1,
     "fields": {
@@ -1318,6 +1336,21 @@
       "measurement_unit": 63,
       "creation_date": "2023-05-10T22:48:14.125Z",
       "last_update": "2023-05-12T22:48:14.166Z"
+    }
+  },
+    {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
     }
   },
   {

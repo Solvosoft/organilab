@@ -82,6 +82,7 @@ MIDDLEWARE = [
     'authentication.middleware.ProfileMiddleware'
 ]
 
+X_FRAME_OPTIONS = "SAMEORIGIN"
 ROOT_URLCONF = 'organilab.urls'
 
 TEMPLATES = [
