@@ -20,10 +20,12 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         self.user = self.user1_org1
         self.client = self.client1_org1
         self.shelf_object = ShelfObject.objects.get(pk=1)
+        self.initial_date = now() + relativedelta(days=+100)
+        self.final_date = now() + relativedelta(days=+200)
         self.data = {
             "amount_required": 2,
-            "initial_date": (now() + relativedelta(days=+100)).strftime("%Y-%m-%d %H:%M"),
-            "final_date": (now() + relativedelta(days=+200)).strftime("%Y-%m-%d %H:%M"),
+            "initial_date": self.initial_date.strftime("%Y-%m-%d %H:%M"),
+            "final_date": self.final_date.strftime("%Y-%m-%d %H:%M"),
             "shelf_object": self.shelf_object.pk
         }
         self.url = reverse("laboratory:api-shelfobject-reserve", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -44,8 +46,8 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
 
         reserved_products = ReservedProducts.objects.filter(
-            initial_date=self.data['initial_date'],
-            final_date=self.data['final_date'],
+            initial_date__date=self.initial_date.date(),
+            final_date__date=self.final_date.date(),
             amount_required=self.data['amount_required'],
             shelf_object=self.data['shelf_object']
         )
@@ -69,8 +71,8 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
 
         reserved_products = ReservedProducts.objects.filter(
-            initial_date=self.data['initial_date'],
-            final_date=self.data['final_date'],
+            initial_date=self.initial_date,
+            final_date=self.final_date,
             amount_required=self.data['amount_required'],
             shelf_object=self.data['shelf_object']
         )
