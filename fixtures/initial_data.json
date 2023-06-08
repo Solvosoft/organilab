@@ -2095,6 +2095,14 @@
     "description": "13 Sólidos no inflamables en envases no inflamables"
   }
 },
+  {
+    "model": "laboratory.catalog",
+    "pk": 158,
+    "fields": {
+        "key": "shelfobject_status",
+        "description": "Excelente estado"
+    }
+},
 {
   "model": "sga.warningclass",
   "pk": 2,
