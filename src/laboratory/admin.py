@@ -1,10 +1,11 @@
 from django.contrib import admin
+from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from laboratory import models
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
-
+from django.core import serializers
 
 @admin.action(description='Regenerate QR')
 def regenerate_qr_codes(admin, request, queryset):
@@ -41,7 +42,24 @@ class InformSchedulerAdmin(admin.ModelAdmin):
     inlines = [PeriodScheduledAdmin]
 
 
-admin.site.register(models.Laboratory)
+@admin.action(description='Export Laboratory')
+def export_laboratory(admin, request, queryset):
+    response = HttpResponse(
+        content_type='Application/json',
+        headers={'Content-Disposition': 'attachment; filename="laboratory.json"'})
+    labrooms=models.LaboratoryRoom.objects.filter(laboratory__in=queryset)
+    furnutures=models.Furniture.objects.filter(labroom__in=labrooms)
+    shelfs=models.Shelf.objects.filter(furniture__in=furnutures)
+    shelfsobject=models.ShelfObject.objects.filter(shelf__in=shelfs)
+    objs = [*labrooms, *furnutures, *shelfs, *shelfsobject]
+    serializers.serialize('json', objs, stream=response)
+    return response
+
+
+class LaboratoryAdmin(admin.ModelAdmin):
+    actions = [export_laboratory]
+
+admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
 admin.site.register(models.LaboratoryRoom)
 admin.site.register(models.Furniture)
