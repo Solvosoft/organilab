@@ -187,7 +187,7 @@ function add_reservation(){
             if(state){
             Swal.fire(
                     '',
-                    reserved,
+                    gettext("Reserved"),
                     'success'
             )
             }else{
