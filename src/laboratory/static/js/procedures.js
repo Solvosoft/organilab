@@ -41,6 +41,9 @@ function add_object(){
                 icon: 'error',
                 text: msg,
             })
+            }else{
+            document.getElementById('object_form').reset();
+            $('select').prop('selectedIndex', 0).change();
             }
         }
         });
