@@ -155,12 +155,13 @@ swalWithBootstrapButtons.fire({
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
-    swalWithBootstrapButtons.fire(
-      'Eliminado!',
-      out_msg,
-      'success'
-    )
+    swalWithBootstrapButtons.fire({
+      title:gettext('Deleted!'),
+      text:out_msg,
+      type:'success'
+    }).then(function(){
      sendrequest(pk,url,action);
+     })
 
 
   } else if (
@@ -198,6 +199,8 @@ function add_reservation(){
                 document.querySelector("#list_errors").innerHTML=list;
                 $("#error_reserved").modal('show')
             }
+            document.getElementById('reservation_form').reset();
+
         }
         });
   }
