@@ -236,6 +236,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'auth_and_perms.view_profile'
         },
         {
+            'name': 'Add Laboratory Room',
+            'category': 'Laboratory Room',
+            'permission': 'laboratory.add_laboratoryroom'
+        },
+        {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'

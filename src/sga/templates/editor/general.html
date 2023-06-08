@@ -1,6 +1,6 @@
 <div role="tabpanel" class="tab-pane show active" id="general">
 
-    <form id="sgaform"  method="post" action="{{form_url}}">
+    <form id="formeditor"  method="post" action="{{form_url}}">
         {% csrf_token %}
         {% if instance %}
             <input type="hidden" name="instance" value="{{instance.pk}}">
