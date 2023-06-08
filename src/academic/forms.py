@@ -1,12 +1,39 @@
 from django import forms
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
-from .models import ProcedureStep, Procedure
+from .models import ProcedureStep, Procedure, MyProcedure, CommentProcedureStep
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from laboratory.models import Object,Catalog,Shelf
 from django.utils.translation import gettext_lazy as _
 from organilab.settings import DATETIME_INPUT_FORMATS
+
+
+class MyProcedureForm(forms.ModelForm, GTForm):
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(MyProcedureForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields['custom_procedure'].queryset = Procedure.objects.filter()
+        else:
+            self.fields['custom_procedure'].queryset = Procedure.objects.none()
+
+    class Meta:
+        model = MyProcedure
+        fields = ['name', 'custom_procedure']
+        widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
+                   'custom_procedure': genwidgets.Select(),
+                   }
+
+
+class CommentProcedureStepForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = CommentProcedureStep
+        fields = ['creator', 'comment']
+        widgets = {'creator': genwidgets.HiddenInput,
+                   'comment': genwidgets.Textarea,
+                   }
 
 
 class ProcedureForm(forms.ModelForm, GTForm):
