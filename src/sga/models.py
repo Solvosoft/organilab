@@ -303,11 +303,13 @@ class TemplateSGA(models.Model):
         verbose_name = _('Template SGA')
         verbose_name_plural = _('Templates SGA')
 
+
 class PersonalTemplateSGA(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     json_representation = models.TextField()
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"), on_delete=models.DO_NOTHING)
+    recipient_size = models.ForeignKey(RecipientSize, null=True, verbose_name=_("Recipient size"),  on_delete=models.SET_NULL)
     preview = models.TextField(help_text="B64 preview image", null=True)
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True, blank=True)
