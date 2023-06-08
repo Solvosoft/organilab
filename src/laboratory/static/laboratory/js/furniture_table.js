@@ -65,10 +65,10 @@ function refresh_description(){
     };
 
     setTimeout(function () {
-        show_refuse_elements();
         show_refuse_elements_limit_only_objects();
         hide_quantity();
         gt_find_initialize($("#shelfmodalbody"));
+        show_refuse_elements();
     }, 1000);
 
 }
@@ -132,11 +132,16 @@ function delete_shelf(id, url){
     })
 }
 function show_refuse_elements(){
+     let infinity_quantity=$('#id_shelf--infinity_quantity')
      if($('#id_shelf--discard').is(':checked')){
         $('#id_shelf--description').parent().parent().show();
+        $('#id_shelf--quantity').parent().parent().show();
+        $('#id_shelf--infinity_quantity').parent().parent().parent().hide();
+        $(infinity_quantity).parent().removeClass('checked');
+        $(infinity_quantity).iCheck('uncheck');
      }else{
         $('#id_shelf--description').parent().parent().hide();
-
+        $('#id_shelf--infinity_quantity').parent().parent().parent().show();
       }
 }
 
@@ -232,7 +237,6 @@ function hide_quantity(){
         $('#id_shelf--quantity').parent().parent().hide();
     }else{
         $('#id_shelf--quantity').parent().parent().show();
-
     }
 }
 save_form();

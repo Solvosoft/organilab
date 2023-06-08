@@ -6,7 +6,7 @@ from django.conf.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from academic.api.views import ReviewSubstanceViewSet
+from academic.api.views import ReviewSubstanceViewSet, ProcedureStepCommentAPI, ProcedureStepCommentTableView
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api import shelfobject as ShelfObjectApi
@@ -201,6 +201,10 @@ router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_informs', InformViewSet, basename='api-informs')
 
+stepcommentsrouter = DefaultRouter()
+stepcommentsrouter.register('api_my_procedure', ProcedureStepCommentAPI, basename='api-my-procedure')
+stepcommentsrouter.register('api_procedure_comments', ProcedureStepCommentTableView, basename='api-procedure-comments')
+
 
 shelfobjectrouter = DefaultRouter()
 shelfobjectrouter.register('api_shelfobject_table', ShelfObjectApi.ShelfObjectTableViewSet, basename='api-shelfobjecttable')
@@ -234,5 +238,5 @@ urlpatterns += organization_urls + [
     path('catalogs/', include(catalogs_urls)),
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
-
+    path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
 ]

@@ -6,9 +6,7 @@
 {% endblock %}
 
 {# CSS #}
-{% block css %}
-<link href="{% static 'editor/svgedit.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
-{% endblock css %}
+
 {% block content %}
 <div class="container">
     <div class="row">
@@ -23,7 +21,7 @@
         </div>
 
         <div class="col-9">
-             <form method="post" id="sgaform">{% csrf_token %}
+             <form method="post" id="formeditor">{% csrf_token %}
             <div class="row  mb-3">
                 <div class="col-9">
                     <div class="card">
@@ -42,15 +40,17 @@
         </a>
 </div>
                     <div class="row  mt-3 mb-2 p-2 text-center">
-        <button id="savesgalabel" type="button" class="btn btn-outline-success">
+                    <button id="editor_save" type="button" class="btn btn-outline-success">
             <i class="fa fa-save"></i>  {% trans 'Save' %}
         </button></div>
-
-
-                </div>
+       </div>
+                <div class="m-3 card">
+    <div class="card-body">
+    <iframe id="editoriframe" src="{{request.scheme}}://{{ request.get_host }}{% url 'sga:index_editor' org_pk=org_pk %}?app_label=sga&model=personaltemplatesga&object_id={{sgalabel.pk}}&field=json_representation" width="100%" height="600px"></iframe>
+    </div>
+</div>
             </div>
              </form>
-            {% include 'editor/canvas_and_utils.html' %}
         </div>
     </div>
 
@@ -60,5 +60,9 @@
 {% block js %}
 <script>
     document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
+    var json_representation=`{{sgalabel.json_representation|safe}}`;
 </script>
+
+<script src="{% static 'sga/js/editor-command.js' %}?v={% get_organilab_version %}"></script>
+
 {% endblock %}

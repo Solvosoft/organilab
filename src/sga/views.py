@@ -6,6 +6,7 @@ from barcode import Code128
 from barcode.writer import SVGWriter
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Max
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseNotFound
@@ -27,13 +28,19 @@ from sga.models import TemplateSGA, PersonalTemplateSGA, Label, Pictogram, Build
 from .api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
 from .decorators import organilab_context_decorator
 from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
-
+from django import forms
 register = Library()
 
 # SGA Home Page
 @login_required
 def index_sga(request):
     return render(request, 'index_sga.html', {})
+
+@login_required
+def render_editor_sga(request, org_pk):
+    context={}
+    return render(request, 'editor/editor.html', context)
+
 
 
 # SGA template visualize
@@ -444,8 +451,7 @@ def sgalabel_step_two(request, org_pk, organilabcontext, pk):
         'sgalabel': sgalabel,
         'organilabcontext': organilabcontext,
         'complement': complement,
-        'form': SGAEditorForm(),
-        'editorform': PersonalSGAForm(instance=sgalabel, initial={'recipient_size': sgalabel.template.recipient_size}),
+        'editorform': PersonalSGAForm(instance=sgalabel),
         'org_pk': org_pk
     }
 

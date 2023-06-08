@@ -12,15 +12,19 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
-from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm
-from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations
-from laboratory.models import Object, Catalog, Furniture, ShelfObject
+from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm, \
+    MyProcedureForm, CommentProcedureStepForm
+from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure, \
+    CommentProcedureStep
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.models import Object, Catalog, Furniture, ShelfObject, Laboratory, OrganizationStructure
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import (
     ListView as DJListView,
     CreateView as DJCreateView,
     UpdateView as DJUpdateView
 )
+from organilab import settings
 from reservations_management.models import ReservedProducts
 from . import convertions
 
@@ -32,6 +36,124 @@ def add_steps_wrapper(request, *args, **kwargs):
     procstep = ProcedureStep.objects.create(procedure=procedure)
     organilab_logentry(request.user, procstep, ADDITION, relobj=kwargs['lab_pk'])
     return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': kwargs['lab_pk'],'org_pk':kwargs['org_pk']}))
+
+
+@permission_required('academic.view_myprocedure')
+def get_my_procedures(request, org_pk, lab_pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
+    content = ContentType.objects.get(app_label="laboratory", model="laboratory")
+    my_procedures = MyProcedure.objects.filter(object_id=laboratory.pk, content_type=content).order_by('-pk')
+    context = {
+        'my_procedures': my_procedures,
+        'form': MyProcedureForm(org_pk=org_pk),
+        'laboratory': laboratory.pk,
+        'org_pk': org_pk,
+        'reservation_form': ReservationForm
+    }
+    return render(request, 'academic/procedure.html', context=context)
+
+
+@permission_required('academic.add_myprocedure')
+def create_my_procedures(request, org_pk, lab_pk, *args, **kwargs):
+    form = MyProcedureForm(request.POST, org_pk=org_pk)
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
+    if form.is_valid():
+        my_procedure = form.save(commit=False)
+        content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
+        my_procedure.content_type = content
+        my_procedure.object_id = lab_pk
+        my_procedure.organization = organization
+        my_procedure.created_by = request.user
+        my_procedure.save()
+        organilab_logentry(request.user, my_procedure, ADDITION, 'myprocedures', relobj=lab_pk)
+        return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
+
+    return render(request, 'academic/procedure.html', context={'laboratory': lab_pk, 'org_pk': org_pk})
+
+
+@permission_required('academic.delete_myprocedure')
+def remove_my_procedure(request, org_pk, lab_pk, pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
+    my_procedure = get_object_or_404(MyProcedure, pk=pk)
+    if my_procedure:
+        organilab_logentry(request.user, my_procedure, DELETION, 'myprocedures', relobj=lab_pk)
+        my_procedure.delete()
+        return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
+    return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
+
+
+def update_my_procedure_data(item, data):
+    if 'key' in item and 'defaultValue' in item:
+        if item['key'] in data:
+            if item['type'] not in ["selectboxes", "select", "custom_select"]:
+                item['defaultValue'] = data[item['key']][0]
+            elif item['type'] in ["select", "custom_select"]:
+                # Save data from a select, allows multiple selection
+                item['defaultValue'] = data[item['key']]
+            else:
+                aux_list = {}
+                for key in data[item['key']]:
+                    aux_list[key] = True
+                    item['defaultValue'] = aux_list
+
+    if 'components' in item:
+        for child in item['components']:
+            update_my_procedure_data(child,data)
+
+    if 'rows' in item and isinstance(item['rows'], (list,tuple)):
+        for row in item['rows']:
+            for child in row:
+                update_my_procedure_data(child,data)
+
+
+@permission_required('academic.change_myprocedure')
+def complete_my_procedure(request, org_pk, lab_pk, pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
+    my_procedure = get_object_or_404(MyProcedure, pk=pk)
+    steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)
+    comments = CommentProcedureStep.objects.filter(procedure_step__procedure=my_procedure.custom_procedure)
+    schema = my_procedure.schema
+    form = json.dumps(schema, indent=2)
+    context = {
+        "schema": form,
+        'my_procedure': my_procedure,
+        'laboratory': lab_pk,
+        'org_pk': org_pk,
+        'form': CommentProcedureStepForm,
+        'steps': steps,
+        'comments': comments
+    }
+
+    if request.method == 'POST':
+        data = dict(request.POST)
+        my_procedure.status = request.POST.get('status')
+        del data['csrfmiddlewaretoken']
+        del data['status']
+
+        result = {}
+
+        for d in data.keys():
+            result[d[d.find("[")+1:d.find("]")]] = data[d]
+
+        update_my_procedure_data(schema, result)
+        my_procedure.schema = schema
+        my_procedure.save()
+
+        return JsonResponse({'url': reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk})})
+
+    return render(request, 'academic/complete_my_procedure.html', context)
 
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
