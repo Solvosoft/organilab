@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm, \
-    MyProcedureForm, CommentProcedureStepForm
+    MyProcedureForm, CommentProcedureStepForm, AddObjectStepForm
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure, \
     CommentProcedureStep
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
@@ -288,23 +288,21 @@ def save_object(request, *args, **kwargs):
     pk = kwargs['pk']
     lab_pk = kwargs['lab_pk']
     org_pk = kwargs['org_pk']
+    form = AddObjectStepForm(request.POST)
     step = get_object_or_404(ProcedureStep, pk=pk)
-    unit = get_object_or_404(Catalog, pk=int(request.POST['unit']))
-    obj = Object.objects.get(pk=int(request.POST['object']))
     status = False
     msg = _('There is no object in the inventory with this unit of measurement')
-
-    if unit.description in validate_unit(lab_pk, obj):
+    if form.is_valid():
+        unit = form.cleaned_data['unit']
+        obj = form.cleaned_data['object']
         objects = ProcedureRequiredObject.objects.create(step=step, object=obj,
-                                                         quantity=request.POST['quantity'],
-                                                         measurement_unit=unit)
-        objects.save()
+                                                             quantity=form.cleaned_data['quantity'],
+                                                             measurement_unit=unit)
         status = True
         str_obj = f'{objects.object} {objects.quantity} {str(objects.measurement_unit)}'
         change_message = str_obj + " procedure required object has been added"
-        changed_data = ['object', 'quantity', 'unit']
-        organilab_logentry(request.user, objects, ADDITION, changed_data=changed_data, change_message=change_message,
-                           relobj=lab_pk)
+        organilab_logentry(request.user, objects, ADDITION, changed_data=form.changed_data, change_message=change_message,
+                               relobj=lab_pk)
 
     return JsonResponse({'data': get_objects(pk), 'status': status, 'msg': msg})
 
