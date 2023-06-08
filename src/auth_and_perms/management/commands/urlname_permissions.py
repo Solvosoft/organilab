@@ -2970,6 +2970,11 @@ URLNAME_PERMISSIONS = {
     ],
     'my_procedure_list': [
         {
+            'name': 'View Procedure Template',
+            'category': 'Procedure Template',
+            'permission': 'academic.view_procedure'
+        },
+        {
             'name': 'Add My Procedure',
             'category': 'My Procedure',
             'permission': 'academic.add_myprocedure'
@@ -2992,8 +2997,8 @@ URLNAME_PERMISSIONS = {
     ],
     'my_procedure_step_comments': [
         {
-            'name': 'View Procedure',
-            'category': 'Procedure',
+            'name': 'View Procedure Template',
+            'category': 'Procedure Template',
             'permission': 'academic.view_procedure'
         },
         {

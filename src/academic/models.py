@@ -27,9 +27,9 @@ class Procedure(models.Model, HTMLPresentation):
 
 
 STATUS_CHOICES = (
-    (_('Eraser'), _('Eraser')),
-    (_('In Review'), _('In Review')),
-    (_('Finalized'), _('Finalized')),
+    ('Eraser', _('Eraser')),
+    ('In Review', _('In Review')),
+    ('Finalized', _('Finalized')),
 )
 
 
