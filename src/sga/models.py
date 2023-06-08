@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from tree_queries.models import TreeNode
 
 from presentation.models import AbstractOrganizationRef
-from sga.managers import OrganilabContextQueryset
 from laboratory import catalog
 from django.conf import settings
 
@@ -162,8 +161,6 @@ class Substance(AbstractOrganizationRef):
                                        verbose_name=_("Agrochemical"))
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.SET_NULL, null=True, related_name='creator')
     description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
 
     @property
     def warning_word(self):
@@ -314,8 +311,6 @@ class PersonalTemplateSGA(models.Model):
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True, blank=True)
     logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         recipient=RecipientSize.objects.get(pk=self.template.recipient_size.pk)

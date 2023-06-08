@@ -8,7 +8,8 @@
 from django.urls import path, re_path
 
 from . import views
-from .views import index_sga, template, editor, render_editor_sga
+from .views import editor
+from .views import sustance
 
 # SGA
 app_name = 'sga'
@@ -16,25 +17,25 @@ app_name = 'sga'
 # Views
 urlpatterns = [
     # sga/index_sga/
-    path('index_sga', index_sga, name='index_sga'),
-    path('editor_sga', render_editor_sga, name='index_editor'),
+    path('index_sga', editor.index_sga, name='index_sga'),
+    path('editor_sga', editor.render_editor_sga, name='index_editor'),
     path('barcode/<str:code>/', views.get_barcode_from_number, name='barcode_from_number'),
-    path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
+    path('label_editor_builder', editor.template, name='template'),
     # sga/editor
-    re_path(r'editor/(?P<organilabcontext>\w+)$', editor, name='editor'),
-    re_path(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
+    path('editor', editor, name='editor'),
+    path('get_preview/<int:pk>', views.get_preview, name='get_preview'),
     re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
 
     # sga/prudence
-    path('prudence/<str:organilabcontext>', views.get_prudence_advice, name='prudence'),
+    path('prudence/', views.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
-    path('danger/<str:organilabcontext>', views.get_danger_indication, name='get_danger_indication'),
+    path('danger/', views.get_danger_indication, name='get_danger_indication'),
     # sga/get_get_templateList
-    re_path(r'add_personal/(?P<organilabcontext>\w+)$', views.create_personal_template, name='add_personal'),
-    re_path(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
+    path('add_personal/', views.create_personal_template, name='add_personal'),
+    path('edit_personal/<int:pk>', views.edit_personal_template, name='edit_personal'),
 
-    re_path(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
-    re_path(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
+    path('delete_sgalabel/<int:pk>', views.delete_sgalabel, name='delete_sgalabel'),
+    path('add_substance', views.create_substance, name='add_substance'),
     path('add_recipient_size/', views.create_recipient, name='add_recipient_size'),
     path('get_pictograms/', views.get_pictograms, name='pictograms_list'),
     path('add_pictogram/', views.add_pictogram, name='add_pictograms'),
@@ -46,10 +47,22 @@ urlpatterns = [
 
 
     path('sgalabel/get_company/<int:pk>', views.get_company, name='get_company'),
-    path('sgalabel/get_recipient_size/<str:organilabcontext>/<int:pk>', views.get_recipient_size, name='get_recipient_size'),
+    path('sgalabel/get_recipient_size/<int:pk>', views.get_recipient_size, name='get_recipient_size'),
     path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
-    path('sgalabel/create/<str:organilabcontext>/', views.create_sgalabel, name='sgalabel_create'),
-    path('sgalabel/step_one/<str:organilabcontext>/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
-    path('sgalabel/step_two/<str:organilabcontext>/<int:pk>', views.sgalabel_step_two, name='sgalabel_step_two'),
+    path('sgalabel/create/', views.create_sgalabel, name='sgalabel_create'),
+    path('sgalabel/step_one/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
+    path('sgalabel/step_two/<int:pk>', views.sgalabel_step_two, name='sgalabel_step_two'),
+
+    path('sustance/', sustance.create_edit_sustance, name='create_sustance'),
+    path('update_substance/<int:pk>/', sustance.create_edit_sustance, name='update_substance'),
+    path('get_substance/', sustance.get_substances, name='get_substance'),
+    path('approved_substance/', sustance.get_list_substances, name='approved_substance'),
+    path('accept_substance/<int:pk>/', sustance.approve_substances, name='accept_substance'),
+    path('delete_substance/<int:pk>/', sustance.delete_substance, name='delete_substance'),
+    path('detail_substance/<int:pk>/', sustance.detail_substance, name='detail_substance'),
+    path('substance/step_one/<int:pk>/', sustance.create_edit_sustance, name='step_one'),
+    path('substance/step_two/<int:pk>/', sustance.step_two, name='step_two'),
+    path('substance/step_three/<int:template>/<int:substance>/', step_three, name='step_three'),
+    path('substance/step_four/<int:substance>/', sustance.step_four, name='step_four'),
 
 ]
