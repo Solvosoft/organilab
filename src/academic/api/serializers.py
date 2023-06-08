@@ -46,7 +46,6 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
 
     def get_action(self, obj):
         obj_kwargs = {
-            'organilabcontext': 'academic',
             'org_pk': obj.substance.organization.pk
         }
         obj_kwargs.update({'pk': obj.substance.pk})

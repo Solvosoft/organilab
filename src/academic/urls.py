@@ -36,17 +36,6 @@ procedure_url =[
 ]
 
 urlpatterns = [
-    path('sustance/<str:organilabcontext>/', create_edit_sustance, name='create_sustance'),
-    path('update_substance/<str:organilabcontext>/<int:pk>/', create_edit_sustance, name='update_substance'),
-    path('get_substance/<str:organilabcontext>/', get_substances, name='get_substance'),
-    path('approved_substance/<str:organilabcontext>/', get_list_substances, name='approved_substance'),
-    path('accept_substance/<str:organilabcontext>/<int:pk>/', approve_substances, name='accept_substance'),
-    path('delete_substance/<str:organilabcontext>/<int:pk>/', delete_substance, name='delete_substance'),
-    path('detail_substance/<str:organilabcontext>/<int:pk>/', detail_substance, name='detail_substance'),
-    path('substance/step_one/<str:organilabcontext>/<int:pk>/', create_edit_sustance, name='step_one'),
-    path('substance/step_two/<str:organilabcontext>/<int:pk>/', step_two, name='step_two'),
-    path('substance/step_three/<str:organilabcontext>/<int:template>/<int:substance>/', step_three, name='step_three'),
-    path('substance/step_four/<str:organilabcontext>/<int:substance>/', step_four, name='step_four'),
     path('substance/danger_indications/', view_danger_indications, name='danger_indications'),
     path('substance/warning_words/', view_warning_words, name='warning_words'),
     path('substance/prudence_advices/', view_prudence_advices, name='prudence_advices'),

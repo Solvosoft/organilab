@@ -16,7 +16,7 @@ class SGAAcademicTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        self.url_attr= {'org_pk':1,'organilabcontext':"academic"}
+        self.url_attr= {'org_pk':1}
         self.url_attr_fail= {'org_pk':1,'organilabcontext':12}
         self.client.force_login(self.user)
 
@@ -52,7 +52,7 @@ class SGAAcademicTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count()>count)
-        self.assertRedirects(response, reverse('academic:step_two', kwargs={'organilabcontext':'academic', 'org_pk': 1, 'pk':1}))
+        self.assertRedirects(response, reverse('academic:step_two', kwargs={'org_pk': 1, 'pk':1}))
 
     def test_update_substance(self):
 
@@ -90,7 +90,7 @@ class SGAAcademicTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count()==count)
         c = SGAComplement.objects.last().pk
-        self.assertRedirects(response, reverse('academic:step_two', kwargs={'organilabcontext':'academic', 'org_pk': 1, 'pk':c}))
+        self.assertRedirects(response, reverse('academic:step_two', kwargs={'org_pk': 1, 'pk':c}))
 
     def test_get_substance(self):
 
@@ -154,7 +154,6 @@ class SGAAcademicTest(TestCase):
         s  = Substance.objects.get(pk=134)
         obs = SubstanceObservation.objects.create(description='Hello', substance=s)
         url=self.url_attr.copy()
-        del url['organilabcontext']
         response=self.client.post(reverse('academic:update_observation', kwargs=url), data={'description':'Simple','pk':obs.pk})
         obs = SubstanceObservation.objects.last().description
 
@@ -169,7 +168,6 @@ class SGAAcademicTest(TestCase):
         s  = Substance.objects.get(pk=134)
         obs = SubstanceObservation.objects.create(description='Hello', substance=s)
         url=self.url_attr.copy()
-        del url['organilabcontext']
         pre = SubstanceObservation.objects.count()
 
         response=self.client.post(reverse('academic:delete_observation', kwargs=url), data={'pk':obs.pk})
@@ -237,4 +235,4 @@ class SGAAcademicTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count()==count)
         c = SGAComplement.objects.last().pk
-        self.assertRedirects(response, reverse('academic:step_two', kwargs={'organilabcontext':'academic', 'org_pk': 1, 'pk':c}))
+        self.assertRedirects(response, reverse('academic:step_two', kwargs={'org_pk': 1, 'pk':c}))
