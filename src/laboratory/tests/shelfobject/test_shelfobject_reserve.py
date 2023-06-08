@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from laboratory.models import ShelfObject
 from laboratory.tests.utils import ShelfObjectSetUp
 from laboratory.utils import check_user_access_kwargs_org_lab
-from reservations_management.models import ReservedProducts
+from reservations_management.models import ReservedProducts, SELECTED
 
 
 class ShelfObjectReserveViewTest(ShelfObjectSetUp):
@@ -28,6 +28,15 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
             "final_date": self.final_date.strftime("%Y-%m-%d %H:%M"),
             "shelf_object": self.shelf_object.pk
         }
+        self.filters = {
+            "initial_date__date": self.initial_date.date(),
+            "final_date__date": self.final_date.date(),
+            "amount_required": self.data['amount_required'],
+            "shelf_object": self.data['shelf_object'],
+            "status": SELECTED,
+            "user": self.user
+        }
+
         self.url = reverse("laboratory:api-shelfobject-reserve", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
     def test_shelfobject_reserve_case1(self):
@@ -45,12 +54,7 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
 
-        reserved_products = ReservedProducts.objects.filter(
-            initial_date__date=self.initial_date.date(),
-            final_date__date=self.final_date.date(),
-            amount_required=self.data['amount_required'],
-            shelf_object=self.data['shelf_object']
-        )
+        reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
         self.assertTrue(reserved_products.exists())
 
     def test_shelfobject_reserve_case2(self):
@@ -70,10 +74,6 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
 
-        reserved_products = ReservedProducts.objects.filter(
-            initial_date__date=self.initial_date.date(),
-            final_date__date=self.final_date.date(),
-            amount_required=self.data['amount_required'],
-            shelf_object=self.data['shelf_object']
-        )
+        self.filters.update({"user": self.user})
+        reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
         self.assertFalse(reserved_products.exists())
