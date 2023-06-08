@@ -192,10 +192,12 @@ datatableelement=createDataTable('#datatableelement', urls['get_datatable_info']
         {
             targets: 3,
             data: null,
-            defaultContent: `<div class="text-end" style="top:0;">
-                <i  class="fa fa-edit beditbtn"></i>
-                <i  class="fa fa-trash deletebtn"></i></div>
-            <div>`,
+            render: function ( data, type, row, meta ) {
+                return `<div class="text-end" style="top:0;">
+                            <i  data-id="${row.id}" class="fa fa-edit beditbtn"></i>
+                            <i  data-id="${row.id}" class="fa fa-trash deletebtn"></i></div>
+                        <div>`;
+            }
         }
     ],
     buttons: [
@@ -221,12 +223,12 @@ $(document).ready(function() {
 $('#datatableelement tbody').on( 'click', 'i', function () {
 
     var action = this.className;
-    var data = datatableelement.row( $(this).parents('tr') ).data();
+    var id = this.dataset.id;
 
     if (action==="fa fa-edit beditbtn") {
-        edit_comment(data.id);
+        edit_comment(id);
     } else if (action=="fa fa-trash deletebtn") {
-        delete_comment(data.id);
+        delete_comment(id);
     }
 
 });

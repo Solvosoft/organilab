@@ -6,7 +6,6 @@
 {% block pre_head %}
     {% define_true  "use_datatables" %}
     {% define_urlname_action 'my_procedure_list' %}
-    {% define_urlname_action 'get_procedure' %}
 {% endblock %}
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}
@@ -36,14 +35,14 @@
               <tr>
                 <td>{{procedure.name}}</td>
                 <td>{{procedure.custom_procedure.title}}</td>
-                <td>{% trans procedure.status %}</td>
+                <td>{{ procedure.get_status_display }}</td>
                 <td>
                   <a class="btn btn-success" href="{% url 'academic:complete_my_procedure' lab_pk=laboratory org_pk=org_pk pk=procedure.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
                   {% show_reserve_button procedure.custom_procedure as show_reserve_btn  %}
                   {% if show_reserve_btn  %}
                       <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.custom_procedure.pk}})"><i class="fa fa-book"></i></a>
                   {% endif %}
-                  <a class="btn btn-danger" href="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=procedure.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                  <a class="btn btn-danger" onclick="delete_my_procedure({{ procedure.pk }})"><i class="fa fa-trash" aria-hidden="true"></i></a>
                 </td>
               </tr>
 
@@ -132,7 +131,8 @@
 <script>
     document.getProcedure="{% url 'academic:get_procedure' lab_pk=laboratory org_pk=org_pk %}"
     document.reservation="{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}"
+    document.removeProcedure="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=0 org_pk=org_pk %}"
 </script>
 <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
-<script src="{% static 'js/procedure.js' %}"></script>
+<script src="{% static 'js/my_procedures_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
