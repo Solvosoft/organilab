@@ -7,9 +7,10 @@ from laboratory.utils import check_user_access_kwargs_org_lab
 from reservations_management.models import ReservedProducts, SELECTED
 
 
-class ShelfObjectReserveViewTest(ShelfObjectSetUp):
+class ShelfObjectReserveByLabViewTest(ShelfObjectSetUp):
     """
-    This test does increase shelfobject request by post method and action 'reserve'
+    *** Reserve shelf object by laboratory view ***
+    This test does reserve shelfobject request by post method and action 'reserve'
         located in laboratory/api/shelfobject.py --> ShelfObjectViewSet generic view set class.
     """
 
@@ -39,7 +40,7 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
 
         self.url = reverse("laboratory:api-shelfobject-reserve", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
-    def test_shelfobject_reserve_case1(self):
+    def test_shelfobject_reserve_by_labview_case1(self):
         """
         #EXPECTED CASE(User 1 in this organization with permissions try to reserve shelfobject)
 
@@ -57,7 +58,7 @@ class ShelfObjectReserveViewTest(ShelfObjectSetUp):
         reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
         self.assertTrue(reserved_products.exists())
 
-    def test_shelfobject_reserve_case2(self):
+    def test_shelfobject_reserve_by_labview_case2(self):
         """
         #UNEXPECTED CASE, BUT POSSIBLE(User 2 to other organization without permissions try to reserve shelfobject)
 
