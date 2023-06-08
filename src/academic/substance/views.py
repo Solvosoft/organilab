@@ -18,7 +18,7 @@ from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, \
-    EditorForm
+     PersonalEditorForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf, ReviewSubstance
 
@@ -77,7 +77,7 @@ def create_edit_sustance(request, org_pk, organilabcontext, pk=None):
 
             return redirect(reverse('academic:step_two', kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'pk':complement.pk}))
 
-    elif instance == None and request.method=='GET':
+    elif instance is None and request.method=='GET':
         substance = Substance.objects.create(organilab_context=organilabcontext, creator=request.user, organization=organization)
         rev_sub = ReviewSubstance.objects.create(substance=substance)
         charac = SubstanceCharacteristics.objects.create(substance=substance)
@@ -403,10 +403,10 @@ def step_three(request, org_pk, organilabcontext, template, substance):
     user = request.user
 
     if request.method == 'POST':
-        form = EditorForm(request.POST, instance=personaltemplateSGA.template)
+        form = PersonalEditorForm(request.POST, instance=personaltemplateSGA)
         if form.is_valid():
             obj = form.save()
-            organilab_logentry(request.user, obj, CHANGE, "template sga", changed_data=form.changed_data)
+            organilab_logentry(user, obj, CHANGE, "Personas template sga", changed_data=form.changed_data)
             return redirect(reverse('academic:step_four', kwargs={'organilabcontext':organilabcontext,
                                                           'substance': personaltemplateSGA.label.substance.pk,
                                                          'org_pk': org_pk}))
@@ -426,15 +426,14 @@ def step_three(request, org_pk, organilabcontext, template, substance):
                             'address': bi_info.address})
 
     context={
-        'editorform': EditorForm(),
-        'warningwords': WarningWord.objects.all(),
-        'form': SGAEditorForm,
+        'editorform': PersonalEditorForm(initial=initial, instance=personaltemplateSGA),
         "instance": personaltemplateSGA,
         "sgalabel": personaltemplateSGA,
         'organilabcontext': organilabcontext,
         'complement': complement.pk,
         'sga_elements': complement,
         'step': 3,
+        'templateinstance': personaltemplateSGA.template,
         'template': personaltemplateSGA.pk,
         'label': personaltemplateSGA.label,
         'substance': personaltemplateSGA.label.substance.pk,
