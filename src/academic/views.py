@@ -472,22 +472,27 @@ def generate_reservation(request, *args, **kwargs):
     if form.is_valid():
         procedure = form.cleaned_data['procedure'].pk
         objects_pk = list_step_objects(procedure)
-
-        for obj in objects_pk:
-
-            objs = convert_to_general_unit(get_objects_list(lab.pk, obj))
-            step_objs = convert_to_general_unit(get_step_object(procedure, obj))
-
-            if objs >= step_objs:
-                obj_find += 1
-            else:
-                obj_unknown.append(Object.objects.get(pk=obj).__str__())
-
-        if len(objects_pk) == obj_find:
-            state = True
+        procedure_obj= ProcedureRequiredObject.objects.filter(step__procedure=procedure).count()
+        if procedure_obj:
             for obj in objects_pk:
-                add_reservation(request, get_objects_list(lab.pk, obj),
-                                    get_step_object(procedure, obj),lab,org)
+
+                objs = convert_to_general_unit(get_objects_list(lab.pk, obj))
+                step_objs = convert_to_general_unit(get_step_object(procedure, obj))
+
+                if objs >= step_objs:
+                    obj_find += 1
+                else:
+                    obj_unknown.append(Object.objects.get(pk=obj).__str__())
+
+            if len(objects_pk) == obj_find:
+                state = True
+                for obj in objects_pk:
+                    add_reservation(request, get_objects_list(lab.pk, obj),
+                                        get_step_object(procedure, obj),lab,org)
+        else:
+            result = status.HTTP_400_BAD_REQUEST
+            return JsonResponse({'msg':_("Don't has objects")}, status=result)
+
     else:
         result=status.HTTP_400_BAD_REQUEST
         form_error=form.errors
