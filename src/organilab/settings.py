@@ -292,8 +292,6 @@ PAYPAL_RECEIVER_EMAIL = 'paypal@solvosoft.com'
 MY_PAYPAL_HOST="http://localhost:8000/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-ALLOWED_ORGANILAB_CONTEXT = ['academic', 'laboratory']
-
 
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')

@@ -19,39 +19,39 @@ urlpatterns = [
     # sga/index_sga/
     path('index_sga', editor.index_sga, name='index_sga'),
     path('editor_sga', editor.render_editor_sga, name='index_editor'),
-    path('barcode/<str:code>/', views.get_barcode_from_number, name='barcode_from_number'),
+    path('barcode/<str:code>/', editor.get_barcode_from_number, name='barcode_from_number'),
     path('label_editor_builder', editor.template, name='template'),
     # sga/editor
-    path('editor', editor, name='editor'),
-    path('get_preview/<int:pk>', views.get_preview, name='get_preview'),
-    re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
+    path('editor', editor.editor, name='editor'),
+    path('get_preview/<int:pk>', editor.get_preview, name='get_preview'),
+    re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', editor.get_svgexport, name='get_svgexport'),
 
     # sga/prudence
-    path('prudence/', views.get_prudence_advice, name='prudence'),
+    path('prudence/', editor.get_prudence_advice, name='prudence'),
     # sga/get_danger_indication
-    path('danger/', views.get_danger_indication, name='get_danger_indication'),
+    path('danger/', editor.get_danger_indication, name='get_danger_indication'),
     # sga/get_get_templateList
-    path('add_personal/', views.create_personal_template, name='add_personal'),
-    path('edit_personal/<int:pk>', views.edit_personal_template, name='edit_personal'),
+    path('add_personal/', editor.create_personal_template, name='add_personal'),
+    path('edit_personal/<int:pk>', editor.edit_personal_template, name='edit_personal'),
 
-    path('delete_sgalabel/<int:pk>', views.delete_sgalabel, name='delete_sgalabel'),
-    path('add_substance', views.create_substance, name='add_substance'),
-    path('add_recipient_size/', views.create_recipient, name='add_recipient_size'),
-    path('get_pictograms/', views.get_pictograms, name='pictograms_list'),
-    path('add_pictogram/', views.add_pictogram, name='add_pictograms'),
-    path('update_pictogram/<str:id_pictogram>/', views.update_pictogram, name='update_pictogram'),
-    path('company/list/', views.get_companies, name='get_companies'),
-    path('company/add/', views.create_company, name='add_company'),
-    path('company/edit/<int:pk>/', views.edit_company, name='edit_company'),
-    path('company/remove/<int:pk>/', views.remove_company, name='remove_company'),
+    path('delete_sgalabel/<int:pk>', editor.delete_sgalabel, name='delete_sgalabel'),
+    path('add_substance', editor.create_substance, name='add_substance'),
+    path('add_recipient_size/', editor.create_recipient, name='add_recipient_size'),
+    path('get_pictograms/', editor.get_pictograms, name='pictograms_list'),
+    path('add_pictogram/', editor.add_pictogram, name='add_pictograms'),
+    path('update_pictogram/<str:id_pictogram>/', editor.update_pictogram, name='update_pictogram'),
+    path('company/list/', editor.get_companies, name='get_companies'),
+    path('company/add/', editor.create_company, name='add_company'),
+    path('company/edit/<int:pk>/', editor.edit_company, name='edit_company'),
+    path('company/remove/<int:pk>/', editor.remove_company, name='remove_company'),
 
 
-    path('sgalabel/get_company/<int:pk>', views.get_company, name='get_company'),
-    path('sgalabel/get_recipient_size/<int:pk>', views.get_recipient_size, name='get_recipient_size'),
-    path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
-    path('sgalabel/create/', views.create_sgalabel, name='sgalabel_create'),
-    path('sgalabel/step_one/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
-    path('sgalabel/step_two/<int:pk>', views.sgalabel_step_two, name='sgalabel_step_two'),
+    path('sgalabel/get_company/<int:pk>', editor.get_company, name='get_company'),
+    path('sgalabel/get_recipient_size/<int:pk>', editor.get_recipient_size, name='get_recipient_size'),
+    path('sgalabel/get_sgacomplement_by_substance/<int:pk>', editor.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
+    path('sgalabel/create/', editor.create_sgalabel, name='sgalabel_create'),
+    path('sgalabel/step_one/<int:pk>', editor.sgalabel_step_one, name='sgalabel_step_one'),
+    path('sgalabel/step_two/<int:pk>', editor.sgalabel_step_two, name='sgalabel_step_two'),
 
     path('sustance/', sustance.create_edit_sustance, name='create_sustance'),
     path('update_substance/<int:pk>/', sustance.create_edit_sustance, name='update_substance'),
@@ -62,7 +62,7 @@ urlpatterns = [
     path('detail_substance/<int:pk>/', sustance.detail_substance, name='detail_substance'),
     path('substance/step_one/<int:pk>/', sustance.create_edit_sustance, name='step_one'),
     path('substance/step_two/<int:pk>/', sustance.step_two, name='step_two'),
-    path('substance/step_three/<int:template>/<int:substance>/', step_three, name='step_three'),
+    path('substance/step_three/<int:template>/<int:substance>/', sustance.step_three, name='step_three'),
     path('substance/step_four/<int:substance>/', sustance.step_four, name='step_four'),
 
 ]

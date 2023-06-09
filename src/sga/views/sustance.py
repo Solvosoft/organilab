@@ -67,7 +67,7 @@ def create_edit_sustance(request, org_pk, pk=None):
             organilab_logentry(request.user, obj, CHANGE, "substance", changed_data=objform.changed_data)
             organilab_logentry(request.user, suscharinst, CHANGE, "substance characteristics", changed_data=suschacform.changed_data)
 
-            return redirect(reverse('academic:step_two', kwargs={'org_pk': org_pk, 'pk':complement.pk}))
+            return redirect(reverse('sga:step_two', kwargs={'org_pk': org_pk, 'pk':complement.pk}))
 
     elif instance is None and request.method == 'GET':
         substance = Substance.objects.create(creator=request.user, organization=organization)
@@ -76,7 +76,7 @@ def create_edit_sustance(request, org_pk, pk=None):
         organilab_logentry(request.user, substance, ADDITION, "substance")
         organilab_logentry(request.user, charac, ADDITION, "substance characteristics")
         organilab_logentry(request.user, rev_sub, ADDITION, "review substance", changed_data=['substance'])
-        return redirect(reverse('academic:step_one', kwargs={'org_pk': org_pk, 'pk': substance.pk}))
+        return redirect(reverse('sga:step_one', kwargs={'org_pk': org_pk, 'pk': substance.pk}))
 
     label, created_label= Label.objects.get_or_create(substance= instance)
     template= TemplateSGA.objects.get(is_default=True)
@@ -131,7 +131,7 @@ def approve_substances(request, org_pk, pk):
     review_subs.is_approved=True
     review_subs.save()
     organilab_logentry(request.user, review_subs, CHANGE, "review substance", changed_data=['is_approved'])
-    return redirect(reverse('academic:approved_substance', kwargs={'org_pk':org_pk}))
+    return redirect(reverse('sga:approved_substance', kwargs={'org_pk':org_pk}))
 
 @login_required
 @permission_required('sga.delete_substance')
@@ -142,8 +142,8 @@ def delete_substance(request, org_pk, pk):
         organilab_logentry(request.user, substances, DELETION, "substance")
         Label.objects.filter(substance=substances).delete()
         substances.delete()
-        return redirect(reverse("academic:get_substance", kwargs={'org_pk': org_pk}))
-    return redirect(reverse("academic:get_substance", kwargs={'org_pk': org_pk}))
+        return redirect(reverse("sga:get_substance", kwargs={'org_pk': org_pk}))
+    return redirect(reverse("sga:get_substance", kwargs={'org_pk': org_pk}))
 
 @login_required
 @permission_required('sga.change_substance')
@@ -201,7 +201,7 @@ def step_two(request, org_pk, pk):
                                changed_data=pesonalform.changed_data)
 
         if complementform_ok and builderinformationform_ok and pesonalform_ok:
-            return redirect(reverse('academic:step_three', kwargs={'template': personaltemplateSGA.pk,
+            return redirect(reverse('sga:step_three', kwargs={'template': personaltemplateSGA.pk,
                                                           'substance': personaltemplateSGA.label.substance.pk,
                                                           'org_pk': org_pk}))
         else:
@@ -241,7 +241,7 @@ def step_three(request, org_pk, template, substance):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(user, obj, CHANGE, "Personas template sga", changed_data=form.changed_data)
-            return redirect(reverse('academic:step_four', kwargs={
+            return redirect(reverse('sga:step_four', kwargs={
                                                           'substance': personaltemplateSGA.label.substance.pk,
                                                          'org_pk': org_pk}))
 
@@ -286,7 +286,7 @@ def step_four(request, org_pk,  substance):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "security leaf", changed_data=form.changed_data)
-            return redirect(reverse('academic:get_substance',kwargs={'org_pk': org_pk }))
+            return redirect(reverse('sga:get_substance',kwargs={'org_pk': org_pk }))
 
     form = SecurityLeafForm(instance=security_leaf)
     context = {'step': 4,

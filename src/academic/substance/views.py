@@ -110,15 +110,15 @@ def add_observation(request, org_pk, substance):
             obj.save()
             organilab_logentry(request.user, obj, ADDITION, "substance observation", changed_data=form.changed_data)
             messages.success(request, 'Se Guardo correctamente')
-            return redirect(reverse('academic:detail_substance',kwargs={'org_pk':org_pk, 'pk':substance}))
+            return redirect(reverse('sga:detail_substance',kwargs={'org_pk':org_pk, 'pk':substance}))
         else:
             request.session['step'] = 2
             messages.error(request, 'Datos invalidos')
-            return redirect(reverse('academic:detail_substance',kwargs={'org_pk': org_pk, 'pk':substance}))
+            return redirect(reverse('sga:detail_substance',kwargs={'org_pk': org_pk, 'pk':substance}))
     else:
         request.session['step'] = 2
-        return redirect(reverse('academic:detail_substance', kwargs={'org_pk': org_pk, 'pk': substance}))
-    return redirect(reverse('academic:detail_substance', kwargs={'org_pk': org_pk, 'pk': substance}))
+        return redirect(reverse('sga:detail_substance', kwargs={'org_pk': org_pk, 'pk': substance}))
+    return redirect(reverse('sga:detail_substance', kwargs={'org_pk': org_pk, 'pk': substance}))
 
 @login_required
 @permission_required('academic.change_substanceobservation')

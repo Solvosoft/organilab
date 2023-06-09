@@ -47,7 +47,7 @@
 {% trans 'MSDS' %}</a>
             {% endif %}
             {% if can_sustance %}
-            <a class="btn btn-secondary btn-sm" href="{% url 'sga:add_personal' node.0.pk 'laboratory' %}"><i class="fa fa-tags" aria-hidden="true"></i> {% trans 'SGA' %}</a>
+            <a class="btn btn-secondary btn-sm" href="{% url 'sga:add_personal' node.0.pk  %}"><i class="fa fa-tags" aria-hidden="true"></i> {% trans 'SGA' %}</a>
             {% endif %}
             {% if disposal_perms %}
                 <a class="btn btn-dark btn-sm" href="{% url 'laboratory:disposal_substance' node.0.pk %}"><i class="fa fa-tags" aria-hidden="true"></i> {% trans 'Disposal' %}</a>

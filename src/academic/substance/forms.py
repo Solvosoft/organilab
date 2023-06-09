@@ -69,7 +69,7 @@ class DangerIndicationForm(GTForm,forms.ModelForm):
 
     class Meta:
         model = DangerIndication
-        exclude = ['organilab_context']
+        fields = '__all__'
         widgets = {
             'code' : genwidgets.TextInput,
             'description' : genwidgets.Textarea,
@@ -83,7 +83,7 @@ class WarningWordForm(GTForm,forms.ModelForm):
 
     class Meta:
         model = WarningWord
-        exclude = ['organilab_context']
+        fields='__all__'
         widgets = {
             'name' : genwidgets.TextInput,
             'weigth' : genwidgets.NumberInput,
@@ -92,7 +92,7 @@ class PrudenceAdviceForm(GTForm,forms.ModelForm):
 
     class Meta:
         model = PrudenceAdvice
-        exclude = ['organilab_context']
+        fields = '__all__'
         widgets = {
             'code' : genwidgets.TextInput,
             'name' : genwidgets.TextInput,

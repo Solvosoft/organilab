@@ -47,11 +47,11 @@ class SGAAcademicTest(TestCase):
             'concentration': "20%"
         }
         count=Substance.objects.count()
-        response=self.client.post(reverse('academic:create_sustance', kwargs=self.url_attr), data=data)
+        response=self.client.post(reverse('sga:create_sustance', kwargs=self.url_attr), data=data)
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count()>count)
-        self.assertRedirects(response, reverse('academic:step_two', kwargs={'org_pk': 1, 'pk':1}))
+        self.assertRedirects(response, reverse('sga:step_two', kwargs={'org_pk': 1, 'pk':1}))
 
     def test_update_substance(self):
 
@@ -84,19 +84,19 @@ class SGAAcademicTest(TestCase):
         url = self.url_attr.copy()
         url['pk']=134
 
-        response=self.client.post(reverse('academic:update_substance', kwargs=url), data=data)
+        response=self.client.post(reverse('sga:update_substance', kwargs=url), data=data)
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count()==count)
         c = SGAComplement.objects.last().pk
-        self.assertRedirects(response, reverse('academic:step_two', kwargs={'org_pk': 1, 'pk':c}))
+        self.assertRedirects(response, reverse('sga:step_two', kwargs={'org_pk': 1, 'pk':c}))
 
     def test_get_substance(self):
 
         url = self.url_attr.copy()
         url['pk']=134
 
-        response=self.client.get(reverse('academic:update_substance', kwargs=url))
+        response=self.client.get(reverse('sga:update_substance', kwargs=url))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['substance']==134)
@@ -105,7 +105,7 @@ class SGAAcademicTest(TestCase):
 
     def test_get_substances(self):
 
-        response=self.client.get(reverse('academic:get_substance', kwargs=self.url_attr))
+        response=self.client.get(reverse('sga:get_substance', kwargs=self.url_attr))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(len(response.context['substances'])==1)
@@ -115,17 +115,17 @@ class SGAAcademicTest(TestCase):
         url=self.url_attr.copy()
         url['pk']=134
 
-        response=self.client.delete(reverse('academic:delete_substance', kwargs=url))
+        response=self.client.delete(reverse('sga:delete_substance', kwargs=url))
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.filter(organization__pk=self.url_attr['org_pk']).count()==0)
-        self.assertRedirects(response,reverse('academic:get_substance', kwargs=self.url_attr))
+        self.assertRedirects(response,reverse('sga:get_substance', kwargs=self.url_attr))
 
     def test_detail_substance(self):
 
         url=self.url_attr.copy()
         url['pk']=134
 
-        response=self.client.get(reverse('academic:detail_substance', kwargs=url))
+        response=self.client.get(reverse('sga:detail_substance', kwargs=url))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(len(response.context['observations'])==0)
@@ -147,7 +147,7 @@ class SGAAcademicTest(TestCase):
         self.assertIn("Simple", obs)
         self.assertTrue("Se Guardo correctamente" == str(msg[0]))
         self.assertTrue(self.client.session["step"] == 2)
-        self.assertRedirects(response, reverse('academic:detail_substance',kwargs=url))
+        self.assertRedirects(response, reverse('sga:detail_substance',kwargs=url))
 
     def test_update_observation(self):
         s  = Substance.objects.get(pk=134)
@@ -181,7 +181,7 @@ class SGAAcademicTest(TestCase):
 
         url=self.url_attr.copy()
 
-        response=self.client.get(reverse('academic:approved_substance', kwargs=url))
+        response=self.client.get(reverse('sga:approved_substance', kwargs=url))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['showapprove']==False)
@@ -192,10 +192,10 @@ class SGAAcademicTest(TestCase):
         url=self.url_attr.copy()
         url['pk'] = review.pk
 
-        response=self.client.post(reverse('academic:accept_substance', kwargs=url))
+        response=self.client.post(reverse('sga:accept_substance', kwargs=url))
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('academic:approved_substance', kwargs=self.url_attr))
+        self.assertRedirects(response, reverse('sga:approved_substance', kwargs=self.url_attr))
 
 
     def test_step_one_substance(self):
@@ -229,9 +229,9 @@ class SGAAcademicTest(TestCase):
         url = self.url_attr.copy()
         url['pk']=134
 
-        response=self.client.post(reverse('academic:step_one', kwargs=url), data=data)
+        response=self.client.post(reverse('sga:step_one', kwargs=url), data=data)
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count()==count)
         c = SGAComplement.objects.last().pk
-        self.assertRedirects(response, reverse('academic:step_two', kwargs={'org_pk': 1, 'pk':c}))
+        self.assertRedirects(response, reverse('sga:step_two', kwargs={'org_pk': 1, 'pk':c}))
