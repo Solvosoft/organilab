@@ -3961,3 +3961,12 @@ msgstr "Mis procedimientos"
 
 msgid "Create procedure template"
 msgstr "Crear plantilla de procedimiento"
+
+msgid "Final date can't be lower than initial date"
+msgstr "La fecha final no puede ser inferior a la fecha inicial"
+
+msgid "The quantity field receives only decimal numbers"
+msgstr "El campo cantidad solo recibe numeros decimales"
+
+msgid "Quantity must be greater than zero"
+msgstr "La cantidad debe ser mayor que 0"
