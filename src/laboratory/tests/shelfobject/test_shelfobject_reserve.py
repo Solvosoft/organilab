@@ -119,8 +119,10 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 200.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check if procedure has objects to reserve.
-       4) Check if reserved product instance was created.
+       3) Check variable state returned by response data.
+       4) Check if procedure has objects to reserve.
+       5) Check if procedure step has procedure required object related.
+       6) Check if reserved product instance was created.
        """
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
@@ -148,8 +150,10 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         CHECK TESTS
         1) Check response status code equal to 404.
         2) Check if user doesn't have permission to access this organization and laboratory.
-        3) Check if procedure has objects to reserve.
-        4) Check if reserved product instance wasn't created.
+        3) Check variable state returned by response data.
+        4) Check if procedure has objects to reserve.
+        5) Check if procedure step has procedure required object related.
+        6) Check if reserved product instance wasn't created.
        """
         self.client = self.client2_org2
         self.user = self.user2_org2
@@ -180,9 +184,11 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 406.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check if procedure steps have objects.
-       4) Check if object quantity is less or equal than zero.
-       5) Check if reserved product instance wasn't created.
+       3) Check variable state returned by response data.
+       4) Check if procedure steps have objects.
+       5) Check if procedure step has procedure required object related.
+       6) Check if object quantity is less or equal than zero.
+       7) Check if reserved product instance wasn't created.
        """
         self.procedure = Procedure.objects.get(pk=2)
         self.data['procedure'] = self.procedure.pk
@@ -215,8 +221,10 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 200.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check if procedure has objects to reserve.
-       4) Check if reserved product instance was created.
+       3) Check variable state returned by response data.
+       4) Check if procedure has objects to reserve.
+       5) Check if procedure step has procedure required object related.
+       6) Check if reserved product instance was created.
        """
         self.procedure = Procedure.objects.get(pk=3)
         self.data['procedure'] = self.procedure.pk
@@ -247,9 +255,11 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 404.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check if procedure steps have objects.
-       4) Check if object quantity is less or equal than zero.
-       5) Check if reserved product instance wasn't created.
+       3) Check variable state returned by response data.
+       4) Check if procedure steps have objects.
+       5) Check if procedure step has procedure required object related.
+       6) Check if object quantity is less or equal than zero.
+       7) Check if reserved product instance wasn't created.
        """
         self.procedure = Procedure.objects.get(pk=2)
         self.data['procedure'] = self.procedure.pk
