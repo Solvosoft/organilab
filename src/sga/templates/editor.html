@@ -20,11 +20,11 @@
 {% block js %}
     <script>
         var json_representation=`{{instance.json_representation|safe}}`;
-        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
+        document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk 0 %}";
         document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
         document.urls={
-            'danger_indication_url': '{% url 'sga:get_danger_indication' org_pk organilabcontext %}',
-            'prudence_advice_url': '{% url 'sga:prudence' org_pk organilabcontext %}',
+            'danger_indication_url': '{% url 'sga:get_danger_indication' org_pk  %}',
+            'prudence_advice_url': '{% url 'sga:prudence' org_pk %}',
         };
 
     </script>
@@ -46,7 +46,7 @@
             </button>
             <ul class="dropdown-menu">
               {% for tem in templates %}
-                <li class="dropdown-item"><a href="{% url 'sga:editor' org_pk organilabcontext %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
+                <li class="dropdown-item"><a href="{% url 'sga:editor' org_pk %}?instance={{tem.pk}}"> {{tem.name}} </a></li>
               {% endfor %}
             </ul>
         </div>

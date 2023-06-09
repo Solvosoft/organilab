@@ -22,7 +22,7 @@
 {% endblock css %}
 {% block js %}
 <script>
-document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
+document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk 0 %}";
 document.clean_canvas_editor = true;
 
 {% if instance.template %}
@@ -57,8 +57,8 @@ document.clean_canvas_editor = true;
 
             <div class="col-sm-12" style="text-align:right">
                 <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
-                <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' organilabcontext %}" >{% trans 'Go to Editor' %}</a>
-                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' organilabcontext %}" >{% trans 'Go to your labels' %}</a>
+                <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' %}" >{% trans 'Go to Editor' %}</a>
+                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' %}" >{% trans 'Go to your labels' %}</a>
             </div>
         </div>
 <hr>

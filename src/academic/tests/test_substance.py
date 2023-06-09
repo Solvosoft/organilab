@@ -17,7 +17,6 @@ class SGAAcademicTest(TestCase):
         self.client = Client()
         self.user = User.objects.get(pk=1)
         self.url_attr= {'org_pk':1}
-        self.url_attr_fail= {'org_pk':1,'organilabcontext':12}
         self.client.force_login(self.user)
 
     def test_add_substance(self):

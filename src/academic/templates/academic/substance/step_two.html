@@ -16,7 +16,7 @@
             <br>
         </div>
     </div>
-<form class="form-horizontal" action="{% url 'academic:step_two' org_pk organilabcontext complement %}" enctype="multipart/form-data" method="POST">
+<form class="form-horizontal" action="{% url 'sga:step_two' org_pk complement %}" enctype="multipart/form-data" method="POST">
     {% csrf_token %}
     <div class="container text-center">
 <div class="row">
