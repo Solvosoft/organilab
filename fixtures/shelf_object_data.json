@@ -764,5 +764,34 @@
       "quantity": 0,
       "measurement_unit": 62
     }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 3,
+    "fields": {
+      "title": "Prácticas Estudiantiles S1 2021",
+      "description": "Prácticas estudiantiles del primer semestre en 2021",
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 3,
+    "fields": {
+      "procedure": 3,
+      "title": "Paso 1",
+      "description": "El paso 1 se compone de ..."
+    }
+  },
+  {
+    "model": "academic.procedurerequiredobject",
+    "pk": 1,
+    "fields": {
+      "step": 3,
+      "object": 1,
+      "quantity": 15,
+      "measurement_unit": 62
+    }
   }
 ]
