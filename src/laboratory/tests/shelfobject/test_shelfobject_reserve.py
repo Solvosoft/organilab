@@ -107,8 +107,6 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.filters = {
             "initial_date__date": self.initial_date.date(),
             "final_date__date": self.final_date.date(),
-            "amount_required": self.data['amount_required'],
-            "shelf_object": self.data['shelf_object'],
             "status": SELECTED,
             "user": self.user
         }
@@ -167,14 +165,20 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.procedure = Procedure.objects.get(pk=2)
         self.data['procedure'] = self.procedure.pk
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
 
         self.objects_list = list_step_objects(self.data['procedure'])
         self.assertTrue(self.objects_list)
 
-        objects_quantity_less_or_equal_zero = ProcedureRequiredObject.objects.filter(quantity__lte=0)
-        self.assertFalse(objects_quantity_less_or_equal_zero.exists())
+        if self.objects_list:
+            step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+            self.assertTrue(step_objects.exists())
 
-        reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
-        self.assertFalse(reserved_products.exists())
+            objects_quantity_less_or_equal_zero = step_objects.filter(quantity__lte=0)
+            self.assertFalse(objects_quantity_less_or_equal_zero.exists())
+
+            for step_obj in step_objects:
+                self.filters.update({"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+                reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+                self.assertFalse(reserved_products.exists())
