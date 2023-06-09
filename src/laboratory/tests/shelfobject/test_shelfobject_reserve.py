@@ -127,8 +127,14 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertTrue(self.objects_list)
 
-        reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
-        self.assertTrue(reserved_products.exists())
+        step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+        self.assertTrue(step_objects.exists())
+
+        for step_obj in step_objects:
+            self.filters.update(
+                {"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+            reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+            self.assertTrue(reserved_products.exists())
 
     def test_shelfobject_reserve_by_procedure_case2(self):
         """
@@ -147,9 +153,15 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertTrue(self.objects_list)
 
+        step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+        self.assertTrue(step_objects.exists())
+
         self.filters.update({"user": self.user})
-        reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
-        self.assertFalse(reserved_products.exists())
+        for step_obj in step_objects:
+            self.filters.update(
+                {"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+            reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+            self.assertFalse(reserved_products.exists())
 
     def test_shelfobject_reserve_by_procedure_case3(self):
         """
@@ -171,14 +183,41 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.objects_list = list_step_objects(self.data['procedure'])
         self.assertTrue(self.objects_list)
 
-        if self.objects_list:
-            step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
-            self.assertTrue(step_objects.exists())
+        step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+        self.assertTrue(step_objects.exists())
 
-            objects_quantity_less_or_equal_zero = step_objects.filter(quantity__lte=0)
-            self.assertFalse(objects_quantity_less_or_equal_zero.exists())
+        objects_quantity_less_or_equal_zero = step_objects.filter(quantity__lte=0)
+        self.assertFalse(objects_quantity_less_or_equal_zero.exists())
 
-            for step_obj in step_objects:
-                self.filters.update({"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
-                reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
-                self.assertFalse(reserved_products.exists())
+        for step_obj in step_objects:
+            self.filters.update({"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+            reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+            self.assertFalse(reserved_products.exists())
+
+    def test_shelfobject_reserve_by_procedure_case4(self):
+        """
+       #EXPECTED CASE(User 1 in this organization with permissions try to reserve shelfobject by procedure with objects in its steps)
+
+       CHECK TESTS
+       1) Check response status code equal to 200.
+       2) Check if user has permission to access this organization and laboratory.
+       3) Check if procedure has objects to reserve.
+       4) Check if reserved product instance was created.
+       """
+        self.procedure = Procedure.objects.get(pk=3)
+        self.data['procedure'] = self.procedure.pk
+        response = self.client.post(self.url, data=self.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+
+        self.objects_list = list_step_objects(self.data['procedure'])
+        self.assertTrue(self.objects_list)
+
+        step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+        self.assertTrue(step_objects.exists())
+
+        for step_obj in step_objects:
+            self.filters.update(
+                {"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+            reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+            self.assertTrue(reserved_products.exists())
