@@ -231,6 +231,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'auth_and_perms.view_profile'
         },
         {
+            'name': 'Add Laboratory Room',
+            'category': 'Laboratory Room',
+            'permission': 'laboratory.add_laboratoryroom'
+        },
+        {
             'name': 'View Laboratory Room',
             'category': 'Laboratory Room',
             'permission': 'laboratory.view_laboratoryroom'
@@ -2968,4 +2973,63 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_report'
         }
     ],
+    'my_procedure_list': [
+        {
+            'name': 'View Procedure Template',
+            'category': 'Procedure Template',
+            'permission': 'academic.view_procedure'
+        },
+        {
+            'name': 'Add My Procedure',
+            'category': 'My Procedure',
+            'permission': 'academic.add_myprocedure'
+        },
+        {
+            'name': 'Change My Procedure',
+            'category': 'My Procedure',
+            'permission': 'academic.change_myprocedure'
+        },
+        {
+            'name': 'Delete My Procedure',
+            'category': 'My Procedure',
+            'permission': 'academic.delete_myprocedure'
+        },
+        {
+            'name': 'View My Procedure',
+            'category': 'My Procedure',
+            'permission': 'academic.view_myprocedure'
+        }
+    ],
+    'my_procedure_step_comments': [
+        {
+            'name': 'View Procedure Template',
+            'category': 'Procedure Template',
+            'permission': 'academic.view_procedure'
+        },
+        {
+            'name': 'View Procedure Step',
+            'category': 'Procedure Step',
+            'permission': 'academic.view_procedurestep'
+        },
+        {
+            'name': 'Add Step Comment',
+            'category': 'Step Comment',
+            'permission': 'academic.add_commentprocedurestep'
+        },
+        {
+            'name': 'Change Step Comment',
+            'category': 'Step Comment',
+            'permission': 'academic.change_commentprocedurestep'
+        },
+        {
+            'name': 'Delete Step Comment',
+            'category': 'Step Comment',
+            'permission': 'academic.delete_commentprocedurestep'
+        },
+        {
+            'name': 'View Step Comment',
+            'category': 'Step Comment',
+            'permission': 'academic.view_commentprocedurestep'
+        }
+    ]
 }

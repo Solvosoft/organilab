@@ -4,6 +4,7 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django.urls import include, path, re_path
+from rest_framework.routers import DefaultRouter
 
 from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, \
     approve_substances, delete_substance, step_two, detail_substance, \
@@ -13,7 +14,8 @@ from academic.substance.views import create_edit_sustance, get_substances, get_l
 from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, ProcedureStepCreateView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
-    delete_step, get_procedure, delete_procedure, generate_reservation
+    delete_step, get_procedure, get_my_procedures, delete_procedure, generate_reservation, create_my_procedures, \
+    remove_my_procedure, complete_my_procedure
 
 procedure_url =[
     re_path('add_steps_wrapper/(?P<pk>\d+)/', add_steps_wrapper, name='add_steps_wrapper'),
@@ -32,7 +34,10 @@ procedure_url =[
     re_path('add_observation/(?P<pk>\d+)/', save_observation, name='add_observation'),
     re_path('remove_observation/(?P<pk>\d+)/', remove_observation, name='remove_observation'),
     re_path('generate_reservation', generate_reservation, name='generate_reservation'),
-
+    re_path('get_list/', get_my_procedures, name='get_my_procedures'),
+    re_path('add_procedures/(?P<content_type>[^/]+)/(?P<model>[^/]+)/', create_my_procedures, name='add_my_procedures'),
+    re_path('remove_procedure/(?P<pk>[0-9]+)/', remove_my_procedure, name='remove_my_procedure'),
+    re_path('complete_procedure/(?P<pk>[0-9]+)/', complete_my_procedure, name="complete_my_procedure"),
 ]
 
 urlpatterns = [
@@ -50,5 +55,5 @@ urlpatterns = [
     path('substance/update_prudence_advice/<int:pk>/', change_prudence_advice, name='update_prudence_advice'),
     path('substance/provider/', add_sga_provider, name='add_sga_provider'),
     path('substance/get_security_leaf/<int:substance>/', security_leaf_pdf, name='security_leaf_pdf'),
-    re_path(r'^(?P<lab_pk>\d+)/procedure/', include(procedure_url)),
+    path('<int:lab_pk>/procedure/', include(procedure_url)),
 ]
