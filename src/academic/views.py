@@ -11,9 +11,10 @@ from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
+from rest_framework import status
 
 from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm, \
-    MyProcedureForm, CommentProcedureStepForm, AddObjectStepForm
+    MyProcedureForm, CommentProcedureStepForm, AddObjectStepForm, ValidateProcedureReservationForm
 from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure, \
     CommentProcedureStep
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
@@ -290,7 +291,8 @@ def save_object(request, *args, **kwargs):
     org_pk = kwargs['org_pk']
     form = AddObjectStepForm(request.POST)
     step = get_object_or_404(ProcedureStep, pk=pk)
-    status = False
+    state = status.HTTP_200_OK
+    form_errors=None
     msg = _('There is no object in the inventory with this unit of measurement')
     if form.is_valid():
         unit = form.cleaned_data['unit']
@@ -298,13 +300,15 @@ def save_object(request, *args, **kwargs):
         objects = ProcedureRequiredObject.objects.create(step=step, object=obj,
                                                              quantity=form.cleaned_data['quantity'],
                                                              measurement_unit=unit)
-        status = True
+
         str_obj = f'{objects.object} {objects.quantity} {str(objects.measurement_unit)}'
         change_message = str_obj + " procedure required object has been added"
         organilab_logentry(request.user, objects, ADDITION, changed_data=form.changed_data, change_message=change_message,
                                relobj=lab_pk)
-
-    return JsonResponse({'data': get_objects(pk), 'status': status, 'msg': msg})
+    else:
+        form_errors= form.errors
+        state= status.HTTP_400_BAD_REQUEST
+    return JsonResponse({'data': get_objects(pk), 'msg': msg, "form":form_errors}, status=state)
 
 
 def validate_unit(lab, obj):
@@ -348,12 +352,17 @@ def save_observation(request, *args, **kwargs):
     pk= kwargs['pk']
 
     step = get_object_or_404(ProcedureStep, pk=pk)
-
-    objects = ProcedureObservations.objects.create(step=step, description=request.POST['description'])
-    objects.save()
-    organilab_logentry(request.user,  objects, ADDITION, changed_data=['description'])
-
-    return JsonResponse({'data': get_observations(pk)})
+    form = ObservationForm(request.POST)
+    result=status.HTTP_200_OK
+    form_errors= {}
+    if form.is_valid():
+        objects = ProcedureObservations.objects.create(step=step, description=form.cleaned_data['procedure_description'])
+        objects.save()
+        organilab_logentry(request.user,  objects, ADDITION, changed_data=['description'])
+    else:
+        form_errors=form.errors
+        result=status.HTTP_400_BAD_REQUEST
+    return JsonResponse({'data': get_observations(pk), 'errors':form_errors},status=result)
 
 def get_observations(pk):
     obsevations = ProcedureObservations.objects.filter(step__id=pk)
@@ -453,29 +462,37 @@ def convert_to_general_unit(data):
 def generate_reservation(request, *args, **kwargs):
 
     lab = kwargs.get('lab_pk')
-    procedure = request.POST['procedure']
-    objects_pk = list_step_objects(procedure)
+    form = ValidateProcedureReservationForm(request.POST)
+    form_error=None
+    result = status.HTTP_200_OK
     obj_find = 0
     state = False
-    obj_unknown=[]
-    for obj in objects_pk:
+    obj_unknown = []
+    if form.is_valid():
+        procedure = form.cleaned_data['procedure'].pk
+        objects_pk = list_step_objects(procedure)
 
-        objs = convert_to_general_unit(get_objects_list(lab, obj))
-        step_objs = convert_to_general_unit(get_step_object(procedure, obj))
-
-        if objs >= step_objs:
-            obj_find += 1
-        else:
-            obj_unknown.append(Object.objects.get(pk=obj).__str__())
-
-
-    if len(objects_pk) == obj_find:
-        state = True
         for obj in objects_pk:
-            add_reservation(request, get_objects_list(lab, obj),
-                            get_step_object(procedure, obj))
 
-    return JsonResponse({'state': state, 'errors':obj_unknown})
+            objs = convert_to_general_unit(get_objects_list(lab, obj))
+            step_objs = convert_to_general_unit(get_step_object(procedure, obj))
+
+            if objs >= step_objs:
+                obj_find += 1
+            else:
+                obj_unknown.append(Object.objects.get(pk=obj).__str__())
+
+        if len(objects_pk) == obj_find:
+            state = True
+            for obj in objects_pk:
+                add_reservation(request, get_objects_list(lab, obj),
+                                    get_step_object(procedure, obj))
+    else:
+        result=status.HTTP_400_BAD_REQUEST
+        form_error=form.errors
+
+
+    return JsonResponse({'state': state, 'errors':obj_unknown,'form':form_error},status=result)
 
 
 def add_reservation(request, data, data_step):

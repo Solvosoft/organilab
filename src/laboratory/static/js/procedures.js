@@ -28,24 +28,36 @@ function get_procedure(pk){
 }
 function add_object(){
   form= new FormData(document.getElementById('object_form'));
+
     $.ajax({
         url: document.save_object,
         type: 'POST',
         data: form,
         processData: false,
         contentType: false,
-        success: function({data, status, msg}) {
+        success: function({data, msg}) {
+
             generate_table(JSON.parse(data));
-            if(!status){
-            Swal.fire({
-                icon: 'error',
-                text: msg,
-            })
-            }else{
             document.getElementById('object_form').reset();
             $('select').prop('selectedIndex', 0).change();
-            }
-        }
+            $('.form_errors').remove();
+            $('#object_modal').modal('hide');
+
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.form;
+               if(errors){
+                  $('.form_errors').remove();
+                  form_field_errors(form, errors,".form-group");
+
+               }else{
+                           Swal.fire({
+                icon: 'error',
+                text: xhr.responseJSON.msg,
+            })
+
+               }
+               }
         });
   }
 
@@ -64,19 +76,30 @@ function generate_table(data){
 }
 
 function add_observation(){
-    form= new FormData(document.getElementById('observation_form'));
+    var modal = $("#observation_form");
+    data= new FormData(document.getElementById('observation_form'));
+    var form = modal.find('form');
     $.ajax({
         url: document.save_observation,
         type: 'POST',
-        data: form,
+        data: data,
         processData: false,
         contentType: false,
         success: function({data}) {
         document.getElementById('observation_form').reset();
-            generate_observation_table(JSON.parse(data))
+            generate_observation_table(JSON.parse(data));
+            $("#observation_modal").modal("hide")
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.errors;
+               if(errors){
+                  $('.form_errors').remove();
+                  form_field_errors(form, errors,"#observation_form");
+
+               }
+            }
+        });
         }
-    });
-}
 
 function generate_observation_table(data){
 
@@ -86,7 +109,7 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td><a class="btn btn-md btn-danger" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> Eliminar</a></td>
+             <td><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> Eliminar</a></td>
             </tr>`
 
     });
@@ -178,13 +201,34 @@ swalWithBootstrapButtons.fire({
   }
 })
 }
+function load_errors(error_list, obj,klass){
+    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center'>";
+    error_list.forEach((item)=>{
+        ul_obj += "<li>"+item+"</li>";
+    });
+    ul_obj += "</ul>"
+    $(obj).parents(klass).prepend(ul_obj);
+    return ul_obj;
+}
+
+function form_field_errors(target_form, form_errors,klass){
+    var item = "";
+    for (const [key, value] of Object.entries(form_errors)) {
+        item = "#id_"+key;
+        if($(item).length > 0){
+            load_errors(form_errors[key], item,klass);
+        }
+    }
+}
 
 function add_reservation(){
-  form= new FormData(document.getElementById('reservation_form'));
+  data= new FormData(document.getElementById('reservation_form'));
+    var modal = $("#reservation_form");
+    var form = modal.find('form');
     $.ajax({
         url: document.reservation,
         type: 'POST',
-        data: form,
+        data: data,
         processData: false,
         contentType: false,
         success: function({state, errors}) {
@@ -194,6 +238,8 @@ function add_reservation(){
                     gettext("Reserved"),
                     'success'
             )
+            $("#reservation_modal").modal("hide")
+
             }else{
                 let list=""
                 errors.forEach(element =>
@@ -204,6 +250,17 @@ function add_reservation(){
             }
             document.getElementById('reservation_form').reset();
 
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.form;
+               if(errors){
+                  $('.form_errors').remove();
+                  form_field_errors(form, errors,".mb-4");
+
+               }
         }
         });
   }
+$(".open_modal").click(function(e){
+   $('.form_errors').remove();
+})
