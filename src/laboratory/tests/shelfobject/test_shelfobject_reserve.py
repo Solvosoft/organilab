@@ -9,6 +9,7 @@ from laboratory.tests.utils import ShelfObjectSetUp
 from laboratory.utils import check_user_access_kwargs_org_lab
 from reservations_management.models import ReservedProducts, SELECTED
 import json
+from django.utils.translation import gettext_lazy as _
 
 class ShelfObjectReserveByLabViewTest(ShelfObjectSetUp):
     """
@@ -112,6 +113,22 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         }
         self.url = reverse("academic:generate_reservation", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
+    def validate_reservation_dates(self, initial_date, final_date):
+        dates_errors = []
+        current_date = now().date()
+
+        if initial_date == final_date:
+            dates_errors.append(_("Final date can't be equal to initial date"))
+        if initial_date >= final_date:
+            dates_errors.append(_("Initial date can't be greater than final date"))
+        elif initial_date <= current_date:
+            dates_errors.append(_("Initial date can't be equal or lower to current date"))
+        elif initial_date <= current_date:
+            dates_errors.append(_("Initial date can't be lower than current date"))
+        elif final_date <= current_date:
+            dates_errors.append(_("Final date can't be lower than current date"))
+        return dates_errors
+
     def test_shelfobject_reserve_by_procedure_case1(self):
         """
        #EXPECTED CASE(User 1 in this organization with permissions try to reserve shelfobject by procedure without objects in its steps)
@@ -119,14 +136,16 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 200.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check variable state returned by response data.
-       4) Check if procedure has objects to reserve.
-       5) Check if procedure step has procedure required object related.
-       6) Check if reserved product instance was created.
+       3) Check if reservation dates are valid.
+       4) Check variable state returned by response data.
+       5) Check if procedure has objects to reserve.
+       6) Check if procedure step has procedure required object related.
+       7) Check if reserved product instance was created.
        """
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
         response_data = json.loads(response.content)
         if 'state' in response_data:
@@ -150,16 +169,18 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         CHECK TESTS
         1) Check response status code equal to 404.
         2) Check if user doesn't have permission to access this organization and laboratory.
-        3) Check variable state returned by response data.
-        4) Check if procedure has objects to reserve.
-        5) Check if procedure step has procedure required object related.
-        6) Check if reserved product instance wasn't created.
+        3) Check if reservation dates are valid.
+        4) Check variable state returned by response data.
+        5) Check if procedure has objects to reserve.
+        6) Check if procedure step has procedure required object related.
+        7) Check if reserved product instance wasn't created.
        """
         self.client = self.client2_org2
         self.user = self.user2_org2
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 404)
         self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
         response_data = json.loads(response.content)
         if 'state' in response_data:
@@ -184,17 +205,19 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 406.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check variable state returned by response data.
-       4) Check if procedure steps have objects.
-       5) Check if procedure step has procedure required object related.
-       6) Check if object quantity is less or equal than zero.
-       7) Check if reserved product instance wasn't created.
+       3) Check if reservation dates are valid.
+       4) Check variable state returned by response data.
+       5) Check if procedure steps have objects.
+       6) Check if procedure step has procedure required object related.
+       7) Check if object quantity is less or equal than zero.
+       8) Check if reserved product instance wasn't created.
        """
         self.procedure = Procedure.objects.get(pk=2)
         self.data['procedure'] = self.procedure.pk
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
         response_data = json.loads(response.content)
         if 'state' in response_data:
@@ -221,16 +244,18 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 200.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check variable state returned by response data.
-       4) Check if procedure has objects to reserve.
-       5) Check if procedure step has procedure required object related.
-       6) Check if reserved product instance was created.
+       3) Check if reservation dates are valid.
+       4) Check variable state returned by response data.
+       5) Check if procedure has objects to reserve.
+       6) Check if procedure step has procedure required object related.
+       7) Check if reserved product instance was created.
        """
         self.procedure = Procedure.objects.get(pk=3)
         self.data['procedure'] = self.procedure.pk
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
         response_data = json.loads(response.content)
         if 'state' in response_data:
@@ -255,11 +280,12 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        CHECK TESTS
        1) Check response status code equal to 404.
        2) Check if user has permission to access this organization and laboratory.
-       3) Check variable state returned by response data.
-       4) Check if procedure steps have objects.
-       5) Check if procedure step has procedure required object related.
-       6) Check if object quantity is less or equal than zero.
-       7) Check if reserved product instance wasn't created.
+       3) Check if reservation dates are valid.
+       4) Check variable state returned by response data.
+       5) Check if procedure steps have objects.
+       6) Check if procedure step has procedure required object related.
+       7) Check if object quantity is less or equal than zero.
+       8) Check if reserved product instance wasn't created.
        """
         self.procedure = Procedure.objects.get(pk=2)
         self.data['procedure'] = self.procedure.pk
@@ -268,6 +294,8 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 404)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+
+        self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
         response_data = json.loads(response.content)
         if 'state' in response_data:
@@ -284,5 +312,47 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
 
         for step_obj in step_objects:
             self.filters.update({"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+            reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+            self.assertFalse(reserved_products.exists())
+
+    def test_shelfobject_reserve_by_procedure_case6(self):
+        """
+       #EXPECTED CASE(User 1 in this organization with permissions try to reserve shelfobject by procedure with objects in its steps)
+
+       CHECK TESTS
+       1) Check response status code equal to 400.
+       2) Check if user has permission to access this organization and laboratory.
+       3) Check if reservation dates are valid.
+       4) Check variable state returned by response data.
+       5) Check if procedure has objects to reserve.
+       6) Check if procedure step has procedure required object related.
+       7) Check if reserved product instance was created.
+       """
+        self.procedure = Procedure.objects.get(pk=3)
+        self.final_date = now() + relativedelta(days=+50)
+        self.initial_date = now() + relativedelta(days=+100)
+        self.data.update({
+            'procedure': self.procedure.pk,
+            'initial_date': self.initial_date.strftime("%Y-%m-%d %H:%M"),
+            'final_date': self.final_date.strftime("%Y-%m-%d %H:%M")
+        })
+        response = self.client.post(self.url, data=self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
+
+        response_data = json.loads(response.content)
+        if 'state' in response_data:
+            self.assertFalse(response_data['state'])
+
+        self.objects_list = list_step_objects(self.data['procedure'])
+        self.assertTrue(self.objects_list)
+
+        step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+        self.assertTrue(step_objects.exists())
+
+        for step_obj in step_objects:
+            self.filters.update(
+                {"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
             reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
             self.assertFalse(reserved_products.exists())
