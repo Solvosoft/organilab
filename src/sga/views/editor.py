@@ -25,8 +25,8 @@ from sga.forms import SGAEditorForm, EditorForm, PersonalForm, SubstanceForm, Re
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import SGAComplement, Substance
 from sga.models import TemplateSGA, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
-from .api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
-from .models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
+from sga.api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
+from sga.models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
 from django import forms
 register = Library()
 
@@ -425,7 +425,7 @@ def sgalabel_step_two(request, org_pk, pk):
         form = PersonalSGAForm(request.POST, instance=sgalabel)
         if form.is_valid():
             form.save()
-            return redirect(reverse('sga:add_personal', args=(org_pk, 'laboratory',)))
+            return redirect(reverse('sga:add_personal', args=(org_pk, )))
 
     context = {
         'sgalabel': sgalabel,
@@ -454,7 +454,6 @@ def get_company(request, org_pk, pk):
 @login_required
 @permission_required('sga.view_builderinformation')
 def get_recipient_size(request, org_pk, pk):
-    # Note: @organilab_context_decorator is not used here intentionally
     recipient_size = get_object_or_404(RecipientSize, pk=pk)
     data = RecipientSizeSerializer(recipient_size).data
     return JsonResponse(data)

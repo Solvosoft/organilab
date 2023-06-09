@@ -58,7 +58,7 @@ document.clean_canvas_editor = true;
             <div class="col-sm-12" style="text-align:right">
                 <p style="font-size:13px;">{% trans "Doesn't have templates created yet, go to the editor and generate your custom templates!" %}</p>
                 <a type="button" class="btn btn-success btn-fill" href="{% url 'sga:editor' %}" >{% trans 'Go to Editor' %}</a>
-                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' %}" >{% trans 'Go to your labels' %}</a>
+                <a type="button" class="btn btn-success btn-circle" href="{% url 'sga:add_personal' org_pk %}" >{% trans 'Go to your labels' %}</a>
             </div>
         </div>
 <hr>

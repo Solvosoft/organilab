@@ -97,14 +97,14 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
             'org_pk': obj.substance.organization.pk
         }
         obj_kwargs.update({'pk': obj.substance.pk})
-        detail_url = reverse('academic:detail_substance', kwargs=obj_kwargs)
+        detail_url = reverse('sga:detail_substance', kwargs=obj_kwargs)
         security_leaf_pdf_url = reverse('academic:security_leaf_pdf', kwargs={'org_pk': obj.substance.organization.pk,
                                                                      'substance': obj.substance.pk})
         action = ""
 
         if not obj.is_approved:
             obj_kwargs.update({'pk': obj.pk})
-            approve_url = reverse('academic:accept_substance', kwargs=obj_kwargs)
+            approve_url = reverse('sga:accept_substance', kwargs=obj_kwargs)
             action += """ <button title='%s' type ='button' data-url='%s' class ='btn btn-info text-white btn_review'>
             <i class='icons fa fa-check'></i></button>""" % (_("Approve"), approve_url,)
 

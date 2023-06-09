@@ -6,11 +6,9 @@ Created on 4 may. 2017
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
-from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, \
-    approve_substances, delete_substance, step_two, detail_substance, \
-    view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
+from academic.substance.views import  view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
     update_observation, delete_observation, change_prudence_advice, change_warning_word, change_danger_indication, \
-    step_three, step_four, add_sga_provider, security_leaf_pdf
+     add_sga_provider, security_leaf_pdf
 from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, ProcedureStepCreateView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
