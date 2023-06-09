@@ -478,6 +478,16 @@
     }
   },
   {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+        "profile": 4,
+        "content_type": 1,
+        "object_id": 1,
+        "rol": [3]
+    }
+  },
+  {
     "model": "laboratory.userorganization",
     "pk": 1,
     "fields": {

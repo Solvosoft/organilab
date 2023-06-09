@@ -8,7 +8,7 @@ from laboratory.models import ShelfObject
 from laboratory.tests.utils import ShelfObjectSetUp
 from laboratory.utils import check_user_access_kwargs_org_lab
 from reservations_management.models import ReservedProducts, SELECTED
-
+import json
 
 class ShelfObjectReserveByLabViewTest(ShelfObjectSetUp):
     """
@@ -125,6 +125,11 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+
+        response_data = json.loads(response.content)
+        if 'state' in response_data:
+            self.assertFalse(response_data['state'])
+
         self.assertTrue(self.objects_list)
 
         step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
@@ -151,6 +156,11 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 404)
         self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+
+        response_data = json.loads(response.content)
+        if 'state' in response_data:
+            self.assertFalse(response_data['state'])
+
         self.assertTrue(self.objects_list)
 
         step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
@@ -179,6 +189,10 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+
+        response_data = json.loads(response.content)
+        if 'state' in response_data:
+            self.assertFalse(response_data['state'])
 
         self.objects_list = list_step_objects(self.data['procedure'])
         self.assertTrue(self.objects_list)
@@ -210,6 +224,10 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
 
+        response_data = json.loads(response.content)
+        if 'state' in response_data:
+            self.assertTrue(response_data['state'])
+
         self.objects_list = list_step_objects(self.data['procedure'])
         self.assertTrue(self.objects_list)
 
@@ -221,3 +239,40 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
                 {"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
             reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
             self.assertTrue(reserved_products.exists())
+
+    def test_shelfobject_reserve_by_procedure_case5(self):
+        """
+       #UNEXPECTED CASE, BUT POSSIBLE(User 4 to other organization with permissions try to reserve shelfobject by procedure with amount object equal to 0)
+
+       CHECK TESTS
+       1) Check response status code equal to 404.
+       2) Check if user has permission to access this organization and laboratory.
+       3) Check if procedure steps have objects.
+       4) Check if object quantity is less or equal than zero.
+       5) Check if reserved product instance wasn't created.
+       """
+        self.procedure = Procedure.objects.get(pk=2)
+        self.data['procedure'] = self.procedure.pk
+        self.client = self.client4_org2
+        self.user = self.user4_org2
+        response = self.client.post(self.url, data=self.data)
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+
+        response_data = json.loads(response.content)
+        if 'state' in response_data:
+            self.assertFalse(response_data['state'])
+
+        self.objects_list = list_step_objects(self.data['procedure'])
+        self.assertTrue(self.objects_list)
+
+        step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
+        self.assertTrue(step_objects.exists())
+
+        objects_quantity_less_or_equal_zero = step_objects.filter(quantity__lte=0)
+        self.assertFalse(objects_quantity_less_or_equal_zero.exists())
+
+        for step_obj in step_objects:
+            self.filters.update({"amount_required": step_obj.quantity, "shelf_object__object__pk": step_obj.object.pk})
+            reserved_products = ReservedProducts.objects.filter(**self.filters).distinct()
+            self.assertFalse(reserved_products.exists())
