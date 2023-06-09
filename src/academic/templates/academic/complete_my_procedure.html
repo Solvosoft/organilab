@@ -13,7 +13,7 @@
     <h1 id="form_name" class="text-center"> </h1>
     <div class="clearfix"></div>
     <div class="row">
-        <div id="left-col" class="col-md-8">
+        <div id="left-col" class="col-md-7">
             <form id="procedure_form">
                 {% csrf_token %}
                 <div id="steps-table">
@@ -24,6 +24,15 @@
                             <div class="row">
                                 <div class="col-md-11">
                                     <div id="step-description-{{ step.pk }}" class="step-description">{{ step.description|safe }}</div>
+                                    <br>
+                                    <label class="fw-bold">{% trans 'Object List'%}</label>
+                                    <ul class="list-group">
+                                        {% for obj in step.procedurerequiredobject_set.all %}
+                                            <li class="list-group-item">{{obj}}</li>
+                                        {% empty %}
+                                            <li class="list-group-item">{% trans 'Object Not Found'%}</li>
+                                        {% endfor %}
+                                    </ul>
                                 </div>
                                 <div class="col-md-1">
                                     <input type="radio" class="stepradio" name="step" value="{{ step.pk }}">
@@ -45,7 +54,7 @@
                 {% endif %}
             </form>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <table id="datatableelement" class="table "> </table>
         </div>
     </div>
