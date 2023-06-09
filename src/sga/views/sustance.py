@@ -135,7 +135,7 @@ def approve_substances(request, org_pk, pk):
 
 @login_required
 @permission_required('sga.delete_substance')
-def delete_substance(request, org_pk, organilabcontext, pk):
+def delete_substance(request, org_pk, pk):
     substances=Substance.objects.filter(pk=pk).first()
     if substances:
         messages.success(request, _("The substance is removed successfully"))
@@ -286,9 +286,8 @@ def step_four(request, org_pk,  substance):
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "security leaf", changed_data=form.changed_data)
-            return redirect(reverse('academic:get_substance',kwargs={'organilabcontext':organilabcontext,
-                                                            'org_pk': org_pk
-                                                            }))
+            return redirect(reverse('academic:get_substance',kwargs={'org_pk': org_pk }))
+
     form = SecurityLeafForm(instance=security_leaf)
     context = {'step': 4,
                'complement': complement.pk,

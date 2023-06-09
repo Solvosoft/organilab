@@ -17,7 +17,7 @@
             <br>
         </div>
     </div>
-    <form id="leaf_form" action="{% url 'academic:step_four' org_pk organilabcontext substance %}" method="POST">
+    <form id="leaf_form" action="{% url 'sga:step_four' org_pk  substance %}" method="POST">
     {% csrf_token %}
 
     <div class="row " style="justify-content: center">

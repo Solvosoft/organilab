@@ -42,7 +42,7 @@ urlpatterns = [
     path('substance/add_danger_indication/', add_sga_complements, kwargs={'element': 'danger'}, name='add_danger_indication'),
     path('substance/add_warning_words/', add_sga_complements, kwargs={'element': 'warning'}, name='add_warning_word'),
     path('substance/add_prudence_advice/', add_sga_complements, kwargs={'element': 'prudence'}, name='add_prudence_advice'),
-    path('substance/add_observation/<str:organilabcontext>/<int:substance>/', add_observation, name='add_observation'),
+    path('substance/add_observation/<int:substance>/', add_observation, name='add_observation'),
     path('substance/update_observation/', update_observation, name='update_observation'),
     path('substance/deleta_observation/', delete_observation, name='delete_observation'),
     path('substance/update_danger_indication/<str:pk>/', change_danger_indication, name='update_danger_indication'),

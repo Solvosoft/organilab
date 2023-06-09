@@ -250,16 +250,16 @@ def get_preview(request, org_pk, pk):
 
 @login_required
 @permission_required('laboratory.change_object')
-def create_substance(request,organilabcontext):
+def create_substance(request):
     form=SubstanceForm()
     if request.method == 'POST':
         form =SubstanceForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request,_('The substance saved successfully'))
-            return redirect(reverse('sga:add_substance', kwargs={'organilabcontext': organilabcontext}))
+            return redirect(reverse('sga:add_substance'))
         else:
-            return redirect(reverse('sga:add_substance', kwargs={'organilabcontext': organilabcontext}))
+            return redirect(reverse('sga:add_substance'))
     return render(request, 'add_substance.html', context={'form':form})
 
 @login_required
@@ -347,7 +347,7 @@ def update_pictogram(request, *args, **kwargs):
     return render(request, 'add_pictograms.html', context=context)
 
 
-def create_sgalabel(request, organilabcontext, org_pk):
+def create_sgalabel(request, org_pk):
 
     if request.method == "POST":
         form = SGALabelForm(request.POST)
@@ -359,13 +359,12 @@ def create_sgalabel(request, organilabcontext, org_pk):
             label = Label.objects.create()
             instance.label = label
             instance.save()
-            return redirect(reverse("sga:sgalabel_step_one", kwargs={'organilabcontext':organilabcontext,
-                                                                     'pk': instance.pk, 'org_pk': org_pk}))
+            return redirect(reverse("sga:sgalabel_step_one", kwargs={'pk': instance.pk, 'org_pk': org_pk}))
         else:
             messages.error(request, _("Form is invalid"))
 
 
-def sgalabel_step_one(request, org_pk, organilabcontext, pk):
+def sgalabel_step_one(request, org_pk, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     builderinformation = sgalabel.label.builderInformation
     sustance = sgalabel.label.substance
@@ -403,13 +402,10 @@ def sgalabel_step_one(request, org_pk, organilabcontext, pk):
             personal_form.save()
 
         if complementsga_form_ok and sgabuilderinfo_form_ok and personal_form_ok:
-            return redirect(reverse("sga:sgalabel_step_two", kwargs={'organilabcontext':organilabcontext,
-                                                                     'pk': sgalabel.pk,
-                                                                     'org_pk': org_pk}))
+            return redirect(reverse("sga:sgalabel_step_two", kwargs={'pk': sgalabel.pk, 'org_pk': org_pk}))
 
     context = {
         'sgalabel': sgalabel,
-        'organilabcontext': organilabcontext,
         'complementsga_form': complementsga_form,
         'builderinformationform': sgabuilderinfo_form,
         'pesonalform': personal_form,
@@ -420,7 +416,7 @@ def sgalabel_step_one(request, org_pk, organilabcontext, pk):
 
 @login_required
 @permission_required('sga.change_pictogram')
-def sgalabel_step_two(request, org_pk, organilabcontext, pk):
+def sgalabel_step_two(request, org_pk, pk):
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
@@ -433,7 +429,6 @@ def sgalabel_step_two(request, org_pk, organilabcontext, pk):
 
     context = {
         'sgalabel': sgalabel,
-        'organilabcontext': organilabcontext,
         'complement': complement,
         'editorform': PersonalSGAForm(instance=sgalabel),
         'org_pk': org_pk
@@ -458,7 +453,7 @@ def get_company(request, org_pk, pk):
 
 @login_required
 @permission_required('sga.view_builderinformation')
-def get_recipient_size(request, org_pk, organilabcontext, pk):
+def get_recipient_size(request, org_pk, pk):
     # Note: @organilab_context_decorator is not used here intentionally
     recipient_size = get_object_or_404(RecipientSize, pk=pk)
     data = RecipientSizeSerializer(recipient_size).data

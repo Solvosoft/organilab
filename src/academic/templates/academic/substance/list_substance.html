@@ -24,7 +24,7 @@
 <div class="row">
 <div class="col-md-12">
     <div class="add-container float-end">
-        <a class="btn btn-outline-success" href="{% url 'academic:create_sustance' org_pk organilabcontext %}"  title="{% trans 'Add new Substance' %}">
+        <a class="btn btn-outline-success" href="{% url 'academic:create_sustance' org_pk %}"  title="{% trans 'Add new Substance' %}">
             <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
     </div>
     <br>
@@ -44,8 +44,8 @@
                     <td>{{substance.comercial_name}}</td>
                     <td>{{substance.substancecharacteristics.cas_id_number|default_if_none:""}}</td>
                     <td><p class="text-center"> No</p></td>
-                    <td><a href="{% url 'academic:update_substance' substance.organization.pk organilabcontext substance.pk  %}" class="btn btn-warning" title="{% trans 'Edit' %}"><i class="icons fa fa-edit"></i></a>
-                        <a class="btn btn-info text-white" href="{% url 'academic:detail_substance' org_pk organilabcontext substance.pk %}" title="{% trans 'Review' %}" }><i class="icons fa fa-eye"></i></a>
+                    <td><a href="{% url 'sga:update_substance' substance.organization.pk substance.pk  %}" class="btn btn-warning" title="{% trans 'Edit' %}"><i class="icons fa fa-edit"></i></a>
+                        <a class="btn btn-info text-white" href="{% url 'sga:detail_substance' org_pk substance.pk %}" title="{% trans 'Review' %}" }><i class="icons fa fa-eye"></i></a>
                         <a data-bs-target="#delete_modal" data-bs-toggle="modal" data-substance="{{substance.pk}}" class="btn btn-danger remove" title="{% trans 'Remove' %}"><i class="icons fa fa-trash"></i></a>
                         {% if template %}
                         <a class="btn  btn-md  btn-info text-white" title="{% trans 'Generate PDF' %}" href="{% url 'academic:security_leaf_pdf' org_pk substance.pk %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>
@@ -112,7 +112,7 @@ function replaceLast(obj, search, replace) {
     $(".remove").on('click', function(){
         $("#remove_substance").removeAttr('href');
         var id = $(this).data('substance')
-        var url = "{% url 'academic:delete_substance' org_pk organilabcontext 0 %}";
+        var url = "{% url 'sga:delete_substance' org_pk 0 %}";
 
         if(id){
             url = replaceLast(url, '0', id);
@@ -123,7 +123,7 @@ function replaceLast(obj, search, replace) {
 })(jQuery);
 </script>
 <script>
-    document.url_get_preview = "{% url 'sga:get_preview' org_pk organilabcontext 0 %}";
+    document.url_get_preview = "{% url 'sga:get_preview' org_pk 0 %}";
 </script>
 <script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}?v={% get_organilab_version %}"></script>
 
