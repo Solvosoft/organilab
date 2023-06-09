@@ -1,0 +1,720 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "user1org1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user1org1",
+      "first_name": "User 1",
+      "last_name": "Org 1",
+      "email": "user1org1@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "user2org2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user2org2",
+      "first_name": "User 2",
+      "last_name": "Org 2",
+      "email": "user2org2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "user3org1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user3org1",
+      "first_name": "User 3",
+      "last_name": "Org 1",
+      "email": "user3org1@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "user4org2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user4org2",
+      "first_name": "User 4",
+      "last_name": "Org 2",
+      "email": "user4org2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "user5org3pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user5org3",
+      "first_name": "User 5",
+      "last_name": "Org 3",
+      "email": "user5org3@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+        "name": "View Shelf",
+        "color": "#337193",
+        "permissions": [18]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+        "name": "Change Shelf Object",
+        "color": "#337193",
+        "permissions": [24]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+        "name": "Add Reserved Product",
+        "color": "#337193",
+        "permissions": [415]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Organization 1",
+      "position": 0,
+      "level": 0,
+      "rol": [1, 2, 3]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization 2",
+      "position": 0,
+      "level": 0,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": 1,
+      "name": "Child Organization 1",
+      "position": 0,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": 2,
+      "name": "Child Organization 2",
+      "position": 0,
+      "level": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 5,
+    "fields": {
+      "parent": null,
+      "name": "Organization 3",
+      "position": 0,
+      "level": 0,
+      "rol": []
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Lab 1",
+      "phone_number": "88888888",
+      "location": "San José",
+      "geolocation": "9.895804362670006,-84.4325435324",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Lab 2",
+      "phone_number": "44444444",
+      "location": "San Miguel",
+      "geolocation": "9.32442142332,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 2,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 3,
+    "fields": {
+      "name": "Lab 3",
+      "phone_number": "33333333",
+      "location": "San Antonio",
+      "geolocation": "9.354352434334343,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 4,
+    "fields": {
+      "name": "Lab 4",
+      "phone_number": "22222222",
+      "location": "San Andres",
+      "geolocation": "9.895804362670006,-84.43434353455",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 4,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 5,
+    "fields": {
+      "name": "Lab 5",
+      "phone_number": "55555555",
+      "location": "Turrialba",
+      "geolocation": "9.895804362670006,-84.43434353455",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 5,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de muestras",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de exp",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 3
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 1",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[1],[]],[[],[],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 2",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[3],[]],[[],[],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "SH 1 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 2,
+    "fields": {
+      "furniture": 1,
+      "name": "SH 2 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 3,
+    "fields": {
+      "furniture": 1,
+      "name": "SH 3 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 2,
+      "name": "SH 4 FU 1",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Reactivo",
+      "description": "Es un reactivo en la industria química."
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "CA777",
+      "name": "Cal 100 gr",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1]
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 2,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [1, 3, 5]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [2, 4]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "6666-6666",
+      "id_card": "0-0000-0000",
+      "job_position": "Student",
+      "laboratories": [1, 3]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone_number": "3333-3333",
+      "id_card": "0-0000-0000",
+      "job_position": "Student",
+      "laboratories": [2, 4]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "phone_number": "3333-3333",
+      "id_card": "0-0000-0000",
+      "job_position": "Admin",
+      "laboratories": [5]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "content_type": 1,
+        "object_id": 1,
+        "rol": [1, 2, 3]
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+        "organization": 1,
+        "user": 1,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 2,
+    "fields": {
+        "organization": 3,
+        "user": 1,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 3,
+    "fields": {
+        "organization": 1,
+        "user": 3,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 4,
+    "fields": {
+        "organization": 3,
+        "user": 3,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 5,
+    "fields": {
+        "organization": 2,
+        "user": 2,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 6,
+    "fields": {
+        "organization": 4,
+        "user": 2,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 7,
+    "fields": {
+        "organization": 2,
+        "user": 4,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 8,
+    "fields": {
+        "organization": 4,
+        "user": 4,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 9,
+    "fields": {
+        "organization": 5,
+        "user": 5,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+  {
+    "model": "laboratory.userorganization",
+    "pk": 10,
+    "fields": {
+        "organization": 5,
+        "user": 1,
+        "status": true,
+        "type_in_organization": 3
+    }
+},
+   {
+    "model": "laboratory.userorganization",
+    "pk": 11,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+   {
+    "model": "laboratory.userorganization",
+    "pk": 12,
+    "fields": {
+      "organization": 1,
+      "user":  3,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 13,
+    "fields": {
+      "organization": 3,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 14,
+    "fields": {
+      "organization": 3,
+      "user":  3,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 15,
+    "fields": {
+      "organization": 2,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 16,
+    "fields": {
+      "organization": 2,
+      "user": 4,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 17,
+    "fields": {
+      "organization": 4,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 18,
+    "fields": {
+      "organization": 4,
+      "user":  4,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 19,
+    "fields": {
+      "organization": 5,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 20,
+    "fields": {
+      "organization": 5,
+      "user": 5,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 20,
+    "fields": {
+      "organization": 2,
+      "object_id": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ]
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "name": "Karine Products",
+      "phone_number": "(506)2209-8765",
+      "email": "karineproductos@cr.com",
+      "legal_identity": "3-8764-8354",
+      "laboratory": 1,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "name": "LP Company",
+      "phone_number": "(506)2209-8765",
+      "email": "lpcompany@cr.com",
+      "legal_identity": "3-463-3423432",
+      "laboratory": 2,
+      "creator": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  }
+]
