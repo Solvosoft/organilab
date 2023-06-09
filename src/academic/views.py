@@ -461,7 +461,8 @@ def convert_to_general_unit(data):
 @permission_required('reservations_management.add_reservedproducts')
 def generate_reservation(request, *args, **kwargs):
 
-    lab = kwargs.get('lab_pk')
+    lab = get_object_or_404(Laboratory,pk=kwargs.get('lab_pk'))
+    org = get_object_or_404(OrganizationStructure,pk=kwargs.get('org_pk'))
     form = ValidateProcedureReservationForm(request.POST)
     form_error=None
     result = status.HTTP_200_OK
@@ -474,7 +475,7 @@ def generate_reservation(request, *args, **kwargs):
 
         for obj in objects_pk:
 
-            objs = convert_to_general_unit(get_objects_list(lab, obj))
+            objs = convert_to_general_unit(get_objects_list(lab.pk, obj))
             step_objs = convert_to_general_unit(get_step_object(procedure, obj))
 
             if objs >= step_objs:
@@ -485,8 +486,8 @@ def generate_reservation(request, *args, **kwargs):
         if len(objects_pk) == obj_find:
             state = True
             for obj in objects_pk:
-                add_reservation(request, get_objects_list(lab, obj),
-                                    get_step_object(procedure, obj))
+                add_reservation(request, get_objects_list(lab.pk, obj),
+                                    get_step_object(procedure, obj),lab,org)
     else:
         result=status.HTTP_400_BAD_REQUEST
         form_error=form.errors
@@ -495,7 +496,7 @@ def generate_reservation(request, *args, **kwargs):
     return JsonResponse({'state': state, 'errors':obj_unknown,'form':form_error},status=result)
 
 
-def add_reservation(request, data, data_step):
+def add_reservation(request, data, data_step,lab,org):
     """Generate the reservation and add the respective quantity of the object"""
     result = 0
     for obj in data:
@@ -523,7 +524,9 @@ def add_reservation(request, data, data_step):
                                                                user=request.user,
                                                                initial_date=form.cleaned_data['initial_date'],
                                                                final_date=form.cleaned_data['final_date'],
-                                                               amount_required=result)
+                                                               amount_required=result,
+                                                               laboratory=lab,
+                                                               organization=org)
                     reserved.save()
                     organilab_logentry(request.user, reserved, ADDITION, changed_data=form.changed_data)
 
