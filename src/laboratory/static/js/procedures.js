@@ -257,6 +257,13 @@ function add_reservation(){
                   $('.form_errors').remove();
                   form_field_errors(form, errors,".mb-4");
 
+               }else{
+                   Swal.fire(
+                    xhr.responseJSON.msg,
+                    gettext("Error"),
+                    'error'
+            )
+
                }
         }
         });

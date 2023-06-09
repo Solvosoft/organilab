@@ -30,7 +30,7 @@
                                         {% for obj in step.procedurerequiredobject_set.all %}
                                             <li class="list-group-item">{{obj}}</li>
                                         {% empty %}
-                                            <li class="list-group-item">{% trans 'Object Not Found'%}</li>
+                                            <li class="list-group-item">{% trans "Don't has objects" %}</li>
                                         {% endfor %}
                                     </ul>
                                 </div>
