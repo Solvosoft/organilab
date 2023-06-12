@@ -14,7 +14,28 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [83, 84, 85, 86]
+      "user_permissions": [
+        [
+          "add_rol",
+          "auth_and_perms",
+          "rol"
+        ],
+        [
+          "change_rol",
+          "auth_and_perms",
+          "rol"
+        ],
+        [
+          "delete_rol",
+          "auth_and_perms",
+          "rol"
+        ],
+        [
+          "view_rol",
+          "auth_and_perms",
+          "rol"
+        ]
+      ]
     }
   },
   {
@@ -95,7 +116,28 @@
     "fields": {
         "name": "Gestión Laboratorio",
         "color": "#337193",
-        "permissions": [1, 37, 38, 39]
+        "permissions": [
+          [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+          [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+          [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+            [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ]
+        ]
     }
 },
   {
@@ -104,7 +146,28 @@
     "fields": {
         "name": "Gestión Informes",
         "color": "#337193",
-        "permissions": [475, 472, 473, 474]
+        "permissions": [
+          [
+            "add_inform",
+            "laboratory",
+            "inform"
+          ],
+          [
+            "change_inform",
+            "laboratory",
+            "inform"
+          ],
+           [
+            "delete_inform",
+            "laboratory",
+            "inform"
+          ],
+          [
+            "view_inform",
+            "laboratory",
+            "inform"
+          ]
+        ]
     }
 },
   {
@@ -113,7 +176,28 @@
     "fields": {
         "name": "Gestión Sustancias",
         "color": "#337193",
-        "permissions": [26, 27, 28, 29]
+        "permissions": [
+          [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+          [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+          [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+          [
+          "view_object",
+          "laboratory",
+          "object"
+        ]
+        ]
     }
 },
   {
@@ -122,7 +206,28 @@
     "fields": {
         "name": "Gestión de reporte de zonas de riesgo",
         "color": "#337193",
-        "permissions": [360, 359, 361, 358]
+        "permissions": [
+          [
+            "add_zonetype",
+            "risk_management",
+            "zonetype"
+          ],
+          [
+            "change_zonetype",
+            "risk_management",
+            "zonetype"
+          ],
+          [
+            "delete_zonetype",
+            "risk_management",
+            "zonetype"
+          ],
+          [
+            "view_zonetype",
+            "risk_management",
+            "zonetype"
+          ]
+        ]
     }
 },
   {
@@ -131,7 +236,28 @@
     "fields": {
         "name": "Gestión de roles",
         "color": "#337193",
-        "permissions": [83, 84, 85, 86]
+        "permissions": [
+          [
+          "add_rol",
+          "auth_and_perms",
+          "rol"
+        ],
+        [
+          "change_rol",
+          "auth_and_perms",
+          "rol"
+        ],
+        [
+          "delete_rol",
+          "auth_and_perms",
+          "rol"
+        ],
+        [
+          "view_rol",
+          "auth_and_perms",
+          "rol"
+        ]
+        ]
     }
 },
   {
@@ -140,7 +266,28 @@
     "fields": {
         "name": "Reporte de zonas de riesgo",
         "color": "#337193",
-        "permissions": [360, 359, 361, 358]
+        "permissions": [
+          [
+            "add_zonetype",
+            "risk_management",
+            "zonetype"
+          ],
+          [
+            "change_zonetype",
+            "risk_management",
+            "zonetype"
+          ],
+          [
+            "delete_zonetype",
+            "risk_management",
+            "zonetype"
+          ],
+          [
+            "view_zonetype",
+            "risk_management",
+            "zonetype"
+          ]
+        ]
     }
 },
   {
