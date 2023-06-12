@@ -84,15 +84,6 @@
         document.remove_object="{% url 'academic:remove_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
         document.save_observation="{% url 'academic:add_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
         document.remove_observation="{% url 'academic:remove_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
-
-        document.message = {
-            'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",
-            'confirmobj': "{% trans 'Are you sure to delete this object ' %}",
-            'deletemsg': "{% trans 'has been deleted' %}",
-            'deleteobs': "{% trans 'Observation has been deleted' %}",
-            'object': "{% trans 'Object' %}"
-        }
-
     </script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
 
