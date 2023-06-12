@@ -37,7 +37,7 @@
                     <td>
                         <div class="d-flex justify-content-center flex-column p-2">
                         <a class="btn btn-info btn-block" href="{% url 'academic:procedure_detail' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
-                            <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
+                            <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} {% trans 'Step detail' %}</a>
                         <a class="btn btn-success btn-block" href="{% url 'academic:add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
                             <i class="fa fa-plus"></i> {% trans 'New Step' %}</a>
                         <a href="{% url 'academic:procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary btn-block">
