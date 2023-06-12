@@ -10,14 +10,14 @@
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}
 <div class="row">
-  <div class="offset-md-2 col-md-8">
+  <div class="col-md-12">
     <div align="center">
       <h3 class="heading-1" ><span> {% trans 'My procedures' %}</span></h3>
       <div class="card">
         <div class="card-header">
           <h2 class="float-start">{% trans 'My procedures' %}</h2>
-           <a class="btn btn-success float-end create_btn"  data-bs-toggle="modal"
-            data-bs-target="#add_my_procedures" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>  <ul class="nav navbar-right panel_toolbox"></ul>
+           <a class="btn btn-outline-success float-end create_btn"  data-bs-toggle="modal"
+            data-bs-target="#add_my_procedures" type="button"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>  <ul class="nav navbar-right panel_toolbox"></ul>
           <div class="clearfix"></div>
         </div>
         <div class="card-body">

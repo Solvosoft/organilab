@@ -1,5 +1,9 @@
 $(document).ready(function() {
-    $('#my_procedures').DataTable();
+    $('#my_procedures').DataTable({
+     dom: "<'d-flex justify-content-between'<'m-2'l>" +
+        "<'m-2 d-flex justify-content-start'f>>" +
+        "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+        });
 });
 
 function delete_my_procedure(pk){

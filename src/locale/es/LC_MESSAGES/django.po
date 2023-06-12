@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 msgid "Approve"
 msgstr "Aprobar"
@@ -3974,4 +3974,5 @@ msgstr "La cantidad debe ser mayor que 0"
 msgid "Don't has objects"
 msgstr "No tiene objetos"
 
-
+msgid "Step detail"
+msgstr "Detalle de pasos"
