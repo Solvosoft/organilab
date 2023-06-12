@@ -69,7 +69,7 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> Eliminar</a>
+        <td><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> ${gettext("Eliminate")}</a>
               </td>
         </tr>`;
     });
@@ -109,7 +109,7 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> Eliminar</a></td>
+             <td><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> ${gettext("Eliminate")}</a></td>
             </tr>`
 
     });
@@ -173,10 +173,10 @@ const swalWithBootstrapButtons = Swal.mixin({
 
 swalWithBootstrapButtons.fire({
   title: in_msg,
-  text: "Estas a tiempo de revertir esta acción!",
+  text: gettext("You are in time to reverse this action!"),
   icon: 'warning',
   showCancelButton: true,
-  confirmButtonText: 'Si',
+  confirmButtonText: gettext('Yes'),
   cancelButtonText: 'No',
   reverseButtons: true
 }).then((result) => {
@@ -194,8 +194,8 @@ swalWithBootstrapButtons.fire({
     result.dismiss === Swal.DismissReason.cancel
   ) {
     swalWithBootstrapButtons.fire(
-      'Cancelado',
-      'El procedimiento no fue eliminado',
+      gettext('Cancelled'),
+      gettext('The procedure was not removed'),
       'error'
     )
   }
