@@ -115,29 +115,28 @@ function generate_observation_table(data){
     });
  }
 
-
 function delete_procedure(pk,procedure_name){
-    open_alert(pk, document.message.confirmprocedure+` ${procedure_name}?`,
-    `${procedure_name} `+ document.message.deletemsg,
-    document.remove_procedure,0);
+    open_alert(pk, gettext('Are you sure to delete the procedure')+` ${procedure_name}?`,
+    `${procedure_name} `+ gettext('has been deleted'),
+    document.remove_procedure,0, gettext('The procedure was not removed'));
 }
 
 function delete_step(pk,step_name){
-    open_alert(pk, document.message.confirmstep+ ` ${step_name}?`,
-    document.message.step+` ${step_name} `+ document.message.deletemsg,
-    document.remove_step,0);
+    open_alert(pk, gettext('Are you sure to delete the step')+ ` ${step_name}?`,
+    gettext('Step')+` ${step_name} `+ gettext('has been deleted'),
+    document.remove_step,0, gettext('The procedure step was not removed'));
 }
 
 function delete_observation(pk){
-    open_alert(pk, document.message.confirmobs,
-    document.message.deleteobs,
-    document.remove_observation,2);
+    open_alert(pk, gettext('Are you sure to delete this observation?'),
+    gettext('Observation has been deleted'),
+    document.remove_observation,2, gettext('The observation was not removed'));
 }
 
 function delete_object(pk,obj_name){
-    open_alert(pk, document.message.confirmobj+ ` ${obj_name}?`,
-    document.message.object+` ${obj_name} `+document.message.deletemsg,
-    document.remove_object,1);
+    open_alert(pk, gettext('Are you sure to delete this object')+ ` ${obj_name}?`,
+    gettext('Object')+` ${obj_name} `+gettext('has been deleted'),
+    document.remove_object,1, gettext('The object was not removed'));
 }
 
 function sendrequest(element,url,action){
@@ -162,7 +161,7 @@ function sendrequest(element,url,action){
       });
 
 }
-function open_alert(pk, in_msg,out_msg,url,action){
+function open_alert(pk, in_msg,out_msg,url,action,msg_cancel){
 const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
     confirmButton: 'btn btn-success',
@@ -195,7 +194,7 @@ swalWithBootstrapButtons.fire({
   ) {
     swalWithBootstrapButtons.fire(
       gettext('Cancelled'),
-      gettext('The procedure was not removed'),
+      msg_cancel,
       'error'
     )
   }

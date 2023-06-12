@@ -76,15 +76,6 @@
 
     <script>
         document.remove_step="{% url 'academic:delete_step' lab_pk=laboratory org_pk=org_pk %}";
-        document.message = {
-            'confirmstep': "{% trans 'Are you sure to delete the step' %}",
-            'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",
-            'confirmobj': "{% trans 'Are you sure to delete this object ' %}",
-            'deletemsg': "{% trans 'has been deleted' %}",
-            'deleteobs': "{% trans 'Observation has been deleted' %}",
-            'step': "{% trans 'Step' %}",
-            'object': "{% trans 'Object' %}"
-        }
     </script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
 

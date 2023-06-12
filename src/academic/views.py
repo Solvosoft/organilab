@@ -32,11 +32,15 @@ from . import convertions
 
 @login_required
 @permission_required('academic.add_procedurestep')
-def add_steps_wrapper(request, *args, **kwargs):
-    procedure = get_object_or_404(Procedure, pk=kwargs['pk'])
+def add_steps_wrapper(request,org_pk, lab_pk,pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
+    procedure = get_object_or_404(Procedure, pk=pk)
     procstep = ProcedureStep.objects.create(procedure=procedure)
-    organilab_logentry(request.user, procstep, ADDITION, relobj=kwargs['lab_pk'])
-    return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': kwargs['lab_pk'],'org_pk':kwargs['org_pk']}))
+    organilab_logentry(request.user, procstep, ADDITION, relobj=lab_pk)
+    return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': lab_pk,'org_pk':org_pk}))
 
 
 @permission_required('academic.view_myprocedure')
@@ -284,11 +288,12 @@ class ProcedureStepUpdateView(DJUpdateView):
 
 @login_required
 @permission_required('academic.add_procedurerequiredobject')
-def save_object(request, *args, **kwargs):
+def save_object(request,org_pk, lab_pk,pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     """ Add a Required object """
-    pk = kwargs['pk']
-    lab_pk = kwargs['lab_pk']
-    org_pk = kwargs['org_pk']
     form = AddObjectStepForm(request.POST)
     step = get_object_or_404(ProcedureStep, pk=pk)
     state = status.HTTP_200_OK
