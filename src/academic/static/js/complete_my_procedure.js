@@ -167,7 +167,7 @@ function delete_comment(comment){
     });
 }
 
-document.table_default_dom = "<'row'<'col-sm-12 col-md-12 mb-1 d-flex' f>" +
+document.table_default_dom = "<'row'<'col-sm-6 col-md-6 p-0' f>" +
              "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
              "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
              "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
