@@ -391,7 +391,13 @@ def remove_observation(request, *args, **kwargs):
 @permission_required('academic.view_procedure')
 def get_procedure(request, *args, **kwargs):
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
-    return JsonResponse({'data': {'title': procedure.title, 'pk': procedure.pk}})
+    result_status = status.HTTP_200_OK
+    msg=""
+    if not ProcedureRequiredObject.objects.filter(step__procedure=procedure).exists():
+        result_status= status.HTTP_400_BAD_REQUEST
+        msg= _("The procedure don't has objects, please add some objects in the procedure steps")
+
+    return JsonResponse({'title': procedure.title, 'pk': procedure.pk,'msg':msg},status=result_status)
 
 @permission_required('academic.delete_procedure')
 def delete_procedure(request, *args, **kwargs):

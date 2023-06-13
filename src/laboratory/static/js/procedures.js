@@ -19,10 +19,21 @@ function get_procedure(pk){
         type:'POST',
         data:{'pk':pk},
         headers: {'X-CSRFToken': getCookie('csrftoken') },
-        success: function({data}){
-            $('#procedure_title').text(data.title);
-            $('#procedure').val(data.pk);
-        }
+        success: function({title,pk}){
+            $('#procedure_title').text(title);
+            $('#procedure').val(pk);
+            $("#reservation_modal").modal('show');
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.msg;
+               if(errors){
+                     Swal.fire({
+                 title: gettext('Error'),
+                icon: 'error',
+                text: errors,
+            })
+            }
+            }
 
     })
 }

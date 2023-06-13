@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from academic.api import serializers
 from academic.api.forms import ValidateReviewSubstanceForm, CommentProcedureStepForm
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import OrganizationStructure, Laboratory
 from organilab import settings
@@ -188,5 +189,36 @@ class ReviewSubstanceViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
         response = {'data': data, 'recordsTotal': ReviewSubstance.objects.count(), 'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
+
+class MyProceduresAPI(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.MyProcedureDataTableSerializer
+    queryset = MyProcedure.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['name', 'custom_procedure__title', 'status','created_by__first_name', 'created_by__last_name','created_by__username']
+    filterset_class = serializers.MyProcedureFilterSet
+    ordering_fields = ['pk']
+    ordering = ('-pk',)
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
+            validate_serializer=ValidateUserAccessOrgLabSerializer(data={'laboratory':self.kwargs.get('lab_pk'), 'organization':self.kwargs.get('org_pk')}, context={'user':self.request.user})
+            if validate_serializer.is_valid():
+                queryset = queryset.filter(organization=validate_serializer.validated_data['organization']).order_by('-pk')
+            else:
+                queryset = queryset.none()
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': MyProcedure.objects.count(), 'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
