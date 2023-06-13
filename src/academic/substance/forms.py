@@ -100,7 +100,7 @@ class PrudenceAdviceForm(GTForm,forms.ModelForm):
         }
 
 
-class ObservacionForm(GTForm, forms.ModelForm):
+class ObservationForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = SubstanceObservation
