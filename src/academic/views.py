@@ -3,6 +3,8 @@ import json
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Sum
+from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect, render
@@ -428,69 +430,6 @@ def delete_procedure(request,org_pk, lab_pk):
     organilab_logentry(request.user, procedure, DELETION)
     return JsonResponse({'data': True})
 
-
-def list_step_objects(id):
-    """ Generate a list about the pk objects of required objects"""
-    steps = ProcedureStep.objects.filter(procedure__id=int(id))
-    objs = []
-
-    for step in steps:
-        for obj in step.procedurerequiredobject_set.all():
-            objs.append(obj.object.id)
-    return set(objs)
-
-
-def get_objects_list(lab, pk):
-    """Generate a list of the ShelfObjects in the laboratory"""
-
-    furnitures = Furniture.objects.filter(labroom__laboratory__id=int(lab))
-    obj_list = []
-    for furniture in furnitures:
-        for shelf in furniture.shelf_set.all():
-            for obj in shelf.shelfobject_set.all():
-                if obj.object.id == pk:
-                    obj_list.append(obj)
-
-    return obj_list
-
-
-def get_step_object(procedure, pk):
-    """Generate a list of required objects into the procedurestep """
-    steps = ProcedureStep.objects.filter(procedure__id=int(procedure))
-    object_list = []
-    for step in steps:
-        for obj in step.procedurerequiredobject_set.all():
-            if obj.object.id == pk:
-                object_list.append(obj)
-
-    return object_list
-
-
-def convert_to_general_unit(data):
-    """" This method convert the objects quantity into specific unit for example meters, grams and liter"""
-    result = 0.0
-
-    mts = ['Centímetros', 'Metros', 'Milímetros']
-
-    gr = ['Kilogramos', 'Miligramo', 'Gramos']
-
-    lt = ['Litros', 'Mililitros']
-
-    for obj in data:
-        if obj.measurement_unit.description in mts:
-            result += convertions.convert_meters(obj.quantity, obj.measurement_unit.description)
-
-        elif obj.measurement_unit.description in gr:
-            result += convertions.convert_grams(obj.quantity, obj.measurement_unit.description)
-
-        elif obj.measurement_unit.description in lt:
-            result += convertions.convert_lt(obj.quantity, obj.measurement_unit.description)
-
-        else:
-            result += obj.quantity
-
-    return result
-
 @permission_required('reservations_management.add_reservedproducts')
 def generate_reservation(request, org_pk, lab_pk):
     lab = get_object_or_404(Laboratory, pk=lab_pk)
@@ -498,78 +437,66 @@ def generate_reservation(request, org_pk, lab_pk):
     user_is_allowed_on_organization(request.user, org)
     organization_can_change_laboratory(lab, org)
     form = ValidateProcedureReservationForm(request.POST)
-    form_error=None
-    result = status.HTTP_200_OK
-    obj_find = 0
+    form_error = None
+    result = status.HTTP_400_BAD_REQUEST
     state = False
     obj_unknown = []
+
     if form.is_valid():
-        procedure = form.cleaned_data['procedure'].pk
-        objects_pk = list_step_objects(procedure)
-        procedure_obj= ProcedureRequiredObject.objects.filter(step__procedure=procedure).count()
-        if procedure_obj:
-            for obj in objects_pk:
+        procedure = form.cleaned_data['procedure']
+        procedure_obj = ProcedureRequiredObject.objects.filter(step__procedure=procedure).distinct('pk')
 
-                objs = convert_to_general_unit(get_objects_list(lab.pk, obj))
-                step_objs = convert_to_general_unit(get_step_object(procedure, obj))
+        if procedure_obj.exists():
 
-                if objs >= step_objs:
-                    obj_find += 1
-                else:
-                    obj_unknown.append(Object.objects.get(pk=obj).__str__())
+            for obj in procedure_obj:
+                shelfobjects = ShelfObject.objects.filter(in_where_laboratory=lab,object=obj.object,
+                                                         measurement_unit=obj.measurement_unit).aggregate(total=Coalesce(Sum('quantity'), 0.0))
 
-            if len(objects_pk) == obj_find:
+                if shelfobjects['total'] < obj.quantity:
+                    obj_unknown.append(obj.object.__str__())
+
+            form = ReservationForm(request.POST)
+
+            if not obj_unknown and form.is_valid():
                 state = True
-                for obj in objects_pk:
-                    add_reservation(request, get_objects_list(lab.pk, obj),
-                                        get_step_object(procedure, obj),lab,org)
+                result=status.HTTP_200_OK
+                add_procedure_reservation(request, procedure_obj,form, lab, org)
         else:
             result = status.HTTP_400_BAD_REQUEST
-            return JsonResponse({'msg':_("Don't has objects")}, status=result)
+            return JsonResponse({'msg': _("Don't has objects")}, status=result)
 
     else:
         result=status.HTTP_400_BAD_REQUEST
         form_error=form.errors
 
-
     return JsonResponse({'state': state, 'errors':obj_unknown,'form':form_error},status=result)
 
 
-def add_reservation(request, data, data_step,lab,org):
-    """Generate the reservation and add the respective quantity of the object"""
-    result = 0
-    for obj in data:
-        index = 0
-        while index < len(data_step):
+def add_procedure_reservation(request, objects, form, lab, org):
+    for obj in objects:
+        shelf_objects = ShelfObject.objects.filter(in_where_laboratory=lab, object=obj.object,
+                                                  measurement_unit=obj.measurement_unit).distinct().\
+            order_by('quantity')
+        obj_quantity = obj.quantity
+        total = 0
+        for shelf_object in shelf_objects:
+            shelf_object_total = shelf_object.quantity
+            result = 0
 
-            result = convertions.convertion(data_step[index].quantity, obj.measurement_unit.description,
-                                            data_step[index].measurement_unit.description)
+            if total < obj_quantity:
+                if obj_quantity <= shelf_object_total:
+                    result = obj_quantity-total
+                elif total+shelf_object_total > obj_quantity:
+                    result = obj_quantity-total
+                else:
+                    result += shelf_object_total
+                total += result
 
-            if obj.quantity >= result:
-                obj.quantity -= result
-                data_step[index].quantity = 0
-
-            else:
-                result = obj.quantity
-                obj.quantity -= result
-                data_step[index].quantity -= convertions.convertion(result,
-                                                                   data_step[index].measurement_unit.description,
-                                                                   obj.measurement_unit.description)
-
-            if result > 0:
-                form = ReservationForm(request.POST)
-                if form.is_valid():
-                    reserved = ReservedProducts.objects.create(shelf_object=obj,
+                reserved = ReservedProducts.objects.create(shelf_object=shelf_object,
                                                                user=request.user,
                                                                initial_date=form.cleaned_data['initial_date'],
                                                                final_date=form.cleaned_data['final_date'],
                                                                amount_required=result,
                                                                laboratory=lab,
                                                                organization=org)
-                    reserved.save()
-                    organilab_logentry(request.user, reserved, ADDITION, changed_data=form.changed_data)
-
-            if result == 0 or obj.quantity == 0:
-                index+=1
-
-    return result
+                organilab_logentry(request.user, reserved, ADDITION, changed_data=form.changed_data)

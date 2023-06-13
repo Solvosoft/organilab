@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -192,6 +194,7 @@ class ReviewSubstanceViewSet(viewsets.ModelViewSet):
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
+@method_decorator(permission_required('academic.view_myprocedure'), name='dispatch')
 class MyProceduresAPI(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
