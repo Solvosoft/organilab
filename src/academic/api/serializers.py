@@ -6,10 +6,14 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet, CharFilter
 from rest_framework import serializers
 from sga.models import ReviewSubstance, SecurityLeaf
-from academic.models import CommentProcedureStep
+from academic.models import CommentProcedureStep, SubstanceObservation
 from django.utils import formats
 from django_filters import DateTimeFromToRangeFilter
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
+from django.conf import settings
+import logging
+
+logger = logging.getLogger('organilab')
 
 
 class ProcedureStepCommentFilterSet(FilterSet):
@@ -127,3 +131,15 @@ class ReviewSubstanceDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+class SubstanceObservationSerializer(serializers.Serializer):
+    pk = serializers.PrimaryKeyRelatedField(queryset=SubstanceObservation.objects.using(settings.READONLY_DATABASE))
+
+    def validate_pk(self, value):
+        attr = super().validate(value)
+        organization_id = self.context.get("organization_id")
+        if attr.substance.organization_id != organization_id:
+            logger.debug(
+                f'SubstanceObservationSerializer --> attr.substance.organization_id ({attr.substance.organization_id}) != organization_id ({organization_id})')
+            raise serializers.ValidationError(_("Substance observation doesn't exists in this organization"))
+        return attr
