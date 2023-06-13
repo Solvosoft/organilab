@@ -3893,3 +3893,6 @@ msgstr "El procedimiento no tiene objetos, agregue algunos objetos en los pasos 
 
 msgid "List of procedures"
 msgstr "Lista de procedimientos"
+
+msgid "Don't has observations"
+msgstr "No tiene observaciones"
