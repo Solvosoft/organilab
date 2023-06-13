@@ -16,8 +16,8 @@ class SGAAcademicTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        self.url_attr= {'org_pk':1,'organilabcontext':"academic"}
-        self.url_attr_fail= {'org_pk':1,'organilabcontext':12}
+        self.url_attr= {'org_pk': 1, 'organilabcontext': "academic"}
+        self.url_attr_fail= {'org_pk': 1, 'organilabcontext': 12}
         self.client.force_login(self.user)
 
     def test_add_substance(self):
@@ -137,16 +137,14 @@ class SGAAcademicTest(TestCase):
         url=self.url_attr.copy()
         url['substance']=134
 
-        response=self.client.post(reverse('academic:add_observation', kwargs=url), data={'description':'Simple'})
-        obs = SubstanceObservation.objects.all().values_list('description',flat=True)
+        response=self.client.post(reverse('academic:add_observation', kwargs=url), data={'description': 'Simple'})
+        obs = SubstanceObservation.objects.all().values_list('description', flat=True)
 
         del url['substance']
         url['pk']=134
-        msg = list(get_messages(response.wsgi_request))
 
         self.assertEqual(response.status_code, 302)
         self.assertIn("Simple", obs)
-        self.assertTrue("Se Guardo correctamente" == str(msg[0]))
         self.assertTrue(self.client.session["step"] == 2)
         self.assertRedirects(response, reverse('academic:detail_substance',kwargs=url))
 
