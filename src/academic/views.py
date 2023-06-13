@@ -224,10 +224,11 @@ class ProcedureUpdateView(DJUpdateView):
 
 @login_required
 @permission_required('academic.view_procedure')
-def procedureStepDetail(request, *args, **kwargs):
-    pk= kwargs['pk']
-    lab_pk=kwargs['lab_pk']
-    org_pk=kwargs['org_pk']
+def procedureStepDetail(request,org_pk,lab_pk,pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     steps = Procedure.objects.filter(pk=pk).first()
     return render(request, 'academic/detail.html',
                   {'object': steps, 'procedure': pk, 'laboratory': lab_pk, 'org_pk':org_pk, 'reservation_form': ReservationForm})
@@ -326,15 +327,22 @@ def validate_unit(lab, obj):
 
 @login_required
 @permission_required('academic.delete_procedurestep')
-def delete_step(request, *args, **kwargs):
+def delete_step(request, org_pk, lab_pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     step = ProcedureStep.objects.get(pk=int(request.POST['pk']))
     organilab_logentry(request.user, step, DELETION, relobj=step.procedure.content_object)
     step.delete()
     return JsonResponse({'data': True})
 
 @permission_required('academic.delete_procedurerequiredobject')
-def remove_object(request, *args, **kwargs):
-    pk= kwargs['pk']
+def remove_object(request, org_pk, lab_pk, pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST['pk']))
     obj.delete()
     organilab_logentry(request.user, obj, DELETION)
@@ -353,8 +361,11 @@ def get_objects(pk):
 
 @login_required
 @permission_required('academic.add_procedureobservations')
-def save_observation(request, *args, **kwargs):
-    pk= kwargs['pk']
+def save_observation(request, org_pk, lab_pk,pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
 
     step = get_object_or_404(ProcedureStep, pk=pk)
     form = ObservationForm(request.POST)
@@ -379,8 +390,11 @@ def get_observations(pk):
 
 @login_required
 @permission_required('academic.delete_procedureobservations')
-def remove_observation(request, *args, **kwargs):
-    pk= kwargs['pk']
+def remove_observation(request, org_pk, lab_pk,pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
 
     obj = get_object_or_404(ProcedureObservations,pk=int(request.POST['pk']))
     obj.delete()
@@ -389,7 +403,11 @@ def remove_observation(request, *args, **kwargs):
 
 @login_required
 @permission_required('academic.view_procedure')
-def get_procedure(request, *args, **kwargs):
+def get_procedure(request, org_pk, lab_pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     result_status = status.HTTP_200_OK
     msg=""
@@ -400,7 +418,11 @@ def get_procedure(request, *args, **kwargs):
     return JsonResponse({'title': procedure.title, 'pk': procedure.pk,'msg':msg},status=result_status)
 
 @permission_required('academic.delete_procedure')
-def delete_procedure(request, *args, **kwargs):
+def delete_procedure(request,org_pk, lab_pk):
+    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     procedure.delete()
     organilab_logentry(request.user, procedure, DELETION)
@@ -470,10 +492,11 @@ def convert_to_general_unit(data):
     return result
 
 @permission_required('reservations_management.add_reservedproducts')
-def generate_reservation(request, *args, **kwargs):
-
-    lab = get_object_or_404(Laboratory,pk=kwargs.get('lab_pk'))
-    org = get_object_or_404(OrganizationStructure,pk=kwargs.get('org_pk'))
+def generate_reservation(request, org_pk, lab_pk):
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    org = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, org)
+    organization_can_change_laboratory(lab, org)
     form = ValidateProcedureReservationForm(request.POST)
     form_error=None
     result = status.HTTP_200_OK
