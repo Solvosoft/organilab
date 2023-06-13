@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-24 19:17-0600\n"
-"PO-Revision-Date: 2023-06-12 11:15-0600\n"
+"PO-Revision-Date: 2023-06-13 13:39-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -480,6 +480,10 @@ msgstr "La observación no fue eliminada"
 #: academic/static/js/procedure.js:139
 msgid "The object was not removed"
 msgstr "El objecto no fue eliminado"
+
+#: academic/static/js/procedure.js:143
+msgid "Observation has been deleted"
+msgstr "La observación ha sido eliminada"
 
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
