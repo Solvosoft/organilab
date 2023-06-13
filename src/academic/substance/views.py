@@ -3,7 +3,6 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
@@ -13,13 +12,14 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.decorators.perms import any_permission_required
 from weasyprint import HTML
 
+from academic.api.serializers import SubstanceObservationSerializer
 from academic.models import SubstanceObservation
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm, \
-    WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm, ReviewSubstanceForm
+    WarningWordForm, PrudenceAdviceForm, ObservationForm, SecurityLeafForm, ReviewSubstanceForm
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from sga.decorators import organilab_context_decorator
-from sga.forms import SGAEditorForm, BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, \
+from sga.forms import BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, \
      PersonalEditorForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf, ReviewSubstance
@@ -29,28 +29,22 @@ from rest_framework import status
 @permission_required('laboratory.change_object')
 @organilab_context_decorator
 def create_edit_sustance(request, org_pk, organilabcontext, pk=None):
-    instance = None
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
+    instance, suscharobj = None, None
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
 
     if pk:
         instance = Substance.objects.filter(pk=pk, organization=organization).first()
 
-    suscharobj=None
-    template = None
-
     if instance:
         suscharobj = instance.substancecharacteristics
 
-    postdata=None
-    filesdata = None
-
     if request.method == 'POST':
-        postdata = request.POST
-
-    objform = SustanceObjectForm(postdata, instance=instance)
-    suschacform = SustanceCharacteristicsForm(postdata, instance=suscharobj)
-
-    if request.method == 'POST':
+        objform = SustanceObjectForm(request.POST, instance=instance)
+        suschacform = SustanceCharacteristicsForm(request.POST, instance=suscharobj)
 
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
@@ -64,11 +58,10 @@ def create_edit_sustance(request, org_pk, organilabcontext, pk=None):
             suscharinst.organilab_context=organilabcontext
             label, created= Label.objects.get_or_create(substance= obj)
             complement, complement_created= SGAComplement.objects.get_or_create(substance= obj)
-            leaf, leaf_created= SecurityLeaf.objects.get_or_create(substance= obj)
+            SecurityLeaf.objects.get_or_create(substance= obj)
             template= TemplateSGA.objects.filter(is_default=True).first()
-            personal,created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
+            PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
 
-            molecular_formula = suschacform.cleaned_data["molecular_formula"]
             #if isValidate_molecular_formula(molecular_formula):
             # #suscharinst.valid_molecular_formula = True
 
@@ -93,18 +86,21 @@ def create_edit_sustance(request, org_pk, organilabcontext, pk=None):
     template= TemplateSGA.objects.get(is_default=True)
     personal, created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user= request.user,organilab_context=organilabcontext)
     complement, sga_created = SGAComplement.objects.get_or_create(substance = instance)
-    leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
+    SecurityLeaf.objects.get_or_create(substance=instance)
+
+    objform = SustanceObjectForm(instance=instance)
+    suschacform = SustanceCharacteristicsForm(instance=suscharobj)
 
     return render(request, 'academic/substance/create_sustance.html', {
         'objform': objform,
         'suschacform': suschacform,
         'instance': instance,
-        'organilabcontext':organilabcontext,
-        'step':1,
-        'template':personal.pk,
-        'substance':instance.pk,
-        'complement':complement.pk,
-        'pk':instance.pk,
+        'organilabcontext': organilabcontext,
+        'step': 1,
+        'template': personal.pk,
+        'substance': instance.pk,
+        'complement': complement.pk,
+        'pk': instance.pk,
         'org_pk': org_pk
     })
 
@@ -112,12 +108,11 @@ def create_edit_sustance(request, org_pk, organilabcontext, pk=None):
 @permission_required('sga.view_substance')
 @organilab_context_decorator
 def get_substances(request, org_pk, organilabcontext):
-    substances=None
 
-    if request.user:
-        substances = Substance.objects.filter(creator=request.user)
-    if substances:
-        substances = substances.filter(organization__pk=org_pk)
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
+    substances = Substance.objects.filter(creator=request.user, organization__pk=org_pk)
     context = {
         'substances':substances,
         'organilabcontext': organilabcontext,
@@ -129,12 +124,16 @@ def get_substances(request, org_pk, organilabcontext):
 @login_required
 @permission_required('sga.view_substance')
 @organilab_context_decorator
-def get_list_substances(request,organilabcontext, org_pk):
+def get_list_substances(request, organilabcontext, org_pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
     showapprove = True if request.GET.get('showapprove') else False
     form = ReviewSubstanceForm()
     context = {
         'organilabcontext': organilabcontext,
-        'form':form,
+        'form': form,
         'org_pk': org_pk,
         'showapprove': showapprove
     }
@@ -144,47 +143,57 @@ def get_list_substances(request,organilabcontext, org_pk):
 @permission_required('sga.change_substance')
 @organilab_context_decorator
 def approve_substances(request, org_pk, organilabcontext, pk):
+
     review_subs = get_object_or_404(ReviewSubstance, pk=pk)
-    review_subs.is_approved=True
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not review_subs.substance.organization.pk == org_pk:
+        raise Http404()
+
+    review_subs.is_approved = True
     review_subs.save()
     organilab_logentry(request.user, review_subs, CHANGE, "review substance", changed_data=['is_approved'])
-    return redirect(reverse('academic:approved_substance', kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk}))
+    return redirect(reverse('academic:approved_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk}))
 
 
 @login_required
 @permission_required('sga.delete_substance')
 @organilab_context_decorator
 def delete_substance(request, org_pk, organilabcontext, pk):
-    substances=Substance.objects.filter(pk=pk).first()
-    if substances:
-        messages.success(request, _("The substance is removed successfully"))
-        organilab_logentry(request.user, substances, DELETION, "substance")
-        Label.objects.filter(substance=substances).delete()
-        substances.delete()
-        return redirect(reverse("academic:get_substance", kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk}))
+    substance = get_object_or_404(Substance, pk=pk)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not substance.organization.pk == org_pk:
+        raise Http404()
+
+    Label.objects.filter(substance=substance).delete()
+    substance.delete()
+    organilab_logentry(request.user, substance, DELETION, "substance")
+    messages.success(request, _("The substance is removed successfully"))
     return redirect(reverse("academic:get_substance", kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk}))
 
 @login_required
-@permission_required('sga.change_substance')
+@permission_required('sga.view_substance')
 @organilab_context_decorator
 def detail_substance(request, org_pk, organilabcontext, pk):
-    detail = None
-    observation = None
+    substance = get_object_or_404(Substance, pk=pk)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not substance.organization.pk == org_pk:
+        raise Http404()
+
     step = 1
+
     if 'step' in request.session:
         step=request.session['step']
         del request.session['step']
 
-    if pk:
-        detail = get_object_or_404(Substance, pk=int(pk))
-        observation = SubstanceObservation.objects.filter(substance =detail)
+    observation = SubstanceObservation.objects.filter(substance=substance, substance__organization=org_pk)
+
     context = {
-        'object':detail,
+        'object':substance,
         'observations': observation,
         'organilabcontext': organilabcontext,
-        'observationForm':ObservacionForm(),
-        'step':step,
-        'url': reverse('academic:add_observation',kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'substance':pk}),
+        'observationForm': ObservationForm(),
+        'step': step,
+        'url': reverse('academic:add_observation',kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'substance': pk}),
         'org_pk': org_pk
     }
     return render(request, "academic/substance/detail.html",context=context)
@@ -275,64 +284,67 @@ def view_prudence_advices(request, org_pk):
 @organilab_context_decorator
 def add_observation(request, org_pk, organilabcontext, substance):
 
-    obj = None
-    form = None
+    substance_obj = get_object_or_404(Substance, pk=substance)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not substance_obj.organization.pk == org_pk:
+        raise Http404()
+
+    request.session['step'] = 2
+    url_detail = reverse('academic:detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk':org_pk, 'pk': substance})
 
     if substance and request.method == 'POST':
-        substance_obj = get_object_or_404(Substance, pk=int(substance))
 
-        form = ObservacionForm(request.POST)
+        form = ObservationForm(request.POST)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.substance=substance_obj
             obj.creator = request.user
-            request.session['step'] = 2
             obj.save()
             organilab_logentry(request.user, obj, ADDITION, "substance observation", changed_data=form.changed_data)
-            messages.success(request, 'Se Guardo correctamente')
-            return redirect(reverse('academic:detail_substance',kwargs={'organilabcontext':organilabcontext, 'org_pk':org_pk, 'pk':substance}))
+            messages.success(request, _("Observation was saved successfully"))
         else:
-            request.session['step'] = 2
-            messages.error(request, 'Datos invalidos')
-            return redirect(reverse('academic:detail_substance',kwargs={'organilabcontext':organilabcontext, 'org_pk': org_pk, 'pk':substance}))
-    else:
-        request.session['step'] = 2
-        return redirect(reverse('academic:detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'pk': substance}))
-    return redirect(reverse('academic:detail_substance', kwargs={'organilabcontext': organilabcontext, 'org_pk': org_pk, 'pk': substance}))
+            messages.error(request, _("Invalid Form"))
+    return redirect(url_detail)
 
 @login_required
 @permission_required('academic.change_substanceobservation')
 def update_observation(request, org_pk):
 
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        return JsonResponse({'status': False}, status=status.HTTP_404_NOT_FOUND)
+
+    request.session['step'] = 2
+
     if request.method == 'POST':
+        serializer = SubstanceObservationSerializer(data=request.POST, context={"organization_id": org_pk})
 
-        substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
-        if substance_obj:
-            substance_obj.description=request.POST.get('description','')
-            substance_obj.save()
-            organilab_logentry(request.user, substance_obj, CHANGE, "substance observation", changed_data=['description'])
-            request.session['step'] = 2
+        if serializer.is_valid():
+            form = ObservationForm(request.POST, instance=serializer.validated_data['pk'])
 
-            return JsonResponse({'status':True})
-        else:
-            return JsonResponse({'status':False})
-    return JsonResponse({'status': False})
+            if form.is_valid():
+                instance = form.save()
+                organilab_logentry(request.user, instance, CHANGE, "substance observation", changed_data=['description'])
+                return JsonResponse({'status': True}, status=status.HTTP_200_OK)
+    return JsonResponse({'status': False}, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required
 @permission_required('academic.delete_substanceobservation')
 def delete_observation(request, org_pk):
 
-    if request.method == 'POST':
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        return JsonResponse({'status': False}, status=status.HTTP_404_NOT_FOUND)
 
-        substance_obj = get_object_or_404(SubstanceObservation, pk=int(request.POST.get('pk')))
-        if substance_obj:
+    request.session['step'] = 2
+
+    if request.method == 'POST':
+        serializer = SubstanceObservationSerializer(data=request.POST, context={"organization_id": org_pk})
+
+        if serializer.is_valid():
+            substance_obj = serializer.validated_data['pk']
             organilab_logentry(request.user, substance_obj, DELETION, "substance observation")
             substance_obj.delete()
-            request.session['step'] = 2
-            return JsonResponse({'status':True})
-        else:
-            return JsonResponse({'status':False})
-    return JsonResponse({'status': False})
+            return JsonResponse({'status':True}, status=status.HTTP_200_OK)
+    return JsonResponse({'status': False}, status=status.HTTP_400_BAD_REQUEST)
 
 @login_required
 @permission_required('sga.change_warningword')
@@ -363,11 +375,12 @@ def change_warning_word(request, org_pk, pk):
 
 @login_required
 @permission_required('sga.change_prudenceadvice')
-def change_prudence_advice(request, *args, **kwargs):
-    pk= int(kwargs.get('pk'))
-    org_pk=int(kwargs.get('org_pk'))
+def change_prudence_advice(request, org_pk, pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
     instance = get_object_or_404(PrudenceAdvice, pk=pk)
-    form = None
     context ={}
 
     if request.method =='POST':
@@ -416,8 +429,14 @@ def change_danger_indication(request, org_pk, pk):
 @permission_required('sga.change_personaltemplatesga')
 @organilab_context_decorator
 def step_three(request, org_pk, organilabcontext, template, substance):
-    personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
+
     complement = get_object_or_404(SGAComplement, substance__pk=substance)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not complement.substance.organization.pk == org_pk:
+        raise Http404()
+
+    personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
+
     user = request.user
 
     if request.method == 'POST':
@@ -462,10 +481,15 @@ def step_three(request, org_pk, organilabcontext, template, substance):
 @login_required
 @permission_required('sga.change_sgacomplement')
 def step_two(request, org_pk, organilabcontext, pk):
+
     complement = get_object_or_404(SGAComplement, pk=pk)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not complement.substance.organization.pk == org_pk:
+        raise Http404()
+
     personaltemplateSGA = PersonalTemplateSGA.objects.filter(user=request.user,
         label__substance__pk=complement.substance.pk).first()
-    context ={}
+
     if request.method == 'POST':
         pesonalform = PersonalSGAAddForm(request.POST, request.FILES, instance=personaltemplateSGA)
         complementform = SGAComplementsForm(request.POST, instance=complement)
@@ -526,16 +550,21 @@ def step_two(request, org_pk, organilabcontext, pk):
 @login_required
 @permission_required('sga.change_securityleaf')
 def step_four(request, org_pk, organilabcontext, substance):
+
+    complement = get_object_or_404(SGAComplement, substance__pk=substance)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not complement.substance.organization.pk == org_pk:
+        raise Http404()
+
     security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     personaltemplateSGA = PersonalTemplateSGA.objects.filter(label__substance__pk=substance).first()
-    complement = SGAComplement.objects.filter(substance__pk=substance).first()
-    context = {}
+
     if request.method == 'POST':
         form = SecurityLeafForm(request.POST, instance=security_leaf)
         if form.is_valid():
             obj = form.save()
             organilab_logentry(request.user, obj, CHANGE, "security leaf", changed_data=form.changed_data)
-            return redirect(reverse('academic:get_substance',kwargs={'organilabcontext':organilabcontext,
+            return redirect(reverse('academic:get_substance', kwargs={'organilabcontext':organilabcontext,
                                                             'org_pk': org_pk
                                                             }))
     form = SecurityLeafForm(instance=security_leaf)
@@ -543,7 +572,7 @@ def step_four(request, org_pk, organilabcontext, substance):
                'organilabcontext': organilabcontext,
                'complement': complement.pk,
                'template': personaltemplateSGA.pk,
-               'form':form,
+               'form': form,
                'provider_form': ProviderSGAForm(),
                'substance': substance,
                'org_pk': org_pk
@@ -555,7 +584,7 @@ def step_four(request, org_pk, organilabcontext, substance):
 def add_sga_provider(request, org_pk):
 
     if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
-        return JsonResponse({'result': False}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'result': False}, status=status.HTTP_404_NOT_FOUND)
 
     form = ProviderSGAForm(request.POST)
 
@@ -569,17 +598,21 @@ def add_sga_provider(request, org_pk):
 
 @login_required
 def security_leaf_pdf(request, org_pk, substance):
+    complement = get_object_or_404(SGAComplement, substance__pk=substance)
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user) or not complement.substance.organization.pk == org_pk:
+        raise Http404()
+
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
-    component = SGAComplement.objects.filter(substance__pk=substance).first()
     date_print =datetime.today().strftime('%Y-%m-%d')
     if leaf:
         template = get_template('academic/substance/security_leaf_pdf.html')
-        context = {'leaf':leaf,
-                   'substance':leaf.substance,
-                   'provider':leaf.provider,
-                   'component':component,
-                   'date_print':date_print,
-                   'date_check':leaf.created_at.strftime('%Y-%m-%d'),
+        context = {'leaf': leaf,
+                   'substance': leaf.substance,
+                   'provider': leaf.provider,
+                   'component': complement,
+                   'date_print': date_print,
+                   'date_check': leaf.created_at.strftime('%Y-%m-%d'),
                    'org_pk': org_pk}
         html_template=template.render(context)
         pdf = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
