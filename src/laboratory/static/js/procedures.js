@@ -14,6 +14,7 @@ function getCookie(name) {
 }
 
 function get_procedure(pk){
+   $('.form_errors').remove();
     $.ajax({
         url: document.getProcedure,
         type:'POST',
@@ -256,6 +257,8 @@ function add_reservation(){
                                     list += `<li class="list-group-item">${element}</li>`
                 );
                 document.querySelector("#list_errors").innerHTML=list;
+                $("#reservation_modal").modal("hide")
+
                 $("#error_reserved").modal('show')
             }
             document.getElementById('reservation_form').reset();
