@@ -3976,3 +3976,6 @@ msgstr "No tiene objetos"
 
 msgid "Step detail"
 msgstr "Detalle de pasos"
+
+msgid "The procedure don't has objects, please add some objects in the procedure steps"
+msgstr "El procedimiento no tiene objetos, agregue algunos objetos en los pasos del procedimiento"

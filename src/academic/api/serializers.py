@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Q
 from django.db.models.expressions import Value
 from django.db.models.functions import Concat
@@ -6,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet, CharFilter
 from rest_framework import serializers
 from sga.models import ReviewSubstance, SecurityLeaf
-from academic.models import CommentProcedureStep
+from academic.models import CommentProcedureStep, MyProcedure
 from django.utils import formats
 from django_filters import DateTimeFromToRangeFilter
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
@@ -29,6 +30,7 @@ class ProcedureStepCommentFilterSet(FilterSet):
 class ProcedureStepCommentSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField(required=False)
     creator_at = serializers.DateTimeField(required=False, format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
+    comment= serializers.CharField(required=True)
 
     def get_creator(self, obj):
         try:
@@ -124,6 +126,86 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
 
 class ReviewSubstanceDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ReviewSubstanceSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class MyProcedureSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    custom_procedure = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        if obj.name:
+            return obj.name
+        return ''
+
+    def get_custom_procedure(self, obj):
+        if obj.custom_procedure:
+            return obj.custom_procedure.title
+        return ''
+
+    def get_status(self, obj):
+        if obj.status:
+            return _(obj.status)
+        return ''
+
+    def get_created_by(self, obj):
+        try:
+            if not obj:
+                return _("No user found")
+            if not obj.created_by:
+                return _("No user found")
+
+            name = obj.created_by.get_full_name()
+            if not name:
+                name = obj.created_by.username
+            return name
+        except AttributeError:
+            return _("No user found")
+
+    def get_actions(self, obj):
+        org_pk=self.context['view'].kwargs.get('org_pk')
+        lab_pk=self.context['view'].kwargs.get('lab_pk')
+        procedure_kwargs = {
+            'lab_pk': lab_pk,
+            'org_pk': org_pk,
+            'pk': obj.pk,
+        }
+        action = ""
+        url = reverse('academic:complete_my_procedure', kwargs=procedure_kwargs)
+        action += """ <a title='%s' class="pe-2" href='%s'><i class="fa fa-edit text-success" aria-hidden="true"></i>
+        </a>""" % (_("Edit"), url,)
+        action += """ <a title='%s' class="pe-2 open_modal" onclick="get_procedure(%d)"><i class="fa fa-book"></i></a>
+        """ % (_("Reserved"), obj.custom_procedure.pk)
+        action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger" 
+        aria-hidden="true"></i></a>""" % (_("Delete"),obj.custom_procedure.pk)
+
+        return action
+
+    class Meta:
+        model = MyProcedure
+        fields = ['name', 'custom_procedure','status','created_by', 'actions']
+
+class MyProcedureFilterSet(FilterSet):
+
+    def filter_queryset(self, queryset):
+        search = self.request.GET.get('search', '')
+        if search:
+            queryset = queryset.annotate(fullname=Concat('created_by__first_name', Value(' '), 'created_by__last_name'))
+            queryset = queryset.filter(
+                Q(name__icontains=search) |
+                Q(fullname__icontains=search) | Q(created_by__username__icontains=search) |
+                Q(custom_procedure__title__icontains=search)).distinct()
+        return queryset
+    class Meta:
+        model = MyProcedure
+        fields = ['name','custom_procedure','status','created_by']
+
+class MyProcedureDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=MyProcedureSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

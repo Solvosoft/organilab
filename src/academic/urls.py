@@ -6,6 +6,7 @@ Created on 4 may. 2017
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
+from academic.api.views import MyProceduresAPI
 from academic.substance.views import create_edit_sustance, get_substances, get_list_substances, \
     approve_substances, delete_substance, step_two, detail_substance, \
     view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
@@ -16,6 +17,8 @@ from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
     delete_step, get_procedure, get_my_procedures, delete_procedure, generate_reservation, create_my_procedures, \
     remove_my_procedure, complete_my_procedure
+myprocedure = DefaultRouter()
+myprocedure.register('api_my_procedure', MyProceduresAPI, basename='api-my-procedure')
 
 procedure_url =[
     re_path('add_steps_wrapper/(?P<pk>\d+)/', add_steps_wrapper, name='add_steps_wrapper'),
@@ -67,4 +70,6 @@ urlpatterns = [
     path('substance/provider/', add_sga_provider, name='add_sga_provider'),
     path('substance/get_security_leaf/<int:substance>/', security_leaf_pdf, name='security_leaf_pdf'),
     path('<int:lab_pk>/procedure/', include(procedure_url)),
+    path('spc/api/<int:lab_pk>/myprocedure/', include(myprocedure.urls)),
 ]
+
