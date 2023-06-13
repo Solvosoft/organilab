@@ -4,24 +4,26 @@ from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import JsonResponse, HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from djgentelella.decorators.perms import any_permission_required
 from weasyprint import HTML
 
 from academic.models import SubstanceObservation
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, DangerIndicationForm, \
     WarningWordForm, PrudenceAdviceForm, ObservacionForm, SecurityLeafForm, ReviewSubstanceForm
 from laboratory.models import OrganizationStructure
-from laboratory.utils import organilab_logentry
+from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from sga.decorators import organilab_context_decorator
 from sga.forms import SGAEditorForm, BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, \
      PersonalEditorForm
 from sga.models import Substance, WarningWord, DangerIndication, PrudenceAdvice, SubstanceCharacteristics, \
     TemplateSGA, Label, PersonalTemplateSGA, SGAComplement, SecurityLeaf, ReviewSubstance
-
+from rest_framework import status
 
 @login_required
 @permission_required('laboratory.change_object')
@@ -188,11 +190,21 @@ def detail_substance(request, org_pk, organilabcontext, pk):
     return render(request, "academic/substance/detail.html",context=context)
 
 @login_required
-def add_sga_complements(request, *args, **kwargs):
-    org_pk= int(kwargs.get('org_pk'))
-    element= str(kwargs.get('element'))
+@any_permission_required(['sga.add_prudenceadvice', 'sga.add_dangerindication', 'sga.add_warningword'])
+def add_sga_complements(request, org_pk, element):
 
-    form = None
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
+    perm = {
+        'warning': 'sga.add_warningword',
+        'danger': 'sga.add_dangerindication',
+        'prudence': 'sga.add_prudenceadvice',
+    }
+
+    if not request.user.has_perm(perm[element]):
+        raise PermissionDenied
+
     urls = {'warning': 'academic:add_warning_word',
             'danger': 'academic:add_danger_indication',
             'prudence': 'academic:add_prudence_advice',
@@ -218,13 +230,7 @@ def add_sga_complements(request, *args, **kwargs):
         form = forms[element]
 
         if form.is_valid():
-            obj = form.save()
-
-            model_name = {
-                'warning': 'warning word',
-                'danger': 'danger indication',
-                'prudence': 'prudence advice'
-            }
+            form.save()
             return redirect(reverse(view_urls[element], kwargs={'org_pk': org_pk}))
 
     else:
@@ -242,21 +248,27 @@ def add_sga_complements(request, *args, **kwargs):
 
 @login_required
 @permission_required('sga.view_dangerindication')
-def view_danger_indications(request, *args, **kwargs):
-    org = int(kwargs.get('org_pk'))
-    listado = list(DangerIndication.objects.all())
-    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado,'org_pk':org})
+def view_danger_indications(request, org_pk):
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+    listado = DangerIndication.objects.all()
+    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado, 'org_pk': org_pk})
+
 @login_required
 @permission_required('sga.view_warningword')
 def view_warning_words(request, org_pk):
-    listado = list(WarningWord.objects.all())
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+    listado = WarningWord.objects.all()
     return render(request, 'academic/substance/warning_words.html', context={'listado': listado, 'org_pk': org_pk})
+
 @login_required
 @permission_required('sga.view_prudenceadvice')
-def view_prudence_advices(request, *args, **kwargs):
-    org = int(kwargs.get('org_pk'))
-    listado = list(PrudenceAdvice.objects.all())
-    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado,'org_pk':org})
+def view_prudence_advices(request, org_pk):
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+    listado = PrudenceAdvice.objects.all()
+    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado, 'org_pk': org_pk})
 
 @login_required
 @permission_required('academic.view_substanceobservation')
@@ -325,8 +337,11 @@ def delete_observation(request, org_pk):
 @login_required
 @permission_required('sga.change_warningword')
 def change_warning_word(request, org_pk, pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
     instance = get_object_or_404(WarningWord, pk=pk)
-    form = None
     context ={}
 
     if request.method =='POST':
@@ -374,8 +389,11 @@ def change_prudence_advice(request, *args, **kwargs):
 @login_required
 @permission_required('sga.change_dangerindication')
 def change_danger_indication(request, org_pk, pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        raise Http404()
+
     instance = get_object_or_404(DangerIndication, pk=pk)
-    form = None
     context ={}
 
     if request.method =='POST':
@@ -535,15 +553,19 @@ def step_four(request, org_pk, organilabcontext, substance):
 @login_required
 @permission_required('sga.add_provider')
 def add_sga_provider(request, org_pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        return JsonResponse({'result': False}, status=status.HTTP_400_BAD_REQUEST)
+
     form = ProviderSGAForm(request.POST)
 
     if form.is_valid():
         provider=form.save(commit=False)
         provider.save()
         organilab_logentry(request.user, provider, ADDITION, "provider", changed_data=form.changed_data)
-        return JsonResponse({'result':True,'provider_pk':provider.pk,'provider':provider.name})
+        return JsonResponse({'result': True, 'provider_pk': provider.pk, 'provider': provider.name})
     else:
-        return JsonResponse({'result':False})
+        return JsonResponse({'result': False})
 
 @login_required
 def security_leaf_pdf(request, org_pk, substance):
