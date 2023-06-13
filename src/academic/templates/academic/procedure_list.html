@@ -22,16 +22,14 @@
     <table  id="datatable" class="table table-bordered table-hover">
         <thead>
         <tr>
-        <th style="display:none"></th>
-        <th>{% trans 'Title' %}</th>
-        <th>{% trans 'Description' %}</th>
-        <th>{% trans 'Actions' %}</th>
+        <th width="30%">{% trans 'Title' %}</th>
+        <th width="50%">{% trans 'Description' %}</th>
+        <th width="20%">{% trans 'Actions' %}</th>
         </tr>
         </thead>
         <tbody>
             {% for procedure in object_list %}
                 <tr>
-                    <td style="display:none">{{procedure.pk}}</td>
                     <td>{{procedure.title}}</td>
                     <td>{{ procedure.description | safe }}</td>
                     <td>
