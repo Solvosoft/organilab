@@ -320,6 +320,8 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
+        self.fields['marked_as_discard'].initial=True
+        
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",

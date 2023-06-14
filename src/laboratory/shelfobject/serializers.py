@@ -282,7 +282,7 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
-    marked_as_discard = serializers.BooleanField(default=False, required=False)
+    marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
@@ -328,7 +328,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
-    marked_as_discard = serializers.BooleanField(default=False, required=False)
+    marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
