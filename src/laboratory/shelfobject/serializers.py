@@ -198,7 +198,7 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
             'limit': shelf_quantity,
         }})
     if shelf.limit_only_objects:
-        if shelf.available_objects_when_limit.filter(pk=obj.pk).exists()==False:
+        if not shelf.available_objects_when_limit.filter(pk=obj.pk).exists():
             errors.update({'object': _("Object is not available in these shelf")})
 
 
