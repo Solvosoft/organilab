@@ -804,9 +804,6 @@ msgstr "Elementos de la etiqueta"
 msgid "Labeling in accordance with Regulation (EC) 1272/2008"
 msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
 
-msgid "Pictograms"
-msgstr "Pictogramas"
-
 msgid "Warning Word"
 msgstr "Crear palabra de advertencia"
 

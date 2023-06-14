@@ -2,12 +2,12 @@ from django.contrib import admin
 
 from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf, SGAComplement, ReviewSubstance
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
-    WarningClass, Component, WarningWord, Pictogram, PrudenceAdvice, \
+    WarningClass, Component, WarningWord, PrudenceAdvice, \
     RecipientSize
 
 class AdminDangerIndication(admin.ModelAdmin):
     # form = DangerIndicationForm
-    filter_horizontal = ['pictograms', 'warning_class',
+    filter_horizontal = ['warning_class',
                          'warning_category', 'prudence_advice']
 
     def get_form(self, *args, **kwargs):
@@ -33,7 +33,7 @@ class AdminSustance(admin.ModelAdmin):
 
 
 admin.site.register(WarningClass)
-admin.site.register([BuilderInformation, RecipientSize, PrudenceAdvice, Component, WarningWord, Pictogram])
+admin.site.register([BuilderInformation, RecipientSize, PrudenceAdvice, Component, WarningWord])
 admin.site.register(DangerIndication, AdminDangerIndication)
 admin.site.register(Substance, AdminSustance)
 admin.site.register(Label)

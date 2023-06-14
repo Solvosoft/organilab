@@ -21,10 +21,10 @@ from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.forms import SGAEditorForm, EditorForm, PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, \
     BuilderInformationForm, \
-    LabelForm, PersonalTemplateForm, PictogramForm, SGALabelForm, SGALabelComplementsForm, \
+    LabelForm, PersonalTemplateForm, SGALabelForm, SGALabelComplementsForm, \
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import SGAComplement, Substance
-from sga.models import TemplateSGA, PersonalTemplateSGA, Label, Pictogram, BuilderInformation
+from sga.models import TemplateSGA, PersonalTemplateSGA, Label, BuilderInformation
 from sga.api.serializers import SGAComplementSerializer, BuilderInformationSerializer, RecipientSizeSerializer
 from sga.models import RecipientSize, DangerIndication, PrudenceAdvice, WarningWord
 from django import forms
@@ -197,7 +197,7 @@ def edit_personal_template(request, org_pk, pk):
             return render(request, 'template_edit.html', context)
 
     initial = {'name': personaltemplateSGA.name, 'template': personaltemplateSGA.template,
-               'barcode': personaltemplateSGA.barcode, 'json_representation': personaltemplateSGA.json_representation}
+               'barcode': personaltemplateSGA.barcotesthtml.htmlde, 'json_representation': personaltemplateSGA.json_representation}
 
     if personaltemplateSGA.label:
         bi_info = personaltemplateSGA.label.builderInformation
@@ -295,56 +295,6 @@ def get_svgexport(request, org_pk, is_pdf, pk):
 
     return response
 
-@login_required
-@permission_required('sga.view_pictogram')
-def get_pictograms(request,org_pk):
-    pictograms = Pictogram.objects.all()
-    return render(request, 'list_pictograms.html', context={'pictograms':pictograms,'org_pk':org_pk})
-
-@login_required
-@permission_required('sga.add_pictogram')
-def add_pictogram(request, *args, **kwargs):
-    organization= get_object_or_404(OrganizationStructure, pk=kwargs.get('org_pk'))
-    org_pk =  organization.pk
-    if request.method=='POST':
-        form = PictogramForm(request.POST)
-        if form.is_valid():
-            instance = form.save()
-            organilab_logentry(request.user, instance, ADDITION, relobj=organization)
-            return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
-    context= {
-        'url': reverse('sga:add_pictograms', kwargs={'org_pk': org_pk}),
-        'form': PictogramForm(initial={'upload_by': request.user.pk}),
-        'title': _('Create pictogram'),
-        'button_text': _('Add'),
-        'org_pk': org_pk
-    }
-    return render(request, 'add_pictograms.html', context=context)
-
-@login_required
-@permission_required('sga.change_pictogram')
-def update_pictogram(request, *args, **kwargs):
-    id_pictogram= kwargs.get('id_pictogram')
-    organization= get_object_or_404(OrganizationStructure, pk=kwargs.get('org_pk'))
-    org_pk =  organization.pk
-    instance = get_object_or_404(Pictogram, pk=id_pictogram)
-    form = PictogramForm(instance=instance, initial={
-        'upload_by': instance.upload_by.pk if instance.upload_by else request.user.pk})
-
-    if request.method=='POST':
-        form = PictogramForm(request.POST, instance=instance, )
-        if form.is_valid():
-            instance = form.save( )
-            organilab_logentry(request.user, instance, CHANGE, relobj=organization)
-            return redirect(reverse('sga:pictograms_list', kwargs={'org_pk': org_pk}))
-    context= {
-        'url': reverse('sga:update_pictogram',kwargs={'org_pk': org_pk, 'id_pictogram': id_pictogram}),
-        'form': form,
-        'title': _('Update pictogram'),
-        'button_text': _('Edit'),
-        'org_pk': org_pk
-    }
-    return render(request, 'add_pictograms.html', context=context)
 
 
 def create_sgalabel(request, org_pk):

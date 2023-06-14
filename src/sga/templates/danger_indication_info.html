@@ -20,19 +20,6 @@
             <div class="col-md-6 col-sm-6 mt-2 text-center">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="fw-bold">{% trans 'Pictograms' %}</h5></div>
-                    <div class="card-body">
-                        {% for pictogram in pictograms %}
-                        <img src="{{pictogram.image.url}}" width="90px" height="90px" />
-                        {% empty %}
-                        <p>{% trans 'Without Pictograms' %}</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 mt-2 text-center">
-                <div class="card">
-                    <div class="card-header">
                         <h5 class="fw-bold">{% trans 'Warning Words' %}</h5></div>
                     <div class="card-body">
                         {% if warning_word %}

@@ -57,28 +57,6 @@ class WarningWord(models.Model):
         verbose_name_plural = _('Warning Words')
 
 
-# Indicación de peligro
-
-
-class Pictogram(models.Model):
-    name = models.CharField(max_length=150, primary_key=True,
-                            verbose_name=_("Name"))
-    warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE, null=True, verbose_name=_("Warning Word"))
-    image = models.ImageField(upload_to="sga/pictograms/", null=True, blank=True)
-    id_pictogram = models.IntegerField(default=1)
-
-    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=False)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Pictogram')
-        verbose_name_plural = _('Pictograms')
-
-
 # palabras de advertencia
 
 
@@ -105,8 +83,6 @@ class DangerIndication(models.Model):
     description = models.TextField(verbose_name=_("Description"))
     warning_words = models.ForeignKey(WarningWord, on_delete=models.DO_NOTHING,
                                       verbose_name=_("Warning words"))
-    pictograms = models.ManyToManyField(
-        Pictogram, verbose_name=_("Pictograms"))
     warning_class = models.ManyToManyField(WarningClass,
                                            verbose_name=_("Warning class"))
 
@@ -328,7 +304,6 @@ class SGAComplement(models.Model):
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
     other_dangers = models.TextField(null=True,blank=True, verbose_name=_("Other Dangers"))
-    pictograms = models.ManyToManyField(Pictogram, verbose_name=_("Pictogram"))
     warningword = models.ForeignKey(WarningWord, null=True,blank=True, on_delete=models.DO_NOTHING, verbose_name=_("WarningWord"))
 
 class Provider(models.Model):
