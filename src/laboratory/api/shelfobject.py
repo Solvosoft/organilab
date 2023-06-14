@@ -31,7 +31,8 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
     MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
-from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
+from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_one_container_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
+    create_shelfobject_observation
 from laboratory.utils import organilab_logentry
 
 
@@ -77,53 +78,67 @@ class ShelfObjectCreateMethods:
     def __init__(self, context={}):
         self.context=context
 
-    def _build_qr(self, shelfobject):
-        qr, url=get_or_create_qr_shelf_object(self.context['request'], shelfobject, self.context['organization'],
-                                         self.context['laboratory'])
-        shelfobject.shelf_object_url = url
-        return qr
-
     def create_reactive(self, serializer, limits_serializer):
         """
-        Create reactive type Shelfobject .
-        :param serializer:  ShelfObjectSerializer to create reactive tyope shelfobject
+        Create reactive type Shelfobject.  
+        The container is moved to the right shelf (created one with quantity 1 and decrease quantity on the original -or delete it if quantity is 0 after-).
+        :param serializer:  ShelfObjectSerializer to create reactive type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: reactive type shelfobject was created
         """
-        shelfobject = serializer.save()
-        shelfobject.creator = self.context['request'].user
-        shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.limits = limits_serializer.save()
-        shelfobject.save()
-        self._build_qr(shelfobject)
-        shelfobject.save()
-        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
-                          shelfobject.quantity, '', 0, "Create",
-                          create=True)
-        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=None, relobj=self.context['laboratory'])
+        creator = self.context['request'].user
+        laboratory = self.context['laboratory']
+        organization = self.context['organization']
+        request = self.context['request']
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        new_container = move_one_container_to(serializer.validated_data['container'], serializer.validated_data['shelf'], creator, request, organization, laboratory)
+        
+        shelfobject = serializer.save(
+            creator=creator, 
+            in_where_laboratory_id=laboratory,
+            limits=limits,
+            container=new_container
+        )
+        
+        build_shelfobject_qr(self.context['request'], shelfobject, organization, laboratory)
+        
+        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '', 0, "Create", create=True)
+        utils.organilab_logentry(creator, shelfobject, ADDITION, 
+                                 changed_data=['object', 'shelf', 'status', 'quantity', 'measurement_unit', 'limit_quantity', 'course_name', 
+                                               'marked_as_discard', 'batch', 'container', 'creator', 'in_where_laboratory', 'limits'], 
+                                 relobj=laboratory)
 
         return shelfobject
 
     def create_refuse_reactive(self, serializer, limits_serializer):
         """
         Create refuse reactive type Shelfobject.
-        :param serializer:  ShelfObjectSerializer to create reactive tyope shelfobject
+        The container is moved to the right shelf (created one with quantity 1 and decrease quantity on the original -or delete it if quantity is 0 after-).
+        :param serializer:  ShelfObjectSerializer to create reactive type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: Refuse reactive type shelfobject was created
         """
+        creator = self.context['request'].user
+        laboratory = self.context['laboratory']
+        organization = self.context['organization']
+        request = self.context['request']
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        new_container = move_one_container_to(serializer.validated_data['container'], serializer.validated_data['shelf'], creator, request, organization, laboratory)
+        
         shelfobject = serializer.save(
-            creator=self.context['request'].user,
-            in_where_laboratory_id=self.context['laboratory']
+            creator=creator,
+            in_where_laboratory_id=laboratory,
+            limits = limits,
+            container=new_container
         )
-        shelfobject.limits = limits_serializer.save()
-        self._build_qr(shelfobject)
-        shelfobject.save()
-        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
-                          shelfobject.quantity, '', 0, "Create",
-                          create=True)
-        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=None, relobj=self.context['laboratory'])
+        
+        build_shelfobject_qr(self.context['request'], shelfobject, organization, laboratory)
+        
+        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '', 0, "Create", create=True)
+        utils.organilab_logentry(creator, shelfobject, ADDITION, 
+                                 changed_data=['object', 'shelf', 'status', 'quantity', 'measurement_unit', 'marked_as_discard', 
+                                               'course_name', 'batch', 'container', 'creator', 'in_where_laboratory', 'limits'], 
+                                 relobj=laboratory)
 
         return shelfobject
 
@@ -134,18 +149,25 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: material type shelfobject was created
         """
-        shelfobject = serializer.save()
-        shelfobject.creator = self.context['request'].user
-        shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.save()
-        shelfobject.limits= limits_serializer.save()
-        self._build_qr(shelfobject)
-        shelfobject.save()
-        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
-                          shelfobject.quantity, '', 0, "Create",
-                          create=True)
-        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=None, relobj=self.context['laboratory'])
+        creator = self.context['request'].user
+        laboratory = self.context['laboratory']
+        organization = self.context['organization']
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        
+        shelfobject = serializer.save(
+            creator=creator,
+            in_where_laboratory_id=laboratory,
+            limits=limits
+        )
+        
+        build_shelfobject_qr(self.context['request'], shelfobject, organization, laboratory)
+
+        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '', 0, "Create", create=True)
+        utils.organilab_logentry(creator, shelfobject, ADDITION, 
+                                 changed_data=['object', 'shelf', 'status', 'quantity', 'limit_quantity', 'measurement_unit', 
+                                               'marked_as_discard', 'course_name', 'creator', 'in_where_laboratory', 'limits'], 
+                                 relobj=laboratory)
+        
         return shelfobject
 
     def create_refuse_material(self, serializer,limits_serializer):
@@ -155,19 +177,25 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: refuse material type shelfobject was created
         """
+        creator = self.context['request'].user
+        laboratory = self.context['laboratory']
+        organization = self.context['organization']
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        
+        shelfobject = serializer.save(
+            creator=creator,
+            in_where_laboratory_id=laboratory,
+            limits=limits
+        )
+        
+        build_shelfobject_qr(self.context['request'], shelfobject, organization, laboratory)
 
-        shelfobject = serializer.save()
-        shelfobject.creator = self.context['request'].user
-        shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.save()
-        shelfobject.limits= limits_serializer.save()
-        self._build_qr(shelfobject)
-        shelfobject.save()
-        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
-                          shelfobject.quantity, '', 0, "Create",
-                          create=True)
-        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=None, relobj=self.context['laboratory'])
+        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '', 0, "Create", create=True)
+        utils.organilab_logentry(creator, shelfobject, ADDITION, 
+                                 changed_data=['object', 'shelf', 'status', 'quantity', 'limit_quantity', 'measurement_unit', 
+                                               'marked_as_discard', 'course_name', 'creator', 'in_where_laboratory', 'limits'], 
+                                 relobj=laboratory)
+        
         return shelfobject
 
     def create_equipment(self, serializer,limits_serializer):
@@ -177,19 +205,25 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: equipment type shelfobject was created
         """
-
-        shelfobject = serializer.save()
-        shelfobject.creator = self.context['request'].user
-        shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.save()
-        self._build_qr(shelfobject)
-        shelfobject.save()
-        shelfobject.limits= limits_serializer.save()
-        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
-                          shelfobject.quantity, '', 0, "Create",
-                          create=True)
-        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=None, relobj=self.context['laboratory'])
+        creator = self.context['request'].user
+        laboratory = self.context['laboratory']
+        organization = self.context['organization']
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        
+        shelfobject = serializer.save(
+            creator=creator,
+            in_where_laboratory_id=laboratory,
+            limits=limits
+        )
+        
+        build_shelfobject_qr(self.context['request'], shelfobject, organization, laboratory)
+        
+        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '', 0, "Create", create=True)
+        utils.organilab_logentry(creator, shelfobject, ADDITION, 
+                                 changed_data=['object', 'shelf', 'status', 'quantity', 'limit_quantity', 'measurement_unit', 
+                                               'marked_as_discard', 'course_name', 'creator', 'in_where_laboratory', 'limits'], 
+                                 relobj=laboratory)
+        
         return shelfobject
 
     def create_refuse_equipment(self, serializer,limits_serializer):
@@ -199,19 +233,25 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: refuse equipment type shelfobject was created
         """
-
-        shelfobject = serializer.save()
-        shelfobject.creator = self.context['request'].user
-        shelfobject.in_where_laboratory_id = self.context['laboratory']
-        shelfobject.save()
-        shelfobject.limits= limits_serializer.save()
-        self._build_qr(shelfobject)
-        shelfobject.save()
-        log_object_change(self.context['request'].user, self.context['laboratory'], shelfobject, 0,
-                          shelfobject.quantity, '', 0, "Create",
-                          create=True)
-        utils.organilab_logentry(self.context['request'].user, shelfobject, ADDITION,
-                                 changed_data=None, relobj=self.context['laboratory'])
+        creator = self.context['request'].user
+        laboratory = self.context['laboratory']
+        organization = self.context['organization']
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        
+        shelfobject = serializer.save(
+            creator=creator,
+            in_where_laboratory_id=laboratory,
+            limits=limits
+        )
+        
+        build_shelfobject_qr(self.context['request'], shelfobject, organization, laboratory)
+        
+        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '', 0, "Create",  create=True)
+        utils.organilab_logentry(creator, shelfobject, ADDITION, 
+                                 changed_data=['object', 'shelf', 'status', 'quantity', 'limit_quantity', 'measurement_unit', 
+                                               'marked_as_discard', 'course_name', 'creator', 'in_where_laboratory', 'limits'], 
+                                 relobj=laboratory)
+        
         return shelfobject
 
 
@@ -253,10 +293,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     def _get_shelfobject_with_check(self, pk, laboratory):
         """
-        Validates if the laboratory relataed to shefobject is the same laboratory is working
+        Validates if the laboratory related to shelfobject is the same laboratory is working
         :param pk: Pk of the Shelfobject is creating o updating
         :param laboratory: laboratory was sended in the request
-        :return: the sheobject serializer and the create function
+        :return: the shelfobject serializer and the create function
         """
         obj=get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
         if obj.in_where_laboratory is None or obj.in_where_laboratory.pk != laboratory:
@@ -269,7 +309,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param request: http request
         :param org_pk: organization related user permissions
         :param lab_pk: laboratory related to shelfobject and user permissions
-        :return: the sheobject serializer and the create function
+        :return: the shelfobject serializer and the create function
         """
         name = ""
         serializer = shelfobject_serializers.ValidateShelfSerializerCreate(data=request.data,
@@ -303,7 +343,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         This action allows the creates shelfobjects into the shelves, also user needs to have required access permission
         to do this action,futhermore the serializer validate that the quantity adding is less or equal than the shelfs
         quantity,the only moment permit a shelfobject quantity greater than shelf quantity is when the shelf is quantity
-        unlimit, also the serializer validates shelfobject measurement unit need to be similar than shelf measurement
+        unlimited, also the serializer validates shelfobject measurement unit need to be similar than shelf measurement
         unit, the only form to add a shelfobjects with different unit is when the shelf don't have measurement unit
         :param request: http request
         :param org_pk: organization related user permissions
@@ -320,10 +360,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             if limit_serializer.is_valid(raise_exception=True):
                 shelfobject=self.serializer_class['method'](serializer, limit_serializer)
-
-                comment=ShelfObjectObservation.objects.create(description=shelfobject.course_name, action_taken=_("Created Object"), shelf_object=shelfobject, creator=request.user)
-                utils.organilab_logentry(request.user, comment, ADDITION, 'shelfobjectobservation',
-                                         relobj=lab_pk)
+                create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, lab_pk)
                 return Response({"detail": _("The creation was performed successfully.")}, status=status.HTTP_201_CREATED)
             else:
                 errors.update(limit_serializer.errors)
@@ -339,7 +376,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         This action allows the shelf object increase by following data:
-        requierd quantity and optional provider and bill validate through serializer,
+        required quantity and optional provider and bill validate through serializer,
         also user needs to have required access permission
         to do this action related to this specific organization and laboratory.
         :param request: http request
@@ -368,7 +405,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def fill_decrease_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         This action allows the shelf object decrease by following data:
-        requierd quantity and optional description validate through serializer,
+        required quantity and optional description validate through serializer,
         also user needs to have required access permission
         to do this action related to this specific organization and laboratory.
         :param request: http request
@@ -396,7 +433,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def reserve(self, request, org_pk, lab_pk, **kwargs):
         """
         This action allows the reserved product creation by following data:
-        requierd quantity, initial and final date validate through serializer,
+        required quantity, initial and final date validate through serializer,
         also user needs to have required access permission
         to do this action related to this specific organization and laboratory.
         :param request: http request
@@ -494,8 +531,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 )
                 organilab_logentry(
                     request.user, transfer_obj, ADDITION, 'transferobject', 
-                    changed_data=['object', 'laboratory_send', 'laboratory_received', 'quantity'], 
-                    relobj=[transfer_obj, source_laboratory, target_laboratory]
+                    changed_data=['object', 'laboratory_send', 'laboratory_received', 'quantity', 'mark_as_discard', 'creator'], 
+                    relobj=[source_laboratory, target_laboratory]
                 )
             else:
                 errors["amount_to_transfer"] = [_("This value cannot be greater than the quantity available for the object.")]
@@ -649,7 +686,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param lab_pk: pk of the laboratory from which the shelf object is located
         :param kwargs: other extra params
         :param pk: pk of the shelf object that is changing the status
-        :return: JsonReponse with the description and detail of the shelfobejct status if is a success or only the detail when is an error
+        :return: JsonResponse with the description and detail of the shelfobject status if is a success or only the detail when is an error
         """
 
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_status")
@@ -721,7 +758,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         This action allows a shelf data request, also user needs to have required access permission
         to visualize shelf information related to this specific organization and laboratory.
         Moreover, it should be stressed that 'shelf info' field return a render_to_string template
-        with all neccessary shelf information by structured html code.
+        with all necessary shelf information by structured html code.
         :param request: http request
         :param org_pk: organization related to shelf object and user permissions
         :param lab_pk: laboratory related to shelf object and user permissions
@@ -750,7 +787,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def create_status(self, request, org_pk, lab_pk, **kwargs):
         """
-        Creates new status for shelobjects
+        Creates new status for shelfobjects
         :param request: http request
         :param org_pk: organization related to reserved product and user permissions
         :param lab_pk: laboratory related to reserved product and user permissions

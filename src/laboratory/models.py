@@ -164,7 +164,9 @@ class ShelfObject(models.Model):
                                             verbose_name=_('Measurement unit'), key_name="key", key_value='units')
     in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
     marked_as_discard = models.BooleanField(default=False, verbose_name=_("Is discard"))
+    # FIXME: this field needs to be deleted
     laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
+    # FIXME: change this field to be called description 
     course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
