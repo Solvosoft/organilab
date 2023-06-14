@@ -446,7 +446,7 @@ msgid "You are in time to reverse this action!"
 msgstr "Estas a tiempo de revertir esta acción!"
 
 #: academic/static/js/procedure.js:72 academic/static/js/procedure.js:112
-msgid "Eliminate"
+msgid "Delete"
 msgstr "Eliminar"
 
 #: academic/static/js/procedure.js:185

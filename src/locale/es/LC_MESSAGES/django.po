@@ -34,6 +34,9 @@ msgid "Unit"
 msgstr "Unidad"
 
 msgid "Title"
+msgstr "Título"
+
+msgid "Academic title"
 msgstr "Título académico"
 
 msgid "Initial Date"
@@ -3896,3 +3899,9 @@ msgstr "Lista de procedimientos"
 
 msgid "Don't has observations"
 msgstr "No tiene observaciones"
+
+msgid "Edit template"
+msgstr "Editar Plantilla"
+
+msgid "Create template procedure"
+msgstr "Crear plantilla de procedimientos"
