@@ -52,8 +52,8 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             return self.queryset.none()
         return self.queryset.filter(
             in_where_laboratory=self.laboratory,
-            shelf=self.data['shelf']
-
+            shelf=self.data['shelf'],
+            containershelfobject=None  # if it's not used as container - query the reverse relationship
         )
 
     def list(self, request, org_pk, lab_pk, **kwargs):

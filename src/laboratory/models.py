@@ -174,7 +174,8 @@ class ShelfObject(models.Model):
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
     shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
-    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Container"), 
+                                  related_name="containershelfobject")
 
     @staticmethod
     def get_units(unit):
