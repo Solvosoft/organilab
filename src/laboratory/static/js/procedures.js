@@ -15,6 +15,8 @@ function getCookie(name) {
 
 function get_procedure(pk){
    $('.form_errors').remove();
+   $("#reservation_form").trigger('reset');
+
     $.ajax({
         url: document.getProcedure,
         type:'POST',
@@ -81,7 +83,7 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> ${gettext("Eliminate")}</a>
+        <td class="text-center"><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> ${gettext("Delete")}</a>
               </td>
         </tr>`;
     });
@@ -121,7 +123,7 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> ${gettext("Eliminate")}</a></td>
+             <td class="text-center"><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash"></i></a></td>
             </tr>`
 
     });
@@ -283,4 +285,10 @@ function add_reservation(){
   }
 $(".open_modal").click(function(e){
    $('.form_errors').remove();
+   var modal_target =$(this).data('bsTarget')
+   var form= $(modal_target).find('form')
+   if(form){
+        $(form).trigger("reset");
+        $('select').prop('selectedIndex', 0).change();
+   }
 })
