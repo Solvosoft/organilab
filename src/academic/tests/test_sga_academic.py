@@ -41,7 +41,6 @@ class SGAAcademicTest(TestCase):
             'code': "1208",
             'description': "No agua",
             'warning_words': 2,
-            'pictograms': ["GHS01 -Bomba Explotando - Explosivo","GHS02 -Llama - Inflamable"],
             'warning_class': [2],
             'warning_category': [64],
             'prudence_advice': [2,3]
@@ -193,7 +192,6 @@ class SGAAcademicTest(TestCase):
             'code': url['pk'],
             'description': "No tocar agua",
             'warning_words': 2,
-            'pictograms': ["GHS01 -Bomba Explotando - Explosivo", "GHS02 -Llama - Inflamable"],
             'warning_class': [2],
             'warning_category': [64],
             'prudence_advice': [2, 3]

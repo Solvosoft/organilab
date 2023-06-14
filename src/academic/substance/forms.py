@@ -64,7 +64,6 @@ class DangerIndicationForm(GTForm,forms.ModelForm):
 
     def __init__(self, *arg, **kwargs):
         super(DangerIndicationForm, self).__init__(*arg,**kwargs)
-        self.fields['pictograms'].required=False
         self.fields['warning_words'].required=False
 
     class Meta:
@@ -74,7 +73,6 @@ class DangerIndicationForm(GTForm,forms.ModelForm):
             'code' : genwidgets.TextInput,
             'description' : genwidgets.Textarea,
             'warning_words' : genwidgets.Select(),
-            'pictograms' : genwidgets.SelectMultiple(),
             'warning_class': genwidgets.SelectMultiple(),
             'warning_category' : genwidgets.SelectMultiple(),
             'prudence_advice' : genwidgets.SelectMultiple()

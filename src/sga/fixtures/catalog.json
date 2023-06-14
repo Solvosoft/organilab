@@ -187,9 +187,6 @@
   "fields": {
     "description": "Explosivo inestable",
     "warning_words": 1,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
     "warning_class": [
       65
     ],
@@ -212,9 +209,7 @@
   "fields": {
     "description": "Explosivo; peligro explosi\u00f3n en masa",
     "warning_words": 1,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
+
     "warning_class": [
       65
     ],
@@ -240,9 +235,7 @@
   "fields": {
     "description": "Explosivo; grave peligro de proyecci\u00f3n",
     "warning_words": 1,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
+
     "warning_class": [
       65
     ],
@@ -268,9 +261,7 @@
   "fields": {
     "description": "Explosivo; peligro de incendio, de onda expansiva o de proyecci\u00f3n",
     "warning_words": 1,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
+
     "warning_class": [
       65
     ],
@@ -296,9 +287,7 @@
   "fields": {
     "description": "Peligro de incendio o de proyecci\u00f3n",
     "warning_words": 2,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
+
     "warning_class": [
       65
     ],
@@ -322,9 +311,7 @@
   "fields": {
     "description": "Peligro de expasi\u00f3n en masa en caso de incendio",
     "warning_words": 1,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       65
     ],
@@ -350,9 +337,7 @@
   "fields": {
     "description": "Peligro de incendio, onda expansiva o proyecci\u00f3n; mayor riesgo de explosi\u00f3n si se reduce el agente insensibilizante",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       35
     ],
@@ -377,9 +362,7 @@
   "fields": {
     "description": "Peligro de incendio o proyecci\u00f3n, mayor riesgo de explosi\u00f3n si se reduce el agente insensibilizante",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       35
     ],
@@ -405,9 +388,7 @@
   "fields": {
     "description": "Peligro de incendio , mayor riesgo de explosi\u00f3n si se reduce el agente insensibilizante",
     "warning_words": 2,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       35
     ],
@@ -432,9 +413,7 @@
   "fields": {
     "description": "Gas extremadamente inflamable",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       8
     ],
@@ -455,9 +434,7 @@
   "fields": {
     "description": "Gas inflamable",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       8
     ],
@@ -478,9 +455,7 @@
   "fields": {
     "description": "Aerosol extremadamente inflamable",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       11
     ],
@@ -501,9 +476,7 @@
   "fields": {
     "description": "Aerosol inflamable",
     "warning_words": 2,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       11
     ],
@@ -524,9 +497,7 @@
   "fields": {
     "description": "Liquido y vapores extremadamente inflamables",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       12
     ],
@@ -554,9 +525,7 @@
   "fields": {
     "description": "Liquido y vapores muy inflamables",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       12
     ],
@@ -584,9 +553,7 @@
   "fields": {
     "description": "Liquido y vapores inflamables",
     "warning_words": 2,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       12
     ],
@@ -611,9 +578,7 @@
   "fields": {
     "description": "Liquido combustible",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       12
     ],
@@ -638,9 +603,7 @@
   "fields": {
     "description": "S\u00f3lido inflamable",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       13
     ],
@@ -663,9 +626,7 @@
   "fields": {
     "description": "Contiene gas a presi\u00f3n, puede reventar si se calienta",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       11
     ],
@@ -688,9 +649,7 @@
   "fields": {
     "description": "Indicaci\u00f3n de peligro adicional: Puede explotar incluso en ausencia de aire",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       8
     ],
@@ -708,9 +667,7 @@
   "fields": {
     "description": "Indicaci\u00f3n de peligro adicional: Puede explotar incluso en ausencia de aire, a presi\u00f3n y/o temperatura elevadas",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       8
     ],
@@ -728,9 +685,7 @@
   "fields": {
     "description": "Puede inflamarse espont\u00e1neamente en contacto con el aire",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       8
     ],
@@ -749,9 +704,7 @@
   "fields": {
     "description": "Puede explotar al calentarse",
     "warning_words": 1,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
+
     "warning_class": [
       26
     ],
@@ -779,9 +732,7 @@
   "fields": {
     "description": "Puede  incendiarse o explotar al calentarse",
     "warning_words": 1,
-    "pictograms": [
-      "Bomba explotando.gif"
-    ],
+
     "warning_class": [
       26
     ],
@@ -808,9 +759,7 @@
   "fields": {
     "description": "Puede incendiarse al calentarse",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       26
     ],
@@ -839,9 +788,7 @@
   "fields": {
     "description": "Se inflama espontanea en contacto de el aire",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       27
     ],
@@ -865,9 +812,7 @@
   "fields": {
     "description": "Se calienta espont\u00e1neamente al contacto con e aire",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       29
     ],
@@ -889,9 +834,7 @@
   "fields": {
     "description": "Se calienta espont\u00e1neamente en grandes cantidades; puede inflamarse",
     "warning_words": 2,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
+
     "warning_class": [
       29
     ],
@@ -913,9 +856,6 @@
   "fields": {
     "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
     "warning_class": [
       30
     ],
@@ -939,9 +879,6 @@
   "fields": {
     "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
     "warning_words": 1,
-    "pictograms": [
-      "Gas inflamable sga.gif"
-    ],
     "warning_class": [
       30
     ],
@@ -965,9 +902,7 @@
   "fields": {
     "description": "Puede provocar o agravar un incendio",
     "warning_words": 1,
-    "pictograms": [
-      "rondflam.gif"
-    ],
+
     "warning_class": [
       14
     ],
@@ -988,9 +923,7 @@
   "fields": {
     "description": "Contiene gas a presi\u00f3n; puede explotar si se calienta",
     "warning_words": 2,
-    "pictograms": [
-      "bottle.gif"
-    ],
+
     "warning_class": [
       15
     ],
@@ -1008,9 +941,7 @@
   "fields": {
     "description": "Contiene gas refrigerado, puede provocar quemaduras o lesiones criog\u00e9nicas",
     "warning_words": 2,
-    "pictograms": [
-      "bottle.gif"
-    ],
+
     "warning_class": [
       15
     ],
@@ -1030,9 +961,7 @@
   "fields": {
     "description": "Puede ser corrosiva para los metales",
     "warning_words": 2,
-    "pictograms": [
-      "acid_red.gif"
-    ],
+
     "warning_class": [
       34
     ],
@@ -1052,9 +981,7 @@
   "fields": {
     "description": "Mortal en caso de ingesti\u00f3n",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1068,9 +995,7 @@
   "fields": {
     "description": "Mortal en caso de ingesti\u00f3n\r\nMortal en contacto con la piel",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1084,9 +1009,7 @@
   "fields": {
     "description": "Mortal en caso de ingesti\u00f3n\r\nMortal en contacto con la piel\r\nMortal si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1100,9 +1023,7 @@
   "fields": {
     "description": "Mortal en caso de ingesti\u00f3n\r\nMortal si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1126,9 +1047,7 @@
   "fields": {
     "description": "T\u00f3xico en caso de ingesti\u00f3n",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1152,9 +1071,7 @@
   "fields": {
     "description": "T\u00f3xico en caso de ingesti\u00f3n o en contacto con la piel",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1182,9 +1099,7 @@
   "fields": {
     "description": "T\u00f3xico en caso de ingesti\u00f3n\r\nT\u00f3xico en contacto con la piel\r\nT\u00f3xico si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1212,9 +1127,7 @@
   "fields": {
     "description": "Nocivo en caso de ingesti\u00f3n",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1236,9 +1149,7 @@
   "fields": {
     "description": "Nocivo en caso de ingesti\u00f3n\r\nNocivo en contacto con la piel",
     "warning_words": 3,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1261,9 +1172,7 @@
   "fields": {
     "description": "Nocivo en caso de ingesti\u00f3n\r\nNocivo en contacto con la piel\r\nNocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1287,9 +1196,7 @@
   "fields": {
     "description": "Nocivo en caso de ingesti\u00f3n\r\nNocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1315,9 +1222,7 @@
   "fields": {
     "description": "Puede ser nocivo en caso de ingesti\u00f3n",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1331,9 +1236,7 @@
   "fields": {
     "description": "Puede ser nocivo en caso de ingesti\u00f3n\r\nPuede ser nocivo en contacto con la piel",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1347,9 +1250,7 @@
   "fields": {
     "description": "Puede ser nocivo en caso de ingesti\u00f3n\r\nPuede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1363,9 +1264,7 @@
   "fields": {
     "description": "Puede ser nocivo en caso de ingesti\u00f3n\r\nPuede ser nocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1384,9 +1283,7 @@
   "fields": {
     "description": "Puede ser mortal en caso de ingesti\u00f3n y de penetraci\u00f3n en las v\u00edas respiratorias",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       57
     ],
@@ -1407,9 +1304,7 @@
   "fields": {
     "description": "Puede ser mortal en caso de ingesti\u00f3n y de penetraci\u00f3n en las v\u00edas respiratorias",
     "warning_words": 2,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       57
     ],
@@ -1430,9 +1325,7 @@
   "fields": {
     "description": "Mortal en contacto con la piel",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1459,9 +1352,7 @@
   "fields": {
     "description": "Mortal en contacto con la piel\r\nMortal si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1494,9 +1385,7 @@
   "fields": {
     "description": "T\u00f3xico en contacto con la piel",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1510,9 +1399,7 @@
   "fields": {
     "description": "T\u00f3xico en contacto con la piel\r\nT\u00f3xico si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1535,9 +1422,7 @@
   "fields": {
     "description": "Nocivo en contacto con la piel",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1551,9 +1436,7 @@
   "fields": {
     "description": "Nocivo en contacto con la piel\r\nNocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1567,9 +1450,7 @@
   "fields": {
     "description": "Puede ser nocivo en contacto con la piel",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1583,9 +1464,7 @@
   "fields": {
     "description": "Puede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1603,9 +1482,7 @@
   "fields": {
     "description": "Provoca graves quemaduras en la piel y lesiones oculares",
     "warning_words": 1,
-    "pictograms": [
-      "acid_red.gif"
-    ],
+
     "warning_class": [
       39,
       40
@@ -1636,9 +1513,7 @@
   "fields": {
     "description": "Provoca irritaci\u00f3n cut\u00e1nea",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       39,
       40
@@ -1663,9 +1538,7 @@
   "fields": {
     "description": "Provoca irritaci\u00f3n cut\u00e1nea\r\nProvoca irritaci\u00f3n ocular",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       40,
       45
@@ -1694,9 +1567,7 @@
   "fields": {
     "description": "Provoca leve irritaci\u00f3n cut\u00e1nea",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       39,
       40
@@ -1716,9 +1587,7 @@
   "fields": {
     "description": "Puede provocar una reacci\u00f3n cut\u00e1nea al\u00e9rgica",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       49
     ],
@@ -1743,9 +1612,7 @@
   "fields": {
     "description": "Provoca lesiones oculares graves",
     "warning_words": 1,
-    "pictograms": [
-      "acid_red.gif"
-    ],
+
     "warning_class": [
       44,
       45
@@ -1767,9 +1634,7 @@
   "fields": {
     "description": "Provoca irritaci\u00f3n ocular grave",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       44,
       45
@@ -1792,9 +1657,7 @@
   "fields": {
     "description": "Provoca irritaci\u00f3n ocular",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       44,
       45
@@ -1815,9 +1678,7 @@
   "fields": {
     "description": "Mortal si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1843,9 +1704,7 @@
   "fields": {
     "description": "T\u00f3xico si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "skull.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1870,9 +1729,7 @@
   "fields": {
     "description": "Nocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1893,9 +1750,7 @@
   "fields": {
     "description": "Puede ser nocivo si se inhala",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       38
     ],
@@ -1913,9 +1768,7 @@
   "fields": {
     "description": "Puede provocar sintomas de alergia o asma o dificultades respiratoria si se inhala",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       48
     ],
@@ -1937,9 +1790,7 @@
   "fields": {
     "description": "Puede irritar las v\u00edas respiratorias o provocar somnoliencia",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       55
     ],
@@ -1961,9 +1812,7 @@
   "fields": {
     "description": "Puede irritar las v\u00edas respiratorias o provocar somnoliencia",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       55
     ],
@@ -1987,9 +1836,7 @@
   "fields": {
     "description": "Puede provocar efectos gen\u00e9ticos (Ind\u00edquese la v\u00edas de ex\u00f3sici\u00f3n si se ha demostrado concluyendtemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       50
     ],
@@ -2012,9 +1859,7 @@
   "fields": {
     "description": "Suscepctible a provocar cancer (Ind\u00edquese la v\u00edas de ex\u00f3sici\u00f3n si se ha demostrado concluyendtemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 2,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       50
     ],
@@ -2037,9 +1882,7 @@
   "fields": {
     "description": "Puede provocar c\u00e1ncer (ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 2,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       51
     ],
@@ -2062,9 +1905,7 @@
   "fields": {
     "description": "Suscepctible a provocar cancer (Ind\u00edquese la v\u00edas de ex\u00f3sici\u00f3n si se ha demostrado concluyendtemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       51
     ],
@@ -2087,9 +1928,7 @@
   "fields": {
     "description": "Puede perjudicar la fertilidad o da\u00f1ar al feto (Ind\u00edquese el efecto especi\u00edfico si se conoce) (Ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       52
     ],
@@ -2112,9 +1951,7 @@
   "fields": {
     "description": "Susceptible de perjudicar la fertilidad o da\u00f1ar al feto (Ind\u00edquese el efecto especi\u00edfico si se conoce) (Ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 2,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       52
     ],
@@ -2137,9 +1974,7 @@
   "fields": {
     "description": "Sin palabra de advertencia",
     "warning_words": 2,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       52
     ],
@@ -2162,9 +1997,7 @@
   "fields": {
     "description": "Provoca da\u00f1os en los \u00f3rganos (o ind\u00edquese todos los \u00f3rganos afectados, si se conocen) (Ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       55
     ],
@@ -2189,9 +2022,7 @@
   "fields": {
     "description": "Puede provocar da\u00f1os en los \u00f3rganos (o ind\u00edquese todos los \u00f3rganos afectados, si se conocen) (Ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       55
     ],
@@ -2213,9 +2044,7 @@
   "fields": {
     "description": "Provoca da\u00f1os en los \u00f3rganos (o ind\u00edquese todos los \u00f3rganos afectados, si se conocen)tras exposiciones prolongadas o repetidas (Ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       56
     ],
@@ -2237,9 +2066,7 @@
   "fields": {
     "description": "Puede provocar da\u00f1os en los \u00f3rganos (o ind\u00edquese todos los \u00f3rganos afectados, si se conocen) tras exposiciones prolongadas o repetidas (Ind\u00edquese la v\u00eda de exposici\u00f3n si se ha demostrado concluyentemente que ninguna otra v\u00eda es peligrosa)",
     "warning_words": 1,
-    "pictograms": [
-      "silhouete.gif"
-    ],
+
     "warning_class": [
       56
     ],
@@ -2259,9 +2086,7 @@
   "fields": {
     "description": "Muy t\u00f3xicos para los organismos acu\u00e1ticos",
     "warning_words": 2,
-    "pictograms": [
-      "Aquatic-pollut-red.gif"
-    ],
+
     "warning_class": [
       164
     ],
@@ -2280,9 +2105,7 @@
   "fields": {
     "description": "T\u00f3xicos para los organismos acu\u00e1ticos",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       164
     ],
@@ -2301,9 +2124,7 @@
   "fields": {
     "description": "Nocivo para los organismos acu\u00e1ticos",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       164
     ],
@@ -2322,9 +2143,7 @@
   "fields": {
     "description": "Muy t\u00f3xicos para los organismos acu\u00e1ticos, con efectos nocivos duraderos",
     "warning_words": 2,
-    "pictograms": [
-      "Aquatic-pollut-red.gif"
-    ],
+
     "warning_class": [
       163
     ],
@@ -2343,9 +2162,7 @@
   "fields": {
     "description": "T\u00f3xicos para los organismos acu\u00e1ticos, con efectos nocivos duraderos",
     "warning_words": 3,
-    "pictograms": [
-      "Aquatic-pollut-red.gif"
-    ],
+
     "warning_class": [
       163
     ],
@@ -2364,9 +2181,7 @@
   "fields": {
     "description": "Nocivos para los organismos acu\u00e1ticos, con efectos nocivos duraderos",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       163
     ],
@@ -2385,9 +2200,7 @@
   "fields": {
     "description": "Puede ser nocivo para los organismos acu\u00e1ticos, con efectos nocivos duraderos",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       163
     ],
@@ -2406,9 +2219,7 @@
   "fields": {
     "description": "Causa da\u00f1os a la salud p\u00fablica y el medio ambiente al destruir el ozono en la atmosfera superior",
     "warning_words": 2,
-    "pictograms": [
-      "exclam.gif"
-    ],
+
     "warning_class": [
       162
     ],
@@ -2427,9 +2238,7 @@
   "fields": {
     "description": "Sin indicaci\u00f3n de peligro",
     "warning_words": 3,
-    "pictograms": [
-      "Sin Pictograma"
-    ],
+
     "warning_class": [
       7
     ],

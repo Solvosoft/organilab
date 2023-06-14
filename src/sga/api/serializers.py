@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, Pictogram, BuilderInformation, \
-    PersonalTemplateSGA, RecipientSize
+from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, BuilderInformation, \
+    PersonalTemplateSGA, RecipientSize, Substance
 
 
 class DangerIndicationSerializer(serializers.ModelSerializer):
@@ -48,3 +48,17 @@ class RecipientSizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipientSize
         fields = ['width', 'height']
+
+
+class SubstanceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Substance
+        fields = ['comercial_name', 'uipa_name', 'cas_id_number']
+
+
+class SubstanceDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=SubstanceSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

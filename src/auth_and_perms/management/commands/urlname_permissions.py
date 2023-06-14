@@ -2697,25 +2697,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_pictogram'
         }
     ],
-    'add_pictograms': [
-        {
-            'name': 'Add Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.add_pictogram'
-        },
-        {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        }
-    ],
-    'pictograms_list': [
-        {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        }
-    ],
     'add_recipient_size': [
         {
             'name': 'Add Recipient Size',

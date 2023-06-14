@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet, CharFilter
 from rest_framework import serializers
-from sga.models import ReviewSubstance, SecurityLeaf
+from sga.models import ReviewSubstance, SecurityLeaf, Substance
 from academic.models import CommentProcedureStep
 from django.utils import formats
 from django_filters import DateTimeFromToRangeFilter
@@ -126,3 +126,4 @@ class ReviewSubstanceDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+

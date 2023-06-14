@@ -5,17 +5,24 @@
 """
 
 # Import functions of another modules
-from django.urls import path, re_path
+from django.urls import path, re_path, include
+from rest_framework.routers import DefaultRouter
 
 from . import views
 from .views import editor
 from .views import sustance
+from .api.viewset import SubstanceViewSet
 
+router = DefaultRouter()
+router.register('api_substance', SubstanceViewSet, basename='api-substance')
 # SGA
 app_name = 'sga'
 
 # Views
 urlpatterns = [
+
+    path('api/', include(router.urls)),
+
     # sga/index_sga/
     path('index_sga', editor.index_sga, name='index_sga'),
     path('editor_sga', editor.render_editor_sga, name='index_editor'),
@@ -37,9 +44,6 @@ urlpatterns = [
     path('delete_sgalabel/<int:pk>', editor.delete_sgalabel, name='delete_sgalabel'),
     path('add_substance', editor.create_substance, name='add_substance'),
     path('add_recipient_size/', editor.create_recipient, name='add_recipient_size'),
-    path('get_pictograms/', editor.get_pictograms, name='pictograms_list'),
-    path('add_pictogram/', editor.add_pictogram, name='add_pictograms'),
-    path('update_pictogram/<str:id_pictogram>/', editor.update_pictogram, name='update_pictogram'),
     path('company/list/', editor.get_companies, name='get_companies'),
     path('company/add/', editor.create_company, name='add_company'),
     path('company/edit/<int:pk>/', editor.edit_company, name='edit_company'),

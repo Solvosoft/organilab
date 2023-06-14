@@ -23,13 +23,6 @@
                 {% trans 'Prudence Advice' %}
             </a>
         </li>
-        {% if perms.sga.view_pictogram %}
-        <li>
-            <a href="{% url 'sga:pictograms_list' org_pk %}">
-                {% trans 'Pictograms' %}
-            </a>
-        </li>
-        {% endif %}
     </ul>
 </li>
 {% endif %}
