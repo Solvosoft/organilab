@@ -23,7 +23,7 @@ class MyProcedureForm(forms.ModelForm, GTForm):
         model = MyProcedure
         fields = ['name', 'custom_procedure']
         widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
-                   'custom_procedure': genwidgets.Select(),
+                   'custom_procedure': genwidgets.Select(attrs={'required':True}),
                    }
 
 
