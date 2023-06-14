@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 from .models import ProcedureStep, Procedure, MyProcedure, CommentProcedureStep
@@ -83,7 +84,7 @@ class ReservationForm(GTForm, forms.Form):
         if initial_date and final_date:
           difference= (final_date-initial_date).days
           if difference<0:
-              self.add_error('final_date', "Final date can't be lower than initial date")
+              self.add_error('final_date', _("Final date can't be lower than initial date"))
 
 
 class ValidateProcedureReservationForm(ReservationForm):
@@ -93,15 +94,10 @@ class ValidateProcedureReservationForm(ReservationForm):
 class AddObjectStepForm(GTForm, forms.Form):
     unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key="units"), required=True)
     object = forms.ModelChoiceField(queryset=Object.objects.all(), required=True)
-    quantity = forms.CharField(widget=genwidgets.TextInput, required=True)
+    quantity = forms.FloatField(widget=genwidgets.TextInput, required=True, min_value=0.1, validators=[
+        RegexValidator(
+                regex=r'^\d+(\.\d{1,2})?$',
+                message=_('The quantity field receives only decimal numbers'),
+            )],
+    )
 
-    def clean(self):
-        cleaned_data = super().clean()
-        quantity = cleaned_data.get('quantity')
-
-        if quantity.isalpha():
-            self.add_error('quantity', _("The quantity field receives only decimal numbers"))
-        elif quantity==None:
-            pass
-        elif int(quantity)<0:
-            self.add_error('quantity', _("Quantity must be greater than zero"))
