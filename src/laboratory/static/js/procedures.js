@@ -83,7 +83,7 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td class="text-center"><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> ${gettext("Delete")}</a>
+        <td class="text-center"><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash"></i></a>
               </td>
         </tr>`;
     });
