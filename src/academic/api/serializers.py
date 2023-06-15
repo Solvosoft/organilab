@@ -1,24 +1,31 @@
+import logging
+
 from django.db.models import Q
 from django.db.models.expressions import Value
 from django.db.models.functions import Concat
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django_filters import FilterSet, CharFilter
-from rest_framework import serializers
-from sga.models import ReviewSubstance, SecurityLeaf, Substance
-from academic.models import CommentProcedureStep
 from django.utils import formats
+from django.utils.translation import gettext_lazy as _
 from django_filters import DateTimeFromToRangeFilter
+from django_filters import FilterSet, CharFilter
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
+from rest_framework import serializers
+
+from academic.models import CommentProcedureStep
+from sga.models import ReviewSubstance, SecurityLeaf
+
+logger = logging.getLogger('organilab')
 
 
 class ProcedureStepCommentFilterSet(FilterSet):
     creator_at = DateTimeFromToRangeFilter(
-        widget=DateTimeRangeTextWidget(attrs={'placeholder': formats.get_format('DATETIME_INPUT_FORMATS')[0]}))
+        widget=DateTimeRangeTextWidget(
+            attrs={'placeholder': formats.get_format('DATETIME_INPUT_FORMATS')[0]}))
     creator = CharFilter(field_name='creator', method='filter_user')
 
     def filter_user(self, queryset, name, value):
-        return queryset.filter(Q(creator__first_name__icontains=value) | Q(creator__last_name__icontains=value) | Q(
+        return queryset.filter(Q(creator__first_name__icontains=value) | Q(
+            creator__last_name__icontains=value) | Q(
             creator__username__icontains=value))
 
     class Meta:
@@ -28,7 +35,8 @@ class ProcedureStepCommentFilterSet(FilterSet):
 
 class ProcedureStepCommentSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField(required=False)
-    creator_at = serializers.DateTimeField(required=False, format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
+    creator_at = serializers.DateTimeField(required=False, format=
+    formats.get_format('DATETIME_INPUT_FORMATS')[0])
 
     def get_creator(self, obj):
         try:
@@ -57,7 +65,6 @@ class ProcedureStepCommentDatatableSerializer(serializers.Serializer):
 
 
 class ReviewSubstanceFilterSet(FilterSet):
-
     class Meta:
         model = ReviewSubstance
         fields = {
@@ -69,8 +76,11 @@ class ReviewSubstanceFilterSet(FilterSet):
         queryset = super().qs
         name = self.request.GET.get('creator__icontains')
         if name:
-            queryset = queryset.annotate(fullname=Concat('substance__creator__first_name', Value(' '), 'substance__creator__last_name'))
-            queryset = queryset.filter(Q(fullname__icontains=name) | Q(substance__creator__username__icontains=name)).distinct()
+            queryset = queryset.annotate(
+                fullname=Concat('substance__creator__first_name', Value(' '),
+                                'substance__creator__last_name'))
+            queryset = queryset.filter(Q(fullname__icontains=name) | Q(
+                substance__creator__username__icontains=name)).distinct()
         return queryset
 
 
@@ -99,8 +109,9 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
         }
         obj_kwargs.update({'pk': obj.substance.pk})
         detail_url = reverse('sga:detail_substance', kwargs=obj_kwargs)
-        security_leaf_pdf_url = reverse('sga:security_leaf_pdf', kwargs={'org_pk': obj.substance.organization.pk,
-                                                                     'substance': obj.substance.pk})
+        security_leaf_pdf_url = reverse('sga:security_leaf_pdf',
+                                        kwargs={'org_pk': obj.substance.organization.pk,
+                                                'substance': obj.substance.pk})
         action = ""
 
         if not obj.is_approved:
@@ -114,7 +125,8 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
         leaf = SecurityLeaf.objects.filter(substance=obj.substance)
         if leaf.exists():
             action += """<a class='btn  btn-md  btn-danger' title='%s' href='%s'><i class='icons fa fa-file-pdf-o'
-             aria-hidden='true'></i></a>""" % (_("Generate PDF"), security_leaf_pdf_url,)
+             aria-hidden='true'></i></a>""" % (
+            _("Generate PDF"), security_leaf_pdf_url,)
         return action
 
     class Meta:
@@ -127,4 +139,3 @@ class ReviewSubstanceDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-

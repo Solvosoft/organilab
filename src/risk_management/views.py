@@ -5,9 +5,10 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from rest_framework import status
 
 from laboratory.models import OrganizationStructure
-from laboratory.utils import organilab_logentry
+from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm
 from risk_management.models import RiskZone, ZoneType
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
@@ -112,10 +113,15 @@ class ZoneDelete(DeleteView):
 class ZoneDetail(DetailView):
     model = RiskZone
 
-def add_zone_type_view(request,org_pk):
+@permission_required('risk_management.add_zonetype')
+def add_zone_type_view(request, org_pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
+        return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
+
     tipo = request.GET.get('tipo', '')
     viewid = str(uuid.uuid4())[:4]
-    data=None
+
     if request.method == 'POST':
         data= request.POST.copy()
         form =ZoneTypeForm(data)
