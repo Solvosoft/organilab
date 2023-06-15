@@ -137,17 +137,17 @@
       "permissions": [
         [
           "change_substanceobservation",
-          "academic",
+          "sga",
           "substanceobservation"
         ],
         [
           "delete_substanceobservation",
-          "academic",
+          "sga",
           "substanceobservation"
         ],
         [
           "view_substanceobservation",
-          "academic",
+          "sga",
           "substanceobservation"
         ]
       ]
