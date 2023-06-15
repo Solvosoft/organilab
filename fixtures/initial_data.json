@@ -324,28 +324,28 @@
 {
   "model": "contenttypes.contenttype",
   "fields": {
-    "app_label": "academic",
+    "app_label": "sga",
     "model": "componentsga"
   }
 },
 {
   "model": "contenttypes.contenttype",
   "fields": {
-    "app_label": "academic",
+    "app_label": "sga",
     "model": "substancesga"
   }
 },
 {
   "model": "contenttypes.contenttype",
   "fields": {
-    "app_label": "academic",
+    "app_label": "sga",
     "model": "sustancecharacteristicssga"
   }
 },
 {
   "model": "contenttypes.contenttype",
   "fields": {
-    "app_label": "academic",
+    "app_label": "sga",
     "model": "substanceobservation"
   }
 },
@@ -9163,7 +9163,7 @@
   "fields": {
     "name": "Can add ComponentSGA",
     "content_type": [
-      "academic",
+      "sga",
       "componentsga"
     ],
     "codename": "add_componentsga"
@@ -9174,7 +9174,7 @@
   "fields": {
     "name": "Can change ComponentSGA",
     "content_type": [
-      "academic",
+      "sga",
       "componentsga"
     ],
     "codename": "change_componentsga"
@@ -9185,7 +9185,7 @@
   "fields": {
     "name": "Can delete ComponentSGA",
     "content_type": [
-      "academic",
+      "sga",
       "componentsga"
     ],
     "codename": "delete_componentsga"
@@ -9196,7 +9196,7 @@
   "fields": {
     "name": "Can view ComponentSGA",
     "content_type": [
-      "academic",
+      "sga",
       "componentsga"
     ],
     "codename": "view_componentsga"
@@ -9207,7 +9207,7 @@
   "fields": {
     "name": "Can add SustanceSGA",
     "content_type": [
-      "academic",
+      "sga",
       "substancesga"
     ],
     "codename": "add_substancesga"
@@ -9218,7 +9218,7 @@
   "fields": {
     "name": "Can change SustanceSGA",
     "content_type": [
-      "academic",
+      "sga",
       "substancesga"
     ],
     "codename": "change_substancesga"
@@ -9229,7 +9229,7 @@
   "fields": {
     "name": "Can delete SustanceSGA",
     "content_type": [
-      "academic",
+      "sga",
       "substancesga"
     ],
     "codename": "delete_substancesga"
@@ -9240,7 +9240,7 @@
   "fields": {
     "name": "Can view SustanceSGA",
     "content_type": [
-      "academic",
+      "sga",
       "substancesga"
     ],
     "codename": "view_substancesga"
@@ -9251,7 +9251,7 @@
   "fields": {
     "name": "Can add Sustance characteristicSGA",
     "content_type": [
-      "academic",
+      "sga",
       "sustancecharacteristicssga"
     ],
     "codename": "add_sustancecharacteristicssga"
@@ -9262,7 +9262,7 @@
   "fields": {
     "name": "Can change Sustance characteristicSGA",
     "content_type": [
-      "academic",
+      "sga",
       "sustancecharacteristicssga"
     ],
     "codename": "change_sustancecharacteristicssga"
@@ -9273,7 +9273,7 @@
   "fields": {
     "name": "Can delete Sustance characteristicSGA",
     "content_type": [
-      "academic",
+      "sga",
       "sustancecharacteristicssga"
     ],
     "codename": "delete_sustancecharacteristicssga"
@@ -9284,7 +9284,7 @@
   "fields": {
     "name": "Can view Sustance characteristicSGA",
     "content_type": [
-      "academic",
+      "sga",
       "sustancecharacteristicssga"
     ],
     "codename": "view_sustancecharacteristicssga"
@@ -9295,7 +9295,7 @@
   "fields": {
     "name": "Can add Observation",
     "content_type": [
-      "academic",
+      "sga",
       "substanceobservation"
     ],
     "codename": "add_substanceobservation"
@@ -9306,7 +9306,7 @@
   "fields": {
     "name": "Can change Observation",
     "content_type": [
-      "academic",
+      "sga",
       "substanceobservation"
     ],
     "codename": "change_substanceobservation"
@@ -9317,7 +9317,7 @@
   "fields": {
     "name": "Can delete Observation",
     "content_type": [
-      "academic",
+      "sga",
       "substanceobservation"
     ],
     "codename": "delete_substanceobservation"
@@ -9328,7 +9328,7 @@
   "fields": {
     "name": "Can view Observation",
     "content_type": [
-      "academic",
+      "sga",
       "substanceobservation"
     ],
     "codename": "view_substanceobservation"
@@ -9904,50 +9904,6 @@
       "label"
     ],
     "codename": "view_label"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can add Pictogram",
-    "content_type": [
-      "sga",
-      "pictogram"
-    ],
-    "codename": "add_pictogram"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can change Pictogram",
-    "content_type": [
-      "sga",
-      "pictogram"
-    ],
-    "codename": "change_pictogram"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can delete Pictogram",
-    "content_type": [
-      "sga",
-      "pictogram"
-    ],
-    "codename": "delete_pictogram"
-  }
-},
-{
-  "model": "auth.permission",
-  "fields": {
-    "name": "Can view Pictogram",
-    "content_type": [
-      "sga",
-      "pictogram"
-    ],
-    "codename": "view_pictogram"
   }
 },
 {
@@ -12762,22 +12718,22 @@
       ],
       [
         "add_substanceobservation",
-        "academic",
+        "sga",
         "substanceobservation"
       ],
       [
         "change_substanceobservation",
-        "academic",
+        "sga",
         "substanceobservation"
       ],
       [
         "delete_substanceobservation",
-        "academic",
+        "sga",
         "substanceobservation"
       ],
       [
         "view_substanceobservation",
-        "academic",
+        "sga",
         "substanceobservation"
       ],
       [
@@ -13334,21 +13290,6 @@
         "view_personaltemplatesga",
         "sga",
         "personaltemplatesga"
-      ],
-      [
-        "add_pictogram",
-        "sga",
-        "pictogram"
-      ],
-      [
-        "change_pictogram",
-        "sga",
-        "pictogram"
-      ],
-      [
-        "view_pictogram",
-        "sga",
-        "pictogram"
       ],
       [
         "add_provider",
@@ -16602,20 +16543,6 @@
 },
 {
   "model": "djgentelella.permissionscategorymanagement",
-  "pk": 203,
-  "fields": {
-    "name": "View Pictogram",
-    "category": "Pictogram",
-    "url_name": "index",
-    "permission": [
-      "view_pictogram",
-      "sga",
-      "pictogram"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
   "pk": 204,
   "fields": {
     "name": "Change Template SGA",
@@ -18947,7 +18874,7 @@
     "url_name": "add_observation_substanceobservation",
     "permission": [
       "add_substanceobservation",
-      "academic",
+      "sga",
       "substanceobservation"
     ]
   }
@@ -18961,7 +18888,7 @@
     "url_name": "add_observation_substanceobservation",
     "permission": [
       "view_substanceobservation",
-      "academic",
+      "sga",
       "substanceobservation"
     ]
   }
@@ -19661,7 +19588,7 @@
     "url_name": "update_observation",
     "permission": [
       "change_substanceobservation",
-      "academic",
+      "sga",
       "substanceobservation"
     ]
   }
@@ -19675,7 +19602,7 @@
     "url_name": "update_observation",
     "permission": [
       "view_substanceobservation",
-      "academic",
+      "sga",
       "substanceobservation"
     ]
   }
@@ -19689,7 +19616,7 @@
     "url_name": "delete_observation",
     "permission": [
       "delete_substanceobservation",
-      "academic",
+      "sga",
       "substanceobservation"
     ]
   }
@@ -19703,7 +19630,7 @@
     "url_name": "delete_observation",
     "permission": [
       "view_substanceobservation",
-      "academic",
+      "sga",
       "substanceobservation"
     ]
   }
@@ -19943,34 +19870,6 @@
       "view_reservedproducts",
       "reservations_management",
       "reservedproducts"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 442,
-  "fields": {
-    "name": "Change Pictogram",
-    "category": "Pictogram",
-    "url_name": "update_pictogram",
-    "permission": [
-      "change_pictogram",
-      "sga",
-      "pictogram"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 443,
-  "fields": {
-    "name": "View Pictogram",
-    "category": "Pictogram",
-    "url_name": "update_pictogram",
-    "permission": [
-      "view_pictogram",
-      "sga",
-      "pictogram"
     ]
   }
 },
