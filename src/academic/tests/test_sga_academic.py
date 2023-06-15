@@ -16,43 +16,12 @@ class SGAAcademicTest(TestCase):
         self.url_attr= {'org_pk':2}
         self.client.force_login(self.user)
 
-    def test_get_danger_indication(self):
-        response = self.client.get(reverse('academic:danger_indications', kwargs=self.url_attr))
-        self.assertEqual(response.status_code,200)
-        self.assertTrue(len(response.context['listado'])==96)
     def test_get_warning_words(self):
         response = self.client.get(reverse('academic:warning_words', kwargs=self.url_attr))
         self.assertEqual(response.status_code,200)
         word=WarningWord.objects.get(pk=2)
         self.assertIn(word,response.context['listado'])
         self.assertTrue(len(response.context['listado']),3)
-
-    def test_get_prudence_advices(self):
-        response = self.client.get(reverse('academic:prudence_advices', kwargs=self.url_attr))
-        self.assertEqual(response.status_code,200)
-
-    def test_add_danger_indications(self):
-        response_get = self.client.get(reverse('academic:add_danger_indication', kwargs=self.url_attr))
-        self.assertEqual(response_get.status_code,200)
-        self.assertEqual(response_get.context['url'], reverse('academic:add_danger_indication', kwargs=self.url_attr))
-        self.assertEqual(response_get.context['view_url'], reverse('academic:danger_indications', kwargs=self.url_attr))
-
-        data = {
-            'code': "1208",
-            'description': "No agua",
-            'warning_words': 2,
-            'warning_class': [2],
-            'warning_category': [64],
-            'prudence_advice': [2,3]
-        }
-
-        c=DangerIndication.objects.all().count()
-
-        response_pos = self.client.post(reverse('academic:add_danger_indication', kwargs=self.url_attr),data, follow=True)
-
-        self.assertEqual(response_pos.status_code,200)
-        self.assertTrue(DangerIndication.objects.all().count()>c)
-        self.assertRedirects(response_pos, reverse('academic:danger_indications',kwargs=self.url_attr))
 
     def test_add_warning_word(self):
         response_get = self.client.get(reverse('academic:add_warning_word', kwargs=self.url_attr))

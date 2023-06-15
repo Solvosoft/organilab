@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-{% load static i18n %}
+{% extends 'pdf/base_pdf.html' %}
+{% load i18n %}
+{% block head %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>{% trans 'Security sheet'%} {% trans 'of'%} {{substance.comercial_name}}</title>
-
-</head>
-{% include 'academic/substance/pdf/pdf_css.html' %}
-
-<body>
+ <title>{% trans 'Security sheet'%} {% trans 'of'%} {{substance.comercial_name}}</title>
+{% endblock %}
+{% block pdf_content %}
 <section id="header">
     {% include 'academic/substance/pdf/header.html' %}
 </section>
@@ -62,5 +57,4 @@
 <section id="sixteen">
     {% include 'academic/substance/pdf/section_sixteen.html' %}
 </section>
-</body>
-</html>
+{% endblock %}

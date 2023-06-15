@@ -2296,7 +2296,7 @@ URLNAME_PERMISSIONS = {
             'permission': 'academic.delete_procedureobservations'
         }
     ],
-    'create_sustance': [
+    'substance_management': [
         {
             'name': 'Change Object',
             'category': 'Object',
@@ -2336,9 +2336,7 @@ URLNAME_PERMISSIONS = {
             'name': 'View Substance Characteristics',
             'category': 'Substance Characteristics',
             'permission': 'sga.view_substancecharacteristics'
-        }
-    ],
-    'update_substance': [
+        },
         {
             'name': 'Change Object',
             'category': 'Object',
@@ -2378,23 +2376,17 @@ URLNAME_PERMISSIONS = {
             'name': 'View Substance Characteristics',
             'category': 'Substance Characteristics',
             'permission': 'sga.view_substancecharacteristics'
-        }
-    ],
-    'get_substance': [
+        },
         {
             'name': 'View Substance',
             'category': 'Substance',
             'permission': 'sga.view_substance'
-        }
-    ],
-    'approved_substance': [
+        },
         {
             'name': 'View Substance',
             'category': 'Substance',
             'permission': 'sga.view_substance'
-        }
-    ],
-    'accept_substance': [
+        },
         {
             'name': 'Change Substance',
             'category': 'Substance',
@@ -2404,9 +2396,7 @@ URLNAME_PERMISSIONS = {
             'name': 'View Substance',
             'category': 'Substance',
             'permission': 'sga.view_substance'
-        }
-    ],
-    'delete_substance': [
+        },
         {
             'name': 'Delete Substance',
             'category': 'Substance',
@@ -2416,9 +2406,7 @@ URLNAME_PERMISSIONS = {
             'name': 'View Substance',
             'category': 'Substance',
             'permission': 'sga.view_substance'
-        }
-    ],
-    'detail_substance': [
+        },
         {
             'name': 'Change Substance',
             'category': 'Substance',
@@ -2753,25 +2741,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_personaltemplatesga'
         }
     ],
-    'get_danger_indication': [
-        {
-            'name': 'View Danger Indication',
-            'category': 'Danger Indication',
-            'permission': 'sga.view_dangerindication'
-        }
-    ],
     'prudence': [
         {
             'name': 'View Prudence Advice',
             'category': 'Prudence Advice',
             'permission': 'sga.view_prudenceadvice'
-        }
-    ],
-    'get_svgexport': [
-        {
-            'name': 'View Label SGA',
-            'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
         }
     ],
     'get_preview': [

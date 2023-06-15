@@ -12,7 +12,6 @@
 {% block pre_head %}
     {% define_urlname_action 'editor' %}
     {% define_urlname_action 'get_recipient_size' %}
-    {% define_urlname_action 'get_danger_indication' %}
     {% define_urlname_action 'prudence' %}
 {% endblock %}
 {# CSS #}
@@ -21,12 +20,6 @@
     <script>
         var json_representation=`{{instance.json_representation|safe}}`;
         document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk 0 %}";
-        document.clean_canvas_editor = {% if clean_canvas_editor %}true{% else %}false{% endif %};
-        document.urls={
-            'danger_indication_url': '{% url 'sga:get_danger_indication' org_pk  %}',
-            'prudence_advice_url': '{% url 'sga:prudence' org_pk %}',
-        };
-
     </script>
 
 <script src="{% static 'sga/js/editor-command.js' %}?v={% get_organilab_version %}"></script>
@@ -50,7 +43,7 @@
               {% endfor %}
             </ul>
         </div>
-        <h5 class="info-text">  {% trans 'Customize the selected template using the canvas editor and it elements' %}</h5>
+        <h5 class="info-text">  {% trans "Customize the selected template using the canvas editor and it's elements" %}</h5>
         <div class="btn-group" style="width:100%">
         </div>
     </div>

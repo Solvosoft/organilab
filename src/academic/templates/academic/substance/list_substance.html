@@ -48,7 +48,7 @@
                         <a class="btn btn-info text-white" href="{% url 'sga:detail_substance' org_pk substance.pk %}" title="{% trans 'Review' %}" }><i class="icons fa fa-eye"></i></a>
                         <a data-bs-target="#delete_modal" data-bs-toggle="modal" data-substance="{{substance.pk}}" class="btn btn-danger remove" title="{% trans 'Remove' %}"><i class="icons fa fa-trash"></i></a>
                         {% if template %}
-                        <a class="btn  btn-md  btn-info text-white" title="{% trans 'Generate PDF' %}" href="{% url 'academic:security_leaf_pdf' org_pk substance.pk %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                        <a class="btn  btn-md  btn-info text-white" title="{% trans 'Generate PDF' %}" href="{% url 'sga:security_leaf_pdf' org_pk substance.pk %}"><i class="icons fa fa-file-pdf-o" aria-hidden="true"></i></a>
                         {% endif %}
                        </td>
                 </tr>

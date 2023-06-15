@@ -298,7 +298,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
             context=context
         )
 
-        pass
+
     class Meta:
         model = ShelfObject
         fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','creator', 'container', 'actions']
