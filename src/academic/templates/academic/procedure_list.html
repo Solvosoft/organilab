@@ -20,8 +20,8 @@
     <a href="{% url 'academic:procedure_create' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-success float-end">
         <i class="fa fa-plus"></i> {% trans 'Create procedure template' %}</a>
 </div>
-    <table  id="datatable" class="table table-bordered table-hover">
-        <thead>
+<table  id="procedure" class="table table-bordered table-hover"></table>
+       <!-- <thead>
         <tr>
         <th width="30%">{% trans 'Title' %}</th>
         <th width="50%">{% trans 'Description' %}</th>
@@ -45,14 +45,14 @@
                     </td>
                 </tr>
             {% endfor %}
-        </tbody>
-    </table>
+        </tbody>-->
 {% endblock %}
 
 {% block js %}
 	{{block.super}}
 	<script>
 	    document.remove_procedure="{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
+	    document.Procedure="{% url 'academic:api-procedure-list' lab_pk=laboratory org_pk=org_pk %}"
 		var table=$("#datatable").DataTable();
 		table.order( [ 0, 'desc' ] ).draw();
 

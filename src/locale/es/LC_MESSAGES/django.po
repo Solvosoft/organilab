@@ -3905,3 +3905,6 @@ msgstr "Editar Plantilla"
 
 msgid "Create template procedure"
 msgstr "Crear plantilla de procedimientos"
+
+msgid "View Steps"
+msgstr "Ver pasos"
