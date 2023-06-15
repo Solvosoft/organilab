@@ -254,7 +254,8 @@ def create_recipient(request, org_pk):
             return redirect('sga:add_recipient_size')
     return render(request, 'add_recipient_size.html', context={'form': form, 'org_pk': org_pk})
 
-
+@login_required
+@permission_required('sga.change_personaltemplate')
 def create_sgalabel(request, org_pk):
     organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
@@ -272,7 +273,8 @@ def create_sgalabel(request, org_pk):
         else:
             messages.error(request, _("Form is invalid"))
 
-
+@login_required
+@permission_required('sga.change_personaltemplate')
 def sgalabel_step_one(request, org_pk, pk):
     organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
@@ -326,7 +328,7 @@ def sgalabel_step_one(request, org_pk, pk):
     return render(request, 'sgalabel/step_one.html', context=context)
 
 @login_required
-@permission_required('sga.change_pictogram')
+@permission_required('sga.change_personaltemplate')
 def sgalabel_step_two(request, org_pk, pk):
     organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)

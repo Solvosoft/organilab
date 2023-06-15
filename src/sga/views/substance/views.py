@@ -467,7 +467,7 @@ def view_prudence_advices(request, org_pk, *args, **kwargs):
 
 
 @login_required
-@permission_required('academic.view_substanceobservation')
+@permission_required('sga.view_substanceobservation')
 def add_observation(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -504,7 +504,7 @@ def add_observation(request, org_pk, substance):
 
 
 @login_required
-@permission_required('academic.change_substanceobservation')
+@permission_required('sga.change_substanceobservation')
 def update_observation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -527,7 +527,7 @@ def update_observation(request, org_pk):
 
 
 @login_required
-@permission_required('academic.delete_substanceobservation')
+@permission_required('sga.delete_substanceobservation')
 def delete_observation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
