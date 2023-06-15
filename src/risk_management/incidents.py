@@ -2,17 +2,19 @@ import django_excel
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
+from rest_framework import status
 from weasyprint import HTML
 
 
-from laboratory.models import OrganizationStructure
-from laboratory.utils import organilab_logentry
+from laboratory.models import OrganizationStructure, Laboratory
+from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
 from risk_management.models import IncidentReport
@@ -159,16 +161,20 @@ _('Laboratories'),
     return content
 
 
-
-
 @permission_required('laboratory.do_report')
-def report_incidentreport(request, *args, **kwargs):
-    var = request.GET.get('pk', '')
-    lab = kwargs.get('lab_pk')
-    if var:
-        incidentreport =  IncidentReport.objects.filter(pk=var)
-    else:
-        incidentreport = IncidentReport.objects.filter(laboratories__in=[lab])
+def report_incidentreport(request, org_pk, lab_pk, pk):
+
+    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+        return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
+
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+    filters = {'laboratories__in': [lab]}
+
+    if pk:
+        filters = {'pk': pk}
+
+    incidentreport = IncidentReport.objects.filter(**filters)
+
     fileformat = request.GET.get('format', 'pdf')
     if fileformat in ['xls', 'xlsx', 'ods']:
         return django_excel.make_response_from_book_dict(

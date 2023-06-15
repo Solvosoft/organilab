@@ -32,10 +32,10 @@
                 </div>
                 <div class="col-3">
 <div class="btn-group" role="group">
-        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' org_pk organilabcontext sgalabel.pk %}">
+        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' org_pk sgalabel.pk %}">
             <i class="fa fa-reply"></i>  {% trans 'Back' %}
         </a>
-        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' org_pk organilabcontext %}">
+        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' org_pk %}">
              <i class="fa fa-close"></i> {% trans 'Cancel' %}
         </a>
 </div>
@@ -59,7 +59,7 @@
 {% endblock %}
 {% block js %}
 <script>
-    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk organilabcontext 0 %}";
+    document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk 0 %}";
     var json_representation=`{{sgalabel.json_representation|safe}}`;
 </script>
 

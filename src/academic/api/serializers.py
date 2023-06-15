@@ -1,25 +1,35 @@
 from django.conf import settings
+import logging
+
 from django.db.models import Q
 from django.db.models.expressions import Value
 from django.db.models.functions import Concat
 from django.urls import reverse
+from django.utils import formats
 from django.utils.translation import gettext_lazy as _
+from django_filters import DateTimeFromToRangeFilter
 from django_filters import FilterSet, CharFilter
+from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
 from rest_framework import serializers
 from sga.models import ReviewSubstance, SecurityLeaf
 from academic.models import CommentProcedureStep, MyProcedure, Procedure
 from django.utils import formats
 from django_filters import DateTimeFromToRangeFilter
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
+from academic.models import CommentProcedureStep
+from sga.models import ReviewSubstance, SecurityLeaf
 
+logger = logging.getLogger('organilab')
 
 class ProcedureStepCommentFilterSet(FilterSet):
     creator_at = DateTimeFromToRangeFilter(
-        widget=DateTimeRangeTextWidget(attrs={'placeholder': formats.get_format('DATETIME_INPUT_FORMATS')[0]}))
+        widget=DateTimeRangeTextWidget(
+            attrs={'placeholder': formats.get_format('DATETIME_INPUT_FORMATS')[0]}))
     creator = CharFilter(field_name='creator', method='filter_user')
 
     def filter_user(self, queryset, name, value):
-        return queryset.filter(Q(creator__first_name__icontains=value) | Q(creator__last_name__icontains=value) | Q(
+        return queryset.filter(Q(creator__first_name__icontains=value) | Q(
+            creator__last_name__icontains=value) | Q(
             creator__username__icontains=value))
 
     class Meta:
@@ -59,7 +69,6 @@ class ProcedureStepCommentDatatableSerializer(serializers.Serializer):
 
 
 class ReviewSubstanceFilterSet(FilterSet):
-
     class Meta:
         model = ReviewSubstance
         fields = {
@@ -71,8 +80,11 @@ class ReviewSubstanceFilterSet(FilterSet):
         queryset = super().qs
         name = self.request.GET.get('creator__icontains')
         if name:
-            queryset = queryset.annotate(fullname=Concat('substance__creator__first_name', Value(' '), 'substance__creator__last_name'))
-            queryset = queryset.filter(Q(fullname__icontains=name) | Q(substance__creator__username__icontains=name)).distinct()
+            queryset = queryset.annotate(
+                fullname=Concat('substance__creator__first_name', Value(' '),
+                                'substance__creator__last_name'))
+            queryset = queryset.filter(Q(fullname__icontains=name) | Q(
+                substance__creator__username__icontains=name)).distinct()
         return queryset
 
 
@@ -82,12 +94,13 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
     comercial_name = serializers.SerializerMethodField()
 
     def get_creator(self, obj):
+        name = None
         if obj.substance:
-            name = obj.substance.creator.get_full_name()
-            if not name:
-                name = obj.substance.creator.username
-            return name
-        return ''
+            if obj.substance.created_by:
+                name = obj.substance.created_by.get_full_name()
+                if not name:
+                    name = obj.substance.created_by.username
+        return name or ''
 
     def get_comercial_name(self, obj):
         if obj.substance:
@@ -96,18 +109,18 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
 
     def get_action(self, obj):
         obj_kwargs = {
-            'organilabcontext': 'academic',
             'org_pk': obj.substance.organization.pk
         }
         obj_kwargs.update({'pk': obj.substance.pk})
-        detail_url = reverse('academic:detail_substance', kwargs=obj_kwargs)
-        security_leaf_pdf_url = reverse('academic:security_leaf_pdf', kwargs={'org_pk': obj.substance.organization.pk,
-                                                                     'substance': obj.substance.pk})
+        detail_url = reverse('sga:detail_substance', kwargs=obj_kwargs)
+        security_leaf_pdf_url = reverse('sga:security_leaf_pdf',
+                                        kwargs={'org_pk': obj.substance.organization.pk,
+                                                'substance': obj.substance.pk})
         action = ""
 
         if not obj.is_approved:
             obj_kwargs.update({'pk': obj.pk})
-            approve_url = reverse('academic:accept_substance', kwargs=obj_kwargs)
+            approve_url = reverse('sga:accept_substance', kwargs=obj_kwargs)
             action += """ <button title='%s' type ='button' data-url='%s' class ='btn btn-info text-white btn_review'>
             <i class='icons fa fa-check'></i></button>""" % (_("Approve"), approve_url,)
 
@@ -116,7 +129,8 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
         leaf = SecurityLeaf.objects.filter(substance=obj.substance)
         if leaf.exists():
             action += """<a class='btn  btn-md  btn-danger' title='%s' href='%s'><i class='icons fa fa-file-pdf-o'
-             aria-hidden='true'></i></a>""" % (_("Generate PDF"), security_leaf_pdf_url,)
+             aria-hidden='true'></i></a>""" % (
+            _("Generate PDF"), security_leaf_pdf_url,)
         return action
 
     class Meta:
@@ -180,7 +194,7 @@ class MyProcedureSerializer(serializers.ModelSerializer):
         </a>""" % (_("Edit"), url,)
         action += """ <a title='%s' class="pe-2 open_modal" onclick="get_procedure(%d)"><i class="fa fa-book"></i></a>
         """ % (_("Reserved"), obj.custom_procedure.pk)
-        action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger" 
+        action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger"
         aria-hidden="true"></i></a>""" % (_("Delete"),obj.custom_procedure.pk)
 
         return action

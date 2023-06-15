@@ -28,9 +28,8 @@
 	<script>
 	    document.remove_procedure="{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
 	    document.Procedure="{% url 'academic:api-procedure-list' lab_pk=laboratory org_pk=org_pk %}"
-		var table=$("#datatable").DataTable();
-		table.order( [ 0, 'desc' ] ).draw();
 
 	</script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
+    <script src="{% static 'js/procedure_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

@@ -1305,11 +1305,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_label'
         },
         {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        },
-        {
             'name': 'Change Template SGA',
             'category': 'Template SGA',
             'permission': 'sga.change_templatesga'
@@ -2281,12 +2276,12 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Add Substance Observation',
             'category': 'Substance Observation',
-            'permission': 'academic.add_substanceobservation'
+            'permission': 'sga.add_substanceobservation'
         },
         {
             'name': 'View Substance Observation',
             'category': 'Substance Observation',
-            'permission': 'academic.view_substanceobservation'
+            'permission': 'sga.view_substanceobservation'
         }
     ],
     'remove_observation': [
@@ -2301,7 +2296,7 @@ URLNAME_PERMISSIONS = {
             'permission': 'academic.delete_procedureobservations'
         }
     ],
-    'create_sustance': [
+    'substance_management': [
         {
             'name': 'Change Object',
             'category': 'Object',
@@ -2341,98 +2336,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Substance Characteristics',
             'category': 'Substance Characteristics',
             'permission': 'sga.view_substancecharacteristics'
-        }
-    ],
-    'update_substance': [
-        {
-            'name': 'Change Object',
-            'category': 'Object',
-            'permission': 'laboratory.change_object'
         },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        },
-        {
-            'name': 'Add Substance',
-            'category': 'Substance',
-            'permission': 'sga.add_substance'
-        },
-        {
-            'name': 'Change Substance',
-            'category': 'Substance',
-            'permission': 'sga.change_substance'
-        },
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
-        },
-        {
-            'name': 'Add Substance Characteristics',
-            'category': 'Substance Characteristics',
-            'permission': 'sga.add_substancecharacteristics'
-        },
-        {
-            'name': 'Change Substance Characteristics',
-            'category': 'Substance Characteristics',
-            'permission': 'sga.change_substancecharacteristics'
-        },
-        {
-            'name': 'View Substance Characteristics',
-            'category': 'Substance Characteristics',
-            'permission': 'sga.view_substancecharacteristics'
-        }
-    ],
-    'get_substance': [
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
-        }
-    ],
-    'approved_substance': [
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
-        }
-    ],
-    'accept_substance': [
-        {
-            'name': 'Change Substance',
-            'category': 'Substance',
-            'permission': 'sga.change_substance'
-        },
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
-        }
-    ],
-    'delete_substance': [
         {
             'name': 'Delete Substance',
             'category': 'Substance',
             'permission': 'sga.delete_substance'
-        },
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
-        }
-    ],
-    'detail_substance': [
-        {
-            'name': 'Change Substance',
-            'category': 'Substance',
-            'permission': 'sga.change_substance'
-        },
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
         }
     ],
     'step_one': [
@@ -2564,24 +2472,24 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Change Substance Observation',
             'category': 'Substance Observation',
-            'permission': 'academic.change_substanceobservation'
+            'permission': 'sga.change_substanceobservation'
         },
         {
             'name': 'View Substance Observation',
             'category': 'Substance Observation',
-            'permission': 'academic.view_substanceobservation'
+            'permission': 'sga.view_substanceobservation'
         }
     ],
     'delete_observation': [
         {
             'name': 'Delete Substance Observation',
             'category': 'Substance Observation',
-            'permission': 'academic.delete_substanceobservation'
+            'permission': 'sga.delete_substanceobservation'
         },
         {
             'name': 'View Substance Observation',
             'category': 'Substance Observation',
-            'permission': 'academic.view_substanceobservation'
+            'permission': 'sga.view_substanceobservation'
         }
     ],
     'update_danger_indication': [
@@ -2690,37 +2598,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'reservations_management.view_reservedproducts'
         }
     ],
-    'update_pictogram': [
-        {
-            'name': 'Change Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.change_pictogram'
-        },
-        {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        }
-    ],
-    'add_pictograms': [
-        {
-            'name': 'Add Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.add_pictogram'
-        },
-        {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        }
-    ],
-    'pictograms_list': [
-        {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        }
-    ],
     'add_recipient_size': [
         {
             'name': 'Add Recipient Size',
@@ -2777,25 +2654,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_personaltemplatesga'
         }
     ],
-    'get_danger_indication': [
-        {
-            'name': 'View Danger Indication',
-            'category': 'Danger Indication',
-            'permission': 'sga.view_dangerindication'
-        }
-    ],
     'prudence': [
         {
             'name': 'View Prudence Advice',
             'category': 'Prudence Advice',
             'permission': 'sga.view_prudenceadvice'
-        }
-    ],
-    'get_svgexport': [
-        {
-            'name': 'View Label SGA',
-            'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
         }
     ],
     'get_preview': [
