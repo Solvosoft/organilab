@@ -1,18 +1,17 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
-
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.tagging import TaggingInput
 
-from academic.models import SubstanceObservation
 from sga.models import Substance, SubstanceCharacteristics, DangerIndication, WarningWord, PrudenceAdvice, SecurityLeaf, \
     ReviewSubstance
-from djgentelella.widgets.tagging import TaggingInput
-from django.utils.translation import gettext_lazy as _
+from sga.models import SubstanceObservation
+
 
 class SustanceObjectForm(GTForm, forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
-        super(SustanceObjectForm,self).__init__(*args, **kwargs)
+        super(SustanceObjectForm, self).__init__(*args, **kwargs)
         self.fields['components_sga'].required = False
 
     class Meta:
@@ -34,10 +33,11 @@ class SustanceObjectForm(GTForm, forms.ModelForm):
             'organization': genwidgets.HiddenInput
         }
 
+
 class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
     class Meta:
         model = SubstanceCharacteristics
-        exclude = ['substance', 'valid_molecular_formula','security_sheet']
+        exclude = ['substance', 'valid_molecular_formula', 'security_sheet']
         widgets = {
             'iarc': genwidgets.Select,
             'imdg': genwidgets.Select,
@@ -52,54 +52,56 @@ class SustanceCharacteristicsForm(GTForm, forms.ModelForm):
             'nfpa': genwidgets.SelectMultiple,
             'storage_class': genwidgets.SelectMultiple,
             'seveso_list': genwidgets.YesNoInput,
-            'number_index':genwidgets.TextInput,
+            'number_index': genwidgets.TextInput,
             'number_ce': genwidgets.TextInput,
-            'molecular_weight':genwidgets.TextInput,
-            'concentration':genwidgets.TextInput
+            'molecular_weight': genwidgets.TextInput,
+            'concentration': genwidgets.TextInput
             # 'security_sheet': genwidgets.FileInput
 
         }
 
-class DangerIndicationForm(GTForm,forms.ModelForm):
+
+class DangerIndicationForm(GTForm, forms.ModelForm):
 
     def __init__(self, *arg, **kwargs):
-        super(DangerIndicationForm, self).__init__(*arg,**kwargs)
-        self.fields['warning_words'].required=False
+        super(DangerIndicationForm, self).__init__(*arg, **kwargs)
+        self.fields['warning_words'].required = False
 
     class Meta:
         model = DangerIndication
         fields = '__all__'
         widgets = {
-            'code' : genwidgets.TextInput,
-            'description' : genwidgets.Textarea,
-            'warning_words' : genwidgets.Select(),
+            'code': genwidgets.TextInput,
+            'description': genwidgets.Textarea,
+            'warning_words': genwidgets.Select(),
             'warning_class': genwidgets.SelectMultiple(),
-            'warning_category' : genwidgets.SelectMultiple(),
-            'prudence_advice' : genwidgets.SelectMultiple()
+            'warning_category': genwidgets.SelectMultiple(),
+            'prudence_advice': genwidgets.SelectMultiple()
         }
-class WarningWordForm(GTForm,forms.ModelForm):
 
+
+class WarningWordForm(GTForm, forms.ModelForm):
     class Meta:
         model = WarningWord
-        fields='__all__'
+        fields = '__all__'
         widgets = {
-            'name' : genwidgets.TextInput,
-            'weigth' : genwidgets.NumberInput,
+            'name': genwidgets.TextInput,
+            'weigth': genwidgets.NumberInput,
         }
-class PrudenceAdviceForm(GTForm,forms.ModelForm):
 
+
+class PrudenceAdviceForm(GTForm, forms.ModelForm):
     class Meta:
         model = PrudenceAdvice
         fields = '__all__'
         widgets = {
-            'code' : genwidgets.TextInput,
-            'name' : genwidgets.TextInput,
-            'prudence_advice_help' : genwidgets.Textarea,
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'prudence_advice_help': genwidgets.Textarea,
         }
 
 
 class ObservacionForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = SubstanceObservation
         fields = ['description']
@@ -109,35 +111,36 @@ class ObservacionForm(GTForm, forms.ModelForm):
 
         }
 
-class SecurityLeafForm(forms.ModelForm,GTForm):
+
+class SecurityLeafForm(forms.ModelForm, GTForm):
 
     def __init__(self, *arg, **kwargs):
-        super(SecurityLeafForm, self).__init__(*arg,**kwargs)
-        fields= self.fields
+        super(SecurityLeafForm, self).__init__(*arg, **kwargs)
+        fields = self.fields
         for field in fields.keys():
-            if field not in['provider','substance']:
+            if field not in ['provider', 'substance']:
                 self.fields[str(field)].widget = genwidgets.Textarea()
-            if field in ['register_number','reach_number','reference']:
+            if field in ['register_number', 'reach_number', 'reference']:
                 self.fields[str(field)].widget = genwidgets.TextInput()
 
-        self.fields['provider'].required= False
-        self.fields['other_info'].label= _('Other Information')
+        self.fields['provider'].required = False
+        self.fields['other_info'].label = _('Other Information')
+
     class Meta:
         model = SecurityLeaf
         exclude = ['substance']
         fields = "__all__"
-        widgets ={
-            'provider':genwidgets.Select
+        widgets = {
+            'provider': genwidgets.Select
         }
 
-class ReviewSubstanceForm(forms.ModelForm, GTForm):
 
+class ReviewSubstanceForm(forms.ModelForm, GTForm):
     class Meta:
         model = ReviewSubstance
         fields = '__all__'
         widgets = {
-        'substance' : genwidgets.HiddenInput,
-        'note' : genwidgets.NumberInput,
-        'is_approved' : genwidgets.HiddenInput
+            'substance': genwidgets.HiddenInput,
+            'note': genwidgets.NumberInput,
+            'is_approved': genwidgets.HiddenInput
         }
-

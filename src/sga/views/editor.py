@@ -109,6 +109,8 @@ def clean_json_text(text):
 @login_required
 @permission_required('sga.add_personaltemplatesga')
 def create_personal_template(request, org_pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     user = request.user
     personal_templates = PersonalTemplateSGA.objects.filter(user=user)
     filter = Q(community_share=True) | Q(creator=user)
@@ -156,6 +158,8 @@ def create_personal_template(request, org_pk):
 @login_required
 @permission_required('sga.change_personaltemplatesga')
 def edit_personal_template(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=pk)
     user = request.user
 
@@ -216,6 +220,8 @@ def edit_personal_template(request, org_pk, pk):
 @login_required
 @permission_required('sga.delete_personaltemplatesga')
 def delete_sgalabel(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     if template.user == request.user:
         template.delete()
@@ -232,36 +238,26 @@ def get_preview(request, org_pk, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
 
-@login_required
-@permission_required('laboratory.change_object')
-def create_substance(request):
-    form=SubstanceForm()
-    if request.method == 'POST':
-        form =SubstanceForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request,_('The substance saved successfully'))
-            return redirect(reverse('sga:add_substance'))
-        else:
-            return redirect(reverse('sga:add_substance'))
-    return render(request, 'add_substance.html', context={'form':form})
 
 @login_required
-def create_recipient(request):
-    form=RecipientSizeForm()
+def create_recipient(request, org_pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    form = RecipientSizeForm()
     if request.method == 'POST':
-        form =RecipientSizeForm(request.POST)
+        form = RecipientSizeForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request,_('The Recipient size saved successfully'))
+            messages.success(request, _('The Recipient size saved successfully'))
             return redirect('sga:add_recipient_size')
         else:
             return redirect('sga:add_recipient_size')
-    return render(request, 'add_recipient_size.html', context={'form':form})
+    return render(request, 'add_recipient_size.html', context={'form': form, 'org_pk': org_pk})
 
 
 def create_sgalabel(request, org_pk):
-
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     if request.method == "POST":
         form = SGALabelForm(request.POST)
 
@@ -278,6 +274,8 @@ def create_sgalabel(request, org_pk):
 
 
 def sgalabel_step_one(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     builderinformation = sgalabel.label.builderInformation
     sustance = sgalabel.label.substance
@@ -330,6 +328,8 @@ def sgalabel_step_one(request, org_pk, pk):
 @login_required
 @permission_required('sga.change_pictogram')
 def sgalabel_step_two(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
@@ -351,6 +351,7 @@ def sgalabel_step_two(request, org_pk, pk):
 
 
 def get_sgacomplement_by_substance(request, org_pk, pk):
+
     substance = get_object_or_404(Substance, pk=pk)
     complement = SGAComplement.objects.filter(substance =substance)
     if complement.exists():

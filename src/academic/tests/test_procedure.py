@@ -213,7 +213,7 @@ class AcademicTest(TestCase):
         data = {
             'description':'First observation'
         }
-        response = self.client.post(reverse('academic:add_observation', kwargs=url),data=data, follow=True)
+        response = self.client.post(reverse('sga:add_observation', kwargs=url),data=data, follow=True)
         obs=ProcedureObservations.objects.filter(step=step)
 
         self.assertTrue(obs.count()==1)

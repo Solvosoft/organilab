@@ -4,11 +4,7 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django.urls import include, path, re_path
-from rest_framework.routers import DefaultRouter
 
-from academic.substance.views import  view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
-    update_observation, delete_observation, change_prudence_advice, change_warning_word, change_danger_indication, \
-     add_sga_provider
 from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, ProcedureStepCreateView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
@@ -39,18 +35,5 @@ procedure_url =[
 ]
 
 urlpatterns = [
-    path('substance/danger_indications/', view_danger_indications, name='danger_indications'),
-    path('substance/warning_words/', view_warning_words, name='warning_words'),
-    path('substance/prudence_advices/', view_prudence_advices, name='prudence_advices'),
-    path('substance/add_danger_indication/', add_sga_complements, kwargs={'element': 'danger'}, name='add_danger_indication'),
-    path('substance/add_warning_words/', add_sga_complements, kwargs={'element': 'warning'}, name='add_warning_word'),
-    path('substance/add_prudence_advice/', add_sga_complements, kwargs={'element': 'prudence'}, name='add_prudence_advice'),
-    path('substance/add_observation/<int:substance>/', add_observation, name='add_observation'),
-    path('substance/update_observation/', update_observation, name='update_observation'),
-    path('substance/deleta_observation/', delete_observation, name='delete_observation'),
-    path('substance/update_danger_indication/<str:pk>/', change_danger_indication, name='update_danger_indication'),
-    path('substance/update_warning_words/<int:pk>/', change_warning_word, name='update_warning_word'),
-    path('substance/update_prudence_advice/<int:pk>/', change_prudence_advice, name='update_prudence_advice'),
-    path('substance/provider/', add_sga_provider, name='add_sga_provider'),
     path('<int:lab_pk>/procedure/', include(procedure_url)),
 ]

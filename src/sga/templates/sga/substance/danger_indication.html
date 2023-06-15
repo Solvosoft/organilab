@@ -11,7 +11,7 @@
 
     <div class="col-md-12">
         <h1>{% trans 'Danger Indication' %}</h1>
-        <a href="{% url 'academic:add_danger_indication' org_pk %}" class="btn btn-success float-end">
+        <a href="{% url 'sga:add_danger_indication' org_pk %}" class="btn btn-success float-end">
             <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
         <table id="danger_table" class="table table-bordered text-center">
             <thead>
@@ -29,7 +29,7 @@
                     <td>{{elem.description}}</td>
                     <td>{{elem.warning_words}}</td>
                     <td>
-                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'academic:update_danger_indication' org_pk=org_pk pk=elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'sga:update_danger_indication' org_pk=org_pk pk=elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             {% endfor %}

@@ -93,8 +93,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-        <button id="delete_observation"  type="button" class="btn btn-danger" data-url="{% url 'academic:delete_observation' org_pk %}">{% trans 'Remove' %}</button>
-        <button id="obeditbtn"  type="button" class="btn btn-primary" data-url="{% url 'academic:update_observation' org_pk %}">{% trans 'Edit' %}</button>
+        <button id="delete_observation"  type="button" class="btn btn-danger" data-url="{% url 'sga:delete_observation' org_pk %}">{% trans 'Remove' %}</button>
+        <button id="obeditbtn"  type="button" class="btn btn-primary" data-url="{% url 'sga:update_observation' org_pk %}">{% trans 'Edit' %}</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
