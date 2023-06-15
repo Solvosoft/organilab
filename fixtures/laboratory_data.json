@@ -14,7 +14,7 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [  ]
+      "user_permissions": []
     }
   },
   {
@@ -62,7 +62,9 @@
       "position": 1,
       "level": 1,
       "rol": [],
-      "users": [1]
+      "users": [
+        1
+      ]
     }
   },
   {
@@ -74,7 +76,9 @@
       "position": 3,
       "level": 3,
       "rol": [],
-      "users": [2]
+      "users": [
+        2
+      ]
     }
   },
   {
@@ -86,7 +90,9 @@
       "position": 3,
       "level": 3,
       "rol": [],
-      "users": [1]
+      "users": [
+        1
+      ]
     }
   },
   {
@@ -98,7 +104,10 @@
       "position": 4,
       "level": 4,
       "rol": [],
-      "users": [1,2]
+      "users": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -176,54 +185,54 @@
       "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
-    {
+  {
     "model": "laboratory.organizationstructurerelations",
     "pk": 1,
-     "fields": {
-        "organization": 1,
-        "content_type": [
-          "laboratory",
-          "laboratory"
-        ],
-       "object_id": 1
-     }
-},
+    "fields": {
+      "organization": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
   {
     "model": "laboratory.organizationstructurerelations",
     "pk": 2,
-     "fields": {
-        "organization": 2,
-        "content_type": [
-          "laboratory",
-          "laboratory"
-        ],
-       "object_id": 1
-     }
-},
-{
+    "fields": {
+      "organization": 2,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
     "model": "laboratory.organizationstructurerelations",
     "pk": 3,
-     "fields": {
-        "organization": 3,
-        "content_type": [
-          "laboratory",
-          "laboratory"
-        ],
-       "object_id": 1
-     }
-},
-{
+    "fields": {
+      "organization": 3,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
     "model": "laboratory.organizationstructurerelations",
     "pk": 4,
-     "fields": {
-        "organization": 4,
-        "content_type": [
-          "laboratory",
-          "laboratory"
-        ],
-       "object_id": 1
-     }
-},
+    "fields": {
+      "organization": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
   {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
@@ -262,7 +271,10 @@
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [1, 2]
+      "laboratories": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -273,7 +285,10 @@
       "phone_number": "7777-7777",
       "id_card": "1-1111-1111",
       "job_position": "Profesional Technician",
-      "laboratories": [1, 2]
+      "laboratories": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -284,7 +299,10 @@
       "phone_number": "9999-9999",
       "id_card": "1-1111-1111",
       "job_position": "No perms",
-      "laboratories": [1, 2]
+      "laboratories": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -586,7 +604,7 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-       "discard": false
+      "discard": false
     }
   },
   {
@@ -600,7 +618,7 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-       "discard": false
+      "discard": false
     }
   },
   {
@@ -614,7 +632,7 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-       "discard": false
+      "discard": false
     }
   },
   {
@@ -641,7 +659,7 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-       "discard": true
+      "discard": true
     }
   },
   {
@@ -682,7 +700,7 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-       "discard": true
+      "discard": true
     }
   },
   {
@@ -877,7 +895,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1]
+      "features": [
+        1
+      ]
     }
   },
   {
@@ -938,7 +958,7 @@
       "last_update": "2023-05-12T22:48:14.166Z"
     }
   },
-    {
+  {
     "model": "laboratory.shelfobject",
     "pk": 4,
     "fields": {
@@ -970,7 +990,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1]
+      "features": [
+        1
+      ]
     }
   },
   {
@@ -990,7 +1012,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1]
+      "features": [
+        1
+      ]
     }
   },
   {
@@ -1138,7 +1162,6 @@
       "brand": "",
       "synonymous": "",
       "agrochemical": false,
-      "creator": 1,
       "description": null,
       "components_sga": [],
       "danger_indications": [
@@ -1159,7 +1182,6 @@
       "brand": "",
       "synonymous": "",
       "agrochemical": false,
-      "creator": 1,
       "description": null,
       "components_sga": [],
       "danger_indications": [
@@ -1180,7 +1202,6 @@
       "brand": "",
       "synonymous": "",
       "agrochemical": false,
-      "creator": 1,
       "description": null,
       "components_sga": [],
       "danger_indications": [
@@ -1274,7 +1295,10 @@
       "profile": 1,
       "content_type": 1,
       "object_id": 1,
-      "rol": [1, 2]
+      "rol": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -1297,20 +1321,19 @@
       "note": ""
     }
   },
-
   {
     "model": "laboratory.informsperiod",
     "pk": 1,
     "fields": {
-        "scheduler": 1,
-        "organization": 1,
-        "inform_template": 1,
-        "creation_date": "2023-03-31",
-        "start_application_date": "2023-03-31",
-        "close_application_date": "2023-03-31",
-        "informs": [
-            1
-        ]
+      "scheduler": 1,
+      "organization": 1,
+      "inform_template": 1,
+      "creation_date": "2023-03-31",
+      "start_application_date": "2023-03-31",
+      "close_application_date": "2023-03-31",
+      "informs": [
+        1
+      ]
     }
   },
   {

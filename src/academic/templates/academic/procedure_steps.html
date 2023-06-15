@@ -82,8 +82,8 @@
     <script>
         document.save_object="{% url 'academic:save_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
         document.remove_object="{% url 'academic:remove_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
-        document.save_observation="{% url 'sga:add_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
-        document.remove_observation="{% url 'sga:remove_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
+        document.save_observation="{% url 'sga:add_observation' org_pk step.id %}";
+        document.remove_observation="{% url 'academic:remove_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}";
 
         document.message = {
             'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",

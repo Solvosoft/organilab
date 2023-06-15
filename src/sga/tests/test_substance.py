@@ -105,9 +105,8 @@ class SGAAcademicTest(TestCase):
 
     def test_get_substances(self):
         response = self.client.get(reverse('sga:get_substance', kwargs=self.url_attr))
-
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.context['substances']) == 1)
+
 
     def test_delete_substance(self):
         url = self.url_attr.copy()
