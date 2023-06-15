@@ -4,12 +4,11 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import TaggingInput
 
 from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
-    BuilderInformation, Label, SGAComplement, Provider, Pictogram
+    BuilderInformation, Label, SGAComplement, Provider
 
 
 class PersonalTemplateForm(GTForm):
@@ -204,12 +203,11 @@ class RecipientSizeForm(forms.ModelForm, GTForm):
 class SGAComplementsForm(forms.ModelForm, GTForm):
     class Meta:
         model = SGAComplement
-        fields = ('prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
-        order_fields = ('prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        fields = ('prudence_advice', 'danger_indication', 'warningword',   'other_dangers')
+        order_fields = ('prudence_advice', 'danger_indication', 'warningword',  'other_dangers')
         widgets = {
             'prudence_advice': AutocompleteSelectMultiple('prudencesearch'),
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
-            'pictograms': genwidgets.SelectMultiple,
             'warningword': genwidgets.Select,
             'substance': genwidgets.HiddenInput,
             'other_dangers': genwidgets.Textarea
@@ -238,25 +236,6 @@ class ProviderSGAForm(forms.ModelForm, GTForm):
         }
 
 
-class PictogramForm(forms.ModelForm, GTForm):
-    image_upload = forms.CharField(max_length=100, widget=forms.HiddenInput, required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(PictogramForm, self).__init__(*args, **kwargs)
-        self.fields['warning_word'].required = False
-
-    class Meta:
-        model = Pictogram
-        fields = '__all__'
-        exclude = ['id_pictogram']
-        widgets = {
-            "name": genwidgets.TextInput(),
-            "warning_word": genwidgets.Select(),
-            "image": FileChunkedUpload,
-            'upload_by': genwidgets.HiddenInput
-        }
-
-
 class SGALabelForm(forms.ModelForm, GTForm):
     class Meta:
         model = PersonalTemplateSGA
@@ -279,12 +258,12 @@ class SGALabelComplementsForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = SGAComplement
-        fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
-        order_fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword',  'other_dangers')
+        order_fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword',  'other_dangers')
         widgets = {
             'prudence_advice': AutocompleteSelectMultiple('prudencesearch'),
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
-            'pictograms': genwidgets.SelectMultiple,
+
             'warningword': genwidgets.Select,
             'substance': genwidgets.Select,
             'other_dangers': genwidgets.Textarea

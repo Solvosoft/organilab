@@ -5,51 +5,103 @@
 """
 
 # Import functions of another modules
-from django.urls import path, re_path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
-from . import views
-from .views import index_sga, template, editor, render_editor_sga
+from .api.substance_viewset import SubstanceViewSet
+from .views import editor
+from .views.substance import views as substance
 
+router = DefaultRouter()
+router.register('api_substance', SubstanceViewSet, basename='api-substance')
 # SGA
 app_name = 'sga'
 
 # Views
 urlpatterns = [
+
+    path('api/', include(router.urls)),
     # sga/index_sga/
-    path('index_sga', index_sga, name='index_sga'),
-    path('editor_sga', render_editor_sga, name='index_editor'),
-    path('barcode/<str:code>/', views.get_barcode_from_number, name='barcode_from_number'),
-    path('label_editor_builder/<str:organilabcontext>/', template, name='template'),
+    path('editor_sga', editor.render_editor_sga, name='index_editor'),
+    path('barcode/<str:code>/', editor.get_barcode_from_number,
+         name='barcode_from_number'),
     # sga/editor
-    re_path(r'editor/(?P<organilabcontext>\w+)$', editor, name='editor'),
-    re_path(r'get_preview/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.get_preview, name='get_preview'),
-    re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', views.get_svgexport, name='get_svgexport'),
+    path('template_editor', editor.template_editor, name='editor'),
 
-    # sga/prudence
-    path('prudence/<str:organilabcontext>', views.get_prudence_advice, name='prudence'),
-    # sga/get_danger_indication
-    path('danger/<str:organilabcontext>', views.get_danger_indication, name='get_danger_indication'),
+    # FIXME: It's necessary this preview ?
+    path('get_preview/<int:pk>', editor.get_preview, name='get_preview'),
+
+    # my templates
+    path('sustance/create/', substance.create_edit_sustance, name='create_sustance'),
+    path('update_substance/<int:pk>/', substance.create_edit_sustance,
+         name='update_substance'),
+    path('delete_substance/<int:pk>/', substance.delete_substance,
+         name='delete_substance'),
+    path('detail_substance/<int:pk>/', substance.detail_substance,
+         name='detail_substance'),
+
     # sga/get_get_templateList
-    re_path(r'add_personal/(?P<organilabcontext>\w+)$', views.create_personal_template, name='add_personal'),
-    re_path(r'edit_personal/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.edit_personal_template, name='edit_personal'),
+    path('add_personal/', editor.create_personal_template, name='add_personal'),
+    path('edit_personal/<int:pk>', editor.edit_personal_template, name='edit_personal'),
 
-    re_path(r'delete_sgalabel/(?P<organilabcontext>\w+)/(?P<pk>\d+)$', views.delete_sgalabel, name='delete_sgalabel'),
-    re_path(r'add_substance/(?P<organilabcontext>\w+)', views.create_substance, name='add_substance'),
-    path('add_recipient_size/', views.create_recipient, name='add_recipient_size'),
-    path('get_pictograms/', views.get_pictograms, name='pictograms_list'),
-    path('add_pictogram/', views.add_pictogram, name='add_pictograms'),
-    path('update_pictogram/<str:id_pictogram>/', views.update_pictogram, name='update_pictogram'),
-    path('company/list/', views.get_companies, name='get_companies'),
-    path('company/add/', views.create_company, name='add_company'),
-    path('company/edit/<int:pk>/', views.edit_company, name='edit_company'),
-    path('company/remove/<int:pk>/', views.remove_company, name='remove_company'),
+    path('delete_sgalabel/<int:pk>', editor.delete_sgalabel, name='delete_sgalabel'),
+    path('add_recipient_size/', editor.create_recipient, name='add_recipient_size'),
+    path('company/list/', editor.get_companies, name='get_companies'),
+    path('company/add/', editor.create_company, name='add_company'),
+    path('company/edit/<int:pk>/', editor.edit_company, name='edit_company'),
+    path('company/remove/<int:pk>/', editor.remove_company, name='remove_company'),
 
+    path('sgalabel/get_company/<int:pk>', editor.get_company, name='get_company'),
+    path('sgalabel/get_recipient_size/<int:pk>', editor.get_recipient_size,
+         name='get_recipient_size'),
+    path('sgalabel/get_sgacomplement_by_substance/<int:pk>',
+         editor.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
+    path('sgalabel/create/', editor.create_sgalabel, name='sgalabel_create'),
+    path('sgalabel/step_one/<int:pk>', editor.sgalabel_step_one,
+         name='sgalabel_step_one'),
+    path('sgalabel/step_two/<int:pk>', editor.sgalabel_step_two,
+         name='sgalabel_step_two'),
 
-    path('sgalabel/get_company/<int:pk>', views.get_company, name='get_company'),
-    path('sgalabel/get_recipient_size/<str:organilabcontext>/<int:pk>', views.get_recipient_size, name='get_recipient_size'),
-    path('sgalabel/get_sgacomplement_by_substance/<int:pk>', views.get_sgacomplement_by_substance, name='get_sgacomplement_by_substance'),
-    path('sgalabel/create/<str:organilabcontext>/', views.create_sgalabel, name='sgalabel_create'),
-    path('sgalabel/step_one/<str:organilabcontext>/<int:pk>', views.sgalabel_step_one, name='sgalabel_step_one'),
-    path('sgalabel/step_two/<str:organilabcontext>/<int:pk>', views.sgalabel_step_two, name='sgalabel_step_two'),
+    path('get_substance/', substance.get_substances, name='get_substance'),
+    path('approved_substance/', substance.get_list_substances,
+         name='approved_substance'),
+    path('accept_substance/<int:pk>/', substance.approve_substances,
+         name='accept_substance'),
 
+    path('substance/step_one/<int:pk>/', substance.create_edit_sustance,
+         name='step_one'),
+    path('substance/step_two/<int:pk>/', substance.step_two, name='step_two'),
+    path('substance/step_three/<int:template>/<int:substance>/', substance.step_three,
+         name='step_three'),
+    path('substance/step_four/<int:substance>/', substance.step_four, name='step_four'),
+    path('substance/get_security_leaf/<int:substance>/', substance.security_leaf_pdf,
+         name='security_leaf_pdf'),
+    path('substance/danger_indications/', substance.view_danger_indications,
+         name='danger_indications'),
+    path('substance/warning_words/', substance.view_warning_words,
+         name='warning_words'),
+    path('substance/prudence_advices/', substance.view_prudence_advices,
+         name='prudence_advices'),
+    path('substance/add_danger_indication/', substance.add_sga_complements,
+         kwargs={'element': 'danger'},
+         name='add_danger_indication'),
+    path('substance/add_warning_words/', substance.add_sga_complements,
+         kwargs={'element': 'warning'},
+         name='add_warning_word'),
+    path('substance/add_prudence_advice/', substance.add_sga_complements,
+         kwargs={'element': 'prudence'},
+         name='add_prudence_advice'),
+    path('substance/add_observation/<int:substance>/', substance.add_observation,
+         name='add_observation'),
+    path('substance/update_observation/', substance.update_observation,
+         name='update_observation'),
+    path('substance/deleta_observation/', substance.delete_observation,
+         name='delete_observation'),
+    path('substance/update_danger_indication/<str:pk>/',
+         substance.change_danger_indication, name='update_danger_indication'),
+    path('substance/update_warning_words/<int:pk>/', substance.change_warning_word,
+         name='update_warning_word'),
+    path('substance/update_prudence_advice/<int:pk>/', substance.change_prudence_advice,
+         name='update_prudence_advice'),
+    path('substance/provider/', substance.add_sga_provider, name='add_sga_provider'),
 ]

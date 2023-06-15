@@ -61,13 +61,6 @@
         {% endfor %}
 
     </div>
-    <div id="pictogram_content">
-        {% for dind in obj.sustance.danger_indications.all %}
-            {% for picto in dind.pictograms.all %}
-                <img width="100pt" heigth="100pt" src="/static/img/pictograms/{{picto.name}}" ></img>
-            {% endfor %}
-        {% endfor %}
-    </div>
     <div id="warning_content">
         <p class="warning_text"> {{ obj.sustance.warning_word }} </p>
         {% for dind in obj.sustance.danger_indications.all %}

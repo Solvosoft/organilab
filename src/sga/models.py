@@ -3,8 +3,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from tree_queries.models import TreeNode
 
+from laboratory.models import Catalog
 from presentation.models import AbstractOrganizationRef
-from sga.managers import OrganilabContextQueryset
 from laboratory import catalog
 from django.conf import settings
 
@@ -58,28 +58,6 @@ class WarningWord(models.Model):
         verbose_name_plural = _('Warning Words')
 
 
-# Indicación de peligro
-
-
-class Pictogram(models.Model):
-    name = models.CharField(max_length=150, primary_key=True,
-                            verbose_name=_("Name"))
-    warning_word = models.ForeignKey(WarningWord, on_delete=models.CASCADE, null=True, verbose_name=_("Warning Word"))
-    image = models.ImageField(upload_to="sga/pictograms/", null=True, blank=True)
-    id_pictogram = models.IntegerField(default=1)
-
-    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=False)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_update = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _('Pictogram')
-        verbose_name_plural = _('Pictograms')
-
-
 # palabras de advertencia
 
 
@@ -106,8 +84,6 @@ class DangerIndication(models.Model):
     description = models.TextField(verbose_name=_("Description"))
     warning_words = models.ForeignKey(WarningWord, on_delete=models.DO_NOTHING,
                                       verbose_name=_("Warning words"))
-    pictograms = models.ManyToManyField(
-        Pictogram, verbose_name=_("Pictograms"))
     warning_class = models.ManyToManyField(WarningClass,
                                            verbose_name=_("Warning class"))
 
@@ -158,12 +134,8 @@ class Substance(AbstractOrganizationRef):
         DangerIndication,
         verbose_name=_("Danger indications"))
     synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
-    agrochemical = models.BooleanField(default=False,
-                                       verbose_name=_("Agrochemical"))
-    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.SET_NULL, null=True, related_name='creator')
+    agrochemical = models.BooleanField(default=False, verbose_name=_("Agrochemical"))
     description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
 
     @property
     def warning_word(self):
@@ -269,9 +241,7 @@ class RecipientSize(models.Model):
 
 
 class Label(models.Model):
-    substance = models.ForeignKey(Substance,
-                                 verbose_name=_("Substance"),
-                                 on_delete=models.CASCADE, null=True)
+    substance = models.ForeignKey(Substance, verbose_name=_("Substance"), on_delete=models.CASCADE, null=True)
     builderInformation = models.ForeignKey(
         BuilderInformation, verbose_name=_("Builder Information"),
         on_delete=models.CASCADE, null=True)
@@ -311,11 +281,9 @@ class PersonalTemplateSGA(models.Model):
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"), on_delete=models.DO_NOTHING)
     recipient_size = models.ForeignKey(RecipientSize, null=True, verbose_name=_("Recipient size"),  on_delete=models.SET_NULL)
     preview = models.TextField(help_text="B64 preview image", null=True)
-    label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
+    label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.CASCADE)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True, blank=True)
     logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
-    organilab_context = models.CharField(max_length=25, default="laboratory")  # academic o laboratory
-    objects = OrganilabContextQueryset.as_manager()
 
     def __str__(self):
         recipient=RecipientSize.objects.get(pk=self.template.recipient_size.pk)
@@ -327,13 +295,12 @@ class PersonalTemplateSGA(models.Model):
 
 
 class SGAComplement(models.Model):
-    substance = models.ForeignKey(Substance, on_delete=models.DO_NOTHING, null=True)
+    substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
     danger_indication = models.ManyToManyField(
         DangerIndication, verbose_name=_("Danger indication"))
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice"))
     other_dangers = models.TextField(null=True,blank=True, verbose_name=_("Other Dangers"))
-    pictograms = models.ManyToManyField(Pictogram, verbose_name=_("Pictogram"))
     warningword = models.ForeignKey(WarningWord, null=True,blank=True, on_delete=models.DO_NOTHING, verbose_name=_("WarningWord"))
 
 class Provider(models.Model):
@@ -473,12 +440,98 @@ class SecurityLeaf(models.Model):
 
 
 class ReviewSubstance(models.Model):
-    substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.DO_NOTHING, verbose_name=_('Substance'))
+    substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_('Substance'))
     note = models.IntegerField(null=True, blank=True, verbose_name=_('Note'))
     is_approved = models.BooleanField(default=False)
+
     class Meta:
         verbose_name = _("Review Substance")
         verbose_name_plural = _("Review Substance")
 
     def __str__(self):
         return f'{self.substance.creator}- ${self.note}'
+
+
+
+class ComponentSGA(models.Model):
+    name = models.CharField(max_length=250, verbose_name=_("Name"))
+    cas_number = models.CharField(max_length=150, verbose_name=_("CAS number"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('ComponentSGA')
+        verbose_name_plural = _('ComponentsSGA')
+
+
+class SubstanceSGA(models.Model):
+    comercial_name = models.CharField(max_length=250,
+                                      verbose_name=_("Comercial name"))
+    synonymous = models.TextField(verbose_name=_("Synonymous"))
+
+    uipa_name= models.CharField(max_length=250, blank=True,
+                                verbose_name=_("UIPA name"))
+    components = models.ManyToManyField(
+        ComponentSGA, verbose_name=_("Components"))
+    agrochemical = models.BooleanField(default=False,
+                                       verbose_name=_("Agrochemical"))
+    is_public = models.BooleanField(default=True, verbose_name=_('Share with others'))
+
+    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, verbose_name=_("Description"))
+    is_approved = models.BooleanField(default=False, blank=True)
+
+    def __str__(self):
+        return self.comercial_name
+
+    class Meta:
+        verbose_name = _('SustanceSGA')
+        verbose_name_plural = _('SustancesSGA')
+
+
+class SustanceCharacteristicsSGA(models.Model):
+    substance = models.OneToOneField(SubstanceSGA, on_delete=models.CASCADE)
+    iarc = catalog.GTForeignKey(Catalog, related_name="gt_iarcrelsga", on_delete=models.DO_NOTHING,
+                                null=True, blank=True, key_name="key", key_value="IARC")
+    imdg = catalog.GTForeignKey(Catalog, related_name="gt_imdgsga", on_delete=models.DO_NOTHING,
+                                null=True, blank=True, key_name="key", key_value="IDMG")
+    white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organsga", key_name="key",
+                                            key_value="white_organ", blank=True)
+    bioaccumulable = models.BooleanField(null=True)
+    molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
+    cas_id_number = models.CharField(
+        _('Cas ID Number'), max_length=255, null=True, blank=True)
+    security_sheet = models.FileField(
+        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+    is_precursor = models.BooleanField(_('Is precursor'), default=False)
+    precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursorsga", on_delete=models.SET_NULL,
+                                          null=True, blank=True, key_name="key", key_value="Precursor")
+
+    h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
+    valid_molecular_formula = models.BooleanField(default=False)
+    ue_code = catalog.GTManyToManyField(Catalog, related_name="gt_uesga", key_name="key",
+                                        key_value="ue_code", blank=True, verbose_name=_('UE codes'))
+    nfpa = catalog.GTManyToManyField(Catalog, related_name="gt_nfpasga", key_name="key",
+                                     key_value="nfpa", blank=True, verbose_name=_('NFPA codes'))
+    storage_class = catalog.GTManyToManyField(Catalog, related_name="gt_storage_classsga", key_name="key",
+                                              key_value="storage_class", blank=True, verbose_name=_('Storage class'))
+    seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
+
+    class Meta:
+        verbose_name = _('Sustance characteristicSGA')
+        verbose_name_plural = _('Sustance characteristicsSGA')
+
+
+class SubstanceObservation(models.Model):
+    substance = models.ForeignKey("sga.Substance",on_delete=models.CASCADE)
+    description = models.TextField(verbose_name=_('Description'))
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,verbose_name=_('Creator'))
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Date'))
+
+    class Meta:
+        verbose_name = _('Observation')
+        verbose_name_plural = _('Observations')
+
+    def __str__(self):
+        return f'{self.substance} {self.creator}'
