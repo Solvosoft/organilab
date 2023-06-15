@@ -478,7 +478,7 @@ def add_observation(request, org_pk, substance):
     if substance and request.method == 'POST':
         substance_obj = get_object_or_404(Substance, pk=int(substance))
 
-        form = ObservacionForm(request.POST)
+        form = ObservationForm(request.POST)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.substance = substance_obj
