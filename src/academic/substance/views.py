@@ -70,7 +70,7 @@ def add_sga_complements(request, *args, **kwargs):
         'title': titles[element]
     }
 
-    return render(request, 'academic/substance/sga_components.html', context=context)
+    return render(request, 'sga/substance/sga_components.html', context=context)
 
 
 @login_required
@@ -78,18 +78,18 @@ def add_sga_complements(request, *args, **kwargs):
 def view_danger_indications(request, *args, **kwargs):
     org = int(kwargs.get('org_pk'))
     listado = list(DangerIndication.objects.all())
-    return render(request, 'academic/substance/danger_indication.html', context={'listado': listado,'org_pk':org})
+    return render(request, 'sga/substance/danger_indication.html', context={'listado': listado,'org_pk':org})
 @login_required
 @permission_required('sga.view_warningword')
 def view_warning_words(request, org_pk):
     listado = list(WarningWord.objects.all())
-    return render(request, 'academic/substance/warning_words.html', context={'listado': listado, 'org_pk': org_pk})
+    return render(request, 'sga/substance/warning_words.html', context={'listado': listado, 'org_pk': org_pk})
 @login_required
 @permission_required('sga.view_prudenceadvice')
 def view_prudence_advices(request, *args, **kwargs):
     org = int(kwargs.get('org_pk'))
     listado = list(PrudenceAdvice.objects.all())
-    return render(request, 'academic/substance/prudence_advice.html', context={'listado': listado,'org_pk':org})
+    return render(request, 'sga/substance/prudence_advice.html', context={'listado': listado,'org_pk':org})
 
 @login_required
 @permission_required('academic.view_substanceobservation')
@@ -176,7 +176,7 @@ def change_warning_word(request, org_pk, pk):
             'url':reverse('academic:update_warning_word', kwargs={'org_pk': org_pk, 'pk':instance.pk}),
             'org_pk': org_pk
         }
-    return render(request, 'academic/substance/sga_components.html', context=context)
+    return render(request, 'sga/substance/sga_components.html', context=context)
 
 @login_required
 @permission_required('sga.change_prudenceadvice')
@@ -201,7 +201,7 @@ def change_prudence_advice(request, *args, **kwargs):
             'title':_('Update the Prudence Advice')+" "+instance.name,
             'url':reverse('academic:update_prudence_advice', kwargs={'org_pk': org_pk, 'pk':instance.pk})
         }
-    return render(request, 'academic/substance/sga_components.html', context=context)
+    return render(request, 'sga/substance/sga_components.html', context=context)
 
 @login_required
 @permission_required('sga.change_dangerindication')
@@ -225,7 +225,7 @@ def change_danger_indication(request, org_pk, pk):
             'url':reverse('academic:update_danger_indication', kwargs={'org_pk': org_pk, 'pk':instance.pk}),
             'org_pk': org_pk
         }
-    return render(request, 'academic/substance/sga_components.html', context=context)
+    return render(request, 'sga/substance/sga_components.html', context=context)
 
 
 @login_required
