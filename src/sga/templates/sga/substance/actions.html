@@ -2,9 +2,12 @@
 <i class="icons fa fa-trash text-danger" onclick="substance_delete({{substance.pk}}, '{{substance}}')"></i>
 {% endif %}
 {% if perms.sga.change_substance %}
-<a target="_blank" href="{% url 'sga:update_substance' org_pk=org_pk pk=substance.pk %}"><i class="icons fa fa-edit"></i></a>
+<a target="_blank" href="{% url 'sga:update_substance' org_pk=org_pk pk=substance.pk %}"><i
+	class="icons fa fa-edit"></i></a>
 {% endif %}
 {% if perms.sga.view_substance %}
-<a target="_blank" href="{% url 'sga:detail_substance' org_pk=org_pk pk=substance.pk %}"><i class="icons fa fa-eye"></i></a>
-<a target="_blank" href="{% url 'sga:security_leaf_pdf' org_pk=org_pk substance=substance.pk %}"><i class="icons fa fa-file-pdf-o"></i></a>
+<a target="_blank" href="{% url 'sga:detail_substance' org_pk=org_pk pk=substance.pk %}">
+	<i class="icons fa fa-eye"></i></a>
+<a target="_blank" href="{% url 'sga:security_leaf_pdf' org_pk=org_pk substance=substance.pk %}"><i
+	class="icons fa fa-file-pdf-o"></i></a>
 {% endif %}
