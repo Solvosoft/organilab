@@ -24,7 +24,7 @@ from sga.models import SubstanceObservation
 from sga.models import WarningWord, DangerIndication, PrudenceAdvice
 from .forms import DangerIndicationForm, \
     WarningWordForm, PrudenceAdviceForm
-from .forms import ObservacionForm, SecurityLeafForm, SustanceObjectForm, \
+from .forms import ObservationForm, SecurityLeafForm, SustanceObjectForm, \
     SustanceCharacteristicsForm, \
     ReviewSubstanceForm
 
@@ -192,7 +192,7 @@ def detail_substance(request, org_pk, pk):
     context = {
         'object': detail,
         'observations': observation,
-        'observationForm': ObservacionForm(),
+        'observationForm': ObservationForm(),
         'step': step,
         'url': reverse('sga:add_observation',
                        kwargs={'org_pk': org_pk, 'substance': pk}),
