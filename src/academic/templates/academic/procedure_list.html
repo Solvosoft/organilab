@@ -21,31 +21,6 @@
         <i class="fa fa-plus"></i> {% trans 'Create procedure template' %}</a>
 </div>
 <table  id="procedure" class="table table-bordered table-hover"></table>
-       <!-- <thead>
-        <tr>
-        <th width="30%">{% trans 'Title' %}</th>
-        <th width="50%">{% trans 'Description' %}</th>
-        <th width="20%">{% trans 'Actions' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-            {% for procedure in object_list %}
-                <tr>
-                    <td class="text-center">{{procedure.title}}</td>
-                    <td>{{ procedure.description | safe }}</td>
-                    <td class="text-center">
-                        <a href="{% url 'academic:procedure_detail' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" title="{{procedure.procedurestep_set.all.count}} {% trans 'Step detail' %}">
-                            <i class="fa fa-eye  fa-sm p-2"></i></a>
-                        <a href="{% url 'academic:add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" title="{% trans 'New Step' %}">
-                            <i class="fa fa-plus text-success p-2"></i></a>
-                        <a href="{% url 'academic:procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" title="{% trans 'Edit' %}">
-                           <i class="fa fa-edit text-primary p-2"></i></a>
-                        <a onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')" title=" {% trans 'Remove' %}">
-                            <i class="fa fa-trash text-danger p-2"></i></a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>-->
 {% endblock %}
 
 {% block js %}
