@@ -1300,11 +1300,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_label'
         },
         {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
-        },
-        {
             'name': 'Change Template SGA',
             'category': 'Template SGA',
             'permission': 'sga.change_templatesga'
@@ -2671,18 +2666,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Reserved Products',
             'category': 'Reserved Products',
             'permission': 'reservations_management.view_reservedproducts'
-        }
-    ],
-    'update_pictogram': [
-        {
-            'name': 'Change Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.change_pictogram'
-        },
-        {
-            'name': 'View Pictogram',
-            'category': 'Pictogram',
-            'permission': 'sga.view_pictogram'
         }
     ],
     'add_recipient_size': [
