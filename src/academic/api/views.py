@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
@@ -17,7 +18,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, o
 from laboratory.models import OrganizationStructure, Laboratory
 from organilab import settings
 from sga.models import ReviewSubstance
-from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure
+from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure, Procedure
 from .serializers import ProcedureStepCommentSerializer, ProcedureStepCommentDatatableSerializer, \
     ProcedureStepCommentFilterSet
 from django.template.loader import render_to_string
@@ -207,8 +208,8 @@ class MyProceduresAPI(viewsets.ModelViewSet):
     ordering_fields = ['pk']
     ordering = ('-pk',)
 
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
+    def get_queryset(self):
+        queryset = super().get_queryset()
         if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
             validate_serializer=ValidateUserAccessOrgLabSerializer(data={'laboratory':self.kwargs.get('lab_pk'), 'organization':self.kwargs.get('org_pk')}, context={'user':self.request.user})
             if validate_serializer.is_valid():
@@ -222,6 +223,39 @@ class MyProceduresAPI(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': MyProcedure.objects.count(), 'recordsFiltered': queryset.count(),
+        response = {'data': data, 'recordsTotal': self.get_queryset().count(), 'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
+
+@method_decorator(permission_required('academic.view_procedure'), name='dispatch')
+class ProcedureAPI(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.ProcedureDataTableSerializer
+    queryset = Procedure.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['title', 'description']
+    filterset_class = serializers.ProcedureFilterSet
+    ordering_fields = ['pk']
+    ordering = ('-pk',)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
+            validate_serializer=ValidateUserAccessOrgLabSerializer(data={'laboratory':self.kwargs.get('lab_pk'), 'organization':self.kwargs.get('org_pk')}, context={'user':self.request.user})
+            if validate_serializer.is_valid():
+                content = ContentType.objects.get(app_label="laboratory", model="laboratory")
+                queryset = queryset.filter(object_id=validate_serializer.validated_data['laboratory'].pk, content_type=content).order_by('-pk')
+            else:
+                queryset = queryset.none()
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': self.get_queryset().count(), 'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)

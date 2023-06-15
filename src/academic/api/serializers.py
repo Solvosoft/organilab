@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet, CharFilter
 from rest_framework import serializers
 from sga.models import ReviewSubstance, SecurityLeaf
-from academic.models import CommentProcedureStep, MyProcedure
+from academic.models import CommentProcedureStep, MyProcedure, Procedure
 from django.utils import formats
 from django_filters import DateTimeFromToRangeFilter
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
@@ -206,6 +206,60 @@ class MyProcedureFilterSet(FilterSet):
 
 class MyProcedureDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=MyProcedureSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class ProcedureSerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_title(self, obj):
+        if obj.title:
+            return obj.title
+        return ''
+
+    def get_description(self, obj):
+        if obj.description:
+            return obj.description
+        return ''
+
+    def get_actions(self, obj):
+        org_pk=self.context['view'].kwargs.get('org_pk')
+        lab_pk=self.context['view'].kwargs.get('lab_pk')
+        procedure_kwargs = {
+            'lab_pk': lab_pk,
+            'org_pk': org_pk,
+            'pk': obj.pk,
+        }
+        action = ""
+        action += """<a href="%s" title="%s"><i class="fa fa-eye  fa-sm p-2"></i></a>"""%(reverse('academic:procedure_detail',kwargs=procedure_kwargs),_('View Steps'))
+        action += """<a href="%s" title="%s"><i class="fa fa-plus text-success p-2"></i></a>"""%(reverse('academic:add_steps_wrapper',kwargs=procedure_kwargs),_('New Step'))
+        action += """<a href="%s" title="%s"><i class="fa fa-edit  fa-sm p-2"></i></a>"""%(reverse('academic:procedure_update',kwargs=procedure_kwargs),_('Edit'))
+        action += """<a delete_procedure(%d,%s) title="%s"><i class="fa fa-trash text-danger p-2"></i></a>"""%(obj.pk,obj.title,_('Remove'))
+
+        return action
+
+    class Meta:
+        model = Procedure
+        fields = ['title', 'description', 'actions']
+
+class ProcedureFilterSet(FilterSet):
+
+    def filter_queryset(self, queryset):
+        search = self.request.GET.get('search', '')
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) |
+                Q(description__icontains=search)).distinct()
+        return queryset
+    class Meta:
+        model = Procedure
+        fields = ['title','description']
+
+class ProcedureDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ProcedureSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
