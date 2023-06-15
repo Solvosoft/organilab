@@ -4,6 +4,7 @@ import json
 import cairosvg
 from barcode import Code128
 from barcode.writer import SVGWriter
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -17,6 +18,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.models import ChunkedUpload
 from django.contrib.admin.models import CHANGE, ADDITION
+
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.forms import SGAEditorForm, EditorForm, PersonalForm, SubstanceForm, RecipientSizeForm, PersonalSGAForm, \
@@ -31,51 +34,42 @@ from django import forms
 register = Library()
 
 # SGA Home Page
-@login_required
-def index_sga(request):
-    return render(request, 'index_sga.html', {})
 
 @login_required
 def render_editor_sga(request, org_pk):
-    context={}
-    return render(request, 'editor/editor.html', context)
+    context={ "org_pk": org_pk }
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    return render(request, 'editor/pictogram_editor.html', context)
 
 
-
-@login_required
-def template(request, org_pk):
-    context = {
-        'laboratory': None,
-        'form': SGAEditorForm(),
-        'warningwords': WarningWord.objects.all(),
-        'generalform': PersonalForm(user=request.user),
-        'form_url': reverse('sga:add_personal', kwargs={'org_pk': org_pk}),
-        'org_pk': org_pk
-    }
-    return render(request, 'template.html', context)
 
 
 # SGA editor
 @login_required
-def editor(request, org_pk):
-    finstance = None
+def template_editor(request, org_pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     clean_canvas_editor = True
-    if 'instance' in request.POST:
-        finstance = get_object_or_404(TemplateSGA, pk=request.POST['instance'])
-    if 'instance' in request.GET:
-        finstance = get_object_or_404(TemplateSGA, pk=request.GET['instance'])
 
     if request.method == "POST":
+        finstance = request.POST['instance'] if 'instance' in request.POST else None
+        if finstance:
+            finstance = get_object_or_404(TemplateSGA, pk=finstance)
         sgaform = EditorForm(request.POST, instance=finstance)
         if sgaform.is_valid():
-            finstance = sgaform.save(commit=False)
-            finstance.creator = request.user
-            finstance.save()
+            instance = sgaform.save(commit=False)
+            instance.creator = request.user
+            instance.save()
+            organilab_logentry(request.user, instance, ADDITION, 'SGA Template from editor', relobj=[organization])
             messages.add_message(request, messages.INFO, _("Tag Template saved successfully"))
             return redirect(reverse('sga:editor', kwargs={'org_pk': org_pk}))
         else:
             clean_canvas_editor = False
     else:
+        finstance = request.POST['instance'] if 'instance' in request.POST else None
+        if finstance:
+            finstance = get_object_or_404(TemplateSGA, pk=finstance)
         sgaform = EditorForm(instance=finstance)
 
     context = {
@@ -89,7 +83,7 @@ def editor(request, org_pk):
         'form_url': reverse('sga:editor', kwargs={'org_pk': org_pk}),
         'org_pk': org_pk
     }
-    return render(request, 'editor.html', context)
+    return render(request, 'template_editor.html', context)
 
 
 # SGA Label Creator
@@ -220,19 +214,6 @@ def edit_personal_template(request, org_pk, pk):
 
 
 @login_required
-def get_prudence_advice(request, org_pk):
-    pk = request.POST.get('pk', '')
-    data = PrudenceAdvice.objects.get(pk=pk)
-    return HttpResponse(data.name)
-
-@login_required
-def get_danger_indication(request, org_pk):
-    pk = request.POST.get('pk', '')
-    data = DangerIndication.objects.get(pk=pk)
-    return HttpResponse(data.description)
-
-
-@login_required
 @permission_required('sga.delete_personaltemplatesga')
 def delete_sgalabel(request, org_pk, pk):
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
@@ -243,8 +224,11 @@ def delete_sgalabel(request, org_pk, pk):
         messages.error(request, _("Error, user is not creator label"))
     return redirect(reverse('sga:add_personal', kwargs={'org_pk': org_pk}))
 
+# FIXME: Delete
 @login_required
 def get_preview(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     template = get_object_or_404(PersonalTemplateSGA, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
 
@@ -274,27 +258,6 @@ def create_recipient(request):
         else:
             return redirect('sga:add_recipient_size')
     return render(request, 'add_recipient_size.html', context={'form':form})
-
-
-@login_required
-def get_svgexport(request, org_pk, is_pdf, pk):
-    personalsga = get_object_or_404(PersonalTemplateSGA, pk=pk)
-    svg = personalsga.json_representation
-    type = "png"
-
-    try:
-        if int(is_pdf):
-            file = cairosvg.svg2pdf(svg)
-            type = "pdf"
-        else:
-           file = cairosvg.svg2png(svg)
-        response = HttpResponse(file, content_type='application/'+type)
-    except IOError:
-        return HttpResponseNotFound()
-    response['Content-Disposition'] = 'attachment; filename=labelsga.'+type
-
-    return response
-
 
 
 def create_sgalabel(request, org_pk):
@@ -411,6 +374,9 @@ def get_recipient_size(request, org_pk, pk):
 
 @login_required
 def get_barcode_from_number(request, org_pk, code):
+    context={ "org_pk": org_pk }
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     response = HttpResponse(content_type='image/svg+xml')
     Code128(code,  writer=SVGWriter()).write(response)
     return response

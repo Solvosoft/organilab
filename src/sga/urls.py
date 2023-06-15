@@ -11,7 +11,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from .views import editor
 from .views import sustance
-from .api.viewset import SubstanceViewSet
+from .api.substance_viewset import SubstanceViewSet
 
 router = DefaultRouter()
 router.register('api_substance', SubstanceViewSet, basename='api-substance')
@@ -22,21 +22,22 @@ app_name = 'sga'
 urlpatterns = [
 
     path('api/', include(router.urls)),
-
     # sga/index_sga/
-    path('index_sga', editor.index_sga, name='index_sga'),
     path('editor_sga', editor.render_editor_sga, name='index_editor'),
     path('barcode/<str:code>/', editor.get_barcode_from_number, name='barcode_from_number'),
-    path('label_editor_builder', editor.template, name='template'),
     # sga/editor
-    path('editor', editor.editor, name='editor'),
-    path('get_preview/<int:pk>', editor.get_preview, name='get_preview'),
-    re_path(r'get_svgexport/(?P<is_pdf>\d+)/(?P<pk>\d+)$', editor.get_svgexport, name='get_svgexport'),
+    path('template_editor', editor.template_editor, name='editor'),
 
-    # sga/prudence
-    path('prudence/', editor.get_prudence_advice, name='prudence'),
-    # sga/get_danger_indication
-    path('danger/', editor.get_danger_indication, name='get_danger_indication'),
+    # FIXME: It's necessary this preview ?
+    path('get_preview/<int:pk>', editor.get_preview, name='get_preview'),
+
+    # my templates
+    path('sustance/create/', sustance.create_edit_sustance, name='create_sustance'),
+    path('update_substance/<int:pk>/', sustance.create_edit_sustance, name='update_substance'),
+    path('delete_substance/<int:pk>/', sustance.delete_substance, name='delete_substance'),
+    path('detail_substance/<int:pk>/', sustance.detail_substance, name='detail_substance'),
+
+
     # sga/get_get_templateList
     path('add_personal/', editor.create_personal_template, name='add_personal'),
     path('edit_personal/<int:pk>', editor.edit_personal_template, name='edit_personal'),
@@ -57,16 +58,14 @@ urlpatterns = [
     path('sgalabel/step_one/<int:pk>', editor.sgalabel_step_one, name='sgalabel_step_one'),
     path('sgalabel/step_two/<int:pk>', editor.sgalabel_step_two, name='sgalabel_step_two'),
 
-    path('sustance/', sustance.create_edit_sustance, name='create_sustance'),
-    path('update_substance/<int:pk>/', sustance.create_edit_sustance, name='update_substance'),
+
     path('get_substance/', sustance.get_substances, name='get_substance'),
     path('approved_substance/', sustance.get_list_substances, name='approved_substance'),
     path('accept_substance/<int:pk>/', sustance.approve_substances, name='accept_substance'),
-    path('delete_substance/<int:pk>/', sustance.delete_substance, name='delete_substance'),
-    path('detail_substance/<int:pk>/', sustance.detail_substance, name='detail_substance'),
+
     path('substance/step_one/<int:pk>/', sustance.create_edit_sustance, name='step_one'),
     path('substance/step_two/<int:pk>/', sustance.step_two, name='step_two'),
     path('substance/step_three/<int:template>/<int:substance>/', sustance.step_three, name='step_three'),
     path('substance/step_four/<int:substance>/', sustance.step_four, name='step_four'),
-
+    path('substance/get_security_leaf/<int:substance>/', sustance.security_leaf_pdf, name='security_leaf_pdf'),
 ]

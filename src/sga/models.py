@@ -133,9 +133,7 @@ class Substance(AbstractOrganizationRef):
         DangerIndication,
         verbose_name=_("Danger indications"))
     synonymous = models.TextField(verbose_name=_("Synonymous"), null=True, blank=True)
-    agrochemical = models.BooleanField(default=False,
-                                       verbose_name=_("Agrochemical"))
-    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.SET_NULL, null=True, related_name='creator')
+    agrochemical = models.BooleanField(default=False, verbose_name=_("Agrochemical"))
     description = models.TextField(blank=True,null=True, verbose_name=_('Description'))
 
     @property
@@ -242,9 +240,7 @@ class RecipientSize(models.Model):
 
 
 class Label(models.Model):
-    substance = models.ForeignKey(Substance,
-                                 verbose_name=_("Substance"),
-                                 on_delete=models.CASCADE, null=True)
+    substance = models.ForeignKey(Substance, verbose_name=_("Substance"), on_delete=models.CASCADE, null=True)
     builderInformation = models.ForeignKey(
         BuilderInformation, verbose_name=_("Builder Information"),
         on_delete=models.CASCADE, null=True)
@@ -284,7 +280,7 @@ class PersonalTemplateSGA(models.Model):
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"), on_delete=models.DO_NOTHING)
     recipient_size = models.ForeignKey(RecipientSize, null=True, verbose_name=_("Recipient size"),  on_delete=models.SET_NULL)
     preview = models.TextField(help_text="B64 preview image", null=True)
-    label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.DO_NOTHING)
+    label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.CASCADE)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True, blank=True)
     logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
 
@@ -298,7 +294,7 @@ class PersonalTemplateSGA(models.Model):
 
 
 class SGAComplement(models.Model):
-    substance = models.ForeignKey(Substance, on_delete=models.DO_NOTHING, null=True)
+    substance = models.ForeignKey(Substance, on_delete=models.CASCADE, null=True)
     danger_indication = models.ManyToManyField(
         DangerIndication, verbose_name=_("Danger indication"))
     prudence_advice = models.ManyToManyField(
@@ -443,9 +439,10 @@ class SecurityLeaf(models.Model):
 
 
 class ReviewSubstance(models.Model):
-    substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.DO_NOTHING, verbose_name=_('Substance'))
+    substance = models.ForeignKey(Substance, null=True, blank=True, on_delete=models.CASCADE, verbose_name=_('Substance'))
     note = models.IntegerField(null=True, blank=True, verbose_name=_('Note'))
     is_approved = models.BooleanField(default=False)
+
     class Meta:
         verbose_name = _("Review Substance")
         verbose_name_plural = _("Review Substance")

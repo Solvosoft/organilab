@@ -3752,10 +3752,8 @@ msgstr "Agregar a lista de donantes?"
 msgid "Available templates"
 msgstr "Plantillas disponibles"
 
-msgid "Customize the selected template using the canvas editor and it elements"
-msgstr ""
-"Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
-"elementos"
+msgid "Customize the selected template using the canvas editor and it's elements"
+msgstr "Personaliza la plantilla seleccionada usando el editor de cuadro y sus elementos"
 
 msgid "General"
 msgstr "Uso general"

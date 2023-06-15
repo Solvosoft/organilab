@@ -1,5 +1,6 @@
+from django.template.loader import render_to_string
 from rest_framework import serializers
-
+from django.utils.translation import gettext_lazy as _
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, BuilderInformation, \
     PersonalTemplateSGA, RecipientSize, Substance
 
@@ -51,10 +52,38 @@ class RecipientSizeSerializer(serializers.ModelSerializer):
 
 
 class SubstanceSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    cas_id_number = serializers.CharField(source='cas_id')
+    created_by = serializers.SerializerMethodField()
+
+    def get_created_by(self, obj):
+        try:
+            if not obj:
+                return _("No user found")
+            if not obj.creator:
+                return _("No user found")
+
+            name = obj.creator.get_full_name()
+            if not name:
+                name = obj.creator.username
+            return name
+        except AttributeError:
+            return _("No user found")
+
+    def get_actions(self, obj):
+        context = {
+            'org_pk': self.context['view'].organization.pk,
+            'substance': obj
+        }
+        return render_to_string(
+            'sga/substance/actions.html',
+            request=self.context['request'],
+            context=context
+        )
 
     class Meta:
         model = Substance
-        fields = ['comercial_name', 'uipa_name', 'cas_id_number']
+        fields = ['pk',  'creation_date', 'created_by', 'comercial_name', 'agrochemical', 'uipa_name', 'cas_id_number', 'actions']
 
 
 class SubstanceDataTableSerializer(serializers.Serializer):

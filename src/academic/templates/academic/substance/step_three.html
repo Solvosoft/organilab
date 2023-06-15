@@ -10,7 +10,6 @@
     {% define_urlname_action 'step_four' %}
     {% define_urlname_action 'update_substance' %}
     {% define_urlname_action 'get_recipient_size' %}
-    {% define_urlname_action 'get_danger_indication' %}
     {% define_urlname_action 'prudence' %}
 {% endblock %}
 {# CSS #}
@@ -23,12 +22,6 @@
     <script>
         var json_representation=`{{instance.json_representation|safe}}`;
         document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk 0 %}";
-        document.clean_canvas_editor = true;
-        document.urls={
-            'danger_indication_url': '{% url 'sga:get_danger_indication' org_pk %}',
-            'prudence_advice_url': '{% url 'sga:prudence' org_pk %}',
-
-        };
     </script>
 {{form.media}}
 

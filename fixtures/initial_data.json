@@ -13792,7 +13792,6 @@
   "model": "sga.templatesga",
   "pk": 2,
   "fields": {
-    "creator": null,
     "name": "Plantilla Base",
     "recipient_size": 2,
     "json_representation": "",
@@ -20117,20 +20116,6 @@
 },
 {
   "model": "djgentelella.permissionscategorymanagement",
-  "pk": 457,
-  "fields": {
-    "name": "View Danger Indication",
-    "category": "Danger Indication",
-    "url_name": "get_danger_indication",
-    "permission": [
-      "view_dangerindication",
-      "sga",
-      "dangerindication"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
   "pk": 458,
   "fields": {
     "name": "View Prudence Advice",
@@ -20140,20 +20125,6 @@
       "view_prudenceadvice",
       "sga",
       "prudenceadvice"
-    ]
-  }
-},
-{
-  "model": "djgentelella.permissionscategorymanagement",
-  "pk": 459,
-  "fields": {
-    "name": "View Label SGA",
-    "category": "Label SGA",
-    "url_name": "get_svgexport",
-    "permission": [
-      "view_personaltemplatesga",
-      "sga",
-      "personaltemplatesga"
     ]
   }
 },

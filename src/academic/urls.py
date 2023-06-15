@@ -8,7 +8,7 @@ from rest_framework.routers import DefaultRouter
 
 from academic.substance.views import  view_warning_words, view_prudence_advices, view_danger_indications, add_sga_complements, add_observation, \
     update_observation, delete_observation, change_prudence_advice, change_warning_word, change_danger_indication, \
-     add_sga_provider, security_leaf_pdf
+     add_sga_provider
 from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, ProcedureStepCreateView, \
     ProcedureStepUpdateView, save_object, remove_object, save_observation, remove_observation, \
@@ -52,6 +52,5 @@ urlpatterns = [
     path('substance/update_warning_words/<int:pk>/', change_warning_word, name='update_warning_word'),
     path('substance/update_prudence_advice/<int:pk>/', change_prudence_advice, name='update_prudence_advice'),
     path('substance/provider/', add_sga_provider, name='add_sga_provider'),
-    path('substance/get_security_leaf/<int:substance>/', security_leaf_pdf, name='security_leaf_pdf'),
     path('<int:lab_pk>/procedure/', include(procedure_url)),
 ]

@@ -80,12 +80,13 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
     comercial_name = serializers.SerializerMethodField()
 
     def get_creator(self, obj):
+        name = None
         if obj.substance:
-            name = obj.substance.creator.get_full_name()
-            if not name:
-                name = obj.substance.creator.username
-            return name
-        return ''
+            if obj.substance.created_by:
+                name = obj.substance.created_by.get_full_name()
+                if not name:
+                    name = obj.substance.created_by.username
+        return name or ''
 
     def get_comercial_name(self, obj):
         if obj.substance:
@@ -98,7 +99,7 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
         }
         obj_kwargs.update({'pk': obj.substance.pk})
         detail_url = reverse('sga:detail_substance', kwargs=obj_kwargs)
-        security_leaf_pdf_url = reverse('academic:security_leaf_pdf', kwargs={'org_pk': obj.substance.organization.pk,
+        security_leaf_pdf_url = reverse('sga:security_leaf_pdf', kwargs={'org_pk': obj.substance.organization.pk,
                                                                      'substance': obj.substance.pk})
         action = ""
 

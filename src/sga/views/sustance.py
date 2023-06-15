@@ -1,13 +1,19 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import get_template
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from weasyprint import HTML
 
 from academic.models import SubstanceObservation
 from academic.substance.forms import ObservacionForm, SecurityLeafForm
 from academic.substance.forms import SustanceObjectForm, SustanceCharacteristicsForm, ReviewSubstanceForm
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.forms import BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, PersonalSGAAddForm, \
@@ -70,7 +76,7 @@ def create_edit_sustance(request, org_pk, pk=None):
             return redirect(reverse('sga:step_two', kwargs={'org_pk': org_pk, 'pk':complement.pk}))
 
     elif instance is None and request.method == 'GET':
-        substance = Substance.objects.create(creator=request.user, organization=organization)
+        substance = Substance.objects.create(created_by=request.user, organization=organization)
         rev_sub = ReviewSubstance.objects.create(substance=substance)
         charac = SubstanceCharacteristics.objects.create(substance=substance)
         organilab_logentry(request.user, substance, ADDITION, "substance")
@@ -96,21 +102,15 @@ def create_edit_sustance(request, org_pk, pk=None):
         'org_pk': org_pk
     })
 
+
 @login_required
 @permission_required('sga.view_substance')
 def get_substances(request, org_pk):
-    substances=None
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    context = {'org_pk': org_pk}
+    return render(request, 'sga/substance/list_substance.html', context=context)
 
-    if request.user:
-        substances = Substance.objects.filter(creator=request.user)
-    if substances:
-        substances = substances.filter(organization__pk=org_pk)
-    context = {
-        'substances':substances,
-        'org_pk': org_pk
-    }
-
-    return render(request, 'academic/substance/list_substance.html', context=context)
 
 @login_required
 @permission_required('sga.view_substance')
@@ -298,3 +298,22 @@ def step_four(request, org_pk,  substance):
                'org_pk': org_pk
                }
     return render(request,'academic/substance/step_four.html',context=context)
+
+
+@login_required
+def security_leaf_pdf(request, org_pk, substance):
+    leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
+    component = SGAComplement.objects.filter(substance__pk=substance).first()
+    date_print = now().strftime('%Y-%m-%d')
+    if leaf:
+        template = get_template('sga/substance/security_leaf_pdf.html')
+        context = {'leaf':leaf,
+                   'substance':leaf.substance,
+                   'provider':leaf.provider,
+                   'component':component,
+                   'date_print':date_print,
+                   'date_check':leaf.created_at.strftime('%Y-%m-%d'),
+                   'org_pk': org_pk}
+        html_template=template.render(context)
+        pdf = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
+        return HttpResponse(pdf, content_type='application/pdf')
