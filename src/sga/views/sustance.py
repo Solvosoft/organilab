@@ -27,20 +27,17 @@ from sga.models import SubstanceCharacteristics, \
 @login_required
 @permission_required('laboratory.change_object')
 def create_edit_sustance(request, org_pk, pk=None):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     instance = None
-    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    suscharobj=None
+    postdata=None
 
     if pk:
         instance = Substance.objects.filter(pk=pk, organization=organization).first()
 
-    suscharobj=None
-    template = None
-
     if instance:
         suscharobj = instance.substancecharacteristics
-
-    postdata=None
-    filesdata = None
 
     if request.method == 'POST':
         postdata = request.POST
@@ -52,17 +49,16 @@ def create_edit_sustance(request, org_pk, pk=None):
 
         if objform.is_valid() and suschacform.is_valid():
             obj = objform.save(commit=False)
-            obj.creator=request.user
-            obj.creator=request.user
+            obj.created_by=request.user
             obj.save()
             objform.save_m2m()
             suscharinst = suschacform.save(commit=False)
             suscharinst.substance = obj
-            label, created= Label.objects.get_or_create(substance= obj)
+            label, created = Label.objects.get_or_create(substance=obj)
             complement, complement_created= SGAComplement.objects.get_or_create(substance= obj)
-            leaf, leaf_created= SecurityLeaf.objects.get_or_create(substance= obj)
-            template= TemplateSGA.objects.filter(is_default=True).first()
-            personal,created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user=request.user)
+            leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=obj)
+            template = TemplateSGA.objects.filter(is_default=True).first()
+            personal, created = PersonalTemplateSGA.objects.get_or_create(label=label, template=template, user=request.user)
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             #if isValidate_molecular_formula(molecular_formula):
@@ -90,7 +86,7 @@ def create_edit_sustance(request, org_pk, pk=None):
     complement, sga_created = SGAComplement.objects.get_or_create(substance=instance)
     leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
 
-    return render(request, 'academic/substance/create_sustance.html', {
+    return render(request, 'sga/substance/create_sustance.html', {
         'objform': objform,
         'suschacform': suschacform,
         'instance': instance,
@@ -122,7 +118,7 @@ def get_list_substances(request, org_pk):
         'org_pk': org_pk,
         'showapprove': showapprove
     }
-    return render(request, 'academic/substance/check_substances.html', context=context)
+    return render(request, 'sga/substance/check_substances.html', context=context)
 
 @login_required
 @permission_required('sga.change_substance')
@@ -166,7 +162,7 @@ def detail_substance(request, org_pk, pk):
         'url': reverse('academic:add_observation',kwargs={'org_pk': org_pk, 'substance':pk}),
         'org_pk': org_pk
     }
-    return render(request, "academic/substance/detail.html", context=context)
+    return render(request, "sga/substance/detail.html", context=context)
 
 @login_required
 @permission_required('sga.change_sgacomplement')
@@ -216,7 +212,7 @@ def step_two(request, org_pk, pk):
                 'substance': complement.substance.pk,
                 'org_pk': org_pk
             }
-            return render(request, 'academic/substance/step_two.html', context)
+            return render(request, 'sga/substance/step_two.html', context)
     context = {
         'form': SGAComplementsForm(instance=complement),
         'builderinformationform': BuilderInformationForm(instance=personaltemplateSGA.label.builderInformation),
@@ -227,7 +223,7 @@ def step_two(request, org_pk, pk):
         'substance': complement.substance.pk,
         'org_pk': org_pk
     }
-    return render(request, 'academic/substance/step_two.html', context)
+    return render(request, 'sga/substance/step_two.html', context)
 
 @login_required
 @permission_required('sga.change_personaltemplatesga')
@@ -272,7 +268,7 @@ def step_three(request, org_pk, template, substance):
         'substance': personaltemplateSGA.label.substance.pk,
         'org_pk': org_pk
     }
-    return render(request, 'academic/substance/step_three.html', context)
+    return render(request, 'sga/substance/step_three.html', context)
 
 @login_required
 @permission_required('sga.change_securityleaf')
@@ -297,7 +293,7 @@ def step_four(request, org_pk,  substance):
                'substance': substance,
                'org_pk': org_pk
                }
-    return render(request,'academic/substance/step_four.html',context=context)
+    return render(request,'sga/substance/step_four.html',context=context)
 
 
 @login_required
