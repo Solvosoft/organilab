@@ -10,8 +10,8 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 from .views import editor
-from .views import sustance
 from .api.substance_viewset import SubstanceViewSet
+from .views.substance import views as substance
 
 router = DefaultRouter()
 router.register('api_substance', SubstanceViewSet, basename='api-substance')
@@ -32,10 +32,10 @@ urlpatterns = [
     path('get_preview/<int:pk>', editor.get_preview, name='get_preview'),
 
     # my templates
-    path('sustance/create/', sustance.create_edit_sustance, name='create_sustance'),
-    path('update_substance/<int:pk>/', sustance.create_edit_sustance, name='update_substance'),
-    path('delete_substance/<int:pk>/', sustance.delete_substance, name='delete_substance'),
-    path('detail_substance/<int:pk>/', sustance.detail_substance, name='detail_substance'),
+    path('sustance/create/', substance.create_edit_sustance, name='create_sustance'),
+    path('update_substance/<int:pk>/', substance.create_edit_sustance, name='update_substance'),
+    path('delete_substance/<int:pk>/', substance.delete_substance, name='delete_substance'),
+    path('detail_substance/<int:pk>/', substance.detail_substance, name='detail_substance'),
 
 
     # sga/get_get_templateList
@@ -43,7 +43,6 @@ urlpatterns = [
     path('edit_personal/<int:pk>', editor.edit_personal_template, name='edit_personal'),
 
     path('delete_sgalabel/<int:pk>', editor.delete_sgalabel, name='delete_sgalabel'),
-    path('add_substance', editor.create_substance, name='add_substance'),
     path('add_recipient_size/', editor.create_recipient, name='add_recipient_size'),
     path('company/list/', editor.get_companies, name='get_companies'),
     path('company/add/', editor.create_company, name='add_company'),
@@ -59,13 +58,29 @@ urlpatterns = [
     path('sgalabel/step_two/<int:pk>', editor.sgalabel_step_two, name='sgalabel_step_two'),
 
 
-    path('get_substance/', sustance.get_substances, name='get_substance'),
-    path('approved_substance/', sustance.get_list_substances, name='approved_substance'),
-    path('accept_substance/<int:pk>/', sustance.approve_substances, name='accept_substance'),
+    path('get_substance/', substance.get_substances, name='get_substance'),
+    path('approved_substance/', substance.get_list_substances, name='approved_substance'),
+    path('accept_substance/<int:pk>/', substance.approve_substances, name='accept_substance'),
 
-    path('substance/step_one/<int:pk>/', sustance.create_edit_sustance, name='step_one'),
-    path('substance/step_two/<int:pk>/', sustance.step_two, name='step_two'),
-    path('substance/step_three/<int:template>/<int:substance>/', sustance.step_three, name='step_three'),
-    path('substance/step_four/<int:substance>/', sustance.step_four, name='step_four'),
-    path('substance/get_security_leaf/<int:substance>/', sustance.security_leaf_pdf, name='security_leaf_pdf'),
+    path('substance/step_one/<int:pk>/', substance.create_edit_sustance, name='step_one'),
+    path('substance/step_two/<int:pk>/', substance.step_two, name='step_two'),
+    path('substance/step_three/<int:template>/<int:substance>/', substance.step_three, name='step_three'),
+    path('substance/step_four/<int:substance>/', substance.step_four, name='step_four'),
+    path('substance/get_security_leaf/<int:substance>/', substance.security_leaf_pdf, name='security_leaf_pdf'),
+    path('substance/danger_indications/', substance.view_danger_indications, name='danger_indications'),
+    path('substance/warning_words/', substance.view_warning_words, name='warning_words'),
+    path('substance/prudence_advices/', substance.view_prudence_advices, name='prudence_advices'),
+    path('substance/add_danger_indication/', substance.add_sga_complements, kwargs={'element': 'danger'},
+         name='add_danger_indication'),
+    path('substance/add_warning_words/', substance.add_sga_complements, kwargs={'element': 'warning'},
+         name='add_warning_word'),
+    path('substance/add_prudence_advice/', substance.add_sga_complements, kwargs={'element': 'prudence'},
+         name='add_prudence_advice'),
+    path('substance/add_observation/<int:substance>/', substance.add_observation, name='add_observation'),
+    path('substance/update_observation/', substance.update_observation, name='update_observation'),
+    path('substance/deleta_observation/', substance.delete_observation, name='delete_observation'),
+    path('substance/update_danger_indication/<str:pk>/', substance.change_danger_indication, name='update_danger_indication'),
+    path('substance/update_warning_words/<int:pk>/', substance.change_warning_word, name='update_warning_word'),
+    path('substance/update_prudence_advice/<int:pk>/', substance.change_prudence_advice, name='update_prudence_advice'),
+    path('substance/provider/', substance.add_sga_provider, name='add_sga_provider'),
 ]

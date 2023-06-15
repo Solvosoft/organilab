@@ -44,7 +44,7 @@
                     {{ form.label_tag }} {{ form }}
                 </div>
                 {% if form.id_for_label == 'id_h_code' %}
-                <label>{% trans 'Did you find H code component?' %}</label><a href="{% url 'academic:add_danger_indication' org_pk %}">
+                <label>{% trans 'Did you find H code component?' %}</label><a href="{% url 'sga:add_danger_indication' org_pk %}">
                 {% trans 'Create it here!' %}</a>
                 {% endif %}
                 {% endfor %}

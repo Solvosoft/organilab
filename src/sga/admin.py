@@ -3,7 +3,8 @@ from django.contrib import admin
 from sga.models import TemplateSGA, PersonalTemplateSGA, SecurityLeaf, SGAComplement, ReviewSubstance
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, PrudenceAdvice, \
-    RecipientSize
+    RecipientSize, SubstanceSGA, SustanceCharacteristicsSGA, ComponentSGA
+
 
 class AdminDangerIndication(admin.ModelAdmin):
     # form = DangerIndicationForm
@@ -18,12 +19,12 @@ class AdminDangerIndication(admin.ModelAdmin):
                 super(MyForm, self).__init__(*args_myform, **kwargs_myform)
                 self.fields['warning_class'].queryset = \
                     WarningClass.objects.filter(
-                    danger_type="class"
-                )
+                        danger_type="class"
+                    )
                 self.fields['warning_category'].queryset = \
                     WarningClass.objects.filter(
-                    danger_type="category"
-                )
+                        danger_type="category"
+                    )
 
         return MyForm
 
@@ -42,3 +43,6 @@ admin.site.register(PersonalTemplateSGA)
 admin.site.register(SecurityLeaf)
 admin.site.register(SGAComplement)
 admin.site.register(ReviewSubstance)
+admin.site.register(SubstanceSGA)
+admin.site.register(SustanceCharacteristicsSGA)
+admin.site.register(ComponentSGA)

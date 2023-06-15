@@ -136,7 +136,7 @@ class SGAAcademicTest(TestCase):
         url=self.url_attr.copy()
         url['substance']=134
 
-        response=self.client.post(reverse('academic:add_observation', kwargs=url), data={'description':'Simple'})
+        response=self.client.post(reverse('sga:add_observation', kwargs=url), data={'description':'Simple'})
         obs = SubstanceObservation.objects.all().values_list('description',flat=True)
 
         del url['substance']
@@ -153,7 +153,7 @@ class SGAAcademicTest(TestCase):
         s  = Substance.objects.get(pk=134)
         obs = SubstanceObservation.objects.create(description='Hello', substance=s)
         url=self.url_attr.copy()
-        response=self.client.post(reverse('academic:update_observation', kwargs=url), data={'description':'Simple','pk':obs.pk})
+        response=self.client.post(reverse('sga:update_observation', kwargs=url), data={'description':'Simple','pk':obs.pk})
         obs = SubstanceObservation.objects.last().description
 
 
@@ -169,7 +169,7 @@ class SGAAcademicTest(TestCase):
         url=self.url_attr.copy()
         pre = SubstanceObservation.objects.count()
 
-        response=self.client.post(reverse('academic:delete_observation', kwargs=url), data={'pk':obs.pk})
+        response=self.client.post(reverse('sga:delete_observation', kwargs=url), data={'pk':obs.pk})
         obs = SubstanceObservation.objects.count()
 
         self.assertEqual(response.status_code, 200)

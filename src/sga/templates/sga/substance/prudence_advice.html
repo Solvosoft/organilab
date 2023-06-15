@@ -11,7 +11,7 @@
 
     <div class="col-sm-12">
         <h1>{% trans 'Prudence Advices' %}</h1>
-        <a href="{% url 'academic:add_prudence_advice' org_pk=org_pk %}" class="btn btn-success float-end">
+        <a href="{% url 'sga:add_prudence_advice' org_pk=org_pk %}" class="btn btn-success float-end">
             <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
         <table id="prudence_table" class="table table-bordered text-center">
             <thead>
@@ -29,7 +29,7 @@
                     <td>{{elem.name}}</td>
                     <td>{% if elem.prudence_advice_help %}{{elem.prudence_advice_help}}{% else %} {% trans 'Unknown' %}{% endif %}</td>
                     <td>
-                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'academic:update_prudence_advice' org_pk=org_pk pk=elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'sga:update_prudence_advice' org_pk=org_pk pk=elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     </td>
                 </tr>
             {% endfor %}

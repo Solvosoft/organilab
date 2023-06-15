@@ -422,7 +422,7 @@
 
     $.ajax({
       method: "POST",
-      url: "{% url 'academic:add_sga_provider' org_pk %}",
+      url: "{% url 'sga:add_sga_provider' org_pk %}",
       headers: {'X-CSRFToken': getCookie('csrftoken')},
       data: json
     }).done(function(data){
