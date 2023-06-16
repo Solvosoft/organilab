@@ -1,0 +1,53 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'warning_words' %}
+    {% define_urlname_action 'add_warning_word' %}
+    {% define_urlname_action 'update_warning_word' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-sm-12">
+        <h1> {% trans 'Warning Words' %}</h1>
+        <a href="{% url 'sga:add_warning_word' org_pk=org_pk %}" class="btn btn-success float-end">
+           <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}
+        </a>
+        <table id="warning_word_table" class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th class="text-center">{% trans 'Name' %}</th>
+                    <th class="text-center">{% trans 'Weight' %}</th>
+                    <th class="text-center">{% trans 'Actions' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for elem in listado %}
+                <tr>
+                    <td>{{elem.name}}</td>
+                    <td>{{elem.weigth}}</td>
+                    <td>
+                        <a class="btn btn-warning" title="{% trans 'Edit' %}" href="{% url 'sga:update_warning_word' org_pk=org_pk pk=elem.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+
+<script>
+
+(function(){
+    $("#warning_word_table").DataTable();
+})(jQuery);
+</script>
+
+
+{% endblock %}

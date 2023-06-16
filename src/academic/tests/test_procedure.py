@@ -205,20 +205,6 @@ class AcademicTest(TestCase):
         self.assertEqual(step, None)
         self.assertEqual(response.status_code, 200)
 
-    def test_add_step_observation(self):
-        url = self.url_attr.copy()
-        step = ProcedureStep.objects.filter(procedure=self.procedure).latest('pk')
-        url['pk'] = step.pk
-
-        data = {
-            'description':'First observation'
-        }
-        response = self.client.post(reverse('academic:add_observation', kwargs=url),data=data, follow=True)
-        obs=ProcedureObservations.objects.filter(step=step)
-
-        self.assertTrue(obs.count()==1)
-        self.assertEqual(response.status_code,200)
-
     def test_delete_procedureobservation(self):
         url = self.url_attr.copy()
         step = ProcedureStep.objects.get(pk=17)

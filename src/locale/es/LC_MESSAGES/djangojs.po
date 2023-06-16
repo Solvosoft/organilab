@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-24 19:17-0600\n"
-"PO-Revision-Date: 2023-05-24 21:48-0600\n"
+"PO-Revision-Date: 2023-06-15 11:37-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.3\n"
 
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:25
@@ -364,9 +364,6 @@ msgstr "Nuevo estado"
 msgid "Saved the new shelfobject status"
 msgstr "Estado de nuevos objetos de estante guardados"
 
-#~ msgid "Clear Filters"
-#~ msgstr "Limpiar Filtros"
-
 #: academic/static/js/complete_my_procedure.js:1
 msgid "Do you want to send the report for review?"
 msgstr "¿Deseas enviar el reporte a Revisión?"
@@ -390,7 +387,7 @@ msgstr "Ningún paso seleccionado"
 
 #: academic/static/js/complete_my_procedure.js:41
 msgid "You must select a step to add comments."
-msgstr "Debes seleccionar un paso para agregar comentarios"
+msgstr "Debes seleccionar un paso para agregar comentarios."
 
 #: academic/static/js/complete_my_procedure.js:51
 msgid "Discarding cannot be undone."
@@ -435,3 +432,62 @@ msgstr "Eliminar procedimiento"
 #: academic/static/js/procedure.js:9
 msgid "Do you want to remove the procedure?"
 msgstr "¿Desea eliminar el procedimiento?"
+
+#: academic/static/js/procedure.js:197
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#: academic/static/js/procedure.js:121 academic/static/js/procedure.js:198
+msgid "The procedure was not removed"
+msgstr "El procedimiento no fue eliminado"
+
+#: academic/static/js/procedure.js:198
+msgid "You are in time to reverse this action!"
+msgstr "Estas a tiempo de revertir esta acción!"
+
+#: academic/static/js/procedure.js:72 academic/static/js/procedure.js:112
+msgid "Delete"
+msgstr "Eliminar"
+
+#: academic/static/js/procedure.js:185
+msgid "Deleted!"
+msgstr "Eliminado!"
+
+#: academic/static/js/procedure.js:119
+msgid "Are you sure to delete the procedure"
+msgstr "¿Está seguro de que quiere eliminar este procedimiento"
+
+#: academic/static/js/procedure.js:120 academic/static/js/procedure.js:138
+msgid "has been deleted"
+msgstr "ha sido eliminado"
+
+#: academic/static/js/procedure.js:131
+msgid "Are you sure to delete this observation?"
+msgstr "¿Está seguro de que quiere eliminar esta observación?"
+
+#: academic/static/js/procedure.js:125
+msgid "Are you sure to delete the step"
+msgstr "Estas seguro de eliminar el paso"
+
+#: academic/static/js/procedure.js:127
+msgid "The procedure step was not removed"
+msgstr "El paso del procedimiento no fue eliminado"
+
+#: academic/static/js/procedure.js:133
+msgid "The observation was not removed"
+msgstr "La observación no fue eliminada"
+
+#: academic/static/js/procedure.js:139
+msgid "The object was not removed"
+msgstr "El objecto no fue eliminado"
+
+#: academic/static/js/procedure.js:143
+msgid "Observation has been deleted"
+msgstr "La observación ha sido eliminada"
+
+#: academic/static/js/procedure.js:143
+msgid "Title"
+msgstr "Título"
+
+#~ msgid "Clear Filters"
+#~ msgstr "Limpiar Filtros"

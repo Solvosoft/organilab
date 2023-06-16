@@ -339,7 +339,7 @@
     "model": "contenttypes.contenttype",
     "pk": 44,
     "fields": {
-        "app_label": "academic",
+        "app_label": "sga",
         "model": "componentsga"
     }
 },
@@ -347,7 +347,7 @@
     "model": "contenttypes.contenttype",
     "pk": 45,
     "fields": {
-        "app_label": "academic",
+        "app_label": "sga",
         "model": "substancesga"
     }
 },
@@ -355,7 +355,7 @@
     "model": "contenttypes.contenttype",
     "pk": 46,
     "fields": {
-        "app_label": "academic",
+        "app_label": "sga",
         "model": "sustancecharacteristicssga"
     }
 },
@@ -363,7 +363,7 @@
     "model": "contenttypes.contenttype",
     "pk": 47,
     "fields": {
-        "app_label": "academic",
+        "app_label": "sga",
         "model": "substanceobservation"
     }
 },
@@ -473,14 +473,6 @@
 },
 {
     "model": "contenttypes.contenttype",
-    "pk": 61,
-    "fields": {
-        "app_label": "sga",
-        "model": "pictogram"
-    }
-},
-{
-    "model": "contenttypes.contenttype",
     "pk": 62,
     "fields": {
         "app_label": "sga",
@@ -540,7 +532,7 @@
     "pk": 69,
     "fields": {
         "app_label": "sga",
-        "model": "personaltemplatesga"
+        "model": "displaylabel"
     }
 },
 {
@@ -3598,105 +3590,6 @@
     }
 },
 {
-    "model": "sga.pictogram",
-    "pk": "GHS01 -Bomba Explotando - Explosivo",
-    "fields": {
-        "warning_word": 2,
-        "image": "sga/pictograms/GHS-pictogram-explos_XmtBAYW.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS02 -Llama - Inflamable",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-flamme_zRyo5cq.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS03 -Llama sobre círculo - Oxidante",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-rondflam_9X73EAC.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS04 -Botella de Gas - Gas Presurizado",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-bottle_ga4e0EI.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS05 -Corrosión - Corrosivo",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-acid_vTtXGjR.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-skull_ITaZxx8.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS07 -Signo de Exclamación - Irritante",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-exclam_DWLFbYi.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-silhouette_YyEM2mT.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
-    "model": "sga.pictogram",
-    "pk": "GHS09 -Medio Ambiente - Dañino para el ambiente",
-    "fields": {
-        "warning_word": null,
-        "image": "sga/pictograms/GHS-pictogram-pollu_eD2Eyu3.svg",
-        "id_pictogram": 1,
-        "creation_date": "2023-01-24T17:04:24.094Z",
-        "last_update": "2023-01-24T17:04:24.094Z"
-    }
-},
-{
     "model": "sga.prudenceadvice",
     "pk": 1,
     "fields": {
@@ -4971,9 +4864,6 @@
     "fields": {
         "description": "Explosivo inestable",
         "warning_words": 1,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-        ],
         "warning_class": [
             65
         ],
@@ -5001,9 +4891,6 @@
     "fields": {
         "description": "Explosivo; peligro explosión en masa",
         "warning_words": 1,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-        ],
         "warning_class": [
             65
         ],
@@ -5029,9 +4916,6 @@
     "fields": {
         "description": "Explosivo; grave peligro de proyección",
         "warning_words": 1,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-        ],
         "warning_class": [
             65
         ],
@@ -5057,9 +4941,6 @@
     "fields": {
         "description": "Explosivo; peligro de incendio, de onda expansiva o de proyección",
         "warning_words": 1,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-        ],
         "warning_class": [
             65
         ],
@@ -5085,9 +4966,6 @@
     "fields": {
         "description": "Peligro de incendio o de proyección",
         "warning_words": 2,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-        ],
         "warning_class": [
             65
         ],
@@ -5111,7 +4989,6 @@
     "fields": {
         "description": "Peligro de expasión en masa en caso de incendio",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             65
         ],
@@ -5137,9 +5014,6 @@
     "fields": {
         "description": "Peligro de incendio, onda expansiva o proyección; mayor riesgo de explosión si se reduce el agente insensibilizante",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             35
         ],
@@ -5169,9 +5043,6 @@
     "fields": {
         "description": "Peligro de incendio o proyección, mayor riesgo de explosión si se reduce el agente insensibilizante",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             35
         ],
@@ -5198,9 +5069,6 @@
     "fields": {
         "description": "Peligro de incendio , mayor riesgo de explosión si se reduce el agente insensibilizante",
         "warning_words": 2,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             35
         ],
@@ -5225,9 +5093,6 @@
     "fields": {
         "description": "Gas extremadamente inflamable",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             8
         ],
@@ -5253,7 +5118,6 @@
     "fields": {
         "description": "Gas inflamable",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             8
         ],
@@ -5278,9 +5142,6 @@
     "fields": {
         "description": "Aerosol extremadamente inflamable",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             11
         ],
@@ -5301,9 +5162,6 @@
     "fields": {
         "description": "Aerosol inflamable",
         "warning_words": 2,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             11
         ],
@@ -5324,9 +5182,6 @@
     "fields": {
         "description": "Liquido y vapores extremadamente inflamables",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             12
         ],
@@ -5354,9 +5209,6 @@
     "fields": {
         "description": "Liquido y vapores muy inflamables",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             12
         ],
@@ -5384,9 +5236,6 @@
     "fields": {
         "description": "Liquido y vapores inflamables",
         "warning_words": 2,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             12
         ],
@@ -5414,7 +5263,6 @@
     "fields": {
         "description": "Liquido combustible",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             12
         ],
@@ -5439,9 +5287,6 @@
     "fields": {
         "description": "Sólido inflamable",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             13
         ],
@@ -5467,9 +5312,6 @@
     "fields": {
         "description": "Contiene gas a presión, puede reventar si se calienta",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             11
         ],
@@ -5492,7 +5334,6 @@
     "fields": {
         "description": "Indicación de peligro adicional: Puede explotar incluso en ausencia de aire",
         "warning_words": 3,
-        "pictograms": [],
         "warning_class": [
             8
         ],
@@ -5516,7 +5357,6 @@
     "fields": {
         "description": "Indicación de peligro adicional: Puede explotar incluso en ausencia de aire, a presión y/o temperatura elevadas",
         "warning_words": 3,
-        "pictograms": [],
         "warning_class": [
             8
         ],
@@ -5534,9 +5374,6 @@
     "fields": {
         "description": "Puede inflamarse espontáneamente en contacto con el aire",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             8
         ],
@@ -5560,9 +5397,6 @@
     "fields": {
         "description": "Puede explotar al calentarse",
         "warning_words": 1,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-        ],
         "warning_class": [
             26
         ],
@@ -5592,10 +5426,6 @@
     "fields": {
         "description": "Puede  incendiarse o explotar al calentarse",
         "warning_words": 1,
-        "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo",
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             26
         ],
@@ -5623,9 +5453,6 @@
     "fields": {
         "description": "Puede incendiarse al calentarse",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             26
         ],
@@ -5655,9 +5482,6 @@
     "fields": {
         "description": "Se inflama espontanea en contacto de el aire",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             27
         ],
@@ -5681,9 +5505,6 @@
     "fields": {
         "description": "Se calienta espontáneamente al contacto con e aire",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             29
         ],
@@ -5706,9 +5527,6 @@
     "fields": {
         "description": "Se calienta espontáneamente en grandes cantidades; puede inflamarse",
         "warning_words": 2,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             29
         ],
@@ -5731,9 +5549,6 @@
     "fields": {
         "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             30
         ],
@@ -5761,9 +5576,6 @@
     "fields": {
         "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
         "warning_words": 1,
-        "pictograms": [
-            "GHS02 -Llama - Inflamable"
-        ],
         "warning_class": [
             30
         ],
@@ -5786,9 +5598,6 @@
     "fields": {
         "description": "Puede provocar o agravar un incendio",
         "warning_words": 1,
-        "pictograms": [
-            "GHS03 -Llama sobre círculo - Oxidante"
-        ],
         "warning_class": [
             14
         ],
@@ -5809,9 +5618,6 @@
     "fields": {
         "description": "Puede provocar un incendio o una explosión; muy comburente",
         "warning_words": 1,
-        "pictograms": [
-            "GHS03 -Llama sobre círculo - Oxidante"
-        ],
         "warning_class": [
             31
         ],
@@ -5837,9 +5643,6 @@
     "fields": {
         "description": "Puede agravar un incendio; comburente",
         "warning_words": 1,
-        "pictograms": [
-            "GHS03 -Llama sobre círculo - Oxidante"
-        ],
         "warning_class": [
             31
         ],
@@ -5864,9 +5667,6 @@
     "fields": {
         "description": "Contiene gas a presión; puede explotar si se calienta",
         "warning_words": 2,
-        "pictograms": [
-            "GHS04 -Botella de Gas - Gas Presurizado"
-        ],
         "warning_class": [
             15
         ],
@@ -5886,9 +5686,6 @@
     "fields": {
         "description": "Contiene gas refrigerado, puede provocar quemaduras o lesiones criogénicas",
         "warning_words": 2,
-        "pictograms": [
-            "GHS04 -Botella de Gas - Gas Presurizado"
-        ],
         "warning_class": [
             15
         ],
@@ -5908,9 +5705,6 @@
     "fields": {
         "description": "Puede ser corrosiva para los metales",
         "warning_words": 2,
-        "pictograms": [
-            "GHS05 -Corrosión - Corrosivo"
-        ],
         "warning_class": [
             34
         ],
@@ -5930,9 +5724,6 @@
     "fields": {
         "description": "Mortal en caso de ingestión",
         "warning_words": 1,
-        "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-        ],
         "warning_class": [
             38
         ],
@@ -5946,7 +5737,6 @@
     "fields": {
         "description": "Mortal en caso de ingestión\r\nMortal en contacto con la piel",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -5960,7 +5750,6 @@
     "fields": {
         "description": "Mortal en caso de ingestión\r\nMortal en contacto con la piel\r\nMortal si se inhala",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -5974,7 +5763,6 @@
     "fields": {
         "description": "Mortal en caso de ingestión\r\nMortal si se inhala",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -5998,9 +5786,6 @@
     "fields": {
         "description": "Tóxico en caso de ingestión",
         "warning_words": 1,
-        "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-        ],
         "warning_class": [
             38
         ],
@@ -6024,7 +5809,6 @@
     "fields": {
         "description": "Tóxico en caso de ingestión o en contacto con la piel",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6051,7 +5835,6 @@
     "fields": {
         "description": "Tóxico en caso de ingestión\r\nTóxico en contacto con la piel\r\nTóxico si se inhala",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6079,9 +5862,6 @@
     "fields": {
         "description": "Nocivo en caso de ingestión",
         "warning_words": 2,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             38
         ],
@@ -6114,7 +5894,6 @@
     "fields": {
         "description": "Nocivo en caso de ingestión\r\nNocivo en contacto con la piel",
         "warning_words": 3,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6136,7 +5915,6 @@
     "fields": {
         "description": "Nocivo en caso de ingestión\r\nNocivo en contacto con la piel\r\nNocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6159,7 +5937,6 @@
     "fields": {
         "description": "Nocivo en caso de ingestión\r\nNocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6185,7 +5962,6 @@
     "fields": {
         "description": "Puede ser nocivo en caso de ingestión",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6203,7 +5979,6 @@
     "fields": {
         "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo en contacto con la piel",
         "warning_words": 3,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6217,7 +5992,6 @@
     "fields": {
         "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6231,7 +6005,6 @@
     "fields": {
         "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6250,9 +6023,6 @@
     "fields": {
         "description": "Puede ser mortal en caso de ingestión y de penetración en las vías respiratorias",
         "warning_words": 1,
-        "pictograms": [
-            "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico"
-        ],
         "warning_class": [
             57
         ],
@@ -6273,9 +6043,6 @@
     "fields": {
         "description": "Puede ser mortal en caso de ingestión y de penetración en las vías respiratorias",
         "warning_words": 2,
-        "pictograms": [
-            "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico"
-        ],
         "warning_class": [
             57
         ],
@@ -6296,9 +6063,6 @@
     "fields": {
         "description": "Mortal en contacto con la piel",
         "warning_words": 1,
-        "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-        ],
         "warning_class": [
             38
         ],
@@ -6325,7 +6089,6 @@
     "fields": {
         "description": "Mortal en contacto con la piel\r\nMortal si se inhala",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6358,9 +6121,6 @@
     "fields": {
         "description": "Tóxico en contacto con la piel",
         "warning_words": 1,
-        "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-        ],
         "warning_class": [
             38
         ],
@@ -6384,7 +6144,6 @@
     "fields": {
         "description": "Tóxico en contacto con la piel\r\nTóxico si se inhala",
         "warning_words": 1,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6407,9 +6166,6 @@
     "fields": {
         "description": "Nocivo en contacto con la piel",
         "warning_words": 2,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             38
         ],
@@ -6432,7 +6188,6 @@
     "fields": {
         "description": "Nocivo en contacto con la piel\r\nNocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6446,7 +6201,6 @@
     "fields": {
         "description": "Puede ser nocivo en contacto con la piel",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6464,7 +6218,6 @@
     "fields": {
         "description": "Puede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6482,9 +6235,6 @@
     "fields": {
         "description": "Provoca graves quemaduras en la piel y lesiones oculares",
         "warning_words": 1,
-        "pictograms": [
-            "GHS05 -Corrosión - Corrosivo"
-        ],
         "warning_class": [
             39,
             40
@@ -6515,9 +6265,6 @@
     "fields": {
         "description": "Provoca irritación cutánea",
         "warning_words": 2,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             39,
             40
@@ -6542,7 +6289,6 @@
     "fields": {
         "description": "Provoca irritación cutánea\r\nProvoca irritación ocular",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             40,
             45
@@ -6571,7 +6317,6 @@
     "fields": {
         "description": "Provoca leve irritación cutánea",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             39,
             40
@@ -6591,9 +6336,6 @@
     "fields": {
         "description": "Puede provocar una reacción cutánea alérgica",
         "warning_words": 2,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             49
         ],
@@ -6618,9 +6360,6 @@
     "fields": {
         "description": "Provoca lesiones oculares graves",
         "warning_words": 1,
-        "pictograms": [
-            "GHS05 -Corrosión - Corrosivo"
-        ],
         "warning_class": [
             44,
             45
@@ -6644,9 +6383,6 @@
     "fields": {
         "description": "Provoca irritación ocular grave",
         "warning_words": 2,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             44,
             45
@@ -6670,7 +6406,6 @@
     "fields": {
         "description": "Provoca irritación ocular",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             44,
             45
@@ -6691,9 +6426,6 @@
     "fields": {
         "description": "Mortal si se inhala",
         "warning_words": 1,
-        "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-        ],
         "warning_class": [
             38
         ],
@@ -6720,9 +6452,6 @@
     "fields": {
         "description": "Tóxico si se inhala",
         "warning_words": 1,
-        "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-        ],
         "warning_class": [
             38
         ],
@@ -6747,9 +6476,6 @@
     "fields": {
         "description": "Nocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             38
         ],
@@ -6770,7 +6496,6 @@
     "fields": {
         "description": "Puede ser nocivo si se inhala",
         "warning_words": 2,
-        "pictograms": [],
         "warning_class": [
             38
         ],
@@ -6788,9 +6513,6 @@
     "fields": {
         "description": "Puede provocar sintomas de alergia o asma o dificultades respiratoria si se inhala",
         "warning_words": 1,
-        "pictograms": [
-            "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico"
-        ],
         "warning_class": [
             48
         ],
@@ -6812,9 +6534,6 @@
     "fields": {
         "description": "Puede irritar las vías respiratorias o provocar somnoliencia",
         "warning_words": 1,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             55
         ],
@@ -6836,9 +6555,6 @@
     "fields": {
         "description": "Puede irritar las vías respiratorias o provocar somnoliencia",
         "warning_words": 1,
-        "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-        ],
         "warning_class": [
             55
         ],
@@ -6862,7 +6578,7 @@
     "fields": {
         "description": "Puede provocar efectos genéticos (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             50
         ],
@@ -6885,7 +6601,7 @@
     "fields": {
         "description": "Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             50
         ],
@@ -6908,7 +6624,7 @@
     "fields": {
         "description": "Puede provocar cáncer (indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             51
         ],
@@ -6931,7 +6647,7 @@
     "fields": {
         "description": "Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             51
         ],
@@ -6954,7 +6670,7 @@
     "fields": {
         "description": "Puede perjudicar la fertilidad o dañar al feto (Indíquese el efecto especiífico si se conoce) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             52
         ],
@@ -6977,7 +6693,7 @@
     "fields": {
         "description": "Susceptible de perjudicar la fertilidad o dañar al feto (Indíquese el efecto especiífico si se conoce) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             52
         ],
@@ -7000,7 +6716,7 @@
     "fields": {
         "description": "Sin palabra de advertencia",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             52
         ],
@@ -7023,7 +6739,7 @@
     "fields": {
         "description": "Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             55
         ],
@@ -7048,7 +6764,7 @@
     "fields": {
         "description": "Puede provocar daños en los órganos (o indíquese todos los órganos afectados, si se conocen) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             55
         ],
@@ -7070,7 +6786,7 @@
     "fields": {
         "description": "Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen)tras exposiciones prolongadas o repetidas (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             56
         ],
@@ -7092,7 +6808,7 @@
     "fields": {
         "description": "Puede provocar daños en los órganos (o indíquese todos los órganos afectados, si se conocen) tras exposiciones prolongadas o repetidas (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             56
         ],
@@ -7112,7 +6828,7 @@
     "fields": {
         "description": "Muy tóxicos para los organismos acuáticos",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             164
         ],
@@ -7131,7 +6847,7 @@
     "fields": {
         "description": "Tóxicos para los organismos acuáticos",
         "warning_words": 3,
-        "pictograms": [],
+
         "warning_class": [
             164
         ],
@@ -7150,7 +6866,7 @@
     "fields": {
         "description": "Nocivo para los organismos acuáticos",
         "warning_words": 3,
-        "pictograms": [],
+
         "warning_class": [
             164
         ],
@@ -7169,7 +6885,7 @@
     "fields": {
         "description": "Muy tóxicos para los organismos acuáticos, con efectos nocivos duraderos",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             163
         ],
@@ -7188,7 +6904,7 @@
     "fields": {
         "description": "Tóxicos para los organismos acuáticos, con efectos nocivos duraderos",
         "warning_words": 3,
-        "pictograms": [],
+
         "warning_class": [
             163
         ],
@@ -7207,7 +6923,7 @@
     "fields": {
         "description": "Nocivos para los organismos acuáticos, con efectos nocivos duraderos",
         "warning_words": 3,
-        "pictograms": [],
+
         "warning_class": [
             163
         ],
@@ -7226,7 +6942,7 @@
     "fields": {
         "description": "Puede ser nocivo para los organismos acuáticos, con efectos nocivos duraderos",
         "warning_words": 1,
-        "pictograms": [],
+
         "warning_class": [
             163
         ],
@@ -7245,7 +6961,7 @@
     "fields": {
         "description": "Causa daños a la salud pública y el medio ambiente al destruir el ozono en la atmosfera superior",
         "warning_words": 2,
-        "pictograms": [],
+
         "warning_class": [
             162
         ],
@@ -7264,7 +6980,7 @@
     "fields": {
         "description": "Sin indicación de peligro",
         "warning_words": 3,
-        "pictograms": [],
+
         "warning_class": [
             7
         ],
@@ -9440,7 +9156,7 @@
     "fields": {
         "name": "Can add ComponentSGA",
         "content_type": [
-            "academic",
+            "sga",
             "componentsga"
         ],
         "codename": "add_componentsga"
@@ -9452,7 +9168,7 @@
     "fields": {
         "name": "Can change ComponentSGA",
         "content_type": [
-            "academic",
+            "sga",
             "componentsga"
         ],
         "codename": "change_componentsga"
@@ -9464,7 +9180,7 @@
     "fields": {
         "name": "Can delete ComponentSGA",
         "content_type": [
-            "academic",
+            "sga",
             "componentsga"
         ],
         "codename": "delete_componentsga"
@@ -9476,7 +9192,7 @@
     "fields": {
         "name": "Can view ComponentSGA",
         "content_type": [
-            "academic",
+            "sga",
             "componentsga"
         ],
         "codename": "view_componentsga"
@@ -9488,7 +9204,7 @@
     "fields": {
         "name": "Can add SustanceSGA",
         "content_type": [
-            "academic",
+            "sga",
             "substancesga"
         ],
         "codename": "add_substancesga"
@@ -9500,7 +9216,7 @@
     "fields": {
         "name": "Can change SustanceSGA",
         "content_type": [
-            "academic",
+            "sga",
             "substancesga"
         ],
         "codename": "change_substancesga"
@@ -9512,7 +9228,7 @@
     "fields": {
         "name": "Can delete SustanceSGA",
         "content_type": [
-            "academic",
+            "sga",
             "substancesga"
         ],
         "codename": "delete_substancesga"
@@ -9524,7 +9240,7 @@
     "fields": {
         "name": "Can view SustanceSGA",
         "content_type": [
-            "academic",
+            "sga",
             "substancesga"
         ],
         "codename": "view_substancesga"
@@ -9536,7 +9252,7 @@
     "fields": {
         "name": "Can add Sustance characteristicSGA",
         "content_type": [
-            "academic",
+            "sga",
             "sustancecharacteristicssga"
         ],
         "codename": "add_sustancecharacteristicssga"
@@ -9548,7 +9264,7 @@
     "fields": {
         "name": "Can change Sustance characteristicSGA",
         "content_type": [
-            "academic",
+            "sga",
             "sustancecharacteristicssga"
         ],
         "codename": "change_sustancecharacteristicssga"
@@ -9560,7 +9276,7 @@
     "fields": {
         "name": "Can delete Sustance characteristicSGA",
         "content_type": [
-            "academic",
+            "sga",
             "sustancecharacteristicssga"
         ],
         "codename": "delete_sustancecharacteristicssga"
@@ -9572,7 +9288,7 @@
     "fields": {
         "name": "Can view Sustance characteristicSGA",
         "content_type": [
-            "academic",
+            "sga",
             "sustancecharacteristicssga"
         ],
         "codename": "view_sustancecharacteristicssga"
@@ -9584,7 +9300,7 @@
     "fields": {
         "name": "Can add Observation",
         "content_type": [
-            "academic",
+            "sga",
             "substanceobservation"
         ],
         "codename": "add_substanceobservation"
@@ -9596,7 +9312,7 @@
     "fields": {
         "name": "Can change Observation",
         "content_type": [
-            "academic",
+            "sga",
             "substanceobservation"
         ],
         "codename": "change_substanceobservation"
@@ -9608,7 +9324,7 @@
     "fields": {
         "name": "Can delete Observation",
         "content_type": [
-            "academic",
+            "sga",
             "substanceobservation"
         ],
         "codename": "delete_substanceobservation"
@@ -9620,7 +9336,7 @@
     "fields": {
         "name": "Can view Observation",
         "content_type": [
-            "academic",
+            "sga",
             "substanceobservation"
         ],
         "codename": "view_substanceobservation"
@@ -10252,54 +9968,6 @@
 },
 {
     "model": "auth.permission",
-    "pk": 247,
-    "fields": {
-        "name": "Can add Pictogram",
-        "content_type": [
-            "sga",
-            "pictogram"
-        ],
-        "codename": "add_pictogram"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 248,
-    "fields": {
-        "name": "Can change Pictogram",
-        "content_type": [
-            "sga",
-            "pictogram"
-        ],
-        "codename": "change_pictogram"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 249,
-    "fields": {
-        "name": "Can delete Pictogram",
-        "content_type": [
-            "sga",
-            "pictogram"
-        ],
-        "codename": "delete_pictogram"
-    }
-},
-{
-    "model": "auth.permission",
-    "pk": 250,
-    "fields": {
-        "name": "Can view Pictogram",
-        "content_type": [
-            "sga",
-            "pictogram"
-        ],
-        "codename": "view_pictogram"
-    }
-},
-{
-    "model": "auth.permission",
     "pk": 251,
     "fields": {
         "name": "Can add Substance",
@@ -10641,9 +10309,9 @@
         "name": "Can add Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "add_personaltemplatesga"
+        "codename": "add_displaylabel"
     }
 },
 {
@@ -10653,9 +10321,9 @@
         "name": "Can change Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "change_personaltemplatesga"
+        "codename": "change_displaylabel"
     }
 },
 {
@@ -10665,9 +10333,9 @@
         "name": "Can delete Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "delete_personaltemplatesga"
+        "codename": "delete_displaylabel"
     }
 },
 {
@@ -10677,9 +10345,9 @@
         "name": "Can view Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "view_personaltemplatesga"
+        "codename": "view_displaylabel"
     }
 },
 {
@@ -13335,22 +13003,22 @@
             ],
             [
                 "add_substanceobservation",
-                "academic",
+                "sga",
                 "substanceobservation"
             ],
             [
                 "change_substanceobservation",
-                "academic",
+                "sga",
                 "substanceobservation"
             ],
             [
                 "delete_substanceobservation",
-                "academic",
+                "sga",
                 "substanceobservation"
             ],
             [
                 "view_substanceobservation",
-                "academic",
+                "sga",
                 "substanceobservation"
             ],
             [
@@ -13848,39 +13516,24 @@
                 "label"
             ],
             [
-                "add_personaltemplatesga",
+                "add_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
-                "change_personaltemplatesga",
+                "change_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
-                "delete_personaltemplatesga",
+                "delete_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
-                "view_personaltemplatesga",
+                "view_displaylabel",
                 "sga",
-                "personaltemplatesga"
-            ],
-            [
-                "add_pictogram",
-                "sga",
-                "pictogram"
-            ],
-            [
-                "change_pictogram",
-                "sga",
-                "pictogram"
-            ],
-            [
-                "view_pictogram",
-                "sga",
-                "pictogram"
+                "displaylabel"
             ],
             [
                 "add_provider",
@@ -14324,13 +13977,16 @@
     "model": "sga.templatesga",
     "pk": 2,
     "fields": {
-        "creator": null,
         "name": "Plantilla Base",
         "recipient_size": 2,
         "json_representation": "",
         "community_share": true,
         "preview": null,
-        "is_default": true
+        "is_default": true,
+        "organization": null,
+        "creation_date": "2023-03-08T16:45:15.188Z",
+        "last_update": "2023-03-08T16:45:15.188Z",
+        "created_by": null
     }
 },
 {
@@ -15965,9 +15621,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "add_personaltemplatesga",
+            "add_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15979,9 +15635,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "change_personaltemplatesga",
+            "change_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15993,9 +15649,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "delete_personaltemplatesga",
+            "delete_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -16007,9 +15663,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -16021,9 +15677,9 @@
         "category": "Label SGA",
         "url_name": "edit_personal",
         "permission": [
-            "change_personaltemplatesga",
+            "change_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -16035,9 +15691,9 @@
         "category": "Label SGA",
         "url_name": "edit_personal",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -16049,9 +15705,9 @@
         "category": "Label SGA",
         "url_name": "template",
         "permission": [
-            "add_personaltemplatesga",
+            "add_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -16063,9 +15719,9 @@
         "category": "Label SGA",
         "url_name": "template",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -17179,20 +16835,6 @@
             "view_label",
             "sga",
             "label"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
-    "pk": 200,
-    "fields": {
-        "name": "View Pictogram",
-        "category": "Pictogram",
-        "url_name": "index",
-        "permission": [
-            "view_pictogram",
-            "sga",
-            "pictogram"
         ]
     }
 },
@@ -19389,7 +19031,7 @@
         "url_name": "add_observation_substanceobservation",
         "permission": [
             "add_substanceobservation",
-            "academic",
+            "sga",
             "substanceobservation"
         ]
     }
@@ -19403,7 +19045,7 @@
         "url_name": "add_observation_substanceobservation",
         "permission": [
             "view_substanceobservation",
-            "academic",
+            "sga",
             "substanceobservation"
         ]
     }
@@ -19417,7 +19059,7 @@
         "url_name": "remove_observation",
         "permission": [
             "delete_procedureobservations",
-            "academic",
+            "sga",
             "procedureobservations"
         ]
     }
@@ -19948,9 +19590,9 @@
         "category": "Label SGA",
         "url_name": "step_three",
         "permission": [
-            "add_personaltemplatesga",
+            "add_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -19962,9 +19604,9 @@
         "category": "Label SGA",
         "url_name": "step_three",
         "permission": [
-            "change_personaltemplatesga",
+            "change_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -19976,9 +19618,9 @@
         "category": "Label SGA",
         "url_name": "step_three",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -20032,9 +19674,9 @@
         "category": "Label SGA",
         "url_name": "step_four",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -20103,7 +19745,7 @@
         "url_name": "update_observation",
         "permission": [
             "change_substanceobservation",
-            "academic",
+            "sga",
             "substanceobservation"
         ]
     }
@@ -20117,7 +19759,7 @@
         "url_name": "update_observation",
         "permission": [
             "view_substanceobservation",
-            "academic",
+            "sga",
             "substanceobservation"
         ]
     }
@@ -20131,7 +19773,7 @@
         "url_name": "delete_observation",
         "permission": [
             "delete_substanceobservation",
-            "academic",
+            "sga",
             "substanceobservation"
         ]
     }
@@ -20145,7 +19787,7 @@
         "url_name": "delete_observation",
         "permission": [
             "view_substanceobservation",
-            "academic",
+            "sga",
             "substanceobservation"
         ]
     }
@@ -20390,76 +20032,6 @@
 },
 {
     "model": "djgentelella.permissionscategorymanagement",
-    "pk": 429,
-    "fields": {
-        "name": "Change Pictogram",
-        "category": "Pictogram",
-        "url_name": "update_pictogram",
-        "permission": [
-            "change_pictogram",
-            "sga",
-            "pictogram"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
-    "pk": 430,
-    "fields": {
-        "name": "View Pictogram",
-        "category": "Pictogram",
-        "url_name": "update_pictogram",
-        "permission": [
-            "view_pictogram",
-            "sga",
-            "pictogram"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
-    "pk": 431,
-    "fields": {
-        "name": "Add Pictogram",
-        "category": "Pictogram",
-        "url_name": "add_pictograms",
-        "permission": [
-            "add_pictogram",
-            "sga",
-            "pictogram"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
-    "pk": 432,
-    "fields": {
-        "name": "View Pictogram",
-        "category": "Pictogram",
-        "url_name": "add_pictograms",
-        "permission": [
-            "view_pictogram",
-            "sga",
-            "pictogram"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
-    "pk": 433,
-    "fields": {
-        "name": "View Pictogram",
-        "category": "Pictogram",
-        "url_name": "pictograms_list",
-        "permission": [
-            "view_pictogram",
-            "sga",
-            "pictogram"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
     "pk": 434,
     "fields": {
         "name": "Add Recipient Size",
@@ -20578,9 +20150,9 @@
         "category": "Label SGA",
         "url_name": "delete_sgalabel",
         "permission": [
-            "delete_personaltemplatesga",
+            "delete_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -20592,23 +20164,9 @@
         "category": "Label SGA",
         "url_name": "delete_sgalabel",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
-    "pk": 444,
-    "fields": {
-        "name": "View Danger Indication",
-        "category": "Danger Indication",
-        "url_name": "get_danger_indication",
-        "permission": [
-            "view_dangerindication",
-            "sga",
-            "dangerindication"
+            "displaylabel"
         ]
     }
 },
@@ -20628,29 +20186,15 @@
 },
 {
     "model": "djgentelella.permissionscategorymanagement",
-    "pk": 446,
-    "fields": {
-        "name": "View Label SGA",
-        "category": "Label SGA",
-        "url_name": "get_svgexport",
-        "permission": [
-            "view_personaltemplatesga",
-            "sga",
-            "personaltemplatesga"
-        ]
-    }
-},
-{
-    "model": "djgentelella.permissionscategorymanagement",
     "pk": 447,
     "fields": {
         "name": "View Label SGA",
         "category": "Label SGA",
         "url_name": "get_preview",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
