@@ -398,7 +398,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse({"detail": _("Shelf object substract was performed successfully.")},
+        return JsonResponse({"detail": _("Shelf object was increased successfully.")},
                             status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
@@ -427,7 +427,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        return JsonResponse({"detail": _("Shelf object substract was performed successfully.")}, status=status.HTTP_200_OK)
+        return JsonResponse({"detail": _("Shelf object was decrease successfully.")}, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
