@@ -8,7 +8,8 @@ from rest_framework import serializers
 
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, \
     BuilderInformation, \
-    RecipientSize, Substance, SubstanceObservation, SecurityLeaf, ReviewSubstance
+    RecipientSize, Substance, SubstanceObservation, SecurityLeaf, ReviewSubstance, \
+    DisplayLabel
 
 logger = logging.getLogger('organilab')
 
@@ -170,6 +171,39 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
 
 class ReviewSubstanceDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ReviewSubstanceSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+
+class DisplayLabelSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
+
+    def get_created_by(self, obj):
+        name = None
+        if obj.created_by:
+            name = obj.created_by.get_full_name()
+            if not name:
+                name = obj.created_by.username
+        return name or ''
+
+
+    def get_actions(self, obj):
+        obj_kwargs = {
+            'org_pk': obj.substance.organization.pk
+        }
+        action="actions"
+        return action
+
+    class Meta:
+        model = DisplayLabel
+        fields = ['creation_date', 'created_by', 'name', 'actions']
+
+
+class DisplayLabelDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DisplayLabelSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

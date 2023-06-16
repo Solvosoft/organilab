@@ -16,7 +16,7 @@ from laboratory.utils import organilab_logentry
 from sga.forms import BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, \
     PersonalSGAAddForm, \
     PersonalEditorForm
-from sga.models import Substance, PersonalTemplateSGA, SGAComplement, \
+from sga.models import Substance, DisplayLabel, SGAComplement, \
     SecurityLeaf
 from sga.models import SubstanceCharacteristics, \
     TemplateSGA, Label, ReviewSubstance
@@ -65,7 +65,7 @@ def create_edit_sustance(request, org_pk, pk=None):
                 substance=obj)
             leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=obj)
             template = TemplateSGA.objects.filter(is_default=True).first()
-            personal, created = PersonalTemplateSGA.objects.get_or_create(label=label,
+            personal, created = DisplayLabel.objects.get_or_create(label=label,
                                                                           template=template,
                                                                           user=request.user)
 
@@ -98,7 +98,7 @@ def create_edit_sustance(request, org_pk, pk=None):
 
     label, created_label = Label.objects.get_or_create(substance=instance)
     template = TemplateSGA.objects.get(is_default=True)
-    personal, created = PersonalTemplateSGA.objects.get_or_create(label=label,
+    personal, created = DisplayLabel.objects.get_or_create(label=label,
                                                                   template=template,
                                                                   user=request.user)
     complement, sga_created = SGAComplement.objects.get_or_create(substance=instance)
@@ -208,15 +208,15 @@ def step_two(request, org_pk, pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     complement = get_object_or_404(SGAComplement, pk=pk)
-    personaltemplateSGA = PersonalTemplateSGA.objects.filter(user=request.user,
+    display_label = DisplayLabel.objects.filter(user=request.user,
                                                              label__substance__pk=complement.substance.pk).first()
     context = {}
     if request.method == 'POST':
         pesonalform = PersonalSGAAddForm(request.POST, request.FILES,
-                                         instance=personaltemplateSGA)
+                                         instance=display_label)
         complementform = SGAComplementsForm(request.POST, instance=complement)
         builderinformationform = BuilderInformationForm(request.POST,
-                                                        instance=personaltemplateSGA.label.builderInformation)
+                                                        instance=display_label.label.builderInformation)
         complementform_ok = complementform.is_valid()
         builderinformationform_ok = builderinformationform.is_valid()
         pesonalform_ok = pesonalform.is_valid()
@@ -231,9 +231,9 @@ def step_two(request, org_pk, pk):
             organilab_logentry(request.user, instance, CHANGE, "builder information",
                                changed_data=builderinformationform.changed_data)
 
-            if personaltemplateSGA.label.builderInformation is None:
-                personaltemplateSGA.label.builderInformation = instance
-                personaltemplateSGA.label.save()
+            if display_label.label.builderInformation is None:
+                display_label.label.builderInformation = instance
+                display_label.label.save()
 
         if pesonalform_ok:
             personal_obj = pesonalform.save()
@@ -243,8 +243,8 @@ def step_two(request, org_pk, pk):
 
         if complementform_ok and builderinformationform_ok and pesonalform_ok:
             return redirect(
-                reverse('sga:step_three', kwargs={'template': personaltemplateSGA.pk,
-                                                  'substance': personaltemplateSGA.label.substance.pk,
+                reverse('sga:step_three', kwargs={'template': display_label.pk,
+                                                  'substance': display_label.label.substance.pk,
                                                   'org_pk': org_pk}))
         else:
             messages.error(request, _("Invalid form"))
@@ -253,7 +253,7 @@ def step_two(request, org_pk, pk):
                 'builderinformationform': builderinformationform,
                 'pesonalform': pesonalform,
                 'step': 2,
-                'template': personaltemplateSGA.pk,
+                'template': display_label.pk,
                 'complement': complement.pk,
                 'substance': complement.substance.pk,
                 'org_pk': org_pk
@@ -262,11 +262,11 @@ def step_two(request, org_pk, pk):
     context = {
         'form': SGAComplementsForm(instance=complement),
         'builderinformationform': BuilderInformationForm(
-            instance=personaltemplateSGA.label.builderInformation),
-        'pesonalform': PersonalSGAAddForm(instance=personaltemplateSGA),
+            instance=display_label.label.builderInformation),
+        'pesonalform': PersonalSGAAddForm(instance=display_label),
         'step': 2,
         'complement': complement.pk,
-        'template': personaltemplateSGA.pk,
+        'template': display_label.pk,
         'substance': complement.substance.pk,
         'org_pk': org_pk
     }
@@ -274,35 +274,35 @@ def step_two(request, org_pk, pk):
 
 
 @login_required
-@permission_required('sga.change_personaltemplatesga')
+@permission_required('sga.change_display_label')
 def step_three(request, org_pk, template, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=template)
+    display_label = get_object_or_404(DisplayLabel, pk=template)
     complement = get_object_or_404(SGAComplement, substance__pk=substance)
     user = request.user
 
     if request.method == 'POST':
-        form = PersonalEditorForm(request.POST, instance=personaltemplateSGA)
+        form = PersonalEditorForm(request.POST, instance=display_label)
         if form.is_valid():
             obj = form.save()
             organilab_logentry(user, obj, CHANGE, "Personas template sga",
                                changed_data=form.changed_data)
             return redirect(reverse('sga:step_four', kwargs={
-                'substance': personaltemplateSGA.label.substance.pk,
+                'substance': display_label.label.substance.pk,
                 'org_pk': org_pk}))
 
-    initial = {'name': personaltemplateSGA.name,
-               'template': personaltemplateSGA.template,
-               'barcode': personaltemplateSGA.barcode,
-               'json_representation': personaltemplateSGA.json_representation}
+    initial = {'name': display_label.name,
+               'template': display_label.template,
+               'barcode': display_label.barcode,
+               'json_representation': display_label.json_representation}
 
-    if personaltemplateSGA.label:
-        bi_info = personaltemplateSGA.label.builderInformation
-        initial.update({'substance': personaltemplateSGA.label.substance.pk,
+    if display_label.label:
+        bi_info = display_label.label.builderInformation
+        initial.update({'substance': display_label.label.substance.pk,
                         'commercial_information':
-                            personaltemplateSGA.label.builderInformation.commercial_information if personaltemplateSGA.label.builderInformation else ''})
+                            display_label.label.builderInformation.commercial_information if display_label.label.builderInformation else ''})
 
         if bi_info:
             initial.update({'company_name': bi_info.name,
@@ -310,16 +310,16 @@ def step_three(request, org_pk, template, substance):
                             'address': bi_info.address})
 
     context = {
-        'editorform': PersonalEditorForm(initial=initial, instance=personaltemplateSGA),
-        "instance": personaltemplateSGA,
-        "sgalabel": personaltemplateSGA,
+        'editorform': PersonalEditorForm(initial=initial, instance=display_label),
+        "instance": display_label,
+        "sgalabel": display_label,
         'complement': complement.pk,
         'sga_elements': complement,
         'step': 3,
-        'templateinstance': personaltemplateSGA.template,
-        'template': personaltemplateSGA.pk,
-        'label': personaltemplateSGA.label,
-        'substance': personaltemplateSGA.label.substance.pk,
+        'templateinstance': display_label.template,
+        'template': display_label.pk,
+        'label': display_label.label,
+        'substance': display_label.label.substance.pk,
         'org_pk': org_pk
     }
     return render(request, 'sga/substance/step_three.html', context)
@@ -332,7 +332,7 @@ def step_four(request, org_pk, substance):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
-    personaltemplateSGA = PersonalTemplateSGA.objects.filter(
+    display_label = DisplayLabel.objects.filter(
         label__substance__pk=substance).first()
     complement = SGAComplement.objects.filter(substance__pk=substance).first()
     context = {}
@@ -347,7 +347,7 @@ def step_four(request, org_pk, substance):
     form = SecurityLeafForm(instance=security_leaf)
     context = {'step': 4,
                'complement': complement.pk,
-               'template': personaltemplateSGA.pk,
+               'template': display_label.pk,
                'form': form,
                'provider_form': ProviderSGAForm(),
                'substance': substance,
