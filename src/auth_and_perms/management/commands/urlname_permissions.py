@@ -226,6 +226,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'academic.view_procedure'
         },
         {
+            'name': 'View My Procedure',
+            'category': 'My Procedure',
+            'permission': 'academic.view_myprocedure'
+        },
+        {
             'name': 'View Profile',
             'category': 'Profile',
             'permission': 'auth_and_perms.view_profile'

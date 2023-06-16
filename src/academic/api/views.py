@@ -1,6 +1,10 @@
+from django.conf import settings
+from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
@@ -10,20 +14,19 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from academic.api import serializers
+from academic.api import serializers, filterset
 from academic.api.forms import CommentProcedureStepForm
-from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure
+from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure, Procedure
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
     organization_can_change_laboratory
 from laboratory.models import OrganizationStructure, Laboratory
-from organilab import settings
-from sga.models import ReviewSubstance
 from .serializers import ProcedureStepCommentSerializer, \
     ProcedureStepCommentDatatableSerializer, \
     ProcedureStepCommentFilterSet
 
 
-class ProcedureStepCommentTableView(viewsets.ModelViewSet):
+class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (SessionAuthentication,)
     serializer_class = ProcedureStepCommentDatatableSerializer
@@ -57,7 +60,7 @@ class ProcedureStepCommentTableView(viewsets.ModelViewSet):
         return Response(self.get_serializer(response).data)
 
 
-class ProcedureStepCommentAPI(viewsets.ModelViewSet):
+class ProcedureStepCommentAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication, BaseAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = CommentProcedureStep.objects.all()
@@ -149,7 +152,7 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
                                             {'comments': self.get_queryset().filter(
                                                 procedure_step=comment.procedure_step).order_by(
                                                 'pk'),
-                                             'user': request.user}, request)
+                                                'user': request.user}, request)
 
                 return Response({'data': template}, status=status.HTTP_200_OK)
 
@@ -173,3 +176,83 @@ class ProcedureStepCommentAPI(viewsets.ModelViewSet):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(permission_required('academic.view_myprocedure'), name='dispatch')
+class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.MyProcedureDataTableSerializer
+    queryset = MyProcedure.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['name', 'custom_procedure__title', 'status',
+                     'created_by__first_name', 'created_by__last_name',
+                     'created_by__username']
+    filterset_class = filterset.MyProcedureFilterSet
+    ordering_fields = ['pk']
+    ordering = ('-pk',)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
+            validate_serializer = ValidateUserAccessOrgLabSerializer(
+                data={'laboratory': self.kwargs.get('lab_pk'),
+                      'organization': self.kwargs.get('org_pk')},
+                context={'user': self.request.user})
+            if validate_serializer.is_valid():
+                queryset = queryset.filter(
+                    organization=validate_serializer.validated_data[
+                        'organization']).order_by('-pk')
+            else:
+                queryset = queryset.none()
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': self.get_queryset().count(),
+                    'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)
+
+
+@method_decorator(permission_required('academic.view_procedure'), name='dispatch')
+class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.ProcedureDataTableSerializer
+    queryset = Procedure.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['title', 'description']
+    filterset_class = filterset.ProcedureFilterSet
+    ordering_fields = ['pk']
+    ordering = ('-pk',)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
+            validate_serializer = ValidateUserAccessOrgLabSerializer(
+                data={'laboratory': self.kwargs.get('lab_pk'),
+                      'organization': self.kwargs.get('org_pk')},
+                context={'user': self.request.user})
+            if validate_serializer.is_valid():
+                content = ContentType.objects.get(app_label="laboratory",
+                                                  model="laboratory")
+                queryset = queryset.filter(
+                    object_id=validate_serializer.validated_data['laboratory'].pk,
+                    content_type=content).order_by('-pk')
+            else:
+                queryset = queryset.none()
+        else:
+            queryset = queryset.none()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        data = self.paginate_queryset(queryset)
+        response = {'data': data, 'recordsTotal': self.get_queryset().count(),
+                    'recordsFiltered': queryset.count(),
+                    'draw': self.request.GET.get('draw', 1)}
+        return Response(self.get_serializer(response).data)

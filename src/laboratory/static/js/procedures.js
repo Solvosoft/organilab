@@ -14,35 +14,64 @@ function getCookie(name) {
 }
 
 function get_procedure(pk){
+   $('.form_errors').remove();
+   $("#reservation_form").trigger('reset');
+
     $.ajax({
         url: document.getProcedure,
         type:'POST',
         data:{'pk':pk},
         headers: {'X-CSRFToken': getCookie('csrftoken') },
-        success: function({data}){
-            $('#procedure_title').text(data.title);
-            $('#procedure').val(data.pk);
-        }
+        success: function({title,pk}){
+            $('#procedure_title').text(title);
+            $('#procedure').val(pk);
+            $("#reservation_modal").modal('show');
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.msg;
+               if(errors){
+                     Swal.fire({
+                 title: gettext('Error'),
+                icon: 'error',
+                text: errors,
+            })
+            }
+            }
 
     })
 }
 function add_object(){
   form= new FormData(document.getElementById('object_form'));
+
     $.ajax({
         url: document.save_object,
         type: 'POST',
         data: form,
         processData: false,
         contentType: false,
-        success: function({data, status, msg}) {
+        success: function({data, msg}) {
+
             generate_table(JSON.parse(data));
-            if(!status){
-            Swal.fire({
+            document.getElementById('object_form').reset();
+            $('select').prop('selectedIndex', 0).change();
+            $('.form_errors').remove();
+            $('#object_modal').modal('hide');
+
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.form;
+               if(errors){
+                  $('.form_errors').remove();
+                  form_field_errors(form, errors,".form-group");
+
+               }else{
+                           Swal.fire({
                 icon: 'error',
-                text: msg,
+                text: xhr.responseJSON.msg,
             })
-            }
-        }
+
+               }
+               }
         });
   }
 
@@ -54,26 +83,37 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')"><i class="fa fa-trash"></i> Eliminar</a>
+        <td class="text-center"><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash"></i></a>
               </td>
         </tr>`;
     });
 }
 
 function add_observation(){
-    form= new FormData(document.getElementById('observation_form'));
+    var modal = $("#observation_form");
+    data= new FormData(document.getElementById('observation_form'));
+    var form = modal.find('form');
     $.ajax({
         url: document.save_observation,
         type: 'POST',
-        data: form,
+        data: data,
         processData: false,
         contentType: false,
         success: function({data}) {
         document.getElementById('observation_form').reset();
-            generate_observation_table(JSON.parse(data))
+            generate_observation_table(JSON.parse(data));
+            $("#observation_modal").modal("hide")
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.errors;
+               if(errors){
+                  $('.form_errors').remove();
+                  form_field_errors(form, errors,"#observation_form");
+
+               }
+            }
+        });
         }
-    });
-}
 
 function generate_observation_table(data){
 
@@ -83,35 +123,34 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td><a class="btn btn-md btn-danger" onclick="delete_observation(${item.id})"><i class="fa fa-trash"></i> Eliminar</a></td>
+             <td class="text-center"><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash"></i></a></td>
             </tr>`
 
     });
  }
 
-
 function delete_procedure(pk,procedure_name){
-    open_alert(pk, document.message.confirmprocedure+` ${procedure_name}?`,
-    `${procedure_name} `+ document.message.deletemsg,
-    document.remove_procedure,0);
+    open_alert(pk, gettext('Are you sure to delete the procedure')+` ${procedure_name}?`,
+    `${procedure_name} `+ gettext('has been deleted'),
+    document.remove_procedure,0, gettext('The procedure was not removed'));
 }
 
 function delete_step(pk,step_name){
-    open_alert(pk, document.message.confirmstep+ ` ${step_name}?`,
-    document.message.step+` ${step_name} `+ document.message.deletemsg,
-    document.remove_step,0);
+    open_alert(pk, gettext('Are you sure to delete the step')+ ` ${step_name}?`,
+    gettext('Step')+` ${step_name} `+ gettext('has been deleted'),
+    document.remove_step,0, gettext('The procedure step was not removed'));
 }
 
 function delete_observation(pk){
-    open_alert(pk, document.message.confirmobs,
-    document.message.deleteobs,
-    document.remove_observation,2);
+    open_alert(pk, gettext('Are you sure to delete this observation?'),
+    gettext('Observation has been deleted'),
+    document.remove_observation,2, gettext('The observation was not removed'));
 }
 
 function delete_object(pk,obj_name){
-    open_alert(pk, document.message.confirmobj+ ` ${obj_name}?`,
-    document.message.object+` ${obj_name} `+document.message.deletemsg,
-    document.remove_object,1);
+    open_alert(pk, gettext('Are you sure to delete this object')+ ` ${obj_name}?`,
+    gettext('Object')+` ${obj_name} `+gettext('has been deleted'),
+    document.remove_object,1, gettext('The object was not removed'));
 }
 
 function sendrequest(element,url,action){
@@ -136,7 +175,7 @@ function sendrequest(element,url,action){
       });
 
 }
-function open_alert(pk, in_msg,out_msg,url,action){
+function open_alert(pk, in_msg,out_msg,url,action,msg_cancel){
 const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
     confirmButton: 'btn btn-success',
@@ -147,40 +186,62 @@ const swalWithBootstrapButtons = Swal.mixin({
 
 swalWithBootstrapButtons.fire({
   title: in_msg,
-  text: "Estas a tiempo de revertir esta acción!",
+  text: gettext("You are in time to reverse this action!"),
   icon: 'warning',
   showCancelButton: true,
-  confirmButtonText: 'Si',
+  confirmButtonText: gettext('Yes'),
   cancelButtonText: 'No',
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
-    swalWithBootstrapButtons.fire(
-      'Eliminado!',
-      out_msg,
-      'success'
-    )
+    swalWithBootstrapButtons.fire({
+      title:gettext('Deleted!'),
+      text:out_msg,
+      type:'success'
+    }).then(function(){
      sendrequest(pk,url,action);
+     })
 
 
   } else if (
     result.dismiss === Swal.DismissReason.cancel
   ) {
     swalWithBootstrapButtons.fire(
-      'Cancelado',
-      'El procedimiento no fue eliminado',
+      gettext('Cancelled'),
+      msg_cancel,
       'error'
     )
   }
 })
 }
+function load_errors(error_list, obj,klass){
+    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center'>";
+    error_list.forEach((item)=>{
+        ul_obj += "<li>"+item+"</li>";
+    });
+    ul_obj += "</ul>"
+    $(obj).parents(klass).prepend(ul_obj);
+    return ul_obj;
+}
+
+function form_field_errors(target_form, form_errors,klass){
+    var item = "";
+    for (const [key, value] of Object.entries(form_errors)) {
+        item = "#id_"+key;
+        if($(item).length > 0){
+            load_errors(form_errors[key], item,klass);
+        }
+    }
+}
 
 function add_reservation(){
-  form= new FormData(document.getElementById('reservation_form'));
+  data= new FormData(document.getElementById('reservation_form'));
+    var modal = $("#reservation_form");
+    var form = modal.find('form');
     $.ajax({
         url: document.reservation,
         type: 'POST',
-        data: form,
+        data: data,
         processData: false,
         contentType: false,
         success: function({state, errors}) {
@@ -190,14 +251,44 @@ function add_reservation(){
                     gettext("Reserved"),
                     'success'
             )
+            $("#reservation_modal").modal("hide")
+
             }else{
                 let list=""
                 errors.forEach(element =>
                                     list += `<li class="list-group-item">${element}</li>`
                 );
                 document.querySelector("#list_errors").innerHTML=list;
+                $("#reservation_modal").modal("hide")
+
                 $("#error_reserved").modal('show')
             }
+            document.getElementById('reservation_form').reset();
+
+        },
+        error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON.form;
+               if(errors){
+                  $('.form_errors').remove();
+                  form_field_errors(form, errors,".mb-4");
+
+               }else{
+                   Swal.fire(
+                    xhr.responseJSON.msg,
+                    gettext("Error"),
+                    'error'
+            )
+
+               }
         }
         });
   }
+$(".open_modal").click(function(e){
+   $('.form_errors').remove();
+   var modal_target =$(this).data('bsTarget')
+   var form= $(modal_target).find('form')
+   if(form){
+        $(form).trigger("reset");
+        $('select').prop('selectedIndex', 0).change();
+   }
+})
