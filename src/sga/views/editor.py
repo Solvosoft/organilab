@@ -28,7 +28,7 @@ from sga.forms import SGAEditorForm, EditorForm, PersonalForm, RecipientSizeForm
     SGALabelBuilderInformationForm, PersonalSGAAddForm, CompanyForm
 from sga.models import RecipientSize, WarningWord
 from sga.models import SGAComplement, Substance
-from sga.models import TemplateSGA, PersonalTemplateSGA, Label, BuilderInformation
+from sga.models import TemplateSGA, DisplayLabel, Label, BuilderInformation
 
 register = Library()
 
@@ -107,13 +107,13 @@ def clean_json_text(text):
 
 
 @login_required
-@permission_required('sga.add_personaltemplatesga')
+@permission_required('sga.add_displaylabel')
 def create_personal_template(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     user = request.user
-    personal_templates = PersonalTemplateSGA.objects.filter(user=user)
+    personal_templates = DisplayLabel.objects.filter(user=user)
     filter = Q(community_share=True) | Q(creator=user)
     sga_templates = TemplateSGA.objects.filter(filter)
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates,
@@ -158,20 +158,20 @@ def create_personal_template(request, org_pk):
 
 
 @login_required
-@permission_required('sga.change_personaltemplatesga')
+@permission_required('sga.change_displaylabel')
 def edit_personal_template(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    personaltemplateSGA = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    display_label = get_object_or_404(DisplayLabel, pk=pk)
     user = request.user
 
     if request.method == 'POST':
 
-        form = PersonalSGAForm(request.POST, instance=personaltemplateSGA)
-        label_form = LabelForm(request.POST, instance=personaltemplateSGA.label)
+        form = PersonalSGAForm(request.POST, instance=display_label)
+        label_form = LabelForm(request.POST, instance=display_label.label)
         builder_information_form = BuilderInformationForm(request.POST,
-                                                          instance=personaltemplateSGA.label.builderInformation)
+                                                          instance=display_label.label.builderInformation)
 
         if form.is_valid() and builder_information_form.is_valid() and label_form.is_valid():
             instance = form.save(commit=False)
@@ -198,14 +198,14 @@ def edit_personal_template(request, org_pk, pk):
             }
             return render(request, 'template_edit.html', context)
 
-    initial = {'name': personaltemplateSGA.name,
-               'template': personaltemplateSGA.template,
-               'barcode': personaltemplateSGA.barcotesthtml.htmlde,
-               'json_representation': personaltemplateSGA.json_representation}
+    initial = {'name': display_label.name,
+               'template': display_label.template,
+               'barcode': display_label.barcotesthtml.htmlde,
+               'json_representation': display_label.json_representation}
 
-    if personaltemplateSGA.label:
-        bi_info = personaltemplateSGA.label.builderInformation
-        initial.update({'substance': personaltemplateSGA.label.substance})
+    if display_label.label:
+        bi_info = display_label.label.builderInformation
+        initial.update({'substance': display_label.label.substance})
 
         if bi_info:
             initial.update({'company_name': bi_info.name,
@@ -216,7 +216,7 @@ def edit_personal_template(request, org_pk, pk):
     context = {
         'warningwords': WarningWord.objects.all(),
         'form': SGAEditorForm,
-        "instance": personaltemplateSGA,
+        "instance": display_label,
         "generalform": PersonalForm(user=user, initial=initial),
         'org_pk': org_pk
     }
@@ -224,12 +224,12 @@ def edit_personal_template(request, org_pk, pk):
 
 
 @login_required
-@permission_required('sga.delete_personaltemplatesga')
+@permission_required('sga.delete_displaylabel')
 def delete_sgalabel(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    template = get_object_or_404(DisplayLabel, pk=pk)
     if template.user == request.user:
         template.delete()
         messages.success(request, _("SGA label was deleted successfully"))
@@ -244,7 +244,7 @@ def get_preview(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    template = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    template = get_object_or_404(DisplayLabel, pk=pk)
     return JsonResponse({'svgString': template.json_representation})
 
 
@@ -295,7 +295,7 @@ def sgalabel_step_one(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    sgalabel = get_object_or_404(DisplayLabel, pk=pk)
     builderinformation = sgalabel.label.builderInformation
     sustance = sgalabel.label.substance
     complement = None
@@ -358,7 +358,7 @@ def sgalabel_step_two(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    sgalabel = get_object_or_404(PersonalTemplateSGA, pk=pk)
+    sgalabel = get_object_or_404(DisplayLabel, pk=pk)
     substance = sgalabel.label.substance
     complement = SGAComplement.objects.filter(substance=substance).first()
 

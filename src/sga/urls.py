@@ -8,6 +8,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from .api.labels_viewset import DisplayLabelViewSet
 from .api.review_flow_substance import ReviewSubstanceViewSet
 from .api.substance_viewset import SubstanceViewSet
 from .views import editor
@@ -16,6 +17,7 @@ from .views.substance import views as substance
 router = DefaultRouter()
 router.register('api_substance', SubstanceViewSet, basename='api-substance')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
+router.register('api_labels', DisplayLabelViewSet, basename='api-labels')
 # SGA
 app_name = 'sga'
 
@@ -44,7 +46,7 @@ urlpatterns = [
          name='detail_substance'),
 
     # sga/get_get_templateList
-    path('add_personal/', editor.create_personal_template, name='add_personal'),
+    path('labels/', editor.create_personal_template, name='add_personal'),
     path('edit_personal/<int:pk>', editor.edit_personal_template, name='edit_personal'),
 
     path('delete_sgalabel/<int:pk>', editor.delete_sgalabel, name='delete_sgalabel'),

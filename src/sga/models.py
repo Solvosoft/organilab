@@ -292,8 +292,7 @@ class Label(models.Model):
         verbose_name_plural = _('Labels')
 
 
-class TemplateSGA(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+class TemplateSGA(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     recipient_size = models.ForeignKey(RecipientSize, verbose_name=_("Recipient Size"),
                                        on_delete=models.CASCADE)
@@ -311,8 +310,7 @@ class TemplateSGA(models.Model):
         verbose_name_plural = _('Templates SGA')
 
 
-class PersonalTemplateSGA(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class DisplayLabel(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
     json_representation = models.TextField()
     template = models.ForeignKey(TemplateSGA, verbose_name=_("Template SGA"),
@@ -321,6 +319,7 @@ class PersonalTemplateSGA(models.Model):
                                        verbose_name=_("Recipient size"),
                                        on_delete=models.SET_NULL)
     preview = models.TextField(help_text="B64 preview image", null=True)
+    label_in_png = models.TextField(help_text="B64 image using the recipient size", null=True)
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.CASCADE)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True,
                                blank=True)

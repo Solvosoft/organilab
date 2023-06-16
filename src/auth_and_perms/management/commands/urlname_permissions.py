@@ -785,46 +785,46 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Add Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.add_personaltemplatesga'
+            'permission': 'sga.add_displaylabel'
         },
         {
             'name': 'Change Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.change_personaltemplatesga'
+            'permission': 'sga.change_displaylabel'
         },
         {
             'name': 'Delete Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.delete_personaltemplatesga'
+            'permission': 'sga.delete_displaylabel'
         },
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         },
     ],
     'edit_personal': [
         {
             'name': 'Change Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.change_personaltemplatesga'
+            'permission': 'sga.change_displaylabel'
         },
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         }
     ],
     'template': [
         {
             'name': 'Add Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.add_personaltemplatesga'
+            'permission': 'sga.add_displaylabel'
         },
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         }
     ],
     'editor': [
@@ -2406,17 +2406,17 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Change Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.add_personaltemplatesga'
+            'permission': 'sga.add_displaylabel'
         },
         {
             'name': 'Change Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.change_personaltemplatesga'
+            'permission': 'sga.change_displaylabel'
         },
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         },
         {
             'name': 'Add Label',
@@ -2438,7 +2438,7 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         },
         {
             'name': 'Add Provider',
@@ -2641,12 +2641,12 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'Delete Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.delete_personaltemplatesga'
+            'permission': 'sga.delete_displaylabel'
         },
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         }
     ],
     'prudence': [
@@ -2660,7 +2660,7 @@ URLNAME_PERMISSIONS = {
         {
             'name': 'View Label SGA',
             'category': 'Label SGA',
-            'permission': 'sga.view_personaltemplatesga'
+            'permission': 'sga.view_displaylabel'
         }
     ],
     'get_recipient_size': [

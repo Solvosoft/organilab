@@ -532,7 +532,7 @@
     "pk": 69,
     "fields": {
         "app_label": "sga",
-        "model": "personaltemplatesga"
+        "model": "displaylabel"
     }
 },
 {
@@ -10309,9 +10309,9 @@
         "name": "Can add Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "add_personaltemplatesga"
+        "codename": "add_displaylabel"
     }
 },
 {
@@ -10321,9 +10321,9 @@
         "name": "Can change Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "change_personaltemplatesga"
+        "codename": "change_displaylabel"
     }
 },
 {
@@ -10333,9 +10333,9 @@
         "name": "Can delete Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "delete_personaltemplatesga"
+        "codename": "delete_displaylabel"
     }
 },
 {
@@ -10345,9 +10345,9 @@
         "name": "Can view Personal Template SGA",
         "content_type": [
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ],
-        "codename": "view_personaltemplatesga"
+        "codename": "view_displaylabel"
     }
 },
 {
@@ -13516,24 +13516,24 @@
                 "label"
             ],
             [
-                "add_personaltemplatesga",
+                "add_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
-                "change_personaltemplatesga",
+                "change_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
-                "delete_personaltemplatesga",
+                "delete_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
-                "view_personaltemplatesga",
+                "view_displaylabel",
                 "sga",
-                "personaltemplatesga"
+                "displaylabel"
             ],
             [
                 "add_provider",
@@ -15617,9 +15617,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "add_personaltemplatesga",
+            "add_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15631,9 +15631,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "change_personaltemplatesga",
+            "change_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15645,9 +15645,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "delete_personaltemplatesga",
+            "delete_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15659,9 +15659,9 @@
         "category": "Label SGA",
         "url_name": "add_personal",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15673,9 +15673,9 @@
         "category": "Label SGA",
         "url_name": "edit_personal",
         "permission": [
-            "change_personaltemplatesga",
+            "change_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15687,9 +15687,9 @@
         "category": "Label SGA",
         "url_name": "edit_personal",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15701,9 +15701,9 @@
         "category": "Label SGA",
         "url_name": "template",
         "permission": [
-            "add_personaltemplatesga",
+            "add_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -15715,9 +15715,9 @@
         "category": "Label SGA",
         "url_name": "template",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -19586,9 +19586,9 @@
         "category": "Label SGA",
         "url_name": "step_three",
         "permission": [
-            "add_personaltemplatesga",
+            "add_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -19600,9 +19600,9 @@
         "category": "Label SGA",
         "url_name": "step_three",
         "permission": [
-            "change_personaltemplatesga",
+            "change_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -19614,9 +19614,9 @@
         "category": "Label SGA",
         "url_name": "step_three",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -19670,9 +19670,9 @@
         "category": "Label SGA",
         "url_name": "step_four",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -20146,9 +20146,9 @@
         "category": "Label SGA",
         "url_name": "delete_sgalabel",
         "permission": [
-            "delete_personaltemplatesga",
+            "delete_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -20160,9 +20160,9 @@
         "category": "Label SGA",
         "url_name": "delete_sgalabel",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
@@ -20188,9 +20188,9 @@
         "category": "Label SGA",
         "url_name": "get_preview",
         "permission": [
-            "view_personaltemplatesga",
+            "view_displaylabel",
             "sga",
-            "personaltemplatesga"
+            "displaylabel"
         ]
     }
 },
