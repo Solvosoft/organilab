@@ -960,7 +960,7 @@
   },
   {
     "model": "laboratory.shelfobject",
-    "pk": 4,
+    "pk": 5,
     "fields": {
       "shelf": 1,
       "object": 2,
@@ -1006,7 +1006,7 @@
       "code": "CA777",
       "name": "Cal 100 gr",
       "synonym": null,
-      "type": "0",
+      "type": "1",
       "is_public": true,
       "description": "",
       "model": "",
@@ -1016,6 +1016,21 @@
         1
       ]
     }
+  },
+  {
+      "model": "laboratory.shelfobject",
+      "pk": 6,
+      "fields": {
+        "shelf": 1,
+        "object": 4,
+        "quantity": 2.0,
+        "in_where_laboratory": 1,
+        "limit_quantity": 7.0,
+        "measurement_unit": 63,
+        "marked_as_discard": false,
+        "creation_date": "2023-01-31T19:33:49.240Z",
+        "last_update": "2023-01-31T19:33:49.272Z"
+      }
   },
   {
     "model": "reservations_management.reservedproducts",

@@ -10,11 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
-
-from laboratory.models import Provider, Furniture, LaboratoryRoom, SustanceCharacteristics
-from laboratory.models import REQUESTED
-from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, ShelfObjectContainer, \
-    TranferObject, ShelfObjectObservation
+from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, \
+    TranferObject, ShelfObjectObservation, Provider, Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
 
@@ -172,13 +169,6 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         return data
 
 
-class ContainerShelfObjectSerializer(serializers.Serializer):
-    container = serializers.PrimaryKeyRelatedField(many=False,
-                                                   queryset=Object.objects.filter(type=1).using(
-                                                       settings.READONLY_DATABASE),
-                                                   required=True)
-
-
 def validate_measurement_unit_and_quantity(klass, data, attr):
     errors = {}
     quantity = attr['quantity']
@@ -219,11 +209,14 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
+    # TODO - update this to use the utils method to get the queryset so it matches the one in the form/gtselect - filter by laboratory_id/organization as well somehow
+    container = serializers.PrimaryKeyRelatedField(many=False, required=True,
+                                                   queryset=ShelfObject.objects.using(settings.READONLY_DATABASE).filter(object__type=Object.MATERIAL))
 
     class Meta:
         model = ShelfObject
         fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit', 'limit_quantity', "course_name",
-                  'marked_as_discard', 'batch']
+                  'marked_as_discard', 'batch', 'container']
 
     def validate(self, data):
         attr = super().validate(data)
@@ -242,11 +235,14 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
+    # TODO - update this to use the utils method to get the queryset so it matches the one in the form/gtselect - filter by laboratory_id/organization as well somehow
+    container = serializers.PrimaryKeyRelatedField(many=False, required=True,
+                                                   queryset=ShelfObject.objects.using(settings.READONLY_DATABASE).filter(object__type=Object.MATERIAL))
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity",
-                  "measurement_unit", "marked_as_discard", "course_name", 'batch']
+                  "measurement_unit", "marked_as_discard", "course_name", 'batch', 'container']
 
     def validate(self, data):
         attr = super().validate(data)
@@ -286,7 +282,7 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
-    marked_as_discard = serializers.BooleanField(default=False, required=False)
+    marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
@@ -332,7 +328,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
-    marked_as_discard = serializers.BooleanField(default=False, required=False)
+    marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
@@ -484,16 +480,6 @@ class ShelfSerializer(serializers.ModelSerializer):
                   'percentage_storage_status']
 
 
-class ShelfObjectContainerSerializer(serializers.ModelSerializer):
-    container = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.filter(type=1).using(
-        settings.READONLY_DATABASE), required=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
-
-    class Meta:
-        model = ShelfObjectContainer
-        fields = '__all__'
-
-
 class ShelfObjectStatusSerializer(serializers.Serializer):
     description = serializers.CharField(allow_blank=False, required=True)
 
@@ -541,25 +527,11 @@ class ShelfObjectObservationSerializer(serializers.ModelSerializer):
         return "No creator"
 
 
-
-
 class ShelfObjectObservationDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ShelfObjectObservationSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
-class TransferObjectDenySerializer(serializers.Serializer):
-    transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.filter(status=REQUESTED))
-
-    def validate_transfer_object(self, value):
-        attr = super().validate(value)
-        if attr.laboratory_received_id != self.context.get('laboratory_id'):
-            logger.debug(f'TransferObjectDeleteSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
-                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
-            raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
-        return attr
-
 
 class UpdateShelfObjectStatusSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(many=False,
@@ -650,3 +622,18 @@ class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
         ("2", 'Equipment'))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
     objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
+
+class TransferInSerializer(serializers.Serializer):
+    transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.filter(status=REQUESTED))
+
+    def validate_transfer_object(self, value):
+        attr = super().validate(value)
+        if attr.laboratory_received_id != self.context.get('laboratory_id'):
+            logger.debug(f'TransferObjectDeleteSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
+                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
+            raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
+        return attr
+
+
+class TransferInAcceptSerializer(TransferInSerializer):
+    pass
