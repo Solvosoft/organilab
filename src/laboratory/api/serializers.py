@@ -239,9 +239,8 @@ class BaseShelfObjectSerializer:
             return _('Unknown')
 
     def get_container(self, obj):
-        obj_container = obj.shelfobjectcontainer_set.first()
-        if obj_container:
-            return obj_container.container.name
+        if obj.container:
+            return obj.container.object.name
         return ''
 
 
@@ -298,7 +297,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
             context=context
         )
 
-        pass
+
     class Meta:
         model = ShelfObject
         fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','creator', 'container', 'actions']

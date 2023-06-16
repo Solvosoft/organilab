@@ -4,9 +4,8 @@ from laboratory.tests.utils import BaseLaboratorySetUpTest
 class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
 
     def test_api_approved_reviewsubstance_list_set_limit(self):
-        url = reverse("laboratory:api-reviewsubstance-list")
+        url = reverse("sga:api-reviewsubstance-list", kwargs={"org_pk": self.org.pk})
         data = {
-            "org_pk": self.org.pk,
             "showapprove": "True",
             "offset": 0,
             "limit": 50
@@ -16,9 +15,8 @@ class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "Cal")
 
     def test_api_notapproved_reviewsubstance_list_set_limit(self):
-        url = reverse("laboratory:api-reviewsubstance-list")
+        url = reverse("sga:api-reviewsubstance-list", kwargs={"org_pk": self.org.pk})
         data = {
-            "org_pk": self.org.pk,
             "showapprove": "False",
             "offset": 0,
             "limit": 50
@@ -28,21 +26,15 @@ class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "Sulfuro de calcio")
 
     def test_api_approved_reviewsubstance_list_default_limit(self):
-        url = reverse("laboratory:api-reviewsubstance-list")
-        data = {
-            "org_pk": self.org.pk,
-            "showapprove": "True"
-        }
+        url = reverse("sga:api-reviewsubstance-list", kwargs={"org_pk": self.org.pk})
+        data = {"showapprove": "True" }
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Cal", response.content.decode())
 
     def test_api_notapproved_reviewsubstance_list_default_limit(self):
-        url = reverse("laboratory:api-reviewsubstance-list")
-        data = {
-            "org_pk": self.org.pk,
-            "showapprove": "False"
-        }
+        url = reverse("sga:api-reviewsubstance-list", kwargs={"org_pk": self.org.pk})
+        data = {"showapprove": "False" }
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Sulfuro de calcio", response.content.decode())

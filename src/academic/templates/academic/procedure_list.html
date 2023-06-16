@@ -16,59 +16,20 @@
 {% endblock %}
 {% block title %}{% trans 'Procedure' %}{% endblock %}
 {% block content %}
-    <h2><a href="{% url 'academic:procedure_create' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-primary">
-        <i class="fa fa-plus"></i> {% trans 'Create New Procedure' %}</a></h2>
-
-    <table  id="datatable" class="table table-bordered table-hover">
-        <thead>
-        <tr>
-        <th style="display:none"></th>
-        <th>{% trans 'Title' %}</th>
-        <th>{% trans 'Description' %}</th>
-        <th>{% trans 'Actions' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-            {% for procedure in object_list %}
-                <tr>
-                    <td style="display:none">{{procedure.pk}}</td>
-                    <td>{{procedure.title}}</td>
-                    <td>{{ procedure.description | safe }}</td>
-                    <td>
-                        <div class="d-flex justify-content-center flex-column p-2">
-                        <a class="btn btn-info btn-block" href="{% url 'academic:procedure_detail' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
-                            <i class="fa fa-eye"></i> {{procedure.procedurestep_set.all.count}} Detalle de pasos</a>
-                        <a class="btn btn-success btn-block" href="{% url 'academic:add_steps_wrapper' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}">
-                            <i class="fa fa-plus"></i> {% trans 'New Step' %}</a>
-                        <a href="{% url 'academic:procedure_update' pk=procedure.id lab_pk=laboratory org_pk=org_pk %}" class="btn btn-primary btn-block">
-                           <i class="fa fa-edit"></i> {% trans 'Edit' %}</a>
-                        <a class="btn btn-danger btn-block" onclick="delete_procedure({{procedure.pk}},'{{procedure.title}}')">
-                            <i class="fa fa-trash"></i> {% trans 'Remove' %}</a>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="clearfix">
+    <a href="{% url 'academic:procedure_create' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-success float-end">
+        <i class="fa fa-plus"></i> {% trans 'Create procedure template' %}</a>
+</div>
+<table  id="procedure" class="table table-bordered table-hover"></table>
 {% endblock %}
 
 {% block js %}
 	{{block.super}}
 	<script>
 	    document.remove_procedure="{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
-		var table=$("#datatable").DataTable();
-		table.order( [ 0, 'desc' ] ).draw();
-		const reserved ="{% trans 'Reserved' %}";
-
-		document.message = {
-            'confirmprocedure': "{% trans 'Are you sure to delete the procedure' %}",
-            'confirmobs': "{% trans 'Are you sure to delete this observation?' %}",
-            'confirmobj': "{% trans 'Are you sure to delete this object ' %}",
-            'deletemsg': "{% trans 'has been deleted' %}",
-            'deleteobs': "{% trans 'Observation has been deleted' %}",
-            'object': "{% trans 'Object' %}"
-        }
+	    document.Procedure="{% url 'academic:api-procedure-list' lab_pk=laboratory org_pk=org_pk %}"
 
 	</script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
+    <script src="{% static 'js/procedure_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

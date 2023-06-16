@@ -44,11 +44,11 @@ def donate(request):
             paypal_form = PayPalPaymentsForm(initial=paypal_dict)
             paypal_form.button_type = "donate"
         return render(
-            request, 'donate_organilab.html', {'paypal_form': paypal_form, 'pay': pay, 'form':form})
+            request, 'presentation/donate_organilab.html', {'paypal_form': paypal_form, 'pay': pay, 'form':form})
     else:
         form = DonateForm()
         return render(
-            request, 'donate_organilab.html', {'form': form, 'pay': pay})
+            request, 'presentation/donate_organilab.html', {'form': form, 'pay': pay})
 
 
 def donate_success(request):

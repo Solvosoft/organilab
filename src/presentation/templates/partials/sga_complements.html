@@ -9,27 +9,20 @@
     </a>
     <ul class="nav child_menu">
         <li>
-            <a href="{% url 'academic:warning_words' org_pk %}">
+            <a href="{% url 'sga:warning_words' org_pk %}">
                 {% trans 'Warning Words' %}
             </a>
         </li>
         <li>
-            <a href="{% url 'academic:danger_indications' org_pk %}">
+            <a href="{% url 'sga:danger_indications' org_pk %}">
                 {% trans 'Danger Indication' %}
             </a>
         </li>
         <li>
-            <a href="{% url 'academic:prudence_advices' org_pk %}">
+            <a href="{% url 'sga:prudence_advices' org_pk %}">
                 {% trans 'Prudence Advice' %}
             </a>
         </li>
-        {% if perms.sga.view_pictogram %}
-        <li>
-            <a href="{% url 'sga:pictograms_list' org_pk %}">
-                {% trans 'Pictograms' %}
-            </a>
-        </li>
-        {% endif %}
     </ul>
 </li>
 {% endif %}

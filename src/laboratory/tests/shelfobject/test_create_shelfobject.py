@@ -35,8 +35,7 @@ class CreateShelfobjectTest(TestCase):
                                                    )
         org.users.add(self.user)
         self.client.force_login(self.user)
-        self.material= Object.objects.get(pk=4)
-
+        self.material= ShelfObject.objects.get(pk=6)
     def test_create_shelfobject_material(self):
         """
         Test for API create_shelfobject when the objecttype is 1 and all the data is given correctly

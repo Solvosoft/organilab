@@ -2688,9 +2688,7 @@
       "fields": {
          "description": "Explosivo inestable",
          "warning_words": 1,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-         ],
+     
          "warning_class": [
             65
          ],
@@ -2718,9 +2716,7 @@
       "fields": {
          "description": "Explosivo; peligro explosión en masa",
          "warning_words": 1,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-         ],
+     
          "warning_class": [
             65
          ],
@@ -2746,9 +2742,7 @@
       "fields": {
          "description": "Explosivo; grave peligro de proyección",
          "warning_words": 1,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-         ],
+     
          "warning_class": [
             65
          ],
@@ -2774,9 +2768,7 @@
       "fields": {
          "description": "Explosivo; peligro de incendio, de onda expansiva o de proyección",
          "warning_words": 1,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-         ],
+     
          "warning_class": [
             65
          ],
@@ -2802,9 +2794,7 @@
       "fields": {
          "description": "Peligro de incendio o de proyección",
          "warning_words": 2,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-         ],
+     
          "warning_class": [
             65
          ],
@@ -2828,7 +2818,7 @@
       "fields": {
          "description": "Peligro de expasión en masa en caso de incendio",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             65
          ],
@@ -2854,9 +2844,7 @@
       "fields": {
          "description": "Peligro de incendio, onda expansiva o proyección; mayor riesgo de explosión si se reduce el agente insensibilizante",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             35
          ],
@@ -2886,9 +2874,7 @@
       "fields": {
          "description": "Peligro de incendio o proyección, mayor riesgo de explosión si se reduce el agente insensibilizante",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             35
          ],
@@ -2915,9 +2901,7 @@
       "fields": {
          "description": "Peligro de incendio , mayor riesgo de explosión si se reduce el agente insensibilizante",
          "warning_words": 2,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             35
          ],
@@ -2942,9 +2926,7 @@
       "fields": {
          "description": "Gas extremadamente inflamable",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             8
          ],
@@ -2970,7 +2952,7 @@
       "fields": {
          "description": "Gas inflamable",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             8
          ],
@@ -2995,9 +2977,7 @@
       "fields": {
          "description": "Aerosol extremadamente inflamable",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             11
          ],
@@ -3018,9 +2998,7 @@
       "fields": {
          "description": "Aerosol inflamable",
          "warning_words": 2,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             11
          ],
@@ -3041,9 +3019,7 @@
       "fields": {
          "description": "Liquido y vapores extremadamente inflamables",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             12
          ],
@@ -3071,9 +3047,7 @@
       "fields": {
          "description": "Liquido y vapores muy inflamables",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             12
          ],
@@ -3101,9 +3075,7 @@
       "fields": {
          "description": "Liquido y vapores inflamables",
          "warning_words": 2,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             12
          ],
@@ -3131,7 +3103,7 @@
       "fields": {
          "description": "Liquido combustible",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             12
          ],
@@ -3156,9 +3128,7 @@
       "fields": {
          "description": "Sólido inflamable",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             13
          ],
@@ -3184,9 +3154,7 @@
       "fields": {
          "description": "Contiene gas a presión, puede reventar si se calienta",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             11
          ],
@@ -3209,7 +3177,7 @@
       "fields": {
          "description": "Indicación de peligro adicional: Puede explotar incluso en ausencia de aire",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             8
          ],
@@ -3233,7 +3201,7 @@
       "fields": {
          "description": "Indicación de peligro adicional: Puede explotar incluso en ausencia de aire, a presión y/o temperatura elevadas",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             8
          ],
@@ -3251,9 +3219,7 @@
       "fields": {
          "description": "Puede inflamarse espontáneamente en contacto con el aire",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             8
          ],
@@ -3277,9 +3243,7 @@
       "fields": {
          "description": "Puede explotar al calentarse",
          "warning_words": 1,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo"
-         ],
+     
          "warning_class": [
             26
          ],
@@ -3309,10 +3273,7 @@
       "fields": {
          "description": "Puede  incendiarse o explotar al calentarse",
          "warning_words": 1,
-         "pictograms": [
-            "GHS01 -Bomba Explotando - Explosivo",
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             26
          ],
@@ -3340,9 +3301,7 @@
       "fields": {
          "description": "Puede incendiarse al calentarse",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             26
          ],
@@ -3372,9 +3331,7 @@
       "fields": {
          "description": "Se inflama espontanea en contacto de el aire",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             27
          ],
@@ -3398,9 +3355,7 @@
       "fields": {
          "description": "Se calienta espontáneamente al contacto con e aire",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             29
          ],
@@ -3423,9 +3378,7 @@
       "fields": {
          "description": "Se calienta espontáneamente en grandes cantidades; puede inflamarse",
          "warning_words": 2,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             29
          ],
@@ -3448,9 +3401,7 @@
       "fields": {
          "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             30
          ],
@@ -3478,9 +3429,7 @@
       "fields": {
          "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
          "warning_words": 1,
-         "pictograms": [
-            "GHS02 -Llama - Inflamable"
-         ],
+     
          "warning_class": [
             30
          ],
@@ -3503,9 +3452,7 @@
       "fields": {
          "description": "Puede provocar o agravar un incendio",
          "warning_words": 1,
-         "pictograms": [
-            "GHS03 -Llama sobre círculo - Oxidante"
-         ],
+     
          "warning_class": [
             14
          ],
@@ -3526,9 +3473,7 @@
       "fields": {
          "description": "Puede provocar un incendio o una explosión; muy comburente",
          "warning_words": 1,
-         "pictograms": [
-            "GHS03 -Llama sobre círculo - Oxidante"
-         ],
+     
          "warning_class": [
             31
          ],
@@ -3554,9 +3499,7 @@
       "fields": {
          "description": "Puede agravar un incendio; comburente",
          "warning_words": 1,
-         "pictograms": [
-            "GHS03 -Llama sobre círculo - Oxidante"
-         ],
+     
          "warning_class": [
             31
          ],
@@ -3581,9 +3524,7 @@
       "fields": {
          "description": "Contiene gas a presión; puede explotar si se calienta",
          "warning_words": 2,
-         "pictograms": [
-            "GHS04 -Botella de Gas - Gas Presurizado"
-         ],
+     
          "warning_class": [
             15
          ],
@@ -3603,9 +3544,7 @@
       "fields": {
          "description": "Contiene gas refrigerado, puede provocar quemaduras o lesiones criogénicas",
          "warning_words": 2,
-         "pictograms": [
-            "GHS04 -Botella de Gas - Gas Presurizado"
-         ],
+     
          "warning_class": [
             15
          ],
@@ -3625,9 +3564,7 @@
       "fields": {
          "description": "Puede ser corrosiva para los metales",
          "warning_words": 2,
-         "pictograms": [
-            "GHS05 -Corrosión - Corrosivo"
-         ],
+     
          "warning_class": [
             34
          ],
@@ -3647,9 +3584,7 @@
       "fields": {
          "description": "Mortal en caso de ingestión",
          "warning_words": 1,
-         "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -3663,7 +3598,7 @@
       "fields": {
          "description": "Mortal en caso de ingestión\r\nMortal en contacto con la piel",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3677,7 +3612,7 @@
       "fields": {
          "description": "Mortal en caso de ingestión\r\nMortal en contacto con la piel\r\nMortal si se inhala",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3691,7 +3626,7 @@
       "fields": {
          "description": "Mortal en caso de ingestión\r\nMortal si se inhala",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3715,9 +3650,7 @@
       "fields": {
          "description": "Tóxico en caso de ingestión",
          "warning_words": 1,
-         "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -3741,7 +3674,7 @@
       "fields": {
          "description": "Tóxico en caso de ingestión o en contacto con la piel",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3768,7 +3701,7 @@
       "fields": {
          "description": "Tóxico en caso de ingestión\r\nTóxico en contacto con la piel\r\nTóxico si se inhala",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3796,9 +3729,7 @@
       "fields": {
          "description": "Nocivo en caso de ingestión",
          "warning_words": 2,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -3831,7 +3762,7 @@
       "fields": {
          "description": "Nocivo en caso de ingestión\r\nNocivo en contacto con la piel",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3853,7 +3784,7 @@
       "fields": {
          "description": "Nocivo en caso de ingestión\r\nNocivo en contacto con la piel\r\nNocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3876,7 +3807,7 @@
       "fields": {
          "description": "Nocivo en caso de ingestión\r\nNocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3902,7 +3833,7 @@
       "fields": {
          "description": "Puede ser nocivo en caso de ingestión",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3920,7 +3851,7 @@
       "fields": {
          "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo en contacto con la piel",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3934,7 +3865,7 @@
       "fields": {
          "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3948,7 +3879,7 @@
       "fields": {
          "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -3967,9 +3898,7 @@
       "fields": {
          "description": "Puede ser mortal en caso de ingestión y de penetración en las vías respiratorias",
          "warning_words": 1,
-         "pictograms": [
-            "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico"
-         ],
+     
          "warning_class": [
             57
          ],
@@ -3990,9 +3919,7 @@
       "fields": {
          "description": "Puede ser mortal en caso de ingestión y de penetración en las vías respiratorias",
          "warning_words": 2,
-         "pictograms": [
-            "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico"
-         ],
+     
          "warning_class": [
             57
          ],
@@ -4013,9 +3940,7 @@
       "fields": {
          "description": "Mortal en contacto con la piel",
          "warning_words": 1,
-         "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -4042,7 +3967,7 @@
       "fields": {
          "description": "Mortal en contacto con la piel\r\nMortal si se inhala",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -4075,9 +4000,7 @@
       "fields": {
          "description": "Tóxico en contacto con la piel",
          "warning_words": 1,
-         "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -4101,7 +4024,7 @@
       "fields": {
          "description": "Tóxico en contacto con la piel\r\nTóxico si se inhala",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -4124,9 +4047,7 @@
       "fields": {
          "description": "Nocivo en contacto con la piel",
          "warning_words": 2,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -4149,7 +4070,7 @@
       "fields": {
          "description": "Nocivo en contacto con la piel\r\nNocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -4163,7 +4084,7 @@
       "fields": {
          "description": "Puede ser nocivo en contacto con la piel",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -4181,7 +4102,7 @@
       "fields": {
          "description": "Puede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -4199,9 +4120,7 @@
       "fields": {
          "description": "Provoca graves quemaduras en la piel y lesiones oculares",
          "warning_words": 1,
-         "pictograms": [
-            "GHS05 -Corrosión - Corrosivo"
-         ],
+     
          "warning_class": [
             39,
             40
@@ -4232,9 +4151,7 @@
       "fields": {
          "description": "Provoca irritación cutánea",
          "warning_words": 2,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             39,
             40
@@ -4259,7 +4176,7 @@
       "fields": {
          "description": "Provoca irritación cutánea\r\nProvoca irritación ocular",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             40,
             45
@@ -4288,7 +4205,7 @@
       "fields": {
          "description": "Provoca leve irritación cutánea",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             39,
             40
@@ -4308,9 +4225,7 @@
       "fields": {
          "description": "Puede provocar una reacción cutánea alérgica",
          "warning_words": 2,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             49
          ],
@@ -4335,9 +4250,7 @@
       "fields": {
          "description": "Provoca lesiones oculares graves",
          "warning_words": 1,
-         "pictograms": [
-            "GHS05 -Corrosión - Corrosivo"
-         ],
+     
          "warning_class": [
             44,
             45
@@ -4361,9 +4274,7 @@
       "fields": {
          "description": "Provoca irritación ocular grave",
          "warning_words": 2,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             44,
             45
@@ -4387,7 +4298,7 @@
       "fields": {
          "description": "Provoca irritación ocular",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             44,
             45
@@ -4408,9 +4319,7 @@
       "fields": {
          "description": "Mortal si se inhala",
          "warning_words": 1,
-         "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -4437,9 +4346,7 @@
       "fields": {
          "description": "Tóxico si se inhala",
          "warning_words": 1,
-         "pictograms": [
-            "GHS06 -Calavera y Tibias Cruzadas - Veneno o peligro de muerte"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -4464,9 +4371,7 @@
       "fields": {
          "description": "Nocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             38
          ],
@@ -4487,7 +4392,7 @@
       "fields": {
          "description": "Puede ser nocivo si se inhala",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             38
          ],
@@ -4505,9 +4410,7 @@
       "fields": {
          "description": "Puede provocar sintomas de alergia o asma o dificultades respiratoria si se inhala",
          "warning_words": 1,
-         "pictograms": [
-            "GHS08 -Pecho agrietado - Peligro para la Salud, Mutagénico, Cancerígeno, Reprotóxico"
-         ],
+     
          "warning_class": [
             48
          ],
@@ -4529,9 +4432,7 @@
       "fields": {
          "description": "Puede irritar las vías respiratorias o provocar somnoliencia",
          "warning_words": 1,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             55
          ],
@@ -4553,9 +4454,7 @@
       "fields": {
          "description": "Puede irritar las vías respiratorias o provocar somnoliencia",
          "warning_words": 1,
-         "pictograms": [
-            "GHS07 -Signo de Exclamación - Irritante"
-         ],
+     
          "warning_class": [
             55
          ],
@@ -4579,7 +4478,7 @@
       "fields": {
          "description": "Puede provocar efectos genéticos (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             50
          ],
@@ -4602,7 +4501,7 @@
       "fields": {
          "description": "Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             50
          ],
@@ -4625,7 +4524,7 @@
       "fields": {
          "description": "Puede provocar cáncer (indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             51
          ],
@@ -4648,7 +4547,7 @@
       "fields": {
          "description": "Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             51
          ],
@@ -4671,7 +4570,7 @@
       "fields": {
          "description": "Puede perjudicar la fertilidad o dañar al feto (Indíquese el efecto especiífico si se conoce) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             52
          ],
@@ -4694,7 +4593,7 @@
       "fields": {
          "description": "Susceptible de perjudicar la fertilidad o dañar al feto (Indíquese el efecto especiífico si se conoce) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             52
          ],
@@ -4717,7 +4616,7 @@
       "fields": {
          "description": "Sin palabra de advertencia",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             52
          ],
@@ -4740,7 +4639,7 @@
       "fields": {
          "description": "Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             55
          ],
@@ -4765,7 +4664,7 @@
       "fields": {
          "description": "Puede provocar daños en los órganos (o indíquese todos los órganos afectados, si se conocen) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             55
          ],
@@ -4787,7 +4686,7 @@
       "fields": {
          "description": "Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen)tras exposiciones prolongadas o repetidas (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             56
          ],
@@ -4809,7 +4708,7 @@
       "fields": {
          "description": "Puede provocar daños en los órganos (o indíquese todos los órganos afectados, si se conocen) tras exposiciones prolongadas o repetidas (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             56
          ],
@@ -4829,7 +4728,7 @@
       "fields": {
          "description": "Muy tóxicos para los organismos acuáticos",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             164
          ],
@@ -4848,7 +4747,7 @@
       "fields": {
          "description": "Tóxicos para los organismos acuáticos",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             164
          ],
@@ -4867,7 +4766,7 @@
       "fields": {
          "description": "Nocivo para los organismos acuáticos",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             164
          ],
@@ -4886,7 +4785,7 @@
       "fields": {
          "description": "Muy tóxicos para los organismos acuáticos, con efectos nocivos duraderos",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             163
          ],
@@ -4905,7 +4804,7 @@
       "fields": {
          "description": "Tóxicos para los organismos acuáticos, con efectos nocivos duraderos",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             163
          ],
@@ -4924,7 +4823,7 @@
       "fields": {
          "description": "Nocivos para los organismos acuáticos, con efectos nocivos duraderos",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             163
          ],
@@ -4943,7 +4842,7 @@
       "fields": {
          "description": "Puede ser nocivo para los organismos acuáticos, con efectos nocivos duraderos",
          "warning_words": 1,
-         "pictograms": [],
+     
          "warning_class": [
             163
          ],
@@ -4962,7 +4861,7 @@
       "fields": {
          "description": "Causa daños a la salud pública y el medio ambiente al destruir el ozono en la atmosfera superior",
          "warning_words": 2,
-         "pictograms": [],
+     
          "warning_class": [
             162
          ],
@@ -4981,7 +4880,7 @@
       "fields": {
          "description": "Sin indicación de peligro",
          "warning_words": 3,
-         "pictograms": [],
+     
          "warning_class": [
             7
          ],

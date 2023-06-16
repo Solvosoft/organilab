@@ -116,7 +116,6 @@ DATABASES = {
         'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
         'HOST': os.getenv('DBHOST', '127.0.0.1'),
         'PORT': os.getenv('DBPORT', '5432'),
-
         'TEST': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('DBNAME', 'organilab_test'),
@@ -124,8 +123,8 @@ DATABASES = {
             'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
             'HOST': os.getenv('DBHOST', '127.0.0.1'),
             'PORT': os.getenv('DBPORT', '5432'),
-        }
-    },
+        },
+    }
 }
 
 READONLY_DATABASE = os.getenv('READONLY_DATABASE', 'default')
@@ -292,8 +291,6 @@ PAYPAL_RECEIVER_EMAIL = 'paypal@solvosoft.com'
 MY_PAYPAL_HOST="http://localhost:8000/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-ALLOWED_ORGANILAB_CONTEXT = ['academic', 'laboratory']
-
 
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
