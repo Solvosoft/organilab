@@ -13738,7 +13738,11 @@
     "json_representation": "",
     "community_share": true,
     "preview": null,
-    "is_default": true
+    "is_default": true,
+    "organization": null,
+    "creation_date": "2023-03-08T16:45:15.188Z",
+    "last_update": "2023-03-08T16:45:15.188Z",
+    "created_by": null
   }
 },
 {

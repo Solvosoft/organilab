@@ -67,7 +67,7 @@ def create_edit_sustance(request, org_pk, pk=None):
             template = TemplateSGA.objects.filter(is_default=True).first()
             personal, created = DisplayLabel.objects.get_or_create(label=label,
                                                                           template=template,
-                                                                          user=request.user)
+                                                                          created_by=request.user)
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             # if isValidate_molecular_formula(molecular_formula):
@@ -100,7 +100,7 @@ def create_edit_sustance(request, org_pk, pk=None):
     template = TemplateSGA.objects.get(is_default=True)
     personal, created = DisplayLabel.objects.get_or_create(label=label,
                                                                   template=template,
-                                                                  user=request.user)
+                                                                  created_by=request.user)
     complement, sga_created = SGAComplement.objects.get_or_create(substance=instance)
     leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
 
@@ -208,7 +208,7 @@ def step_two(request, org_pk, pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     complement = get_object_or_404(SGAComplement, pk=pk)
-    display_label = DisplayLabel.objects.filter(user=request.user,
+    display_label = DisplayLabel.objects.filter(created_by=request.user,
                                                              label__substance__pk=complement.substance.pk).first()
     context = {}
     if request.method == 'POST':
