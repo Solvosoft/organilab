@@ -8,12 +8,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from .api.review_flow_substance import ReviewSubstanceViewSet
 from .api.substance_viewset import SubstanceViewSet
 from .views import editor
 from .views.substance import views as substance
 
 router = DefaultRouter()
 router.register('api_substance', SubstanceViewSet, basename='api-substance')
+router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 # SGA
 app_name = 'sga'
 
@@ -21,6 +23,7 @@ app_name = 'sga'
 urlpatterns = [
 
     path('api/', include(router.urls)),
+
     # sga/index_sga/
     path('editor_sga', editor.render_editor_sga, name='index_editor'),
     path('barcode/<str:code>/', editor.get_barcode_from_number,

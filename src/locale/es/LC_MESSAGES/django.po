@@ -330,7 +330,7 @@ msgid "Warning Words"
 msgstr "Palabras de Advertencia"
 
 msgid "Information about the Substance"
-msgstr "Informacion sobre la sustancia"
+msgstr "Información sobre la sustancia"
 
 msgid "Brand"
 msgstr "Marca"

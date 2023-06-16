@@ -2,12 +2,13 @@ import logging
 
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, \
     BuilderInformation, \
-    RecipientSize, Substance, SubstanceObservation
+    RecipientSize, Substance, SubstanceObservation, SecurityLeaf, ReviewSubstance
 
 logger = logging.getLogger('organilab')
 
@@ -66,12 +67,12 @@ class SubstanceSerializer(serializers.ModelSerializer):
         try:
             if not obj:
                 return _("No user found")
-            if not obj.creator:
+            if not obj.created_by:
                 return _("No user found")
 
-            name = obj.creator.get_full_name()
+            name = obj.created_by.get_full_name()
             if not name:
-                name = obj.creator.username
+                name = obj.created_by.username
             return name
         except AttributeError:
             return _("No user found")
@@ -113,3 +114,62 @@ class SubstanceObservationSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 _("Substance observation doesn't exists in this organization"))
         return attr
+
+
+class ReviewSubstanceSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
+    comercial_name = serializers.SerializerMethodField()
+
+    def get_created_by(self, obj):
+        name = None
+        if obj.created_by:
+            name = obj.created_by.get_full_name()
+            if not name:
+                name = obj.created_by.username
+        return name or ''
+
+
+    def get_comercial_name(self, obj):
+        if obj.substance:
+            return obj.substance.comercial_name
+        return ''
+
+    def get_actions(self, obj):
+        obj_kwargs = {
+            'org_pk': obj.substance.organization.pk
+        }
+        obj_kwargs.update({'pk': obj.substance.pk})
+        detail_url = reverse('sga:detail_substance', kwargs=obj_kwargs)
+        security_leaf_pdf_url = reverse('sga:security_leaf_pdf',
+                                        kwargs={'org_pk': obj.substance.organization.pk,
+                                                'substance': obj.substance.pk})
+        action = ""
+
+        if not obj.is_approved:
+            obj_kwargs.update({'pk': obj.pk})
+            approve_url = reverse('sga:accept_substance', kwargs=obj_kwargs)
+            action += """ <a title='%s'  data-url='%s' class ='text-success btn_review'>
+            <i class='icons fa fa-check'></i></a>""" % (_("Approve"), approve_url,)
+
+        action += """<a class ='text-warning m-1' title='%s' href='%s'>
+        <i class='icons fa fa-eye'></i></a>""" \
+                  % (_("Detail"), detail_url,)
+        leaf = SecurityLeaf.objects.filter(substance=obj.substance)
+        if leaf.exists():
+            action += """<a class='text-danger m-1' title='%s' href='%s'>
+            <i class='icons fa fa-file-pdf-o'
+             aria-hidden='true'></i></a>""" % (
+                _("Generate PDF"), security_leaf_pdf_url,)
+        return action
+
+    class Meta:
+        model = ReviewSubstance
+        fields = ['creation_date', 'created_by', 'comercial_name', 'actions']
+
+
+class ReviewSubstanceDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ReviewSubstanceSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

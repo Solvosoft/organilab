@@ -9,50 +9,54 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            {% include 'sgalabel/steps.html' %}
-            <br>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-3">
-                {% include 'editor/sga_live.html' %}
-        </div>
+	<div class="row">
+		<div class="col-md-12">
+			{% include 'sgalabel/steps.html' %}
+			<br>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-3">
+			{% include 'editor/sga_live.html' %}
+		</div>
 
-        <div class="col-9">
-             <form method="post" id="formeditor">{% csrf_token %}
-            <div class="row  mb-3">
-                <div class="col-9">
-                    <div class="card">
-                    <div class="card-body">
-                        {{editorform.as_inline}}
-                    </div>
-                    </div>
-                </div>
-                <div class="col-3">
-<div class="btn-group" role="group">
-        <a type="button" class="btn btn-sm btn-outline-warning" href="{% url 'sga:sgalabel_step_one' org_pk sgalabel.pk %}">
-            <i class="fa fa-reply"></i>  {% trans 'Back' %}
-        </a>
-        <a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' org_pk %}">
-             <i class="fa fa-close"></i> {% trans 'Cancel' %}
-        </a>
-</div>
-                    <div class="row  mt-3 mb-2 p-2 text-center">
-                    <button id="editor_save" type="button" class="btn btn-outline-success">
-            <i class="fa fa-save"></i>  {% trans 'Save' %}
-        </button></div>
-       </div>
-                <div class="m-3 card">
-    <div class="card-body">
-    <iframe id="editoriframe" src="{{request.scheme}}://{{ request.get_host }}{% url 'sga:index_editor' org_pk=org_pk %}?app_label=sga&model=personaltemplatesga&object_id={{sgalabel.pk}}&field=json_representation" width="100%" height="600px"></iframe>
-    </div>
-</div>
-            </div>
-             </form>
-        </div>
-    </div>
+		<div class="col-9">
+			<form method="post" id="formeditor">{% csrf_token %}
+				<div class="row  mb-3">
+					<div class="col-9">
+						<div class="card">
+							<div class="card-body">
+								{{editorform.as_inline}}
+							</div>
+						</div>
+					</div>
+					<div class="col-3">
+						<div class="btn-group" role="group">
+							<a type="button" class="btn btn-sm btn-outline-warning"
+										href="{% url 'sga:sgalabel_step_one' org_pk sgalabel.pk %}">
+								<i class="fa fa-reply"></i> {% trans 'Back' %}
+							</a>
+							<a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'sga:add_personal' org_pk %}">
+								<i class="fa fa-close"></i> {% trans 'Cancel' %}
+							</a>
+						</div>
+						<div class="row  mt-3 mb-2 p-2 text-center">
+							<button id="editor_save" type="button" class="btn btn-outline-success">
+								<i class="fa fa-save"></i> {% trans 'Save' %}
+							</button>
+						</div>
+					</div>
+					<div class="m-3 card">
+						<div class="card-body">
+							<iframe id="editoriframe"
+															src="{{request.scheme}}://{{ request.get_host }}{% url 'sga:index_editor' org_pk=org_pk %}?app_label=sga&model=personaltemplatesga&object_id={{sgalabel.pk}}&field=json_representation"
+															width="100%" height="600px"></iframe>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 
 
 </div>
@@ -61,6 +65,7 @@
 <script>
     document.url_get_recipient_size = "{% url 'sga:get_recipient_size' org_pk 0 %}";
     var json_representation=`{{sgalabel.json_representation|safe}}`;
+
 </script>
 
 <script src="{% static 'sga/js/editor-command.js' %}?v={% get_organilab_version %}"></script>
