@@ -315,3 +315,7 @@ class CompanyForm(forms.ModelForm, GTForm):
             'user': genwidgets.HiddenInput
 
         }
+
+
+class ValidateReviewSubstanceForm(forms.Form):
+    showapprove = forms.BooleanField(required=False)
