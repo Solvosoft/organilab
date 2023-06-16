@@ -10,46 +10,18 @@
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}
 <div class="row">
-  <div class="offset-md-2 col-md-8">
+  <div class="col-md-12">
     <div align="center">
-      <h3 class="heading-1" ><span> {% trans 'My procedures' %}</span></h3>
+      <h3 class="heading-1" ><span> {% trans 'Procedures' %}</span></h3>
       <div class="card">
         <div class="card-header">
-          <h2 class="float-start">{% trans 'My procedures' %}</h2>
-           <a class="btn btn-success float-end create_btn"  data-bs-toggle="modal"
+          <h2 class="float-start">{% trans 'List of procedures' %}</h2>
+           <a class="btn btn-success float-end create_btn open_modal"  data-bs-toggle="modal" title="{% trans 'Add' %}"
             data-bs-target="#add_my_procedures" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>  <ul class="nav navbar-right panel_toolbox"></ul>
           <div class="clearfix"></div>
         </div>
         <div class="card-body">
-          <table id="my_procedures" class="table table-striped table-bordered text-center" style="width:100%">
-            <thead>
-            <tr>
-              <th>{% trans 'Name' %}</th>
-              <th>{% trans 'Template' %}</th>
-              <th>{% trans 'State' %}</th>
-              <th>{% trans 'Actions' %}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for procedure in my_procedures %}
-              <tr>
-                <td>{{procedure.name}}</td>
-                <td>{{procedure.custom_procedure.title}}</td>
-                <td>{{ procedure.get_status_display }}</td>
-                <td>
-                  <a class="btn btn-success" href="{% url 'academic:complete_my_procedure' lab_pk=laboratory org_pk=org_pk pk=procedure.pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
-                  {% show_reserve_button procedure.custom_procedure as show_reserve_btn  %}
-                  {% if show_reserve_btn  %}
-                      <a class="btn btn-dark btn-block" data-bs-target="#reservation_modal" data-bs-toggle="modal" onclick="get_procedure({{procedure.custom_procedure.pk}})"><i class="fa fa-book"></i></a>
-                  {% endif %}
-                  <a class="btn btn-danger" onclick="delete_my_procedure({{ procedure.pk }})"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                </td>
-              </tr>
-
-            {% endfor %}
-
-            </tbody>
-          </table>
+          <table id="my_procedures" class="table table-striped table-bordered text-center" style="width:100%"></table>
         </div>
       </div>
     </div>
@@ -100,7 +72,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-success" type="button" data-bs-dismiss="modal" onclick="add_reservation()">{% trans 'Save changes' %}</button>
+                <button class="btn btn-success" type="button" onclick="add_reservation()">{% trans 'Save changes' %}</button>
             </div>
         </div>
     </div>
@@ -132,6 +104,7 @@
     document.getProcedure="{% url 'academic:get_procedure' lab_pk=laboratory org_pk=org_pk %}"
     document.reservation="{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}"
     document.removeProcedure="{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=0 org_pk=org_pk %}"
+    document.myProcedure="{% url 'academic:api-my-procedure-list' lab_pk=laboratory org_pk=org_pk %}"
 </script>
 <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
 <script src="{% static 'js/my_procedures_list.js' %}?v={% get_organilab_version %}"></script>

@@ -4,12 +4,12 @@
 {% block pre_head %}
     {% define_urlname_action 'procedure_create' %}
 {% endblock %}
-{% block title %}{% trans "Detail of" %} {{ model_verbose_name|lower }}{% endblock %}
+{% block title %}{% trans "Procedure" %}{% endblock %}
 {% block content %}
 
 <div class="card-body">
 
-    <a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}"><i class="fa fa-arrow-left"></i></a>
+    <a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}" title="{% trans 'Back to list' %}"><i class="fa fa-arrow-left"></i></a>
 
     <div class="card-title">
   {% if 'update' in request.path %}
@@ -23,7 +23,7 @@
           {% csrf_token %}
             {{form.as_p | safe}}
             {{ form.media }}
-          <input class="btn btn-success float-end" type="submit" value="{% trans 'Save' %}">
+         <button class="btn btn-success float-end" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}</button>
     </form>
       </div>
 </div>

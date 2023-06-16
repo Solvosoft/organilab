@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 from .models import ProcedureStep, Procedure, MyProcedure, CommentProcedureStep
@@ -23,7 +24,7 @@ class MyProcedureForm(forms.ModelForm, GTForm):
         model = MyProcedure
         fields = ['name', 'custom_procedure']
         widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
-                   'custom_procedure': genwidgets.Select(),
+                   'custom_procedure': genwidgets.Select(attrs={'required':True}),
                    }
 
 
@@ -57,7 +58,7 @@ class ProcedureStepForm(forms.ModelForm,GTForm):
 
 
 class ObservationForm(forms.Form):
-    description = forms.CharField(widget=genwidgets.Textarea(), label= _("Description"))
+    procedure_description = forms.CharField(widget=genwidgets.Textarea(), label= _("Description"), required=True)
 
 
 class ObjectForm(GTForm, forms.Form):
@@ -73,5 +74,30 @@ class StepForm(GTForm, forms.Form):
 
 
 class ReservationForm(GTForm, forms.Form):
-    initial_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=False, label=_("Initial Date"))
-    final_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=False, label=_("Final Date"))
+    initial_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=True, label=_("Initial Date"))
+    final_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=True, label=_("Final Date"))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        initial_date = cleaned_data.get('initial_date')
+        final_date = cleaned_data.get('final_date')
+        if initial_date and final_date:
+          difference= (final_date-initial_date).days
+          if difference<0:
+              self.add_error('final_date', _("Final date can't be lower than initial date"))
+
+
+class ValidateProcedureReservationForm(ReservationForm):
+    procedure= forms.ModelChoiceField(widget=genwidgets.Select(), queryset=Procedure.objects.all(), required=True)
+
+
+class AddObjectStepForm(GTForm, forms.Form):
+    unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key="units"), required=True)
+    object = forms.ModelChoiceField(queryset=Object.objects.all(), required=True)
+    quantity = forms.FloatField(widget=genwidgets.TextInput, required=True, min_value=0.1, validators=[
+        RegexValidator(
+                regex=r'^\d+(\.\d{1,2})?$',
+                message=_('The quantity field receives only decimal numbers'),
+            )],
+    )
+

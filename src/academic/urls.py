@@ -4,7 +4,9 @@ Created on 4 may. 2017
 @author: luis
 '''
 from django.urls import include, path, re_path
+from rest_framework.routers import DefaultRouter
 
+from academic.api.views import MyProceduresAPI, ProcedureAPI
 from academic.views import add_steps_wrapper, ProcedureListView, \
     ProcedureCreateView, ProcedureUpdateView, procedureStepDetail, \
     ProcedureStepCreateView, \
@@ -14,9 +16,13 @@ from academic.views import add_steps_wrapper, ProcedureListView, \
     generate_reservation, create_my_procedures, \
     remove_my_procedure, complete_my_procedure
 
-procedure_url = [
-    re_path('add_steps_wrapper/(?P<pk>\d+)/', add_steps_wrapper,
-            name='add_steps_wrapper'),
+
+myprocedure = DefaultRouter()
+myprocedure.register('api_my_procedure', MyProceduresAPI, basename='api-my-procedure')
+myprocedure.register('api_procedures', ProcedureAPI, basename='api-procedure')
+
+procedure_url =[
+    path('add_steps_wrapper/<int:pk>/', add_steps_wrapper, name='add_steps_wrapper'),
     re_path('save_object/(?P<pk>\d+)/', save_object, name='save_object'),
     re_path('procedure_list/', ProcedureListView.as_view(), name='procedure_list'),
     re_path('procedure_create/', ProcedureCreateView.as_view(),
@@ -49,4 +55,6 @@ procedure_url = [
 
 urlpatterns = [
     path('<int:lab_pk>/procedure/', include(procedure_url)),
+    path('spc/api/<int:lab_pk>/myprocedure/', include(myprocedure.urls)),
 ]
+
