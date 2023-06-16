@@ -113,7 +113,7 @@ def create_personal_template(request, org_pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     user = request.user
-    personal_templates = DisplayLabel.objects.filter(user=user)
+    personal_templates = DisplayLabel.objects.filter(created_by=user)
     filter = Q(community_share=True) | Q(creator=user)
     sga_templates = TemplateSGA.objects.filter(filter)
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates,

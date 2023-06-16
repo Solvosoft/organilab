@@ -19,7 +19,7 @@ class PersonalTemplateForm(GTForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(PersonalTemplateForm, self).__init__(*args, **kwargs)
-        filter = Q(community_share=True) | Q(creator=user)
+        filter = Q(community_share=True) | Q(created_by=user)
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
 
 
