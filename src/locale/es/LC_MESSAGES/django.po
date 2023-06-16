@@ -3850,7 +3850,7 @@ msgid "Created Object"
 msgstr "Objeto creado"
 
 msgid "Unlimited"
-msgstr "ilimitado"
+msgstr "Ilimitado"
 
 msgid "Object is not available in these shelf"
 msgstr "El objeto no está disponible en este estante"

@@ -46,6 +46,12 @@ const tableObject={
             }
             document.prefix=id;
             shelf_action_modals(modalid)
+            if(!$(document.prefix+"without_limit").parent().hasClass('checked')){
+                $(document.prefix+"without_limit").parent().addClass('checked')
+            }
+            if($(document.prefix+"marked_as_discard").parent().hasClass('checked') && !discard){
+                $(document.prefix+"marked_as_discard").parent().removeClass('checked')
+            }
 
     },
     addObject: function( e, dt, node, config ){
