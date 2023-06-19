@@ -2,12 +2,14 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import get_template
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from djgentelella.decorators.perms import any_permission_required
 from weasyprint import HTML
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
@@ -27,6 +29,8 @@ from .forms import DangerIndicationForm, \
 from .forms import ObservationForm, SecurityLeafForm, SustanceObjectForm, \
     SustanceCharacteristicsForm, \
     ReviewSubstanceForm
+from ...api.serializers import SubstanceObservationSerializer, \
+    SubstanceObservationDescriptionSerializer
 
 
 @login_required
@@ -66,8 +70,8 @@ def create_edit_sustance(request, org_pk, pk=None):
             leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=obj)
             template = TemplateSGA.objects.filter(is_default=True).first()
             personal, created = DisplayLabel.objects.get_or_create(label=label,
-                                                                          template=template,
-                                                                          created_by=request.user)
+                                                                   template=template,
+                                                                   created_by=request.user)
 
             molecular_formula = suschacform.cleaned_data["molecular_formula"]
             # if isValidate_molecular_formula(molecular_formula):
@@ -99,8 +103,8 @@ def create_edit_sustance(request, org_pk, pk=None):
     label, created_label = Label.objects.get_or_create(substance=instance)
     template = TemplateSGA.objects.get(is_default=True)
     personal, created = DisplayLabel.objects.get_or_create(label=label,
-                                                                  template=template,
-                                                                  created_by=request.user)
+                                                           template=template,
+                                                           created_by=request.user)
     complement, sga_created = SGAComplement.objects.get_or_create(substance=instance)
     leaf, leaf_created = SecurityLeaf.objects.get_or_create(substance=instance)
 
@@ -163,13 +167,12 @@ def delete_substance(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    substances = Substance.objects.filter(pk=pk).first()
-    if substances:
-        messages.success(request, _("The substance is removed successfully"))
-        organilab_logentry(request.user, substances, DELETION, "substance")
-        Label.objects.filter(substance=substances).delete()
-        substances.delete()
-        return redirect(reverse("sga:get_substance", kwargs={'org_pk': org_pk}))
+
+    substance = get_object_or_404(Substance, pk=pk)
+    Label.objects.filter(substance=substance).delete()
+    substance.delete()
+    organilab_logentry(request.user, substance, DELETION, "substance")
+    messages.success(request, _("The substance is removed successfully"))
     return redirect(reverse("sga:get_substance", kwargs={'org_pk': org_pk}))
 
 
@@ -179,24 +182,23 @@ def detail_substance(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    detail = None
-    observation = None
+
+    substance = get_object_or_404(Substance, pk=pk)
+
     step = 1
     if 'step' in request.session:
         step = request.session['step']
         del request.session['step']
 
-    if pk:
-        detail = get_object_or_404(Substance, pk=int(pk))
-        observation = SubstanceObservation.objects.filter(substance=detail)
+    observation = SubstanceObservation.objects.filter(substance=substance,
+                                                      substance__organization=org_pk)
     context = {
-        'object': detail,
+        'object': substance,
         'observations': observation,
         'observationForm': ObservationForm(),
         'step': step,
         'url': reverse('sga:add_observation',
-                       kwargs={'org_pk': org_pk, 'substance': pk}),
-        'org_pk': org_pk
+                       kwargs={'org_pk': org_pk, 'substance': pk}), 'org_pk': org_pk
     }
     return render(request, "sga/substance/detail.html", context=context)
 
@@ -209,7 +211,7 @@ def step_two(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     complement = get_object_or_404(SGAComplement, pk=pk)
     display_label = DisplayLabel.objects.filter(created_by=request.user,
-                                                             label__substance__pk=complement.substance.pk).first()
+                                                label__substance__pk=complement.substance.pk).first()
     context = {}
     if request.method == 'POST':
         pesonalform = PersonalSGAAddForm(request.POST, request.FILES,
@@ -380,12 +382,22 @@ def security_leaf_pdf(request, org_pk, substance):
 
 
 @login_required
-def add_sga_complements(request, org_pk, *args, **kwargs):
+@any_permission_required(
+    ['sga.add_prudenceadvice', 'sga.add_dangerindication', 'sga.add_warningword'])
+def add_sga_complements(request, org_pk, element):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    element = kwargs['element']
-    form = None
+
+    perm = {
+        'warning': 'sga.add_warningword',
+        'danger': 'sga.add_dangerindication',
+        'prudence': 'sga.add_prudenceadvice',
+    }
+
+    if not request.user.has_perm(perm[element]):
+        raise PermissionDenied
+
     urls = {'warning': 'sga:add_warning_word',
             'danger': 'sga:add_danger_indication',
             'prudence': 'sga:add_prudence_advice',
@@ -411,13 +423,7 @@ def add_sga_complements(request, org_pk, *args, **kwargs):
         form = forms[element]
 
         if form.is_valid():
-            obj = form.save()
-
-            model_name = {
-                'warning': 'warning word',
-                'danger': 'danger indication',
-                'prudence': 'prudence advice'
-            }
+            form.save()
             return redirect(reverse(view_urls[element], kwargs={'org_pk': org_pk}))
 
     else:
@@ -439,7 +445,7 @@ def view_danger_indications(request, org_pk, *args, **kwargs):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    listado = list(DangerIndication.objects.all())
+    listado = DangerIndication.objects.all()
     return render(request, 'sga/substance/danger_indication.html',
                   context={'listado': listado, 'org_pk': org_pk})
 
@@ -472,33 +478,23 @@ def add_observation(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    obj = None
-    form = None
+
+    substance_obj = get_object_or_404(Substance, pk=substance)
+    request.session['step'] = 2
 
     if substance and request.method == 'POST':
-        substance_obj = get_object_or_404(Substance, pk=int(substance))
-
         form = ObservationForm(request.POST)
+
         if form.is_valid():
             obj = form.save(commit=False)
             obj.substance = substance_obj
             obj.creator = request.user
-            request.session['step'] = 2
             obj.save()
             organilab_logentry(request.user, obj, ADDITION, "substance observation",
                                changed_data=form.changed_data)
-            messages.success(request, 'Se Guardo correctamente')
-            return redirect(reverse('sga:detail_substance',
-                                    kwargs={'org_pk': org_pk, 'pk': substance}))
+            messages.success(request, _("Observation was saved successfully"))
         else:
-            request.session['step'] = 2
-            messages.error(request, 'Datos invalidos')
-            return redirect(reverse('sga:detail_substance',
-                                    kwargs={'org_pk': org_pk, 'pk': substance}))
-    else:
-        request.session['step'] = 2
-        return redirect(
-            reverse('sga:detail_substance', kwargs={'org_pk': org_pk, 'pk': substance}))
+            messages.error(request, _("Invalid Form"))
     return redirect(
         reverse('sga:detail_substance', kwargs={'org_pk': org_pk, 'pk': substance}))
 
@@ -509,21 +505,23 @@ def update_observation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    if request.method == 'POST':
 
-        substance_obj = get_object_or_404(SubstanceObservation,
-                                          pk=int(request.POST.get('pk')))
-        if substance_obj:
-            substance_obj.description = request.POST.get('description', '')
+    response = {'status': False}
+
+    if request.method == 'POST':
+        serializer = SubstanceObservationDescriptionSerializer(data=request.POST,
+                                                               context={
+                                                                   "organization_id": org_pk})
+
+        if serializer.is_valid():
+            substance_obj = serializer.validated_data['pk']
+            substance_obj.description = serializer.validated_data['description']
             substance_obj.save()
             organilab_logentry(request.user, substance_obj, CHANGE,
                                "substance observation", changed_data=['description'])
             request.session['step'] = 2
-
-            return JsonResponse({'status': True})
-        else:
-            return JsonResponse({'status': False})
-    return JsonResponse({'status': False})
+            response['status'] = True
+    return JsonResponse(response)
 
 
 @login_required
@@ -532,19 +530,21 @@ def delete_observation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    if request.method == 'POST':
 
-        substance_obj = get_object_or_404(SubstanceObservation,
-                                          pk=int(request.POST.get('pk')))
-        if substance_obj:
+    response = {'status': False}
+
+    if request.method == 'POST':
+        serializer = SubstanceObservationSerializer(data=request.POST,
+                                                    context={"organization_id": org_pk})
+
+        if serializer.is_valid():
+            substance_obj = serializer.validated_data['pk']
+            substance_obj.delete()
             organilab_logentry(request.user, substance_obj, DELETION,
                                "substance observation")
-            substance_obj.delete()
             request.session['step'] = 2
-            return JsonResponse({'status': True})
-        else:
-            return JsonResponse({'status': False})
-    return JsonResponse({'status': False})
+            response['status'] = True
+    return JsonResponse(response)
 
 
 @login_required
@@ -554,7 +554,6 @@ def change_warning_word(request, org_pk, pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     instance = get_object_or_404(WarningWord, pk=pk)
-    form = None
     context = {}
 
     if request.method == 'POST':
@@ -584,7 +583,6 @@ def change_prudence_advice(request, org_pk, pk, *args, **kwargs):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     instance = get_object_or_404(PrudenceAdvice, pk=pk)
-    form = None
     context = {}
 
     if request.method == 'POST':
@@ -614,7 +612,6 @@ def change_danger_indication(request, org_pk, pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     instance = get_object_or_404(DangerIndication, pk=pk)
-    form = None
     context = {}
 
     if request.method == 'POST':
@@ -644,14 +641,20 @@ def add_sga_provider(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    form = ProviderSGAForm(request.POST)
 
-    if form.is_valid():
-        provider = form.save(commit=False)
-        provider.save()
-        organilab_logentry(request.user, provider, ADDITION, "provider",
-                           changed_data=form.changed_data)
-        return JsonResponse(
-            {'result': True, 'provider_pk': provider.pk, 'provider': provider.name})
-    else:
-        return JsonResponse({'result': False})
+    response = {'status': False}
+
+    if request.method == 'POST':
+        form = ProviderSGAForm(request.POST)
+
+        if form.is_valid():
+            provider = form.save(commit=False)
+            provider.save()
+            organilab_logentry(request.user, provider, ADDITION, "provider",
+                               changed_data=form.changed_data)
+            response.update({
+                'result': True,
+                'provider_pk': provider.pk,
+                'provider': provider.name
+            })
+    return JsonResponse(response)
