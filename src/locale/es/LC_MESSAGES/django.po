@@ -3905,3 +3905,6 @@ msgstr "Crear plantilla de procedimientos"
 
 msgid "View Steps"
 msgstr "Ver pasos"
+
+msgid "Procedure template list"
+msgstr "Lista de plantillas de procedimientos"

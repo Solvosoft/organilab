@@ -76,7 +76,9 @@
 {% block js %}
 
     <script>
-        document.remove_step="{% url 'academic:delete_step' lab_pk=laboratory org_pk=org_pk %}";
+        document.urls={
+        							remove_step: "{% url 'academic:delete_step' lab_pk=laboratory org_pk=org_pk %}"
+        							}
     </script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
 

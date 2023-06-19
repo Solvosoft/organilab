@@ -18,7 +18,7 @@ function get_procedure(pk){
    $("#reservation_form").trigger('reset');
 
     $.ajax({
-        url: document.getProcedure,
+        url: document.urls['get_procedures'],
         type:'POST',
         data:{'pk':pk},
         headers: {'X-CSRFToken': getCookie('csrftoken') },
@@ -44,7 +44,7 @@ function add_object(){
   form= new FormData(document.getElementById('object_form'));
 
     $.ajax({
-        url: document.save_object,
+        url: document.urls["save_object"],
         type: 'POST',
         data: form,
         processData: false,
@@ -94,7 +94,7 @@ function add_observation(){
     data= new FormData(document.getElementById('observation_form'));
     var form = modal.find('form');
     $.ajax({
-        url: document.save_observation,
+        url: document.urls["save_observation"],
         type: 'POST',
         data: data,
         processData: false,
@@ -132,25 +132,25 @@ function generate_observation_table(data){
 function delete_procedure(pk,procedure_name){
     open_alert(pk, gettext('Are you sure to delete the procedure')+` ${procedure_name}?`,
     `${procedure_name} `+ gettext('has been deleted'),
-    document.remove_procedure,0, gettext('The procedure was not removed'));
+    document.urls["remove_procedure"],0, gettext('The procedure was not removed'));
 }
 
 function delete_step(pk,step_name){
     open_alert(pk, gettext('Are you sure to delete the step')+ ` ${step_name}?`,
     gettext('Step')+` ${step_name} `+ gettext('has been deleted'),
-    document.remove_step,0, gettext('The procedure step was not removed'));
+    document.urls["remove_step"],0, gettext('The procedure step was not removed'));
 }
 
 function delete_observation(pk){
     open_alert(pk, gettext('Are you sure to delete this observation?'),
     gettext('Observation has been deleted'),
-    document.remove_observation,2, gettext('The observation was not removed'));
+    document.urls["remove_observation"],2, gettext('The observation was not removed'));
 }
 
 function delete_object(pk,obj_name){
     open_alert(pk, gettext('Are you sure to delete this object')+ ` ${obj_name}?`,
     gettext('Object')+` ${obj_name} `+gettext('has been deleted'),
-    document.remove_object,1, gettext('The object was not removed'));
+    document.urls["remove_object"],1, gettext('The object was not removed'));
 }
 
 function sendrequest(element,url,action){
@@ -239,7 +239,7 @@ function add_reservation(){
     var modal = $("#reservation_form");
     var form = modal.find('form');
     $.ajax({
-        url: document.reservation,
+        url: document.urls["add_reservation"],
         type: 'POST',
         data: data,
         processData: false,
