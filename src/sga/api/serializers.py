@@ -9,7 +9,7 @@ from rest_framework import serializers
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, \
     BuilderInformation, \
     RecipientSize, Substance, SubstanceObservation, SecurityLeaf, ReviewSubstance, \
-    DisplayLabel
+    DisplayLabel, WarningWord
 
 logger = logging.getLogger('organilab')
 
@@ -35,7 +35,7 @@ class PrudenceAdviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PrudenceAdvice
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'prudence_advice_help']
 
 
 class SGAComplementSerializer(serializers.ModelSerializer):
@@ -204,6 +204,41 @@ class DisplayLabelSerializer(serializers.ModelSerializer):
 
 class DisplayLabelDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=DisplayLabelSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class WarningWordSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WarningWord
+        fields = '__all__'
+
+
+class WarningWordDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=WarningWordSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class DangerIndicationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DangerIndication
+        fields = ['code', 'description', 'warning_words']
+
+
+class DangerIndicationDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DangerIndicationSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class PrudenceAdviceDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=PrudenceAdviceSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
