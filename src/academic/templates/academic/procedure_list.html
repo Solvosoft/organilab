@@ -14,11 +14,11 @@
     {% define_urlname_action 'procedure_detail' %}
     {% define_urlname_action 'generate_reservation' %}
 {% endblock %}
-{% block title %}{% trans 'Procedure' %}{% endblock %}
+{% block title %}{% trans 'Procedure templates' %}{% endblock %}
 {% block content %}
 <div class="container-fluid">
 	<h3 class="text-center">{% trans "Procedure template list" %}</h3>
-	<table  id="procedure" class="table table-bordered table-hover"></table>
+	<table  id="procedure" class="table table-bordered table-hover table-striped" width="100%"></table>
 </div>
 {% endblock %}
 
@@ -26,9 +26,9 @@
 	{{block.super}}
 	<script>
         document.urls={
-            create_procedure: "{% url 'academic:procedure_create' org_pk=org_pk lab_pk=laboratory %}",
-            remove_procedure: "{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}",
-            get_procedures: "{% url 'academic:api-procedure-list' lab_pk=laboratory org_pk=org_pk %}"
+            create_procedure: "{% url 'academic:procedure_create' org_pk=org_pk %}",
+            remove_procedure: "{% url 'academic:delete_procedure'  org_pk=org_pk %}",
+            get_procedures: "{% url 'academic:api-procedure-list' org_pk=org_pk %}"
         }
 	</script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>

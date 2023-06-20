@@ -16,13 +16,13 @@
 {% trans "Unknown" as default_value %}
 
 <div class="clearfix mb-2">
-	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}"
+	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk %}"
 				title="{% trans 'Back to list' %}"> <i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-	<a href="{% url 'academic:procedure_update' pk=procedure lab_pk=laboratory org_pk=org_pk %}"
+	<a href="{% url 'academic:procedure_update' pk=procedure org_pk=org_pk %}"
 				class="btn btn-success float-end">
 		<i class="fa fa-edit"></i> {% trans 'Edit template' %}</a>
 </div>
-<h1 class="text-center">{{object.title}}</h1>
+<h1 class="text-center">{{object.title|default_if_none:""}}</h1>
 <div class="container">{{object.description|safe}}</div>
 <h3>{% trans 'Steps' %}: </h3>
 {% for step in object.procedurestep_set.all %}
@@ -36,12 +36,12 @@
 				<span class="fa fa-trash text-danger" aria-hidden="true"></span>
 			</a>
 			<a class="btn float-end" title="{% trans 'Edit' %}"
-						href="{% url 'academic:update_step' pk=step.pk lab_pk=laboratory org_pk=org_pk %}">
+						href="{% url 'academic:update_step' pk=step.pk org_pk=org_pk %}">
 				<span class="fa fa-edit text-success" title="{% trans 'Edit' %}" aria-hidden="true"></span>
 			</a>
 		</div>
 	<div class="card-body collapse {% if forloop.counter == 1 %}show {% endif %}" id="collapse_{{step.pk}}">
-		<div class="container">{{step.description|safe}}</div>
+		<div class="container">{{step.description|default:""|safe}}</div>
 		<hr>
 		<h3>{% trans 'Required objects' %}</h3>
 		<ul class="list-group">
@@ -67,7 +67,7 @@
 </div>
 {% endfor %}
 <div class="d-flex justify-content-center">
-	<a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-primary mt-3">
+	<a href="{% url 'academic:procedure_list' org_pk=org_pk %}" class="btn btn-primary mt-3">
 		<i class="fa fa-undo"></i> {% trans "Back to list" %}
 	</a>
 </div>
@@ -78,7 +78,7 @@
 
 <script>
 document.urls={
-        							remove_step: "{% url 'academic:delete_step' lab_pk=laboratory org_pk=org_pk %}"
+        							remove_step: "{% url 'academic:delete_step' org_pk=org_pk %}"
         							}
 </script>
 <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>

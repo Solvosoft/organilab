@@ -10,10 +10,10 @@
 {% define_urlname_action 'remove_object' %}
 {% define_urlname_action 'procedure_list' %}
 {% endblock %}
-{% block title %}{% trans "Procedures" %}{% endblock %}
+{% block title %}{% trans "Procedures Steps" %}{% endblock %}
 {% block content %}
 <div class="card-body">
-	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}"
+	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk %}"
 				title="{% trans 'Back to list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
 	<h1 class="card-title text-center">{% trans 'Create Step' %}</h1>
 	<div class="card">
@@ -102,10 +102,10 @@
 {% block js %}
 <script>
 	document.urls = {
-								save_object: "{% url 'academic:save_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}",
-								remove_object: "{% url 'academic:remove_object' pk=step.id lab_pk=laboratory org_pk=org_pk %}",
-								save_observation: "{% url 'academic:add_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}",
-								remove_observation: "{% url 'academic:remove_observation' pk=step.id lab_pk=laboratory org_pk=org_pk %}"
+								save_object: "{% url 'academic:save_object' pk=step.id org_pk=org_pk %}",
+								remove_object: "{% url 'academic:remove_object' pk=step.id org_pk=org_pk %}",
+								save_observation: "{% url 'academic:add_observation' pk=step.id org_pk=org_pk %}",
+								remove_observation: "{% url 'academic:remove_observation' pk=step.id org_pk=org_pk %}"
 			}
 </script>
 <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
