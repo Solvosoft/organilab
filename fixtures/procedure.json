@@ -5,19 +5,18 @@
     "fields": {
       "password": "pbkdf2_sha256$320000$f85Ke2ZXlAnDIGR2e1Qn6Q$o8w7pDEOEHtdKGzRBAK4EQh+xiITzvjoPI1wb+6D2VE=",
       "last_login": "2023-01-10T22:49:30.603Z",
-      "is_superuser": false,
+      "is_superuser": true,
       "username": "gus0811",
       "first_name": "Gustavo",
       "last_name": "Mora Blanco",
       "email": "gmorablanco@hotmail.org",
-      "is_staff": false,
+      "is_staff": true,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
       "user_permissions": []
     }
   },
-
   {
     "model": "auth_and_perms.profile",
     "pk": 1,
@@ -161,8 +160,16 @@
       "name": "Organización de Estudiantes",
       "position": 1,
       "level": 1,
-      "rol": [1, 2, 3, 4, 5],
-      "users": [1]
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "users": [
+        1
+      ]
     }
   },
   {
