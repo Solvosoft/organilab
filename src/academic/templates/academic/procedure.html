@@ -12,20 +12,15 @@
 <div class="row">
   <div class="col-md-12">
     <div align="center">
-      <h3 class="heading-1" ><span> {% trans 'Procedures' %}</span></h3>
-      <div class="card">
-        <div class="card-header">
-          <h2 class="float-start">{% trans 'List of procedures' %}</h2>
-          </div>
-        <div class="card-body">
-          <table id="my_procedures" class="table table-striped table-bordered text-center" style="width:100%"></table>
-        </div>
+      <h3 class="title" ><span> {% trans 'List of procedures' %}</span></h3>
+					<table id="my_procedures" class="table table-striped table-bordered text-center" style="width:100%"></table>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="add_my_procedures" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="add_my_procedures" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+					aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -99,7 +94,6 @@
 {% block js %}
 <script>
     document.urls= {
-        get_procedures: "{% url 'academic:get_procedure' lab_pk=laboratory org_pk=org_pk %}",
         add_reservation: "{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}",
         remove_procedure: "{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=0 org_pk=org_pk %}",
         get_my_procedures: "{% url 'academic:api-my-procedure-list' lab_pk=laboratory org_pk=org_pk %}"

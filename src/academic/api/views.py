@@ -23,7 +23,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
 from laboratory.models import OrganizationStructure, Laboratory
 from .serializers import ProcedureStepCommentSerializer, \
     ProcedureStepCommentDatatableSerializer, \
-    ProcedureStepCommentFilterSet
+    ProcedureStepCommentFilterSet, ValidateUserAccessOrgSerializer
 
 
 class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -224,7 +224,7 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
 class ProcedureAPI(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    authentication_classes = [SessionAuthentication]
+    authentication_classes = [SessionAuthentication, BaseAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.ProcedureDataTableSerializer
     queryset = Procedure.objects.all()
@@ -234,28 +234,28 @@ class ProcedureAPI(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     filterset_class = filterset.ProcedureFilterSet
     ordering_fields = ['pk']
     ordering = ('-pk',)
-    laboratory = None
+    organization = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
         content = ContentType.objects.get(app_label="laboratory",
-                                          model="laboratory")
-        if self.laboratory:
+                                          model="organizationstructure")
+
+        if self.organization:
             queryset = queryset.filter(
-                object_id=self.laboratory,
+                object_id=self.organization,
                 content_type=content).order_by('-pk')
         else:
             queryset = queryset.none()
 
         return queryset
 
-    def list(self, request, org_pk, lab_pk, *args, **kwargs):
-        self.laboratory = lab_pk
+    def list(self, request, org_pk, *args, **kwargs):
+        self.organization=org_pk
         queryset = self.filter_queryset(self.get_queryset())
-        validate_serializer = ValidateUserAccessOrgLabSerializer(
-            data={'laboratory': lab_pk,
-                  'organization': org_pk},
+        validate_serializer = ValidateUserAccessOrgSerializer(
+            data={'organization': org_pk},
             context={'user': self.request.user})
         if validate_serializer.is_valid():
             data = self.paginate_queryset(queryset)

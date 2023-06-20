@@ -13,14 +13,13 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function get_procedure(pk){
+function get_procedure(element){
    $('.form_errors').remove();
    $("#reservation_form").trigger('reset');
-
+    let url = $(element).data('url')
     $.ajax({
-        url: document.urls['get_procedures'],
-        type:'POST',
-        data:{'pk':pk},
+        url: url,
+        type:'GET',
         headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function({title,pk}){
             $('#procedure_title').text(title);
