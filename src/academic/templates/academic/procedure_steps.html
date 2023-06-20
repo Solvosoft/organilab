@@ -18,13 +18,15 @@
 	<h1 class="card-title text-center">{% trans 'Create Step' %}</h1>
 	<div class="card">
 		<div class="card-body">
-			<form method="post">
+			<form method="post" id="form_step">
 				{% csrf_token %}
 				{{form.as_p | safe}}
 				{{ form.media }}
-				<button class="btn btn-success float-end" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i>
-					{% trans 'Save' %}
-				</button>
+				<div class="text-center">
+							<button class="btn btn-success step_save" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+								{% trans 'Save' %}
+							</button>
+					</div>
 			</form>
 		</div>
 	</div>
@@ -88,6 +90,11 @@
 			</table>
 		</div>
 	</div>
+					<div class="text-center mt-2">
+							<button class="btn btn-success" id="save_step"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+								{% trans 'Save' %}
+							</button>
+					</div>
 </div>
 {% include 'academic/step_modal.html'%}
 {% endblock %}

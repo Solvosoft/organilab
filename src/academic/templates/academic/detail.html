@@ -5,82 +5,83 @@
 
 
 {% block pre_head %}
-    {% define_urlname_action 'procedure_update' %}
-    {% define_urlname_action 'delete_step' %}
-    {% define_urlname_action 'procedure_detail' %}
-    {% define_urlname_action 'update_step' %}
-    {% define_urlname_action 'procedure_list' %}
+{% define_urlname_action 'procedure_update' %}
+{% define_urlname_action 'delete_step' %}
+{% define_urlname_action 'procedure_detail' %}
+{% define_urlname_action 'update_step' %}
+{% define_urlname_action 'procedure_list' %}
 {% endblock %}
 {% block title %}{% trans 'Procedures' %}{% endblock %}
 {% block content %}
 {% trans "Unknown" as default_value %}
+
 <div class="clearfix mb-2">
-<a href="{% url 'academic:procedure_update' pk=procedure lab_pk=laboratory org_pk=org_pk %}" class="btn btn-success float-end">
-    <i class="fa fa-edit"></i> {% trans 'Edit template' %}</a>
+	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}"
+				title="{% trans 'Back to list' %}"> <i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+	<a href="{% url 'academic:procedure_update' pk=procedure lab_pk=laboratory org_pk=org_pk %}"
+				class="btn btn-success float-end">
+		<i class="fa fa-edit"></i> {% trans 'Edit template' %}</a>
 </div>
-<div class="card p-2">
-    <div class="card-title">
-        <h1 class="text-center">{{object.title}}</h1>
-    </div>
-    <div class="container">{{object.description|safe}}</div>
-    <h3>{% trans 'Steps' %}: </h3>
-    {% for step in object.procedurestep_set.all %}
-    <div class="row m-0 b-0 p-0">
-        <div class="card  p-2 mt-2">
-            <div class="card-header">
-                <h3 class="card-title">{{forloop.counter}} - {{step.title|default:default_value}}
-                    <a class="btn float-end" title="{% trans 'Remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
-                        <span class="fa fa-trash text-danger" aria-hidden="true"></span>
-                    </a>
-                    <a class="btn float-end" title="{% trans 'Edit' %}" href="{% url 'academic:update_step' pk=step.pk lab_pk=laboratory org_pk=org_pk %}">
-                        <span class="fa fa-edit text-success" title="{% trans 'Edit' %}"aria-hidden="true"></span>
-                    </a>
-                </h3>
-            </div>
-            <div class="card-body">
-                <div class="container">{{step.description|safe}}</div>
-                <hr>
-                <h3>{% trans 'Required objects' %}</h3>
-                <ul class="list-group">
-                    {% for obj in step.procedurerequiredobject_set.all %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center fw-bold">
-                            {{obj.object}}
-                            <span class="badge bg-primary badge-pill">{{obj.quantity}} {{obj.measurement_unit}}</span>
-                        </li>
-                    {% empty %}
-                        <li class="list-group-item">{% trans "Don't has objects" %}</li>
-                    {% endfor %}
-                </ul>
-                <hr>
-                <h3>{% trans 'Observations' %}</h3>
-                <ul class="list-group">
-                    {% for observation in step.procedureobservations_set.all %}
-                        <li class="list-group-item">{{observation}}</li>
-                    {% empty %}
-                        <li class="list-group-item">{% trans "Don't has observations"%}</li>
-                    {%endfor%}
-                </ul>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
+<h1 class="text-center">{{object.title}}</h1>
+<div class="container">{{object.description|safe}}</div>
+<h3>{% trans 'Steps' %}: </h3>
+{% for step in object.procedurestep_set.all %}
+<div class="row border border-1 mt-2">
+	<div class="col-10 bg-white callout-{% cycle 'danger' 'success' 'info' 'warning' %}"  data-bs-toggle="collapse"
+						href="#collapse_{{step.pk}}" role="button" aria-expanded="false" aria-controls="arial_{{step.pk}}">
+		<h2 class="card-title">{{forloop.counter}} - {{step.title|default:default_value}}</h2>
+	</div>
+	<div class="col-2">
+			<a class="btn float-end" title="{% trans 'Remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
+				<span class="fa fa-trash text-danger" aria-hidden="true"></span>
+			</a>
+			<a class="btn float-end" title="{% trans 'Edit' %}"
+						href="{% url 'academic:update_step' pk=step.pk lab_pk=laboratory org_pk=org_pk %}">
+				<span class="fa fa-edit text-success" title="{% trans 'Edit' %}" aria-hidden="true"></span>
+			</a>
+		</div>
+	<div class="card-body collapse {% if forloop.counter == 1 %}show {% endif %}" id="collapse_{{step.pk}}">
+		<div class="container">{{step.description|safe}}</div>
+		<hr>
+		<h3>{% trans 'Required objects' %}</h3>
+		<ul class="list-group">
+			{% for obj in step.procedurerequiredobject_set.all %}
+			<li class="list-group-item d-flex justify-content-between align-items-center">
+				{{obj.object}}
+				<span class="badge bg-primary badge-pill">{{obj.quantity}} {{obj.measurement_unit}}</span>
+			</li>
+			{% empty %}
+			<li class="list-group-item">{% trans "Don't has objects" %}</li>
+			{% endfor %}
+		</ul>
+		<hr>
+		<h3>{% trans 'Observations' %}</h3>
+		<ul class="list-group">
+			{% for observation in step.procedureobservations_set.all %}
+			<li class="list-group-item">{{observation}}</li>
+			{% empty %}
+			<li class="list-group-item">{% trans "Don't has observations"%}</li>
+			{%endfor%}
+		</ul>
+	</div>
 </div>
+{% endfor %}
 <div class="d-flex justify-content-center">
-    <a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-primary mt-3">
-        <i class="fa fa-undo"></i> {% trans "Back to list" %}
-    </a>
+	<a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-primary mt-3">
+		<i class="fa fa-undo"></i> {% trans "Back to list" %}
+	</a>
 </div>
 
 {% endblock %}
 
 {% block js %}
 
-    <script>
-        document.urls={
+<script>
+document.urls={
         							remove_step: "{% url 'academic:delete_step' lab_pk=laboratory org_pk=org_pk %}"
         							}
-    </script>
-    <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
+</script>
+<script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}

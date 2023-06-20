@@ -292,3 +292,8 @@ $(".open_modal").click(function(e){
         $('select').prop('selectedIndex', 0).change();
    }
 })
+
+$("#save_step").click(function(e){
+   $("#form_step").submit();
+
+})
