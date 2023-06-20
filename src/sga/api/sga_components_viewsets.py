@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.contrib.admin.models import ADDITION, DELETION, CHANGE
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -15,6 +16,7 @@ from sga.models import WarningWord
 from sga.api.serializers import WarningWordSerializer, WarningWordDataTableSerializer
 from laboratory.models import OrganizationStructure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.utils import organilab_logentry
 
 
 class WarningWordTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -60,10 +62,20 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def add_warning_word(self, request, org_pk):
         self._check_permission_on_organization(request, org_pk, 'add_warning_word')
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk
+        )
         serializer = WarningWordSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            warning_word = WarningWord.objects.create(
+                name=serializer.data['name'],
+                weigth=serializer.data['weigth']
+            )
+            warning_word.save()
+            organilab_logentry(request.user, warning_word, ADDITION,
+                               'warningword', relobj=[organization])
 
             warning_words = self.get_queryset().order_by('pk')
             template = render_to_string('sga/warning_word.html',
@@ -87,6 +99,10 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     @action(detail=True, methods=['put'])
     def update_warning_word(self, request, org_pk, pk=None):
         self._check_permission_on_organization(request, org_pk, 'update_warning_word')
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk
+        )
         warning_word = None
 
         if pk:
@@ -101,6 +117,8 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                 warning_word.name = request.data['name']
                 warning_word.weigth = request.data['weigth']
                 warning_word.save()
+                organilab_logentry(request.user, warning_word, CHANGE,
+                                   'warningword', relobj=[organization])
 
                 warning_words = self.get_queryset().order_by('pk')
 
@@ -115,12 +133,18 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     @action(detail=True, methods=['delete'])
     def delete_warning_word(self, request, org_pk, pk=None):
         self._check_permission_on_organization(request, org_pk, 'delete_warning_word')
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk
+        )
 
         if pk:
             warning_word = get_object_or_404(
                 WarningWord.objects.using(settings.READONLY_DATABASE),
                 pk=pk
             )
+            organilab_logentry(request.user, warning_word, DELETION,
+                               'warningword', relobj=[organization])
             warning_word.delete()
 
             warning_words = self.get_queryset().order_by('pk')
