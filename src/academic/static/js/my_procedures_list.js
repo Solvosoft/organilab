@@ -16,7 +16,7 @@ datatableelement=createDataTable('#my_procedures', document.urls['get_my_procedu
                 open_modal('#add_my_procedures')
               },
               text: '<i class="fa fa-plus" aria-hidden="true"></i> '+gettext('Create procedure'),
-              className: 'btn-sm btn-success',
+              className: 'btn-sm btn-success card-title',
             },
                 ],
         ajax: {

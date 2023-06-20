@@ -2988,8 +2988,8 @@ msgstr "Organizaciones y permisos"
 msgid "Manage Organizations"
 msgstr "Administración de Organizaciones"
 
-msgid "Reports and Informs"
-msgstr "Reportes e informes"
+msgid "Reports Informs and Procedures"
+msgstr "Reportes informes y Procedimientos"
 
 msgid "Report List"
 msgstr "Listado de Reportes"
@@ -3908,3 +3908,6 @@ msgstr "Ver pasos"
 
 msgid "Procedure template list"
 msgstr "Lista de plantillas de procedimientos"
+
+msgid "Procedure templates"
+msgstr "Plantillas de procedimientos"

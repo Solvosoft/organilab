@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-24 19:17-0600\n"
-"PO-Revision-Date: 2023-06-19 11:25-0600\n"
+"PO-Revision-Date: 2023-06-20 16:35-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -492,6 +492,15 @@ msgstr "La observación ha sido eliminada"
 #: academic/static/js/procedure.js:143
 msgid "Title"
 msgstr "Título"
+
+msgid "Create procedure"
+msgstr "Crear procedimiento"
+
+msgid "Create procedure template"
+msgstr "Crear plantilla de procedimiento"
+
+msgid "Status"
+msgstr "Estado"
 
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
