@@ -185,7 +185,10 @@ class ShelfObject(models.Model):
                                   key_name="key", key_value='shelfobject_status')
     quantity = models.FloatField(_('Material quantity'),
                                  help_text=_('Use dot like 0.344 on decimal'))
-    quantity_base_unit = models.IntegerField(null=True, blank=True, default=0)
+    quantity_base_unit = models.FloatField(default=0,
+                                           verbose_name=_('Quantity Base Unit'),
+                                           help_text=_(
+                                               'Quantity in its respective base unit'))
     # FIXME: Delete this field, for limits
     limit_quantity = models.FloatField(_('Limit material quantity'),
                                        help_text=_('Use dot like 0.344 on decimal'),
@@ -240,7 +243,8 @@ class ShelfObject(models.Model):
 
     def get_object_detail(self):
         return '%s %s %s %s' % (
-        self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
+            self.object.code, self.object.name, self.quantity,
+            str(self.measurement_unit))
 
 
 class BaseUnitValues(models.Model):
@@ -333,7 +337,7 @@ class Shelf(BaseCreationObj):
 
     def get_shelf(self):
         return '%s %s %s %s' % (
-        self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
+            self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
 
     def get_total_refuse(self):
         return ShelfObject.objects.filter(shelf=self).aggregate(
@@ -779,7 +783,7 @@ class TranferObject(BaseCreationObj):
 
     def get_object_detail(self):
         return "%s %s %s" % (
-        self.object.object.name, self.quantity, str(self.object.measurement_unit))
+            self.object.object.name, self.quantity, str(self.object.measurement_unit))
 
 
 MONTHS = (
