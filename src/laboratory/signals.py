@@ -21,9 +21,9 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
 @receiver(pre_save, sender=ShelfObject)
 def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
-    si_value = BaseUnitValues.objects.get(measurement_unit=instance.measurement_unit).si_value
-    if si_value:
-        result = instance.quantity/si_value
+    base_unit = BaseUnitValues.objects.get(measurement_unit=instance.measurement_unit)
+    if base_unit:
+        result = instance.quantity / base_unit.si_value
         instance.quantity_base_unit = result
 
 
@@ -31,7 +31,7 @@ def shelf_object_base_quantity(sender, **kwargs):
 def add_level_organization_structure(sender, **kwargs):
     instance = kwargs.get('instance')
     if instance.parent is not None:
-        instance.level=instance.parent.level+1
+        instance.level = instance.parent.level + 1
 
 
 def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
@@ -58,8 +58,8 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
         context['blockurl'] = f"{schema}://{domain}{url}"
         context['domain'] = domain
         send_email_from_template("Shelf object in limit",
-                             email,
-                             context=context,
-                             enqueued=enqueued,
-                             user=None,
-                             upfile=None)
+                                 email,
+                                 context=context,
+                                 enqueued=enqueued,
+                                 user=None,
+                                 upfile=None)
