@@ -248,5 +248,5 @@ urlpatterns += organization_urls + [
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
     path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
-    path('sga/api/<int:org_pk>/', include(sgacomponentsrouter.urls))
+    path('sga_components/api/<int:org_pk>/', include(sgacomponentsrouter.urls)),
 ]
