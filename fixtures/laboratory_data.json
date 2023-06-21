@@ -54,6 +54,36 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Gestión de reporte de incidentes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_incidentreport",
+          "risk_management",
+          "incidentreport"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+      "name": "Gestión de informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_inform",
+          "laboratory",
+          "inform"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -75,7 +105,7 @@
       "name": "Organization Testing",
       "position": 3,
       "level": 3,
-      "rol": [],
+      "rol": [1, 2],
       "users": [
         2
       ]
@@ -412,14 +442,6 @@
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
-    }
-  },
-  {
-    "model": "contenttypes.contenttype",
-    "pk": 1,
-    "fields": {
-      "app_label": "laboratory",
-      "model": "laboratory"
     }
   },
   {
@@ -1314,7 +1336,10 @@
     "pk": 1,
     "fields": {
       "profile": 1,
-      "content_type": 1,
+      "content_type": [
+        "auth_and_perms",
+        "profile"
+      ],
       "object_id": 1,
       "rol": [
         1,
