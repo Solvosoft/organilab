@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from academic.models import Procedure, ProcedureRequiredObject
-from academic.views import list_step_objects
 from laboratory.models import ShelfObject
 from laboratory.tests.utils import ShelfObjectSetUp
 from laboratory.utils import check_user_access_kwargs_org_lab
@@ -104,7 +103,9 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
             'initial_date': self.initial_date.strftime("%Y-%m-%d %H:%M"),
             'final_date': self.final_date.strftime("%Y-%m-%d %H:%M")
         }
-        self.objects_list = list_step_objects(self.data['procedure'])
+        self.objects_list = ProcedureRequiredObject.objects.\
+            filter(step__procedure__pk=self.data['procedure']).\
+            values_list('object', flat=True)
         self.filters = {
             "initial_date__date": self.initial_date.date(),
             "final_date__date": self.final_date.date(),
@@ -143,7 +144,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
        7) Check if reserved product instance was created.
        """
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
@@ -178,7 +179,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.client = self.client2_org2
         self.user = self.user2_org2
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
@@ -215,7 +216,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.procedure = Procedure.objects.get(pk=2)
         self.data['procedure'] = self.procedure.pk
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
@@ -223,7 +224,9 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         if 'state' in response_data:
             self.assertFalse(response_data['state'])
 
-        self.objects_list = list_step_objects(self.data['procedure'])
+        self.objects_list = ProcedureRequiredObject.objects.\
+            filter(step__procedure__pk=self.data['procedure']).\
+            values_list('object', flat=True)
         self.assertTrue(self.objects_list)
 
         step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
@@ -253,7 +256,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.procedure = Procedure.objects.get(pk=3)
         self.data['procedure'] = self.procedure.pk
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
 
@@ -261,7 +264,9 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         if 'state' in response_data:
             self.assertTrue(response_data['state'])
 
-        self.objects_list = list_step_objects(self.data['procedure'])
+        self.objects_list = ProcedureRequiredObject.objects.\
+            filter(step__procedure__pk=self.data['procedure']).\
+            values_list('object', flat=True)
         self.assertTrue(self.objects_list)
 
         step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
@@ -292,7 +297,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.client = self.client4_org2
         self.user = self.user4_org2
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
 
         self.assertFalse(self.validate_reservation_dates(self.initial_date.date(), self.final_date.date()))
@@ -301,7 +306,9 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         if 'state' in response_data:
             self.assertFalse(response_data['state'])
 
-        self.objects_list = list_step_objects(self.data['procedure'])
+        self.objects_list = ProcedureRequiredObject.objects.\
+            filter(step__procedure__pk=self.data['procedure']).\
+            values_list('object', flat=True)
         self.assertTrue(self.objects_list)
 
         step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
@@ -345,7 +352,9 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         if 'state' in response_data:
             self.assertFalse(response_data['state'])
 
-        self.objects_list = list_step_objects(self.data['procedure'])
+        self.objects_list = ProcedureRequiredObject.objects.\
+            filter(step__procedure__pk=self.data['procedure']).\
+            values_list('object', flat=True)
         self.assertTrue(self.objects_list)
 
         step_objects = ProcedureRequiredObject.objects.filter(object__in=self.objects_list)
