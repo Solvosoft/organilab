@@ -189,7 +189,12 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     queryset = DangerIndication.objects.all()
     serializer_class = DangerIndicationSerializer
-    permissions_by_endpoint = {}
+    permissions_by_endpoint = {
+        "add_danger_indication": ["sga.view_dangerindication", "sga.add_dangerindication"],
+        "list_danger_indications": ["sga.view_dangerindication"],
+        "update_danger_indication": ["sga.view_dangerindication", "sga.change_dangerindication"],
+        "delete_danger_indication": ["sga.view_dangerindication", "sga.change_dangerindication"]
+    }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
         if request.user.has_perms(self.permissions_by_endpoint[method_name]):
@@ -331,7 +336,12 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     queryset = PrudenceAdvice.objects.all()
     serializer_class = PrudenceAdviceSerializer
-    permissions_by_endpoint = {}
+    permissions_by_endpoint = {
+        "add_danger_indication": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
+        "list_danger_indications": ["sga.view_prudenceadvice"],
+        "update_danger_indication": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
+        "delete_danger_indication": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"]
+    }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
         if request.user.has_perms(self.permissions_by_endpoint[method_name]):
