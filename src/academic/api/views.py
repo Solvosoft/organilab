@@ -224,8 +224,8 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
 class ProcedureAPI(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    authentication_classes = [SessionAuthentication, BaseAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication]
+    permission_classes = (IsAuthenticated, )
     serializer_class = serializers.ProcedureDataTableSerializer
     queryset = Procedure.objects.all()
     pagination_class = LimitOffsetPagination

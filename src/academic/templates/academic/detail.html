@@ -16,7 +16,7 @@
 {% trans "Unknown" as default_value %}
 
 <div class="clearfix mb-2">
-	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk %}"
+	<a class="btn btn-primary" href="{% url 'academic:procedure_list' org_pk=org_pk %}"
 				title="{% trans 'Back to list' %}"> <i class="fa fa-arrow-left" aria-hidden="true"></i></a>
 	<a href="{% url 'academic:procedure_update' pk=procedure org_pk=org_pk %}"
 				class="btn btn-success float-end">
