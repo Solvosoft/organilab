@@ -1,5 +1,4 @@
 import json
-
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -157,6 +156,7 @@ class ShelfObject(models.Model):
     status = catalog.GTForeignKey(Catalog, null=True, on_delete=models.DO_NOTHING, verbose_name=_('Status'),
                                 key_name="key", key_value='shelfobject_status')
     quantity = models.FloatField(_('Material quantity'), help_text= _('Use dot like 0.344 on decimal'))
+    quantity_base_unit = models.IntegerField(null=True, blank=True, default=0)
     # FIXME: Delete this field, for limits
     limit_quantity = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
     limits = models.ForeignKey(ShelfObjectLimits, on_delete=models.SET_NULL, null=True, blank=True)
@@ -166,7 +166,7 @@ class ShelfObject(models.Model):
     marked_as_discard = models.BooleanField(default=False, verbose_name=_("Is discard"))
     # FIXME: this field needs to be deleted
     laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
-    # FIXME: change this field to be called description 
+    # FIXME: change this field to be called description
     course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
@@ -174,7 +174,7 @@ class ShelfObject(models.Model):
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
     shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
-    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Container"), 
+    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Container"),
                                   related_name="containershelfobject")
 
     @staticmethod
@@ -199,6 +199,13 @@ class ShelfObject(models.Model):
 
     def get_object_detail(self):
         return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
+
+
+class BaseUnitValues(models.Model):
+    measurement_unit = catalog.GTOneToOneField(Catalog, related_name="baseunit", on_delete=models.CASCADE,
+                                            verbose_name=_('Base unit'), key_name="key", key_value='units', unique=True)
+    si_value = models.FloatField(default=1)
+
 
 class ShelfObjectObservation(BaseCreationObj):
     action_taken = models.CharField(max_length=50, default=_("Object Change"), verbose_name=_("Action Taken"))
@@ -648,7 +655,7 @@ class BlockedListNotification(models.Model):
     class Meta:
         verbose_name = _('Blocked List Notification')
         verbose_name_plural = _('Bloked List Notifications')
-    
+
     def __str__(self):
         return f"{self.object}: {self.laboratory}: {self.user}"
 
