@@ -38,10 +38,10 @@ class LaboratoryRoomsList(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reserve_object_form'] = ReserveShelfObjectForm()
+        context['reserve_object_form'] = ReserveShelfObjectForm(prefix="reserve")
         context['tranfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
-        context['increase_object_form'] = IncreaseShelfObjectForm()
-        context['decrease_object_form'] = DecreaseShelfObjectForm()
+        context['increase_object_form'] = IncreaseShelfObjectForm(prefix="increase")
+        context['decrease_object_form'] = DecreaseShelfObjectForm(prefix="decrease")
         context['move_object_form'] = MoveShelfObjectForm(prefix="move")
         context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='ef')
         context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(initial={"objecttype":2},org_pk=self.org, prefix='erf')
