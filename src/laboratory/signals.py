@@ -2,11 +2,12 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
 
 from auth_and_perms.models import Profile
-from laboratory.models import ShelfObject, OrganizationStructure
+from laboratory.models import ShelfObject, OrganizationStructure, BaseUnitValues
 from django.conf import settings
 from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
+
 
 @receiver(post_save, sender=ShelfObject)
 def notify_shelf_object_reach_limit(sender, **kwargs):
@@ -15,6 +16,15 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
     if instance.quantity < instance.limit_quantity:
         # send email notification
         send_email_to_ptech_limitobjs(instance)
+
+
+@receiver(pre_save, sender=ShelfObject)
+def shelf_object_base_quantity(sender, **kwargs):
+    instance = kwargs.get('instance')
+    si_value = BaseUnitValues.objects.get(measurement_unit=instance.measurement_unit).si_value
+    if si_value:
+        result = instance.quantity/si_value
+        instance.quantity_base_unit = result
 
 
 @receiver(pre_save, sender=OrganizationStructure)
