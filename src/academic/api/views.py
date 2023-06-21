@@ -223,7 +223,7 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
-class ProcedureAPI(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = (IsAuthenticated, )
     serializer_class = serializers.ProcedureDataTableSerializer
@@ -257,7 +257,9 @@ class ProcedureAPI(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         validate_serializer = ValidateUserAccessOrgSerializer(
             data={'organization': org_pk},
             context={'user': self.request.user})
+
         if validate_serializer.is_valid():
+            user_is_allowed_on_organization(self.request.user, validate_serializer.validated_data["organization"])
             data = self.paginate_queryset(queryset)
             response = {'data': data, 'recordsTotal': self.get_queryset().count(),
                         'recordsFiltered': queryset.count(),

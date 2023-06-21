@@ -29,12 +29,12 @@ class ProceduresAPITest(TestCase):
         self.client.logout()
         url = reverse("academic:api-procedure-list",kwargs=self.url_attr)
         response = self.api_client.get(url)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
 
     def test_get_procedures_no_organization(self):
         self.client.force_login(self.user)
         url = reverse("academic:api-procedure-list",kwargs={'org_pk':10000})
         response = self.api_client.get(url)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
 
 
