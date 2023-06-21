@@ -16,7 +16,7 @@ def load_base_unit_data(apps, schema_editor):
         (Catalog.objects.get(description='Gramos', key='units'), 1000),
         (Catalog.objects.get(description='Kilogramos', key='units'), 1),
         (Catalog.objects.get(description='Miligramos', key='units'), 1000000),
-        (Catalog.objects.get(description='Metro cúbico', key='units'), 1),
+        (Catalog.objects.get(description='Metro cúbico', key='units'), 0.001),
         (Catalog.objects.get(description='Atmósfera', key='units'), 0.00000986923),
         (Catalog.objects.get(description='Pascales', key='units'), 1),
         (Catalog.objects.get(description='PSI', key='units'), 0.0001450377),
