@@ -113,7 +113,7 @@
     "fields": {
         "name": "Add Reserved Product",
         "color": "#337193",
-        "permissions": [415]
+        "permissions": [411]
     }
   },
   {
