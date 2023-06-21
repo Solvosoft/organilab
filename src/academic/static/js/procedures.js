@@ -82,7 +82,7 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td class="text-center"><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash"></i></a>
+        <td class="text-center"><a onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash text-danger"></i></a>
               </td>
         </tr>`;
     });
@@ -122,7 +122,7 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td class="text-center"><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash"></i></a></td>
+             <td class="text-center"><a class="text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash text-danger"></i></a></td>
             </tr>`
 
     });
