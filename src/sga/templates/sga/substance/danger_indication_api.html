@@ -1,0 +1,40 @@
+{% load static i18n %}
+{% for danger_indication in danger_indications %}
+<div>
+	<div class="row" style="border-radius:10px;">
+		<div class="offset-md-2 col-sm-9 bg-light p-2">
+			<div class="float-end">
+				<div>
+					<p>{% if danger_indication.code %} {{ danger_indication.code }} {% else %} {% trans 'Unknown code' %} {% endif %}</p>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="container" style="width:100%; font-size:13px;">
+				<div>
+					{% if danger_indication.description %}
+				 {{ danger_indication.description }}
+				 {% else %}
+				 {% trans 'No description' %}
+				 {% endif %}
+				</div>
+				<div>
+					{% if danger_indication.warning_words %}
+					{{ danger_indication.warning_words }}
+					{% else %}
+					{% trans 'No warning words' %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<br>
+	</div>
+	<br>
+</div>
+
+{% empty %}
+<div class="col-md-9" style="text-align:center; margin-top:15%; margin-left: 10%;">
+	<div class="list-group-item list-group-item-danger">
+		<h2 style="display:inline-block">{% trans 'No danger indications registered' %}</h2>
+	</div>
+</div>
+{% endfor %}
