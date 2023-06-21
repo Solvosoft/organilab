@@ -1,0 +1,25 @@
+{% load static i18n %}
+{% for warning_word in warning_words %}
+<div>
+	<div class="row" style="border-radius:10px;">
+		<div class="offset-md-2 col-sm-9 bg-light p-2">
+			<div class="float-end">
+				<div>
+					<p>{% if warning_word.weigth %} {{ warning_word.weigth }} {% else %} {% trans 'Unknown weight' %} {% endif %}</p>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="container" style="width:100%; font-size:13px;">{% if warning_word.name %} {{ warning_word.name }} {% else %} {% trans 'No name' %} {% endif %}</div>
+		</div>
+		<br>
+	</div>
+	<br>
+</div>
+
+{% empty %}
+<div class="col-md-9" style="text-align:center; margin-top:15%; margin-left: 10%;">
+	<div class="list-group-item list-group-item-danger">
+		<h2 style="display:inline-block">{% trans 'No registered warning words' %}</h2>
+	</div>
+</div>
+{% endfor %}

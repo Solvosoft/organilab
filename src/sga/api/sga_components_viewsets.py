@@ -49,7 +49,12 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     queryset = WarningWord.objects.all()
     serializer_class = WarningWordSerializer
-    permissions_by_endpoint = {}
+    permissions_by_endpoint = {
+        "add_warning_word": ["sga.view_warningword", "sga.add_warningword"],
+        "list_warning_words": ["sga.view_warningword"],
+        "update_warning_word": ["sga.view_warningword", "sga.change_warningword"],
+        "delete_warning_word": ["sga.view_warningword", "sga.change_warningword"]
+    }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
         if request.user.has_perms(self.permissions_by_endpoint[method_name]):
@@ -80,7 +85,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'warningword', relobj=[organization])
 
             warning_words = self.get_queryset().order_by('weigth')
-            template = render_to_string('sga/warning_word.html',
+            template = render_to_string('sga/substance/warning_word.html',
                                         {'warning_words': warning_words},
                                         request)
 
@@ -92,7 +97,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     def list_warning_words(self, request, org_pk):
         self._check_permission_on_organization(request, org_pk, 'list_warning_words')
         warning_words = self.get_queryset().order_by('weigth')
-        template = render_to_string('sga/warning_word.html',
+        template = render_to_string('sga/substance/warning_word.html',
                                     {'warning_words': warning_words},
                                     request)
 
@@ -124,7 +129,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
                 warning_words = self.get_queryset().order_by('weigth')
 
-                template = render_to_string('sga/warning_word.html',
+                template = render_to_string('sga/substance/warning_word.html',
                                             {'warning_words': warning_words},
                                             request)
 
@@ -147,7 +152,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             warning_word.delete()
 
             warning_words = self.get_queryset().order_by('weigth')
-            template = render_to_string('sga/warning_word.html',
+            template = render_to_string('sga/substance/warning_word.html',
                                         {'warning_words': warning_words},
                                         request)
 
@@ -218,7 +223,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'dangerindication', relobj=[organization])
 
             danger_indications = self.get_queryset().order_by('code')
-            template = render_to_string('sga/danger_indication.html',
+            template = render_to_string('sga/substance/danger_indication.html',
                                         {'danger_indications': danger_indications},
                                         request)
 
@@ -230,7 +235,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     def list_danger_indications(self, request, org_pk):
         self._check_permission_on_organization(request, org_pk, 'list_danger_indications')
         danger_indications = self.get_queryset().order_by('code')
-        template = render_to_string('sga/danger_indication.html',
+        template = render_to_string('sga/substance/danger_indication.html',
                                     {'danger_indications': danger_indications},
                                     request)
 
@@ -266,7 +271,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
                 danger_indications = self.get_queryset().order_by('code')
 
-                template = render_to_string('sga/danger_indication.html',
+                template = render_to_string('sga/substance/danger_indication.html',
                                             {'danger_indications': danger_indications},
                                             request)
 
@@ -289,7 +294,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             danger_indication.delete()
 
             danger_indications = self.get_queryset().order_by('code')
-            template = render_to_string('sga/danger_indication.html',
+            template = render_to_string('sga/substance/danger_indication.html',
                                         {'danger_indications': danger_indications},
                                         request)
 
@@ -358,7 +363,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'prudenceadvice', relobj=[organization])
 
             prudence_advices = self.get_queryset().order_by('code')
-            template = render_to_string('sga/prudence_advice.html',
+            template = render_to_string('sga/substance/prudence_advice.html',
                                         {'prudence_advices': prudence_advices},
                                         request)
 
@@ -370,7 +375,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     def list_prudence_advices(self, request, org_pk):
         self._check_permission_on_organization(request, org_pk, 'list_prudence_advices')
         prudence_advices = self.get_queryset().order_by('code')
-        template = render_to_string('sga/prudence_advice.html',
+        template = render_to_string('sga/substance/prudence_advice.html',
                                     {'prudence_advices': prudence_advices},
                                     request)
 
@@ -403,7 +408,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
                 prudence_advices = self.get_queryset().order_by('code')
 
-                template = render_to_string('sga/prudence_advice.html',
+                template = render_to_string('sga/substance/prudence_advice.html',
                                             {'prudence_advices': prudence_advices},
                                             request)
 
@@ -426,7 +431,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             prudence_advice.delete()
 
             prudence_advices = self.get_queryset().order_by('code')
-            template = render_to_string('sga/prudence_advice.html',
+            template = render_to_string('sga/substance/prudence_advice.html',
                                         {'prudence_advices': prudence_advices},
                                         request)
 
