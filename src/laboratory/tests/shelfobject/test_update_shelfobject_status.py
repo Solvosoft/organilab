@@ -14,14 +14,14 @@ class ShelfObjectStatusTest(BaseShelfobjectStatusSetUpTest):
         self.client.force_login(self.user)
         catalog = Catalog.objects.create(key="shelfobject_status", description="Buen estado")
         data = {
-            "shelfobject": 4,
+            "shelfobject": 5,
             "status": catalog.pk,
             "description": "Change Status"
         }
         url = reverse("laboratory:api-shelfobject-update-status",
-                      kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, "pk": 4})
+                      kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, "pk": 5})
         response = self.client.put(url, data=data, content_type='application/json')
-        shelfobject = ShelfObject.objects.get(pk=4)
+        shelfobject = ShelfObject.objects.get(pk=5)
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(shelfobject.status.pk == data['status'])
