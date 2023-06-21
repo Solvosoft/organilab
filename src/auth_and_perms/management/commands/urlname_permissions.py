@@ -924,6 +924,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Warning Word',
             'category': 'Warning Word',
             'permission': 'sga.view_warningword'
+        },
+        {
+            'name': 'Delete Warning Word',
+            'category': 'Warning Word',
+            'permission': 'sga.delete_warningword'
         }
     ],
     'add_warning_words': [
@@ -977,6 +982,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Danger Indication',
             'category': 'Danger Indication',
             'permission': 'sga.view_dangerindication'
+        },
+        {
+            'name': 'Delete Danger Indication',
+            'category': 'Danger Indication',
+            'permission': 'sga.delete_dangerindication'
         }
     ],
     'prudence_advices': [
@@ -994,6 +1004,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Prudence Advice',
             'category': 'Prudence Advice',
             'permission': 'sga.view_prudenceadvice'
+        },
+        {
+            'name': 'Delete Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.delete_prudenceadvice'
         }
     ],
     'reservations_list': [
