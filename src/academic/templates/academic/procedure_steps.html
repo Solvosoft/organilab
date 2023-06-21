@@ -13,7 +13,7 @@
 {% block title %}{% trans "Procedures Steps" %}{% endblock %}
 {% block content %}
 <div class="card-body">
-	<a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk %}"
+	<a class="btn btn-primary" href="{% url 'academic:procedure_list' org_pk=org_pk %}"
 				title="{% trans 'Back to list' %}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
 	<h1 class="card-title text-center">{% trans 'Create Step' %}</h1>
 	<div class="card">
@@ -36,11 +36,11 @@
 			<div class="clearfix">
 				<h3 class="card-title float-start">{% trans 'Object List'%}</h3>
 				<span class="btn btn-success float-end open_modal" data-bs-target="#object_modal" data-bs-toggle="modal"
-										title="{% trans 'Add' %}">
-                    <i class="fa fa-plus"></i>
+										title="{% trans 'Create Object' %}">
+                    <i class="fa fa-plus"></i> {% trans 'Create Object' %}
                 </span>
 			</div>
-			<table class="table table-bordered">
+			<table class="table table-bordered table-hover table-striped">
 				<thead>
 				<tr>
 					<th width="60%">{% trans 'Name' %}</th>
@@ -53,8 +53,8 @@
 				<tr>
 					<td>{{ obj.object }}</td>
 					<td class="text-center">{{ obj.quantity }} {{obj.measurement_unit}}</td>
-					<td class="text-center"><span class="btn btn-danger" onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"
-																																			title="{% trans 'Delete' %}"><i class="fa fa-trash"></i></span></td>
+					<td class="text-center"><span onclick="delete_object({{obj.pk}}, '{{obj.object.name}}')"
+																																			title="{% trans 'Delete' %}"><i class="fa fa-trash text-danger"></i></span></td>
 				</tr>
 				{% endfor %}
 				</tbody>
@@ -67,11 +67,11 @@
 			<div class="clearfix">
 				<h3 class="card-title float-start">{% trans 'Observations'%}</h3>
 				<span class="btn btn-success float-end open_modal" data-bs-target="#observation_modal"
-										data-bs-toggle="modal" title="{% trans 'Add' %}">
-                    <i class="fa fa-plus"></i>
+										data-bs-toggle="modal" title="{% trans 'Create Observation' %}">
+                    <i class="fa fa-plus"></i> {% trans 'Create Observation'%}
                 </span>
 			</div>
-			<table class="table table-bordered">
+			<table class="table table-bordered table-hover table-striped">
 				<thead>
 				<tr>
 					<th width="80%">{% trans 'Description' %}</th>
@@ -82,8 +82,8 @@
 				{% for obs in step.procedureobservations_set.all %}
 				<tr>
 					<td>{{ obs.description }}</td>
-					<td class="text-center"><span class="btn btn-danger" onclick="delete_observation({{obs.pk}})"
-																																			title="{% trans 'Delete' %}"><i class="fa fa-trash"></i></span></td>
+					<td class="text-center"><span onclick="delete_observation({{obs.pk}})"
+																																			title="{% trans 'Delete' %}"><i class="fa fa-trash text-danger"></i></span></td>
 				</tr>
 				{% endfor %}
 				</tbody>
