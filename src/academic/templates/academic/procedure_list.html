@@ -14,21 +14,22 @@
     {% define_urlname_action 'procedure_detail' %}
     {% define_urlname_action 'generate_reservation' %}
 {% endblock %}
-{% block title %}{% trans 'Procedure' %}{% endblock %}
+{% block title %}{% trans 'Procedure templates' %}{% endblock %}
 {% block content %}
-<div class="clearfix">
-    <a href="{% url 'academic:procedure_create' org_pk=org_pk lab_pk=laboratory %}" class="btn btn-success float-end">
-        <i class="fa fa-plus"></i> {% trans 'Create procedure template' %}</a>
+<div class="container-fluid">
+	<h1 class="card-title text-center">{% trans "Procedure template list" %}</h1>
+	<table  id="procedure" class="table table-bordered table-hover table-striped" width="100%"></table>
 </div>
-<table  id="procedure" class="table table-bordered table-hover"></table>
 {% endblock %}
 
 {% block js %}
 	{{block.super}}
 	<script>
-	    document.remove_procedure="{% url 'academic:delete_procedure' lab_pk=laboratory org_pk=org_pk %}"
-	    document.Procedure="{% url 'academic:api-procedure-list' lab_pk=laboratory org_pk=org_pk %}"
-
+        document.urls={
+            create_procedure: "{% url 'academic:procedure_create' org_pk=org_pk %}",
+            remove_procedure: "{% url 'academic:delete_procedure'  org_pk=org_pk %}",
+            get_procedures: "{% url 'academic:api-procedure-list' org_pk=org_pk %}"
+        }
 	</script>
     <script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
     <script src="{% static 'js/procedure_list.js' %}?v={% get_organilab_version %}"></script>

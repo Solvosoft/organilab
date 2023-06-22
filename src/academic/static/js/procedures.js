@@ -13,14 +13,13 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function get_procedure(pk){
+function get_procedure(element){
    $('.form_errors').remove();
    $("#reservation_form").trigger('reset');
-
+    let url = $(element).data('url')
     $.ajax({
-        url: document.getProcedure,
-        type:'POST',
-        data:{'pk':pk},
+        url: url,
+        type:'GET',
         headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function({title,pk}){
             $('#procedure_title').text(title);
@@ -44,7 +43,7 @@ function add_object(){
   form= new FormData(document.getElementById('object_form'));
 
     $.ajax({
-        url: document.save_object,
+        url: document.urls["save_object"],
         type: 'POST',
         data: form,
         processData: false,
@@ -83,7 +82,7 @@ function generate_table(data){
     tbody.innerHTML+=`<tr>
         <td>${item.obj}</td>
         <td>${item.amount} ${item.unit}</td>
-        <td class="text-center"><a class="btn btn-md btn-danger" onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash"></i></a>
+        <td class="text-center"><a onclick="delete_object(${item.id},'${item.obj}')" title=" ${gettext('Delete')}"><i class="fa fa-trash text-danger"></i></a>
               </td>
         </tr>`;
     });
@@ -94,7 +93,7 @@ function add_observation(){
     data= new FormData(document.getElementById('observation_form'));
     var form = modal.find('form');
     $.ajax({
-        url: document.save_observation,
+        url: document.urls["save_observation"],
         type: 'POST',
         data: data,
         processData: false,
@@ -123,7 +122,7 @@ function generate_observation_table(data){
     data.forEach((item)=>{
         tbody.innerHTML+=`<tr>
             <td>${item.description}</td>
-             <td class="text-center"><a class="btn btn-md btn-danger text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash"></i></a></td>
+             <td class="text-center"><a class="text-center" onclick="delete_observation(${item.id})" title="${gettext('Delete')}"><i class="fa fa-trash text-danger"></i></a></td>
             </tr>`
 
     });
@@ -132,25 +131,25 @@ function generate_observation_table(data){
 function delete_procedure(pk,procedure_name){
     open_alert(pk, gettext('Are you sure to delete the procedure')+` ${procedure_name}?`,
     `${procedure_name} `+ gettext('has been deleted'),
-    document.remove_procedure,0, gettext('The procedure was not removed'));
+    document.urls["remove_procedure"],0, gettext('The procedure was not removed'));
 }
 
 function delete_step(pk,step_name){
     open_alert(pk, gettext('Are you sure to delete the step')+ ` ${step_name}?`,
     gettext('Step')+` ${step_name} `+ gettext('has been deleted'),
-    document.remove_step,0, gettext('The procedure step was not removed'));
+    document.urls["remove_step"],0, gettext('The procedure step was not removed'));
 }
 
 function delete_observation(pk){
     open_alert(pk, gettext('Are you sure to delete this observation?'),
     gettext('Observation has been deleted'),
-    document.remove_observation,2, gettext('The observation was not removed'));
+    document.urls["remove_observation"],2, gettext('The observation was not removed'));
 }
 
 function delete_object(pk,obj_name){
     open_alert(pk, gettext('Are you sure to delete this object')+ ` ${obj_name}?`,
     gettext('Object')+` ${obj_name} `+gettext('has been deleted'),
-    document.remove_object,1, gettext('The object was not removed'));
+    document.urls["remove_object"],1, gettext('The object was not removed'));
 }
 
 function sendrequest(element,url,action){
@@ -239,7 +238,7 @@ function add_reservation(){
     var modal = $("#reservation_form");
     var form = modal.find('form');
     $.ajax({
-        url: document.reservation,
+        url: document.urls["add_reservation"],
         type: 'POST',
         data: data,
         processData: false,
@@ -291,4 +290,9 @@ $(".open_modal").click(function(e){
         $(form).trigger("reset");
         $('select').prop('selectedIndex', 0).change();
    }
+})
+
+$("#save_step").click(function(e){
+   $("#form_step").submit();
+
 })
