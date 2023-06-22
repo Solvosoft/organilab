@@ -84,6 +84,21 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+      "name": "Gestión de estantes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "delete_shelf",
+          "laboratory",
+          "shelf"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -91,7 +106,7 @@
       "name": "Investigadores SA",
       "position": 1,
       "level": 1,
-      "rol": [],
+      "rol": [3],
       "users": [
         1
       ]
@@ -1343,7 +1358,8 @@
       "object_id": 1,
       "rol": [
         1,
-        2
+        2,
+        3
       ]
     }
   },
