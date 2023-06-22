@@ -53,7 +53,7 @@ urlpatterns = [
 lab_shelf_urls = [
     #path('list/<int:furniture_pk>', shelfs.list_shelf, name="list_shelf"),
     path('create/', shelfs.ShelfCreate.as_view(), name="shelf_create"),
-    path('delete/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfDelete, name="shelf_delete"),
+    path('delete/<int:pk>/<int:row>/<int:col>/', shelfs.delete_shelf, name="shelf_delete"),
     path('edit/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfEdit.as_view(), name="shelf_edit")
 
 ]
