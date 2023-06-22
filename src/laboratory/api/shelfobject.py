@@ -31,7 +31,7 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
     MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
-from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_one_container_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
+from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_shelfobject_partial_quantity_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation
 from laboratory.utils import organilab_logentry
 
@@ -91,7 +91,9 @@ class ShelfObjectCreateMethods:
         organization = self.context['organization']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
-        new_container = move_one_container_to(serializer.validated_data['container'], serializer.validated_data['shelf'], creator, request, organization, laboratory)
+        # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
+        new_container = move_shelfobject_partial_quantity_to(serializer.validated_data['container'], serializer.validated_data['shelf'], 
+                                                             request, organization, laboratory, quantity=1)
         
         shelfobject = serializer.save(
             creator=creator, 
@@ -123,7 +125,9 @@ class ShelfObjectCreateMethods:
         organization = self.context['organization']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
-        new_container = move_one_container_to(serializer.validated_data['container'], serializer.validated_data['shelf'], creator, request, organization, laboratory)
+        # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
+        new_container = move_shelfobject_partial_quantity_to(serializer.validated_data['container'], serializer.validated_data['shelf'], 
+                                                             request, organization, laboratory, quantity=1)
         
         shelfobject = serializer.save(
             creator=creator,

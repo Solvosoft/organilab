@@ -14,6 +14,7 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, S
     TranferObject, ShelfObjectObservation, Provider, Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
+from laboratory.shelfobject.utils import get_available_containers_for_selection
 
 logger = logging.getLogger('organilab')
 
@@ -198,6 +199,8 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
 
 
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
+    # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
+    
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),
                                                 required=True)
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -209,9 +212,7 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
-    # TODO - update this to use the utils method to get the queryset so it matches the one in the form/gtselect - filter by laboratory_id/organization as well somehow
-    container = serializers.PrimaryKeyRelatedField(many=False, required=True,
-                                                   queryset=ShelfObject.objects.using(settings.READONLY_DATABASE).filter(object__type=Object.MATERIAL))
+    container = serializers.PrimaryKeyRelatedField(many=False, required=True, queryset=ShelfObject.objects.none())
 
     class Meta:
         model = ShelfObject
@@ -221,8 +222,16 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     def validate(self, data):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
+    
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        # allow select only available containers
+        fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
+        return fields
 
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
+    # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
+    
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
                                                required=True)
@@ -235,9 +244,7 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
-    # TODO - update this to use the utils method to get the queryset so it matches the one in the form/gtselect - filter by laboratory_id/organization as well somehow
-    container = serializers.PrimaryKeyRelatedField(many=False, required=True,
-                                                   queryset=ShelfObject.objects.using(settings.READONLY_DATABASE).filter(object__type=Object.MATERIAL))
+    container = serializers.PrimaryKeyRelatedField(many=False, required=True, queryset=ShelfObject.objects.none())
 
     class Meta:
         model = ShelfObject
@@ -247,6 +254,12 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     def validate(self, data):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
+    
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        # allow select only available containers
+        fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
+        return fields
 
 class MaterialShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))

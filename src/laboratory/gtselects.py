@@ -13,6 +13,7 @@ from laboratory.forms import ValidateShelfForm
 from laboratory.models import Object, Catalog, Provider, OrganizationStructure, Laboratory, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
+from laboratory.shelfobject.utils import get_available_containers_for_selection
 from django.conf import settings
 
 
@@ -125,15 +126,8 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
         return f"{obj.object.code} {obj.object.name}"
 
     def get_queryset(self):
-        if self.org_pk and self.laboratory:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
-            # TODO - this method needs to be updated to use the required utils method instead of hardcode the query here, since the query needs to be way better than this
-            # to return only the available and not all in the laboratory whether they are used or not
-            queryset = ShelfObject.objects.filter(
-                object__type = Object.MATERIAL,
-                object__organization__in=organizations,
-                in_where_laboratory=self.laboratory
-            )
+        if self.laboratory:
+            queryset = get_available_containers_for_selection(self.laboratory)
         else:
             queryset = ShelfObject.objects.none()
         return queryset
@@ -141,7 +135,6 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
         if self.serializer.is_valid():
-            self.org_pk = self.serializer.validated_data['organization']
             self.laboratory = self.serializer.validated_data['laboratory']
             return super().list(request, *args, **kwargs)
         return Response({
