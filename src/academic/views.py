@@ -469,7 +469,7 @@ def generate_reservation(request, org_pk, lab_pk):
     if form.is_valid():
         procedure = form.cleaned_data['procedure']
         procedure_obj = ProcedureRequiredObject.objects.filter(
-            step__procedure=procedure).distinct('pk')
+            step__procedure=procedure).exclude(quantity__lte=0).distinct('pk')
         if procedure_obj.exists():
 
             for obj in procedure_obj:
@@ -519,7 +519,6 @@ def add_procedure_reservation(request, objects, form, lab, org):
                 else:
                     result += shelf_object_total
                 total += result
-
                 reserved = ReservedProducts.objects.create(shelf_object=shelf_object,
                                                            user=request.user,
                                                            initial_date=
