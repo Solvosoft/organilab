@@ -1,10 +1,10 @@
 {% load i18n %}
 
-{% if perms.derb.add_customform %}
+{% if perms.derb.add_customform or perms.academic.view_procedure %}
     <li>
         <a>
                 <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
-                {% trans 'Reports and Informs' %}
+                {% trans 'Reports Informs and Procedures' %}
             <span class="fa fa-chevron-down"></span>
         </a>
         <ul class="nav child_menu">
@@ -21,6 +21,15 @@
             {% trans 'Inform List' %}
                 </a>
             </li>
-        </ul>
+              {% if perms.academic.view_procedure %}
+                <li class="list-group-item">
+                  <a href="{% url 'academic:procedure_list' org_pk=org_pk %}">
+                    <i class="fa fa-list-alt" aria-hidden="true"></i> {% trans 'Procedure templates' %}
+                  </a>
+                </li>
+														{% endif %}
+
+								</ul>
     </li>
 {% endif %}
+
