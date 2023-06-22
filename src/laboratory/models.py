@@ -166,7 +166,7 @@ class ShelfObject(models.Model):
     marked_as_discard = models.BooleanField(default=False, verbose_name=_("Is discard"))
     # FIXME: this field needs to be deleted
     laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
-    # FIXME: change this field to be called description 
+    # FIXME: change this field to be called description
     course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'), max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
@@ -174,7 +174,7 @@ class ShelfObject(models.Model):
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
     shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
-    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Container"), 
+    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Container"),
                                   related_name="containershelfobject")
 
     @staticmethod
@@ -400,7 +400,7 @@ class Furniture(BaseCreationObj):
         return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
 
     def get_limited_shelf_objects(self):
-        return ShelfObject.objects.filter(shelf__furniture=self,quantity__lte=F('limit_quantity'))
+        return ShelfObject.objects.filter(shelf__furniture=self)
 
     def __str__(self):
         return '%s' % (self.name)
@@ -648,7 +648,7 @@ class BlockedListNotification(models.Model):
     class Meta:
         verbose_name = _('Blocked List Notification')
         verbose_name_plural = _('Bloked List Notifications')
-    
+
     def __str__(self):
         return f"{self.object}: {self.laboratory}: {self.user}"
 

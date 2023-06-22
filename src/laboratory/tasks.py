@@ -17,7 +17,7 @@ from .task_utils import create_informsperiods
 app = importlib.import_module(settings.CELERY_MODULE).app
 
 def get_limited_shelf_objects(lab):
-    return ShelfObject.objects.filter(in_where_laboratory=lab, quantity__lte=F('limit_quantity'))
+    return ShelfObject.objects.filter(in_where_laboratory=lab)
 
 
 @app.task

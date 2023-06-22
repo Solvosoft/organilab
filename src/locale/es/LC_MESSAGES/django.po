@@ -2988,8 +2988,8 @@ msgstr "Organizaciones y permisos"
 msgid "Manage Organizations"
 msgstr "Administración de Organizaciones"
 
-msgid "Reports and Informs"
-msgstr "Reportes e informes"
+msgid "Reports Informs and Procedures"
+msgstr "Reportes informes y Procedimientos"
 
 msgid "Report List"
 msgstr "Listado de Reportes"
@@ -3892,7 +3892,7 @@ msgid "The procedure don't has objects, please add some objects in the procedure
 msgstr "El procedimiento no tiene objetos, agregue algunos objetos en los pasos del procedimiento"
 
 msgid "List of procedures"
-msgstr "Lista de procedimientos"
+msgstr "Lista de Procedimientos"
 
 msgid "Don't has observations"
 msgstr "No tiene observaciones"
@@ -3905,3 +3905,15 @@ msgstr "Crear plantilla de procedimientos"
 
 msgid "View Steps"
 msgstr "Ver pasos"
+
+msgid "Procedure template list"
+msgstr "Lista de Plantillas de Procedimientos"
+
+msgid "Procedure templates"
+msgstr "Plantillas de Procedimientos"
+
+msgid "Create Object"
+msgstr "Crear Objecto"
+
+msgid "Create Observation"
+msgstr "Crear Observación"
