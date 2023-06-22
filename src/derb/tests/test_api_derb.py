@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 
 
 class DerbAPITest(TestCase):
-    fixtures = ["derb.json", "laboratory_data.json"]
+    fixtures = ["laboratory_data.json"]
+
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)

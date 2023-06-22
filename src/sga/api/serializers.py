@@ -117,6 +117,10 @@ class SubstanceObservationSerializer(serializers.Serializer):
         return attr
 
 
+class SubstanceObservationDescriptionSerializer(SubstanceObservationSerializer):
+    description = serializers.CharField()
+
+
 class ReviewSubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
@@ -129,7 +133,6 @@ class ReviewSubstanceSerializer(serializers.ModelSerializer):
             if not name:
                 name = obj.created_by.username
         return name or ''
-
 
     def get_comercial_name(self, obj):
         if obj.substance:
@@ -176,7 +179,6 @@ class ReviewSubstanceDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
-
 class DisplayLabelSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
@@ -189,12 +191,11 @@ class DisplayLabelSerializer(serializers.ModelSerializer):
                 name = obj.created_by.username
         return name or ''
 
-
     def get_actions(self, obj):
         obj_kwargs = {
             'org_pk': obj.substance.organization.pk
         }
-        action="actions"
+        action = "actions"
         return action
 
     class Meta:
