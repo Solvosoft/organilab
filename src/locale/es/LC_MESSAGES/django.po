@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-24 19:10-0600\n"
+"POT-Creation-Date: 2023-06-23 11:50-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,16 +10,28 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0.1\n"
 
-msgid "Approve"
-msgstr "Aprobar"
+msgid "No user found"
+msgstr "Usuario no encontrado"
 
-msgid "Detail"
-msgstr "Detalle"
+msgid "Edit"
+msgstr "Editar"
 
-msgid "Generate PDF"
-msgstr "Uso general"
+msgid "Reserved"
+msgstr "Reservar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "View Steps"
+msgstr "Ver pasos"
+
+msgid "New Step"
+msgstr "Nuevo Paso"
+
+msgid "Remove"
+msgstr "Eliminar"
 
 msgid "Description"
 msgstr "Descripción"
@@ -36,20 +48,38 @@ msgstr "Unidad"
 msgid "Title"
 msgstr "Título"
 
-msgid "Academic title"
-msgstr "Título académico"
-
 msgid "Initial Date"
 msgstr "Fecha inicial"
 
 msgid "Final Date"
 msgstr "Fecha final"
 
+msgid "Final date can't be lower than initial date"
+msgstr "La fecha final no puede ser inferior a la fecha inicial"
+
+msgid "The quantity field receives only decimal numbers"
+msgstr "El campo cantidad solo recibe numeros decimales"
+
 msgid "Procedure"
 msgstr "Procedimientos"
 
 msgid "Procedures"
 msgstr "Procedimientos"
+
+msgid "Eraser"
+msgstr "Borrador"
+
+msgid "In Review"
+msgstr "En revisión"
+
+msgid "Finalized"
+msgstr "Finalizado"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Template"
+msgstr "Plantilla"
 
 msgid "No titled step"
 msgstr "Paso sin título"
@@ -59,6 +89,18 @@ msgstr "Paso en procedimiento"
 
 msgid "Procedure steps"
 msgstr "Pasos en los procedimientos"
+
+msgid "Creator"
+msgstr "Creador"
+
+msgid "Comment"
+msgstr "Comentar"
+
+msgid "Step"
+msgstr "Paso"
+
+msgid "My procedure"
+msgstr "Mi procedimiento"
 
 msgid "Material quantity"
 msgstr "Cantidad de material"
@@ -78,176 +120,65 @@ msgstr "Observaciones del procedimiento"
 msgid "Procedure Observations"
 msgstr "Observaciones del procedimiento"
 
-msgid "Name"
-msgstr "Nombre"
-
-msgid "CAS number"
-msgstr "Número ID CAS"
-
-msgid "ComponentSGA"
-msgstr "Componente SGA"
-
-msgid "ComponentsSGA"
-msgstr "Componente SGA"
-
-msgid "Comercial name"
-msgstr "Nombre Comercial"
-
-msgid "Synonymous"
-msgstr "Sinónimos"
-
-msgid "UIPA name"
-msgstr "Nombre UIPA"
-
-msgid "Components"
-msgstr "Componentes"
-
-msgid "Agrochemical"
-msgstr "Agroquímicos"
-
-msgid "Share with others"
-msgstr "Compartir con otros"
-
-msgid "SustanceSGA"
-msgstr "Sustancia SGA"
-
-msgid "SustancesSGA"
-msgstr "Sustancias SGA"
-
-msgid "Molecular formula"
-msgstr "Formula molecular"
-
-msgid "Cas ID Number"
-msgstr "Número ID CAS"
-
-msgid "Security sheet"
-msgstr "Hojas de seguridad"
-
-msgid "Is precursor"
-msgstr "¿Es precursor?"
-
-msgid "Danger Indication"
-msgstr "Indicación de peligro"
-
-msgid "UE codes"
-msgstr "Códigos UE"
-
-msgid "NFPA codes"
-msgstr "Códigos NFPA"
-
-msgid "Storage class"
-msgstr "Clases de almacenamientos"
-
-msgid "Is Seveso list III?"
-msgstr "Esta Seveso en la lista III?"
-
-msgid "Sustance characteristicSGA"
-msgstr "Características"
-
-msgid "Sustance characteristicsSGA"
-msgstr "Características"
-
-msgid "Creator"
-msgstr "Creador"
-
-msgid "Date"
-msgstr "Fecha"
-
-msgid "Observation"
-msgstr "Observaciones"
-
-msgid "Observations"
-msgstr "Observaciones"
-
-msgid "Other Information"
-msgstr "Otra información"
-
-msgid "The substance is removed successfully"
-msgstr "La sustancia fue eliminada con éxito"
-
-msgid "Create Warning Word"
-msgstr "Crear palabra de advertencia"
-
-msgid "Create Danger Indication"
-msgstr "Crear indicación de peligro"
-
-msgid "Create Prudence Advice"
-msgstr "Crear consejo de prudencia"
-
-msgid "Update the Warning Word"
-msgstr "Actualizar palabra de advertencia"
-
-msgid "Update the Prudence Advice"
-msgstr "Actualizar consejo de prudencia"
-
-msgid "Update the Danger indication"
-msgstr "Actualizar indicacion de peligro"
-
-msgid "Invalid form"
-msgstr "Formularion inválido"
-
 msgid "Unknown"
 msgstr "Desconocido"
 
-msgid "Edit"
-msgstr "Editar"
+msgid "Unknown date and time"
+msgstr "Fecha y hora desconocida"
 
-msgid "Steps"
-msgstr "Pasos"
+msgid "No description"
+msgstr "Sin descripción"
 
-msgid "remove"
-msgstr "eliminar"
+msgid "No registered comments"
+msgstr "No hay comentarios registrados"
 
-msgid "Required objects"
-msgstr "Objetos requeridos"
+msgid "Object List"
+msgstr "Lista de Objetos"
+
+msgid "Don't has objects"
+msgstr "No tiene objetos"
+
+msgid "Send for review"
+msgstr "Enviar a Revisión"
+
+msgid "Finalize"
+msgstr "Finalizar"
+
+msgid "Send to draft"
+msgstr "Enviar a borrador"
+
+msgid "Add observation"
+msgstr "Agregar Observación"
 
 msgid "Back to list"
 msgstr "Volver a la lista"
 
-msgid "Are you sure to delete the step"
-msgstr "¿Está seguro de que quiere eliminar este paso?"
+msgid "Edit template"
+msgstr "Editar Plantilla"
 
-msgid "Are you sure to delete this observation?"
-msgstr "¿Está seguro de que quiere eliminar esta observación?"
+msgid "Steps"
+msgstr "Pasos"
 
-msgid "Are you sure to delete this object "
-msgstr "¿Está seguro de que quiere eliminar este objeto?"
+msgid "Required objects"
+msgstr "Objetos requeridos"
 
-msgid "has been deleted"
-msgstr "ha sido eliminado"
+msgid "Observations"
+msgstr "Observaciones"
 
-msgid "Observation has been deleted"
-msgstr "La observación ha sido eliminada"
+msgid "Don't has observations"
+msgstr "No tiene observaciones"
 
-msgid "Step"
-msgstr "Paso"
-
-msgid "Detail of"
-msgstr "Detalle de"
-
-msgid "Edit procedure"
-msgstr "Editar procedimiento"
+msgid "List of procedures"
+msgstr "Lista de Procedimientos"
 
 msgid "Create procedure"
 msgstr "Crear procedimiento"
 
-msgid "Save"
-msgstr "Guardar"
+msgid "Cancel"
+msgstr "Cancelar"
 
-msgid "Create New Procedure"
-msgstr "Crear Nuevo Procedimiento"
-
-msgid "Actions"
-msgstr "Acciones"
-
-msgid "New Step"
-msgstr "Nuevo Paso"
-
-msgid "Reserve"
-msgstr "Reservar"
-
-msgid "Remove"
-msgstr "Eliminar"
+msgid "Add"
+msgstr "Agregar"
 
 msgid "Reservation"
 msgstr "Reservación"
@@ -262,29 +193,36 @@ msgid "Error"
 msgstr "Error"
 
 msgid ""
-"The requested quantity of the material is not found in the inventory of the following materials:"
+"The requested quantity of the material is not found in the inventory of the "
+"following materials:"
 msgstr "La cantidad no disponibles en los siguientes materiales:"
 
-msgid "Reserved"
-msgstr "Reservar"
+msgid "Edit procedure"
+msgstr "Editar procedimiento"
 
-msgid "Are you sure to delete the procedure"
-msgstr "¿Está seguro de que quiere eliminar este procedimiento"
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Procedure templates"
+msgstr "Plantillas de Procedimientos"
+
+msgid "Procedure template list"
+msgstr "Lista de Plantillas de Procedimientos"
+
+msgid "Procedures Steps"
+msgstr "Pasos en los procedimientos"
 
 msgid "Create Step"
 msgstr "Crear Paso"
 
-msgid "Object List"
-msgstr "Lista de Objetos"
+msgid "Create Object"
+msgstr "Crear Objecto"
 
-msgid "Delete"
-msgstr "Eliminar"
+msgid "Actions"
+msgstr "Acciones"
 
-msgid "Create"
-msgstr "Crear"
-
-msgid "Crear"
-msgstr "Crear"
+msgid "Create Observation"
+msgstr "Crear Observación"
 
 msgid "Objects"
 msgstr "Objetos"
@@ -295,574 +233,21 @@ msgstr "Eliminar Objecto"
 msgid "Do you want to remove the object?"
 msgstr "¿Deseas eliminar el objecto?"
 
-msgid "List of Substances"
-msgstr "Listado de Sustancias"
-
-msgid "Show approved substances"
-msgstr "Mostrar sustancias aprobadas"
-
-msgid "Yes"
-msgstr "Si"
-
-msgid "Preview"
-msgstr "Previsualizar"
-
-msgid "Substance"
-msgstr "Sustancia"
-
-msgid "Substance Management"
-msgstr "Administración de soluciones"
-
-msgid "Did you find H code component?"
-msgstr "¿Encontró el componente de códigos H?"
-
-msgid "Create it here!"
-msgstr "Crear lo aquí!"
-
-msgid "Continue"
-msgstr "Continuar"
-
-msgid "Add"
-msgstr "Agregar"
-
-msgid "Code"
-msgstr "Código"
-
-msgid "Warning Words"
-msgstr "Palabras de Advertencia"
-
-msgid "Information about the Substance"
-msgstr "Información sobre la sustancia"
-
-msgid "Brand"
-msgstr "Marca"
-
-msgid "Molecular Weight"
-msgstr "Formula molecular"
-
-msgid "Concentration"
-msgstr "Concentración"
-
-msgid "White Organ"
-msgstr "Organo blanco"
-
-msgid "Bioaccomulable"
-msgstr "Bioacumulable"
-
-msgid "Number Index"
-msgstr "Numero indice"
-
-msgid "Number CE"
-msgstr "Numero CE"
-
-msgid "Add new Substance"
-msgstr "Añadir nueva sustancia"
-
-msgid "Cas code"
-msgstr "Código CAS"
-
-msgid "State"
-msgstr "Estado"
-
-msgid "Review"
-msgstr "Revisión"
-
-msgid "Delete Substance"
-msgstr "Eliminar sustancia"
-
-msgid "¿You want to remove the substance?"
-msgstr "¿Quieres eliminar la sustancia?"
-
-msgid ""
-"If you want to edit or delete the observations that you have created, you must double click on "
-"it"
-msgstr ""
-"Si desea editar o eliminar los observaciones que usted ha creado debe dar doble click sobre el "
-"mismo"
-
-msgid "New observation"
-msgstr "Nueva observación"
-
-msgid "Edit observation"
-msgstr "Editar observación"
-
-msgid "SAFETY DATA SHEET"
-msgstr "FICHA DE DATOS DE SEGURIDAD"
-
-msgid "according to Regulation (CE) No. 1907/2006"
-msgstr "de acuerdo el Reglamento (CE) No. 1907/2006"
-
-msgid "Version 1.0 Revision Date"
-msgstr "Versión 1.0 Fecha de revisión"
-
-msgid "Printing date"
-msgstr "Fecha de impresión"
-
-msgid "Page"
-msgstr "Página"
-
-msgid "of"
-msgstr "de"
-
-msgid "SECTION 8: Exposure controls/personal protection"
-msgstr "SECCIÓN 8: Controles de exposición/protección individual"
-
-msgid "data not available"
-msgstr "Dato no disponible"
-
-msgid "Exposure controls"
-msgstr "Controles de la exposición"
-
-msgid "Appropriate technical controls"
-msgstr "Controles técnicos apropiados"
-
-msgid "no data available"
-msgstr "sin datos disponibles"
-
-msgid "Eye/face protection"
-msgstr "Protección de los ojos/ la cara"
-
-msgid "Skin protection"
-msgstr "Protección de la piel"
-
-msgid "Corporal protection"
-msgstr "Controles de exposición/protección individual"
-
-msgid "Breath protection"
-msgstr "Protección respiratoria"
-
-msgid "Environmental exposure control"
-msgstr "Control de exposición ambiental"
-
-msgid "SECTION"
-msgstr "SECCIÓN"
-
-msgid "Toxicological informacion"
-msgstr "Información Toxicologica"
-
-msgid "Information on toxicological effects"
-msgstr "Información sobre los efectos toxicológicos"
-
-msgid "Acute toxicity"
-msgstr "Toxicidad aguda"
-
-msgid "Skin corrosion or irritation"
-msgstr "Corrosión o irritación cutáneas"
-
-msgid "Serious eye damage or irritation"
-msgstr "Lesiones o irritación ocular graves"
-
-msgid "Respiratory or skin sensitization"
-msgstr "Sanitización de respiratoria o de piel"
-
-msgid "Germ cell mutagenicity"
-msgstr "Mutagenicidad en células germinales"
-
-msgid "Carcinogenicity"
-msgstr "Carcinogenicidad"
-
-msgid "Reproductive toxicity"
-msgstr "Toxicidad para la reproducción"
-
-msgid "Specific target organ toxicity - single exposure"
-msgstr "Toxicidad específica en determinados órganos - exposición única"
-
-msgid "Specific target organ toxicity - repeated exposure"
-msgstr "Toxicidad específica en determinados órganos - exposiciones repetidas"
-
-msgid "Aspiration hazard"
-msgstr "Peligro de aspiración"
-
-msgid "Additional Information"
-msgstr "Información Adicional"
-
-msgid "Regulatory information"
-msgstr "Información reglamentaria"
-
-msgid ""
-"Regulations and legislation on safety, health and the environment specific to the substance or "
-"mixture"
-msgstr ""
-"Reglamentación y legislación en materia de seguridad, salud y medio ambiente específicas para "
-"la sustancia o la mezcla"
-
-msgid "Chemical Safety Assessment"
-msgstr "Evaluación de la seguridad química"
-
-msgid "SECTION 5: Fire Fighting Measures"
-msgstr "SECCIÓN 5: Medidas de lucha contra incendios"
-
-msgid "Extinguishing media"
-msgstr "Medios de extinción"
-
-msgid "Suitable extinguishing media"
-msgstr "Medios de extinción apropiados"
-
-msgid "Unsuitable extinguishing media"
-msgstr "Medios de extinción no apropiados"
-
-msgid "Specific hazards arising from the substance or mixture"
-msgstr "Peligros específicos derivados de la sustancia o la mezcla"
-
-msgid "Hazardous Combustion Products"
-msgstr "Productos de combustión peligrosos"
-
-msgid "Recommendations for firefighters"
-msgstr "Recomendaciones para el personal de lucha contra incendios"
-
-msgid "SECTION 4: First aid"
-msgstr "SECCIÓN 4: Primeros auxilios"
-
-msgid "Description of first aid"
-msgstr "Descripción de los primeros auxilios"
-
-msgid "General recommendations"
-msgstr "Recomendaciones generales"
-
-msgid "If inhaled"
-msgstr "Si es inhalado"
-
-msgid "In case of skin contact"
-msgstr "En caso de contacto con la piel"
-
-msgid "In case of contact with eyes"
-msgstr "En caso de contacto con los ojos"
-
-msgid "if it is swallowed"
-msgstr "si es tragado"
-
-msgid "Most important symptoms and effects, both acute and delayed"
-msgstr "Principales síntomas y efectos, agudos y retardados"
-
-msgid "Other Causes"
-msgstr "Otros Peligros"
-
-msgid ""
-"Indication of any medical attention and special treatment that should be provided immediately"
-msgstr ""
-"Indicación de toda atención médica y de los tratamientos especiales que deban dispensarse "
-"inmediatamente"
-
-msgid "Transport information"
-msgstr "Información relativa al transporte"
-
-msgid "ONU Number"
-msgstr "Número CAS"
-
-msgid "United Nations proper shipping name"
-msgstr "Designación oficial de transporte de las Naciones Unidas"
-
-msgid "Transport hazard class"
-msgstr "Clase(s) de peligro para el transporte"
-
-msgid "Packaging group"
-msgstr "Grupo embalaje"
-
-msgid "Environmental hazards"
-msgstr "Peligros para el medio ambiente"
-
-msgid "Special precautions for users"
-msgstr "Precauciones particulares para los usuarios"
-
-msgid "Physical and chemical properties"
-msgstr "Propiedades físicas y química"
-
-msgid "Information on basic physical and chemical properties"
-msgstr "Información sobre propiedades físicas y químicas básicas"
-
-msgid "Aspect"
-msgstr "Aspecto"
-
-msgid "Smell"
-msgstr "Olor"
-
-msgid "Olfactory threshold"
-msgstr "Umbral olfativo"
-
-msgid "pH"
-msgstr "pH"
-
-msgid "Melting point/ point of freezing"
-msgstr "Punto de fusión/ punto de congelación"
-
-msgid "Starting point of boiling and range boiling"
-msgstr "Punto inicial de ebullición e intervalo de ebullición"
-
-msgid "Flashpoint"
-msgstr "Punto de inflamación"
-
-msgid "Evaporation rate"
-msgstr "Tasa de evaporación"
-
-msgid "Flammability (solid,gas)"
-msgstr "Inflamabilidad (sólido,gas)"
-
-msgid "Inflammability top/bottom or explosive limits"
-msgstr "Inflamabilidad superior/inferior o límites explosivos"
-
-msgid "Vapor pressure"
-msgstr "Presión osmótica"
-
-msgid "Vapor density"
-msgstr "Densidad de vapor"
-
-msgid "Relative density"
-msgstr "Administración de Reactivos"
-
-msgid "Water solubility"
-msgstr "Solubilidad en agua"
-
-msgid "Partition coefficient n-octanol/wate"
-msgstr "Coeficiente de partición: N-Octanol/Agua"
-
-msgid "Auto-temperature inflammation"
-msgstr "Temperatura de auto-inflamación"
-
-msgid "Temperature of decomposition"
-msgstr "Temperatura de descomposición"
-
-msgid "Viscosity"
-msgstr "Viscosidad dinámica"
-
-msgid "Explosive properties"
-msgstr "Propiedades de la solución"
-
-msgid "Properties oxidising"
-msgstr "Propiedades comburentes"
-
-msgid "Other security information"
-msgstr "Otra información de seguridad"
-
-msgid "SECTION 1: Identification of the substance or mixture and of the company or undertaking"
-msgstr "SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la empresa"
-
-msgid "Product Identifiers"
-msgstr "Identificadores del producto"
-
-msgid "Product name"
-msgstr "Nombre del producto"
-
-msgid "Reference"
-msgstr "Referencia"
-
-msgid "Relevant identified uses of the substance or mixture and uses advised against"
-msgstr "Usos pertinentes identificados de la sustancia o de la mezcla y usos desaconsejados"
-
-msgid "Details of the supplier of the safety data sheet"
-msgstr "Datos del proveedor de la ficha de datos de seguridad"
-
-msgid "Company"
-msgstr "Compañía"
-
-msgid "Direction"
-msgstr "Descripción"
-
-msgid "Country"
-msgstr "Cantidad"
-
-msgid "Telephone number"
-msgstr "Teléfono de emergencia"
-
-msgid "Email"
-msgstr "Correo electrónico"
-
-msgid "Emergency number"
-msgstr "Teléfono de emergencia"
-
-msgid "SECTION 7: Handling and storage"
-msgstr "SECCIÓN 7: Manipulación y almacenamiento"
-
-msgid "Precautions for safe handling"
-msgstr "Precauciones para una manipulación segura"
-
-msgid "Conditions for safe storage, including possible incompatibilities"
-msgstr "Condiciones de almacenamiento seguro, incluidas posibles incompatibilidades"
-
-msgid "Specific end uses"
-msgstr "Usos específicos finales"
-
-msgid "SECTION 6: Accidental Release Measures"
-msgstr "SECCIÓN 6: Medidas en caso de vertido accidental"
-
-msgid "Personnel who are not part of the emergency services"
-msgstr "Precauciones personales, equipo de protección y procedimientos de emergencia"
-
-msgid "Environmental relative precautions"
-msgstr "Precauciones relativas al medio ambiente"
-
-msgid "Methods and material for containment and cleaning up"
-msgstr "Métodos y material de contención y de limpieza"
-
-msgid "Reference to other sections"
-msgstr "Referencia a otras secciones"
-
-msgid "Other information"
-msgstr "Otra información"
-
-msgid "Full text of the H-Statements referred to in sections 2 and 3."
-msgstr "Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
-
-msgid "The full text of the R-phrases referred to in points 2 and 3"
-msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
-
-msgid "Other data"
-msgstr "Otros datos"
-
-msgid "Stability and Reactivity"
-msgstr "Estabilidad y Reactividad"
-
-msgid "Reactivity"
-msgstr "Reactividad"
-
-msgid "Chemical stability"
-msgstr "Energía química potencial"
-
-msgid "Possibility of hazardous reactions"
-msgstr "Posibilidad de reacciones peligrosas"
-
-msgid "Conditions to avoid"
-msgstr "Condiciones que deben evitarse"
-
-msgid "Incompatible materials"
-msgstr "Materiales incompatibles"
-
-msgid "Hazardous decomposition products"
-msgstr "Productos de descomposición peligrosos"
-
-msgid "Relative Considerations Disposal"
-msgstr "Consideraciones Relativas Eliminación"
-
-msgid "Waste treatment methods"
-msgstr "Métodos para el tratamiento de residuos"
-
-msgid "Product"
-msgstr "Nombre del producto"
-
-msgid "Contaminated packaging"
-msgstr "Envases contaminados"
-
-msgid "SECTION 3: Composition/Information on ingredients"
-msgstr "SECCION 3: Composición/Informacion sobre los componentes"
-
-msgid "Hazardous ingredients according to Regulation (EC) No. 1272/2008"
-msgstr "Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008"
-
-msgid "Component"
-msgstr "Componentes SGA"
-
-msgid "Classification"
-msgstr "Clasificación"
-
-msgid "Hazardous ingredients according to Directive 1999/45/EC"
-msgstr "Ingredientes peligrosos según la Directiva 1999/45/CE"
-
-msgid "Ecological Information"
-msgstr "Información Ecológica"
-
-msgid "Toxicity"
-msgstr "Toxicidad"
-
-msgid "Persistence and degradability"
-msgstr "Persistencia y degradabilidad"
-
-msgid "Bioaccumulative potential"
-msgstr "Potencial de bioacumulación"
-
-msgid "Soil mobility"
-msgstr "Movilidad en el suelo"
-
-msgid "Results of PBT and vPvB assessment"
-msgstr "Resultados de la valoración PBT y mPmB"
-
-msgid "Other adverse effects"
-msgstr "Otros efectos adversos"
-
-msgid "SECTION 2: Hazard identification"
-msgstr "SECCIÓN 2: Identificación de los peligro"
-
-msgid "Classification of the substance or mixture"
-msgstr "Clasificación de la sustancia o de la mezcla"
-
-msgid "Classification according to Regulation (CE) 1272/2008"
-msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
-
-msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
-msgstr "Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
-
-msgid "Label elements"
-msgstr "Elementos de la etiqueta"
-
-msgid "Labeling in accordance with Regulation (EC) 1272/2008"
-msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
-
-msgid "Warning Word"
-msgstr "Crear palabra de advertencia"
-
-msgid "Danger indication"
-msgstr "Indicación de peligro"
-
-msgid "Prudence advice"
-msgstr "Crear consejo de prudencia"
-
-msgid "Other dangers"
-msgstr "Otros Peligros"
-
-msgid "Prudence Advices"
-msgstr "Crear consejo de prudencia"
-
-msgid "Prudence Advice"
-msgstr "Crear consejo de prudencia"
-
-msgid "Important"
-msgstr "Importante"
-
-msgid "Changing de code field create new instance"
-msgstr "Cambiando el campo de código genera una nueva instancia"
-
-msgid "First aid"
-msgstr "Primeros Auxilios"
-
-msgid "Fire-fighting measures"
-msgstr "Medidas de lucha contra incendios"
-
-msgid "Measures in case of accidental spill"
-msgstr "Medidas en caso de vertido accidental"
-
-msgid "Handling Storage"
-msgstr "Manipulación Almacenamiento"
-
-msgid "Exposure controls/personal protection"
-msgstr "Controles de exposición/protección individual"
-
-msgid "Add Provider"
-msgstr "Agregar Proveedor"
-
-msgid "Use save before finish"
-msgstr "Usar guardar antes de terminar"
-
-msgid "SGA Components"
-msgstr "Componentes SGA"
-
-msgid "Commercial information"
-msgstr "Información Comercial"
-
-msgid "Create Substances"
-msgstr "Crear Sustancias"
-
-msgid "Label Components"
-msgstr "Componentes de etiqueta"
-
-msgid "Label editor"
-msgstr "Editor de etiquetas"
-
-msgid "Security Leafs"
-msgstr "Hojas de Seguridad"
-
-msgid "Weight"
-msgstr "Peso"
-
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
+
+msgid ""
+"The procedure don't has objects, please add some objects in the procedure "
+"steps"
+msgstr ""
+"El procedimiento no tiene objetos, agregue algunos objetos en los pasos del "
+"procedimiento"
+
+msgid "Organization can't change this laboratory"
+msgstr "La organización no puede editar este laboratorio"
+
+msgid "User doesn't have permissions"
+msgstr "El usuario no tiene permisos"
 
 msgid "Laboratory modification not authorized"
 msgstr "Modificación en el laboratorio no autorizada"
@@ -884,6 +269,9 @@ msgstr "Método de validación"
 
 msgid "new-password"
 msgstr "nueva-contraseña"
+
+msgid "Email"
+msgstr "Correo electrónico"
 
 msgid "First name"
 msgstr "Nombre"
@@ -929,7 +317,8 @@ msgstr "Roles de perfil"
 
 #, python-format
 msgid "User %(user)s not allowed on organization %(organization)r "
-msgstr "Usuario %(user)s noe está autorizado en la organización %(organization)r"
+msgstr ""
+"Usuario %(user)s noe está autorizado en la organización %(organization)r"
 
 msgid "You can modify this laboratory"
 msgstr "Puede editar este laboratorio"
@@ -944,19 +333,24 @@ msgid "Create user"
 msgstr "Crear usuario"
 
 msgid ""
-"We need to validate that you are not a robot or spamer, so you need to configure a Two-Factor "
-"Authentication"
+"We need to validate that you are not a robot or spamer, so you need to "
+"configure a Two-Factor Authentication"
 msgstr ""
-"Necesitamos validar que no sos un robot spammer, por eso necesitamos configurar un método de 2 "
-"pasos de autenticación"
+"Necesitamos validar que no sos un robot spammer, por eso necesitamos "
+"configurar un método de 2 pasos de autenticación"
 
-msgid "You need an OTP generator to login on the platform, you can use a free app called FreeOTP:"
+msgid ""
+"You need an OTP generator to login on the platform, you can use a free app "
+"called FreeOTP:"
 msgstr ""
-"Usted necesita un generador de OTP para registrarse en la plataforma, por favor use una "
-"aplicación llamada FreeOTP"
+"Usted necesita un generador de OTP para registrarse en la plataforma, por "
+"favor use una aplicación llamada FreeOTP"
 
-msgid "For Costa Rica citicen, use your digital signature to login on organilab"
-msgstr "Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a Organilab"
+msgid ""
+"For Costa Rica citicen, use your digital signature to login on organilab"
+msgstr ""
+"Solo para ciudadanos de Costa Rica, use su firma digital para ingresar a "
+"Organilab"
 
 msgid "Configure your profile"
 msgstr "Configure su perfil"
@@ -967,8 +361,10 @@ msgstr "Validar usuario"
 msgid "How use Digital Signature"
 msgstr "Cómo usar Firma digital"
 
-msgid "If you don't have Digital signature, please request on your favorite bank"
-msgstr "Si usted no tiene firma digital, por favor solicítela en su banco favorito"
+msgid ""
+"If you don't have Digital signature, please request on your favorite bank"
+msgstr ""
+"Si usted no tiene firma digital, por favor solicítela en su banco favorito"
 
 msgid "Configure your machine using this link"
 msgstr "Configure su máquina usando este enlace"
@@ -977,7 +373,9 @@ msgid "Download and install Gaudi"
 msgstr "Descargar e instalar Gaudi"
 
 msgid "Connect you card on computer and wait for connect success popup "
-msgstr "Conecte su tarjeta a la computadora y espere hasta el emergente de conexión satisfactoria"
+msgstr ""
+"Conecte su tarjeta a la computadora y espere hasta el emergente de conexión "
+"satisfactoria"
 
 msgid "Your OTP Seed"
 msgstr "Su semilla OTP"
@@ -988,8 +386,12 @@ msgstr "Esta imágen no estará disponible en el futuro, por favor guardela"
 msgid "Profile create successfully"
 msgstr "Elemento guardado exitosamente"
 
-msgid "Your organization was created successfully, please login with your credentials"
-msgstr "Su organización fue creada con éxito, por favor autentifiques con sus credenciales"
+msgid ""
+"Your organization was created successfully, please login with your "
+"credentials"
+msgstr ""
+"Su organización fue creada con éxito, por favor autentifiques con sus "
+"credenciales"
 
 msgid "Login"
 msgstr "Inicio de sesión"
@@ -1153,8 +555,12 @@ msgstr "Formulario erróneo, debe pasar un laboratorio válido como contenttype"
 msgid "Organization Management"
 msgstr "Administración de Organización"
 
-msgid "You have no creation process, maybe it was expired, please try to register again"
-msgstr "No tiene un proceso de creación activo, o está expirado, por favor vuelva a inscribirse"
+msgid ""
+"You have no creation process, maybe it was expired, please try to register "
+"again"
+msgstr ""
+"No tiene un proceso de creación activo, o está expirado, por favor vuelva a "
+"inscribirse"
 
 msgid "Password"
 msgstr "Contraseña"
@@ -1183,11 +589,11 @@ msgstr "Su contraseña no debe ser muy común."
 msgid "Your password cannot be completely numeric."
 msgstr "Su contraseña no puede contener solo números."
 
-msgid "Cancel"
-msgstr "Cancelar"
-
 msgid "New User"
 msgstr "Nuevo Usuario"
+
+msgid "Create"
+msgstr "Crear"
 
 msgid "Feedback"
 msgstr "Retroalimentación"
@@ -1204,8 +610,12 @@ msgstr "Solicita una demostración"
 msgid "Requesting a demonstration"
 msgstr "Solicitar una demostración"
 
-msgid "Hey, thanks for you interest in Organilab, we work hard to have a great software."
-msgstr "Hola, gracias por su interés en Organilab, trabajamos duro para tener un gran software."
+msgid ""
+"Hey, thanks for you interest in Organilab, we work hard to have a great "
+"software."
+msgstr ""
+"Hola, gracias por su interés en Organilab, trabajamos duro para tener un "
+"gran software."
 
 msgid "Thank you"
 msgstr "Gracias"
@@ -1294,32 +704,26 @@ msgstr "Archivo no encontrado"
 msgid "Download"
 msgstr "Descargar"
 
-msgid "No user found"
-msgstr "Usuario no encontrado"
-
 msgid "Register"
 msgstr "Registrarse"
+
+msgid "Created Object"
+msgstr "Objeto creado"
 
 msgid "The creation was performed successfully."
 msgstr "La creación se ha realizado con éxito."
 
-#, python-format
-msgid "The quantity is much larger than the shelf limit %(limit)s"
-msgstr "La cantidad es mucho mayor al limite del estante %(limit)s"
+msgid "Shelf object was increased successfully."
+msgstr "El objeto de estante fue incrementado exitosamente."
 
-msgid "The quantity is more than the shelf has"
-msgstr "La cantidad es mayor a la que posee el estante"
-
-msgid "Shelf object substract was performed successfully."
-msgstr "Objeto sustraído exitosamente"
-
-msgid "The amount to be subtracted is more than the shelf has"
-msgstr "La cantidad a sustraer es más que el estante tiene"
+msgid "Shelf object was decrease successfully."
+msgstr "El objeto del estante fue disminuido exitosamente."
 
 msgid "Reservation was performed successfully."
 msgstr "La reservación se ha realizado con éxito."
 
-msgid "This value cannot be greater than the quantity available for the object."
+msgid ""
+"This value cannot be greater than the quantity available for the object."
 msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto."
 
 msgid "The transfer out was performed successfully."
@@ -1365,11 +769,20 @@ msgstr "Grupo"
 msgid "Entered date should be greater than current date and time"
 msgstr "Fecha ingresada es mayor a la fecha actual"
 
+msgid "Use dot like 0.344 on decimal"
+msgstr "Use punto ej. 0.34 en decimales"
+
+msgid "Mark as discard"
+msgstr "Marcar como desecho"
+
 msgid "Bill"
 msgstr "Factura"
 
 msgid "Provider"
 msgstr "Proveedores"
+
+msgid "Describe the action"
+msgstr "Describe la acción realizada"
 
 msgid "Last Name"
 msgstr "Apellidos"
@@ -1406,13 +819,17 @@ msgstr "Nombre de usuario"
 
 #, python-format
 msgid ""
-"Please enter a correct %(username)s and password. Note that both fields may be case-sensitive."
+"Please enter a correct %(username)s and password. Note that both fields may "
+"be case-sensitive."
 msgstr ""
-"Por favor, ingrese  %(username)s y contraseña.  Note que ambos campos son sensibles a "
-"minúsculas y mayúsculas"
+"Por favor, ingrese  %(username)s y contraseña.  Note que ambos campos son "
+"sensibles a minúsculas y mayúsculas"
 
 msgid "This account is inactive."
 msgstr "Su cuenta está activa."
+
+msgid "Code"
+msgstr "Código"
 
 msgid "Code didn't match."
 msgstr "Código no coincide."
@@ -1460,6 +877,9 @@ msgstr "Nombres separados por comas"
 msgid "Type"
 msgstr "Tipo"
 
+msgid "Share with others"
+msgstr "Compartir con otros"
+
 msgid "Model"
 msgstr "Modelo"
 
@@ -1468,6 +888,33 @@ msgstr "Serie"
 
 msgid "Plaque"
 msgstr "Placa"
+
+msgid "Molecular formula"
+msgstr "Formula molecular"
+
+msgid "Cas ID Number"
+msgstr "Número ID CAS"
+
+msgid "Security sheet"
+msgstr "Hojas de seguridad"
+
+msgid "Is precursor"
+msgstr "¿Es precursor?"
+
+msgid "Danger Indication"
+msgstr "Indicación de peligro"
+
+msgid "UE codes"
+msgstr "Códigos UE"
+
+msgid "NFPA codes"
+msgstr "Códigos NFPA"
+
+msgid "Storage class"
+msgstr "Clases de almacenamientos"
+
+msgid "Is Seveso list III?"
+msgstr "Esta Seveso en la lista III?"
 
 msgid "Sustance representation"
 msgstr "Representación de la sustancia"
@@ -1481,20 +928,23 @@ msgstr "Características de sustancias"
 msgid "Limit material quantity"
 msgstr "Cantidad límite de material"
 
-msgid "Use dot like 0.344 on decimal"
-msgstr "Use punto ej. 0.34 en decimales"
-
 msgid "Expiration date"
 msgstr "Fecha de expiración"
-
-msgid "Describe the action"
-msgstr "Describe la acción realizada"
 
 msgid "Equipment or reactive or sustance"
 msgstr "Equipo o reactivo o sustancia"
 
 msgid "Production batch"
 msgstr "Numero de lote"
+
+msgid "Quantity Base Unit"
+msgstr "Unidad base de cantidad"
+
+msgid "Quantity in its respective base unit"
+msgstr ""
+
+msgid "Is discard"
+msgstr "Es desecho"
 
 msgid "Laboratory name"
 msgstr "Nombre del Laboratorio"
@@ -1505,11 +955,17 @@ msgstr "Url del objeto en el estante"
 msgid "Shelf Object QR"
 msgstr "QR del objeto"
 
+msgid "Container"
+msgstr "Contenedor"
+
 msgid "Shelf object"
 msgstr "Estante del objeto"
 
 msgid "Shelf objects"
 msgstr "Estante de los objetos"
+
+msgid "Base unit"
+msgstr "Unidad Base"
 
 msgid "Object Change"
 msgstr "Cambios del Objeto"
@@ -1531,6 +987,9 @@ msgstr "Estante del contenedor"
 
 msgid "Quantity"
 msgstr "Cantidad"
+
+msgid "Limit quantity of the shelf"
+msgstr "Cantidad límite del estante"
 
 msgid "Limit objects to be added"
 msgstr "Limita los objetos a agregar"
@@ -1584,7 +1043,7 @@ msgid "Can download available reports"
 msgstr "Puede descargar los informes disponibles"
 
 msgid "legal identity"
-msgstr "Cédula Jurídica"
+msgstr "cédula jurídica"
 
 msgid "Blocked List Notification"
 msgstr "Notificación de la lista de bloqueados"
@@ -1640,21 +1099,6 @@ msgstr "Noviembre"
 msgid "December"
 msgstr "Diciembre"
 
-msgid "Eraser"
-msgstr "Borrador"
-
-msgid "In Review"
-msgstr "En revisión"
-
-msgid "Finalized"
-msgstr "Finalizado"
-
-msgid "Template"
-msgstr "Plantilla"
-
-msgid "Comment"
-msgstr "Comentar"
-
 msgid "Inform"
 msgstr "Información"
 
@@ -1691,16 +1135,14 @@ msgstr "QR registro de usuario"
 msgid "Role"
 msgstr "Rol"
 
-msgid "Shelf Object"
-msgstr "Objeto de estante"
-
-msgid "Container"
-msgstr "Contenedor"
-
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
 
-msgid "Unlimit"
+msgid ""
+"This select only shows shelves with same measurement unit than current object"
+msgstr ""
+
+msgid "Unlimited"
 msgstr "Ilimitado"
 
 msgid "Minimum Limit"
@@ -1727,30 +1169,36 @@ msgstr "Fecha inicial no puede ser menor a la fecha actual"
 msgid "Final date can't be lower than current date"
 msgstr "Fecha final no puede ser menor a la fecha actual"
 
-msgid "Object does not exist in the laboratory"
-msgstr "El objeto seleccionado no existe en el laboratorio"
+msgid "Object doesn't exists in this laboratory"
+msgstr "Objeto no existe en este laboratorio"
 
-msgid "Provider does not exist in the laboratory"
-msgstr "Proveedor no existe en el laboratorio"
-
-msgid "Minimum limit can't be greater than maximum limit"
-msgstr "Límite mínimo no puede ser mayor al límite máximo"
+msgid "Provider doesn't exists in this laboratory"
+msgstr "Proveedor no existe en este laboratorio"
 
 msgid "Measurement unit can't different than shelf measurement unit"
-msgstr "La unidad de medida es diferente a la que tiene el estante %(measurement_unit)s"
+msgstr ""
+"La unidad de medida es diferente a la que tiene el estante "
+"%(measurement_unit)s"
 
 #, python-format
 msgid "Quantity can't greater than shelf quantity limit %(limit)s"
 msgstr "La cantidad es mucho mayor al límite del estante %(limit)s"
+
+msgid "Substract amount can't be greater than available shelf amount"
+msgstr ""
+"El monto de la resta no puede ser mayor al monto disponible en el estante"
+
+msgid "Minimum limit can't be greater than maximum limit"
+msgstr "Límite mínimo no puede ser mayor al límite máximo"
+
+msgid "Object is not available in these shelf"
+msgstr "El objeto no está disponible en este estante"
 
 msgid "Object does not exist in the laboratory."
 msgstr "El objeto seleccionado no pertenece al laboratorio."
 
 msgid "Unlimited storage"
 msgstr "Almacenamiento Ilimitado"
-
-msgid "Transfer was not sent to the laboratory."
-msgstr "Transferencia no fue enviada al laboratorio."
 
 msgid "Laboratory room doesn't exists in this laboratory"
 msgstr "Sala de laboratorio no existe en este laboratorio"
@@ -1761,11 +1209,25 @@ msgstr "Mueble no existe en este laboratorio"
 msgid "Shelf doesn't exists in this laboratory"
 msgstr "Estante no existe en este laboratorio"
 
-msgid "Object doesn't exists in this laboratory"
-msgstr "Objeto no existe en este laboratorio"
-
 msgid "Object can't be moved to same shelf"
 msgstr "Object no puede ser movido al mismo estante"
+
+msgid "Object can't be moved to shelf with different measurement unit"
+msgstr ""
+"El objeto no puede ser movido a un estante con una unidad de medida diferente"
+
+msgid "Transfer was not sent to the laboratory."
+msgstr "Transferencia no fue enviada al laboratorio."
+
+msgid "Object was decreased"
+msgstr "El objeto fue disminuido"
+
+msgid "Object was increased"
+msgstr "El objeto fue incrementado"
+
+#, python-format
+msgid "Current available objects: %(amount)d"
+msgstr ""
 
 msgid "Sustance saved successfully"
 msgstr "Sustancia guardada satisfactoriamente"
@@ -1775,6 +1237,9 @@ msgstr "Información pendiente en el formulario"
 
 msgid "Is precursor?"
 msgstr "¿Es precursor?"
+
+msgid "Yes"
+msgstr "Si"
 
 msgid "No"
 msgstr "No"
@@ -1795,16 +1260,18 @@ msgid "Hi,"
 msgstr "Hola,"
 
 msgid ""
-"You have received this email because you are in charge of a laboratory in the Organilab system."
+"You have received this email because you are in charge of a laboratory in "
+"the Organilab system."
 msgstr ""
-"Usted ha recibido este correo porque tiene un cambio en un laboratorio en el sistema Organilab."
+"Usted ha recibido este correo porque tiene un cambio en un laboratorio en el "
+"sistema Organilab."
 
 msgid ""
-"This message is to notify you that one of the shelf objects of your laboratory has reached its "
-"limit"
+"This message is to notify you that one of the shelf objects of your "
+"laboratory has reached its limit"
 msgstr ""
-"Este mensaje es para notificarle que uno o más objetos en su laboratorio están en las cuotas "
-"mínimas"
+"Este mensaje es para notificarle que uno o más objetos en su laboratorio "
+"están en las cuotas mínimas"
 
 msgid "This are the details of the product:"
 msgstr "Detalle de productos:"
@@ -1825,9 +1292,10 @@ msgid "Measurement unit:"
 msgstr "Unidad de medida:"
 
 msgid ""
-"Please refill this product or contact the people that reserved it to balance the current "
-"quantity."
-msgstr "Por favor recargue este producto o contacte a la persona que pueda hacerlo."
+"Please refill this product or contact the people that reserved it to balance "
+"the current quantity."
+msgstr ""
+"Por favor recargue este producto o contacte a la persona que pueda hacerlo."
 
 msgid "If you don't want to recieve notifications of this object, please use"
 msgstr "Si no desea recibir notificaciones de este objeto, por favor utilice"
@@ -1835,10 +1303,11 @@ msgstr "Si no desea recibir notificaciones de este objeto, por favor utilice"
 msgid "this link"
 msgstr "este enlace"
 
-msgid "if your email service block links then copy and paste this url in a new tab"
+msgid ""
+"if your email service block links then copy and paste this url in a new tab"
 msgstr ""
-"si su servicio de correo electrónico bloquea los enlaces, copie y pegue esta url en una nueva "
-"pestaña"
+"si su servicio de correo electrónico bloquea los enlaces, copie y pegue esta "
+"url en una nueva pestaña"
 
 msgid "Thanks,"
 msgstr "Gracias,"
@@ -1871,23 +1340,23 @@ msgid "Start application date"
 msgstr "Fecha de inicio de aplicación"
 
 msgid ""
-"Corresponds to the date of the first report, additionally it is the date since the cycle begins "
-"to count."
+"Corresponds to the date of the first report, additionally it is the date "
+"since the cycle begins to count."
 msgstr ""
-"Corresponde a la fecha del primer informe, adicionalmente es la fecha desde que se inicia a "
-"contar el ciclo."
+"Corresponde a la fecha del primer informe, adicionalmente es la fecha desde "
+"que se inicia a contar el ciclo."
 
 msgid "Close application date"
 msgstr "Fecha de cierre del informe"
 
 msgid ""
-"It is used to define the date where the period of filling of a report is terminated, the "
-"difference between the start and closed date of the first execution is maintained in the "
-"subsequent cycles."
+"It is used to define the date where the period of filling of a report is "
+"terminated, the difference between the start and closed date of the first "
+"execution is maintained in the subsequent cycles."
 msgstr ""
-"Se usa para definir la fecha donde se termina el período de llenado de un informe, la "
-"diferencia entre la fecha de inicio y de cerrado de la primera ejecución se mantiene en los "
-"ciclos posteriores."
+"Se usa para definir la fecha donde se termina el período de llenado de un "
+"informe, la diferencia entre la fecha de inicio y de cerrado de la primera "
+"ejecución se mantiene en los ciclos posteriores."
 
 msgid "Active"
 msgstr "Activo"
@@ -1943,15 +1412,6 @@ msgstr "Bloquear las notificaciones de objetos"
 msgid "List of comments"
 msgstr "Listado de Observaciones"
 
-msgid "Send for review"
-msgstr "Enviar a Revisión"
-
-msgid "Finalize"
-msgstr "Finalizar"
-
-msgid "Send to draft"
-msgstr "Enviar a borrador"
-
 msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
@@ -1969,9 +1429,6 @@ msgstr "¿Deseas eliminar la observación?"
 
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
-
-msgid "Add observation"
-msgstr "Agregar Observación"
 
 msgid "Update the observation"
 msgstr "Actualizar Observación"
@@ -1994,11 +1451,14 @@ msgstr "El estante no tiene objetos"
 msgid "Add Shelf"
 msgstr "Agregar estante"
 
-msgid "Mark as discard"
-msgstr "Marcar como desecho"
-
 msgid "List of discarded substances by shelf"
 msgstr "Listado de sustancias desechadas por Estante"
+
+msgid "Substance"
+msgstr "Sustancia"
+
+msgid "Date"
+msgstr "Fecha"
 
 msgid "Limit material of  the shelf"
 msgstr "Cantidad limite de materiales del estante"
@@ -2069,11 +1529,11 @@ msgstr "Vista de laboratorio"
 msgid "Laboratory administration"
 msgstr "Administración del laboratorio"
 
+msgid "My procedures"
+msgstr "Mis procedimientos"
+
 msgid "Register user"
 msgstr "Registrar usuario"
-
-msgid "Transfers"
-msgstr "Transferencias"
 
 msgid "Providers"
 msgstr "Proveedores"
@@ -2083,6 +1543,9 @@ msgstr "Bienvenido al organizador de laboratorio"
 
 msgid "Templates of inform"
 msgstr "Plantillas para informes"
+
+msgid "State"
+msgstr "Estado"
 
 msgid "Create Inform"
 msgstr "Crear Informe"
@@ -2099,13 +1562,18 @@ msgstr "Crear un laboratorio"
 msgid "Previous"
 msgstr "Anterior"
 
+msgid "Page"
+msgstr "Página"
+
 msgid "Next"
 msgstr "Siguiente"
 
-msgid "Sorry, you have not permission to create laboratory, please contact your administrator"
+msgid ""
+"Sorry, you have not permission to create laboratory, please contact your "
+"administrator"
 msgstr ""
-"Disculpas, usted no tiene permiso para crear un laboratorio, por favor contáctese con su "
-"administrador"
+"Disculpas, usted no tiene permiso para crear un laboratorio, por favor "
+"contáctese con su administrador"
 
 msgid "Maybe you are not associate with any laboratory in a role"
 msgstr "Posiblemente, porque no tiene asociado un laboratorio en algún rol"
@@ -2128,9 +1596,6 @@ msgstr "Reconstruir QR"
 msgid "Laboratory rooms"
 msgstr "Salas de laboratorio"
 
-msgid "Use this QR to fast access to"
-msgstr "Usa este QR para acceder rápido a"
-
 msgid "Info"
 msgstr "Info"
 
@@ -2145,6 +1610,9 @@ msgstr "Modificación"
 
 msgid "Deletion"
 msgstr "Eliminación"
+
+msgid "Detail"
+msgstr "Detalle"
 
 msgid "Delete Selected Item"
 msgstr "Eliminar el elemento seleccionado"
@@ -2167,6 +1635,9 @@ msgstr "Mis reservaciones"
 msgid "Cancel all selected products"
 msgstr "Cancelar todos los productos seleccionados"
 
+msgid "Reserve"
+msgstr "Reservar"
+
 msgid "Amount required"
 msgstr "Cantidad requerida"
 
@@ -2188,6 +1659,9 @@ msgstr "Administración de características de objetos"
 msgid "No object features"
 msgstr "No hay características de objeto"
 
+msgid "of"
+msgstr "de"
+
 msgid "Delete object"
 msgstr "Borrar objeto"
 
@@ -2203,8 +1677,12 @@ msgstr "Administración de objetos"
 msgid "Reactive management"
 msgstr "Administración de Reactivos"
 
+msgid "Organization Structure Management"
+msgstr "Administración de la estructura de la organización"
+
 msgid "You don't have the permissions required to access this section"
-msgstr "Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
+msgstr ""
+"Usted no cuenta con los privilegios suficientes para acceder este laboratorio"
 
 msgid "Precursor Report"
 msgstr "Reporte sobre precursores"
@@ -2386,20 +1864,20 @@ msgstr "Salir"
 msgid "Shelf Information"
 msgstr "Información del estante"
 
-msgid "Quantity storage status"
-msgstr "Estado de la cantidad de almacenamiento"
+msgid "Quantity storage"
+msgstr "Cantidad de almacenamiento"
 
-msgid "Percentage storage status"
-msgstr "Estado del porcentaje de almacenamiento"
+msgid "Percentage storage"
+msgstr "Porcentaje de almacenamiento"
+
+msgid "Purpose"
+msgstr ""
 
 msgid "Logs"
 msgstr "Bitácora"
 
 msgid "QR object"
 msgstr "Objetos QR"
-
-msgid "Is discard"
-msgstr "Es desecho"
 
 msgid "Update Status"
 msgstr "Actualizar Estado"
@@ -2443,6 +1921,9 @@ msgstr "IARC"
 msgid "IMDG"
 msgstr "IMDG"
 
+msgid "White Organ"
+msgstr "Organo blanco"
+
 msgid "Bio Accumulable"
 msgstr "Bioacumulable"
 
@@ -2455,23 +1936,17 @@ msgstr "Hojas de seguridad"
 msgid "Sustance Representation"
 msgstr "Representación de la sustancia"
 
+msgid "Add new Substance"
+msgstr "Añadir nueva sustancia"
+
+msgid "Cas code"
+msgstr "Código CAS"
+
+msgid "Substance Management"
+msgstr "Administración de soluciones"
+
 msgid "Select the Shelf"
 msgstr "Seleccione el Estante"
-
-msgid "My Transfers"
-msgstr "Mis Transferencias"
-
-msgid "Transfer of objects"
-msgstr "Transferencia de objectos"
-
-msgid "Laboratory send"
-msgstr "Laboratorio que envía"
-
-msgid "Laboratory received"
-msgstr "Laboratorio que recibe"
-
-msgid "add"
-msgstr "agregar"
 
 msgid "Date:"
 msgstr "Fecha:"
@@ -2503,7 +1978,9 @@ msgstr "No hay estantes"
 msgid "No Furniture Elements"
 msgstr "No hay elementos en los muebles"
 
-msgid "You have not assigned laboratories yet, or there is no laboratories registered"
+msgid ""
+"You have not assigned laboratories yet, or there is no laboratories "
+"registered"
 msgstr "Aún no ha asignado laboratorios, o no hay laboratorios registrados"
 
 msgid "Furniture:"
@@ -2560,6 +2037,24 @@ msgstr "Códigos NFPA"
 msgid "UE Codes"
 msgstr "Códigos UE"
 
+msgid "This field is required."
+msgstr ""
+
+msgid "Quantity can't greater than shelf quantity limit 40.0"
+msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
+
+msgid "You do not have permission to perform this action."
+msgstr "No tienes los permisos necesarios para realizar esta acción."
+
+msgid "This field may not be null."
+msgstr ""
+
+msgid "Authentication credentials were not provided."
+msgstr ""
+
+msgid "This field may not be blank."
+msgstr ""
+
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
 msgstr "%(value)s no es un número molecular (es sensible a mayúsculas)"
@@ -2586,11 +2081,11 @@ msgid "Laboratory was created successfully"
 msgstr "Substraído exitosamente"
 
 msgid ""
-"Sorry, there is not available laboratory, please contact the administrator and request a "
-"laboratory enrollment"
+"Sorry, there is not available laboratory, please contact the administrator "
+"and request a laboratory enrollment"
 msgstr ""
-"Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su administrador y "
-"solicite que lo asigne a algún laboratorio"
+"Lo lamentamos, no hay un laboratorio disponible, por favor contacte a su "
+"administrador y solicite que lo asigne a algún laboratorio"
 
 msgid "Use following QR code to register user in laboratory"
 msgstr "Use el siguiente código QR para registrar un usuario en el laboratorio"
@@ -2676,16 +2171,31 @@ msgstr "Asunto"
 msgid "User Reactive Exposition in Organization Report"
 msgstr "Reporte Exposición Reactiva del Usuario en la Organización"
 
+msgid "The quantity is more than the shelf has"
+msgstr "La cantidad es mayor a la que posee el estante"
+
 #, python-format
-msgid "Need add the same measurement unit that the shelf has  %(measurement_unit)s"
-msgstr "Necesita agregar la misma unidad de medida que posee el estante %(measurement_unit)s"
+msgid ""
+"Need add the same measurement unit that the shelf has  %(measurement_unit)s"
+msgstr ""
+"Necesita agregar la misma unidad de medida que posee el estante "
+"%(measurement_unit)s"
+
+#, python-format
+msgid "The quantity is much larger than the shelf limit %(limit)s"
+msgstr "La cantidad es mucho mayor al limite del estante %(limit)s"
 
 #, python-format
 msgid "The measurent unit is different of there shelf has %(measurement_unit)s"
-msgstr "La unidad de medida es diferente de la que tiene el estante %(measurement_unit)s"
+msgstr ""
+"La unidad de medida es diferente de la que tiene el estante "
+"%(measurement_unit)s"
 
 msgid "Added successfully"
 msgstr "Agregado exitosamente"
+
+msgid "The amount to be subtracted is more than the shelf has"
+msgstr "La cantidad a sustraer es más que el estante tiene"
 
 msgid "Sustracted successfully"
 msgstr "Substraído exitosamente"
@@ -2694,7 +2204,8 @@ msgid "Only can accept whole numbers or decimal numbers with ."
 msgstr "Solo se pueden aceptar números enteros o números decimales con ."
 
 msgid "The amount sending is less that the amount we have in the Shelf"
-msgstr "La cantidad de envío es inferior a la cantidad que existe en la estantería"
+msgstr ""
+"La cantidad de envío es inferior a la cantidad que existe en la estantería"
 
 msgid "Transfer done successfully"
 msgstr "Transferencia realizada con éxito"
@@ -2708,8 +2219,12 @@ msgstr "La cantidad debe ser mayor que 0"
 msgid "When a shelf if discard you need to add a measurement unit"
 msgstr "Cuando se descarta un estante, debe agregar una unidad de medida"
 
-msgid "The shelf have objects need to removed them, before changes the measurement unit"
-msgstr "El estante tiene objetos que deben quitarse antes de cambiar la unidad de medida"
+msgid ""
+"The shelf have objects need to removed them, before changes the measurement "
+"unit"
+msgstr ""
+"El estante tiene objetos que deben quitarse antes de cambiar la unidad de "
+"medida"
 
 msgid "Need add the measurement unit"
 msgstr "Necesita agregar una unidad de medida o la cantidad es 0"
@@ -2719,6 +2234,9 @@ msgstr "La cantidad es menor que la cantidad a la suma de los objetos"
 
 msgid "MSDS File"
 msgstr "Archivo MSDS"
+
+msgid "Product"
+msgstr "Nombre del producto"
 
 msgid "MSDS Object"
 msgstr "Objeto MSDS"
@@ -2746,6 +2264,9 @@ msgstr "Confirme eliminación"
 
 msgid "by "
 msgstr "por "
+
+msgid "Country"
+msgstr "Cantidad"
 
 msgid "Download all"
 msgstr "Descargar"
@@ -2894,17 +2415,19 @@ msgid "Welcome"
 msgstr "Bienvenido/a"
 
 msgid "This email was sent because someone create an user with your email in "
-msgstr "Este correo fue enviado porque alguien creó un usuario con su correo electrónico en "
+msgstr ""
+"Este correo fue enviado porque alguien creó un usuario con su correo "
+"electrónico en "
 
 msgid "Your username is: "
 msgstr "Su nombre de usuario es: "
 
 msgid ""
-"for security reason password was create randomly and it is not provided here, please use this "
-"link"
+"for security reason password was create randomly and it is not provided "
+"here, please use this link"
 msgstr ""
-"por razones de seguridad su contraseña fue creada aleatoriamente y no está provista en este "
-"correo, por favor use este enlace"
+"por razones de seguridad su contraseña fue creada aleatoriamente y no está "
+"provista en este correo, por favor use este enlace"
 
 msgid "to regenerate new password and login on platform"
 msgstr "para regenerar su nueva contraseña e iniciar sessión en al plataforma"
@@ -2928,7 +2451,8 @@ msgid "Password reseted"
 msgstr "Contraseña cambiada"
 
 msgid "Email with password reset instructions has been sent."
-msgstr "Un correo con las instrucciones para reinicio de contraseña ha sido enviada."
+msgstr ""
+"Un correo con las instrucciones para reinicio de contraseña ha sido enviada."
 
 msgid "Go to home"
 msgstr "Ir al inicio"
@@ -2944,12 +2468,13 @@ msgid "Here"
 msgstr "Aquí"
 
 msgid ""
-"This email was send because someone try to reset your password, if you didn't request a reset, "
-"please delete this email and do not more actions\n"
+"This email was send because someone try to reset your password, if you "
+"didn't request a reset, please delete this email and do not more actions\n"
 "    "
 msgstr ""
-"Este correo ha sido enviado porque alguien trató de reiniciar su contraseña, si usted no fue "
-"por favor elimine este correo y no realice ninguna otra acción"
+"Este correo ha sido enviado porque alguien trató de reiniciar su contraseña, "
+"si usted no fue por favor elimine este correo y no realice ninguna otra "
+"acción"
 
 msgid "Reset password"
 msgstr "Recuperar contraseña"
@@ -2958,7 +2483,9 @@ msgid "Please insert the user email registered in platform"
 msgstr "Por favor ingrese el correo registrado en la plataforma"
 
 msgid "We will send you a email to verify you are were you say you are"
-msgstr "Nosotros le enviaremos un correo de verificación  para probar que accedes al correo"
+msgstr ""
+"Nosotros le enviaremos un correo de verificación  para probar que accedes al "
+"correo"
 
 msgid "Send email"
 msgstr "Enviar correo"
@@ -2971,7 +2498,8 @@ msgid "Registration is currently closed."
 msgstr "Registro es actualmente cerrado."
 
 msgid "You are now registered. Activation email sent."
-msgstr "Usted está registrado actualmente. Un correo de activación fue enviado."
+msgstr ""
+"Usted está registrado actualmente. Un correo de activación fue enviado."
 
 msgid "Welcome to Organilab"
 msgstr "Bienvenido a Organilab"
@@ -3027,11 +2555,23 @@ msgstr "Vista de reporte"
 msgid "H code Reports"
 msgstr "Reporte códigos H"
 
+msgid "Create Substances"
+msgstr "Crear Sustancias"
+
 msgid "My Substances"
 msgstr "Mis Sustancias"
 
 msgid "Check of Substances"
 msgstr "Revision de Sustancias"
+
+msgid "SGA Components"
+msgstr "Componentes SGA"
+
+msgid "Warning Words"
+msgstr "Palabras de Advertencia"
+
+msgid "Prudence Advice"
+msgstr "Crear consejo de prudencia"
 
 msgid "SGA Management"
 msgstr "Gestión SGA"
@@ -3048,17 +2588,31 @@ msgstr "MSDS: Hojas de seguridad"
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
 
-msgid "MSDS Files"
-msgstr "Archivo MSDS"
-
 msgid "Donate Organilab"
 msgstr "Donar a Organilab"
 
-msgid "Your donation was completed successfully, thank you for support this project!"
+msgid "Thank for support this project making your donation."
+msgstr "Gracias por apoyar este proyecto con una donación."
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Donation Details"
+msgstr "Detalle de la donación"
+
+msgid "Add to donators list?"
+msgstr "Agregar a lista de donantes?"
+
+msgid "MSDS Files"
+msgstr "Archivo MSDS"
+
+msgid ""
+"Your donation was completed successfully, thank you for support this project!"
 msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
 
 msgid "Thank you for your help. We will check your problem as soon as we can"
-msgstr "Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos"
+msgstr ""
+"Gracias por tu ayuda. Comprobaremos su problema tan pronto como podamos"
 
 msgid "File Name"
 msgstr "Nombre de archivo"
@@ -3072,15 +2626,19 @@ msgstr "En pantalla"
 msgid "Format"
 msgstr "Formato"
 
-msgid "This option allows to expand this query to all laboratories of current organization"
+msgid ""
+"This option allows to expand this query to all laboratories of current "
+"organization"
 msgstr ""
-"Esta opción permite expandir la consulta a todos los laboratorios de la organización actual"
+"Esta opción permite expandir la consulta a todos los laboratorios de la "
+"organización actual"
 
 msgid "All laboratories"
 msgstr "En todos los laboratorios"
 
 msgid "If you want to delimit this query select laboratory rooms (Optional)"
-msgstr "Si deseas delimitar la consulta selecciona salas de laboratorio (Opcional)"
+msgstr ""
+"Si deseas delimitar la consulta selecciona salas de laboratorio (Opcional)"
 
 msgid "Filter Laboratory Room"
 msgstr "Filtrar sala de laboratorio"
@@ -3149,7 +2707,9 @@ msgid "Loading data to analyze in"
 msgstr "Cargando datos a analizar en"
 
 msgid "Report can't be processed, try again or contact administrator"
-msgstr "Reporte no puede ser procesado, intente nuevamente o contacte el administrador"
+msgstr ""
+"Reporte no puede ser procesado, intente nuevamente o contacte el "
+"administrador"
 
 msgid "Quantity total"
 msgstr "Cantidad total"
@@ -3162,6 +2722,9 @@ msgstr "Número de identificación CAS"
 
 msgid "IMDG type"
 msgstr "Tipo IMDG"
+
+msgid "Danger indication"
+msgstr "Indicación de peligro"
 
 msgid "Limit quantity"
 msgstr "Cantidad límite"
@@ -3183,6 +2746,9 @@ msgstr "Exposición"
 
 msgid "Sustance"
 msgstr "Sustancia"
+
+msgid "Reserved product doesn't exists in this organization"
+msgstr "El producto reservado no existe en esta organización"
 
 msgid "Denied"
 msgstr "Rechazado"
@@ -3246,6 +2812,9 @@ msgstr "para laboratorio"
 
 msgid "Products List"
 msgstr "Lista de productos"
+
+msgid "Product name"
+msgstr "Nombre del producto"
 
 msgid "Available quantity"
 msgstr "Cantidad disponible"
@@ -3398,31 +2967,33 @@ msgid "Impacto ambiental"
 msgstr "Impacto ambiental"
 
 msgid ""
-"Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes "
-"Químicos."
+"Resultado de la implementación del Plan de Prevención, Preparación y "
+"Respuesta ante Accidentes Químicos."
 msgstr ""
-"Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes "
-"Químicos."
+"Resultado de la implementación del Plan de Prevención, Preparación y "
+"Respuesta ante Accidentes Químicos."
 
-msgid "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
-msgstr "Medidas adoptadas para corregir la situación y para atenuar sus efectos."
+msgid ""
+"Medidas adoptadas para corregir la situación y para atenuar sus efectos."
+msgstr ""
+"Medidas adoptadas para corregir la situación y para atenuar sus efectos."
 
 msgid "Recomendaciones"
 msgstr "Recomendaciones"
 
 msgid ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir "
-"el riesgo de que accidentes similares vuelvan a producirse."
+"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
+"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
 msgstr ""
-"Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir "
-"el riesgo de que accidentes similares vuelvan a producirse."
+"Recomendaciones que describan en detalle las medidas que se vayan a llevar a "
+"cabo para reducir el riesgo de que accidentes similares vuelvan a producirse."
 
 msgid ""
-"En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de "
-"Control de Intoxicaciones (CNCI)"
+"En caso de intoxicación adjuntar copia de la notificación realizada al "
+"Centro Nacional de Control de Intoxicaciones (CNCI)"
 msgstr ""
-"En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de "
-"Control de Intoxicaciones (CNCI)"
+"En caso de intoxicación adjuntar copia de la notificación realizada al "
+"Centro Nacional de Control de Intoxicaciones (CNCI)"
 
 msgid "Delete Incident report"
 msgstr "Eliminar reporte de incidente"
@@ -3475,6 +3046,24 @@ msgstr "Existe un error en el formulario"
 msgid "Add a new zonetype"
 msgstr "Ingrese un tipo de zona"
 
+msgid "Substance observation doesn't exists in this organization"
+msgstr "Observación de la sustancia no existe en esta organización"
+
+msgid "Approve"
+msgstr "Aprobar"
+
+msgid "Generate PDF"
+msgstr "Uso general"
+
+msgid "Substance deleted successfully"
+msgstr "Sustancia guardada con éxito"
+
+msgid "Recipient size"
+msgstr "Tamaño del recipiente"
+
+msgid "UIPA name"
+msgstr "Nombre UIPA"
+
 msgid "Select Provider"
 msgstr "Seleccione Proveedor"
 
@@ -3499,11 +3088,14 @@ msgstr "Clases de peligro"
 msgid "Weigth"
 msgstr "Peso"
 
-msgid "Pictogram"
-msgstr "Pictograma"
+msgid "Warning Word"
+msgstr "Crear palabra de advertencia"
 
 msgid "Help for prudence advice"
 msgstr "Ayuda en los consejos de prudencia"
+
+msgid "Prudence Advices"
+msgstr "Crear consejo de prudencia"
 
 msgid "Warning words"
 msgstr "Palabras de advertencia"
@@ -3514,17 +3106,62 @@ msgstr "Clase de peligro"
 msgid "Warning category"
 msgstr "Categorías de peligro"
 
+msgid "Prudence advice"
+msgstr "Crear consejo de prudencia"
+
 msgid "Indication of Danger"
 msgstr "Indicaciones de peligro"
 
+msgid "CAS number"
+msgstr "Número ID CAS"
+
+msgid "Component"
+msgstr "Componentes SGA"
+
+msgid "Components"
+msgstr "Componentes"
+
+msgid "Draft"
+msgstr ""
+
+msgid "Under Review"
+msgstr "En revisión"
+
+msgid "Approved"
+msgstr "Aprobado"
+
+msgid "Comercial name"
+msgstr "Nombre Comercial"
+
+msgid "Brand"
+msgstr "Marca"
+
 msgid "Danger indications"
 msgstr "Indicación de peligro"
+
+msgid "Synonymous"
+msgstr "Sinónimos"
+
+msgid "Agrochemical"
+msgstr "Agroquímicos"
 
 msgid "Substances"
 msgstr "Sustancias"
 
 msgid "White organ"
 msgstr "Organo blanco"
+
+msgid "Number Index"
+msgstr "Numero indice"
+
+msgid "Number CE"
+msgstr "Numero CE"
+
+msgid "Molecular Weight"
+msgstr "Formula molecular"
+
+msgid "Concentration"
+msgstr "Concentración"
 
 msgid "Substance characteristic SGA"
 msgstr "Característica de sustancia SGA"
@@ -3604,6 +3241,15 @@ msgstr "Otros peligros"
 msgid "WarningWord"
 msgstr "Palabra de advertencia"
 
+msgid "Direction"
+msgstr "Descripción"
+
+msgid "Telephone number"
+msgstr "Teléfono de emergencia"
+
+msgid "Emergency number"
+msgstr "Teléfono de emergencia"
+
 msgid "No. Registro"
 msgstr "No. Registro"
 
@@ -3613,14 +3259,277 @@ msgstr "REACH No."
 msgid "Identified uses"
 msgstr "Usos específicos finales"
 
+msgid "Reference"
+msgstr "Referencia"
+
+msgid "Classification according to Regulation (CE) 1272/2008"
+msgstr "Clasificación de acuerdo con el Reglamento (CE) 1272/2008"
+
+msgid "Classification according to EU Directives 67/548/CEE or 1999/45/CE"
+msgstr ""
+"Clasificación deacuerdo con las directivas de la EU  67/548/CEE or 1999/45/CE"
+
+msgid "General recommendations"
+msgstr "Recomendaciones generales"
+
+msgid "If inhaled"
+msgstr "Si es inhalado"
+
+msgid "In case of skin contact"
+msgstr "En caso de contacto con la piel"
+
+msgid "In case of contact with eyes"
+msgstr "En caso de contacto con los ojos"
+
+msgid "if it is swallowed"
+msgstr "si es tragado"
+
+msgid "Most important symptoms and effects, both acute and delayed"
+msgstr "Principales síntomas y efectos, agudos y retardados"
+
+msgid "Other Causes"
+msgstr "Otros Peligros"
+
+msgid ""
+"Indication of any medical attention and special treatment that should be "
+"provided immediately"
+msgstr ""
+"Indicación de toda atención médica y de los tratamientos especiales que "
+"deban dispensarse inmediatamente"
+
+msgid "Suitable extinguishing media"
+msgstr "Medios de extinción apropiados"
+
+msgid "Unsuitable extinguishing media"
+msgstr "Medios de extinción no apropiados"
+
+msgid "Specific hazards arising from the substance or mixture"
+msgstr "Peligros específicos derivados de la sustancia o la mezcla"
+
+msgid "Hazardous Combustion Products"
+msgstr "Productos de combustión peligrosos"
+
+msgid "Recommendations for firefighters"
+msgstr "Recomendaciones para el personal de lucha contra incendios"
+
+msgid "Personnel who are not part of the emergency services"
+msgstr ""
+"Precauciones personales, equipo de protección y procedimientos de emergencia"
+
+msgid "Environmental relative precautions"
+msgstr "Precauciones relativas al medio ambiente"
+
+msgid "Methods and material for containment and cleaning up"
+msgstr "Métodos y material de contención y de limpieza"
+
+msgid "Reference to other sections"
+msgstr "Referencia a otras secciones"
+
+msgid "Precautions for safe handling"
+msgstr "Precauciones para una manipulación segura"
+
+msgid "Conditions for safe storage, including possible incompatibilities"
+msgstr ""
+"Condiciones de almacenamiento seguro, incluidas posibles incompatibilidades"
+
+msgid "Specific end uses"
+msgstr "Usos específicos finales"
+
+msgid "Appropriate technical controls"
+msgstr "Controles técnicos apropiados"
+
+msgid "Eye/face protection"
+msgstr "Protección de los ojos/ la cara"
+
+msgid "Skin protection"
+msgstr "Protección de la piel"
+
+msgid "Corporal protection"
+msgstr "Controles de exposición/protección individual"
+
+msgid "Breath protection"
+msgstr "Protección respiratoria"
+
+msgid "Environmental exposure control"
+msgstr "Control de exposición ambiental"
+
 msgid "Annotation"
 msgstr "Anotacion"
 
 msgid "Font"
 msgstr "Fuente"
 
+msgid "Aspect"
+msgstr "Aspecto"
+
+msgid "Smell"
+msgstr "Olor"
+
+msgid "Olfactory threshold"
+msgstr "Umbral olfativo"
+
+msgid "pH"
+msgstr "pH"
+
+msgid "Melting point/ point of freezing"
+msgstr "Punto de fusión/ punto de congelación"
+
+msgid "Starting point of boiling and range boiling"
+msgstr "Punto inicial de ebullición e intervalo de ebullición"
+
+msgid "Flashpoint"
+msgstr "Punto de inflamación"
+
+msgid "Evaporation rate"
+msgstr "Tasa de evaporación"
+
+msgid "Flammability (solid,gas)"
+msgstr "Inflamabilidad (sólido,gas)"
+
+msgid "Inflammability top/bottom or explosive limits"
+msgstr "Inflamabilidad superior/inferior o límites explosivos"
+
+msgid "Vapor pressure"
+msgstr "Presión osmótica"
+
+msgid "Vapor density"
+msgstr "Densidad de vapor"
+
+msgid "Relative density"
+msgstr "Administración de Reactivos"
+
+msgid "Water solubility"
+msgstr "Solubilidad en agua"
+
 msgid "Partition coefficient n-octanol/water"
 msgstr "Coeficiente de reparto n-octanol/agua"
+
+msgid "Auto-temperature inflammation"
+msgstr "Temperatura de auto-inflamación"
+
+msgid "Temperature of decomposition"
+msgstr "Temperatura de descomposición"
+
+msgid "Viscosity"
+msgstr "Viscosidad dinámica"
+
+msgid "Explosive properties"
+msgstr "Propiedades de la solución"
+
+msgid "Properties oxidising"
+msgstr "Propiedades comburentes"
+
+msgid "Other security information"
+msgstr "Otra información de seguridad"
+
+msgid "Reactivity"
+msgstr "Reactividad"
+
+msgid "Chemical stability"
+msgstr "Energía química potencial"
+
+msgid "Possibility of hazardous reactions"
+msgstr "Posibilidad de reacciones peligrosas"
+
+msgid "Conditions to avoid"
+msgstr "Condiciones que deben evitarse"
+
+msgid "Incompatible materials"
+msgstr "Materiales incompatibles"
+
+msgid "Hazardous decomposition products"
+msgstr "Productos de descomposición peligrosos"
+
+msgid "Acute toxicity"
+msgstr "Toxicidad aguda"
+
+msgid "Skin corrosion or irritation"
+msgstr "Corrosión o irritación cutáneas"
+
+msgid "Serious eye damage or irritation"
+msgstr "Lesiones o irritación ocular graves"
+
+msgid "Respiratory or skin sensitization"
+msgstr "Sanitización de respiratoria o de piel"
+
+msgid "Germ cell mutagenicity"
+msgstr "Mutagenicidad en células germinales"
+
+msgid "Carcinogenicity"
+msgstr "Carcinogenicidad"
+
+msgid "Reproductive toxicity"
+msgstr "Toxicidad para la reproducción"
+
+msgid "Specific target organ toxicity - single exposure"
+msgstr "Toxicidad específica en determinados órganos - exposición única"
+
+msgid "Specific target organ toxicity - repeated exposure"
+msgstr "Toxicidad específica en determinados órganos - exposiciones repetidas"
+
+msgid "Aspiration hazard"
+msgstr "Peligro de aspiración"
+
+msgid "Additional Information"
+msgstr "Información Adicional"
+
+msgid "Toxicity"
+msgstr "Toxicidad"
+
+msgid "Persistence and degradability"
+msgstr "Persistencia y degradabilidad"
+
+msgid "Bioaccumulative potential"
+msgstr "Potencial de bioacumulación"
+
+msgid "Soil mobility"
+msgstr "Movilidad en el suelo"
+
+msgid "Results of PBT and vPvB assessment"
+msgstr "Resultados de la valoración PBT y mPmB"
+
+msgid "Other adverse effects"
+msgstr "Otros efectos adversos"
+
+msgid "Contaminated packaging"
+msgstr "Envases contaminados"
+
+msgid "ONU Number"
+msgstr "Número CAS"
+
+msgid "United Nations proper shipping name"
+msgstr "Designación oficial de transporte de las Naciones Unidas"
+
+msgid "Transport hazard class"
+msgstr "Clase(s) de peligro para el transporte"
+
+msgid "Packaging group"
+msgstr "Grupo embalaje"
+
+msgid "Environmental hazards"
+msgstr "Peligros para el medio ambiente"
+
+msgid "Special precautions for users"
+msgstr "Precauciones particulares para los usuarios"
+
+msgid "Regulatory information"
+msgstr "Información reglamentaria"
+
+msgid ""
+"Regulations and legislation on safety, health and the environment specific "
+"to the substance or mixture"
+msgstr ""
+"Reglamentación y legislación en materia de seguridad, salud y medio ambiente "
+"específicas para la sustancia o la mezcla"
+
+msgid "Chemical Safety Assessment"
+msgstr "Evaluación de la seguridad química"
+
+msgid "Full text of the H-Statements referred to in sections 2 and 3."
+msgstr "Texto íntegro de las Declaraciones-H referidas en las secciones 2 y 3."
+
+msgid "The full text of the R-phrases referred to in points 2 and 3"
+msgstr "El texto completo de las frases-R referidas en los puntos 2 y 3"
 
 msgid "Otro datos"
 msgstr "Otro datos"
@@ -3631,66 +3540,44 @@ msgstr "Nota"
 msgid "Review Substance"
 msgstr "Crear  Sustancia"
 
+msgid "ComponentSGA"
+msgstr "Componente SGA"
+
+msgid "ComponentsSGA"
+msgstr "Componente SGA"
+
+msgid "SustanceSGA"
+msgstr "Sustancia SGA"
+
+msgid "SustancesSGA"
+msgstr "Sustancias SGA"
+
+msgid "Sustance characteristicSGA"
+msgstr "Características"
+
+msgid "Sustance characteristicsSGA"
+msgstr "Características"
+
+msgid "Observation"
+msgstr "Observaciones"
+
 msgid "Create New Recipient"
 msgstr "Crear Nuevo Recipiente"
 
-msgid "Create New Substance"
-msgstr "Crear Nueva Sustancia"
+msgid "List of Companies"
+msgstr "Listado de companías"
 
-msgid "SGA Search"
-msgstr "Buscador SGA"
+msgid "Add Company"
+msgstr "Agregar Compañía"
 
-msgid "Danger Indication Information"
-msgstr "Información de las indicaciones de peligro"
+msgid "Remove company"
+msgstr "Eliminar Compañía"
 
-msgid "Without Pictograms"
-msgstr "Sin Pictogramas"
+msgid "Do you want to remove the company?"
+msgstr "¿Deseas eliminar la compañía?"
 
-msgid "Without Warning Words"
-msgstr "Sin palabras de advertencia"
-
-msgid "Without Prudence Advices"
-msgstr "Sin consejos de prudencia"
-
-msgid "Survey"
-msgstr "Encuesta"
-
-msgid ""
-"Are you a professional in chemistry, chemical engineering or industrial maintenance?\n"
-"                        If the answer is yes, we appreciate you completing the following form."
-msgstr ""
-"Es usted profesional en química, ingeniería química o mantenimiento industrial?\n"
-"                        Si la respuesta es SI, agradecemos que complete el siguiente formulario."
-
-msgid "Go to form"
-msgstr "Ir al formulario"
-
-msgid "Thank for support this project making your donation."
-msgstr "Gracias por apoyar este proyecto con una donación."
-
-msgid "Donation Details"
-msgstr "Detalle de la donación"
-
-msgid "Add to donators list?"
-msgstr "Agregar a lista de donantes?"
-
-msgid "Available templates"
-msgstr "Plantillas disponibles"
-
-msgid "Customize the selected template using the canvas editor and it's elements"
-msgstr "Personaliza la plantilla seleccionada usando el editor de cuadro y sus elementos"
-
-msgid "General"
-msgstr "Uso general"
-
-msgid "Live"
-msgstr "En vivo"
-
-msgid "Generic"
-msgstr "Genérico"
-
-msgid "Custom"
-msgstr "Cliente"
+msgid "The company is removed successfully"
+msgstr "Se elimino correctamente la compañía"
 
 msgid "Substance Name"
 msgstr "Nombre de la sustancia"
@@ -3716,74 +3603,8 @@ msgstr "Información Comercial"
 msgid "Graphics"
 msgstr "Gráficos"
 
-msgid "GHS Label Creator"
-msgstr "Creador de etiquetas del SGA"
-
-msgid "Go to custom labels"
-msgstr "Ir a tus etiquetas"
-
-msgid "Create your own chemical label according to the Globally Harmonized System (GHS)."
-msgstr "Crea tu propia etiqueta química de acuerdo con el Sistema Globalmente Armonizado (SGA)."
-
-msgid "GHS Label Example and Requirements"
-msgstr "Ejemplo y requisitos de la etiqueta del SGA"
-
-msgid "Online GHS Solution"
-msgstr "Solución GHS en línea"
-
-msgid ""
-"Create and customize a chemical label according to Globally Harmonized System (GHS).On the "
-"other hand, this tool helps suppliers and downstream users such as laboratories to quickly "
-"adopt the new standard and avoid the risk of non-compliance."
-msgstr ""
-"Crear y personalizar una etiqueta química de acuerdo con el Sistema Globalmente Armonizado "
-"(SGA). Por otra parte, este instrumento ayuda a los proveedores y usuarios intermedios, como "
-"los laboratorios, a adoptar rápidamente la nueva norma y evitar el riesgo de incumplimiento."
-
-msgid "Moreover, the solution contains multiples features:"
-msgstr "Además, la solución contiene múltiples características:"
-
-msgid "Container Management."
-msgstr "Gestión de contenedores."
-
-msgid "Social Media Options."
-msgstr "Opciones de medios sociales."
-
-msgid "Printing Management."
-msgstr "Gestión de la impresión."
-
-msgid "Do you have labels already created, print them!"
-msgstr "¿Tienes etiquetas ya creadas? ¡Imprímelas!"
-
-msgid "Create a GHS Label"
-msgstr "Crear una etiqueta SGA"
-
 msgid "GHS"
 msgstr "SGA"
-
-msgid "List of Companies"
-msgstr "Listado de companías"
-
-msgid "Add Company"
-msgstr "Agregar Compañía"
-
-msgid "Remove company"
-msgstr "Eliminar Compañía"
-
-msgid "Do you want to remove the company?"
-msgstr "¿Deseas eliminar la compañía?"
-
-msgid "The company is removed successfully"
-msgstr "Se elimino correctamente la compañía"
-
-msgid "List of Pictograms"
-msgstr "Listado de Pictogramas"
-
-msgid "Add Pictogram"
-msgstr "Crear Pictograma"
-
-msgid "Image"
-msgstr "Imágen"
 
 msgid "List of SGA Labels"
 msgstr "Listado de Etiquetas SGA"
@@ -3791,24 +3612,230 @@ msgstr "Listado de Etiquetas SGA"
 msgid "New SGA Label"
 msgstr "Nueva etiqueta SGA"
 
-msgid "Generate PNG"
-msgstr "Uso general"
+msgid "Preview"
+msgstr "Previsualizar"
 
 msgid "This action is irreversible"
 msgstr "Esta acción es irreversible"
 
-msgid "There can only be one Indication of Danger or Attention"
-msgstr "Sólo puede haber una Indicación de Peligro o Atención"
+msgid "List of Substances"
+msgstr "Listado de Sustancias"
 
-msgid "En vivo"
-msgstr "En vivo"
+msgid "Show approved substances"
+msgstr "Mostrar sustancias aprobadas"
+
+msgid "Did you find H code component?"
+msgstr "¿Encontró el componente de códigos H?"
+
+msgid "Create it here!"
+msgstr "Crear lo aquí!"
+
+msgid "Information about the Substance"
+msgstr "Información sobre la sustancia"
+
+msgid "Bioaccomulable"
+msgstr "Bioacumulable"
+
+msgid ""
+"If you want to edit or delete the observations that you have created, you "
+"must double click on it"
+msgstr ""
+"Si desea editar o eliminar los observaciones que usted ha creado debe dar "
+"doble click sobre el mismo"
+
+msgid "New observation"
+msgstr "Nueva observación"
+
+msgid "Edit observation"
+msgstr "Editar observación"
+
+msgid "SAFETY DATA SHEET"
+msgstr "FICHA DE DATOS DE SEGURIDAD"
+
+msgid "according to Regulation (CE) No. 1907/2006"
+msgstr "de acuerdo el Reglamento (CE) No. 1907/2006"
+
+msgid "Version 1.0 Revision Date"
+msgstr "Versión 1.0 Fecha de revisión"
+
+msgid "Printing date"
+msgstr "Fecha de impresión"
+
+msgid "SECTION 8: Exposure controls/personal protection"
+msgstr "SECCIÓN 8: Controles de exposición/protección individual"
+
+msgid "data not available"
+msgstr "Dato no disponible"
+
+msgid "Exposure controls"
+msgstr "Controles de la exposición"
+
+msgid "no data available"
+msgstr "sin datos disponibles"
+
+msgid "SECTION"
+msgstr "SECCIÓN"
+
+msgid "Toxicological informacion"
+msgstr "Información Toxicologica"
+
+msgid "Information on toxicological effects"
+msgstr "Información sobre los efectos toxicológicos"
+
+msgid "SECTION 5: Fire Fighting Measures"
+msgstr "SECCIÓN 5: Medidas de lucha contra incendios"
+
+msgid "Extinguishing media"
+msgstr "Medios de extinción"
+
+msgid "Other Information"
+msgstr "Otra información"
+
+msgid "SECTION 4: First aid"
+msgstr "SECCIÓN 4: Primeros auxilios"
+
+msgid "Description of first aid"
+msgstr "Descripción de los primeros auxilios"
+
+msgid "Transport information"
+msgstr "Información relativa al transporte"
+
+msgid "Physical and chemical properties"
+msgstr "Propiedades físicas y química"
+
+msgid "Information on basic physical and chemical properties"
+msgstr "Información sobre propiedades físicas y químicas básicas"
+
+msgid "Partition coefficient n-octanol/wate"
+msgstr "Coeficiente de partición: N-Octanol/Agua"
+
+msgid ""
+"SECTION 1: Identification of the substance or mixture and of the company or "
+"undertaking"
+msgstr ""
+"SECCIÓN 1: Identificación de la sustancia o la mezcla y de la sociedad o la "
+"empresa"
+
+msgid "Product Identifiers"
+msgstr "Identificadores del producto"
+
+msgid ""
+"Relevant identified uses of the substance or mixture and uses advised against"
+msgstr ""
+"Usos pertinentes identificados de la sustancia o de la mezcla y usos "
+"desaconsejados"
+
+msgid "Details of the supplier of the safety data sheet"
+msgstr "Datos del proveedor de la ficha de datos de seguridad"
+
+msgid "Company"
+msgstr "Compañía"
+
+msgid "SECTION 7: Handling and storage"
+msgstr "SECCIÓN 7: Manipulación y almacenamiento"
+
+msgid "SECTION 6: Accidental Release Measures"
+msgstr "SECCIÓN 6: Medidas en caso de vertido accidental"
+
+msgid "Other information"
+msgstr "Otra información"
+
+msgid "Other data"
+msgstr "Otros datos"
+
+msgid "Stability and Reactivity"
+msgstr "Estabilidad y Reactividad"
+
+msgid "Relative Considerations Disposal"
+msgstr "Consideraciones Relativas Eliminación"
+
+msgid "Waste treatment methods"
+msgstr "Métodos para el tratamiento de residuos"
+
+msgid "SECTION 3: Composition/Information on ingredients"
+msgstr "SECCION 3: Composición/Informacion sobre los componentes"
+
+msgid "Hazardous ingredients according to Regulation (EC) No. 1272/2008"
+msgstr "Ingredientes peligrosos de acuerdo con el Reglamento (CE) Nº 1272/2008"
+
+msgid "Classification"
+msgstr "Clasificación"
+
+msgid "Hazardous ingredients according to Directive 1999/45/EC"
+msgstr "Ingredientes peligrosos según la Directiva 1999/45/CE"
+
+msgid "Ecological Information"
+msgstr "Información Ecológica"
+
+msgid "SECTION 2: Hazard identification"
+msgstr "SECCIÓN 2: Identificación de los peligro"
+
+msgid "Classification of the substance or mixture"
+msgstr "Clasificación de la sustancia o de la mezcla"
+
+msgid "Label elements"
+msgstr "Elementos de la etiqueta"
+
+msgid "Labeling in accordance with Regulation (EC) 1272/2008"
+msgstr "Etiquetado de acuerdo con el Reglamento (CE) 1272/2008"
+
+msgid "Pictograms"
+msgstr "Pictogramas"
+
+msgid "Other dangers"
+msgstr "Otros Peligros"
+
+msgid "Important"
+msgstr "Importante"
+
+msgid "Changing de code field create new instance"
+msgstr "Cambiando el campo de código genera una nueva instancia"
+
+msgid "First aid"
+msgstr "Primeros Auxilios"
+
+msgid "Fire-fighting measures"
+msgstr "Medidas de lucha contra incendios"
+
+msgid "Measures in case of accidental spill"
+msgstr "Medidas en caso de vertido accidental"
+
+msgid "Handling Storage"
+msgstr "Manipulación Almacenamiento"
+
+msgid "Exposure controls/personal protection"
+msgstr "Controles de exposición/protección individual"
+
+msgid "Add Provider"
+msgstr "Agregar Proveedor"
+
+msgid "Use save before finish"
+msgstr "Usar guardar antes de terminar"
+
+msgid "Commercial information"
+msgstr "Información Comercial"
+
+msgid "Label Components"
+msgstr "Componentes de etiqueta"
+
+msgid "Label editor"
+msgstr "Editor de etiquetas"
+
+msgid "Security Leafs"
+msgstr "Hojas de Seguridad"
+
+msgid "Weight"
+msgstr "Peso"
 
 msgid "Edit your label"
 msgstr "Edita tu etiqueta"
 
-msgid "Doesn't have templates created yet, go to the editor and generate your custom templates!"
+msgid ""
+"Doesn't have templates created yet, go to the editor and generate your "
+"custom templates!"
 msgstr ""
-"No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas personalizadas!"
+"No tiene plantillas creadas todavía, ¡ve al editor y genera tus plantillas "
+"personalizadas!"
 
 msgid "Go to Editor"
 msgstr "Ir al editor"
@@ -3816,8 +3843,38 @@ msgstr "Ir al editor"
 msgid "Go to your labels"
 msgstr "Ir a tus etiquetas"
 
+msgid "There can only be one Indication of Danger or Attention"
+msgstr "Sólo puede haber una Indicación de Peligro o Atención"
+
+msgid "General"
+msgstr "Uso general"
+
+msgid "En vivo"
+msgstr "En vivo"
+
+msgid "Available templates"
+msgstr "Plantillas disponibles"
+
+msgid ""
+"Customize the selected template using the canvas editor and it's elements"
+msgstr ""
+"Personaliza la plantilla seleccionada usando el editor de cuadro y sus "
+"elementos"
+
+msgid "Live"
+msgstr "En vivo"
+
+msgid "Generic"
+msgstr "Genérico"
+
+msgid "Custom"
+msgstr "Cliente"
+
 msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
+
+msgid "Invalid form"
+msgstr "Formularion inválido"
 
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
@@ -3825,17 +3882,8 @@ msgstr "Etiqueta SGA fue eliminada exitosamente"
 msgid "Error, user is not creator label"
 msgstr "Error, usuario no es el creador de la etiqueta"
 
-msgid "The substance saved successfully"
-msgstr "La sustancias fue guardada con éxito"
-
 msgid "The Recipient size saved successfully"
 msgstr "El recipiente fue guardado con éxito"
-
-msgid "Create pictogram"
-msgstr "Crear pictograma"
-
-msgid "Update pictogram"
-msgstr "Actualizar pictograma"
 
 msgid "Form is invalid"
 msgstr "El formulario es inválido"
@@ -3846,74 +3894,29 @@ msgstr "Crear Compañía"
 msgid "Edit Company"
 msgstr "Editar Compañía"
 
-msgid "Created Object"
-msgstr "Objeto creado"
+msgid "The substance is removed successfully"
+msgstr "La sustancia fue eliminada con éxito"
 
-msgid "Unlimited"
-msgstr "Ilimitado"
+msgid "Create Warning Word"
+msgstr "Crear palabra de advertencia"
 
-msgid "Object is not available in these shelf"
-msgstr "El objeto no está disponible en este estante"
+msgid "Create Danger Indication"
+msgstr "Crear indicación de peligro"
 
-msgid "Limit quantity of the shelf"
-msgstr "Cantidad límite del estante "
+msgid "Create Prudence Advice"
+msgstr "Crear consejo de prudencia"
 
-msgid "Unknown date and time"
-msgstr "Fecha y hora desconocida"
+msgid "Observation was saved successfully"
+msgstr "La observación fue creada exitosamente"
 
-msgid "No description"
-msgstr "Sin descripción"
+msgid "Invalid Form"
+msgstr "Formulario inválido"
 
-msgid "No registered comments"
-msgstr "No hay comentarios registrados"
+msgid "Update the Warning Word"
+msgstr "Actualizar palabra de advertencia"
 
-msgid "My procedures"
-msgstr "Mis procedimientos"
+msgid "Update the Prudence Advice"
+msgstr "Actualizar consejo de prudencia"
 
-msgid "Create procedure template"
-msgstr "Crear plantilla de procedimiento"
-
-msgid "Final date can't be lower than initial date"
-msgstr "La fecha final no puede ser inferior a la fecha inicial"
-
-msgid "The quantity field receives only decimal numbers"
-msgstr "El campo cantidad solo recibe numeros decimales"
-
-msgid "Quantity must be greater than zero"
-msgstr "La cantidad debe ser mayor que 0"
-
-msgid "Don't has objects"
-msgstr "No tiene objetos"
-
-msgid "Step detail"
-msgstr "Detalle de pasos"
-
-msgid "The procedure don't has objects, please add some objects in the procedure steps"
-msgstr "El procedimiento no tiene objetos, agregue algunos objetos en los pasos del procedimiento"
-
-msgid "List of procedures"
-msgstr "Lista de Procedimientos"
-
-msgid "Don't has observations"
-msgstr "No tiene observaciones"
-
-msgid "Edit template"
-msgstr "Editar Plantilla"
-
-msgid "Create template procedure"
-msgstr "Crear plantilla de procedimientos"
-
-msgid "View Steps"
-msgstr "Ver pasos"
-
-msgid "Procedure template list"
-msgstr "Lista de Plantillas de Procedimientos"
-
-msgid "Procedure templates"
-msgstr "Plantillas de Procedimientos"
-
-msgid "Create Object"
-msgstr "Crear Objecto"
-
-msgid "Create Observation"
-msgstr "Crear Observación"
+msgid "Update the Danger indication"
+msgstr "Actualizar indicacion de peligro"
