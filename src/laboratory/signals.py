@@ -22,12 +22,15 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
 @receiver(pre_save, sender=ShelfObject)
 def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
-    base_unit = BaseUnitValues.objects.get(measurement_unit=instance.measurement_unit)
-    if base_unit:
+    try:
+        base_unit = BaseUnitValues.objects.get(measurement_unit=instance.measurement_unit)
         quantity = Decimal(str(instance.quantity))
         base_unit_value = Decimal(str(base_unit.si_value))
         result = float(quantity / base_unit_value)
         instance.quantity_base_unit = result
+    except BaseUnitValues.DoesNotExist as e:
+        None
+
 
 
 @receiver(pre_save, sender=OrganizationStructure)
