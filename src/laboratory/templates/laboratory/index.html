@@ -55,12 +55,7 @@
                   </a>
                 </li>
               {% endif %}
-              {% if perms.academic.view_procedure %}
-                <li class="list-group-item">
-                  <a href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}">
-                    <strong>{% trans 'Create procedure template' %}</strong>
-                  </a>
-                </li>
+              {% if perms.academic.view_myprocedure %}
                 <li class="list-group-item">
                   <a href="{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}">
                     <strong>{% trans 'My procedures' %}</strong>

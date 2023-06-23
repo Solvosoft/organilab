@@ -58,10 +58,9 @@
                 <div class="form-group mt-2">
                     <div class="controls text-end">
 
-                        <a href="{% url 'reservations_management:reservations_list' org_pk object.status %}" class="btn btn-danger"><i class='fa fa-times'></i>
-                            Volver</a>
+                        <a href="{% url 'reservations_management:reservations_list' org_pk object.status %}" class="btn btn-danger"><i class='fa fa-times'></i> {% trans 'Cancel' %}</a>
 
-                        <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> Enviar</button>
+                        <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> {% trans 'Save' %}</button>
                     </div>
                 </div>
 

@@ -9,7 +9,7 @@
 
 <div class="card-body">
 
-    <a class="btn btn-danger" href="{% url 'academic:procedure_list' org_pk=org_pk lab_pk=laboratory %}" title="{% trans 'Back to list' %}"><i class="fa fa-arrow-left"></i></a>
+    <a class="btn btn-primary" href="{% url 'academic:procedure_list' org_pk=org_pk %}" title="{% trans 'Back to list' %}"><i class="fa fa-arrow-left"></i></a>
 
     <div class="card-title">
   {% if 'update' in request.path %}
@@ -23,8 +23,10 @@
           {% csrf_token %}
             {{form.as_p | safe}}
             {{ form.media }}
-         <button class="btn btn-success float-end" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}</button>
-    </form>
+						<div class="text-center">
+         <button class="btn btn-success" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}</button>
+					</div>
+					</form>
       </div>
 </div>
     {% endblock %}

@@ -50,8 +50,9 @@ class SGAAcademicTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Substance.objects.count() > count)
+        sga_complement=SGAComplement.objects.last()
         self.assertRedirects(response,
-                             reverse('sga:step_two', kwargs={'org_pk': 1, 'pk': 1}))
+                             reverse('sga:step_two', kwargs={'org_pk': 1, 'pk': sga_complement.pk}))
 
     def test_update_substance(self):
         data = {
@@ -97,10 +98,10 @@ class SGAAcademicTest(TestCase):
         url['pk'] = 134
 
         response = self.client.get(reverse('sga:update_substance', kwargs=url))
-
+        sgaComplement= SGAComplement.objects.get(substance__pk=134)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['substance'] == 134)
-        self.assertTrue(response.context['complement'] == 2)
+        self.assertTrue(response.context['complement'] == sgaComplement.pk)
         self.assertTrue(response.context['step'] == 1)
 
     def test_get_substances(self):

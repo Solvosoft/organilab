@@ -23,7 +23,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
 from laboratory.models import OrganizationStructure, Laboratory
 from .serializers import ProcedureStepCommentSerializer, \
     ProcedureStepCommentDatatableSerializer, \
-    ProcedureStepCommentFilterSet
+    ProcedureStepCommentFilterSet, ValidateUserAccessOrgSerializer
 
 
 class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -51,16 +51,18 @@ class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewS
         return queryset
 
     def list(self, request, *args, **kwargs):
-        recordsTotal = self.get_queryset().count()
+        records_total = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': recordsTotal,
+        response = {'data': data, 'recordsTotal': records_total,
                     'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
 
-class ProcedureStepCommentAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
+class ProcedureStepCommentAPI(mixins.ListModelMixin,
+                              mixins.RetrieveModelMixin,
+                              viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication, BaseAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = CommentProcedureStep.objects.all()
@@ -148,10 +150,11 @@ class ProcedureStepCommentAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             if comment:
                 comment.comment = request.data['comment']
                 comment.save()
+                query = self.get_queryset().filter(
+                                                procedure_step=comment.procedure_step).\
+                    order_by('pk')
                 template = render_to_string('academic/comment.html',
-                                            {'comments': self.get_queryset().filter(
-                                                procedure_step=comment.procedure_step).order_by(
-                                                'pk'),
+                                            {'comments': query,
                                                 'user': request.user}, request)
 
                 return Response({'data': template}, status=status.HTTP_200_OK)
@@ -190,37 +193,39 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     filterset_class = filterset.MyProcedureFilterSet
     ordering_fields = ['pk']
     ordering = ('-pk',)
+    organization = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
-            validate_serializer = ValidateUserAccessOrgLabSerializer(
-                data={'laboratory': self.kwargs.get('lab_pk'),
-                      'organization': self.kwargs.get('org_pk')},
-                context={'user': self.request.user})
-            if validate_serializer.is_valid():
-                queryset = queryset.filter(
-                    organization=validate_serializer.validated_data[
-                        'organization']).order_by('-pk')
-            else:
-                queryset = queryset.none()
+        if self.organization:
+            queryset = queryset.filter(
+                        organization=self.organization).order_by('-pk')
         else:
             queryset = queryset.none()
         return queryset
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request, org_pk, lab_pk, *args, **kwargs):
+        self.organization = org_pk
         queryset = self.filter_queryset(self.get_queryset())
-        data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': self.get_queryset().count(),
-                    'recordsFiltered': queryset.count(),
-                    'draw': self.request.GET.get('draw', 1)}
-        return Response(self.get_serializer(response).data)
+        validate_serializer = ValidateUserAccessOrgLabSerializer(
+            data={'laboratory': lab_pk,
+                  'organization': org_pk},
+            context={'user': self.request.user})
+        if validate_serializer.is_valid():
+            data = self.paginate_queryset(queryset)
+            response = {'data': data, 'recordsTotal': self.get_queryset().count(),
+                        'recordsFiltered': queryset.count(),
+                        'draw': self.request.GET.get('draw', 1)}
+            return Response(self.get_serializer(response).data)
+        else:
+            return Response(validate_serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
 class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated, )
     serializer_class = serializers.ProcedureDataTableSerializer
     queryset = Procedure.objects.all()
     pagination_class = LimitOffsetPagination
@@ -229,30 +234,37 @@ class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     filterset_class = filterset.ProcedureFilterSet
     ordering_fields = ['pk']
     ordering = ('-pk',)
+    organization = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if 'lab_pk' in self.kwargs and 'org_pk' in self.kwargs:
-            validate_serializer = ValidateUserAccessOrgLabSerializer(
-                data={'laboratory': self.kwargs.get('lab_pk'),
-                      'organization': self.kwargs.get('org_pk')},
-                context={'user': self.request.user})
-            if validate_serializer.is_valid():
-                content = ContentType.objects.get(app_label="laboratory",
-                                                  model="laboratory")
-                queryset = queryset.filter(
-                    object_id=validate_serializer.validated_data['laboratory'].pk,
-                    content_type=content).order_by('-pk')
-            else:
-                queryset = queryset.none()
+
+        content = ContentType.objects.get(app_label="laboratory",
+                                          model="organizationstructure")
+
+        if self.organization:
+            queryset = queryset.filter(
+                object_id=self.organization,
+                content_type=content).order_by('-pk')
         else:
             queryset = queryset.none()
+
         return queryset
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request, org_pk, *args, **kwargs):
+        self.organization=org_pk
         queryset = self.filter_queryset(self.get_queryset())
-        data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': self.get_queryset().count(),
-                    'recordsFiltered': queryset.count(),
-                    'draw': self.request.GET.get('draw', 1)}
-        return Response(self.get_serializer(response).data)
+        validate_serializer = ValidateUserAccessOrgSerializer(
+            data={'organization': org_pk},
+            context={'user': self.request.user})
+
+        if validate_serializer.is_valid():
+            user_is_allowed_on_organization(self.request.user, validate_serializer.validated_data["organization"])
+            data = self.paginate_queryset(queryset)
+            response = {'data': data, 'recordsTotal': self.get_queryset().count(),
+                        'recordsFiltered': queryset.count(),
+                        'draw': self.request.GET.get('draw', 1)}
+            return Response(self.get_serializer(response).data)
+        else:
+            return Response(validate_serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
