@@ -7,6 +7,7 @@ from django.conf import settings
 from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
+from decimal import Decimal
 
 
 @receiver(post_save, sender=ShelfObject)
@@ -23,7 +24,9 @@ def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
     base_unit = BaseUnitValues.objects.get(measurement_unit=instance.measurement_unit)
     if base_unit:
-        result = instance.quantity / base_unit.si_value
+        quantity = Decimal(str(instance.quantity))
+        base_unit_value = Decimal(str(base_unit.si_value))
+        result = float(quantity / base_unit_value)
         instance.quantity_base_unit = result
 
 
