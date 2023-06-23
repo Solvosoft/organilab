@@ -61,16 +61,10 @@ class BaseUnitTest(TestCase):
         self.assertEqual(inst.quantity_base_unit, 0.00002)
 
     def test_units(self):
-        units = Catalog.objects.get(description='Kilogramos', key='units')
+        units = Catalog.objects.get(description='Unidades', key='units')
         inst = ShelfObject(quantity=20, measurement_unit=units)
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 20)
-
-    def test_pascals(self):
-        atm = Catalog.objects.get(description='Atmósfera', key='units')
-        inst = ShelfObject(quantity=20, measurement_unit=atm)
-        pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, 2026500.547661773)
 
     def test_psi_to_pascal(self):
         psi = Catalog.objects.get(description='PSI', key='units')
@@ -84,8 +78,26 @@ class BaseUnitTest(TestCase):
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 20)
 
+    def test_pascals(self):
+        atm = Catalog.objects.get(description='Atmósfera', key='units')
+        inst = ShelfObject(quantity=20, measurement_unit=atm)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 2026500.547661773)
+
     def test_low_quantity(self):
-        liter = Catalog.objects.get(description='Miligramos', key='units')
-        inst = ShelfObject(quantity=0.10, measurement_unit=liter)
+        ml = Catalog.objects.get(description='Miligramos', key='units')
+        inst = ShelfObject(quantity=0.10, measurement_unit=ml)
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 0.0000001)
+
+    def test_negative_quantity(self):
+        ml = Catalog.objects.get(description='Miligramos', key='units')
+        inst = ShelfObject(quantity=-0.10, measurement_unit=ml)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, -0.0000001)
+
+    def test_unsupported_catalog(self):
+        new_catalog = Catalog.objects.create(key='units', description='New Catalog')
+        inst = ShelfObject(quantity=-0.10, measurement_unit=new_catalog)
+        pre_save.send(sender=ShelfObject, instance=inst)
+        self.assertEqual(inst.quantity_base_unit, 0)
