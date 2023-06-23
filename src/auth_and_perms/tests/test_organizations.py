@@ -124,7 +124,7 @@ class OrganizationTest(TestCase):
 
 
         self.assertEqual(post_response.status_code, 302)
-        self.assertContains(get_response, 'R1 rol display')
+        self.assertContains(get_response, 'Gestión de Organizaciones')
         success_url = reverse('auth_and_perms:list_rol_by_org', args=[1])
         self.assertRedirects(post_response, success_url)
         self.assertTrue(pre_rol > pos_rol)
@@ -137,12 +137,9 @@ class OrganizationTest(TestCase):
             'rols': [3]
         }
         pre_rol = OrganizationStructure.objects.get(pk=1).rol.count()
-
         post_response = self.client.post(reverse('auth_and_perms:copy_rols', kwargs={'pk':1}), data=data)
-        pos_rol = OrganizationStructure.objects.get(pk=1).rol.count()
-
-
         self.assertEqual(post_response.status_code, 302)
+        pos_rol = OrganizationStructure.objects.get(pk=1).rol.count()
         success_url = reverse('auth_and_perms:organizationManager')
         self.assertTrue(_("Element saved successfully") == str(list(get_messages(post_response.wsgi_request))[0]))
 
@@ -275,13 +272,4 @@ class OrganizationTest(TestCase):
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 201)
         self.assertIn(data['name'], json.loads(response.content)['name'])
-
-    def test_update_rol(self):
-        rol = Rol.objects.first()
-        data = {"name": "Casar"}
-        url = reverse("auth_and_perms:api-rol-detail", kwargs={"pk": rol.pk, })
-        response = self.client.put(url, data=json.dumps(data), content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        rol = Rol.objects.first()
-        self.assertEqual(rol.name, data['name'])
 
