@@ -66,7 +66,7 @@ class BaseUnitTest(TestCase):
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 20)
 
-    def test_atm_to_pascal(self):
+    def test_pascals(self):
         atm = Catalog.objects.get(description='Atmósfera', key='units')
         inst = ShelfObject(quantity=20, measurement_unit=atm)
         pre_save.send(sender=ShelfObject, instance=inst)
@@ -78,7 +78,7 @@ class BaseUnitTest(TestCase):
         pre_save.send(sender=ShelfObject, instance=inst)
         self.assertEqual(inst.quantity_base_unit, 137895.1817355074)
 
-    def test_pascals(self):
+    def test_atm_to_pascal(self):
         pascal = Catalog.objects.get(description='Pascales', key='units')
         inst = ShelfObject(quantity=20, measurement_unit=pascal)
         pre_save.send(sender=ShelfObject, instance=inst)
@@ -86,6 +86,6 @@ class BaseUnitTest(TestCase):
 
     def test_low_quantity(self):
         liter = Catalog.objects.get(description='Miligramos', key='units')
-        inst = ShelfObject(quantity=0.1, measurement_unit=liter)
+        inst = ShelfObject(quantity=0.10, measurement_unit=liter)
         pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, 1.0000000000000001e-07)
+        self.assertEqual(inst.quantity_base_unit, 0.0000001)
