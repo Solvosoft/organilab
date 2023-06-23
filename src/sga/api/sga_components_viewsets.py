@@ -102,7 +102,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'warningword', relobj=[self.organization],
                                changed_data=list(serializer.validated_data.keys()))
 
-            return JsonResponse({"detail": _("Warning word created successfully.")},
+            return JsonResponse({"detail": _("Item created successfully.")},
                                 status=status.HTTP_201_CREATED)
 
         return JsonResponse({'errors': serializer.errors},
@@ -115,17 +115,15 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
+
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
+
         return JsonResponse({'data': serializer.data})
 
     def update(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'update')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
 
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
@@ -134,28 +132,24 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             if serializer.is_valid():
                 warning_word = serializer.save()
                 organilab_logentry(request.user, warning_word, CHANGE,
-                                   'warningword', relobj=[organization],
+                                   'warningword', relobj=[self.organization],
                                    changed_data=list(serializer.validated_data.keys()))
 
-                return JsonResponse({"detail": _("Updated")},
+                return JsonResponse({"detail": _("Item updated successfully")},
                                     status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'destroy')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
 
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
             organilab_logentry(request.user, warning_word, DELETION,
-                               'warningword', relobj=[organization])
+                               'warningword', relobj=[self.organization])
             warning_word.delete()
 
-            return JsonResponse({'detail': _('Deleted successfully')},
+            return JsonResponse({'detail': _('Item deleted successfully')},
                                 status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -171,8 +165,22 @@ class DangerIndicationTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
     search_fields = ['code', 'description', 'warning_words__name']
     filterset_fields = ['code', 'description', 'warning_words__name']
     ordering_fields = ['code']
+    permissions_by_endpoint = {
+        "list": ["sga.view_dangerindication"]
+    }
 
-    def list(self, request, *args, **kwargs):
+    def _check_permission_on_organization(self, request, org_pk, method_name):
+        if request.user.has_perms(self.permissions_by_endpoint[method_name]):
+            self.organization = get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=org_pk
+            )
+            user_is_allowed_on_organization(request.user, self.organization)
+        else:
+            raise PermissionDenied()
+
+    def list(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
         recordsTotal = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
@@ -190,10 +198,10 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = DangerIndication.objects.all()
     serializer_class = DangerIndicationSerializer
     permissions_by_endpoint = {
-        "add_danger_indication": ["sga.view_dangerindication", "sga.add_dangerindication"],
-        "list_danger_indications": ["sga.view_dangerindication"],
-        "update_danger_indication": ["sga.view_dangerindication", "sga.change_dangerindication"],
-        "delete_danger_indication": ["sga.view_dangerindication", "sga.delete_dangerindication"]
+        "create": ["sga.view_dangerindication", "sga.add_dangerindication"],
+        "list": ["sga.view_dangerindication"],
+        "update": ["sga.view_dangerindication", "sga.change_dangerindication"],
+        "destroy": ["sga.view_dangerindication", "sga.delete_dangerindication"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
@@ -206,88 +214,75 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         else:
             raise PermissionDenied()
 
-    @action(detail=False, methods=['post'])
-    def add_danger_indication(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'add_danger_indication')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
+    def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
+        if pk:
+            warning_word = get_object_or_404(WarningWord, pk=pk)
+            serializer = self.get_serializer(warning_word)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'create')
         serializer = DangerIndicationSerializer(data=request.data)
 
         if serializer.is_valid():
             danger_indication = serializer.save()
             organilab_logentry(request.user, danger_indication, ADDITION,
-                               'dangerindication', relobj=[organization],
+                               'dangerindication', relobj=[self.organization],
                                changed_data=list(serializer.validated_data.keys()))
 
-            danger_indications = self.get_queryset().order_by('code')
-            template = render_to_string('sga/substance/danger_indication_api.html',
-                                        {'danger_indications': danger_indications},
-                                        request)
+            return JsonResponse({"detail": _("Item created successfully.")},
+                                status=status.HTTP_201_CREATED)
 
-            return Response({'data': template}, status=status.HTTP_201_CREATED)
+        return JsonResponse({'errors': serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def list(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
+        queryset = self.get_queryset().order_by('code')
 
-    @action(detail=False, methods=['get'])
-    def list_danger_indications(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'list_danger_indications')
-        danger_indications = self.get_queryset().order_by('code')
-        template = render_to_string('sga/substance/danger_indication_api.html',
-                                    {'danger_indications': danger_indications},
-                                    request)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
 
-        return Response({'data': template})
+            return self.get_paginated_response(serializer.data)
 
-    @action(detail=True, methods=['put'])
-    def update_danger_indication(self, request, org_pk, pk=None):
-        self._check_permission_on_organization(request, org_pk, 'update_danger_indication')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
-        danger_indication = None
+        serializer = self.get_serializer(queryset, many=True)
+        return JsonResponse({'data': serializer.data})
+
+    def update(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'update')
 
         if pk:
-            serializer = DangerIndicationSerializer(data=request.data)
+            danger_indication = get_object_or_404(DangerIndication, pk=pk)
+            serializer = DangerIndicationSerializer(danger_indication,
+                                                    data=request.data)
 
             if serializer.is_valid():
                 danger_indication = serializer.save()
                 organilab_logentry(request.user, danger_indication, CHANGE,
-                                   'dangerindication', relobj=[organization],
+                                   'dangerindication', relobj=[self.organization],
                                    changed_data=list(serializer.validated_data.keys()))
 
-                danger_indications = DangerIndication.objects.all()
+                return JsonResponse({'detail': _('Item updated successfully')},
+                                    status=status.HTTP_200_OK)
 
-                template = render_to_string('sga/substance/danger_indication_api.html',
-                                            {'danger_indications': danger_indications},
-                                            request)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-                return Response({'data': template}, status=status.HTTP_200_OK)  # Devolver Json
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=['delete'])
-    def delete_danger_indication(self, request, org_pk, pk=None):
-        self._check_permission_on_organization(request, org_pk, 'delete_danger_indication')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
+    def destroy(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'destroy')
 
         if pk:
             danger_indication = get_object_or_404(DangerIndication, pk=pk)
             organilab_logentry(request.user, danger_indication, DELETION,
-                               'dangerindication', relobj=[organization])
+                               'dangerindication', relobj=[self.organization])
             danger_indication.delete()
 
-            danger_indications = self.get_queryset().order_by('code')
-            template = render_to_string('sga/substance/danger_indication_api.html',
-                                        {'danger_indications': danger_indications},
-                                        request)
-
-            return Response({'data': template}, status=status.HTTP_200_OK)
+            return JsonResponse({'detail': _('Item deleted successfully')},
+                                status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -302,8 +297,22 @@ class PrudenceAdviceTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
     search_fields = ['code', 'name', 'prudence_advice_help']
     filterset_fields = ['code', 'name', 'prudence_advice_help']
     ordering_fields = ['code']
+    permissions_by_endpoint = {
+        "list": ["sga.view_prudenceadvice"]
+    }
 
-    def list(self, request, *args, **kwargs):
+    def _check_permission_on_organization(self, request, org_pk, method_name):
+        if request.user.has_perms(self.permissions_by_endpoint[method_name]):
+            self.organization = get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=org_pk
+            )
+            user_is_allowed_on_organization(request.user, self.organization)
+        else:
+            raise PermissionDenied()
+
+    def list(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
         recordsTotal = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
@@ -324,7 +333,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         "add_prudence_advice": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
         "list_prudence_advices": ["sga.view_prudenceadvice"],
         "update_prudence_advice": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
-        "delete_prudence_advice": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"]
+        "delete_prudence_advice": ["sga.view_prudenceadvice", "sga.delete_prudenceadvice"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
