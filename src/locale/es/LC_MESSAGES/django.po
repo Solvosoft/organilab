@@ -941,7 +941,7 @@ msgid "Quantity Base Unit"
 msgstr "Unidad base de cantidad"
 
 msgid "Quantity in its respective base unit"
-msgstr ""
+msgstr "Cantidad en su respectiva unidad base"
 
 msgid "Is discard"
 msgstr "Es desecho"
@@ -1141,6 +1141,8 @@ msgstr "Producto Agregado exitosamente"
 msgid ""
 "This select only shows shelves with same measurement unit than current object"
 msgstr ""
+"Esta seleccion solo muestra los estantes que tengan la misma unidad de "
+"medida que el objeto actual."
 
 msgid "Unlimited"
 msgstr "Ilimitado"
@@ -1227,7 +1229,7 @@ msgstr "El objeto fue incrementado"
 
 #, python-format
 msgid "Current available objects: %(amount)d"
-msgstr ""
+msgstr "Objetos disponibles actualmente: %(amount)d"
 
 msgid "Sustance saved successfully"
 msgstr "Sustancia guardada satisfactoriamente"
@@ -1871,7 +1873,7 @@ msgid "Percentage storage"
 msgstr "Porcentaje de almacenamiento"
 
 msgid "Purpose"
-msgstr ""
+msgstr "Proposito"
 
 msgid "Logs"
 msgstr "Bitácora"
@@ -2038,7 +2040,7 @@ msgid "UE Codes"
 msgstr "Códigos UE"
 
 msgid "This field is required."
-msgstr ""
+msgstr "Este campo es requerido."
 
 msgid "Quantity can't greater than shelf quantity limit 40.0"
 msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
@@ -2047,13 +2049,13 @@ msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
 
 msgid "This field may not be null."
-msgstr ""
+msgstr "Este campo no debe ser nulo."
 
 msgid "Authentication credentials were not provided."
-msgstr ""
+msgstr "No se proporcionaron las credenciales de autenticación."
 
 msgid "This field may not be blank."
-msgstr ""
+msgstr "Este campo no debe estar vacío."
 
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
@@ -3122,7 +3124,7 @@ msgid "Components"
 msgstr "Componentes"
 
 msgid "Draft"
-msgstr ""
+msgstr "Borrador"
 
 msgid "Under Review"
 msgstr "En revisión"
