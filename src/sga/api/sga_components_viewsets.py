@@ -135,7 +135,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                    'warningword', relobj=[self.organization],
                                    changed_data=list(serializer.validated_data.keys()))
 
-                return JsonResponse({"detail": _("Item updated successfully")},
+                return JsonResponse({"detail": _("Item updated successfully.")},
                                     status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -149,7 +149,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'warningword', relobj=[self.organization])
             warning_word.delete()
 
-            return JsonResponse({'detail': _('Item deleted successfully')},
+            return JsonResponse({'detail': _('Item deleted successfully.')},
                                 status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -267,7 +267,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                    'dangerindication', relobj=[self.organization],
                                    changed_data=list(serializer.validated_data.keys()))
 
-                return JsonResponse({'detail': _('Item updated successfully')},
+                return JsonResponse({'detail': _('Item updated successfully.')},
                                     status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -281,7 +281,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'dangerindication', relobj=[self.organization])
             danger_indication.delete()
 
-            return JsonResponse({'detail': _('Item deleted successfully')},
+            return JsonResponse({'detail': _('Item deleted successfully.')},
                                 status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -330,10 +330,10 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = PrudenceAdvice.objects.all()
     serializer_class = PrudenceAdviceSerializer
     permissions_by_endpoint = {
-        "add_prudence_advice": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
-        "list_prudence_advices": ["sga.view_prudenceadvice"],
-        "update_prudence_advice": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
-        "delete_prudence_advice": ["sga.view_prudenceadvice", "sga.delete_prudenceadvice"]
+        "create": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
+        "list": ["sga.view_prudenceadvice"],
+        "update": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
+        "destroy": ["sga.view_prudenceadvice", "sga.delete_prudenceadvice"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
@@ -346,87 +346,74 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         else:
             raise PermissionDenied()
 
-    @action(detail=False, methods=['post'])
-    def add_prudence_advice(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'add_prudence_advice')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
+    def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
+        if pk:
+            prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
+            serializer = self.get_serializer(prudence_advice)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'create')
         serializer = PrudenceAdviceSerializer(data=request.data)
 
         if serializer.is_valid():
             prudence_advice = serializer.save()
             organilab_logentry(request.user, prudence_advice, ADDITION,
-                               'prudenceadvice', relobj=[organization],
+                               'prudenceadvice', relobj=[self.organization],
                                changed_data=list(serializer.validated_data.keys()))
 
-            prudence_advices = self.get_queryset().order_by('code')
-            template = render_to_string('sga/substance/prudence_advice_api.html',
-                                        {'prudence_advices': prudence_advices},
-                                        request)
+            return JsonResponse({'detail': _("Item created successfully.")},
+                                status=status.HTTP_201_CREATED)
 
-            return Response({'data': template}, status=status.HTTP_201_CREATED)
+        return JsonResponse({'errors': serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def list(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
+        queryset = self.get_queryset().order_by('code')
 
-    @action(detail=False, methods=['get'])
-    def list_prudence_advices(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'list_prudence_advices')
-        prudence_advices = self.get_queryset().order_by('code')
-        template = render_to_string('sga/substance/prudence_advice_api.html',
-                                    {'prudence_advices': prudence_advices},
-                                    request)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
 
-        return Response({'data': template})
+            return self.get_paginated_response(serializer.data)
 
-    @action(detail=True, methods=['put'])
-    def update_prudence_advice(self, request, org_pk, pk=None):
-        self._check_permission_on_organization(request, org_pk, 'update_prudence_advice')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
-        prudence_advice = None
+        serializer = self.get_serializer(queryset, many=True)
+
+        return JsonResponse({'data': serializer.data})
+
+    def update(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'update')
 
         if pk:
-            serializer = PrudenceAdviceSerializer(data=request.data)
+            prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
+            serializer = PrudenceAdviceSerializer(prudence_advice, data=request.data)
 
             if serializer.is_valid():
                 prudence_advice = serializer.save()
                 organilab_logentry(request.user, prudence_advice, CHANGE,
-                                   'prudenceadvice', relobj=[organization],
+                                   'prudenceadvice', relobj=[self.organization],
                                    changed_data=list(serializer.validated_data.keys()))
 
-                prudence_advices = PrudenceAdvice.objects.all()
+                return JsonResponse({'detail':  _("Item updated successfully.")},
+                                    status=status.HTTP_200_OK)
 
-                template = render_to_string('sga/substance/prudence_advice_api.html',
-                                            {'prudence_advices': prudence_advices},
-                                            request)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-                return Response({'data': template}, status=status.HTTP_200_OK)  # Devolver Json
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=['delete'])
-    def delete_prudence_advice(self, request, org_pk, pk=None):
-        self._check_permission_on_organization(request, org_pk, 'delete_prudence_advice')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
+    def destroy(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'destroy')
 
         if pk:
             prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
             organilab_logentry(request.user, prudence_advice, DELETION,
-                               'prudenceadvice', relobj=[organization])
+                               'prudenceadvice', relobj=[self.organization])
             prudence_advice.delete()
 
-            prudence_advices = self.get_queryset().order_by('code')
-            template = render_to_string('sga/substance/prudence_advice_api.html',
-                                        {'prudence_advices': prudence_advices},
-                                        request)
-
-            return Response({'data': template}, status=status.HTTP_200_OK)
+            return JsonResponse({'detail': _('Item deleted successfully.')},
+                                status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
