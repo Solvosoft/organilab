@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import formats
@@ -11,6 +12,8 @@ from rest_framework import serializers
 
 from academic.models import CommentProcedureStep
 from academic.models import MyProcedure, Procedure
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.models import OrganizationStructure
 
 logger = logging.getLogger('organilab')
 
@@ -33,8 +36,7 @@ class ProcedureStepCommentFilterSet(FilterSet):
 
 class ProcedureStepCommentSerializer(serializers.ModelSerializer):
     creator = serializers.SerializerMethodField(required=False)
-    creator_at = serializers.DateTimeField(required=False, format=
-    formats.get_format('DATETIME_INPUT_FORMATS')[0])
+    creator_at = serializers.DateTimeField(required=False, format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
     comment = serializers.CharField(required=True)
 
     def get_creator(self, obj):
@@ -111,8 +113,8 @@ class MyProcedureSerializer(serializers.ModelSerializer):
         url = reverse('academic:complete_my_procedure', kwargs=procedure_kwargs)
         action += """ <a title='%s' class="pe-2" href='%s'><i class="fa fa-edit text-success" aria-hidden="true"></i>
         </a>""" % (_("Edit"), url,)
-        action += """ <a title='%s' class="pe-2 open_modal" onclick="get_procedure(%d)"><i class="fa fa-book"></i></a>
-        """ % (_("Reserved"), obj.custom_procedure.pk)
+        action += """ <a title='%s' class="pe-2 open_modal" data-url="%s" onclick="get_procedure(this)"><i class="fa fa-book"></i></a>
+        """ % (_("Reserved"), reverse('academic:get_procedure', kwargs={'org_pk':org_pk,'pk':obj.custom_procedure.pk}))
         action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger"
         aria-hidden="true"></i></a>""" % (_("Delete"), obj.custom_procedure.pk)
 
@@ -147,9 +149,7 @@ class ProcedureSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         org_pk = self.context['view'].kwargs.get('org_pk')
-        lab_pk = self.context['view'].kwargs.get('lab_pk')
         procedure_kwargs = {
-            'lab_pk': lab_pk,
             'org_pk': org_pk,
             'pk': obj.pk,
         }
@@ -160,8 +160,9 @@ class ProcedureSerializer(serializers.ModelSerializer):
         reverse('academic:add_steps_wrapper', kwargs=procedure_kwargs), _('New Step'))
         action += """<a href="%s" title="%s"><i class="fa fa-edit  fa-sm p-2"></i></a>""" % (
         reverse('academic:procedure_update', kwargs=procedure_kwargs), _('Edit'))
-        action += """<a delete_procedure(%d,%s) title="%s"><i class="fa fa-trash text-danger p-2"></i></a>""" % (
-        obj.pk, obj.title, _('Remove'))
+        action += """<a onclick="delete_procedure(%d,'%s')" title="%s">
+        <i class="fa fa-trash text-danger p-2"></i>
+        </a>""" % (obj.pk, str(obj.title), _('Remove'))
 
         return action
 
@@ -175,3 +176,6 @@ class ProcedureDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+class ValidateUserAccessOrgSerializer(serializers.Serializer):
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
