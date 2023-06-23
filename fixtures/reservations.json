@@ -77,19 +77,35 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 4,
+    "fields": {
+      "name": "Gestión de Reservaciones",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_reservations",
+          "reservations_management",
+          "reservations"
+        ]
+      ]
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
       "profile": 1,
       "content_type": [
-        "laboratory",
-        "organizationstructure"
+        "auth_and_perms",
+        "profile"
       ],
       "object_id": 1,
       "rol": [
         1,
         2,
-        3
+        3,
+        4
       ]
     }
   },
@@ -104,7 +120,8 @@
       "rol": [
         1,
         2,
-        3
+        3,
+        4
       ],
       "users": [
         1

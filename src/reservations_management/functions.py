@@ -274,7 +274,7 @@ def get_related_data_sets(requested_product):
         'related_different_reserved_products_list': related_different_reserved_products_list
     }
 
-@permission_required('risk_management.change_shelfobject')
+@permission_required('laboratory.change_shelfobject')
 def validate_reservation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)

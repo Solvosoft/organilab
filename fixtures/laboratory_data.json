@@ -57,7 +57,7 @@
     "model": "auth_and_perms.rol",
     "pk": 1,
     "fields": {
-      "name": "Gestión de reporte de incidentes",
+      "name": "Gestión de Reporte de Incidentes",
       "color": "#337193",
       "permissions": [
         [
@@ -72,11 +72,26 @@
     "model": "auth_and_perms.rol",
     "pk": 2,
     "fields": {
-      "name": "Gestión de informes",
+      "name": "Gestión de Informes",
       "color": "#337193",
       "permissions": [
         [
           "add_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "change_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "delete_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "view_inform",
           "laboratory",
           "inform"
         ]
@@ -87,13 +102,463 @@
     "model": "auth_and_perms.rol",
     "pk": 3,
     "fields": {
-      "name": "Gestión de estantes",
+      "name": "Gestión de Estantes",
       "color": "#337193",
       "permissions": [
+        [
+          "add_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "change_shelf",
+          "laboratory",
+          "shelf"
+        ],
         [
           "delete_shelf",
           "laboratory",
           "shelf"
+        ],
+        [
+          "view_shelf",
+          "laboratory",
+          "shelf"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 4,
+    "fields": {
+      "name": "Gestión de Desechos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "can_manage_disposal",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "can_view_disposal",
+          "laboratory",
+          "shelf"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 5,
+    "fields": {
+      "name": "Gestión de Muebles",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "change_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "delete_furniture",
+          "laboratory",
+          "furniture"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 6,
+    "fields": {
+      "name": "Gestión de Proveedores",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_provider",
+          "laboratory",
+          "provider"
+        ],
+        [
+          "change_provider",
+          "laboratory",
+          "provider"
+        ],
+        [
+          "view_provider",
+          "laboratory",
+          "provider"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 7,
+    "fields": {
+      "name": "Gestión de Usuarios",
+      "color": "#337193",
+      "permissions": [
+        [
+          "change_user",
+          "auth",
+          "user"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 8,
+    "fields": {
+      "name": "Gestión de Objetos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 9,
+    "fields": {
+      "name": "Gestión de Reportes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "do_report",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_report",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 10,
+    "fields": {
+      "name": "Gestión de Protocolos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_protocol",
+          "laboratory",
+          "protocol"
+        ],
+        [
+          "view_protocol",
+          "laboratory",
+          "protocol"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 11,
+    "fields": {
+      "name": "Gestión de Perfiles",
+      "color": "#337193",
+      "permissions": [
+        [
+          "change_profile",
+          "auth_and_perms",
+          "profile"
+        ],
+        [
+          "view_profile",
+          "auth_and_perms",
+          "profile"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 12,
+    "fields": {
+      "name": "Gestión de Características de Objetos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_objectfeatures",
+          "laboratory",
+          "objectfeatures"
+        ],
+        [
+          "change_objectfeatures",
+          "laboratory",
+          "objectfeatures"
+        ],
+        [
+          "delete_objectfeatures",
+          "laboratory",
+          "objectfeatures"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 13,
+    "fields": {
+      "name": "Gestión de Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 14,
+    "fields": {
+      "name": "Gestión de Sala de Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "change_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "delete_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "view_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 15,
+    "fields": {
+      "name": "Gestión de la Estructura de la Organización",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_organizationstructure",
+          "laboratory",
+          "organizationstructure"
+        ],
+        [
+          "delete_organizationstructure",
+          "laboratory",
+          "organizationstructure"
+        ],
+        [
+          "change_organizationstructure",
+          "laboratory",
+          "organizationstructure"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 16,
+    "fields": {
+      "name": "Gestión de Objeto en el Estante",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "change_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "delete_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 17,
+    "fields": {
+      "name": "Gestión de Tranferencia de Objeto",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ],
+        [
+          "change_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ],
+        [
+          "delete_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ],
+        [
+          "view_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 18,
+    "fields": {
+      "name": "Gestión de Reserva de Productos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 19,
+    "fields": {
+      "name": "Gestión de Observaciones del Objeto en el Estante",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_shelfobjectobservation",
+          "laboratory",
+          "shelfobjectobservation"
+        ],
+        [
+          "view_shelfobjectobservation",
+          "laboratory",
+          "shelfobjectobservation"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 20,
+    "fields": {
+      "name": "Gestión de Catalogos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_catalog",
+          "laboratory",
+          "catalog"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 21,
+    "fields": {
+      "name": "Gestión de Agendador de Informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_informscheduler",
+          "laboratory",
+          "informscheduler"
+        ],
+        [
+          "change_informscheduler",
+          "laboratory",
+          "informscheduler"
+        ],
+        [
+          "view_informscheduler",
+          "laboratory",
+          "informscheduler"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 22,
+    "fields": {
+      "name": "Gestión de Reservaciones",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_reservations",
+          "reservations_management",
+          "reservations"
         ]
       ]
     }
@@ -106,7 +571,30 @@
       "name": "Investigadores SA",
       "position": 1,
       "level": 1,
-      "rol": [3],
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
       "users": [
         1
       ]
@@ -120,7 +608,30 @@
       "name": "Organization Testing",
       "position": 3,
       "level": 3,
-      "rol": [1, 2],
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
       "users": [
         2
       ]
@@ -134,7 +645,30 @@
       "name": "Org MK",
       "position": 3,
       "level": 3,
-      "rol": [],
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
       "users": [
         1
       ]
@@ -148,38 +682,34 @@
       "name": "Chec Org",
       "position": 4,
       "level": 4,
-      "rol": [],
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
       "users": [
         1,
         2
       ]
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 1,
-    "fields": {
-      "organization": 1,
-      "user": 1,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 2,
-    "fields": {
-      "organization": 2,
-      "user": 2,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 3,
-    "fields": {
-      "organization": 3,
-      "user": 1,
-      "type_in_organization": 1
     }
   },
   {
@@ -627,7 +1157,8 @@
       "color": "#73879C",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
-      "discard": false
+      "discard": false,
+      "measurement_unit": 63
     }
   },
   {
@@ -1055,19 +1586,19 @@
     }
   },
   {
-      "model": "laboratory.shelfobject",
-      "pk": 6,
-      "fields": {
-        "shelf": 1,
-        "object": 4,
-        "quantity": 2.0,
-        "in_where_laboratory": 1,
-        "limit_quantity": 7.0,
-        "measurement_unit": 63,
-        "marked_as_discard": false,
-        "creation_date": "2023-01-31T19:33:49.240Z",
-        "last_update": "2023-01-31T19:33:49.272Z"
-      }
+    "model": "laboratory.shelfobject",
+    "pk": 6,
+    "fields": {
+      "shelf": 1,
+      "object": 4,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
   },
   {
     "model": "reservations_management.reservedproducts",
@@ -1359,7 +1890,26 @@
       "rol": [
         1,
         2,
-        3
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
       ]
     }
   },

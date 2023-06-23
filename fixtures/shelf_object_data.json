@@ -360,7 +360,7 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
       "discard": false,
-      "measurement_unit": 64,
+      "measurement_unit": 62,
       "quantity": 100,
       "limit_only_objects": false,
       "infinity_quantity": false
@@ -378,7 +378,7 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
       "discard": false,
-      "measurement_unit": 64,
+      "measurement_unit": 62,
       "quantity": 100,
       "limit_only_objects": false,
       "infinity_quantity": false
