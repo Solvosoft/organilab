@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.contrib.admin.models import ADDITION, DELETION, CHANGE
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,6 +12,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django.utils.translation import gettext_lazy as _
 
 from sga.models import WarningWord, DangerIndication, PrudenceAdvice
 from sga.api.serializers import WarningWordSerializer, WarningWordDataTableSerializer, \
@@ -31,8 +33,22 @@ class WarningWordTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
     search_fields = ['name', 'weigth']
     filterset_fields = ['name', 'weigth']
     ordering_fields = ['weigth']
+    permissions_by_endpoint = {
+        "list": ["sga.view_warningword"]
+    }
 
-    def list(self, request, *args, **kwargs):
+    def _check_permission_on_organization(self, request, org_pk, method_name):
+        if request.user.has_perms(self.permissions_by_endpoint[method_name]):
+            self.organization = get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=org_pk
+            )
+            user_is_allowed_on_organization(request.user, self.organization)
+        else:
+            raise PermissionDenied()
+
+    def list(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
         recordsTotal = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
@@ -50,10 +66,10 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = WarningWord.objects.all()
     serializer_class = WarningWordSerializer
     permissions_by_endpoint = {
-        "add_warning_word": ["sga.view_warningword", "sga.add_warningword"],
-        "list_warning_words": ["sga.view_warningword"],
-        "update_warning_word": ["sga.view_warningword", "sga.change_warningword"],
-        "delete_warning_word": ["sga.view_warningword", "sga.change_warningword"]
+        "create": ["sga.view_warningword", "sga.add_warningword"],
+        "list": ["sga.view_warningword"],
+        "update": ["sga.view_warningword", "sga.change_warningword"],
+        "destroy": ["sga.view_warningword", "sga.delete_warningword"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
@@ -66,80 +82,68 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         else:
             raise PermissionDenied()
 
-    @action(detail=False, methods=['post'])
-    def add_warning_word(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'add_warning_word')
-        organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk
-        )
+    def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
+        if pk:
+            warning_word = get_object_or_404(WarningWord, pk=pk)
+            serializer = self.get_serializer(warning_word)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def create(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, "create")
         serializer = WarningWordSerializer(data=request.data)
 
         if serializer.is_valid():
-            warning_word = WarningWord.objects.create(
-                name=serializer.data['name'],
-                weigth=serializer.data['weigth']
-            )
-            warning_word.save()
+            warning_word = serializer.save()
             organilab_logentry(request.user, warning_word, ADDITION,
-                               'warningword', relobj=[organization])
+                               'warningword', relobj=[self.organization],
+                               changed_data=list(serializer.validated_data.keys()))
 
-            warning_words = self.get_queryset().order_by('weigth')
-            template = render_to_string('sga/substance/warning_word_api.html',
-                                        {'warning_words': warning_words},
-                                        request)
+            return JsonResponse({"detail": _("Warning word created successfully.")},
+                                status=status.HTTP_201_CREATED)
 
-            return Response({'data': template}, status=status.HTTP_201_CREATED)
+        return JsonResponse({'errors': serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def list(self, request, org_pk, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'list')
+        queryset = self.get_queryset().order_by('weigth')
 
-    @action(detail=False, methods=['get'])
-    def list_warning_words(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'list_warning_words')
-        warning_words = self.get_queryset().order_by('weigth')
-        template = render_to_string('sga/substance/warning_word_api.html',
-                                    {'warning_words': warning_words},
-                                    request)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
 
-        return Response({'data': template})
+        serializer = self.get_serializer(queryset, many=True)
+        return JsonResponse({'data': serializer.data})
 
-    @action(detail=True, methods=['put'])
-    def update_warning_word(self, request, org_pk, pk=None):
-        self._check_permission_on_organization(request, org_pk, 'update_warning_word')
+    def update(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'update')
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=org_pk
         )
-        warning_word = None
 
         if pk:
-            serializer = WarningWordSerializer(data=request.data)
+            warning_word = get_object_or_404(WarningWord, pk=pk)
+            serializer = WarningWordSerializer(warning_word, data=request.data)
 
             if serializer.is_valid():
-                warning_word = get_object_or_404(WarningWord, pk=pk)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            if warning_word:
-                warning_word.name = request.data['name']
-                warning_word.weigth = request.data['weigth']
-                warning_word.save()
+                warning_word = serializer.save()
                 organilab_logentry(request.user, warning_word, CHANGE,
-                                   'warningword', relobj=[organization])
+                                   'warningword', relobj=[organization],
+                                   changed_data=list(serializer.validated_data.keys()))
 
-                warning_words = self.get_queryset().order_by('weigth')
+                return JsonResponse({"detail": _("Updated")},
+                                    status=status.HTTP_200_OK)
 
-                template = render_to_string('sga/substance/warning_word_api.html',
-                                            {'warning_words': warning_words},
-                                            request)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-                return Response({'data': template}, status=status.HTTP_200_OK)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    @action(detail=True, methods=['delete'])
-    def delete_warning_word(self, request, org_pk, pk=None):
-        self._check_permission_on_organization(request, org_pk, 'delete_warning_word')
+    def destroy(self, request, org_pk, pk=None, *args, **kwargs):
+        self._check_permission_on_organization(request, org_pk, 'destroy')
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=org_pk
@@ -151,12 +155,8 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                                'warningword', relobj=[organization])
             warning_word.delete()
 
-            warning_words = self.get_queryset().order_by('weigth')
-            template = render_to_string('sga/substance/warning_word_api.html',
-                                        {'warning_words': warning_words},
-                                        request)
-
-            return Response({'data': template}, status=status.HTTP_200_OK)
+            return JsonResponse({'detail': _('Deleted successfully')},
+                                status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -193,7 +193,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         "add_danger_indication": ["sga.view_dangerindication", "sga.add_dangerindication"],
         "list_danger_indications": ["sga.view_dangerindication"],
         "update_danger_indication": ["sga.view_dangerindication", "sga.change_dangerindication"],
-        "delete_danger_indication": ["sga.view_dangerindication", "sga.change_dangerindication"]
+        "delete_danger_indication": ["sga.view_dangerindication", "sga.delete_dangerindication"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
@@ -216,16 +216,10 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         serializer = DangerIndicationSerializer(data=request.data)
 
         if serializer.is_valid():
-            danger_indication = DangerIndication.objects.create(
-                code=serializer.data['code'],
-                description=serializer.data['description'],
-                warning_class=serializer.data['warning_class'],
-                warning_category=serializer.data['warning_category'],
-                prudence_advice=serializer.data['prudence_advice']
-            )
-            danger_indication.save()
+            danger_indication = serializer.save()
             organilab_logentry(request.user, danger_indication, ADDITION,
-                               'dangerindication', relobj=[organization])
+                               'dangerindication', relobj=[organization],
+                               changed_data=list(serializer.validated_data.keys()))
 
             danger_indications = self.get_queryset().order_by('code')
             template = render_to_string('sga/substance/danger_indication_api.html',
@@ -259,28 +253,18 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             serializer = DangerIndicationSerializer(data=request.data)
 
             if serializer.is_valid():
-                danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            if danger_indication:
-                danger_indication.code = serializer.data['code'],
-                danger_indication.description = serializer.data['description'],
-                danger_indication.warning_class = serializer.data['warning_class'],
-                danger_indication.warning_category = serializer.data['warning_category'],
-                danger_indication.prudence_advice = serializer.data['prudence_advice']
-
-                danger_indication.save()
+                danger_indication = serializer.save()
                 organilab_logentry(request.user, danger_indication, CHANGE,
-                                   'dangerindication', relobj=[organization])
+                                   'dangerindication', relobj=[organization],
+                                   changed_data=list(serializer.validated_data.keys()))
 
-                danger_indications = self.get_queryset().order_by('code')
+                danger_indications = DangerIndication.objects.all()
 
                 template = render_to_string('sga/substance/danger_indication_api.html',
                                             {'danger_indications': danger_indications},
                                             request)
 
-                return Response({'data': template}, status=status.HTTP_200_OK)
+                return Response({'data': template}, status=status.HTTP_200_OK)  # Devolver Json
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -337,10 +321,10 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = PrudenceAdvice.objects.all()
     serializer_class = PrudenceAdviceSerializer
     permissions_by_endpoint = {
-        "add_danger_indication": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
-        "list_danger_indications": ["sga.view_prudenceadvice"],
-        "update_danger_indication": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
-        "delete_danger_indication": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"]
+        "add_prudence_advice": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
+        "list_prudence_advices": ["sga.view_prudenceadvice"],
+        "update_prudence_advice": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
+        "delete_prudence_advice": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):
@@ -363,14 +347,10 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         serializer = PrudenceAdviceSerializer(data=request.data)
 
         if serializer.is_valid():
-            prudence_advice = PrudenceAdvice.objects.create(
-                code=serializer.data['code'],
-                name=serializer.data['name'],
-                prudence_advice_help=serializer.data['prudence_advice_help']
-            )
-            prudence_advice.save()
+            prudence_advice = serializer.save()
             organilab_logentry(request.user, prudence_advice, ADDITION,
-                               'prudenceadvice', relobj=[organization])
+                               'prudenceadvice', relobj=[organization],
+                               changed_data=list(serializer.validated_data.keys()))
 
             prudence_advices = self.get_queryset().order_by('code')
             template = render_to_string('sga/substance/prudence_advice_api.html',
@@ -404,25 +384,18 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             serializer = PrudenceAdviceSerializer(data=request.data)
 
             if serializer.is_valid():
-                prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            if prudence_advice:
-                prudence_advice.code = request.data['code']
-                prudence_advice.name = request.data['name']
-                prudence_advice.prudence_advice_help = request.data['prudence_advice_help']
-                prudence_advice.save()
+                prudence_advice = serializer.save()
                 organilab_logentry(request.user, prudence_advice, CHANGE,
-                                   'prudenceadvice', relobj=[organization])
+                                   'prudenceadvice', relobj=[organization],
+                                   changed_data=list(serializer.validated_data.keys()))
 
-                prudence_advices = self.get_queryset().order_by('code')
+                prudence_advices = PrudenceAdvice.objects.all()
 
                 template = render_to_string('sga/substance/prudence_advice_api.html',
                                             {'prudence_advices': prudence_advices},
                                             request)
 
-                return Response({'data': template}, status=status.HTTP_200_OK)
+                return Response({'data': template}, status=status.HTTP_200_OK)  # Devolver Json
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
