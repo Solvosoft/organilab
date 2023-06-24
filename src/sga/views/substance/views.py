@@ -451,8 +451,9 @@ def view_warning_words(request, org_pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     listado = WarningWord.objects.all()
+    form = WarningWordForm
     return render(request, 'sga/substance/warning_words.html',
-                  context={'listado': listado, 'org_pk': org_pk})
+                  context={'form': form, 'org_pk': org_pk})
 
 
 @login_required
