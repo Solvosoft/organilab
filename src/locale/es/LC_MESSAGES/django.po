@@ -3905,3 +3905,15 @@ msgstr "Crear plantilla de procedimientos"
 
 msgid "View Steps"
 msgstr "Ver pasos"
+
+msgid "Item created successfully."
+msgstr "Elemento creado exitosamente"
+
+msgid "Item updated successfully."
+msgstr "Elemento actualizado exitosamente"
+
+msgid "Item deleted successfully."
+msgstr "Elemento eliminado exitosamente"
+
+msgid "Warning word"
+msgstr "Palabra de advertencia"

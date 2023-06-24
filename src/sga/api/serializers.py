@@ -210,10 +210,37 @@ class DisplayLabelDataTableSerializer(serializers.Serializer):
 
 
 class WarningWordSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    weigth = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        if obj.name:
+            return obj.name
+        return ''
+
+    def get_weigth(self, obj):
+        if obj.weigth:
+            return obj.weigth
+        return 0
+
+    def get_actions(self, obj):
+        org_pk = self.context['view'].kwargs.get('org_pk')
+        action = ""
+
+        action += """<a title='%s' class="pe-2" onclick="edit_warning_word('%d')">
+        <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+        </a>""" % (_('Edit'), obj.pk)
+
+        action += """<a title='%s' class="pe-2" onclick="delete_warning_word(%d)">
+        <i class="fa fa-close text-danger" aria-hidden="true"></i>
+        </a>""" % (_("Delete"), obj.pk)
+
+        return action
 
     class Meta:
         model = WarningWord
-        fields = '__all__'
+        fields = ['pk', 'name', 'weigth', 'actions']
 
 
 class WarningWordDataTableSerializer(serializers.Serializer):

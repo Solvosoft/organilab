@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.http import JsonResponse
-from django.template.loader import render_to_string
 from django.contrib.admin.models import ADDITION, DELETION, CHANGE
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, status
@@ -21,6 +20,7 @@ from sga.api.serializers import WarningWordSerializer, WarningWordDataTableSeria
 from laboratory.models import OrganizationStructure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.utils import organilab_logentry
+from sga.views.substance.forms import WarningWordForm
 
 
 class WarningWordTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -94,19 +94,18 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def create(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, "create")
-        serializer = WarningWordSerializer(data=request.data)
+        form = WarningWordForm(request.POST)
 
-        if serializer.is_valid():
-            warning_word = serializer.save()
+        if form.is_valid():
+            warning_word = form.save()
             organilab_logentry(request.user, warning_word, ADDITION,
                                'warningword', relobj=[self.organization],
-                               changed_data=list(serializer.validated_data.keys()))
+                               changed_data=form.changed_data)
 
             return JsonResponse({"detail": _("Item created successfully.")},
                                 status=status.HTTP_201_CREATED)
 
-        return JsonResponse({'errors': serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'list')
@@ -127,13 +126,13 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
-            serializer = WarningWordSerializer(warning_word, data=request.data)
+            form = WarningWordForm(request.POST, instance=warning_word)
 
-            if serializer.is_valid():
-                warning_word = serializer.save()
+            if form.is_valid():
+                warning_word = form.save()
                 organilab_logentry(request.user, warning_word, CHANGE,
                                    'warningword', relobj=[self.organization],
-                                   changed_data=list(serializer.validated_data.keys()))
+                                   changed_data=form.changed_data)
 
                 return JsonResponse({"detail": _("Item updated successfully.")},
                                     status=status.HTTP_200_OK)

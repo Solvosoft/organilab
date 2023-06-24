@@ -491,3 +491,23 @@ msgstr "Título"
 
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
+
+#: sga/static/sga/js/warning_words.js:4
+msgid "Weight"
+msgstr "Peso"
+
+#: sga/static/sga/js/warning_words.js:16
+msgid "Add"
+msgstr "Agregar"
+
+#: sga/static/sga/js/warning_words.js:16
+msgid "Updated"
+msgstr "Actualizado"
+
+#: sga/static/sga/js/warning_words.js:16
+msgid "Delete warning word"
+msgstr "Eliminar palabra de advertencia"
+
+#: sga/static/sga/js/warning_words.js:16
+msgid "Do you want to remove the warning word?"
+msgstr "¿Desea eliminar esta palabra de advertencia?"
