@@ -23,6 +23,7 @@ msgstr ""
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
 #: laboratory/static/laboratory/js/detail_modal_creation.js:21
 #: laboratory/static/laboratory/js/laboratory.js:168
+#: sga/static/sga/js/warning_words.js:105
 msgid "Name"
 msgstr "Nombre"
 
@@ -35,6 +36,7 @@ msgstr "Roles"
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
 #: laboratory/static/laboratory/js/laboratory.js:172
 #: laboratory/static/laboratory/js/laboratory.js:236
+#: sga/static/sga/js/warning_words.js:107
 msgid "Actions"
 msgstr "Acciones"
 
@@ -260,6 +262,7 @@ msgstr "Formula Molecular"
 #: academic/static/js/complete_my_procedure.js:100
 #: academic/static/js/complete_my_procedure.js:144
 #: academic/static/js/procedure.js:11
+#: sga/static/sga/js/warning_words.js:77
 msgid "Yes"
 msgstr "Sí"
 
@@ -267,6 +270,7 @@ msgstr "Sí"
 #: academic/static/js/complete_my_procedure.js:101
 #: academic/static/js/complete_my_procedure.js:145
 #: academic/static/js/procedure.js:12
+#: sga/static/sga/js/warning_words.js:78
 msgid "No"
 msgstr "No"
 
@@ -373,11 +377,14 @@ msgid "Do you want to finish the report?"
 msgstr "¿Deseas finalizar el reporte?"
 
 #: academic/static/js/complete_my_procedure.js:22
+#: sga/static/sga/js/warning_words.js:4
+#: sga/static/sga/js/warning_words.js:46
 msgid "Added"
 msgstr "Agregado"
 
 #: academic/static/js/complete_my_procedure.js:23
 #: academic/static/js/complete_my_procedure.js:73
+#: sga/static/sga/js/warning_words.js:28
 msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
@@ -414,6 +421,7 @@ msgid "Do you want to remove the observation?"
 msgstr "¿Deseas eliminar la observación?"
 
 #: academic/static/js/complete_my_procedure.js:160
+#: sga/static/sga/js/warning_words.js:93
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
 
@@ -492,22 +500,22 @@ msgstr "Título"
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
 
-#: sga/static/sga/js/warning_words.js:4
+#: sga/static/sga/js/warning_words.js:106
 msgid "Weight"
 msgstr "Peso"
 
-#: sga/static/sga/js/warning_words.js:16
+#: sga/static/sga/js/warning_words.js:111
 msgid "Add"
 msgstr "Agregar"
 
-#: sga/static/sga/js/warning_words.js:16
+#: sga/static/sga/js/warning_words.js:66
 msgid "Updated"
 msgstr "Actualizado"
 
-#: sga/static/sga/js/warning_words.js:16
+#: sga/static/sga/js/warning_words.js:74
 msgid "Delete warning word"
 msgstr "Eliminar palabra de advertencia"
 
-#: sga/static/sga/js/warning_words.js:16
+#: sga/static/sga/js/warning_words.js:75
 msgid "Do you want to remove the warning word?"
 msgstr "¿Desea eliminar esta palabra de advertencia?"
