@@ -251,10 +251,48 @@ class WarningWordDataTableSerializer(serializers.Serializer):
 
 
 class DangerIndicationSerializer(serializers.ModelSerializer):
+    code = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    warning_words = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_code(self, obj):
+        if obj.code:
+            return obj.code
+        return ''
+
+    def get_description(self, obj):
+        if obj.description:
+            return obj.description
+        return ''
+
+    def get_warning_words(self, obj):
+        if obj.warning_words:
+            return obj.warning_words.name
+        return ''
+
+    def get_actions(self, obj):
+        org_pk = self.context['view'].kwargs.get('org_pk')
+        kwargs = {
+            'org_pk': org_pk,
+            'pk': obj.pk
+        }
+        edit_url = reverse('sga:update_danger_indication', kwargs=kwargs)
+        action = ""
+        action += """<a title='%s' class="pe-2" href='%s'>
+                <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+                </a>""" % (_('Edit'), edit_url)
+
+        action += """<a title='%s' class="pe-2"
+                onclick="delete_danger_indication('%s')">
+                <i class="fa fa-close text-danger" aria-hidden="true"></i>
+                </a>""" % (_("Delete"), obj.pk)
+
+        return action
 
     class Meta:
         model = DangerIndication
-        fields = ['code', 'description', 'warning_words']
+        fields = ['pk', 'code', 'description', 'warning_words', 'actions']
 
 
 class DangerIndicationDataTableSerializer(serializers.Serializer):

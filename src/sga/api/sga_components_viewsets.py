@@ -20,7 +20,7 @@ from sga.api.serializers import WarningWordSerializer, WarningWordDataTableSeria
 from laboratory.models import OrganizationStructure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.utils import organilab_logentry
-from sga.views.substance.forms import WarningWordForm
+from sga.views.substance.forms import WarningWordForm, DangerIndicationForm
 
 
 class WarningWordTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -225,19 +225,18 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def create(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'create')
-        serializer = DangerIndicationSerializer(data=request.data)
+        form = DangerIndicationForm(request.POST)
 
-        if serializer.is_valid():
-            danger_indication = serializer.save()
+        if form.is_valid():
+            danger_indication = form.save()
             organilab_logentry(request.user, danger_indication, ADDITION,
                                'dangerindication', relobj=[self.organization],
-                               changed_data=list(serializer.validated_data.keys()))
+                               changed_data=form.changed_data)
 
             return JsonResponse({"detail": _("Item created successfully.")},
                                 status=status.HTTP_201_CREATED)
 
-        return JsonResponse({'errors': serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'list')
@@ -257,14 +256,13 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            serializer = DangerIndicationSerializer(danger_indication,
-                                                    data=request.data)
+            form = DangerIndicationForm(request.POST, instance=danger_indication)
 
-            if serializer.is_valid():
-                danger_indication = serializer.save()
+            if form.is_valid():
+                danger_indication = form.save()
                 organilab_logentry(request.user, danger_indication, CHANGE,
                                    'dangerindication', relobj=[self.organization],
-                                   changed_data=list(serializer.validated_data.keys()))
+                                   changed_data=form.changed_data)
 
                 return JsonResponse({'detail': _('Item updated successfully.')},
                                     status=status.HTTP_200_OK)
