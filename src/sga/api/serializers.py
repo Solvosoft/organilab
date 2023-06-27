@@ -48,7 +48,6 @@ class PrudenceAdviceSerializer(serializers.ModelSerializer):
     def get_prudence_advice_help(self, obj):
         if obj.prudence_advice_help:
             return obj.prudence_advice_help
-        return _('Unknown')
 
     def get_actions(self, obj):
         action = ""

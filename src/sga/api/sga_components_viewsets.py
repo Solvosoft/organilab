@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, QueryDict
 from django.contrib.admin.models import ADDITION, DELETION, CHANGE
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, status
@@ -7,7 +7,6 @@ from rest_framework.authentication import SessionAuthentication, BaseAuthenticat
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -100,7 +99,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         if form.is_valid():
             warning_word = form.save()
             organilab_logentry(request.user, warning_word, ADDITION,
-                               'warningword', relobj=[self.organization],
+                               'warning word', relobj=[self.organization],
                                changed_data=form.changed_data)
 
             return JsonResponse({"detail": _("Item created successfully.")},
@@ -127,12 +126,13 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
-            form = WarningWordForm(request.POST, instance=warning_word)
+            data = QueryDict(request.body.decode('utf-8'))
+            form = WarningWordForm(data, instance=warning_word)
 
             if form.is_valid():
                 warning_word = form.save()
                 organilab_logentry(request.user, warning_word, CHANGE,
-                                   'warningword', relobj=[self.organization],
+                                   'warning word', relobj=[self.organization],
                                    changed_data=form.changed_data)
 
                 return JsonResponse({"detail": _("Item updated successfully.")},
@@ -146,7 +146,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
             organilab_logentry(request.user, warning_word, DELETION,
-                               'warningword', relobj=[self.organization])
+                               'warning word', relobj=[self.organization])
             warning_word.delete()
 
             return JsonResponse({'detail': _('Item deleted successfully.')},
@@ -217,8 +217,8 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'list')
         if pk:
-            warning_word = get_object_or_404(WarningWord, pk=pk)
-            serializer = self.get_serializer(warning_word)
+            danger_indication = get_object_or_404(DangerIndication, pk=pk)
+            serializer = self.get_serializer(danger_indication)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -231,7 +231,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         if form.is_valid():
             danger_indication = form.save()
             organilab_logentry(request.user, danger_indication, ADDITION,
-                               'dangerindication', relobj=[self.organization],
+                               'danger indication', relobj=[self.organization],
                                changed_data=form.changed_data)
 
             return JsonResponse({"detail": _("Item created successfully.")},
@@ -257,12 +257,13 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            form = DangerIndicationForm(request.POST, instance=danger_indication)
+            data = QueryDict(request.body.decode('utf-8'))
+            form = DangerIndicationForm(data, instance=danger_indication)
 
             if form.is_valid():
                 danger_indication = form.save()
                 organilab_logentry(request.user, danger_indication, CHANGE,
-                                   'dangerindication', relobj=[self.organization],
+                                   'danger indication', relobj=[self.organization],
                                    changed_data=form.changed_data)
 
                 return JsonResponse({'detail': _('Item updated successfully.')},
@@ -276,7 +277,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         if pk:
             danger_indication = get_object_or_404(DangerIndication, pk=pk)
             organilab_logentry(request.user, danger_indication, DELETION,
-                               'dangerindication', relobj=[self.organization])
+                               'danger indication', relobj=[self.organization])
             danger_indication.delete()
 
             return JsonResponse({'detail': _('Item deleted successfully.')},
@@ -361,7 +362,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         if form.is_valid():
             prudence_advice = form.save()
             organilab_logentry(request.user, prudence_advice, ADDITION,
-                               'prudenceadvice', relobj=[self.organization],
+                               'prudence advice', relobj=[self.organization],
                                changed_data=form.changed_data)
 
             return JsonResponse({'detail': _("Item created successfully.")},
@@ -388,12 +389,13 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            form = PrudenceAdviceForm(request.POST, instance=prudence_advice)
+            data = QueryDict(request.body.decode('utf-8'))
+            form = PrudenceAdviceForm(data, instance=prudence_advice)
 
             if form.is_valid():
                 prudence_advice = form.save()
                 organilab_logentry(request.user, prudence_advice, CHANGE,
-                                   'prudenceadvice', relobj=[self.organization],
+                                   'prudence advice', relobj=[self.organization],
                                    changed_data=form.changed_data)
 
                 return JsonResponse({'detail':  _("Item updated successfully.")},
@@ -407,7 +409,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         if pk:
             prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
             organilab_logentry(request.user, prudence_advice, DELETION,
-                               'prudenceadvice', relobj=[self.organization])
+                               'prudence advice', relobj=[self.organization])
             prudence_advice.delete()
 
             return JsonResponse({'detail': _('Item deleted successfully.')},
