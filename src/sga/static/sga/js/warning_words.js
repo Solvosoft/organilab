@@ -29,6 +29,15 @@ formmodal.addBtnForm = function(instance) {
                     datatableelement.ajax.reload();
                 });
             },
+            error: function( request, status, error ){
+                Swal.fire({
+                  icon: 'error',
+                  title: gettext('Error'),
+                  text: gettext('An error has occurred'),
+                }).then(function(result) {
+                datatableelement.ajax.reload();
+                })
+            }
         });
     }
 }
@@ -62,6 +71,15 @@ function edit_warning_word(pk){
             document.getElementById("id_name").value = success.name;
             document.getElementById("id_weigth").value = success.weigth;
             add_title = gettext("Updated");
+        },
+        error: function( request, status, error ){
+            Swal.fire({
+              icon: 'error',
+              title: gettext('Error'),
+              text: gettext('An error has occurred'),
+            }).then(function(result) {
+            datatableelement.ajax.reload();
+            })
         }
     });
 }
@@ -92,6 +110,15 @@ function delete_warning_word(pk){
                     datatableelement.ajax.reload();
                 })
             },
+            error: function( request, status, error ){
+                Swal.fire({
+                  icon: 'error',
+                  title: gettext('Error'),
+                  text: gettext('An error has occurred'),
+                }).then(function(result) {
+                datatableelement.ajax.reload();
+                })
+            }
         });
     }
     });

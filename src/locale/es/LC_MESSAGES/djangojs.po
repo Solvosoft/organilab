@@ -23,8 +23,8 @@ msgstr ""
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:81
 #: laboratory/static/laboratory/js/detail_modal_creation.js:21
 #: laboratory/static/laboratory/js/laboratory.js:168
-#: sga/static/sga/js/warning_words.js:105
-#: sga/static/sga/js/prudence_advice.js:106
+#: sga/static/sga/js/warning_words.js:129
+#: sga/static/sga/js/prudence_advice.js:121
 msgid "Name"
 msgstr "Nombre"
 
@@ -37,9 +37,9 @@ msgstr "Roles"
 #: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
 #: laboratory/static/laboratory/js/laboratory.js:172
 #: laboratory/static/laboratory/js/laboratory.js:236
-#: sga/static/sga/js/warning_words.js:107
-#: sga/static/sga/js/danger_indication.js:37
-#: sga/static/sga/js/prudence_advice.js:108
+#: sga/static/sga/js/warning_words.js:131
+#: sga/static/sga/js/danger_indication.js:45
+#: sga/static/sga/js/prudence_advice.js:123
 msgid "Actions"
 msgstr "Acciones"
 
@@ -155,16 +155,28 @@ msgstr ""
 #: laboratory/static/laboratory/js/base_modal_management.js:121
 #: laboratory/static/laboratory/js/laboratory.js:134
 #: laboratory/static/laboratory/js/shelfobject_utils.js:32
+#: sga/static/sga/js/prudence_advice.js:35
+#: sga/static/sga/js/prudence_advice.js:107
+#: sga/static/sga/js/warning_words.js:35
+#: sga/static/sga/js/warning_words.js:78
+#: sga/static/sga/js/warning_words.js:116
+#: sga/static/sga/js/danger_indication.js:30
 msgid "Error"
 msgstr "Error"
 
 #: laboratory/static/js/shelfobjectedit.js:70
+#: sga/static/sga/js/prudence_advice.js:36
+#: sga/static/sga/js/prudence_advice.js:108
+#: sga/static/sga/js/warning_words.js:36
+#: sga/static/sga/js/warning_words.js:79
+#: sga/static/sga/js/warning_words.js:117
+#: sga/static/sga/js/danger_indication.js:31
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:20
-#: sga/static/sga/js/danger_indication.js:34
-#: sga/static/sga/js/prudence_advice.js:105
+#: sga/static/sga/js/danger_indication.js:42
+#: sga/static/sga/js/prudence_advice.js:120
 msgid "Code"
 msgstr "Código"
 
@@ -174,7 +186,7 @@ msgstr "Sinónimo"
 
 #: laboratory/static/laboratory/js/detail_modal_creation.js:23
 #: laboratory/static/laboratory/js/shelfobject_management.js:9
-#: sga/static/sga/js/danger_indication.js:35
+#: sga/static/sga/js/danger_indication.js:43
 msgid "Description"
 msgstr "Descripción"
 
@@ -268,9 +280,9 @@ msgstr "Formula Molecular"
 #: academic/static/js/complete_my_procedure.js:100
 #: academic/static/js/complete_my_procedure.js:144
 #: academic/static/js/procedure.js:11
-#: sga/static/sga/js/warning_words.js:77
+#: sga/static/sga/js/warning_words.js:93
 #: sga/static/sga/js/danger_indication.js:7
-#: sga/static/sga/js/prudence_advice.js:77
+#: sga/static/sga/js/prudence_advice.js:84
 msgid "Yes"
 msgstr "Sí"
 
@@ -278,9 +290,9 @@ msgstr "Sí"
 #: academic/static/js/complete_my_procedure.js:101
 #: academic/static/js/complete_my_procedure.js:145
 #: academic/static/js/procedure.js:12
-#: sga/static/sga/js/warning_words.js:78
+#: sga/static/sga/js/warning_words.js:94
 #: sga/static/sga/js/danger_indication.js:8
-#: sga/static/sga/js/prudence_advice.js:78
+#: sga/static/sga/js/prudence_advice.js:85
 msgid "No"
 msgstr "No"
 
@@ -388,15 +400,15 @@ msgstr "¿Deseas finalizar el reporte?"
 
 #: academic/static/js/complete_my_procedure.js:22
 #: sga/static/sga/js/warning_words.js:4
-#: sga/static/sga/js/warning_words.js:46
+#: sga/static/sga/js/warning_words.js:54
 #: sga/static/sga/js/prudence_advice.js:4
-#: sga/static/sga/js/prudence_advice.js:45
+#: sga/static/sga/js/prudence_advice.js:53
 msgid "Added"
 msgstr "Agregado"
 
 #: academic/static/js/complete_my_procedure.js:23
 #: academic/static/js/complete_my_procedure.js:73
-#: sga/static/sga/js/warning_words.js:28
+#: sga/static/sga/js/warning_words.js:27
 #: sga/static/sga/js/prudence_advice.js:28
 msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
@@ -434,10 +446,9 @@ msgid "Do you want to remove the observation?"
 msgstr "¿Deseas eliminar la observación?"
 
 #: academic/static/js/complete_my_procedure.js:160
-#: sga/static/sga/js/warning_words.js:93
-#: sga/static/sga/js/warning_words.js:93
-#: sga/static/sga/js/danger_indication.js:23
-#: sga/static/sga/js/prudence_advice.js:93
+#: sga/static/sga/js/warning_words.js:108
+#: sga/static/sga/js/danger_indication.js:22
+#: sga/static/sga/js/prudence_advice.js:99
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
 
@@ -516,26 +527,26 @@ msgstr "Título"
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"
 
-#: sga/static/sga/js/warning_words.js:106
+#: sga/static/sga/js/warning_words.js:130
 msgid "Weight"
 msgstr "Peso"
 
-#: sga/static/sga/js/warning_words.js:111
-#: sga/static/sga/js/danger_indication.js:41
-#: sga/static/sga/js/prudence_advice.js:112
+#: sga/static/sga/js/warning_words.js:135
+#: sga/static/sga/js/danger_indication.js:49
+#: sga/static/sga/js/prudence_advice.js:127
 msgid "Add"
 msgstr "Agregar"
 
-#: sga/static/sga/js/warning_words.js:66
-#: sga/static/sga/js/prudence_advice.js:66
+#: sga/static/sga/js/warning_words.js:73
+#: sga/static/sga/js/prudence_advice.js:73
 msgid "Updated"
 msgstr "Actualizado"
 
-#: sga/static/sga/js/warning_words.js:74
+#: sga/static/sga/js/warning_words.js:90
 msgid "Delete warning word"
 msgstr "Eliminar palabra de advertencia"
 
-#: sga/static/sga/js/warning_words.js:75
+#: sga/static/sga/js/warning_words.js:91
 msgid "Do you want to remove the warning word?"
 msgstr "¿Desea eliminar esta palabra de advertencia?"
 
@@ -547,22 +558,22 @@ msgstr "Eliminar indicacion de peligro"
 msgid "Do you want to remove the danger indication?"
 msgstr "¿Desea eliminar esta indicacion de peligro?"
 
-#: sga/static/sga/js/danger_indication.js:36
+#: sga/static/sga/js/danger_indication.js:44
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
-#: sga/static/sga/js/prudence_advice.js:74
+#: sga/static/sga/js/prudence_advice.js:81
 msgid "Delete prudence advice"
 msgstr "Eliminar consejo de prudencia"
 
-#: sga/static/sga/js/prudence_advice.js:75
+#: sga/static/sga/js/prudence_advice.js:82
 msgid "Do you want to remove the prudence advice?"
 msgstr "¿Desea eliminar este consejo de prudencia?"
 
-#: sga/static/sga/js/prudence_advice.js:107
+#: sga/static/sga/js/prudence_advice.js:122
 msgid "Help message"
 msgstr "Mensaje de ayuda"
 
-#: sga/static/sga/js/prudence_advice.js:107
+#: sga/static/sga/js/prudence_advice.js:122
 msgid "Unknown"
 msgstr "Desconocido"
