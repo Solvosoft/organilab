@@ -20,7 +20,8 @@ from sga.api.serializers import WarningWordSerializer, WarningWordDataTableSeria
 from laboratory.models import OrganizationStructure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.utils import organilab_logentry
-from sga.views.substance.forms import WarningWordForm, DangerIndicationForm
+from sga.views.substance.forms import WarningWordForm, DangerIndicationForm, \
+    PrudenceAdviceForm
 
 
 class WarningWordTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -355,19 +356,18 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def create(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'create')
-        serializer = PrudenceAdviceSerializer(data=request.data)
+        form = PrudenceAdviceForm(request.POST)
 
-        if serializer.is_valid():
-            prudence_advice = serializer.save()
+        if form.is_valid():
+            prudence_advice = form.save()
             organilab_logentry(request.user, prudence_advice, ADDITION,
                                'prudenceadvice', relobj=[self.organization],
-                               changed_data=list(serializer.validated_data.keys()))
+                               changed_data=form.changed_data)
 
             return JsonResponse({'detail': _("Item created successfully.")},
                                 status=status.HTTP_201_CREATED)
 
-        return JsonResponse({'errors': serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'list')
@@ -388,13 +388,13 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            serializer = PrudenceAdviceSerializer(prudence_advice, data=request.data)
+            form = PrudenceAdviceForm(request.POST, instance=prudence_advice)
 
-            if serializer.is_valid():
-                prudence_advice = serializer.save()
+            if form.is_valid():
+                prudence_advice = form.save()
                 organilab_logentry(request.user, prudence_advice, CHANGE,
                                    'prudenceadvice', relobj=[self.organization],
-                                   changed_data=list(serializer.validated_data.keys()))
+                                   changed_data=form.changed_data)
 
                 return JsonResponse({'detail':  _("Item updated successfully.")},
                                     status=status.HTTP_200_OK)

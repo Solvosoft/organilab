@@ -15,8 +15,6 @@
         <table id="dangerindicationtable" class="table table-striped"></table>
     </div>
 </div>
-{% trans 'Danger Indication' as modaltitle %}
-{% include 'modal_template.html' with form=form id="dangerindicationmodal" title=modaltitle form_id="dangerindicationmodal" url=api_danger_indication_detail %}
 {% endblock %}
 
 {% block js %}

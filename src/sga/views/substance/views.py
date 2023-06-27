@@ -462,9 +462,9 @@ def view_prudence_advices(request, org_pk, *args, **kwargs):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    listado = PrudenceAdvice.objects.all()
+    form = PrudenceAdviceForm
     return render(request, 'sga/substance/prudence_advice.html',
-                  context={'listado': listado, 'org_pk': org_pk})
+                  context={'form': form, 'org_pk': org_pk})
 
 
 @login_required
