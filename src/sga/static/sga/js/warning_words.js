@@ -17,7 +17,6 @@ formmodal.addBtnForm = function(instance) {
             dataType: "json",
             data: {'name': dataAsJson.name, 'weigth': dataAsJson.weigth},
             headers: {
-                "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: (success) => {
@@ -56,7 +55,6 @@ function edit_warning_word(pk){
         type: "GET",
         dataType: "json",
         headers: {
-            "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken"),
         },
         success: (success) => {
@@ -85,7 +83,6 @@ function delete_warning_word(pk){
             type: "DELETE",
             dataType: "json",
             headers: {
-                "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: (success) => {
