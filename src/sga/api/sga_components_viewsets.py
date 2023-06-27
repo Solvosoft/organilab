@@ -126,8 +126,7 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
-            data = QueryDict(request.body.decode('utf-8'))
-            form = WarningWordForm(data, instance=warning_word)
+            form = WarningWordForm(request.data, instance=warning_word)
 
             if form.is_valid():
                 warning_word = form.save()
@@ -257,8 +256,7 @@ class DangerIndicationAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             danger_indication = get_object_or_404(DangerIndication, pk=pk)
-            data = QueryDict(request.body.decode('utf-8'))
-            form = DangerIndicationForm(data, instance=danger_indication)
+            form = DangerIndicationForm(request.data, instance=danger_indication)
 
             if form.is_valid():
                 danger_indication = form.save()
@@ -389,8 +387,7 @@ class PrudenceAdviceAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             prudence_advice = get_object_or_404(PrudenceAdvice, pk=pk)
-            data = QueryDict(request.body.decode('utf-8'))
-            form = PrudenceAdviceForm(data, instance=prudence_advice)
+            form = PrudenceAdviceForm(request.data, instance=prudence_advice)
 
             if form.is_valid():
                 prudence_advice = form.save()

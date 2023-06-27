@@ -80,7 +80,10 @@ class WarningWordAPITests(TestCase):
 
     def test_update_warning_word(self):
         self.client.force_login(self.first_user)
-        data = b'name=Changed&weigth=4'
+        data = {
+            "name": "Changed",
+            "weigth": 0
+        }
         warning_word = WarningWord.objects.get(pk=18)
         url = reverse('laboratory:api-warning-word-detail',
                       kwargs={"org_pk": self.organization.pk,
@@ -282,8 +285,11 @@ class PrudenceAdviceAPITests(TestCase):
 
     def test_update_prudence_advice(self):
         self.client.force_login(self.first_user)
-        data = b'code=P616&name=Changed&prudence_' \
-               b'advice_help=Set a good prudence advice message'
+        data = {
+            "code": "P616",
+            "name": "Changed",
+            "prudence_advice_help": "Also changed"
+        }
         prudence_advice = PrudenceAdvice.objects.get(pk=1)
         url = reverse('laboratory:api-prudence-advice-detail',
                       kwargs={"org_pk": self.organization.pk,
