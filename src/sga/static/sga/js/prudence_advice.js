@@ -17,7 +17,7 @@ formmodal.addBtnForm = function(instance) {
             dataType: "json",
             data: {'code': dataAsJson.code, 'name': dataAsJson.name, 'prudence_advice_help': dataAsJson.prudence_advice_help},
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: (success) => {
@@ -55,7 +55,7 @@ function edit_prudence_advice(pk) {
         type: "GET",
         dataType: "json",
         headers: {
-            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken"),
         },
         success: (success) => {
@@ -85,7 +85,7 @@ function delete_prudence_advice(pk) {
             type: "DELETE",
             dataType: "json",
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: (success) => {
