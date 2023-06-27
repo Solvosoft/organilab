@@ -104,7 +104,7 @@ datatableelement=createDataTable('#prudenceadvicetable', document.url_advices_ta
     columns: [
         {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
         {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
-        {data: "prudence_advice_help", name: "prudence_advice_help", title: gettext("Help message"), type: "string", visible: true},
+        {data: "prudence_advice_help", name: "prudence_advice_help", title: gettext("Help message"), defaultContent:gettext("Unknown"), type: "string", visible: true},
         {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, sortable: false}
     ],
     buttons: [
