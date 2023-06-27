@@ -30,12 +30,43 @@ class DangerIndicationSerializer(serializers.ModelSerializer):
 
 
 class PrudenceAdviceSerializer(serializers.ModelSerializer):
+    code = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    prudence_advice_help = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_code(self, obj):
+        if obj.code:
+            return obj.code
+        return ''
+
     def get_name(self, obj):
-        return obj.code + ": " + obj.name
+        if obj.name:
+            return obj.name
+        return ''
+
+    def get_prudence_advice_help(self, obj):
+        if obj.prudence_advice_help:
+            return obj.prudence_advice_help
+        return _('Unknown')
+
+    def get_actions(self, obj):
+        action = ""
+
+        action += """<a title='%s' class="pe-2" onclick="edit_prudence_advice('%d')">
+        <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+        </a>""" % (_('Edit'), obj.pk)
+
+        action += """<a title='%s' class="pe-2" onclick="delete_prudence_advice('%d')">
+        <i class="fa fa-close text-danger" aria-hidden="true"></i>
+        </a>""" % (_("Delete"), obj.pk)
+
+        return action
+
 
     class Meta:
         model = PrudenceAdvice
-        fields = ['id', 'name', 'prudence_advice_help']
+        fields = ['id', 'code', 'name', 'prudence_advice_help', 'actions']
 
 
 class SGAComplementSerializer(serializers.ModelSerializer):
