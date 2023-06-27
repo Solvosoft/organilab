@@ -23,7 +23,7 @@ from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from ..shelfobject.forms import TransferOutShelfObjectForm,\
     MoveShelfObjectForm,  ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
     ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm, \
-    DecreaseShelfObjectForm, IncreaseShelfObjectForm
+    DecreaseShelfObjectForm, IncreaseShelfObjectForm, TransferInShelfObjectApproveWithContainerForm
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
@@ -39,7 +39,7 @@ class LaboratoryRoomsList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reserve_object_form'] = ReserveShelfObjectForm()
-        context['tranfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
+        context['transfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user,lab_send=self.lab, org=self.org)
         context['increase_object_form'] = IncreaseShelfObjectForm()
         context['decrease_object_form'] = DecreaseShelfObjectForm()
         context['move_object_form'] = MoveShelfObjectForm(prefix="move")
@@ -49,6 +49,7 @@ class LaboratoryRoomsList(ListView):
         context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(initial={"objecttype":0},org_pk=self.org, prefix="rff")
         context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype":1},org_pk=self.org, prefix="mf")
         context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(initial={"objecttype":1},org_pk=self.org, prefix="mff")
+        context['transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(laboratory_id=self.lab)
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
         return context
