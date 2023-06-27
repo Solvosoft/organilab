@@ -15,7 +15,7 @@ function delete_danger_indication(pk){
             type: "DELETE",
             dataType: "json",
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
                 "X-CSRFToken": getCookie("csrftoken"),
             },
             success: (success) => {
