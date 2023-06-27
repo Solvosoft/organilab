@@ -30,7 +30,7 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
     ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
     MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, TransferInApproveSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_shelfobject_partial_quantity_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation
 from laboratory.utils import organilab_logentry
@@ -264,7 +264,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     permission_classes = [IsAuthenticated]
     permissions_by_endpoint = {
         "transfer_out": ["laboratory.add_tranferobject", "laboratory.view_shelfobject", "laboratory.change_shelfobject"], 
-        "transfer_in_accept": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", "laboratory.view_shelfobject",
+        "transfer_in_approve": ["laboratory.add_shelfobject", "laboratory.change_shelfobject", "laboratory.view_shelfobject",
                                "laboratory.change_tranferobject", "laboratory.view_tranferobject"],
         "transfer_available_list": ["laboratory.view_tranferobject"],
         "transfer_in_deny": ["laboratory.view_tranferobject", "laboratory.delete_tranferobject"],
@@ -592,7 +592,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     
     @action(detail=False, methods=['post'])
-    def transfer_in_accept(self, request, org_pk, lab_pk, **kwargs):
+    def transfer_in_approve(self, request, org_pk, lab_pk, **kwargs):
         """
         Marta
         :param request:
@@ -601,14 +601,20 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs:
         :return:
         """
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_accept")
-        self.serializer_class = TransferInSerializer
-        serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk})
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_approve")
+        self.serializer_class = TransferInApproveSerializer
+        serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk, "organization_id": org_pk})
+        errors = []
         
         if serializer.is_valid():
             pass
         else:
            errors = serializer.errors 
+        
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return JsonResponse({"detail": _("The transfer in was approved successfully.")}, status=status.HTTP_200_OK)
         
 
     @action(detail=False, methods=['delete'])

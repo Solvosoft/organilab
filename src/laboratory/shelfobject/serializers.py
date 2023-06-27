@@ -14,9 +14,31 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, S
     TranferObject, ShelfObjectObservation, Provider, Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
-from laboratory.shelfobject.utils import get_available_containers_for_selection
+from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
 
 logger = logging.getLogger('organilab')
+
+
+class ContainerSerializer(serializers.Serializer):
+    CONTAINER_SELECT_CHOICES = [
+        ('clone', _('Create new based on selected')), 
+        ('available', _('Use selected')),
+    ]
+    container_select_option = serializers.ChoiceField(required=True, choices=CONTAINER_SELECT_CHOICES)
+    container_for_cloning = serializers.PrimaryKeyRelatedField(many=False, allow_null=True, queryset=ShelfObject.objects.none())
+    available_container = serializers.PrimaryKeyRelatedField(many=False, allow_null=True, queryset=ShelfObject.objects.none())
+       
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        # allow select only available containers or containers for cloning depending on what the user wants and make the right field not nullable
+        container_select_option = self.initial_data.get('container_select_option')
+        if container_select_option == 'clone':
+            fields['container_for_cloning'].queryset = get_containers_for_cloning(self.context['organization_id'])
+            fields['container_for_cloning'].allow_null = False
+        elif container_select_option == 'available':
+            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'])
+            fields['available_container'].allow_null = False
+        return fields
 
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
@@ -200,6 +222,7 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
 
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
+    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
     
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),
                                                 required=True)
@@ -231,6 +254,7 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
 
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
+    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
     
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -503,7 +527,7 @@ class TransferObjectSerializer(serializers.ModelSerializer):
     quantity = serializers.SerializerMethodField()
 
     def get_object(self, obj):
-        return obj.object.object.name
+        return {"name": obj.object.object.name, "type": obj.object.object.get_type_display()}
 
     def get_laboratory_send(self, obj):
         return obj.laboratory_send.name
@@ -628,6 +652,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
+
 class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
     OBJTYPE_CHOICES = (
         ("0", 'Reactive'),
@@ -635,6 +660,7 @@ class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
         ("2", 'Equipment'))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
     objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
+
 
 class TransferInSerializer(serializers.Serializer):
     transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.filter(status=REQUESTED))
@@ -648,5 +674,11 @@ class TransferInSerializer(serializers.Serializer):
         return attr
 
 
-class TransferInAcceptSerializer(TransferInSerializer):
-    pass
+class TransferInApproveSerializer(TransferInSerializer, ContainerSerializer):
+    TRANSFER_IN_CONTAINER_SELECT_CHOICES = [
+        ('clone', _('Create new based on selected')), 
+        ('available', _('Use selected')),
+        ('use_source', _('Move the container from the source laboratory')),
+        ('new_based_source', _('Create new based on current container in the source laboratory'))
+    ]
+    container_select_option = serializers.ChoiceField(required=True, choices=TRANSFER_IN_CONTAINER_SELECT_CHOICES)
