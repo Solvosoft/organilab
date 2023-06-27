@@ -29,6 +29,15 @@ formmodal.addBtnForm = function(instance) {
                     datatableelement.ajax.reload();
                 });
             },
+            error: function( request, status, error ){
+                Swal.fire({
+                  icon: 'error',
+                  title: gettext('Error'),
+                  text: gettext('An error has occurred'),
+                }).then(function(result) {
+                datatableelement.ajax.reload();
+                })
+            }
         });
     }
 }
@@ -92,6 +101,15 @@ function delete_prudence_advice(pk) {
                     datatableelement.ajax.reload();
                 })
             },
+            error: function( request, status, error ){
+                Swal.fire({
+                  icon: 'error',
+                  title: gettext('Error'),
+                  text: gettext('An error has occurred'),
+                }).then(function(result) {
+                datatableelement.ajax.reload();
+                })
+            }
         });
     }
     });

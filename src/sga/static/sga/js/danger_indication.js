@@ -24,6 +24,15 @@ function delete_danger_indication(pk){
                         datatableelement.ajax.reload();
                     })
             },
+            error: function( request, status, error ){
+                Swal.fire({
+                  icon: 'error',
+                  title: gettext('Error'),
+                  text: gettext('An error has occurred'),
+                }).then(function(result) {
+                datatableelement.ajax.reload();
+                })
+            }
         });
     }
     });
