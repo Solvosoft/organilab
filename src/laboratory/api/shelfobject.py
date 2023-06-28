@@ -21,7 +21,7 @@ from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
-from laboratory.models import Catalog, ShelfObjectObservation
+from laboratory.models import Catalog, ShelfObjectObservation, LaboratoryRoom, Furniture, Shelf
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
 from laboratory.qr_utils import get_or_create_qr_shelf_object
@@ -30,7 +30,7 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
     ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
     MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ShelfObjectPk
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_one_container_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation
 from laboratory.utils import organilab_logentry
@@ -47,6 +47,7 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'container__object__name']
     ordering = ('-last_update',)  # default order
 
+
     def get_queryset(self):
         if not self.data['shelf'] :
             return self.queryset.none()
@@ -55,6 +56,15 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             shelf=self.data['shelf'],
             containershelfobject=None  # if it's not used as container - query the reverse relationship
         )
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        serializer_so = ShelfObjectPk(data=self.request.GET)
+
+        if not queryset and serializer_so.is_valid():
+            queryset = self.get_queryset()
+            queryset = queryset.filter(pk=int(serializer_so.validated_data['search'].split('=')[1]))
+        return queryset
 
     def list(self, request, org_pk, lab_pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -804,3 +814,100 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
             return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SearchLabView(viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def _check_permission_on_laboratory(self, request, org_pk, lab_pk):
+        perms_list = ['laboratory.view_laboratory', 'laboratory.view_laboratoryroom', 'laboratory.view_furniture',
+                      'laboratory.view_shelf', 'laboratory.view_shelfobject']
+        if request.user.has_perms(perms_list):
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=org_pk)
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+            user_is_allowed_on_organization(request.user, self.organization)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
+        else:
+            raise PermissionDenied()
+
+    def get_labroom(self, extra_filters):
+        result = {}
+        filters = extra_filters.copy()
+        filters.update({'laboratory': self.laboratory})
+        labroom_list = LaboratoryRoom.objects.filter(**filters)
+
+        if labroom_list:
+            result = self.get_pk_list(labroom_list)
+        return result
+
+    def get_furniture(self, extra_filters):
+        result = {}
+        filters = extra_filters.copy()
+        filters.update({'labroom__laboratory': self.laboratory})
+        furniture_list = Furniture.objects.filter(**filters)
+
+        if furniture_list:
+            labroom = list(furniture_list.values_list('labroom__pk', flat=True))
+            furniture = self.get_pk_list(furniture_list)
+            result = {
+                'furniture': furniture,
+                'labroom': labroom
+            }
+        return result
+
+    def get_shelf(self, extra_filters):
+        result = {}
+        filters = extra_filters.copy()
+        filters.update({'furniture__labroom__laboratory': self.laboratory})
+        shelf_list = Shelf.objects.filter(**filters)
+
+        if shelf_list:
+            furniture = list(shelf_list.values_list('furniture__pk', flat=True))
+            labroom = list(shelf_list.values_list('furniture__labroom__pk', flat=True))
+            shelf = self.get_pk_list(shelf_list)
+            result = {
+                'shelf': shelf,
+                'furniture': furniture,
+                'labroom': labroom
+            }
+        return result
+
+    def get_shelfobject(self, extra_filters):
+        result = {}
+        filters = extra_filters.copy()
+        filters['object__name__icontains'] = filters.pop('name__icontains')
+        filters.update({'in_where_laboratory': self.laboratory})
+        shelfobject_list = ShelfObject.objects.filter(**filters)
+
+        if shelfobject_list:
+            labroom = list(shelfobject_list.values_list('shelf__furniture__labroom__pk', flat=True))
+            furniture = list(shelfobject_list.values_list('shelf__furniture__pk', flat=True))
+            shelf = list(shelfobject_list.values_list('shelf__pk', flat=True))
+            shelfobject = self.get_pk_list(shelfobject_list)
+            result = {
+                'shelfobject': shelfobject,
+                'shelf': shelf,
+                'furniture': furniture,
+                'labroom': labroom
+            }
+        return result
+
+    def get_pk_list(self, queryset):
+        return list(queryset.values_list('pk', flat=True).distinct())
+
+    @action(detail=False, methods=['get'])
+    def get(self, request, org_pk, lab_pk):
+        extra_filters = {}
+        if 'q' in request.query_params and request.query_params['q']:
+            extra_filters = {'name__icontains': request.query_params['q']}
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        search_list = {}
+        if extra_filters:
+            search_list = {
+                'labroom': self.get_labroom(extra_filters),
+                'furniture': self.get_furniture(extra_filters),
+                'shelf': self.get_shelf(extra_filters),
+                'shelfobject': self.get_shelfobject(extra_filters)
+            }
+        return JsonResponse({'search_list': search_list}, status=status.HTTP_200_OK)
