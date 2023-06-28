@@ -1,6 +1,6 @@
 from datetime import datetime
 import logging
-
+import re
 from django.conf import settings
 from django.forms import model_to_dict
 from django.template.loader import render_to_string
@@ -643,8 +643,7 @@ class ShelfObjectPk(serializers.Serializer):
 
     def validate_search(self, value):
         attr = super().validate(value)
-
-        if not 'pk=' in attr or not len(attr.split('=')) == 2 or not attr.split('=')[1].isnumeric():
+        if not re.findall('pk?=?(\d+)', attr):
             raise serializers.ValidationError(_("Invalid search"))
         return attr
 
