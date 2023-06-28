@@ -209,6 +209,7 @@ stepcommentsrouter.register('api_procedure_comments', ProcedureStepCommentTableV
 shelfobjectrouter = DefaultRouter()
 shelfobjectrouter.register('api_shelfobject_table', ShelfObjectApi.ShelfObjectTableViewSet, basename='api-shelfobjecttable')
 shelfobjectrouter.register('api_shelfobject', ShelfObjectApi.ShelfObjectViewSet, basename='api-shelfobject')
+shelfobjectrouter.register('api_search_labview', ShelfObjectApi.SearchLabView, basename='api-search-labview')
 
 '''MULTILAB'''
 urlpatterns += organization_urls + [
