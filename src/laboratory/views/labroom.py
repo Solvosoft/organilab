@@ -24,6 +24,7 @@ from ..shelfobject.forms import TransferOutShelfObjectForm,\
     MoveShelfObjectForm,  ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
     ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm, \
     DecreaseShelfObjectForm, IncreaseShelfObjectForm
+from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
@@ -35,6 +36,59 @@ class LaboratoryRoomsList(ListView):
         lab = get_object_or_404( Laboratory, pk=self.lab)
         self.request.session['search_lab'] = self.lab
         return lab.laboratoryroom_set.all()
+
+    def get_labroom_data(self, serializer, result):
+        if 'labroom' in serializer.validated_data:
+            result["labroom"] = [serializer.validated_data['labroom'].pk]
+
+    def get_furniture_data(self, serializer, result):
+        if 'furniture' in serializer.validated_data:
+            furniture = serializer.validated_data['furniture']
+            result["furniture"] = {"furniture": [furniture.pk]}
+
+            if not "labroom" in serializer.validated_data:
+                result["labroom"] = [furniture.labroom.pk]
+
+    def get_shelf_data(self, serializer, result):
+        if 'shelf' in serializer.validated_data:
+            shelf = serializer.validated_data['shelf']
+            result["shelf"] = {"shelf": [shelf.pk]}
+
+            if not "furniture" in serializer.validated_data:
+                result["furniture"] = {"furniture": [shelf.furniture.pk]}
+
+            if not "labroom" in serializer.validated_data:
+                result["labroom"] = [shelf.furniture.labroom.pk]
+
+    def get_shelfobject_data(self, serializer, result):
+        if 'shelfobject' in serializer.validated_data:
+            shelfobject = serializer.validated_data['shelfobject']
+            result["shelfobject"] = {"shelfobject": [shelfobject.pk]}
+
+            if not "shelf" in serializer.validated_data:
+                result["shelf"] = {"shelf": [shelfobject.shelf.pk]}
+
+            if not "furniture" in serializer.validated_data:
+                result["furniture"] = {"furniture": [shelfobject.shelf.furniture.pk]}
+
+            if not "labroom" in serializer.validated_data:
+                result["labroom"] = [shelfobject.shelf.furniture.labroom.pk]
+
+    def search_by_url(self, kwargs):
+        result = {}
+
+        if any([i in kwargs for i in ['labroom', 'furniture', 'shelf', 'shelfobject']]):
+            serializer = SearchShelfObjectSerializer(data=kwargs, context={'source_laboratory_id': self.lab})
+
+            if serializer.is_valid():
+                self.get_labroom_data(serializer, result)
+                self.get_furniture_data(serializer, result)
+                self.get_shelf_data(serializer, result)
+                self.get_shelfobject_data(serializer, result)
+            else:
+                raise Http404()
+        return result
+
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,6 +105,7 @@ class LaboratoryRoomsList(ListView):
         context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(initial={"objecttype":1},org_pk=self.org, prefix="mff")
         context['options'] = ['Reservation','Add','Transfer','Substract']
         context['user'] = self.request.user
+        context['search_by_url'] = self.search_by_url(self.request.GET)
         return context
 
 @method_decorator(permission_required('laboratory.add_laboratoryroom'), name='dispatch')

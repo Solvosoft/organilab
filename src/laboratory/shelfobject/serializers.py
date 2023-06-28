@@ -637,3 +637,65 @@ class TransferInSerializer(serializers.Serializer):
 
 class TransferInAcceptSerializer(TransferInSerializer):
     pass
+
+class ShelfObjectPk(serializers.Serializer):
+    search = serializers.CharField(min_length=4)
+
+    def validate_search(self, value):
+        attr = super().validate(value)
+
+        if not 'pk=' in attr or not len(attr.split('=')) == 2 or not attr.split('=')[1].isnumeric():
+            raise serializers.ValidationError(_("Invalid search"))
+        return attr
+
+
+class SearchShelfObjectSerializer(serializers.Serializer):
+    labroom = serializers.PrimaryKeyRelatedField(queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE), allow_null=True, allow_empty=True, required=False)
+    furniture = serializers.PrimaryKeyRelatedField(queryset=Furniture.objects.using(settings.READONLY_DATABASE), allow_null=True, allow_empty=True, required=False)
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), allow_null=True, allow_empty=True, required=False)
+    shelfobject = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.filter(containershelfobject=None).using(settings.READONLY_DATABASE), allow_null=True, allow_empty=True, required=False)
+
+    def validate_laboratory(self, lab_pk, obj_name):
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if lab_pk != source_laboratory_id:
+            raise serializers.ValidationError(_("%s doesn't exists in this laboratory") % (obj_name))
+
+    def validate_labroom_data(self, data):
+        self.validate_laboratory(data['labroom'].laboratory_id, "Laboratory room")
+
+    def validate_furniture_data(self, data):
+        if 'furniture' in data:
+            self.validate_laboratory(data['furniture'].labroom.laboratory_id, "Furniture")
+
+            if 'labroom' in data and data['furniture'].labroom.pk != data['labroom'].pk:
+                raise serializers.ValidationError({'furniture': _("Furniture doesn't exists in this laboratory room")})
+
+    def validate_shelf_data(self, data):
+        if 'shelf' in data:
+            self.validate_laboratory(data['shelf'].furniture.labroom.laboratory_id, "Shelf")
+
+            if 'furniture' in data and data['shelf'].furniture.pk != data['furniture'].pk:
+                raise serializers.ValidationError({'shelf': _("Shelf doesn't exists in this furniture")})
+
+            if 'labroom' in data and data['labroom'].pk != data['shelf'].furniture.labroom.pk:
+                raise serializers.ValidationError({'shelfobject': _("Shelf doesn't exists in this labroom")})
+
+    def validate_shelfobject_data(self, data):
+        if 'shelfobject' in data:
+            self.validate_laboratory(data['shelfobject'].in_where_laboratory_id, "Object")
+
+            if 'shelf' in data and data['shelfobject'].shelf.pk != data['shelf'].pk:
+                raise serializers.ValidationError({'shelfobject': _("Object doesn't exists in this shelf")})
+
+            if 'furniture' in data and data['furniture'].pk != data['shelfobject'].shelf.furniture.pk:
+                raise serializers.ValidationError({'shelfobject': _("Object doesn't exists in this furniture")})
+
+            if 'labroom' in data and data['labroom'].pk != data['shelfobject'].shelf.furniture.labroom.pk:
+                raise serializers.ValidationError({'shelfobject': _("Object doesn't exists in this labroom")})
+
+    def validate(self, data):
+        self.validate_labroom_data(data)
+        self.validate_furniture_data(data)
+        self.validate_shelf_data(data)
+        self.validate_shelfobject_data(data)
+        return data
