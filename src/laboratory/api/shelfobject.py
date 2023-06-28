@@ -889,7 +889,8 @@ class SearchLabView(viewsets.GenericViewSet):
                 'shelfobject': shelfobject,
                 'shelf': shelf,
                 'furniture': furniture,
-                'labroom': labroom
+                'labroom': labroom,
+                'filter_shelfobject': False
             }
         return result
 
