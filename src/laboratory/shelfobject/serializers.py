@@ -661,7 +661,8 @@ class SearchShelfObjectSerializer(serializers.Serializer):
             raise serializers.ValidationError(_("%s doesn't exists in this laboratory") % (obj_name))
 
     def validate_labroom_data(self, data):
-        self.validate_laboratory(data['labroom'].laboratory_id, "Laboratory room")
+        if 'labroom' in data:
+            self.validate_laboratory(data['labroom'].laboratory_id, "Laboratory room")
 
     def validate_furniture_data(self, data):
         if 'furniture' in data:
