@@ -64,6 +64,7 @@ class LaboratoryRoomsList(ListView):
         if 'shelfobject' in serializer.validated_data:
             shelfobject = serializer.validated_data['shelfobject']
             result["shelfobject"] = {"shelfobject": [shelfobject.pk]}
+            result["shelfobject"]["filter_shelfobject"] = True
 
             if not "shelf" in serializer.validated_data:
                 result["shelf"] = {"shelf": [shelfobject.shelf.pk]}

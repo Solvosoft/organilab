@@ -339,7 +339,8 @@ const labviewSearch={
         }
     },
     wait_shelfobject_table: function(shelfobject_list){
-        if($('div#shelfobjecttable_filter input[type="search"]').length){
+
+        if($('div#shelfobjecttable_filter input[type="search"]').length && shelfobject_list['filter_shelfobject']){
             $('div#shelfobjecttable_filter input[type="search"]').val('pk='+shelfobject_list['shelfobject'][0]);
             $('div#shelfobjecttable_filter input[type="search"]').focus();
             $('div#shelfobjecttable_filter input[type="search"]').keyup();
@@ -353,6 +354,7 @@ const labviewSearch={
         $('input[name="shelfselected"]').iCheck('uncheck');
         $('input[name="shelfselected"]').change();
         $("span.check-box").click();
+        $('div#shelfobjecttable_filter input[type="search"]').val('');
     },
     select_objs: function(search_list){
         labviewSearch.uncheck_objs();
