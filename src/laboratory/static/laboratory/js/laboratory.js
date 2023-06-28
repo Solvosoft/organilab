@@ -307,6 +307,7 @@ const labviewSearch={
             span_obj = "#"+key+"_"+value;
 
             if($(span_obj).length  && !$(span_obj).hasClass('check-box')){
+                $(span_obj).parent().show();
                 $(span_obj).click();
             }
         });
@@ -316,6 +317,7 @@ const labviewSearch={
             radio_obj = "#"+key+"_"+value;
 
             if($(radio_obj).length){
+                $(radio_obj).parent().parent().show();
                 $(radio_obj).iCheck('check');
                 $(radio_obj).change();
             }
@@ -338,27 +340,27 @@ const labviewSearch={
             labviewSearch.check_radios(shelf_list['shelf'], "shelf");
         }
     },
-    wait_shelfobject_table: function(shelfobject_list){
-
+    select_shelfobject: function(shelfobject_list){
+        labviewSearch.select_furniture(shelfobject_list);
         if($('div#shelfobjecttable_filter input[type="search"]').length && shelfobject_list['filter_shelfobject']){
             $('div#shelfobjecttable_filter input[type="search"]').val('pk='+shelfobject_list['shelfobject'][0]);
             $('div#shelfobjecttable_filter input[type="search"]').focus();
             $('div#shelfobjecttable_filter input[type="search"]').keyup();
         }
     },
-    select_shelfobject: function(shelfobject_list){
-        labviewSearch.select_furniture(shelfobject_list);
-        labviewSearch.wait_shelfobject_table(shelfobject_list);
-    },
     uncheck_objs: function(){
         $('input[name="shelfselected"]').iCheck('uncheck');
         $('input[name="shelfselected"]').change();
         $("span.check-box").click();
         $('div#shelfobjecttable_filter input[type="search"]').val('');
+        $("span.box").parent().show();
+        $('input[type="radio"]').parent().parent().show();
     },
     select_objs: function(search_list){
         labviewSearch.uncheck_objs();
         if(Object.keys(search_list).length){
+            $("span.box").parent().hide();
+            $('input[type="radio"]').parent().parent().hide();
             if('labroom' in search_list && Object.keys(search_list['labroom']).length){
                 labviewSearch.select_labroom(search_list['labroom']);
             }
