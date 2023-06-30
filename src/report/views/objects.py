@@ -12,37 +12,47 @@ from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formu
     get_users_from_organization
 from laboratory.views.djgeneric import ResultQueryElement
 from report.utils import filter_period, set_format_table_columns, get_report_name, load_dataset_by_column
+from report.views.object_changes import  get_dataset_objectlogchanges
 
 
 #report_objectlogchange
 def resume_queryset(queryset):
-    objects = set(queryset.values_list('object', flat=True))
-    list_obj = []
-    for obj in objects:
-        obj_check = Object.objects.filter(pk=obj)
-        if obj_check.exists():
-            ini = queryset.filter(object=obj).values('old_value')[0]['old_value']
-            end = queryset.filter(object=obj).last()
-            diff = queryset.filter(object=obj).aggregate(balance=Sum('diff_value'))['balance']
+    laboratories = set(queryset.values_list('laboratory__pk',flat=True))
+    objectchange_list= []
+    result=[]
+    for laboratory in laboratories:
+        lab= Laboratory.objects.get(pk=laboratory)
+        query = queryset.filter(laboratory=lab)
+        objects = set(query.values_list('object','measurement_unit'))
+        for obj in objects:
+            query_values=query.filter(object__pk=obj[0],measurement_unit__pk=obj[1])
+            objectchange_list.append({'lab':lab.name,"values":query_values,
+                                      'diff':query_values.aggregate(total=Sum('diff_value'))['total']})
+
+    list_obj=[]
+    i=0
+    for obj in objectchange_list:
+        for ob in obj['values']:
             try:
-                user = end.user.get_full_name()
+                user = ob.user.get_full_name()
                 if not user:
-                    user = end.user.username
+                    user = ob.user.username
             except Exception as e:
                 user = ""
 
-            list_obj.append(ResultQueryElement({'user': user,
-                                                'laboratory': end.laboratory,
-                                                'object': end.object,
-                                                'update_time': end.update_time,
-                                                'old_value': ini,
-                                                'new_value': end.new_value,
-                                                'diff_value': diff,
-                                                'measurement_unit': end.measurement_unit
+            object_list=ResultQueryElement({'user': user,
+                         #'laboratory': ob.laboratory,
+                         'pk':ob.pk,
+                         'object': ob.object,
+                         'update_time': ob.update_time,
+                         'old_value': ob.old_value,
+                         'new_value': ob.new_value,
+                         'diff_value': ob.diff_value,
+                         'measurement_unit': ob.measurement_unit
                                                 })
-                            )
-    return list_obj
+            list_obj.append(object_list)
 
+    return list_obj
 def get_queryset(report):
     query = ObjectLogChange.objects.all().order_by('update_time')
     if 'period' in report.data:
@@ -81,34 +91,31 @@ def get_dataset_objectlogchange(report, column_list=None):
 
 def report_objectlogchange_html(report):
     columns_fields = [
-        {'name': 'user', 'title':_("User")}, {'name': 'laboratory', 'title': _("Laboratory")},
-        {'name': 'object', 'title':_("Object")}, {'name': 'update_time', 'title':_("Day"), 'type': 'date'},
-        {'name': 'old_value', 'title':_("Old")}, {'name': 'new_value', 'title':_("New")},
-        {'name': 'diff_value', 'title':_("Difference")},{'name': 'measurement_unit', 'title':_("Unit")}
+        {'name': 'user', 'title':_("User")},
+        {'name': 'update_time', 'title':_("Day"), 'type': 'date'},
+        {'name': 'old_value', 'title':_("Old")},
+        {'name': 'new_value', 'title':_("New")},
+        {'name': 'diff_value', 'title':_("Difference")},
+        {'name': 'measurement_unit', 'title':_("Unit")}
     ]
     columns_fields = set_format_table_columns(columns_fields)
     column_list = list(map(lambda x: x['name'], columns_fields))
+    elements= get_dataset_objectlogchanges(report)
     report.table_content = {
         'columns': columns_fields,
-        'dataset': get_dataset_objectlogchange(report, column_list)
+        'dataset': elements['content']
     }
     report.save()
-    return len(report.table_content['dataset'])
+    return elements['record']
 
 def report_objectlogchange_doc(report):
     builder = ExcelGraphBuilder()
-    content = [[_("User"), _("Laboratory"), _("Object"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]]
-    content = content + get_dataset_objectlogchange(report, None)
-    record_total=len(content)-1
+    content = get_dataset_objectlogchanges(report, None)
+    record_total=content['record']
     file=None
     report_name = get_report_name(report)
-    builder.add_table(content, report_name)
-    if report.file_type!= 'ods':
-        builder.add_table(content, report_name)
-        file=builder.save()
-    else:
-        content.insert(0,[report_name])
-        file=builder.save_ods(content)
+
+    file=builder.save_ods(content['doc_elements'], format_type=report.file_type)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
