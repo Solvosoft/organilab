@@ -16,7 +16,7 @@ from io import BytesIO
 
 from report.models import DocumentReportStatus
 from report.utils import get_pdf_table_content, create_notification, get_report_name, \
-    document_status, calc_duration, check_import_obj
+    document_status, calc_duration, check_import_obj, get_pdf_log_change_table_content
 from django_celery_results.models import TaskResult
 
 
@@ -65,11 +65,16 @@ def build_report(pk, absolute_uri):
 
 def base_pdf(report, uri):
     title = ''
+    datalist=""
     if 'title' in report.data and report.data['title']:
         title = report.data['title']
     report_name = get_report_name(report)
+    if report.type_report == "report_objectschanges":
+        datalist = get_pdf_log_change_table_content(report.table_content)
+    else:
+        datalist = get_pdf_table_content(report.table_content)
     context = {
-        'datalist': get_pdf_table_content(report.table_content),
+        'datalist': datalist,
         'user': report.creator,
         'title': title if title else report_name,
         'datetime': timezone.now(),
@@ -187,11 +192,16 @@ def download_report(request, org_pk, lab_pk):
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
 
+
 @login_required
 @permission_required('laboratory.do_report')
 def report_table(request, org_pk, lab_pk, pk):
     task = TaskReport.objects.filter(pk=pk).first()
-    return render(request, template_name='report/general_reports.html', context={
+    template_name = 'report/log_change.html' \
+        if task.type_report == "report_objectschanges" \
+        else "report/general_reports.html"
+
+    return render(request, template_name=template_name, context={
         'table': task.table_content,
         'lab_pk': lab_pk,
         'org_pk': org_pk,
