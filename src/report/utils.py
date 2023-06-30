@@ -53,7 +53,7 @@ def set_format_table_columns(columns_fields):
 
 
 def get_pdf_table_content(table_content):
-    pdf_table = "<thead>"
+    pdf_table = "<table id='pdf_table_report'><thead>"
     if 'columns' and 'dataset' in table_content:
         pdf_table += '<tr>'
         for col in table_content['columns']:
@@ -66,7 +66,7 @@ def get_pdf_table_content(table_content):
             for item in row:
                 pdf_table += '<td>%s</td>' % (item)
             pdf_table += '</tr>'
-        "</tbody>"
+        "</tbody></table>"
     else:
         pdf_table = ""
     return pdf_table
@@ -145,3 +145,22 @@ def check_import_obj(path):
         import_obj = None
 
     return import_obj
+
+def get_pdf_log_change_table_content(table_content):
+    pdf_table=""
+    for table in table_content['dataset']:
+        pdf_table+= "<p>%s</p>" %(f'{table["lab"]} {table["obj"]} {table["diff"]}')
+        pdf_table += "<table id='pdf_table_report'><thead>"
+        pdf_table += '<tr>'
+        for col in [_("User"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]:
+            pdf_table += "<th>%s</th>" % (col)
+        pdf_table += '</tr></thead><tbody>'
+
+        for row in table['values']:
+            pdf_table += '<tr>'
+            for item in row:
+                pdf_table += '<td>%s</td>' % (row[item])
+            pdf_table += '</tr>'
+        pdf_table+="</tbody></table><br><br>"
+
+    return pdf_table
