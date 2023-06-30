@@ -193,6 +193,33 @@ function update_selects(form_element){
     });
 }
 
+function add_log_change_datatables(id, lab, obj, diff, url){
+    html_card=`<div class="card mt-5">
+	<div class="card-title text-center fw-bold p-2">
+	<p>${lab} | ${obj} ${diff}}</p>
+	<hr>
+	</div>
+	<div class="card-body"><table id=${id} class="log_changes_table display table table-striped table-bordered text-center dt-responsive"></table>
+	</div></div>`;
+	$('#body_tables').append(html_card);
+
+    data=createDataTable("#"+id, url, {
+           responsive: true,
+          columns: JSON.parse(document.getElementById('columns').textContent)['columns'],
+
+		  ajax: {
+				url: url,
+				type: 'GET',
+				data: function(dataTableParams, settings) {
+					return formatDataTableParams(dataTableParams, settings);
+				}
+			},
+		dom: "<'d-flex justify-content-between'<'m-2'l>" +
+       "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
+       "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+
+	    }, addfilter=true,);
+}
 
 $('#id_all_labs_org').on('change', function(){
     document.select_data.all_labs_org = false;
