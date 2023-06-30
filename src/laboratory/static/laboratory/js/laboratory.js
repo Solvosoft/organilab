@@ -275,6 +275,38 @@ $(document).ready(function(){
         }
     });
 
+
+var inputElm = document.querySelector('input[name=tags-search]');
+
+
+
+const tagify = new Tagify(inputElm, {
+    enforceWhitelist: true,
+    whitelist: document.suggestions_tag,
+    placeholder: gettext("Search")
+});
+
+$("#btnremovealltags").on('click', function(){
+    tagify.removeAllTags();
+    labviewSearch.restart_objs();
+});
+
+tagify.on('add', function(e, tagName){
+        document.removealltags = false;
+        labviewSearch.search(e.detail.tagify.value);
+    }).on("invalid", function(e, tagName){
+        console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
+    }).on('remove', function(e){
+        document.removealltags = false;
+        var obj_list = e.detail.tagify.value;
+
+        if(obj_list.length){
+            labviewSearch.search(obj_list);
+        }else{
+            labviewSearch.restart_objs();
+        }
+    });
+
 });
 
 
@@ -302,7 +334,6 @@ function show_hide_limits(e,prefix){
 
 const labviewSearch={
     check_objs: function(obj_list, key){
-
         obj_list.forEach(function(value) {
             span_obj = "#"+key+"_"+value;
 
@@ -310,6 +341,13 @@ const labviewSearch={
                 $(span_obj).parent().show();
                 $(span_obj).click();
             }
+
+            if(key === 'labroom'){
+                $(span_obj).next().children().show();
+            }else{
+                $(span_obj).next().children().find('div.input-group').show();
+            }
+
         });
     },
     check_radios(obj_list, key){
@@ -317,6 +355,7 @@ const labviewSearch={
             radio_obj = "#"+key+"_"+value;
 
             if($(radio_obj).length){
+                $('input[type="radio"]').parent().parent().hide();
                 $(radio_obj).parent().parent().show();
                 $(radio_obj).iCheck('check');
                 $(radio_obj).change();
@@ -336,31 +375,32 @@ const labviewSearch={
     },
     select_shelf: function(shelf_list){
         labviewSearch.select_furniture(shelf_list);
+
         if(shelf_list.hasOwnProperty('shelf')){
             labviewSearch.check_radios(shelf_list['shelf'], "shelf");
         }
     },
     select_shelfobject: function(shelfobject_list){
         labviewSearch.select_furniture(shelfobject_list);
-        if($('div#shelfobjecttable_filter input[type="search"]').length && shelfobject_list['filter_shelfobject']){
-            $('div#shelfobjecttable_filter input[type="search"]').val('pk='+shelfobject_list['shelfobject'][0]);
-            $('div#shelfobjecttable_filter input[type="search"]').focus();
-            $('div#shelfobjecttable_filter input[type="search"]').keyup();
+        labviewSearch.select_shelf(shelfobject_list);
+        var table_filter_input = $('div#shelfobjecttable_filter input[type="search"]');
+        if(table_filter_input.length){// && shelfobject_list['filter_shelfobject']
+            table_filter_input.val('pk='+shelfobject_list['shelfobject'][0]);
+            table_filter_input.focus();
+            table_filter_input.keyup();
         }
     },
-    uncheck_objs: function(){
-        $('input[name="shelfselected"]').iCheck('uncheck');
-        $('input[name="shelfselected"]').change();
+    restart_objs: function(){
+        $('input[name="shelfselected"]').iCheck('uncheck').change();
         $("span.check-box").click();
-        $('div#shelfobjecttable_filter input[type="search"]').val('');
+        $('div#shelfobjecttable_filter input[type="search"]').val('').keyup();
         $("span.box").parent().show();
         $('input[type="radio"]').parent().parent().show();
     },
     select_objs: function(search_list){
-        labviewSearch.uncheck_objs();
+        labviewSearch.restart_objs();
         if(Object.keys(search_list).length){
             $("span.box").parent().hide();
-            $('input[type="radio"]').parent().parent().hide();
             if('labroom' in search_list && Object.keys(search_list['labroom']).length){
                 labviewSearch.select_labroom(search_list['labroom']);
             }
@@ -370,17 +410,37 @@ const labviewSearch={
             if('shelf' in search_list && Object.keys(search_list['shelf']).length){
                 labviewSearch.select_shelf(search_list['shelf']);
             }
+            $('div#shelfobjecttable_filter input[type="search"]').val('').change();
             if('shelfobject' in search_list && Object.keys(search_list['shelfobject']).length){
                 labviewSearch.select_shelfobject(search_list['shelfobject']);
             }
+
         }
     },
     search: function(q){
+        var data = {
+            'labroom': [],
+            'furniture': [],
+            'shelf': [],
+            'shelfobject': []
+        };
+
+        if(q.length){
+            q.forEach(function(item) {
+                if(item.objtype == 'laboratoryroom'){
+                    data['labroom'].push(item.pk);
+                }else{
+                    data[item.objtype].push(item.pk);
+                }
+            });
+        }
+
         $.ajax({
             url: document.urls.search_labview,
             type: "GET",
             dataType: "json",
-            data: {"q": q},
+            data: data,
+            traditional: true,
             headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
             success: function(data){
                 labviewSearch.select_objs(data.search_list);
@@ -390,26 +450,3 @@ const labviewSearch={
         });
     }
 }
-
-$("input[name=tags-search]").on('keyup', function(event){
-    labviewSearch.search($(this).val());
-});
-
-
-//$(document).ready(function(){
-//    var $input = $('input[name=tags-search]')
-//        .tagify({
-//                whitelist : [
-//                    {"id":1, "value":"some string"}
-//                ]
-//            })
-//            .on('add', function(e, tagName){
-//                console.log('JQUERY EVENT: ', 'added', tagName)
-//            })
-//            .on("invalid", function(e, tagName) {
-//                console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
-//            });
-//
-//    // get the Tagify instance assigned for this jQuery input object so its methods could be accessed
-//    var jqTagify = $input.data('tagify');
-//});

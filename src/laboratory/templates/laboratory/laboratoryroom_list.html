@@ -30,6 +30,11 @@
         </a>
     </div>
     <input name="tags-search" type="text" class="form-control" >
+    <div class="input-group-text">
+        <a class="w-100" id="btnremovealltags" type="button" title="{% trans 'Remove All Tags' %}">
+            <i class="fa fa-trash red"></i>
+        </a>
+    </div>
 </div>
 <div class="w-100 overflow-auto border border-top-0 border-1 rounded-bottom pt-2" style="max-height: 350px !important;">
 
@@ -91,6 +96,7 @@
 {% block js %}
 {{block.super}}
 {{search_by_url|json_script:"search_by_url"}}
+{{suggestions_tag|json_script:"suggestions_tag"}}
 <script>
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
@@ -107,6 +113,7 @@ document.url_shelfobject = '{% url "laboratory:api-shelfobjecttable-list" org_pk
 document.url_status = '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}';
 const view_search = false;
 document.search_by_url = JSON.parse(document.getElementById('search_by_url').textContent);
+document.suggestions_tag = JSON.parse(document.getElementById('suggestions_tag').textContent);
 
 </script>
 
