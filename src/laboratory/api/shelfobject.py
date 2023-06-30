@@ -833,9 +833,8 @@ class SearchLabView(viewsets.GenericViewSet):
 
     def get_labroom(self, query_params):
         result = {}
-        filters = {}
         if 'labroom' in query_params:
-            filters.update({'pk__in':query_params['labroom'],  'laboratory': self.laboratory})
+            filters = {'pk__in':query_params['labroom'],  'laboratory': self.laboratory}
             labroom_list = LaboratoryRoom.objects.filter(**filters)
 
             if labroom_list:
@@ -844,9 +843,8 @@ class SearchLabView(viewsets.GenericViewSet):
 
     def get_furniture(self, query_params):
         result = {}
-        filters = {}
         if 'furniture' in query_params:
-            filters.update({'pk__in': query_params['furniture'], 'labroom__laboratory': self.laboratory})
+            filters = {'pk__in': query_params['furniture'], 'labroom__laboratory': self.laboratory}
             furniture_list = Furniture.objects.filter(**filters)
 
             if furniture_list:
@@ -858,9 +856,8 @@ class SearchLabView(viewsets.GenericViewSet):
 
     def get_shelf(self, query_params):
         result = {}
-        filters = {}
         if 'shelf' in query_params:
-            filters.update({'pk__in': query_params['shelf'], 'furniture__labroom__laboratory': self.laboratory})
+            filters = {'pk__in': query_params['shelf'], 'furniture__labroom__laboratory': self.laboratory}
             shelf_list = Shelf.objects.filter(**filters)
 
             if shelf_list:
@@ -873,9 +870,8 @@ class SearchLabView(viewsets.GenericViewSet):
 
     def get_shelfobject(self, query_params):
         result = {}
-        filters = {}
         if 'shelfobject' in query_params:
-            filters.update({'pk__in': query_params['shelfobject'], 'in_where_laboratory': self.laboratory, 'containershelfobject': None})
+            filters = {'pk__in': query_params['shelfobject'], 'in_where_laboratory': self.laboratory, 'containershelfobject': None}
             shelfobject_list = ShelfObject.objects.filter(**filters)
 
             if shelfobject_list:

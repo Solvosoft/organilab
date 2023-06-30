@@ -93,7 +93,7 @@ class LaboratoryRoomsList(ListView):
                 raise Http404()
         return result
 
-    def update_suggestions_tag(self, model, filters, value='name'):
+    def get_whitelist_by_object(self, model, filters, value='name'):
         suggestions_tag = []
         contenttype = ContentType.objects.filter(
             app_label='laboratory',
@@ -102,7 +102,7 @@ class LaboratoryRoomsList(ListView):
 
         MODEL = contenttype.model_class()
         queryset = MODEL.objects.filter(**filters).values('pk', value)
-        whitelist = [{'pk': x['pk'], 'value': x[value], 'objtype': model} for x in queryset]
+        whitelist = [{'pk': x['pk'], 'value': "%d: %s" %(x['pk'], x[value]), 'objtype': model} for x in queryset]
 
         if whitelist:
             suggestions_tag = suggestions_tag + whitelist
@@ -110,10 +110,10 @@ class LaboratoryRoomsList(ListView):
 
     def get_suggestions_tag(self):
 
-        suggestions_tag = self.update_suggestions_tag('laboratoryroom', {'laboratory': self.lab})
-        suggestions_tag += self.update_suggestions_tag('furniture', {'labroom__laboratory': self.lab})
-        suggestions_tag += self.update_suggestions_tag('shelf', {'furniture__labroom__laboratory': self.lab})
-        suggestions_tag += self.update_suggestions_tag('shelfobject',
+        suggestions_tag = self.get_whitelist_by_object('laboratoryroom', {'laboratory': self.lab})
+        suggestions_tag += self.get_whitelist_by_object('furniture', {'labroom__laboratory': self.lab})
+        suggestions_tag += self.get_whitelist_by_object('shelf', {'furniture__labroom__laboratory': self.lab})
+        suggestions_tag += self.get_whitelist_by_object('shelfobject',
                                                        {'in_where_laboratory': self.lab, 'containershelfobject': None},
                                                        value='object__name')
         return suggestions_tag

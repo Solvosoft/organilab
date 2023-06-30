@@ -291,13 +291,11 @@ $("#btnremovealltags").on('click', function(){
     labviewSearch.restart_objs();
 });
 
-tagify.on('add', function(e, tagName){
-        document.removealltags = false;
+tagify.on('add', function(e){
         labviewSearch.search(e.detail.tagify.value);
     }).on("invalid", function(e, tagName){
         console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
     }).on('remove', function(e){
-        document.removealltags = false;
         var obj_list = e.detail.tagify.value;
 
         if(obj_list.length){
@@ -355,8 +353,8 @@ const labviewSearch={
             radio_obj = "#"+key+"_"+value;
 
             if($(radio_obj).length){
-                $('input[type="radio"]').parent().parent().hide();
-                $(radio_obj).parent().parent().show();
+                $(radio_obj).parents('.shelfrow').children().hide();
+                $(radio_obj).parents('.col').show();
                 $(radio_obj).iCheck('check');
                 $(radio_obj).change();
             }
@@ -395,7 +393,7 @@ const labviewSearch={
         $("span.check-box").click();
         $('div#shelfobjecttable_filter input[type="search"]').val('').keyup();
         $("span.box").parent().show();
-        $('input[type="radio"]').parent().parent().show();
+        $('input[type="radio"]').parents('.shelfrow').children().show();
     },
     select_objs: function(search_list){
         labviewSearch.restart_objs();
