@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block title %}{% trans 'Reports' %} {% endblock %}
+{% block pre_head %}
+    {% define_true 'use_datatables' %}
+	{% define_urlname_action 'can_do_report' %}
+{% endblock %}
+
+{% block content %}
+
+{% if perms.laboratory.do_report and perms.laboratory.view_object  %}
+<div class="col-md-12">
+	<div class="page-header" align="center">
+		<h1>{{obj_task.data.title}}</h1>
+	</div>
+</div>
+<div id="body_tables" class="container-fluid">
+
+</div>
+
+<!--{% for lab in obj_task.table_content.dataset %}
+<div class="card mt-5">
+	<div class="card-title text-center fw-bold p-2">
+		<p>{{ lab.lab }}</p>
+		<p>{{ lab.obj }} {{ lab.diff }}</p>
+		<hr>
+	</div>
+		<div class="card-body">
+	<table class="log_changes_table display table table-striped table-bordered text-center dt-responsive">
+		<thead>
+			<tr>
+				<th>{% trans 'User' %}</th>
+				<th>{% trans 'Update time' %}</th>
+				<th>{% trans 'Old value' %}</th>
+				<th>{% trans 'New value' %}</th>
+				<th>{% trans 'Diff' %}</th>
+				<th>{% trans 'Unit' %}</th>
+			</tr>
+		</thead>
+		<tbody>
+	{% for ob in lab.values %}
+	<tr>
+		<td>{{ob.user}}</td>
+			<td>{{ob.update_time}}</td>
+			<td>{{ob.old_value}}</td>
+			<td>{{ob.new_value}}</td>
+			<td>{{ob.diff_value}}</td>
+			<td>{{ob.measurement_unit}}</td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+</div>
+</div>
+{% endfor %}
+{% endif %}
+-->
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+{{obj_task.table_content|json_script:"columns"}}
+<script src="{% static 'laboratory/js/reports.js' %}?v={% get_organilab_version %}"></script>
+<script>
+{% for lab in obj_task.table_content.dataset %}
+	 id= "table_{{lab.lab_id}}_{{lab.obj_id}}_{{lab.unit}}";
+	url = '{% url "report:api-report-log-detail" obj_task.pk %}'+"?lab={{lab.lab_id}}&obj={{lab.obj_id}}&unit={{lab.unit}}";
+	add_log_change_datatables(id,"{{lab.lab}}","{{lab.obj}}","{{lab.diff}}", url);
+{% endfor %}
+
+</script>
+{% endblock %}
+
