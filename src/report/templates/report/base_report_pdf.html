@@ -1,7 +1,5 @@
 {% extends 'report/base_pdf.html' %}
 {% load i18n %}
 {% block pdf_content %}
-    <table id="pdf_table_report">
         {{ datalist | safe }}
-    </table>
 {% endblock %}
