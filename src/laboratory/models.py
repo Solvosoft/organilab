@@ -1,5 +1,4 @@
 import json
-
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -25,6 +24,7 @@ class BaseCreationObj(models.Model):
 
     class Meta:
         abstract = True
+
 
 class CLInventory(models.Model):
     name = models.TextField(_('Name'))
@@ -71,8 +71,10 @@ class Object(AbstractOrganizationRef):
 
     code = models.CharField(_('Code'), max_length=255)
     name = models.CharField(_('Name'), max_length=255)
-    synonym = models.CharField(_('Synonym'), max_length=255, help_text=_('Comma separed name'), null=True, blank=True)
-    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES, default=REACTIVE)
+    synonym = models.CharField(_('Synonym'), max_length=255,
+                               help_text=_('Comma separed name'), null=True, blank=True)
+    type = models.CharField(_('Type'), max_length=2, choices=TYPE_CHOICES,
+                            default=REACTIVE)
     is_public = models.BooleanField(default=True, verbose_name=_('Share with others'))
     description = models.TextField(_('Description'), null=True, blank=True)
 
@@ -113,68 +115,110 @@ class Object(AbstractOrganizationRef):
 
 class SustanceCharacteristics(models.Model):
     obj = models.OneToOneField(Object, on_delete=models.CASCADE)
-    iarc = catalog.GTForeignKey(Catalog, related_name="gt_iarcrel", on_delete=models.DO_NOTHING,
+    iarc = catalog.GTForeignKey(Catalog, related_name="gt_iarcrel",
+                                on_delete=models.DO_NOTHING,
                                 null=True, blank=True, key_name="key", key_value="IARC")
-    imdg = catalog.GTForeignKey(Catalog, related_name="gt_imdg", on_delete=models.DO_NOTHING,
+    imdg = catalog.GTForeignKey(Catalog, related_name="gt_imdg",
+                                on_delete=models.DO_NOTHING,
                                 null=True, blank=True, key_name="key", key_value="IDMG")
-    white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ", key_name="key",
+    white_organ = catalog.GTManyToManyField(Catalog, related_name="gt_white_organ",
+                                            key_name="key",
                                             key_value="white_organ", blank=True)
     bioaccumulable = models.BooleanField(null=True)
-    molecular_formula = models.CharField(_('Molecular formula'), max_length=255, null=True, blank=True)
+    molecular_formula = models.CharField(_('Molecular formula'), max_length=255,
+                                         null=True, blank=True)
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)
     security_sheet = models.FileField(
         _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
-    precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursor", on_delete=models.SET_NULL,
-                                          null=True, blank=True, key_name="key", key_value="Precursor")
+    precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursor",
+                                          on_delete=models.SET_NULL,
+                                          null=True, blank=True, key_name="key",
+                                          key_value="Precursor")
 
-    h_code = models.ManyToManyField('sga.DangerIndication', verbose_name=_("Danger Indication"), blank=True)
+    h_code = models.ManyToManyField('sga.DangerIndication',
+                                    verbose_name=_("Danger Indication"), blank=True)
     valid_molecular_formula = models.BooleanField(default=False)
     ue_code = catalog.GTManyToManyField(Catalog, related_name="gt_ue", key_name="key",
-                                        key_value="ue_code", blank=True, verbose_name=_('UE codes'))
+                                        key_value="ue_code", blank=True,
+                                        verbose_name=_('UE codes'))
     nfpa = catalog.GTManyToManyField(Catalog, related_name="gt_nfpa", key_name="key",
-                                     key_value="nfpa", blank=True, verbose_name=_('NFPA codes'))
-    storage_class = catalog.GTManyToManyField(Catalog, related_name="gt_storage_class", key_name="key",
-                                              key_value="storage_class", blank=True, verbose_name=_('Storage class'))
-    seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'), default=False)
-    img_representation = models.ImageField(upload_to='sustances/', verbose_name=_('Sustance representation'),
+                                     key_value="nfpa", blank=True,
+                                     verbose_name=_('NFPA codes'))
+    storage_class = catalog.GTManyToManyField(Catalog, related_name="gt_storage_class",
+                                              key_name="key",
+                                              key_value="storage_class", blank=True,
+                                              verbose_name=_('Storage class'))
+    seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'),
+                                      default=False)
+    img_representation = models.ImageField(upload_to='sustances/',
+                                           verbose_name=_('Sustance representation'),
                                            null=True, blank=True)
 
     class Meta:
         verbose_name = _('Sustance characteristic')
         verbose_name_plural = _('Sustance characteristics')
 
+
 class ShelfObjectLimits(models.Model):
-    minimum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
-    maximum_limit = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
-    expiration_date = models.DateField(null=True, blank=True, verbose_name=_('Expiration date'))
+    minimum_limit = models.FloatField(_('Limit material quantity'),
+                                      help_text=_('Use dot like 0.344 on decimal'),
+                                      default=0)
+    maximum_limit = models.FloatField(_('Limit material quantity'),
+                                      help_text=_('Use dot like 0.344 on decimal'),
+                                      default=0)
+    expiration_date = models.DateField(null=True, blank=True,
+                                       verbose_name=_('Expiration date'))
+
 
 class ShelfObject(models.Model):
-    shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"), on_delete=models.CASCADE)
-    object = models.ForeignKey('Object', verbose_name=_("Equipment or reactive or sustance"), on_delete=models.CASCADE)
-    batch = models.CharField(max_length=250, default="0", verbose_name=_("Production batch"))
-    status = catalog.GTForeignKey(Catalog, null=True, on_delete=models.DO_NOTHING, verbose_name=_('Status'),
-                                key_name="key", key_value='shelfobject_status')
-    quantity = models.FloatField(_('Material quantity'), help_text= _('Use dot like 0.344 on decimal'))
+    shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"),
+                              on_delete=models.CASCADE)
+    object = models.ForeignKey('Object',
+                               verbose_name=_("Equipment or reactive or sustance"),
+                               on_delete=models.CASCADE)
+    batch = models.CharField(max_length=250, default="0",
+                             verbose_name=_("Production batch"))
+    status = catalog.GTForeignKey(Catalog, null=True, on_delete=models.DO_NOTHING,
+                                  verbose_name=_('Status'),
+                                  key_name="key", key_value='shelfobject_status')
+    quantity = models.FloatField(_('Material quantity'),
+                                 help_text=_('Use dot like 0.344 on decimal'))
+    quantity_base_unit = models.FloatField(default=0,
+                                           verbose_name=_('Quantity Base Unit'),
+                                           help_text=_(
+                                               'Quantity in its respective base unit'))
     # FIXME: Delete this field, for limits
-    limit_quantity = models.FloatField(_('Limit material quantity'), help_text=_('Use dot like 0.344 on decimal'), default=0)
-    limits = models.ForeignKey(ShelfObjectLimits, on_delete=models.SET_NULL, null=True, blank=True)
-    measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit", on_delete=models.DO_NOTHING,
-                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-    in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False, on_delete=models.CASCADE)
+    limit_quantity = models.FloatField(_('Limit material quantity'),
+                                       help_text=_('Use dot like 0.344 on decimal'),
+                                       default=0)
+    limits = models.ForeignKey(ShelfObjectLimits, on_delete=models.SET_NULL, null=True,
+                               blank=True)
+    measurement_unit = catalog.GTForeignKey(Catalog, related_name="measurementunit",
+                                            on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Measurement unit'),
+                                            key_name="key", key_value='units')
+    in_where_laboratory = models.ForeignKey('Laboratory', null=True, blank=False,
+                                            on_delete=models.CASCADE)
     marked_as_discard = models.BooleanField(default=False, verbose_name=_("Is discard"))
     # FIXME: this field needs to be deleted
-    laboratory_name = models.CharField(null=True, blank=True, verbose_name=_('Laboratory name'), max_length=30)
+    laboratory_name = models.CharField(null=True, blank=True,
+                                       verbose_name=_('Laboratory name'), max_length=30)
     # FIXME: change this field to be called description
-    course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'), max_length=30)
+    course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'),
+                                   max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    creator = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'), on_delete=models.CASCADE)
+    creator = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'),
+                                on_delete=models.CASCADE)
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
-    shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'), upload_to='shelf_object_qr/')
-    container = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_("Container"),
+    shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'),
+                                       upload_to='shelf_object_qr/')
+    container = models.ForeignKey('self', null=True, blank=True,
+                                  on_delete=models.SET_NULL,
+                                  verbose_name=_("Container"),
                                   related_name="containershelfobject")
 
     @staticmethod
@@ -198,15 +242,31 @@ class ShelfObject(models.Model):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
 
     def get_object_detail(self):
-        return '%s %s %s %s' %(self.object.code, self.object.name, self.quantity, str(self.measurement_unit))
+        return '%s %s %s %s' % (
+            self.object.code, self.object.name, self.quantity,
+            str(self.measurement_unit))
+
+
+class BaseUnitValues(models.Model):
+    measurement_unit = catalog.GTOneToOneField(Catalog, related_name="baseunit",
+                                               on_delete=models.CASCADE,
+                                               verbose_name=_('Base unit'),
+                                               key_name="key", key_value='units',
+                                               unique=True)
+    si_value = models.FloatField(default=1)
+
 
 class ShelfObjectObservation(BaseCreationObj):
-    action_taken = models.CharField(max_length=50, default=_("Object Change"), verbose_name=_("Action Taken"))
+    action_taken = models.CharField(max_length=50, default=_("Object Change"),
+                                    verbose_name=_("Action Taken"))
     description = models.TextField(null=True)
-    shelf_object = models.ForeignKey('ShelfObject', on_delete=models.CASCADE, blank=False, null=False)
+    shelf_object = models.ForeignKey('ShelfObject', on_delete=models.CASCADE,
+                                     blank=False, null=False)
+
 
 class LaboratoryRoom(BaseCreationObj):
-    laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True, blank=False)
+    laboratory = models.ForeignKey('Laboratory', on_delete=models.CASCADE, null=True,
+                                   blank=False)
     name = models.CharField(_('Name'), max_length=255)
 
     class Meta:
@@ -218,25 +278,37 @@ class LaboratoryRoom(BaseCreationObj):
 
 
 class Shelf(BaseCreationObj):
-    furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"), on_delete=models.CASCADE)
+    furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"),
+                                  on_delete=models.CASCADE)
     name = models.CharField(_("Name"), max_length=15, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
-                                        verbose_name=_("Container shelf"), on_delete=models.CASCADE)
+                                        verbose_name=_("Container shelf"),
+                                        on_delete=models.CASCADE)
 
     # C space  D drawer
-    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
+    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
+                                verbose_name=_('Type'),
                                 key_name="key", key_value='container_type')
     color = models.CharField(default="#73879C", max_length=10)
     discard = models.BooleanField(default=False, verbose_name=_('Disposal'))
-    quantity = models.FloatField(default=0, verbose_name=_('Quantity'), help_text=_('Limit quantity of the shelf'))
-    measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True, related_name="measurementshelfunit", on_delete=models.DO_NOTHING,
-                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')
-    description= models.TextField(null=True,blank=True, default="", verbose_name=_('Description'))
+    quantity = models.FloatField(default=0, verbose_name=_('Quantity'),
+                                 help_text=_('Limit quantity of the shelf'))
+    measurement_unit = catalog.GTForeignKey(Catalog, null=True, blank=True,
+                                            related_name="measurementshelfunit",
+                                            on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Measurement unit'),
+                                            key_name="key", key_value='units')
+    description = models.TextField(null=True, blank=True, default="",
+                                   verbose_name=_('Description'))
 
-    limit_only_objects = models.BooleanField(default=False, verbose_name=_('Limit objects to be added'))
-    available_objects_when_limit = models.ManyToManyField(Object,  related_name="limit_objects",
-                                                          verbose_name=_('Only objects allowed in this shelf'))
-    infinity_quantity = models.BooleanField(default=True, verbose_name=_('Infinite amount'))
+    limit_only_objects = models.BooleanField(default=False, verbose_name=_(
+        'Limit objects to be added'))
+    available_objects_when_limit = models.ManyToManyField(Object,
+                                                          related_name="limit_objects",
+                                                          verbose_name=_(
+                                                              'Only objects allowed in this shelf'))
+    infinity_quantity = models.BooleanField(default=True,
+                                            verbose_name=_('Infinite amount'))
 
     def get_objects(self):
         return ShelfObject.objects.filter(shelf=self)
@@ -264,18 +336,19 @@ class Shelf(BaseCreationObj):
         verbose_name_plural = _('Shelves')
 
     def get_shelf(self):
-        return '%s %s %s %s' % (self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
-
+        return '%s %s %s %s' % (
+            self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
 
     def get_total_refuse(self):
-        return ShelfObject.objects.filter(shelf=self).aggregate(amount = Sum('quantity', default=0))['amount']
+        return ShelfObject.objects.filter(shelf=self).aggregate(
+            amount=Sum('quantity', default=0))['amount']
 
     def get_refuse_porcentage(self):
-        result=0
+        result = 0
         try:
-            result=(self.get_total_refuse()/self.quantity)*100
+            result = (self.get_total_refuse() / self.quantity) * 100
         except ZeroDivisionError:
-            result=0
+            result = 0
         return result
 
     def get_measurement_unit_display(self):
@@ -284,17 +357,19 @@ class Shelf(BaseCreationObj):
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
 
-
     class Meta:
         permissions = [('can_manage_disposal', 'Can manage disposal'),
                        ('can_add_disposal', 'Can add disposal'),
                        ('can_view_disposal', 'Can view disposal')]
 
+
 class Furniture(BaseCreationObj):
-    labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE, verbose_name=_("Labroom"))
+    labroom = models.ForeignKey('LaboratoryRoom', on_delete=models.CASCADE,
+                                verbose_name=_("Labroom"))
     name = models.CharField(_('Name'), max_length=255)
     # old  'F' Cajón   'D' Estante
-    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING, verbose_name=_('Type'),
+    type = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
+                                verbose_name=_('Type'),
                                 key_name="key", key_value='furniture_type')
     color = models.CharField(default="#73879C", max_length=10)
     dataconfig = models.TextField(_('Data configuration'))
@@ -397,10 +472,12 @@ class Furniture(BaseCreationObj):
         ordering = ['name']
 
     def get_objects(self):
-        return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf', '-shelf__name')
+        return ShelfObject.objects.filter(shelf__furniture=self).order_by('shelf',
+                                                                          '-shelf__name')
 
     def get_limited_shelf_objects(self):
-        return ShelfObject.objects.filter(shelf__furniture=self)
+        return ShelfObject.objects.filter(shelf__furniture=self,
+                                          quantity__lte=F('limit_quantity'))
 
     def __str__(self):
         return '%s' % (self.name)
@@ -408,42 +485,49 @@ class Furniture(BaseCreationObj):
 
 class OrganizationStructureManager(models.Manager):
 
-    def organization_tree(self, organization, descendants=True, include_self=True, ancestors=True):
+    def organization_tree(self, organization, descendants=True, include_self=True,
+                          ancestors=True):
         organizations = OrganizationStructure.objects.filter(pk__in=[organization])
         pks = []
         for org in organizations:
             if descendants:
-                pks += list(org.descendants(include_self=include_self).values_list('pk', flat=True))
+                pks += list(org.descendants(include_self=include_self).values_list('pk',
+                                                                                   flat=True))
             if ancestors:
-                pks += list(org.ancestors(include_self=include_self).values_list('pk', flat=True))
+                pks += list(org.ancestors(include_self=include_self).values_list('pk',
+                                                                                 flat=True))
         if pks:
             return OrganizationStructure.objects.filter(pk__in=pks)
         return OrganizationStructure.objects.none()
 
-
-    def filter_user(self, user, descendants=True, include_self=True, ancestors=False, org_pk=None):
-        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True))|Q(users=user)
+    def filter_user(self, user, descendants=True, include_self=True, ancestors=False,
+                    org_pk=None):
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization',
+                                                                 flat=True)) | Q(
+            users=user)
         if org_pk:
-            organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(qparams)
+            organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(
+                qparams)
         else:
             organizations = OrganizationStructure.objects.filter(qparams)
 
         pks = []
         for org in organizations:
             if descendants:
-                pks += list(org.descendants(include_self=include_self).values_list('pk', flat=True))
+                pks += list(org.descendants(include_self=include_self).values_list('pk',
+                                                                                   flat=True))
             if ancestors:
-                pks += list(org.ancestors(include_self=include_self).values_list('pk', flat=True))
+                pks += list(org.ancestors(include_self=include_self).values_list('pk',
+                                                                                 flat=True))
         if pks:
             return OrganizationStructure.objects.filter(pk__in=pks)
         return OrganizationStructure.objects.none()
 
     def get_children(self, org_id):
-        return OrganizationStructure.objects.filter(pk=org_id).descendants(include_self=True)
+        return OrganizationStructure.objects.filter(pk=org_id).descendants(
+            include_self=True)
 
     def filter_organization_by_user(self, user, descendants=True, ancestors=False):
-
-
 
         organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
@@ -460,44 +544,49 @@ class OrganizationStructureManager(models.Manager):
                         pks.append(parent.pk)
 
         if pks:
-
             return OrganizationStructure.objects.filter(pk__in=pks)
 
         return OrganizationStructure.objects.none()
 
-    def filter_user_orgs(self, user, org=None, descendants=True, include_self=True, ancestors=False):
+    def filter_user_orgs(self, user, org=None, descendants=True, include_self=True,
+                         ancestors=False):
         organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
         for org in organizations:
             pks.append(org.pk)
             if descendants:
-                for sons in org.descendants(include_self=include_self).filter(users=user):
+                for sons in org.descendants(include_self=include_self).filter(
+                    users=user):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
             if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(users=user):
+                for parent in org.descendants(include_self=include_self).filter(
+                    users=user):
                     if parent.pk not in pks:
                         pks.append(parent.pk)
 
         if pks:
-
             return OrganizationStructure.objects.filter(pk__in=pks)
 
         return OrganizationStructure.objects.none()
 
     def filter_labs_by_user(self, user, org_pk=None):
-        contenttype = ContentType.objects.filter(app_label='laboratory', model='laboratory').first()
+        contenttype = ContentType.objects.filter(app_label='laboratory',
+                                                 model='laboratory').first()
 
-        orgs = self.filter_user(user, descendants=True, include_self=True, ancestors=True, org_pk=org_pk)
+        orgs = self.filter_user(user, descendants=True, include_self=True,
+                                ancestors=True, org_pk=org_pk)
         labs_related = set(OrganizationStructureRelations.objects.filter(
-            organization__in = orgs,
-            content_type = contenttype,
+            organization__in=orgs,
+            content_type=contenttype,
         ).values_list('object_id', flat=True))
-        labs_in_orgs = set(orgs.exclude(laboratory=None).values_list('laboratory', flat=True))
+        labs_in_orgs = set(
+            orgs.exclude(laboratory=None).values_list('laboratory', flat=True))
 
         pks = labs_related.union(labs_in_orgs)
         return contenttype.model_class().objects.filter(pk__in=pks)
+
 
 class OrganizationStructure(TreeNode):
     name = models.CharField(_('Name'), max_length=255)
@@ -516,6 +605,7 @@ class OrganizationStructure(TreeNode):
         ordering = ["position"]
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
+
     def __str__(self):
         return "%s" % self.name
 
@@ -531,11 +621,12 @@ class OrganizationStructure(TreeNode):
             labs += lab.name
         return labs
 
+
 class UserOrganization(models.Model):
-    ADMINISTRATOR=1
-    LABORATORY_MANAGER=2
-    LABORATORY_USER=3
-    TYPE_IN_ORG=(
+    ADMINISTRATOR = 1
+    LABORATORY_MANAGER = 2
+    LABORATORY_USER = 3
+    TYPE_IN_ORG = (
         (ADMINISTRATOR, _("Administrator")),
         (LABORATORY_MANAGER, _("Laboratory Manager")),
         (LABORATORY_USER, _("Laboratory User"))
@@ -545,7 +636,8 @@ class UserOrganization(models.Model):
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     status = models.BooleanField(default=True)
-    type_in_organization = models.IntegerField(choices=TYPE_IN_ORG, default=LABORATORY_USER)
+    type_in_organization = models.IntegerField(choices=TYPE_IN_ORG,
+                                               default=LABORATORY_USER)
 
     def __str__(self):
         return "%s" % self.user
@@ -555,9 +647,10 @@ class UserOrganization(models.Model):
         verbose_name = _('User Organization')
         verbose_name_plural = _('User Organizations')
 
-#FIXME: Delete this model
 
-#class OrganizationUserManagement(models.Model):
+# FIXME: Delete this model
+
+# class OrganizationUserManagement(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 #    users = models.ManyToManyField(User, blank=True)
@@ -587,11 +680,13 @@ class Laboratory(BaseCreationObj):
     location = models.CharField(_('Location'), default='', max_length=255)
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
-    email= models.EmailField(_('Email'),blank=True)
-    coordinator=models.CharField(_('Coordinator'), default='', max_length=255, blank=True)
-    unit=models.CharField(_('Unit'), default='', max_length=50, blank=True)
+    email = models.EmailField(_('Email'), blank=True)
+    coordinator = models.CharField(_('Coordinator'), default='', max_length=255,
+                                   blank=True)
+    unit = models.CharField(_('Unit'), default='', max_length=50, blank=True)
     organization = TreeNodeForeignKey(
-        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE, null=True)
+        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE,
+        null=True)
 
     class Meta:
         verbose_name = _('Laboratory')
@@ -609,11 +704,15 @@ class Laboratory(BaseCreationObj):
 
 
 class Provider(BaseCreationObj):
-    name = models.CharField(max_length=255, blank=True, default='',verbose_name=_('Name'))
-    phone_number = models.CharField(max_length=25, blank=True, default='',verbose_name=_('Phone'))
-    email = models.EmailField(blank=True,verbose_name=_('Email'))
-    legal_identity = models.CharField(max_length=50,blank=True,default='',verbose_name=_('legal identity'))
-    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, default='',
+                            verbose_name=_('Name'))
+    phone_number = models.CharField(max_length=25, blank=True, default='',
+                                    verbose_name=_('Phone'))
+    email = models.EmailField(blank=True, verbose_name=_('Email'))
+    legal_identity = models.CharField(max_length=50, blank=True, default='',
+                                      verbose_name=_('legal identity'))
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, blank=True,
+                                   null=True)
 
     def __str__(self):
         return self.name
@@ -628,22 +727,27 @@ class ObjectLogChange(models.Model):
     diff_value = models.FloatField(default=0)
     update_time = models.DateTimeField(auto_now_add=True)
     precursor = models.BooleanField(default=False)
-    measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit", on_delete=models.DO_NOTHING,
-                                            verbose_name=_('Measurement unit'), key_name="key", key_value='units')
+    measurement_unit = catalog.GTForeignKey(Catalog, related_name="logmeasurementunit",
+                                            on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Measurement unit'),
+                                            key_name="key", key_value='units')
     subject = models.CharField(max_length=100, blank=True, null=True)
-    provider= models.ForeignKey(Provider, blank=True, db_constraint=False, on_delete=models.DO_NOTHING, null=True)
+    provider = models.ForeignKey(Provider, blank=True, db_constraint=False,
+                                 on_delete=models.DO_NOTHING, null=True)
     bill = models.CharField(max_length=100, blank=True, null=True)
-    type_action=models.IntegerField(default=0)
-    note = models.CharField(default='',blank=True, null=True, max_length=255)
+    type_action = models.IntegerField(default=0)
+    note = models.CharField(default='', blank=True, null=True, max_length=255)
 
     def __str__(self):
         return self.object.name
+
 
 class BlockedListNotification(models.Model):
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory"))
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("User"))
-    object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name=_("Object"))
+    object = models.ForeignKey(Object, on_delete=models.CASCADE,
+                               verbose_name=_("Object"))
 
     class Meta:
         verbose_name = _('Blocked List Notification')
@@ -652,19 +756,25 @@ class BlockedListNotification(models.Model):
     def __str__(self):
         return f"{self.object}: {self.laboratory}: {self.user}"
 
+
 REQUESTED = 0
 ACCEPTED = 1
-
 
 TRANFEROBJECT_STATUS = (
     (REQUESTED, _("Requested")),
     (ACCEPTED, _("Accepted")),
 )
 
+
 class TranferObject(BaseCreationObj):
-    object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,verbose_name=_("Object"))
-    laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Send"), related_name="lab_send")
-    laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_("Laboratory Received"), related_name="lab_received")
+    object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE,
+                               verbose_name=_("Object"))
+    laboratory_send = models.ForeignKey(Laboratory, on_delete=models.CASCADE,
+                                        verbose_name=_("Laboratory Send"),
+                                        related_name="lab_send")
+    laboratory_received = models.ForeignKey(Laboratory, on_delete=models.CASCADE,
+                                            verbose_name=_("Laboratory Received"),
+                                            related_name="lab_received")
     quantity = models.FloatField()
     update_time = models.DateTimeField(auto_now_add=True)
     state = models.BooleanField(default=True)
@@ -672,9 +782,11 @@ class TranferObject(BaseCreationObj):
     mark_as_discard = models.BooleanField(default=False)
 
     def get_object_detail(self):
-        return "%s %s %s" % (self.object.object.name, self.quantity, str(self.object.measurement_unit))
+        return "%s %s %s" % (
+            self.object.object.name, self.quantity, str(self.object.measurement_unit))
 
-MONTHS=(
+
+MONTHS = (
     (1, _('January')),
     (2, _('February')),
     (3, _('March')),
@@ -689,10 +801,12 @@ MONTHS=(
     (12, _('December')),
 )
 
+
 class PrecursorReport(models.Model):
     month = models.IntegerField(choices=MONTHS)
     year = models.IntegerField()
-    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,
+                                   verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
 
 
@@ -704,8 +818,11 @@ STATUS_CHOICES = (
 
 
 class Inform(AbstractOrganizationRef):
-    name = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('Name'))
-    custom_form = models.ForeignKey('derb.CustomForm', blank=True, null=True, on_delete=models.CASCADE,verbose_name=_('Template'))
+    name = models.CharField(max_length=100, null=True, blank=True,
+                            verbose_name=_('Name'))
+    custom_form = models.ForeignKey('derb.CustomForm', blank=True, null=True,
+                                    on_delete=models.CASCADE,
+                                    verbose_name=_('Template'))
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     context_object = GenericForeignKey('content_type', 'object_id')
@@ -722,17 +839,20 @@ class Inform(AbstractOrganizationRef):
 
 
 class CommentInform(models.Model):
-    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_("Creator"))
+    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE,
+                                verbose_name=_("Creator"))
     create_at = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(blank=True, verbose_name=_("Comment"))
-    inform = models.ForeignKey(Inform, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Inform'))
+    inform = models.ForeignKey(Inform, blank=True, null=True, on_delete=models.CASCADE,
+                               verbose_name=_('Inform'))
 
     def __str__(self):
         return f'{self.creator} - {self.create_at}'
 
 
 class LabOrgLogEntry(models.Model):
-    log_entry = models.ForeignKey('admin.LogEntry', on_delete=models.CASCADE, verbose_name=_("Log Entry"))
+    log_entry = models.ForeignKey('admin.LogEntry', on_delete=models.CASCADE,
+                                  verbose_name=_("Log Entry"))
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -744,11 +864,14 @@ class LabOrgLogEntry(models.Model):
 class Protocol(BaseCreationObj):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(upload_to="protocols", verbose_name=_("Protocol PDF File"),
-                            validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+                            validators=[
+                                FileExtensionValidator(allowed_extensions=['pdf'])])
 
     short_description = models.CharField(_("short description"), max_length=300)
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
-    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='upload_protocol', on_delete=models.DO_NOTHING)
+    upload_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                  related_name='upload_protocol',
+                                  on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return self.name
@@ -765,7 +888,9 @@ class InformScheduler(AbstractOrganizationRef):
     close_application_date = models.DateField()
 
     period_on_days = models.IntegerField(default=365)
-    inform_template = models.ForeignKey('derb.CustomForm', verbose_name=_("Inform template"),  on_delete=models.CASCADE)
+    inform_template = models.ForeignKey('derb.CustomForm',
+                                        verbose_name=_("Inform template"),
+                                        on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -778,10 +903,12 @@ class InformScheduler(AbstractOrganizationRef):
 
 class InformsPeriod(models.Model):
     scheduler = models.ForeignKey(InformScheduler, on_delete=models.SET_NULL, null=True)
-    organization = models.ForeignKey(OrganizationStructure, verbose_name=_("Organization"),
+    organization = models.ForeignKey(OrganizationStructure,
+                                     verbose_name=_("Organization"),
                                      on_delete=models.CASCADE)
 
-    inform_template = models.ForeignKey('derb.CustomForm', verbose_name=_("Inform template"),
+    inform_template = models.ForeignKey('derb.CustomForm',
+                                        verbose_name=_("Inform template"),
                                         on_delete=models.CASCADE)
     informs = models.ManyToManyField(Inform, blank=True)
     creation_date = models.DateField(auto_now_add=True)
@@ -789,10 +916,10 @@ class InformsPeriod(models.Model):
     close_application_date = models.DateField()
 
     def __str__(self):
-        return "%s %s to %s"%(
-                self.inform_template.name,
-                self.start_application_date,
-                self.close_application_date)
+        return "%s %s to %s" % (
+            self.inform_template.name,
+            self.start_application_date,
+            self.close_application_date)
 
     class Meta:
         ordering = ['-start_application_date']
@@ -801,20 +928,28 @@ class InformsPeriod(models.Model):
 class RegisterUserQR(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, verbose_name=_("Created by"))
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING,
+                                   verbose_name=_("Created by"))
     activate_user = models.BooleanField(default=True, verbose_name=_('Activate user'))
     url = models.TextField(verbose_name=_("Url"))
-    register_user_qr = models.FileField(_('Register user QR'), upload_to='register_user_qr/')
-    role = models.ForeignKey('auth_and_perms.Rol', on_delete=models.DO_NOTHING, verbose_name=_('Role'))
+    register_user_qr = models.FileField(_('Register user QR'),
+                                        upload_to='register_user_qr/')
+    role = models.ForeignKey('auth_and_perms.Rol', on_delete=models.DO_NOTHING,
+                             verbose_name=_('Role'))
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    organization_creator = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_creator')
-    organization_register = models.ForeignKey(OrganizationStructure, on_delete=models.CASCADE, related_name='organization_register')
+    organization_creator = models.ForeignKey(OrganizationStructure,
+                                             on_delete=models.CASCADE,
+                                             related_name='organization_creator')
+    organization_register = models.ForeignKey(OrganizationStructure,
+                                              on_delete=models.CASCADE,
+                                              related_name='organization_register')
 
-    code = models.CharField(max_length=4, unique=True, null=True, verbose_name=_("Code"))
+    code = models.CharField(max_length=4, unique=True, null=True,
+                            verbose_name=_("Code"))
 
     def __str__(self):
         return f"{self.url}"
