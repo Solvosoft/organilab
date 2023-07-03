@@ -149,7 +149,7 @@ def check_import_obj(path):
 def get_pdf_log_change_table_content(table_content):
     pdf_table=""
     for table in table_content['dataset']:
-        pdf_table+= "<p>%s</p>" %(f'{table["lab"]} {table["obj"]} {table["diff"]}')
+        pdf_table+= "<p>%s</p>" %(f'{table["lab"]} | {table["obj"]} {table["diff"]}')
         pdf_table += "<table id='pdf_table_report'><thead>"
         pdf_table += '<tr>'
         for col in [_("User"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")]:
