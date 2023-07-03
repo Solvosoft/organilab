@@ -195,11 +195,11 @@ function update_selects(form_element){
 
 function add_log_change_datatables(id, lab, obj, diff, url){
     html_card=`<div class="card mt-5">
-	<div class="card-title text-center fw-bold p-2">
-	<p>${lab} | ${obj} ${diff}}</p>
+	<div class="card-title text-center fw-bold">
+	<p>${lab} | ${obj} ${diff}</p>
 	<hr>
 	</div>
-	<div class="card-body"><table id=${id} class="log_changes_table display table table-striped table-bordered text-center dt-responsive"></table>
+	<div class="card-body"><table id=${id} class="log_changes_table mt-0 p-0 display table table-striped table-bordered text-center dt-responsive"></table>
 	</div></div>`;
 	$('#body_tables').append(html_card);
 
@@ -219,6 +219,12 @@ function add_log_change_datatables(id, lab, obj, diff, url){
        "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
 
 	    }, addfilter=true,);
+	    //table_6_22_63_filter
+
+      /*$('.dataTables_filter').addClass('mt-0 p-0');
+      $('.dataTables_length').removeClass('paging_full_numbers');
+      $('.dataTables_paginate').addClass('paging_simple_numbers');
+      $('#notificationdatatable').removeClass('dtr-inline');*/
 }
 
 $('#id_all_labs_org').on('change', function(){

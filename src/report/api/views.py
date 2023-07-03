@@ -133,27 +133,28 @@ class ReportDataLogViewSet(viewsets.ViewSet):
     unit = None
 
     def get_queryset(self):
-        self.datadict={column['name']:"ll.row_data->>"+str(i) for i,column in enumerate(self.report.table_content['columns'])}
+        self.datadict={column['name']:"data->>"+str(i) for i,column in enumerate(self.report.table_content['columns'])}
         self.translation_columns={self.datadict[data]:self.request.GET[data].lower() for data in self.datadict if data in self.request.GET}
 
-        sql_query="""Select ll.row_data::json->'values' from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id %s AND ll.row_data::json->>'lab_id' = '%s' AND ll.row_data::json->>'obj_id' = '%s' AND ll.row_data::json->>'unit' = '%s' order by %s %s;"""%(self.pk, self.get_where_clause(),self.lab,self.obj,self.unit, self.get_ordering(), self.get_limit_and_offset())
+        sql_query="""SELECT data FROM (Select json_array_elements(ll.row_data::json->'values') as data from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id where ll.row_data::json->>'lab_id' = '%s' AND ll.row_data::json->>'obj_id' = '%s' AND ll.row_data::json->>'unit' = '%s') as data %s order by %s %s;"""%(self.pk,self.lab,self.obj,self.unit,self.get_where_clause(), self.get_ordering(), self.get_limit_and_offset())
 
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
-            return list(map(lambda x: x[0], cursor))[0]
+            return list(map(lambda x: x[0], cursor))
 
 
     def get_queryset_total(self):
-        sql_query = """Select ll.row_data::json->'values' from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id where ll.row_data::json->>'lab_id' = '%s' AND ll.row_data::json->>'obj_id' = '%s' AND ll.row_data::json->>'unit' = '%s'""" %(self.pk,self.lab,self.obj,self.unit)
+        sql_query = """SELECT COUNT(quantity) FROM (Select json_array_elements(ll.row_data::json->'values') as quantity from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id=%s) as ll on ll.id=lab.id where ll.row_data::json->>'lab_id' = '%s' AND ll.row_data::json->>'obj_id' = '%s' AND ll.row_data::json->>'unit' = '%s') AS subquery;""" %(self.pk,self.lab,self.obj,self.unit)
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
-            return len(list(map(lambda x: x[0], cursor))[0])
+            return cursor.fetchone()[0]
+
 
     def get_queryset_record_filtered_total(self):
-        sql_query = """Select ll.row_data::json->'values' from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id= %s ) as ll on ll.id=lab.id %s AND ll.row_data::json->>'lab_id' = '%s' AND ll.row_data::json->>'obj_id' = '%s' AND ll.row_data::json->>'unit' = '%s'""" % (self.pk, self.get_where_clause(),self.lab,self.obj,self.unit)
+        sql_query = """SELECT COUNT(quantity) FROM (Select json_array_elements(ll.row_data::json->'values') as quantity from report_taskreport as lab join (SELECT id, jsonb_array_elements(jsonb_extract_path("table_content",  'dataset' )) as row_data from report_taskreport where id= %s ) as ll on ll.id=lab.id %s AND ll.row_data::json->>'lab_id' = '%s' AND ll.row_data::json->>'obj_id' = '%s' AND ll.row_data::json->>'unit' = '%s') AS subquery;""" % (self.pk, self.get_where_clause(),self.lab,self.obj,self.unit)
         with connection.cursor() as cursor:
             cursor.execute(sql_query)
-            return len(list(map(lambda x: x[0], cursor))[0])
+            return cursor.fetchone()[0]
 
     def get_where_clause(self):
         where_clause=""
@@ -163,6 +164,7 @@ class ReportDataLogViewSet(viewsets.ViewSet):
             if i:
                 where_clause+=" AND "
             where_clause+="LOWER(%s) LIKE '%%%s%%'" % (item,self.clean_where_item(self.translation_columns[item]))
+            print(where_clause)
         if where_clause:
             where_clause="where "+where_clause
 

@@ -21,9 +21,9 @@ def resume_queryset(queryset):
         objects = set(query.values_list('object', 'measurement_unit'))
 
         for obj in objects:
-            ob= Object.objects.filter(pk=obj[0]).first()
-            query_values = query.filter(object=ob, measurement_unit__pk=obj[1])
-            object_diff = queryset.filter(laboratory=lab,object=ob, measurement_unit__pk=obj[1]).aggregate(total=Sum('diff_value'))['total']
+            obj_using= Object.objects.filter(pk=obj[0]).first()
+            query_values = query.filter(object=obj_using, measurement_unit__pk=obj[1])
+            object_diff = queryset.filter(laboratory=lab,object=obj_using, measurement_unit__pk=obj[1]).aggregate(total=Sum('diff_value'))['total']
             for values in query_values:
 
                 try:
@@ -45,14 +45,14 @@ def resume_queryset(queryset):
 
                 list_obj.append(list(object_list.values()))
                 doc_elements.append(list(object_list.values()))
-            if ob:
-                doc_list.append([f'{lab.name} | {str(ob)} {object_diff}'])
+            if obj_using:
+                doc_list.append([f'{lab.name} | {str(obj_using)} {object_diff}'])
                 doc_list.append([_("User"), _("Day"), _('Old'), _('New'), _("Difference"), _("Unit")])
                 doc_list.extend(doc_elements)
                 doc_list.append([])
                 doc_list.append([])
-                result.append({'lab': lab.name,'lab_id': lab.id,'obj': str(ob),
-                               'obj_id': ob.id, 'unit': obj[1],
+                result.append({'lab': lab.name,'lab_id': lab.id,'obj': str(obj_using),
+                               'obj_id': obj_using.id, 'unit': obj[1],
                                'values': list_obj,'diff': object_diff})
             list_obj = []
             doc_elements=[]

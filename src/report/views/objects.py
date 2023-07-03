@@ -93,10 +93,10 @@ def report_objectlogchange_html(report):
     columns_fields = [
         {'name': 'user', 'title':_("User")},
         {'name': 'update_time', 'title':_("Day"), 'type': 'date'},
-        {'name': 'old_value', 'title':_("Old")},
-        {'name': 'new_value', 'title':_("New")},
-        {'name': 'diff_value', 'title':_("Difference")},
-        {'name': 'measurement_unit', 'title':_("Unit")}
+        {'name': 'old_value', 'title':_("Old"), 'type':'number'},
+        {'name': 'new_value', 'title':_("New"),'type':'number'},
+        {'name': 'diff_value', 'title':_("Difference"),'type':'number'},
+        {'name': 'measurement_unit', 'title':_("Unit"),'type':'string'}
     ]
     columns_fields = set_format_table_columns(columns_fields)
     column_list = list(map(lambda x: x['name'], columns_fields))
