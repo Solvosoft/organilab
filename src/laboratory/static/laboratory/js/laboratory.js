@@ -348,11 +348,22 @@ const labviewSearch={
 
         });
     },
-    check_radios(obj_list, key){
-        obj_list.forEach(function(value) {
+    check_radios: function(obj_list, key){
+        obj_list['shelf']['shelf'].forEach(function(value) {
             radio_obj = "#"+key+"_"+value;
 
             if($(radio_obj).length){
+                var active_shelf = tableObject.get_active_shelf(show_alert=false);
+                var shelf_obj = $("#"+key+"_"+active_shelf);
+
+                if(active_shelf != undefined && value != active_shelf && obj_list.hasOwnProperty('furniture')){
+                    if(obj_list['furniture'].hasOwnProperty('furniture')){
+                        var furniture = parseInt($(shelf_obj).parents('li').children('span.furnitureroot')[0].id.split("_")[1]);
+                        if(obj_list['furniture']['furniture'].includes(furniture)){
+                            $(shelf_obj).parents('.shelfrow').children().show();
+                        }
+                    }
+                }
                 $(radio_obj).parents('.shelfrow').children().hide();
                 $(radio_obj).parents('.col').show();
                 $(radio_obj).iCheck('check');
@@ -372,18 +383,21 @@ const labviewSearch={
         }
     },
     select_shelf: function(shelf_list){
-        labviewSearch.select_furniture(shelf_list);
 
         if(shelf_list.hasOwnProperty('shelf')){
-            labviewSearch.check_radios(shelf_list['shelf'], "shelf");
+            labviewSearch.select_furniture(shelf_list['shelf']);
+
+            if(shelf_list['shelf'].hasOwnProperty('shelf')){
+                labviewSearch.check_radios(shelf_list, "shelf");
+            }
         }
     },
     select_shelfobject: function(shelfobject_list){
         labviewSearch.select_furniture(shelfobject_list);
         labviewSearch.select_shelf(shelfobject_list);
         var table_filter_input = $('div#shelfobjecttable_filter input[type="search"]');
-        if(table_filter_input.length){// && shelfobject_list['filter_shelfobject']
-            table_filter_input.val('pk='+shelfobject_list['shelfobject'][0]);
+        if(table_filter_input.length){
+            table_filter_input.val('pk='+shelfobject_list['shelfobject'].slice(-1)[0]);
             table_filter_input.focus();
             table_filter_input.keyup();
         }
@@ -406,9 +420,8 @@ const labviewSearch={
                 labviewSearch.select_furniture(search_list['furniture']);
             }
             if('shelf' in search_list && Object.keys(search_list['shelf']).length){
-                labviewSearch.select_shelf(search_list['shelf']);
+                labviewSearch.select_shelf(search_list);
             }
-            $('div#shelfobjecttable_filter input[type="search"]').val('').change();
             if('shelfobject' in search_list && Object.keys(search_list['shelfobject']).length){
                 labviewSearch.select_shelfobject(search_list['shelfobject']);
             }
@@ -416,21 +429,18 @@ const labviewSearch={
         }
     },
     search: function(q){
-        var data = {
-            'labroom': [],
-            'furniture': [],
-            'shelf': [],
-            'shelfobject': []
-        };
+        var data = "";
 
         if(q.length){
             q.forEach(function(item) {
                 if(item.objtype == 'laboratoryroom'){
-                    data['labroom'].push(item.pk);
+                    data += 'labroom=' + item.pk;
                 }else{
-                    data[item.objtype].push(item.pk);
+                    data += item.objtype + "=" + item.pk;
                 }
+                data += '&';
             });
+            data = data.slice(0, -1);
         }
 
         $.ajax({

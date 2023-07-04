@@ -54,7 +54,7 @@
                     {% get_qr_svg_img furniture organization=org_pk icon=True url=furnutureurl  style="color: {{furniture.color}}" %}
 
                     <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
-                    <span class="box" id="furniture_{{furniture.pk}}" style="color: {{furniture.color}}" >{{furniture}}</span>
+                    <span class="box furnitureroot" id="furniture_{{furniture.pk}}" style="color: {{furniture.color}}" >{{furniture}}</span>
                     <ul class="nested">
 
                         <li>
