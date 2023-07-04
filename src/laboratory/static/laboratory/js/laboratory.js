@@ -331,6 +331,22 @@ function show_hide_limits(e,prefix){
 
 
 const labviewSearch={
+    show_deselected_previous_shelfs: function(shelf_list, key, value){
+        var active_shelf = tableObject.get_active_shelf(show_alert=false);
+        var shelf_obj = $("#"+key+"_"+active_shelf);
+
+        if(active_shelf != undefined && value != active_shelf && shelf_list.hasOwnProperty('furniture')){
+            if(shelf_list['furniture'].hasOwnProperty('furniture')){
+                var furniture = $(shelf_obj).parents('li').children('span.furnitureroot');
+                if($(furniture).length){
+                    var furniture_parent = parseInt($(furniture)[0].id.split("_")[1]);
+                    if(shelf_list['furniture']['furniture'].includes(furniture_parent)){
+                        $(shelf_obj).parents('.shelfrow').children().show();
+                    }
+                }
+            }
+        }
+    },
     check_objs: function(obj_list, key){
         obj_list.forEach(function(value) {
             span_obj = "#"+key+"_"+value;
@@ -348,22 +364,12 @@ const labviewSearch={
 
         });
     },
-    check_radios: function(obj_list, key){
-        obj_list['shelf']['shelf'].forEach(function(value) {
-            radio_obj = "#"+key+"_"+value;
+    check_radios: function(shelf_list, obj_list, key){
+        obj_list.forEach(function(value) {
+            var radio_obj = "#"+key+"_"+value;
 
             if($(radio_obj).length){
-                var active_shelf = tableObject.get_active_shelf(show_alert=false);
-                var shelf_obj = $("#"+key+"_"+active_shelf);
-
-                if(active_shelf != undefined && value != active_shelf && obj_list.hasOwnProperty('furniture')){
-                    if(obj_list['furniture'].hasOwnProperty('furniture')){
-                        var furniture = parseInt($(shelf_obj).parents('li').children('span.furnitureroot')[0].id.split("_")[1]);
-                        if(obj_list['furniture']['furniture'].includes(furniture)){
-                            $(shelf_obj).parents('.shelfrow').children().show();
-                        }
-                    }
-                }
+                labviewSearch.show_deselected_previous_shelfs(shelf_list, key, value);
                 $(radio_obj).parents('.shelfrow').children().hide();
                 $(radio_obj).parents('.col').show();
                 $(radio_obj).iCheck('check');
@@ -388,7 +394,9 @@ const labviewSearch={
             labviewSearch.select_furniture(shelf_list['shelf']);
 
             if(shelf_list['shelf'].hasOwnProperty('shelf')){
-                labviewSearch.check_radios(shelf_list, "shelf");
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf']['shelf'], "shelf");
+            }else{
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf'], "shelf");
             }
         }
     },
