@@ -28,6 +28,11 @@
         </a>
     </div>
     <input name="tags-search" type="text" class="form-control" >
+    <div class="input-group-text">
+        <a class="w-100" id="btnremovealltags" type="button" title="{% trans 'Remove All Tags' %}">
+            <i class="fa fa-trash red"></i>
+        </a>
+    </div>
 </div>
 <div class="w-100 overflow-auto border border-top-0 border-1 rounded-bottom pt-2" style="max-height: 350px !important;">
 
@@ -38,7 +43,7 @@
             <li>
                 {% get_laboratory_view_url LaboratoryRoom as labindex %}
                 {% get_qr_svg_img LaboratoryRoom organization=org_pk icon=True url=labindex  %}
-                 <span class="box">{{LaboratoryRoom}} </span>
+                 <span class="box" id="labroom_{{LaboratoryRoom.pk}}">{{LaboratoryRoom.pk}}: {{LaboratoryRoom}} </span>
             <ul class="nested ulfurnuture">
 
                 {% for furniture in LaboratoryRoom.furniture_set.all %}
@@ -47,7 +52,7 @@
                     {% get_qr_svg_img furniture organization=org_pk icon=True url=furnutureurl  style="color: {{furniture.color}}" %}
 
                     <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
-                    <span class="box" style="color: {{furniture.color}}" >{{furniture}}</span>
+                    <span class="box furnitureroot" id="furniture_{{furniture.pk}}" style="color: {{furniture.color}}" >{{furniture.pk}}: {{furniture}}</span>
                     <ul class="nested">
 
                         <li>
@@ -88,12 +93,15 @@
 
 {% block js %}
 {{block.super}}
+{{search_by_url|json_script:"search_by_url"}}
+{{suggestions_tag|json_script:"suggestions_tag"}}
 <script>
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
     shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
     transfer_list: '{% url "laboratory:api-shelfobject-transfer-available-list" org_pk=org_pk lab_pk=laboratory %}',
-    transfer_in_deny: '{% url "laboratory:api-shelfobject-transfer-in-deny" org_pk=org_pk lab_pk=laboratory%}'
+    transfer_in_deny: '{% url "laboratory:api-shelfobject-transfer-in-deny" org_pk=org_pk lab_pk=laboratory%}',
+    search_labview: '{% url "laboratory:api-search-labview-get" org_pk=org_pk lab_pk=laboratory %}'
 }
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';
@@ -102,6 +110,8 @@ document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
 document.url_shelfobject = '{% url "laboratory:api-shelfobjecttable-list" org_pk laboratory %}';
 document.url_status = '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}';
 const view_search = false;
+document.search_by_url = JSON.parse(document.getElementById('search_by_url').textContent);
+document.suggestions_tag = JSON.parse(document.getElementById('suggestions_tag').textContent);
 
 </script>
 

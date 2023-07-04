@@ -147,6 +147,7 @@ function transferInObjectDeny(btn) {
     })
 }
 
+
 $(document).ready(function(){
     const searchLaboratory={
         init: function(){
@@ -169,7 +170,7 @@ $(document).ready(function(){
 
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
-            {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
+            {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: true},
             {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
@@ -267,25 +268,45 @@ $(document).ready(function(){
     $('input[name="shelfselected"]').change(function(){
         datatableelement.ajax.reload();
     });
+
+    $('#shelfobjecttable').on( 'init.dt', function () {
+        if(document.search_by_url){
+            labviewSearch.select_objs(document.search_by_url);
+        }
+    });
+
+
+var inputElm = document.querySelector('input[name=tags-search]');
+
+
+
+const tagify = new Tagify(inputElm, {
+    enforceWhitelist: true,
+    whitelist: document.suggestions_tag,
+    placeholder: gettext("Search")
 });
 
-$(document).ready(function(){
-    var $input = $('input[name=tags-search]')
-        .tagify({
-                whitelist : [
-                    {"id":1, "value":"some string"}
-                ]
-            })
-            .on('add', function(e, tagName){
-                console.log('JQUERY EVENT: ', 'added', tagName)
-            })
-            .on("invalid", function(e, tagName) {
-                console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
-            });
-
-    // get the Tagify instance assigned for this jQuery input object so its methods could be accessed
-    var jqTagify = $input.data('tagify');
+$("#btnremovealltags").on('click', function(){
+    tagify.removeAllTags();
+    labviewSearch.restart_objs();
 });
+
+tagify.on('add', function(e){
+        labviewSearch.search(e.detail.tagify.value);
+    }).on("invalid", function(e, tagName){
+        console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
+    }).on('remove', function(e){
+        var obj_list = e.detail.tagify.value;
+
+        if(obj_list.length){
+            labviewSearch.search(obj_list);
+        }else{
+            labviewSearch.restart_objs();
+        }
+    });
+
+});
+
 
 $(".add_status").click(function(){
     add_status(document.url_status)
@@ -305,5 +326,143 @@ function show_hide_limits(e,prefix){
         $(prefix+'minimum_limit').parent().parent().show();
         $(prefix+'maximum_limit').parent().parent().show();
         $(prefix+'expiration_date').parent().parent().parent().show();
+    }
+}
+
+
+const labviewSearch={
+    show_deselected_previous_shelfs: function(shelf_list, key, value){
+        var active_shelf = tableObject.get_active_shelf(show_alert=false);
+        var shelf_obj = $("#"+key+"_"+active_shelf);
+
+        if(active_shelf != undefined && value != active_shelf && shelf_list.hasOwnProperty('furniture')){
+            if(shelf_list['furniture'].hasOwnProperty('furniture')){
+                var furniture = $(shelf_obj).parents('li').children('span.furnitureroot');
+                if($(furniture).length){
+                    var furniture_parent = parseInt($(furniture)[0].id.split("_")[1]);
+                    if(shelf_list['furniture']['furniture'].includes(furniture_parent)){
+                        $(shelf_obj).parents('.shelfrow').children().show();
+                    }
+                }
+            }
+        }
+    },
+    check_objs: function(obj_list, key){
+        obj_list.forEach(function(value) {
+            span_obj = "#"+key+"_"+value;
+
+            if($(span_obj).length  && !$(span_obj).hasClass('check-box')){
+                $(span_obj).parent().show();
+                $(span_obj).click();
+            }
+
+            if(key === 'labroom'){
+                $(span_obj).next().children().show();
+            }else{
+                $(span_obj).next().children().find('div.input-group').show();
+            }
+
+        });
+    },
+    check_radios: function(shelf_list, obj_list, key){
+        obj_list.forEach(function(value) {
+            var radio_obj = "#"+key+"_"+value;
+
+            if($(radio_obj).length){
+                labviewSearch.show_deselected_previous_shelfs(shelf_list, key, value);
+                $(radio_obj).parents('.shelfrow').children().hide();
+                $(radio_obj).parents('.col').show();
+                $(radio_obj).iCheck('check');
+                $(radio_obj).change();
+            }
+        });
+    },
+    select_labroom: function(labroom_list){
+        labviewSearch.check_objs(labroom_list, "labroom");
+    },
+    select_furniture: function(furniture_list){
+        if(furniture_list.hasOwnProperty('furniture')){
+            labviewSearch.check_objs(furniture_list['furniture'], "furniture");
+        }
+        if(furniture_list.hasOwnProperty('labroom')){
+            labviewSearch.select_labroom(furniture_list['labroom']);
+        }
+    },
+    select_shelf: function(shelf_list){
+
+        if(shelf_list.hasOwnProperty('shelf')){
+            labviewSearch.select_furniture(shelf_list['shelf']);
+
+            if(shelf_list['shelf'].hasOwnProperty('shelf')){
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf']['shelf'], "shelf");
+            }else{
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf'], "shelf");
+            }
+        }
+    },
+    select_shelfobject: function(shelfobject_list){
+        labviewSearch.select_furniture(shelfobject_list);
+        labviewSearch.select_shelf(shelfobject_list);
+        var table_filter_input = $('div#shelfobjecttable_filter input[type="search"]');
+        if(table_filter_input.length){
+            table_filter_input.val('pk='+shelfobject_list['shelfobject'].slice(-1)[0]);
+            table_filter_input.focus();
+            table_filter_input.keyup();
+        }
+    },
+    restart_objs: function(){
+        $('input[name="shelfselected"]').iCheck('uncheck').change();
+        $("span.check-box").click();
+        $('div#shelfobjecttable_filter input[type="search"]').val('').keyup();
+        $("span.box").parent().show();
+        $('input[type="radio"]').parents('.shelfrow').children().show();
+    },
+    select_objs: function(search_list){
+        labviewSearch.restart_objs();
+        if(Object.keys(search_list).length){
+            $("span.box").parent().hide();
+            if('labroom' in search_list && Object.keys(search_list['labroom']).length){
+                labviewSearch.select_labroom(search_list['labroom']);
+            }
+            if('furniture' in search_list && Object.keys(search_list['furniture']).length){
+                labviewSearch.select_furniture(search_list['furniture']);
+            }
+            if('shelf' in search_list && Object.keys(search_list['shelf']).length){
+                labviewSearch.select_shelf(search_list);
+            }
+            if('shelfobject' in search_list && Object.keys(search_list['shelfobject']).length){
+                labviewSearch.select_shelfobject(search_list['shelfobject']);
+            }
+
+        }
+    },
+    search: function(q){
+        var data = "";
+
+        if(q.length){
+            q.forEach(function(item) {
+                if(item.objtype == 'laboratoryroom'){
+                    data += 'labroom=' + item.pk;
+                }else{
+                    data += item.objtype + "=" + item.pk;
+                }
+                data += '&';
+            });
+            data = data.slice(0, -1);
+        }
+
+        $.ajax({
+            url: document.urls.search_labview,
+            type: "GET",
+            dataType: "json",
+            data: data,
+            traditional: true,
+            headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+            success: function(data){
+                labviewSearch.select_objs(data.search_list);
+            },
+            error: function(xhr, resp, text) {
+            }
+        });
     }
 }
