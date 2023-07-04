@@ -99,7 +99,7 @@ function transferInObjectDeny(btn) {
     let transferListDataTable = $('#transfer-list-datatable').DataTable()
     let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
     let message = gettext("Are you sure you want to deny the transfer of")
-    message = `${message} "${transfer_data.object}"?`
+    message = `${message} "${transfer_data.object.name}"?`
     Swal.fire({ //Confirmation for delete
         icon: "warning",
         title: gettext("Are you sure?"),
@@ -145,6 +145,22 @@ function transferInObjectDeny(btn) {
                     });
             }
     })
+}
+
+function transferInObjectApprove(btn, event){
+    let transferListDataTable = $('#transfer-list-datatable').DataTable()
+    let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
+    if(transfer_data.object.type === 'Reactive'){
+        show_hide_container_selects('none');
+        $("#id_transfer_object").val(transfer_data.id);
+        $("#transfer-list-modal").modal('hide');
+        show_me_modal(btn, event);
+        form_modals[$(btn).data('modalid')].success = function(instance, data){
+            $("#transfer-list-modal").modal('show');
+        }
+    }else{
+
+    }
 }
 
 
@@ -235,13 +251,13 @@ $(document).ready(function(){
     createDataTable('#transfer-list-datatable', document.urls.transfer_list, {
         columns: [
             {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-            {data: "object", name: "object__object__name", title: gettext("Object"), type: "string", visible: true},
+            {data: "object.name", name: "object__object__name", title: gettext("Object"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
             {data: "laboratory_send", name: "laboratory_send__name", title: gettext("Laboratory Send"), type: "string", visible: true },
             {data: "mark_as_discard", name: "mark_as_discard", title: gettext("Mark as Discard"), type: "boolean", render: objShowBool, visible: true },
             {data: "update_time", name: "update_time", title: gettext("Date"), type: "date", render: DataTable.render.datetime(), visible: true},
             {data: null, title: gettext('Actions'), sortable: false, filterable: false,
-             defaultContent: `<a href="#" class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
+             defaultContent: `<a onclick="transferInObjectApprove(this, event);" data-modalid="transfer_in_approve_with_container_id_modal" class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
                               <a onclick="transferInObjectDeny(this);" class='btn btn-sm btn-outline-danger' title='Deny'><i class="fa fa-times-circle"></i></a>`
             }
         ],
@@ -261,7 +277,7 @@ $(document).ready(function(){
                return data;
            }
        }
-    }, 
+    },
     addfilter=false);
 
     //shelfselected
@@ -328,6 +344,7 @@ function show_hide_limits(e,prefix){
         $(prefix+'expiration_date').parent().parent().parent().show();
     }
 }
+
 
 
 const labviewSearch={
@@ -466,3 +483,20 @@ const labviewSearch={
         });
     }
 }
+
+function show_hide_container_selects(selected_value){
+    // they are hidden for the other options, so hide them by default and just display one if required
+    $("#id_available_container").parents(".form-group").hide();
+    $("#id_container_for_cloning").parents(".form-group").hide();
+    if(selected_value === 'available'){
+        $("#id_available_container").parents('.form-group').show();
+    }else if(selected_value === 'clone'){
+        $("#id_container_for_cloning").parents('.form-group').show();
+    }
+}
+
+$("#id_container_select_option").on('change', function(event){
+    let selected_value = event.target.value;
+    show_hide_container_selects(selected_value);
+});
+
