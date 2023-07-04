@@ -170,7 +170,7 @@ $(document).ready(function(){
 
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
-            {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
+            {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: true},
             {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
