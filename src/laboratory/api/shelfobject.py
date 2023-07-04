@@ -21,16 +21,17 @@ from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
-from laboratory.models import Catalog, ShelfObjectObservation
+from laboratory.models import Catalog, ShelfObjectObservation, LaboratoryRoom, Furniture, Shelf
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
     ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
-    MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
+    MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, \
+    TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ShelfObjectPk, SearchShelfObjectSerializerMany
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_one_container_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation
 from laboratory.utils import organilab_logentry
@@ -47,6 +48,7 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering_fields = ['object__name', 'object__type', 'quantity', 'measurement_unit__description', 'container__object__name']
     ordering = ('-last_update',)  # default order
 
+
     def get_queryset(self):
         if not self.data['shelf'] :
             return self.queryset.none()
@@ -55,6 +57,15 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             shelf=self.data['shelf'],
             containershelfobject=None  # if it's not used as container - query the reverse relationship
         )
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        serializer_so = ShelfObjectPk(data=self.request.GET)
+
+        if not queryset and serializer_so.is_valid():
+            queryset = self.get_queryset()
+            queryset = queryset.filter(pk=int(serializer_so.validated_data['search'].split('=')[1]))
+        return queryset
 
     def list(self, request, org_pk, lab_pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -804,3 +815,91 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             Catalog.objects.create(key='shelfobject_status', description=serializer.data['description'])
             return JsonResponse({'detail': _('The item was created successfully')}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SearchLabView(viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def _check_permission_on_laboratory(self, request, org_pk, lab_pk):
+        perms_list = ['laboratory.view_laboratory', 'laboratory.view_laboratoryroom', 'laboratory.view_furniture',
+                      'laboratory.view_shelf', 'laboratory.view_shelfobject']
+        if request.user.has_perms(perms_list):
+            self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                                                  pk=org_pk)
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+            user_is_allowed_on_organization(request.user, self.organization)
+            organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
+        else:
+            raise PermissionDenied()
+
+    def get_labroom(self, labroom):
+        result = {}
+        if labroom:
+            result = self.get_pk_list(labroom)
+        return result
+
+    def get_furniture(self, furniture):
+        result = {}
+        if furniture:
+            furniture = self.get_pk_list(furniture)
+            furniture_list = Furniture.objects.filter(pk__in=furniture)
+
+            if furniture_list:
+                result = {
+                    'furniture': furniture,
+                    'labroom': list(furniture_list.values_list('labroom__pk', flat=True))
+                }
+        return result
+
+    def get_shelf(self, shelf):
+        result = {}
+        if shelf:
+            shelf = self.get_pk_list(shelf)
+            shelf_list = Shelf.objects.filter(pk__in=shelf)
+
+            if shelf_list:
+                result = {
+                    'shelf': shelf,
+                    'furniture': list(shelf_list.values_list('furniture__pk', flat=True)),
+                    'labroom': list(shelf_list.values_list('furniture__labroom__pk', flat=True))
+                }
+        return result
+
+    def get_shelfobject(self, shelfobject):
+        result = {}
+        if shelfobject:
+            shelfobject = self.get_pk_list(shelfobject)
+            shelfobject_list = ShelfObject.objects.filter(pk__in=shelfobject)
+
+            if shelfobject_list:
+                result = {
+                    'shelfobject': shelfobject,
+                    'shelf': list(shelfobject_list.values_list('shelf__pk', flat=True)),
+                    'furniture': list(shelfobject_list.values_list('shelf__furniture__pk', flat=True)),
+                    'labroom': list(shelfobject_list.values_list('shelf__furniture__labroom__pk', flat=True))
+                }
+        return result
+
+    def get_pk_list(self, queryset):
+        return [obj.pk for obj in queryset]
+
+    @action(detail=False, methods=['get'])
+    def get(self, request, org_pk, lab_pk):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk)
+        search_list, errors = {}, {}
+        serializer = SearchShelfObjectSerializerMany(data=request.query_params, context={"source_laboratory_id": lab_pk})
+
+        if serializer.is_valid():
+            search_list = {
+                'labroom': self.get_labroom(serializer.validated_data.get('labroom', [])),
+                'furniture': self.get_furniture(serializer.validated_data.get('furniture', [])),
+                'shelf': self.get_shelf(serializer.validated_data.get('shelf', [])),
+                'shelfobject': self.get_shelfobject(serializer.validated_data.get('shelfobject', []))
+            }
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({'search_list': search_list}, status=status.HTTP_200_OK)
