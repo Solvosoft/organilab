@@ -7,8 +7,6 @@ Created on 26/12/2016
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Value
-from django.db.models.functions import Chr, Concat
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -19,19 +17,23 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
 from laboratory.forms import LaboratoryRoomForm, FurnitureCreateForm, RoomCreateForm
-from laboratory.models import LaboratoryRoom, Laboratory, Furniture, Shelf, ShelfObject
+from laboratory.models import LaboratoryRoom, Laboratory
 from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from ..shelfobject.forms import TransferOutShelfObjectForm, \
-    MoveShelfObjectForm, ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, ShelfObjectMaterialForm, \
-    ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm, \
-    DecreaseShelfObjectForm, IncreaseShelfObjectForm
+    MoveShelfObjectForm, ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, \
+    ShelfObjectMaterialForm, \
+    ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, \
+    ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm, \
+    DecreaseShelfObjectForm, IncreaseShelfObjectForm, \
+    TransferInShelfObjectApproveWithContainerForm
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
 
-@method_decorator(permission_required('laboratory.view_laboratoryroom'), name='dispatch')
+@method_decorator(permission_required('laboratory.view_laboratoryroom'),
+                  name='dispatch')
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
 
@@ -82,7 +84,8 @@ class LaboratoryRoomsList(ListView):
         result = {}
 
         if any([i in kwargs for i in ['labroom', 'furniture', 'shelf', 'shelfobject']]):
-            serializer = SearchShelfObjectSerializer(data=kwargs, context={'source_laboratory_id': self.lab})
+            serializer = SearchShelfObjectSerializer(data=kwargs, context={
+                'source_laboratory_id': self.lab})
 
             if serializer.is_valid():
                 self.get_labroom_data(serializer, result)
@@ -102,7 +105,9 @@ class LaboratoryRoomsList(ListView):
 
         MODEL = contenttype.model_class()
         queryset = MODEL.objects.filter(**filters).values('pk', value)
-        whitelist = [{'pk': x['pk'], 'value': "%d: %s" %(x['pk'], x[value]), 'objtype': model} for x in queryset]
+        whitelist = [
+            {'pk': x['pk'], 'value': "%d: %s" % (x['pk'], x[value]), 'objtype': model}
+            for x in queryset]
 
         if whitelist:
             suggestions_tag = suggestions_tag + whitelist
@@ -110,31 +115,43 @@ class LaboratoryRoomsList(ListView):
 
     def get_suggestions_tag(self):
 
-        suggestions_tag = self.get_whitelist_by_object('laboratoryroom', {'laboratory': self.lab})
-        suggestions_tag += self.get_whitelist_by_object('furniture', {'labroom__laboratory': self.lab})
-        suggestions_tag += self.get_whitelist_by_object('shelf', {'furniture__labroom__laboratory': self.lab})
+        suggestions_tag = self.get_whitelist_by_object('laboratoryroom',
+                                                       {'laboratory': self.lab})
+        suggestions_tag += self.get_whitelist_by_object('furniture', {
+            'labroom__laboratory': self.lab})
+        suggestions_tag += self.get_whitelist_by_object('shelf', {
+            'furniture__labroom__laboratory': self.lab})
         suggestions_tag += self.get_whitelist_by_object('shelfobject',
-                                                       {'in_where_laboratory': self.lab, 'containershelfobject': None},
-                                                       value='object__name')
+                                                        {
+                                                            'in_where_laboratory': self.lab,
+                                                            'containershelfobject': None},
+                                                        value='object__name')
         return suggestions_tag
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reserve_object_form'] = ReserveShelfObjectForm(prefix="reserve")
-        context['tranfer_out_object_form'] = TransferOutShelfObjectForm(users=self.request.user, lab_send=self.lab,
-                                                                        org=self.org)
+        context['transfer_out_object_form'] = TransferOutShelfObjectForm(
+            users=self.request.user, lab_send=self.lab, org=self.org)
         context['increase_object_form'] = IncreaseShelfObjectForm(prefix="increase")
         context['decrease_object_form'] = DecreaseShelfObjectForm(prefix="decrease")
         context['move_object_form'] = MoveShelfObjectForm(prefix="move")
-        context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype": 2}, org_pk=self.org, prefix='ef')
-        context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(initial={"objecttype": 2}, org_pk=self.org,
-                                                                         prefix='erf')
-        context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype": 0}, org_pk=self.org, prefix="rf")
-        context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(initial={"objecttype": 0}, org_pk=self.org,
-                                                                        prefix="rff")
-        context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype": 1}, org_pk=self.org, prefix="mf")
-        context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(initial={"objecttype": 1}, org_pk=self.org,
-                                                                        prefix="mff")
+        context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype": 2},
+                                                            org_pk=self.org,
+                                                            prefix='ef')
+        context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(
+            initial={"objecttype": 2}, org_pk=self.org, prefix='erf')
+        context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype": 0},
+                                                           org_pk=self.org, prefix="rf")
+        context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(
+            initial={"objecttype": 0}, org_pk=self.org, prefix="rff")
+        context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype": 1},
+                                                           org_pk=self.org, prefix="mf")
+        context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(
+            initial={"objecttype": 1}, org_pk=self.org, prefix="mff")
+        context[
+            'transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(
+            laboratory_id=self.lab)
         context['options'] = ['Reservation', 'Add', 'Transfer', 'Substract']
         context['user'] = self.request.user
         context['search_by_url'] = self.search_by_url(self.request.GET)
@@ -159,7 +176,8 @@ class LabroomCreate(CreateView):
     def generate_qr(self):
         schema = self.request.scheme + "://"
         domain = schema + self.request.get_host()
-        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = domain + reverse('laboratory:rooms_list',
+                               kwargs={"org_pk": self.org, "lab_pk": self.lab})
         url = url + "#labroom=%d" % self.object.pk
         build_qr_instance(url, self.object, self.org)
 
@@ -171,7 +189,8 @@ class LabroomCreate(CreateView):
         self.object.save()
         self.generate_qr()
 
-        organilab_logentry(self.request.user, self.object, ADDITION, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, self.object, ADDITION,
+                           changed_data=form.changed_data,
                            relobj=self.lab)
 
         return super(LabroomCreate, self).form_valid(form)
@@ -180,7 +199,8 @@ class LabroomCreate(CreateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
 
 
-@method_decorator(permission_required('laboratory.change_laboratoryroom'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_laboratoryroom'),
+                  name='dispatch')
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
     form_class = RoomCreateForm
@@ -206,7 +226,8 @@ class LabroomUpdate(UpdateView):
         self.object = form.save(commit=False)
         self.object.laboratory = get_object_or_404(Laboratory, pk=self.lab)
         self.object.save()
-        organilab_logentry(self.request.user, self.object, CHANGE, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, self.object, CHANGE,
+                           changed_data=form.changed_data,
                            relobj=self.lab)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -214,13 +235,15 @@ class LabroomUpdate(UpdateView):
         return super().form_invalid(form)
 
 
-@method_decorator(permission_required('laboratory.delete_laboratoryroom'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_laboratoryroom'),
+                  name='dispatch')
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
     success_url = "/"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:rooms_create', args=(self.org, self.kwargs.get('lab_pk')))
+        return reverse_lazy('laboratory:rooms_create',
+                            args=(self.org, self.kwargs.get('lab_pk')))
 
     def get(self, *args, **kwargs):
         return super().get(*args, **kwargs)
@@ -278,7 +301,8 @@ def rebuild_laboratory_qr(request, org_pk, lab_pk):
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     schema = request.scheme + "://"
     domain = schema + request.get_host()
-    baseurl = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
+    baseurl = domain + reverse('laboratory:rooms_list',
+                               kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
 
     for labroom in lab.laboratoryroom_set.all():
         labroom_url = "#labroom=%d" % labroom.pk
@@ -288,6 +312,8 @@ def rebuild_laboratory_qr(request, org_pk, lab_pk):
             update_qr_instance(baseurl + labroom_url + furnitureurl, furniture, org_pk)
             for shelf in furniture.shelf_set.all():
                 shelfurl = "&shelf=%d" % shelf.pk
-                update_qr_instance(baseurl + labroom_url + furnitureurl + shelfurl, shelf, org_pk)
+                update_qr_instance(baseurl + labroom_url + furnitureurl + shelfurl,
+                                   shelf, org_pk)
 
-    return redirect(reverse('laboratory:rooms_create', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
+    return redirect(
+        reverse('laboratory:rooms_create', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
