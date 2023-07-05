@@ -1,4 +1,4 @@
-{% load laboratory %}
+{% load laboratory i18n %}
 
 <div class="container" ><div class="row shelfrow">
 
@@ -10,10 +10,12 @@
                  {% for item in row %}
                     <div class="input-group" >
                     <div class="input-group-text" style="background-color: {{item.color}}">
-                        <input type="radio" name="shelfselected" id="shelf_{{item.pk}}" class="form-check-input  shelf"  data-refuse="{{item.discard}}"  value="{{item.pk}}">
+                        <input type="radio" name="shelfselected" id="shelf_{{item.pk}}" class="form-check-input shelf hideshelves"  data-refuse="{{item.discard}}"  value="{{item.pk}}">
                     </div>
                     <div class="card">
-                        <div class="card-body">{{item.pk}}: {{item.name}}<br>
+                        <div class="card-body">
+                        <div class="representation_obj shelf_color" title="{% trans 'Shelf' %}"></div>
+                        {{item.pk}}: {{item.name}}<br>
                           {{item.description|safe}}
                         </div>
                         <div class="card-footer">
