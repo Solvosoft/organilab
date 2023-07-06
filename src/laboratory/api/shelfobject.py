@@ -21,7 +21,7 @@ from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
-from laboratory.models import Catalog, ShelfObjectObservation
+from laboratory.models import Catalog, ShelfObjectObservation, Object
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import REQUESTED
 from laboratory.qr_utils import get_or_create_qr_shelf_object
@@ -30,7 +30,7 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
     ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
     MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, TransferInApproveSerializer
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, TransferInApproveWithContainerSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_shelfobject_partial_quantity_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation
 from laboratory.utils import organilab_logentry
@@ -552,6 +552,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
         """
         Returns the transfers that have the provided laboratory saved as laboratory_received, this for the ones that have not been approved yet.
+        :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
         :param kwargs: other extra params
@@ -577,6 +578,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_in_deny(self, request, org_pk, lab_pk, **kwargs):
         """
         Denies a transfer in, which means it will be deleted from database and the change added to the log
+        :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
         :param kwargs: other extra params
@@ -594,26 +596,31 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def transfer_in_approve(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marta
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Approves a transfer in, which means it will be moved/added to the new laboratory and decrement it from the source laboratory
+        :param request: http request
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or error info) 
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_approve")
-        self.serializer_class = TransferInApproveSerializer
+        transfer_obj = get_object_or_404(TranferObject, pk=request.data.get('transfer_object'))
+        self.serializer_class = TransferInApproveWithContainerSerializer if transfer_obj.object.object.type == Object.REACTIVE else TransferInSerializer
         serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk, "organization_id": org_pk})
-        errors = []
-        
+        errors = {}
         if serializer.is_valid():
-            pass
+            transfer_object = serializer.validated_data['transfer_object']
+            if transfer_object.quantity <= transfer_object.object.quantity:
+                pass
+            else:
+                return JsonResponse({"detail": _("This transfer cannot be accepted since the transfer quantity is bigger " \
+                                                 "than the quantity available in the object.")}, status=status.HTTP_400_BAD_REQUEST)
         else:
            errors = serializer.errors 
         
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-        
+                    
         return JsonResponse({"detail": _("The transfer in was approved successfully.")}, status=status.HTTP_200_OK)
         
 
@@ -779,7 +786,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "shelf_availability_information")
         self.serializer_class = ValidateShelfSerializer
-        serializer = self.serializer_class(data=request.query_params, context={"source_laboratory_id": self.laboratory.pk})
+        serializer = self.serializer_class(data=request.query_params, context={"laboratory_id": self.laboratory.pk})
         errors, data = {}, {}
 
         if serializer.is_valid():
