@@ -3,7 +3,7 @@ from django.contrib import admin
 from sga.models import TemplateSGA, DisplayLabel, SecurityLeaf, SGAComplement, ReviewSubstance
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, PrudenceAdvice, \
-    RecipientSize, SubstanceSGA, SustanceCharacteristicsSGA, ComponentSGA
+    RecipientSize
 
 
 class AdminDangerIndication(admin.ModelAdmin):
@@ -43,6 +43,3 @@ admin.site.register(DisplayLabel)
 admin.site.register(SecurityLeaf)
 admin.site.register(SGAComplement)
 admin.site.register(ReviewSubstance)
-admin.site.register(SubstanceSGA)
-admin.site.register(SustanceCharacteristicsSGA)
-admin.site.register(ComponentSGA)

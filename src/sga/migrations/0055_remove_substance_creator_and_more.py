@@ -2,7 +2,15 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
+import logging
+logger = logging.getLogger("django")
 
+# def migrate_to_creator_model(apps, schema_editor):
+#     Substance = apps.get_model('sga', 'Substance')
+#
+#     for data in Substance.objects.all().values('pk', 'creator'):
+#         Substance.objects.filter(pk=data['pk']).update(created_by=data['creator'])
+#         logger.info("Substance Creator %(pk)s = %(creator)s"%data)
 
 class Migration(migrations.Migration):
 
@@ -11,10 +19,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='substance',
-            name='creator',
-        ),
+       # migrations.RunPython(migrate_to_creator_model),
         migrations.AlterField(
             model_name='personaltemplatesga',
             name='label',
