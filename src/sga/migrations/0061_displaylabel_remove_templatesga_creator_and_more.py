@@ -14,63 +14,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='DisplayLabel',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_date', models.DateTimeField(auto_now_add=True)),
-                ('last_update', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=150, verbose_name='Name')),
-                ('json_representation', models.TextField()),
-                ('preview', models.TextField(help_text='B64 preview image', null=True)),
-                ('label_in_png', models.TextField(help_text='B64 image using the recipient size', null=True)),
-                ('barcode', models.CharField(blank=True, max_length=150, null=True, verbose_name='Barcode')),
-                ('logo', models.FileField(blank=True, null=True, upload_to='sga/logo/', verbose_name='Logo')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('label', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sga.label', verbose_name='Label')),
-                ('organization', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.organizationstructure')),
-                ('recipient_size', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='sga.recipientsize', verbose_name='Recipient size')),
-            ],
-            options={
-                'verbose_name': 'Personal Template SGA',
-                'verbose_name_plural': 'Personal Templates SGA',
-            },
+        migrations.RenameModel(
+            old_name='PersonalTemplateSGA',
+            new_name='DisplayLabel',
         ),
-        migrations.RemoveField(
-            model_name='templatesga',
-            name='creator',
-        ),
-        migrations.AddField(
-            model_name='templatesga',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='templatesga',
-            name='creation_date',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.AddField(
-            model_name='templatesga',
-            name='last_update',
-            field=models.DateTimeField(auto_now=True),
-        ),
-        migrations.AddField(
-            model_name='templatesga',
-            name='organization',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.organizationstructure'),
-        ),
-        migrations.AlterField(
-            model_name='builderinformation',
-            name='creation_date',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
-        migrations.DeleteModel(
-            name='PersonalTemplateSGA',
-        ),
-        migrations.AddField(
-            model_name='displaylabel',
-            name='template',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='sga.templatesga', verbose_name='Template SGA'),
-        ),
+
     ]
