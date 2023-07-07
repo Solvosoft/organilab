@@ -116,7 +116,8 @@ document.urls = {
     shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
     transfer_list: '{% url "laboratory:api-shelfobject-transfer-available-list" org_pk=org_pk lab_pk=laboratory %}',
     transfer_in_deny: '{% url "laboratory:api-shelfobject-transfer-in-deny" org_pk=org_pk lab_pk=laboratory%}',
-    search_labview: '{% url "laboratory:api-search-labview-get" org_pk=org_pk lab_pk=laboratory %}'
+    search_labview: '{% url "laboratory:api-search-labview-get" org_pk=org_pk lab_pk=laboratory %}',
+    transfer_in_approve: '{% url "laboratory:api-shelfobject-transfer-in-approve" org_pk=org_pk lab_pk=laboratory%}'
 }
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';

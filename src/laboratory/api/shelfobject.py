@@ -1,5 +1,3 @@
-import json
-
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.http import JsonResponse, Http404
@@ -16,6 +14,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
     organization_can_change_laboratory
 from laboratory import utils
@@ -23,10 +22,8 @@ from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, \
     CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
-from laboratory.models import Catalog, ShelfObjectObservation, LaboratoryRoom, Furniture, Shelf, Object
-from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
-from laboratory.models import Catalog, ShelfObjectObservation, LaboratoryRoom, \
-    Furniture, Shelf
+from laboratory.models import Catalog, ShelfObjectObservation, Furniture, Shelf
+from laboratory.models import Object
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, \
     TranferObject
 from laboratory.models import REQUESTED
@@ -41,9 +38,10 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     TransferInSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, \
     ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, ShelfObjectPk, \
-    SearchShelfObjectSerializerMany, TransferInApproveSerializer
-
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, \
+    TransferInApproveWithContainerSerializer
+from laboratory.shelfobject.serializers import ShelfObjectPk, \
+    SearchShelfObjectSerializerMany
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
     save_shelfobject_limits_from_serializer, \
@@ -64,7 +62,6 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering_fields = ['object__name', 'object__type', 'quantity',
                        'measurement_unit__description', 'container__object__name']
     ordering = ('-last_update',)  # default order
-
 
     def get_queryset(self):
         if not self.data['shelf']:
@@ -355,7 +352,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
     }
-
 
     # This is not an API endpoint
     def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
@@ -664,6 +660,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
         """
         Returns the transfers that have the provided laboratory saved as laboratory_received, this for the ones that have not been approved yet.
+        :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
         :param kwargs: other extra params
@@ -695,6 +692,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_in_deny(self, request, org_pk, lab_pk, **kwargs):
         """
         Denies a transfer in, which means it will be deleted from database and the change added to the log
+        :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
         :param kwargs: other extra params
@@ -716,26 +714,33 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def transfer_in_approve(self, request, org_pk, lab_pk, **kwargs):
         """
-        Marta
-        :param request:
-        :param org_pk:
-        :param lab_pk:
-        :param kwargs:
-        :return:
+        Approves a transfer in, which means it will be moved/added to the new laboratory and decrement it from the source laboratory
+        :param request: http request
+        :param org_pk: pk of the organization being queried
+        :param lab_pk: pk of the laboratory that can receive the transfer in
+        :param kwargs: other extra params
+        :return: JsonResponse with result information (success or error info)
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk,
                                              "transfer_in_approve")
-        self.serializer_class = TransferInApproveSerializer
+        transfer_obj = get_object_or_404(TranferObject,
+                                         pk=request.data.get('transfer_object'))
+        self.serializer_class = TransferInApproveWithContainerSerializer if transfer_obj.object.object.type == Object.REACTIVE else TransferInSerializer
         serializer = self.get_serializer(data=request.data,
                                          context={"laboratory_id": lab_pk,
                                                   "organization_id": org_pk})
-        errors = []
-
+        errors = {}
         if serializer.is_valid():
-            pass
+            transfer_object = serializer.validated_data['transfer_object']
+            if transfer_object.quantity <= transfer_object.object.quantity:
+                pass
+            else:
+                return JsonResponse({"detail": _(
+                    "This transfer cannot be accepted since the transfer quantity is bigger " \
+                    "than the quantity available in the object.")},
+                                    status=status.HTTP_400_BAD_REQUEST)
         else:
             errors = serializer.errors
-
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -849,7 +854,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                       'pre_status': pre_status,
                                                       'description': shelfobject.status.description
                                                   },
-                                                  description=serializer.validated_data['description'],
+                                                  description=serializer.validated_data[
+                                                      'description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
             organilab_logentry(
@@ -919,7 +925,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                              "shelf_availability_information")
         self.serializer_class = ValidateShelfSerializer
         serializer = self.serializer_class(data=request.query_params, context={
-            "source_laboratory_id": self.laboratory.pk})
+            "laboratory_id": self.laboratory.pk})
         errors, data = {}, {}
 
         if serializer.is_valid():
@@ -932,7 +938,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_200_OK)
-
 
     @action(detail=False, methods=['post'])
     def create_status(self, request, org_pk, lab_pk, **kwargs):
@@ -988,7 +993,8 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if furniture:
             furniture = self.get_pk_list(furniture)
-            furniture_list = Furniture.objects.filter(pk__in=furniture).using(settings.READONLY_DATABASE)
+            furniture_list = Furniture.objects.filter(pk__in=furniture).using(
+                settings.READONLY_DATABASE)
 
             if furniture_list:
                 result = {
@@ -1002,7 +1008,8 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if shelf:
             shelf = self.get_pk_list(shelf)
-            shelf_list = Shelf.objects.filter(pk__in=shelf).using(settings.READONLY_DATABASE)
+            shelf_list = Shelf.objects.filter(pk__in=shelf).using(
+                settings.READONLY_DATABASE)
 
             if shelf_list:
                 result = {
@@ -1018,7 +1025,8 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if shelfobject:
             shelfobject = self.get_pk_list(shelfobject)
-            shelfobject_list = ShelfObject.objects.filter(pk__in=shelfobject).using(settings.READONLY_DATABASE)
+            shelfobject_list = ShelfObject.objects.filter(pk__in=shelfobject).using(
+                settings.READONLY_DATABASE)
 
             if shelfobject_list:
                 result = {
@@ -1037,17 +1045,24 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if object_param:
             object_param_name = [obj.name for obj in object_param]
-            object_list = Object.objects.filter(name__in=object_param_name).using(settings.READONLY_DATABASE)
-            shelf = Shelf.objects.filter(shelfobject__object__in=object_list).using(settings.READONLY_DATABASE)
-            shelf_pk_list = list(shelf.values_list('pk', flat=True).using(settings.READONLY_DATABASE))
+            object_list = Object.objects.filter(name__in=object_param_name).using(
+                settings.READONLY_DATABASE)
+            shelf = Shelf.objects.filter(shelfobject__object__in=object_list).using(
+                settings.READONLY_DATABASE)
+            shelf_pk_list = list(
+                shelf.values_list('pk', flat=True).using(settings.READONLY_DATABASE))
             shelf_pk_list.reverse()
             object_param_name.reverse()
             result = {
                 'object': object_param_name,
                 'shelf': {
                     'shelf': shelf_pk_list,
-                    'furniture': list(shelf.values_list('furniture__pk', flat=True).distinct().using(settings.READONLY_DATABASE)),
-                    'labroom': list(shelf.values_list('furniture__labroom', flat=True).distinct().using(settings.READONLY_DATABASE))
+                    'furniture': list(
+                        shelf.values_list('furniture__pk', flat=True).distinct().using(
+                            settings.READONLY_DATABASE)),
+                    'labroom': list(shelf.values_list('furniture__labroom',
+                                                      flat=True).distinct().using(
+                        settings.READONLY_DATABASE))
                 }
             }
         return result
@@ -1070,8 +1085,10 @@ class SearchLabView(viewsets.GenericViewSet):
                 'furniture': self.get_furniture(
                     serializer.validated_data.get('furniture', [])),
                 'shelf': self.get_shelf(serializer.validated_data.get('shelf', [])),
-                'shelfobject': self.get_shelfobject(serializer.validated_data.get('shelfobject', [])),
-                'object': self.get_object_param(serializer.validated_data.get('object', []))
+                'shelfobject': self.get_shelfobject(
+                    serializer.validated_data.get('shelfobject', [])),
+                'object': self.get_object_param(
+                    serializer.validated_data.get('object', []))
             }
         else:
             errors = serializer.errors
