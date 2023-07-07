@@ -1,14 +1,13 @@
-var objecttype= ""
+var objecttype= "";
 document.shelf_discard = undefined;
-document.prefix=""
+document.prefix="";
 
 function shelf_action_modals(modalid){
     var label_a = document.createElement("a");
-    label_a.setAttribute("data-modalid", modalid)
-    show_me_modal(label_a,null)
+    label_a.setAttribute("data-modalid", modalid);
+    show_me_modal(label_a, null);
     form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
-    show_hide_limits($(`${document.prefix}without_limit`),document.prefix)
-
+    show_hide_limits($(`${document.prefix}without_limit`), document.prefix);
     return false;
 }
 const tableObject={
@@ -312,7 +311,7 @@ $(document).ready(function(){
             labviewSearch.select_objs(document.search_by_url);
         }
     });
-
+});
 
 var inputElm = document.querySelector('input[name=tags-search]');
 
@@ -442,7 +441,6 @@ const labviewSearch={
         if(!hide_related_shelf){
             $(".hideshelves").parents('.col').hide();
         }
-
     },
     select_labroom: function(labroom_list){
         labviewSearch.check_objs(labroom_list, "labroom");

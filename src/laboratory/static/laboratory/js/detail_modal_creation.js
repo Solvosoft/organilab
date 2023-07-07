@@ -123,7 +123,6 @@ I: data (JSON), inst(Instance of HTML to append to)
 O: None
 */
 function append_data_lists(data, data_lists, inst, nested_key){
-    console.log(data_lists)
     titles = Object.keys(data_lists)
     titles.forEach( (title) => {
         if (data[title].length > 0){

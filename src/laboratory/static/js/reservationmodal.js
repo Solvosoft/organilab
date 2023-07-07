@@ -7,29 +7,29 @@ var discard
 const refuse_select_options= [
                {
                  'value':2,
-                  'text': select_options_trans['add']
+                  'text': gettext('Add')
                 },
                 {
                   'value':3,
-                  'text': select_options_trans['transfer']
+                  'text': gettext('Transfer')
                  }
                 ]
 const normal_select_options= [
             {
                'value':1,
-               'text': select_options_trans['reserved']
+               'text': gettext('Reservation')
             },
             {
                'value':2,
-               'text': select_options_trans['add']
+               'text': gettext('Add')
             },
             {
                'value':3,
-               'text': select_options_trans['transfer']
+               'text': gettext('Transfer')
             },
             {
                'value':4,
-               'text': select_options_trans['substract']
+               'text': gettext('Substract')
             }
         ]
 
@@ -53,7 +53,7 @@ function initialize_reservation_modal(element,shelf_obj_pk,object_pk, user_pk,un
     set_select()
     }
 
-/* Function that appends an input field to the form 
+/* Function that appends an input field to the form
 before serializing it. In this case the shelf_object field and the user's id.
 */
 function get_form_data(form) {
