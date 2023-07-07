@@ -17,6 +17,7 @@ Contents:
    pdf_generation
    api_inform
    my_procedure
+   search_lab_view
 
 
 Indices and tables
