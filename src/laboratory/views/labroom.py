@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -96,7 +97,17 @@ class LaboratoryRoomsList(ListView):
                 raise Http404()
         return result
 
-    def get_whitelist_by_object(self, model, filters, value='name'):
+    def get_obj_colors(self):
+        return {
+            'labroom': '#b8e4ff',
+            'furniture': '#ff85d5',
+            'shelf': '#ffe180',
+            'shelfobject': '#95fab9',
+            'object': '#f4fab4',
+        }
+
+
+    def get_whitelist_by_object(self, model, filters, color, value='name'):
         suggestions_tag = []
         contenttype = ContentType.objects.filter(
             app_label='laboratory',
@@ -104,7 +115,7 @@ class LaboratoryRoomsList(ListView):
         ).first()
 
         MODEL = contenttype.model_class()
-        queryset = MODEL.objects.filter(**filters).values('pk', value)
+        queryset = MODEL.objects.filter(**filters).values('pk', value).distinct()
         whitelist = [
             {'pk': x['pk'], 'value': "%d: %s" % (x['pk'], x[value]), 'objtype': model}
             for x in queryset]
@@ -114,18 +125,17 @@ class LaboratoryRoomsList(ListView):
         return suggestions_tag
 
     def get_suggestions_tag(self):
-
-        suggestions_tag = self.get_whitelist_by_object('laboratoryroom',
-                                                       {'laboratory': self.lab})
-        suggestions_tag += self.get_whitelist_by_object('furniture', {
-            'labroom__laboratory': self.lab})
-        suggestions_tag += self.get_whitelist_by_object('shelf', {
-            'furniture__labroom__laboratory': self.lab})
+        color_by_obj = self.get_obj_colors()
+        suggestions_tag = self.get_whitelist_by_object('laboratoryroom', {'laboratory': self.lab}, color_by_obj['labroom'])
+        suggestions_tag += self.get_whitelist_by_object('furniture', {'labroom__laboratory': self.lab}, color_by_obj['furniture'])
+        suggestions_tag += self.get_whitelist_by_object('shelf', {'furniture__labroom__laboratory': self.lab}, color_by_obj['shelf'])
         suggestions_tag += self.get_whitelist_by_object('shelfobject',
-                                                        {
-                                                            'in_where_laboratory': self.lab,
-                                                            'containershelfobject': None},
-                                                        value='object__name')
+                                                        {'in_where_laboratory': self.lab, 'containershelfobject': None},
+                                                        color_by_obj['shelfobject'], value='object__name')
+        suggestions_tag += self.get_whitelist_by_object('object',
+                                                        {'shelfobject__in_where_laboratory': self.lab,
+                                                         'shelfobject__containershelfobject': None}, color_by_obj['object'],
+                                                        value='name')
         return suggestions_tag
 
     def get_context_data(self, **kwargs):
@@ -156,6 +166,8 @@ class LaboratoryRoomsList(ListView):
         context['user'] = self.request.user
         context['search_by_url'] = self.search_by_url(self.request.GET)
         context['suggestions_tag'] = self.get_suggestions_tag()
+        context['colors_tooltip'] = render_to_string('laboratory/shelfobject/colors_tooltip.html',
+                                                      request=self.request)
         return context
 
 

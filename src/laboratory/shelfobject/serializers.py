@@ -3,6 +3,7 @@ import logging
 import re
 from django.conf import settings
 from django.forms import model_to_dict
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -770,6 +771,9 @@ class SearchShelfObjectSerializerMany(serializers.Serializer):
         queryset=ShelfObject.objects.filter(containershelfobject=None).using(settings.READONLY_DATABASE),
         allow_null=True, allow_empty=True, required=False, many=True)
 
+    object = serializers.PrimaryKeyRelatedField(
+        queryset=Object.objects.using(settings.READONLY_DATABASE), allow_null=True, allow_empty=True, required=False, many=True)
+
     def validate_laboratory(self, lab_pk, obj_name):
         source_laboratory_id = self.context.get("source_laboratory_id")
         if lab_pk != source_laboratory_id:
@@ -793,13 +797,22 @@ class SearchShelfObjectSerializerMany(serializers.Serializer):
     def validate_shelfobject_data(self, data):
         if 'shelfobject' in data:
             for shelfobject in data['shelfobject']:
-                self.validate_laboratory(shelfobject.in_where_laboratory_id, "Object")
+                self.validate_laboratory(shelfobject.in_where_laboratory_id, "ShelfObject")
+
+    def validate_object_data(self, data):
+        if 'object' in data:
+            for object in data['object']:
+                lab_pk = self.context.get("source_laboratory_id")
+                shelf_object = ShelfObject.objects.filter(object=object, in_where_laboratory=lab_pk)
+                if not shelf_object.exists():
+                    raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
 
     def validate(self, data):
         self.validate_labroom_data(data)
         self.validate_furniture_data(data)
         self.validate_shelf_data(data)
         self.validate_shelfobject_data(data)
+        self.validate_object_data(data)
         return data
 
 class TransferInApproveSerializer(TransferInSerializer, ContainerSerializer):

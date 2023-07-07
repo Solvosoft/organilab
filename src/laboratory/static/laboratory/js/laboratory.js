@@ -297,6 +297,28 @@ var inputElm = document.querySelector('input[name=tags-search]');
 
 
 const tagify = new Tagify(inputElm, {
+    templates : {
+        tag : function(tagData){
+            try{
+                return `<tag title='${tagData.value}' objtype='${tagData.objtype}' pk='${tagData.pk}' style='--tag-bg: ${tagData.color}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>
+                            <span class='tagify__tag-text fs-6'>${tagData.value}</span>
+                        </div>
+                    </tag>`
+            }
+            catch(err){}
+        },
+        dropdownItem : function(tagData){
+            try{
+                return `<div ${this.getAttributes(tagData)} class='tagify__dropdown__item ${tagData.class ? tagData.class : ""}' >
+
+                            <span class='fs-6' style='background-color: ${tagData.color}; color: black;'>${tagData.value}</span>
+                        </div>`
+            }
+            catch(err){ console.error(err)}
+        }
+    },
     enforceWhitelist: true,
     whitelist: document.suggestions_tag,
     placeholder: gettext("Search")
@@ -381,18 +403,27 @@ const labviewSearch={
 
         });
     },
-    check_radios: function(shelf_list, obj_list, key){
+    check_radios: function(shelf_list, obj_list, key, hide_related_shelf=true){
         obj_list.forEach(function(value) {
             var radio_obj = "#"+key+"_"+value;
 
             if($(radio_obj).length){
                 labviewSearch.show_deselected_previous_shelfs(shelf_list, key, value);
-                $(radio_obj).parents('.shelfrow').children().hide();
+                if(hide_related_shelf){
+                    $(radio_obj).parents('.shelfrow').children().hide();
+                }else{
+                    $(radio_obj).removeClass('hideshelves');
+                }
                 $(radio_obj).parents('.col').show();
                 $(radio_obj).iCheck('check');
                 $(radio_obj).change();
             }
         });
+
+        if(!hide_related_shelf){
+            $(".hideshelves").parents('.col').hide();
+        }
+
     },
     select_labroom: function(labroom_list){
         labviewSearch.check_objs(labroom_list, "labroom");
@@ -405,15 +436,14 @@ const labviewSearch={
             labviewSearch.select_labroom(furniture_list['labroom']);
         }
     },
-    select_shelf: function(shelf_list){
-
+    select_shelf: function(shelf_list, hide_related_shelf=true){
         if(shelf_list.hasOwnProperty('shelf')){
             labviewSearch.select_furniture(shelf_list['shelf']);
 
             if(shelf_list['shelf'].hasOwnProperty('shelf')){
-                labviewSearch.check_radios(shelf_list, shelf_list['shelf']['shelf'], "shelf");
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf']['shelf'], "shelf", hide_related_shelf=hide_related_shelf);
             }else{
-                labviewSearch.check_radios(shelf_list, shelf_list['shelf'], "shelf");
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf'], "shelf", hide_related_shelf=hide_related_shelf);
             }
         }
     },
@@ -427,12 +457,30 @@ const labviewSearch={
             table_filter_input.keyup();
         }
     },
+    select_object: function(object_list){
+        labviewSearch.select_shelf(object_list, hide_related_shelf=false);
+        var table_filter_input = $('div#shelfobjecttable_filter input[type="search"]');
+        if(table_filter_input.length){
+            table_filter_input.val(object_list['object'][0]);
+            table_filter_input.focus();
+            table_filter_input.keyup();
+        }
+
+        if(object_list.hasOwnProperty('shelf')){
+            if(object_list['shelf'].hasOwnProperty('shelf')){
+                var shelf_result = object_list['shelf']['shelf'].length;
+               $("#alert_msg").html("<b>"+gettext("Showing first result from ")+ shelf_result +gettext(" matched shelves")+"</b>");
+               $("div.alert").addClass('show');
+            }
+        }
+    },
     restart_objs: function(){
         $('input[name="shelfselected"]').iCheck('uncheck').change();
         $("span.check-box").click();
         $('div#shelfobjecttable_filter input[type="search"]').val('').keyup();
         $("span.box").parent().show();
         $('input[type="radio"]').parents('.shelfrow').children().show();
+        $("div.alert").removeClass('show');
     },
     select_objs: function(search_list){
         labviewSearch.restart_objs();
@@ -450,7 +498,9 @@ const labviewSearch={
             if('shelfobject' in search_list && Object.keys(search_list['shelfobject']).length){
                 labviewSearch.select_shelfobject(search_list['shelfobject']);
             }
-
+            if('object' in search_list && Object.keys(search_list['object']).length){
+                labviewSearch.select_object(search_list['object']);
+            }
         }
     },
     search: function(q){
@@ -483,6 +533,11 @@ const labviewSearch={
         });
     }
 }
+
+$("#hide_alert").on('click', function(){
+    $("#alert_msg").html("");
+    $("div.alert").removeClass("show");
+});
 
 function show_hide_container_selects(selected_value){
     // they are hidden for the other options, so hide them by default and just display one if required
