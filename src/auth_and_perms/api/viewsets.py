@@ -196,7 +196,7 @@ class UserLaboratoryOrganization(mixins.ListModelMixin,
         return profiles.filter(
             profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
             profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
-            profilepermission__object_id=self.contenttypeobj.pk)
+            profilepermission__object_id=self.contenttypeobj.pk) # Is laboratory
 
     def list(self, request, *args, **kwargs):
         form = LaboratoryAndOrganizationForm(request.GET)

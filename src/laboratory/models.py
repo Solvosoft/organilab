@@ -507,9 +507,9 @@ class OrganizationStructureManager(models.Manager):
             users=user)
         if org_pk:
             organizations = OrganizationStructure.objects.filter(pk=org_pk).filter(
-                qparams)
+                qparams).distinct()
         else:
-            organizations = OrganizationStructure.objects.filter(qparams)
+            organizations = OrganizationStructure.objects.filter(qparams).distinct()
 
         pks = []
         for org in organizations:
@@ -576,7 +576,7 @@ class OrganizationStructureManager(models.Manager):
                                                  model='laboratory').first()
 
         orgs = self.filter_user(user, descendants=True, include_self=True,
-                                ancestors=True, org_pk=org_pk)
+                                ancestors=False, org_pk=org_pk)
         labs_related = set(OrganizationStructureRelations.objects.filter(
             organization__in=orgs,
             content_type=contenttype,
