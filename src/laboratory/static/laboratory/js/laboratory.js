@@ -114,7 +114,7 @@ function transferInObjectDeny(btn) {
                 fetch(document.urls.transfer_in_deny, {
                     method: "delete",
                     headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
-                    body: JSON.stringify({'transfer_object': transfer_data.id})})
+                    body: JSON.stringify({'transfer_object': transfer_data.id, 'shelf': tableObject.get_active_shelf()})})
                     .then(response => {
                         if(response.ok){ return response.json(); }
                         return Promise.reject(response);  // then it will go to the catch if it is an error code
@@ -151,18 +151,40 @@ function transferInObjectApprove(btn, event){
     let transferListDataTable = $('#transfer-list-datatable').DataTable()
     let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
     if(transfer_data.object.type === 'Reactive'){
-        show_hide_container_selects('none');
-        $("#id_transfer_object").val(transfer_data.id);
+        show_hide_container_selects("#transfer_in_approve_with_container_form", 'none');
+        $("#transfer_in_approve_with_container_form #id_transfer_object").val(transfer_data.id);
+        $("#transfer_in_approve_with_container_form #id_shelf").val(tableObject.get_active_shelf());
         $("#transfer-list-modal").modal('hide');
         show_me_modal(btn, event);
         form_modals[$(btn).data('modalid')].success = function(instance, data){
             $("#transfer-list-modal").modal('show');
         }
+        form_modals[$(btn).data('modalid')].hidemodal = function(){
+            this.instance.modal('hide');
+            $("#transfer-list-modal").modal('show');
+        }
     }else{
-
+        $.ajax({
+            type: "POST",
+            headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+            url: document.urls.transfer_in_approve,
+            data: JSON.stringify({'transfer_object': transfer_data.id, 'shelf': tableObject.get_active_shelf()}),
+            success: function(data){
+                Swal.fire({ title: gettext('Success'), text: data['detail'], icon: 'success', timer: 1500 });
+                transferListDataTable.ajax.reload();
+            },
+            error: function(data){
+                let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                if(data.responseJSON.errors && data.responseJSON.errors.transfer_object){
+                    error_msg = data.responseJSON.errors.transfer_object[0];  // specific api validation errors
+                }else if(data.responseJSON.detail){
+                    error_msg = data.responseJSON.detail;
+                }
+                Swal.fire({ title: gettext('Error'), text: error_msg, icon: 'error' });
+            }
+        });
     }
 }
-
 
 $(document).ready(function(){
     const searchLaboratory={
@@ -342,9 +364,6 @@ tagify.on('add', function(e){
             labviewSearch.restart_objs();
         }
     });
-
-});
-
 
 $(".add_status").click(function(){
     add_status(document.url_status)
@@ -541,17 +560,15 @@ $("#hide_alert").on('click', function(){
 
 function show_hide_container_selects(selected_value){
     // they are hidden for the other options, so hide them by default and just display one if required
-    $("#id_available_container").parents(".form-group").hide();
-    $("#id_container_for_cloning").parents(".form-group").hide();
+    $(form_id).find("#id_available_container").parents(".form-group").hide();
+    $(form_id).find("#id_container_for_cloning").parents(".form-group").hide();
     if(selected_value === 'available'){
-        $("#id_available_container").parents('.form-group').show();
+        $(form_id).find("#id_available_container").parents('.form-group').show();
     }else if(selected_value === 'clone'){
-        $("#id_container_for_cloning").parents('.form-group').show();
+        $(form_id).find("#id_container_for_cloning").parents('.form-group').show();
     }
 }
 
-$("#id_container_select_option").on('change', function(event){
-    let selected_value = event.target.value;
-    show_hide_container_selects(selected_value);
+$("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
+    show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
-
