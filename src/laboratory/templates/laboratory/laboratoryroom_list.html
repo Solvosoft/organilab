@@ -18,61 +18,76 @@
 <input type="hidden" name="shelf" id="id_shelf" value="">
 
 {#   {% include 'laboratory/reservation_modal.html' %} #}
-    {% include 'laboratory/shelfobject/action_modal.html' %}
+{% include 'laboratory/shelfobject/action_modal.html' %}
 
-    <h1 class="text-center">{% get_laboratory_name %}</h1>
+<h1 class="text-center">{% get_laboratory_name %}</h1>
+<div class="alert alert-secondary alert-dismissible fade" role="alert">
+    <div id="alert_msg"></div>
+  <button type="button" class="btn-close" id="hide_alert"></button>
+</div>
 <div class="input-group m-0">
     <div class="input-group-text">
-        <a class="w-100" data-bs-toggle="collapse" href="#collapselabroom" role="button" aria-expanded="false" aria-controls="collapselabroom">
+        <a class="w-100" data-bs-toggle="collapse" href="#collapselabroom" role="button" aria-expanded="false"
+           aria-controls="collapselabroom">
             <i class="fa fa-compress"></i>
         </a>
     </div>
-    <input name="tags-search" type="text" class="form-control" >
+    <input name="tags-search" type="text" class="form-control">
     <div class="input-group-text">
         <a class="w-100" id="btnremovealltags" type="button" title="{% trans 'Remove All Tags' %}">
             <i class="fa fa-trash red"></i>
         </a>
     </div>
+    <div class="input-group-text">
+        <a class="w-100" id="" type="button" data-bs-toggle="tooltip" data-bs-html="true" title="{{colors_tooltip}}">
+            <i class="fa fa-info-circle"></i>
+        </a>
+    </div>
 </div>
 <div class="w-100 overflow-auto border border-top-0 border-1 rounded-bottom pt-2" style="max-height: 350px !important;">
 
-<div id="collapselabroom" class="collapse show" >
+    <div id="collapselabroom" class="collapse show">
         <ul class="ullabroom fs-6">
 
-    {% for LaboratoryRoom in object_list %}
+            {% for LaboratoryRoom in object_list %}
             <li>
+                <div class="representation_obj labroom_color" title="{% trans 'Laboratory Room' %}"></div>
                 {% get_laboratory_view_url LaboratoryRoom as labindex %}
-                {% get_qr_svg_img LaboratoryRoom organization=org_pk icon=True url=labindex  %}
-                 <span class="box" id="labroom_{{LaboratoryRoom.pk}}">{{LaboratoryRoom.pk}}: {{LaboratoryRoom}} </span>
-            <ul class="nested ulfurnuture">
+                {% get_qr_svg_img LaboratoryRoom organization=org_pk icon=True url=labindex %}
+                <span class="box" id="labroom_{{LaboratoryRoom.pk}}">{{LaboratoryRoom.pk}}: {{LaboratoryRoom}} </span>
+                <ul class="nested ulfurnuture">
 
-                {% for furniture in LaboratoryRoom.furniture_set.all %}
-                <li>
-                    {% get_laboratory_view_url LaboratoryRoom furniture as furnutureurl %}
-                    {% get_qr_svg_img furniture organization=org_pk icon=True url=furnutureurl  style="color: {{furniture.color}}" %}
+                    {% for furniture in LaboratoryRoom.furniture_set.all %}
+                    <li>
+                        <div class="representation_obj furniture_color" title="{% trans 'Furniture' %}"></div>
+                        {% get_laboratory_view_url LaboratoryRoom furniture as furnutureurl %}
+                        {% get_qr_svg_img furniture organization=org_pk icon=True url=furnutureurl style="color: {{furniture.color}}" %}
 
-                    <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}" target="_blank" style="color: {{furniture.color}}">  <i class="fa fa-file-pdf-o" aria-hidden="true"></i> </a>
-                    <span class="box furnitureroot" id="furniture_{{furniture.pk}}" style="color: {{furniture.color}}" >{{furniture.pk}}: {{furniture}}</span>
-                    <ul class="nested">
+                        <a href="{% url 'laboratory:reports_furniture_detail' org_pk=org_pk lab_pk=laboratory %}?laboratory={{laboratory}}&furniture={{furniture.pk}}"
+                           target="_blank" style="color: {{furniture.color}}"> <i class="fa fa-file-pdf-o"
+                                                                                  aria-hidden="true"></i> </a>
 
-                        <li>
-                           {% display_furniture furniture %}
-                        </li>
-                    </ul>
-                </li>
-                {% endfor %}
+                        <span class="box furnitureroot" id="furniture_{{furniture.pk}}"
+                              style="color: {{furniture.color}}">{{furniture.pk}}: {{furniture}}</span>
+                        <ul class="nested">
 
-            </ul>
-        </li>
-    {% endfor %}
-      </ul>
-</div>
+                            <li>
+                                {% display_furniture furniture %}
+                            </li>
+                        </ul>
+                    </li>
+                    {% endfor %}
+
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 
 </div>
 <div class="row">
-<table class="table table-striped" id="shelfobjecttable"></table>
+    <table class="table table-striped" id="shelfobjecttable"></table>
 </div>
-
 
 
 {% include 'laboratory/shelfobjectUpdate_modal.html' %}
@@ -88,7 +103,7 @@
 {% endblock %}
 
 {% block css %}
-<link href="{% static 'laboratory/css/laboratory.css' %}?v={% get_organilab_version %}" rel="stylesheet" >
+<link href="{% static 'laboratory/css/laboratory.css' %}?v={% get_organilab_version %}" rel="stylesheet">
 {% endblock %}
 
 {% block js %}
@@ -117,10 +132,13 @@ document.suggestions_tag = JSON.parse(document.getElementById('suggestions_tag')
 
 <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
 <script src="{% static 'js/reservationmodal.js' %}?v={% get_organilab_version %}"></script>
-<script type="text/javascript" src="{% static 'laboratory/js/shelfobject_utils.js'%}?v={% get_organilab_version %}"></script>
-<script type="text/javascript" src="{% static 'laboratory/js/base_modal_management.js'%}?v={% get_organilab_version %}"></script>
+<script type="text/javascript"
+        src="{% static 'laboratory/js/shelfobject_utils.js'%}?v={% get_organilab_version %}"></script>
+<script type="text/javascript"
+        src="{% static 'laboratory/js/base_modal_management.js'%}?v={% get_organilab_version %}"></script>
 <script type="text/javascript" src="{% static 'laboratory/js/laboratory.js'%}?v={% get_organilab_version %}"></script>
-<script type="text/javascript" src="{% static 'laboratory/js/detail_modal_creation.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript"
+        src="{% static 'laboratory/js/detail_modal_creation.js' %}?v={% get_organilab_version %}"></script>
 
 <script>
     window.onload = load_self_from_uls();

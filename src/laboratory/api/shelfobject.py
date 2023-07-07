@@ -23,6 +23,8 @@ from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, \
     CreateObservationShelfObjectSerializer
 from laboratory.logsustances import log_object_change
+from laboratory.models import Catalog, ShelfObjectObservation, LaboratoryRoom, Furniture, Shelf, Object
+from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
 from laboratory.models import Catalog, ShelfObjectObservation, LaboratoryRoom, \
     Furniture, Shelf
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, \
@@ -62,6 +64,7 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering_fields = ['object__name', 'object__type', 'quantity',
                        'measurement_unit__description', 'container__object__name']
     ordering = ('-last_update',)  # default order
+
 
     def get_queryset(self):
         if not self.data['shelf']:
@@ -128,7 +131,7 @@ class ShelfObjectCreateMethods:
             request, organization, laboratory, quantity=1)
 
         shelfobject = serializer.save(
-            creator=creator,
+            created_by=creator,
             in_where_laboratory_id=laboratory,
             limits=limits,
             container=new_container
@@ -352,6 +355,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
     }
+
 
     # This is not an API endpoint
     def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
@@ -845,8 +849,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                       'pre_status': pre_status,
                                                       'description': shelfobject.status.description
                                                   },
-                                                  description=serializer.validated_data[
-                                                      'description'],
+                                                  description=serializer.validated_data['description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
             organilab_logentry(
@@ -930,6 +933,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse(data, status=status.HTTP_200_OK)
 
+
     @action(detail=False, methods=['post'])
     def create_status(self, request, org_pk, lab_pk, **kwargs):
         """
@@ -984,7 +988,7 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if furniture:
             furniture = self.get_pk_list(furniture)
-            furniture_list = Furniture.objects.filter(pk__in=furniture)
+            furniture_list = Furniture.objects.filter(pk__in=furniture).using(settings.READONLY_DATABASE)
 
             if furniture_list:
                 result = {
@@ -998,7 +1002,7 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if shelf:
             shelf = self.get_pk_list(shelf)
-            shelf_list = Shelf.objects.filter(pk__in=shelf)
+            shelf_list = Shelf.objects.filter(pk__in=shelf).using(settings.READONLY_DATABASE)
 
             if shelf_list:
                 result = {
@@ -1014,7 +1018,7 @@ class SearchLabView(viewsets.GenericViewSet):
         result = {}
         if shelfobject:
             shelfobject = self.get_pk_list(shelfobject)
-            shelfobject_list = ShelfObject.objects.filter(pk__in=shelfobject)
+            shelfobject_list = ShelfObject.objects.filter(pk__in=shelfobject).using(settings.READONLY_DATABASE)
 
             if shelfobject_list:
                 result = {
@@ -1027,6 +1031,25 @@ class SearchLabView(viewsets.GenericViewSet):
                         shelfobject_list.values_list('shelf__furniture__labroom__pk',
                                                      flat=True))
                 }
+        return result
+
+    def get_object_param(self, object_param):
+        result = {}
+        if object_param:
+            object_param_name = [obj.name for obj in object_param]
+            object_list = Object.objects.filter(name__in=object_param_name).using(settings.READONLY_DATABASE)
+            shelf = Shelf.objects.filter(shelfobject__object__in=object_list).using(settings.READONLY_DATABASE)
+            shelf_pk_list = list(shelf.values_list('pk', flat=True).using(settings.READONLY_DATABASE))
+            shelf_pk_list.reverse()
+            object_param_name.reverse()
+            result = {
+                'object': object_param_name,
+                'shelf': {
+                    'shelf': shelf_pk_list,
+                    'furniture': list(shelf.values_list('furniture__pk', flat=True).distinct().using(settings.READONLY_DATABASE)),
+                    'labroom': list(shelf.values_list('furniture__labroom', flat=True).distinct().using(settings.READONLY_DATABASE))
+                }
+            }
         return result
 
     def get_pk_list(self, queryset):
@@ -1047,8 +1070,8 @@ class SearchLabView(viewsets.GenericViewSet):
                 'furniture': self.get_furniture(
                     serializer.validated_data.get('furniture', [])),
                 'shelf': self.get_shelf(serializer.validated_data.get('shelf', [])),
-                'shelfobject': self.get_shelfobject(
-                    serializer.validated_data.get('shelfobject', []))
+                'shelfobject': self.get_shelfobject(serializer.validated_data.get('shelfobject', [])),
+                'object': self.get_object_param(serializer.validated_data.get('object', []))
             }
         else:
             errors = serializer.errors
