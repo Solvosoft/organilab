@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-07 20:08-0600\n"
-"PO-Revision-Date: 2023-07-07 20:19-0600\n"
+"POT-Creation-Date: 2023-05-24 19:17-0600\n"
+"PO-Revision-Date: 2023-06-21 11:47-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -676,6 +676,21 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 #: sga/static/sga/js/warning_words.js:130
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Day"
+msgstr "Día"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Old"
+msgstr "Antiguo"
+
+msgid "New"
+msgstr "Nuevo"
+
+msgid "Difference"
+msgstr "Diferencia"
 
 #~ msgid "Clear Filters"
 #~ msgstr "Limpiar Filtros"

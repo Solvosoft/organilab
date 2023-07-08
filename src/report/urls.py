@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
-from report.api.views import ReportDataViewSet
+from report.api.views import ReportDataViewSet, ReportDataLogViewSet
 from report.views import base
 
 
@@ -14,6 +14,7 @@ base_reports = [
 
 router = DefaultRouter()
 router.register('api_report', ReportDataViewSet, basename='api-report')
+router.register('api_report_log', ReportDataLogViewSet, basename='api-report-log')
 
 
 app_name = 'report'

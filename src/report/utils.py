@@ -5,7 +5,8 @@ from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
 from laboratory.models import Furniture
-from report.models import DocumentReportStatus
+from report.models import DocumentReportStatus, ObjectChangeLogReport, \
+    ObjectChangeLogReportBuilder
 
 
 def format_date(value):
@@ -53,7 +54,7 @@ def set_format_table_columns(columns_fields):
 
 
 def get_pdf_table_content(table_content):
-    pdf_table = "<thead>"
+    pdf_table = "<table id='pdf_table_report'><thead>"
     if 'columns' and 'dataset' in table_content:
         pdf_table += '<tr>'
         for col in table_content['columns']:
@@ -66,7 +67,7 @@ def get_pdf_table_content(table_content):
             for item in row:
                 pdf_table += '<td>%s</td>' % (item)
             pdf_table += '</tr>'
-        "</tbody>"
+        "</tbody></table>"
     else:
         pdf_table = ""
     return pdf_table
@@ -145,3 +146,37 @@ def check_import_obj(path):
         import_obj = None
 
     return import_obj
+
+def get_pdf_log_change_table_content(report):
+    table_content = ObjectChangeLogReport.objects.filter(task_report=report)
+    pdf_table = ""
+
+    for table in table_content:
+        pdf_table += "<p>%s</p>" %(f'{table.laboratory.name} | {table.object.name}')
+        pdf_table += "<p>%s</p>" \
+                     %(_("Difference") + f' :{table.diff_value} | {table.unit.description}')
+
+        pdf_table += "<table id='pdf_table_report'><thead>"
+        pdf_table += '<tr>'
+        for col in [_("User"), _("Day"), _('Old'), _('New'), _("Difference")]:
+            pdf_table += "<th>%s</th>" % (col)
+        pdf_table += '</tr></thead><tbody>'
+        table =ObjectChangeLogReportBuilder.objects.filter(report=table)
+
+        for data in table:
+            try:
+                user = data.user.get_full_name()
+                if not user:
+                    user = data.user.username
+            except Exception as e:
+                user = ""
+            pdf_table += '<tr>'
+            pdf_table += '<td>%s</td>' % (user)
+            pdf_table += '<td>%s</td>' % (data.update_time.strftime("%m/%d/%Y, %H:%M:%S"))
+            pdf_table += '<td>%s</td>' % (data.old_value)
+            pdf_table += '<td>%s</td>' % (data.new_value)
+            pdf_table += '<td>%s</td>' % (data.diff_value)
+            pdf_table += '</tr>'
+        pdf_table+="</tbody></table><br><br>"
+
+    return pdf_table
