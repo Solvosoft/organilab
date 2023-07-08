@@ -20,44 +20,7 @@
 <div id="body_tables" class="container-fluid">
 
 </div>
-
-<!--{% for lab in obj_task.table_content.dataset %}
-<div class="card mt-5">
-	<div class="card-title text-center fw-bold p-2">
-		<p>{{ lab.lab }}</p>
-		<p>{{ lab.obj }} {{ lab.diff }}</p>
-		<hr>
-	</div>
-		<div class="card-body">
-	<table class="log_changes_table display table table-striped table-bordered text-center dt-responsive">
-		<thead>
-			<tr>
-				<th>{% trans 'User' %}</th>
-				<th>{% trans 'Update time' %}</th>
-				<th>{% trans 'Old value' %}</th>
-				<th>{% trans 'New value' %}</th>
-				<th>{% trans 'Diff' %}</th>
-				<th>{% trans 'Unit' %}</th>
-			</tr>
-		</thead>
-		<tbody>
-	{% for ob in lab.values %}
-	<tr>
-		<td>{{ob.user}}</td>
-			<td>{{ob.update_time}}</td>
-			<td>{{ob.old_value}}</td>
-			<td>{{ob.new_value}}</td>
-			<td>{{ob.diff_value}}</td>
-			<td>{{ob.measurement_unit}}</td>
-		</tr>
-{% endfor %}
-	</tbody>
-</table>
-</div>
-</div>
-{% endfor %}
 {% endif %}
--->
 {% endblock %}
 
 {% block js %}
@@ -66,13 +29,13 @@
 <script src="{% static 'laboratory/js/reports.js' %}?v={% get_organilab_version %}"></script>
 <script>
     $(document).ready(function() {
-{% for lab in obj_task.table_content.dataset %}
-	 id= "table_{{lab.lab_id}}_{{lab.obj_id}}_{{lab.unit}}";
-	url = '{% url "report:api-report-log-detail" obj_task.pk %}'+"?lab={{lab.lab_id}}&obj={{lab.obj_id}}&unit={{lab.unit}}";
-	add_log_change_datatables(id,"{{lab.lab}}","{{lab.obj}}","{{lab.diff}}", url);
+{% for lab in changelogreport %}
+	 id= "table_{{lab.laboratory.pk}}_{{lab.object.pk}}_{{lab.unit.pk}}";
+	 url = '{% url "report:api-report-log-detail" obj_task.pk %}'+"?laboratory={{lab.laboratory.pk}}&object={{lab.object.pk}}&unit={{lab.unit.pk}}";
+	add_log_change_datatables(id,"{{lab.laboratory.name}}","{{lab.object.name}}","{{lab.diff_value}}",
+	"{{lab.unit.description}}", url);
 	$("#"+id+"_filter").parent().addClass('mt-0 p-0')
-	table_6_22_63_length
- $("#"+id+"_length").parent().addClass('mt-0 p-0')
+  $("#"+id+"_length").parent().addClass('mt-0 p-0')
 {% endfor %}
      });
 
