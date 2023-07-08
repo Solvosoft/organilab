@@ -152,7 +152,7 @@ class CompleteMyProcedureViewTest(TestCase):
 
     def test_comments_list_without_specified_step(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=7&ordering=creator' \
+        search_script = '?offset=0&limit=10&draw=7&ordering=created_by' \
                         '&my_procedure=1&_=1685373101914'
         url = reverse('laboratory:api-procedure-comments-list',
                       kwargs={"lab_pk": self.lab.pk,
@@ -240,7 +240,7 @@ class CompleteMyProcedureViewTest(TestCase):
     def test_general_filter_input_returns_one_record(self):
         self.client.force_login(self.first_user)
         search_script = '?offset=0&limit=10&draw=7&search=test&ordering=' \
-                        'creator&procedure_step=24&my_procedure=1&_=1685373101914'
+                        'created_by&procedure_step=24&my_procedure=1&_=1685373101914'
         url = reverse('laboratory:api-procedure-comments-list',
                       kwargs={"lab_pk": self.lab.pk,
                               "org_pk": self.organization.pk}) + search_script
@@ -249,10 +249,10 @@ class CompleteMyProcedureViewTest(TestCase):
         result = response.json()
         self.assertEqual(result['recordsFiltered'], expected)
 
-    def test_creator_filter_input_returns_one_record(self):
+    def test_created_by_filter_input_returns_one_record(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=13&creator=seco&creator__' \
-                        'icontains=seco&ordering=creator&procedure_step=24&my_procedure=1&_=1685373101920'
+        search_script = '?offset=0&limit=10&draw=13&created_by=seco&created_by__' \
+                        'icontains=seco&ordering=created_by&procedure_step=24&my_procedure=1&_=1685373101920'
         url = reverse('laboratory:api-procedure-comments-list',
                       kwargs={"lab_pk": self.lab.pk,
                               "org_pk": self.organization.pk}) + search_script
@@ -263,8 +263,8 @@ class CompleteMyProcedureViewTest(TestCase):
 
     def test_creation_date_filter_input_returns_one_record(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=2&creator_at=05%2F14%2F2023%2000%3A00%20AM%20-' \
-                        '%2005%2F16%2F2023%2023%3A59%20PM&ordering=creator&procedure_step=17&' \
+        search_script = '?offset=0&limit=10&draw=2&created_by_at=05%2F14%2F2023%2000%3A00%20AM%20-' \
+                        '%2005%2F16%2F2023%2023%3A59%20PM&ordering=created_by&procedure_step=17&' \
                         'my_procedure=1&_=1685392101339'
         url = reverse('laboratory:api-procedure-comments-list',
                       kwargs={"lab_pk": self.lab.pk,
@@ -277,7 +277,7 @@ class CompleteMyProcedureViewTest(TestCase):
     def test_comment_filter_input_returns_one_record(self):
         self.client.force_login(self.first_user)
         search_script = '?offset=0&limit=10&draw=28&comment=Standard%20comment&comment__icontains=Standard%20comment' \
-                        '&ordering=creator&procedure_step=17&my_procedure=1&_=1685392745477'
+                        '&ordering=created_by&procedure_step=17&my_procedure=1&_=1685392745477'
         url = reverse('laboratory:api-procedure-comments-list',
                       kwargs={"lab_pk": self.lab.pk,
                               "org_pk": self.organization.pk}) + search_script

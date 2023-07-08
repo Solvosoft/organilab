@@ -433,8 +433,8 @@
     "model": "academic.commentprocedurestep",
     "pk": 1,
     "fields": {
-      "creator": 1,
-      "creator_at": "2023-05-15T14:39:50.061659-06:00",
+      "created_by": 1,
+      "created_by_at": "2023-05-15T14:39:50.061659-06:00",
       "comment": "First test comment",
       "procedure_step": 17,
       "my_procedure": 1
@@ -444,8 +444,8 @@
     "model": "academic.commentprocedurestep",
     "pk": 2,
     "fields": {
-      "creator": 1,
-      "creator_at": "2023-05-20T14:39:50.061659-06:00",
+      "created_by": 1,
+      "created_by_at": "2023-05-20T14:39:50.061659-06:00",
       "comment": "Second test comment",
       "procedure_step": 24,
       "my_procedure": 1
@@ -455,8 +455,8 @@
     "model": "academic.commentprocedurestep",
     "pk": 3,
     "fields": {
-      "creator": 2,
-      "creator_at": "2023-05-22T13:39:50.061659-06:00",
+      "created_by": 2,
+      "created_by_at": "2023-05-22T13:39:50.061659-06:00",
       "comment": "Standard comment",
       "procedure_step": 17,
       "my_procedure": 1
@@ -466,8 +466,8 @@
     "model": "academic.commentprocedurestep",
     "pk": 4,
     "fields": {
-      "creator": 2,
-      "creator_at": "2023-05-22T14:39:50.061659-06:00",
+      "created_by": 2,
+      "created_by_at": "2023-05-22T14:39:50.061659-06:00",
       "comment": "Comment of Second User",
       "procedure_step": 24,
       "my_procedure": 1

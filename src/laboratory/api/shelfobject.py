@@ -236,7 +236,7 @@ class ShelfObjectCreateMethods:
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
-            creator=created_by,
+            created_by=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits
         )
@@ -244,13 +244,13 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(self.context['request'], shelfobject, organization,
                              laboratory)
 
-        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '',
+        log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
                           0, "Create", create=True)
-        utils.organilab_logentry(creator, shelfobject, ADDITION,
+        utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
                                                'marked_as_discard', 'course_name',
-                                               'creator', 'in_where_laboratory',
+                                               'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory)
 
@@ -263,13 +263,13 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: equipment type shelfobject was created
         """
-        creator = self.context['request'].user
+        created_by = self.context['request'].user
         laboratory = self.context['laboratory']
         organization = self.context['organization']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
-            creator=creator,
+            created_by=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits
         )
@@ -277,13 +277,13 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(self.context['request'], shelfobject, organization,
                              laboratory)
 
-        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '',
+        log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
                           0, "Create", create=True)
-        utils.organilab_logentry(creator, shelfobject, ADDITION,
+        utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
                                                'marked_as_discard', 'course_name',
-                                               'creator', 'in_where_laboratory',
+                                               'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory)
 
@@ -296,13 +296,13 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: refuse equipment type shelfobject was created
         """
-        creator = self.context['request'].user
+        created_by = self.context['request'].user
         laboratory = self.context['laboratory']
         organization = self.context['organization']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
-            creator=creator,
+            created_by=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits
         )
@@ -310,13 +310,13 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(self.context['request'], shelfobject, organization,
                              laboratory)
 
-        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '',
+        log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
                           0, "Create", create=True)
-        utils.organilab_logentry(creator, shelfobject, ADDITION,
+        utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
                                                'marked_as_discard', 'course_name',
-                                               'creator', 'in_where_laboratory',
+                                               'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory)
 
@@ -635,12 +635,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     laboratory_received=target_laboratory,
                     quantity=amount_to_transfer,
                     mark_as_discard=serializer.validated_data['mark_as_discard'],
-                    creator=request.user
+                    created_by=request.user
                 )
                 organilab_logentry(
                     request.user, transfer_obj, ADDITION, 'transferobject',
                     changed_data=['object', 'laboratory_send', 'laboratory_received',
-                                  'quantity', 'mark_as_discard', 'creator'],
+                                  'quantity', 'mark_as_discard', 'created_by'],
                     relobj=[source_laboratory, target_laboratory]
                 )
             else:
@@ -785,7 +785,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         errors = {}
         if serializer_sho.is_valid():
             observation_instance = serializer_sho.save(shelf_object=shelf_object,
-                                                       creator=request.user)
+                                                       created_by=request.user)
             utils.organilab_logentry(request.user, observation_instance, ADDITION,
                                      'shelfobjectobservation', relobj=self.laboratory)
         else:
@@ -813,8 +813,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class = ShelfObjectObservationDataTableSerializer
         self.pagination_class = LimitOffsetPagination
         self.filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-        self.search_fields = ['action_taken', 'description', 'creator__first_name',
-                              'creator__last_name', 'creation_date']
+        self.search_fields = ['action_taken', 'description', 'created_by__first_name',
+                              'created_by__last_name', 'creation_date']
         self.ordering = ('-creation_date',)
         self.queryset = shelf_object.shelfobjectobservation_set.all()
         queryset = self.filter_queryset(self.queryset)
@@ -857,7 +857,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                   description=serializer.validated_data[
                                                       'description'],
                                                   shelf_object=shelfobject,
-                                                  creator=request.user)
+                                                  created_by=request.user)
             organilab_logentry(
                 request.user, shelfobject, CHANGE,
                 changed_data=['status'],

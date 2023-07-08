@@ -552,7 +552,7 @@
       "email": "karineproductos@cr.com",
       "legal_identity": "3-8764-8354",
       "laboratory": 1,
-      "creator": 1,
+      "created_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -566,7 +566,7 @@
       "email": "lpcompany@cr.com",
       "legal_identity": "3-463-3423432",
       "laboratory": 2,
-      "creator": 1,
+      "created_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }

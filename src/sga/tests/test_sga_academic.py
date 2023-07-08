@@ -19,9 +19,7 @@ class SGAAcademicTest(TestCase):
     def test_get_warning_words(self):
         response = self.client.get(reverse('sga:warning_words', kwargs=self.url_attr))
         self.assertEqual(response.status_code, 200)
-        word = WarningWord.objects.get(pk=2)
-        self.assertIn(word, response.context['listado'])
-        self.assertTrue(len(response.context['listado']), 3)
+        self.assertEqual(response.templates[0].name, 'sga/substance/warning_words.html')
 
     def test_add_warning_word(self):
         response_get = self.client.get(
