@@ -33,11 +33,11 @@ class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewS
     queryset = CommentProcedureStep.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['comment', 'creator__username',
-                     'creator_at', ]  # for the global search
+    search_fields = ['comment', 'created_by__username',
+                     'created_by_at', ]  # for the global search
     filterset_class = ProcedureStepCommentFilterSet
-    ordering_fields = ['creator_at', ]
-    ordering = ('-creator_at',)  # default order
+    ordering_fields = ['created_by_at', ]
+    ordering = ('-created_by_at',)  # default order
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -102,7 +102,7 @@ class ProcedureStepCommentAPI(mixins.ListModelMixin,
                                              pk=request.data['my_procedure'])
 
             CommentProcedureStep.objects.create(
-                creator=request.user,
+                created_by=request.user,
                 comment=serializer.data['comment'],
                 procedure_step=procedure_step,
                 my_procedure=my_procedure

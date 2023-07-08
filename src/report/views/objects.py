@@ -50,7 +50,7 @@ def get_queryset(report):
     if 'precursor' in report.data:
         query = query.filter(precursor=True)
     if 'all_labs_org' in report.data:
-        query = query.filter(laboratory__in=get_user_laboratories(report.creator))
+        query = query.filter(laboratory__in=get_user_laboratories(report.created_by))
     else:
         query = query.filter(laboratory__pk=report.data['lab_pk'])
     if 'resume' in report.data:

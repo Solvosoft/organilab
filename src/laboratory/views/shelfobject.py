@@ -136,7 +136,7 @@ class ShelfObjectForm(forms.ModelForm,GTForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','course_name','status','creator', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
+        exclude =['laboratory_name','course_name','status','created_by', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
@@ -191,7 +191,7 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity','limits']
-        exclude = ['creator',"laboratory_name", "status"]
+        exclude = ['created_by',"laboratory_name", "status"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
@@ -211,7 +211,7 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
         fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit']
-        exclude =['creator']
+        exclude =['created_by']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
@@ -247,7 +247,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.creator= self.request.user
+        self.object.created_by= self.request.user
         self.object.in_where_laboratory_id= self.lab
         self.object.save()
         schema = self.request.scheme + "://"

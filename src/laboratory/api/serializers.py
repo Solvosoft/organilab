@@ -232,9 +232,9 @@ class BaseShelfObjectSerializer:
     def get_last_update(self, obj):
         return obj.last_update.date()
 
-    def get_creator(self, obj):
-        if obj.creator:
-            return str(obj.creator)
+    def get_created_by(self, obj):
+        if obj.created_by:
+            return str(obj.created_by)
         else:
             return _('Unknown')
 
@@ -249,18 +249,18 @@ class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerialize
     object_name = serializers.SerializerMethodField()
     unit = serializers.SerializerMethodField()
     last_update = serializers.SerializerMethodField()
-    creator = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
 
     def get_action(self, obj):
         if obj:
             org_pk = self.context['org_pk']
-            if obj.creator:
+            if obj.created_by:
                 return """
                         <a href="%s" class="btn btn-secondary" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
                         """%(
                     reverse('laboratory:profile_detail', kwargs={
                         'org_pk': org_pk,
-                        'pk': obj.creator.pk
+                        'pk': obj.created_by.pk
                     })
                 )
             else:
@@ -269,7 +269,7 @@ class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerialize
 
     class Meta:
         model = ShelfObject
-        fields = ['object_name', 'unit','quantity','last_update','creator','action']
+        fields = ['object_name', 'unit','quantity','last_update','created_by','action']
 
 
 class ShelfPkList(serializers.Serializer):
@@ -281,7 +281,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
     object_name = serializers.SerializerMethodField()
     unit = serializers.SerializerMethodField()
     last_update = serializers.SerializerMethodField()
-    creator = serializers.SerializerMethodField()
+    created_by = serializers.SerializerMethodField()
     container = serializers.SerializerMethodField()
     actions = serializers.SerializerMethodField()
 
@@ -300,7 +300,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
 
     class Meta:
         model = ShelfObject
-        fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','creator', 'container', 'actions']
+        fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','created_by', 'container', 'actions']
 
 
 class ShelfObjectTableSerializer(serializers.Serializer):

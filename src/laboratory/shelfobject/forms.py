@@ -96,9 +96,9 @@ class ShelfObjectExtraFields(GTForm, forms.Form):
     expiration_date = forms.DateField(widget=genwidgets.DateInput, required=False, label=_("Expiration date"))
 
 
-class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):    
+class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
     # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
-    
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -157,7 +157,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","status","quantity", "measurement_unit", "container", "course_name", "marked_as_discard", "batch", "objecttype"]
-        exclude =['laboratory_name','creator', 'limit_quantity', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
+        exclude =['laboratory_name','created_by', 'limit_quantity', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'course_name': genwidgets.Textarea,
@@ -222,7 +222,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
     class Meta:
         model = ShelfObject
         fields = ["object","shelf","status","quantity", "measurement_unit","container","course_name","marked_as_discard","batch","objecttype"]
-        exclude = ['creator',"laboratory_name", "limit_quantity", 'limits']
+        exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
@@ -322,7 +322,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
         self.fields['marked_as_discard'].initial=True
-        
+
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
@@ -462,11 +462,11 @@ class TransferInShelfObjectApproveWithContainerForm(GTForm):
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
     available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
-    
+
     def __init__(self, *args, **kwargs):
         laboratory_id = kwargs.pop('laboratory_id')
         super(TransferInShelfObjectApproveWithContainerForm, self).__init__(*args, **kwargs)
-        
+
         self.fields['available_container'] = forms.ModelChoiceField(
             queryset=ShelfObject.objects.none(),
             widget=AutocompleteSelect('available-container-search',

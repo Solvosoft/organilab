@@ -117,18 +117,18 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: reactive type shelfobject was created
         """
-        creator = self.context['request'].user
+        created_by = self.context['request'].user
         laboratory = self.context['laboratory']
         organization = self.context['organization']
         request = self.context['request']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
             serializer.validated_data['container'], serializer.validated_data['shelf'],
             request, organization, laboratory, quantity=1)
 
         shelfobject = serializer.save(
-            created_by=creator,
+            created_by=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits,
             container=new_container
@@ -137,14 +137,14 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(self.context['request'], shelfobject, organization,
                              laboratory)
 
-        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '',
+        log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
                           0, "Create", create=True)
-        utils.organilab_logentry(creator, shelfobject, ADDITION,
+        utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'limit_quantity',
                                                'course_name',
                                                'marked_as_discard', 'batch',
-                                               'container', 'creator',
+                                               'container', 'created_by',
                                                'in_where_laboratory', 'limits'],
                                  relobj=laboratory)
 
@@ -158,18 +158,18 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: Refuse reactive type shelfobject was created
         """
-        creator = self.context['request'].user
+        created_by = self.context['request'].user
         laboratory = self.context['laboratory']
         organization = self.context['organization']
         request = self.context['request']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
             serializer.validated_data['container'], serializer.validated_data['shelf'],
             request, organization, laboratory, quantity=1)
 
         shelfobject = serializer.save(
-            creator=creator,
+            created_by=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits,
             container=new_container
@@ -178,13 +178,13 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(self.context['request'], shelfobject, organization,
                              laboratory)
 
-        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '',
+        log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
                           0, "Create", create=True)
-        utils.organilab_logentry(creator, shelfobject, ADDITION,
+        utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'marked_as_discard',
                                                'course_name', 'batch', 'container',
-                                               'creator', 'in_where_laboratory',
+                                               'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory)
 
@@ -197,13 +197,13 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: material type shelfobject was created
         """
-        creator = self.context['request'].user
+        created_by = self.context['request'].user
         laboratory = self.context['laboratory']
         organization = self.context['organization']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
-            creator=creator,
+            created_by=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits
         )
@@ -211,13 +211,13 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(self.context['request'], shelfobject, organization,
                              laboratory)
 
-        log_object_change(creator, laboratory, shelfobject, 0, shelfobject.quantity, '',
+        log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
                           0, "Create", create=True)
-        utils.organilab_logentry(creator, shelfobject, ADDITION,
+        utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
                                                'marked_as_discard', 'course_name',
-                                               'creator', 'in_where_laboratory',
+                                               'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory)
 
@@ -230,13 +230,13 @@ class ShelfObjectCreateMethods:
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: refuse material type shelfobject was created
         """
-        creator = self.context['request'].user
+        created_by = self.context['request'].user
         laboratory = self.context['laboratory']
         organization = self.context['organization']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, creator)
+        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
-            creator=creator,
+            creator=created_by,
             in_where_laboratory_id=laboratory,
             limits=limits
         )
