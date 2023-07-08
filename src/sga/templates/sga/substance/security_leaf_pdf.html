@@ -1,0 +1,60 @@
+{% extends 'pdf/base_pdf.html' %}
+{% load i18n %}
+{% block head %}
+
+ <title>{% trans 'Security sheet'%} {% trans 'of'%} {{substance.comercial_name}}</title>
+{% endblock %}
+{% block pdf_content %}
+<section id="header">
+    {% include 'sga/substance/pdf/header.html' %}
+</section>
+<section id="product">
+    {% include 'sga/substance/pdf/section_one.html' %}
+</section>
+
+<section id="two">
+    {% include 'sga/substance/pdf/section_two.html' %}
+</section>
+<section id="three">
+    {% include 'sga/substance/pdf/section_three.html' %}
+</section>
+<section id="four">
+    {% include 'sga/substance/pdf/section_four.html' %}
+</section>
+<section id="five">
+    {% include 'sga/substance/pdf/section_five.html' %}
+</section>
+<section id="six">
+    {% include 'sga/substance/pdf/section_six.html' %}
+</section>
+<section id="seven">
+    {% include 'sga/substance/pdf/section_seven.html' %}
+</section>
+<section id="eight">
+    {% include 'sga/substance/pdf/section_eight.html' %}
+</section>
+<section id="nine">
+    {% include 'sga/substance/pdf/section_nine.html' %}
+</section>
+<section id="ten">
+    {% include 'sga/substance/pdf/section_ten.html' %}
+</section>
+<section id="eleven">
+    {% include 'sga/substance/pdf/section_eleven.html' %}
+</section>
+<section id="twelve">
+    {% include 'sga/substance/pdf/section_twelve.html' %}
+</section>
+<section id="thirdteen">
+    {% include 'sga/substance/pdf/section_thirdteen.html' %}
+</section>
+<section id="fourteen">
+    {% include 'sga/substance/pdf/section_fourteen.html' %}
+</section>
+<section id="fifthteen">
+    {% include 'sga/substance/pdf/section_fifthteen.html' %}
+</section>
+<section id="sixteen">
+    {% include 'sga/substance/pdf/section_sixteen.html' %}
+</section>
+{% endblock %}

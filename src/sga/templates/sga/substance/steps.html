@@ -1,0 +1,34 @@
+{% load static i18n %}
+
+<div id="wizard" class="form_wizard wizard_horizontal">
+    <ul class="wizard_steps anchor">
+        <li>
+            <a href="{% if not substance %} {% url 'sga:create_sustance' org_pk %} {% else %} {% url 'sga:update_substance' org_pk substance %} {% endif %}" class="{% if step == 1 %}selected{%else%}disabled{% endif %}" isdone="1" rel="1">
+                <span class="step_no">1</span>
+                <span class="step_descr">{% trans 'Create Substances' %}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'sga:step_two' org_pk complement %}" class="{% if step == 2 %}selected{%else%}disabled{% endif %}" isdone="0" rel="1">
+                <span class="step_no">2</span>
+                <span class="step_descr">{% trans 'Label Components' %}</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'sga:step_three' org_pk template substance %}" class="{% if step == 3 %}selected{%else%}disabled{% endif %}" isdone="0" rel="3">
+                <span class="step_no">3</span>
+                <span class="step_descr">{% trans 'Label editor' %}</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'sga:step_four' org_pk substance %}" class="{% if step == 4 %}selected{%else%}disabled{%endif%}" isdone="0" rel="4">
+                <span class="step_no">4</span>
+                <span class="step_descr">
+                    <small>{% trans 'Security Leafs'%}</small>
+                </span>
+            </a>
+        </li>
+    </ul>
+</div>

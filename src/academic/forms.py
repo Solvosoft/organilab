@@ -31,8 +31,8 @@ class MyProcedureForm(forms.ModelForm, GTForm):
 class CommentProcedureStepForm(forms.ModelForm, GTForm):
     class Meta:
         model = CommentProcedureStep
-        fields = ['creator', 'comment']
-        widgets = {'creator': genwidgets.HiddenInput,
+        fields = ['created_by', 'comment']
+        widgets = {'created_by': genwidgets.HiddenInput,
                    'comment': genwidgets.Textarea,
                    }
 

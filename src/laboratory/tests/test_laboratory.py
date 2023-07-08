@@ -32,7 +32,7 @@ class LaboratoryRoomViewTest(BaseLaboratorySetUpTest):
 
         data = {
             "name": "Sala de inventario químico",
-            "creator": 1
+            "created_by": 1
         }
         response_post = self.client.post(url, data=data)
         success_url = reverse("laboratory:rooms_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})

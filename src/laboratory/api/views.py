@@ -98,7 +98,7 @@ class CommentAPI(viewsets.ModelViewSet):
             inform=Inform.objects.filter(pk=request.data['inform']).first()
 
             CommentInform.objects.create(
-                creator=request.user,
+                created_by=request.user,
                 comment = serializer.data['comment'],
                 inform = inform
             )

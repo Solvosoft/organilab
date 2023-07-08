@@ -1,8 +1,9 @@
 from datetime import datetime
 import logging
-
+import re
 from django.conf import settings
 from django.forms import model_to_dict
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -10,15 +11,39 @@ from django.utils.translation import gettext_lazy as _
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
-
-from laboratory.models import Provider, Furniture, LaboratoryRoom, SustanceCharacteristics
-from laboratory.models import REQUESTED
-from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, ShelfObjectContainer, \
-    TranferObject, ShelfObjectObservation
+from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, ShelfObjectLimits, \
+    TranferObject, ShelfObjectObservation, Provider, Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
+from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
 
 logger = logging.getLogger('organilab')
+
+
+class ContainerSerializer(serializers.Serializer):
+    CONTAINER_SELECT_CHOICES = [
+        ('clone', _('Create new based on selected')),
+        ('available', _('Use selected')),
+    ]
+    container_select_option = serializers.ChoiceField(required=True, choices=CONTAINER_SELECT_CHOICES)
+    container_for_cloning = serializers.PrimaryKeyRelatedField(many=False, allow_null=True,
+                                                               queryset=Object.objects.none())
+    available_container = serializers.PrimaryKeyRelatedField(many=False, allow_null=True,
+                                                             queryset=ShelfObject.objects.none())
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        # allow select only available containers or containers for cloning depending on what the user wants and make the right field not nullable
+        container_select_option = self.initial_data.get('container_select_option')
+        if container_select_option == 'clone':
+            # set queryset to validate that only those in the organization of type material are valid for selection
+            fields['container_for_cloning'].queryset = get_containers_for_cloning(self.context['organization_id'])
+            fields['container_for_cloning'].allow_null = False
+        elif container_select_option == 'available':
+            # set queryset to validate that only those in the laboratory of type material are valid for selection
+            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'])
+            fields['available_container'].allow_null = False
+        return fields
 
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
@@ -33,13 +58,14 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         final_date = data['final_date'].date()
 
         if initial_date == final_date:
-            raise serializers.ValidationError({'final_date':_("Final date can't be equal to initial date")})
+            raise serializers.ValidationError({'final_date': _("Final date can't be equal to initial date")})
         if initial_date >= final_date:
-            raise serializers.ValidationError({'initial_date':_("Initial date can't be greater than final date")})
+            raise serializers.ValidationError({'initial_date': _("Initial date can't be greater than final date")})
         elif initial_date <= current_date:
-            raise serializers.ValidationError({'initial_date':_("Initial date can't be equal or lower to current date")})
+            raise serializers.ValidationError(
+                {'initial_date': _("Initial date can't be equal or lower to current date")})
         elif initial_date <= current_date:
-            raise serializers.ValidationError({'initial_date':_("Initial date can't be lower than current date")})
+            raise serializers.ValidationError({'initial_date': _("Initial date can't be lower than current date")})
         elif final_date <= current_date:
             raise serializers.ValidationError({'initial_date': _("Final date can't be lower than current date")})
 
@@ -62,7 +88,8 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 class IncreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False, allow_blank=True)
-    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE), required=False, allow_null=True)
+    provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE),
+                                                  required=False, allow_null=True)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
@@ -96,12 +123,14 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
             logger.debug(
                 f'IncreaseShelfObjectSerializer --> shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit is'
                 f' ({check_measurement_unit})')
-            raise serializers.ValidationError({'shelf_object': _("Measurement unit can't different than shelf measurement unit")})
+            raise serializers.ValidationError(
+                {'shelf_object': _("Measurement unit can't different than shelf measurement unit")})
 
         if total > shelf_quantity and not shelf.infinity_quantity:
-            raise serializers.ValidationError({'amount': _("Quantity can't greater than shelf quantity limit %(limit)s") % {
-                'limit': shelf_quantity,
-            }})
+            raise serializers.ValidationError(
+                {'amount': _("Quantity can't greater than shelf quantity limit %(limit)s") % {
+                    'limit': shelf_quantity,
+                }})
         return data
 
 
@@ -124,16 +153,19 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         shelf_object = data['shelf_object']
 
         if shelf_object.quantity < amount:
-            raise serializers.ValidationError({'amount': _("Substract amount can't be greater than available shelf amount")})
+            raise serializers.ValidationError(
+                {'amount': _("Substract amount can't be greater than available shelf amount")})
         return data
 
 
 class ValidateShelfSerializerCreate(serializers.Serializer):
+    # TODO - update this serializer to validate that the shelf belongs to the laboratory, maybe inherit from ValidateShelfSerializer?
+
     OBJTYPE_CHOICES = (
         ("0", 'Reactive'),
         ("1", 'Material'),
         ("2", 'Equipment'))
-    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all())
+    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE))
     objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
 
     def get_key_descriptor(self):
@@ -172,35 +204,27 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         return data
 
 
-class ContainerShelfObjectSerializer(serializers.Serializer):
-    container = serializers.PrimaryKeyRelatedField(many=False,
-                                                   queryset=Object.objects.filter(type=1).using(
-                                                       settings.READONLY_DATABASE),
-                                                   required=True)
-
-
 def validate_measurement_unit_and_quantity(klass, data, attr):
     errors = {}
     quantity = attr['quantity']
     total = attr['shelf'].get_total_refuse() + quantity
-    shelf= attr['shelf']
-    obj= attr['object']
+    shelf = attr['shelf']
+    obj = attr['object']
     shelf_quantity = attr['shelf'].quantity
     unit = attr['measurement_unit']
     shelf_unit = attr['shelf'].measurement_unit
     shelf_infinity = attr['shelf'].infinity_quantity
-    #discard = attr['marked_as_discard'] if 'marked_as_discard' and attr else False
+    # discard = attr['marked_as_discard'] if 'marked_as_discard' and attr else False
 
     if unit != shelf_unit and shelf_unit:
         errors.update({'measurement_unit': _("Measurement unit can't different than shelf measurement unit")})
     if total > shelf_quantity and not shelf_infinity:
-        errors.update({'quantity': _("Quantity can't greater than shelf quantity limit %(limit)s")%{
+        errors.update({'quantity': _("Quantity can't greater than shelf quantity limit %(limit)s") % {
             'limit': shelf_quantity,
         }})
     if shelf.limit_only_objects:
-        if shelf.available_objects_when_limit.filter(pk=obj.pk).exists()==False:
+        if not shelf.available_objects_when_limit.filter(pk=obj.pk).exists():
             errors.update({'object': _("Object is not available in these shelf")})
-
 
     if errors:
         raise serializers.ValidationError(errors)
@@ -208,6 +232,9 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
 
 
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
+    # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
+    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
+
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),
                                                 required=True)
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -219,17 +246,28 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
+    container = serializers.PrimaryKeyRelatedField(many=False, required=True, queryset=ShelfObject.objects.none())
 
     class Meta:
         model = ShelfObject
         fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit', 'limit_quantity', "course_name",
-                  'marked_as_discard', 'batch']
+                  'marked_as_discard', 'batch', 'container']
 
     def validate(self, data):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
 
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        # allow select only available containers
+        fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
+        return fields
+
+
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
+    # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
+    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
+
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
                                                required=True)
@@ -242,15 +280,23 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
+    container = serializers.PrimaryKeyRelatedField(many=False, required=True, queryset=ShelfObject.objects.none())
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity",
-                  "measurement_unit", "marked_as_discard", "course_name", 'batch']
+                  "measurement_unit", "marked_as_discard", "course_name", 'batch', 'container']
 
     def validate(self, data):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        # allow select only available containers
+        fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
+        return fields
+
 
 class MaterialShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -275,6 +321,7 @@ class MaterialShelfObjectSerializer(serializers.ModelSerializer):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
 
+
 class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -286,7 +333,7 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
-    marked_as_discard = serializers.BooleanField(default=False, required=False)
+    marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
@@ -297,6 +344,7 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
     def validate(self, data):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
+
 
 class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -321,6 +369,7 @@ class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
         attr = super().validate(data)
         return validate_measurement_unit_and_quantity(self, data, attr)
 
+
 class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -332,7 +381,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
                                                           queryset=Catalog.objects.using(settings.READONLY_DATABASE),
                                                           required=True)
-    marked_as_discard = serializers.BooleanField(default=False, required=False)
+    marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
@@ -346,10 +395,10 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
 
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
     amount_to_transfer = serializers.FloatField(min_value=0.1)
     mark_as_discard = serializers.BooleanField(default=False)
-    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.all())
+    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
@@ -362,7 +411,7 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
 
 
 class ShelfObjectDeleteSerializer(serializers.Serializer):
-    shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
+    shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelfobj(self, value):
         attr = super().validate(value)
@@ -378,10 +427,10 @@ class ValidateShelfSerializer(serializers.Serializer):
 
     def validate_shelf(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
-        if attr.furniture.labroom.laboratory_id != source_laboratory_id:
+        laboratory_id = self.context.get("laboratory_id")
+        if attr.furniture.labroom.laboratory_id != laboratory_id:
             logger.debug(f'ValidateShelfSerializer --> attr.furniture.labroom.laboratory_id '
-                         f'({attr.furniture.labroom.laboratory_id}) != source_laboratory_id ({source_laboratory_id})')
+                         f'({attr.furniture.labroom.laboratory_id}) != laboratory_id ({laboratory_id})')
             raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
         return attr
 
@@ -437,7 +486,6 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer, serializers.ModelSe
 
 
 class ShelfSerializer(serializers.ModelSerializer):
-
     type = serializers.SerializerMethodField()
     quantity = serializers.SerializerMethodField()
     measurement_unit = serializers.SerializerMethodField()
@@ -484,16 +532,6 @@ class ShelfSerializer(serializers.ModelSerializer):
                   'percentage_storage_status']
 
 
-class ShelfObjectContainerSerializer(serializers.ModelSerializer):
-    container = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.filter(type=1).using(
-        settings.READONLY_DATABASE), required=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.all())
-
-    class Meta:
-        model = ShelfObjectContainer
-        fields = '__all__'
-
-
 class ShelfObjectStatusSerializer(serializers.Serializer):
     description = serializers.CharField(allow_blank=False, required=True)
 
@@ -504,7 +542,7 @@ class TransferObjectSerializer(serializers.ModelSerializer):
     quantity = serializers.SerializerMethodField()
 
     def get_object(self, obj):
-        return obj.object.object.name
+        return {"name": obj.object.object.name, "type": obj.object.object.get_type_display()}
 
     def get_laboratory_send(self, obj):
         return obj.laboratory_send.name
@@ -532,15 +570,13 @@ class ShelfObjectObservationSerializer(serializers.ModelSerializer):
         fields = ['id', 'action_taken', 'description', 'creator_name', 'creation_date']
 
     def get_creator_name(self, obj):
-        if obj.creator:
-            name = obj.creator.get_full_name()
+        if obj.created_by:
+            name = obj.created_by.get_full_name()
             if name:
                 return name
             else:
-                return obj.creator.username
+                return obj.created_by.username
         return "No creator"
-
-
 
 
 class ShelfObjectObservationDataTableSerializer(serializers.Serializer):
@@ -548,17 +584,6 @@ class ShelfObjectObservationDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
-class TransferObjectDenySerializer(serializers.Serializer):
-    transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.filter(status=REQUESTED))
-
-    def validate_transfer_object(self, value):
-        attr = super().validate(value)
-        if attr.laboratory_received_id != self.context.get('laboratory_id'):
-            logger.debug(f'TransferObjectDeleteSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
-                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
-            raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
-        return attr
 
 
 class UpdateShelfObjectStatusSerializer(serializers.Serializer):
@@ -572,8 +597,9 @@ class UpdateShelfObjectStatusSerializer(serializers.Serializer):
     def validate_shelf_object(self, value):
         attr = super().validate(value)
         if attr.in_where_laboratory_id != self.context.get('laboratory_id'):
-            logger.debug(f'UpdateShelfObjectStatusSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '
-                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
+            logger.debug(
+                f'UpdateShelfObjectStatusSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) '
+                f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Object does not exist in the laboratory."))
         return attr
 
@@ -635,7 +661,8 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         if shelf.measurement_unit != shelf_object.measurement_unit:
             logger.debug(
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError({'shelf': _("Object can't be moved to shelf with different measurement unit")})
+            raise serializers.ValidationError(
+                {'shelf': _("Object can't be moved to shelf with different measurement unit")})
 
         return data
 
@@ -643,10 +670,167 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
+
 class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
     OBJTYPE_CHOICES = (
         ("0", 'Reactive'),
         ("1", 'Material'),
         ("2", 'Equipment'))
-    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.all(), required=True)
+    shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
     objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
+
+
+class TransferInSerializer(ValidateShelfSerializer):
+    # inherits the shelf field and its validation from parent serializer
+
+    transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.using(settings.READONLY_DATABASE).filter(status=REQUESTED))
+
+    def validate_transfer_object(self, value):
+        attr = super().validate(value)
+        if attr.laboratory_received_id != self.context.get('laboratory_id'):
+            logger.debug(f'TransferInSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
+                         f'!= laboratory_id ({self.context.get("laboratory_id")})')
+            raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
+        return attr
+
+
+class ShelfObjectPk(serializers.Serializer):
+    search = serializers.CharField(min_length=4)
+
+    def validate_search(self, value):
+        attr = super().validate(value)
+        if not re.findall('pk?=?(\d+)', attr):
+            raise serializers.ValidationError(_("Invalid search"))
+        return attr
+
+
+class SearchShelfObjectSerializer(serializers.Serializer):
+    labroom = serializers.PrimaryKeyRelatedField(queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE),
+                                                 allow_null=True, allow_empty=True, required=False)
+    furniture = serializers.PrimaryKeyRelatedField(queryset=Furniture.objects.using(settings.READONLY_DATABASE),
+                                                   allow_null=True, allow_empty=True, required=False)
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE),
+                                               allow_null=True, allow_empty=True, required=False)
+    shelfobject = serializers.PrimaryKeyRelatedField(
+        queryset=ShelfObject.objects.filter(containershelfobject=None).using(settings.READONLY_DATABASE),
+        allow_null=True, allow_empty=True, required=False)
+
+    def validate_laboratory(self, lab_pk, obj_name):
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if lab_pk != source_laboratory_id:
+            raise serializers.ValidationError(_("%s doesn't exists in this laboratory") % (obj_name))
+
+    def validate_labroom_data(self, data):
+        if 'labroom' in data:
+            self.validate_laboratory(data['labroom'].laboratory_id, "Laboratory room")
+
+    def validate_furniture_data(self, data):
+        if 'furniture' in data:
+            self.validate_laboratory(data['furniture'].labroom.laboratory_id, "Furniture")
+
+            if 'labroom' in data and data['furniture'].labroom.pk != data['labroom'].pk:
+                raise serializers.ValidationError({'furniture': _("Furniture doesn't exists in this laboratory room")})
+
+    def validate_shelf_data(self, data):
+        if 'shelf' in data:
+            self.validate_laboratory(data['shelf'].furniture.labroom.laboratory_id, "Shelf")
+
+            if 'furniture' in data and data['shelf'].furniture.pk != data['furniture'].pk:
+                raise serializers.ValidationError({'shelf': _("Shelf doesn't exists in this furniture")})
+
+            if 'labroom' in data and data['labroom'].pk != data['shelf'].furniture.labroom.pk:
+                raise serializers.ValidationError({'shelfobject': _("Shelf doesn't exists in this labroom")})
+
+    def validate_shelfobject_data(self, data):
+        if 'shelfobject' in data:
+            self.validate_laboratory(data['shelfobject'].in_where_laboratory_id, "Object")
+
+            if 'shelf' in data and data['shelfobject'].shelf.pk != data['shelf'].pk:
+                raise serializers.ValidationError({'shelfobject': _("Object doesn't exists in this shelf")})
+
+            if 'furniture' in data and data['furniture'].pk != data['shelfobject'].shelf.furniture.pk:
+                raise serializers.ValidationError({'shelfobject': _("Object doesn't exists in this furniture")})
+
+            if 'labroom' in data and data['labroom'].pk != data['shelfobject'].shelf.furniture.labroom.pk:
+                raise serializers.ValidationError({'shelfobject': _("Object doesn't exists in this labroom")})
+
+    def validate(self, data):
+        self.validate_labroom_data(data)
+        self.validate_furniture_data(data)
+        self.validate_shelf_data(data)
+        self.validate_shelfobject_data(data)
+        return data
+
+
+class SearchShelfObjectSerializerMany(serializers.Serializer):
+    labroom = serializers.PrimaryKeyRelatedField(queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE),
+                                                 allow_null=True, allow_empty=True, required=False, many=True)
+    furniture = serializers.PrimaryKeyRelatedField(queryset=Furniture.objects.using(settings.READONLY_DATABASE),
+                                                   allow_null=True, allow_empty=True, required=False, many=True)
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE),
+                                               allow_null=True, allow_empty=True, required=False, many=True)
+    shelfobject = serializers.PrimaryKeyRelatedField(
+        queryset=ShelfObject.objects.filter(containershelfobject=None).using(settings.READONLY_DATABASE),
+        allow_null=True, allow_empty=True, required=False, many=True)
+
+    object = serializers.PrimaryKeyRelatedField(
+        queryset=Object.objects.using(settings.READONLY_DATABASE), allow_null=True, allow_empty=True, required=False, many=True)
+
+    def validate_laboratory(self, lab_pk, obj_name):
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if lab_pk != source_laboratory_id:
+            raise serializers.ValidationError(_("%s doesn't exists in this laboratory") % (obj_name))
+
+    def validate_labroom_data(self, data):
+        if 'labroom' in data:
+            for labroom in data['labroom']:
+                self.validate_laboratory(labroom.laboratory_id, "Laboratory room")
+
+    def validate_furniture_data(self, data):
+        if 'furniture' in data:
+            for furniture in data['furniture']:
+                self.validate_laboratory(furniture.labroom.laboratory_id, "Furniture")
+
+    def validate_shelf_data(self, data):
+        if 'shelf' in data:
+            for shelf in data['shelf']:
+                self.validate_laboratory(shelf.furniture.labroom.laboratory_id, "Shelf")
+
+    def validate_shelfobject_data(self, data):
+        if 'shelfobject' in data:
+            for shelfobject in data['shelfobject']:
+                self.validate_laboratory(shelfobject.in_where_laboratory_id, "ShelfObject")
+
+    def validate_object_data(self, data):
+        if 'object' in data:
+            for object in data['object']:
+                lab_pk = self.context.get("source_laboratory_id")
+                shelf_object = ShelfObject.objects.filter(object=object, in_where_laboratory=lab_pk)
+                if not shelf_object.exists():
+                    raise serializers.ValidationError(_("Object doesn't exists in this laboratory"))
+
+    def validate(self, data):
+        self.validate_labroom_data(data)
+        self.validate_furniture_data(data)
+        self.validate_shelf_data(data)
+        self.validate_shelfobject_data(data)
+        self.validate_object_data(data)
+        return data
+
+
+class TransferInApproveWithContainerSerializer(TransferInSerializer, ContainerSerializer):
+    TRANSFER_IN_CONTAINER_SELECT_CHOICES = [
+        ('clone', _('Create new based on selected')),
+        ('available', _('Use selected')),
+        ('use_source', _('Move the container from the source laboratory')),
+        ('new_based_source', _('Create new based on current container in the source laboratory'))
+    ]
+    container_select_option = serializers.ChoiceField(required=True, choices=TRANSFER_IN_CONTAINER_SELECT_CHOICES)
+
+    def validate(self, data):
+        container_select_option = data['container_select_option']
+        transfer_object = data['transfer_object']
+        if container_select_option == 'use_source' and transfer_object.quantity != transfer_object.object.quantity:
+            raise serializers.ValidationError({"container_select_option":
+                _("Source container cannot be moved since the entire quantity available for the object was not transferred in.")})
+        return data

@@ -3,7 +3,7 @@
 {% load user_rol_tags %}
 {% load urlname_tags %}
 {% block pre_head %}
-     {% define_urlname_action 'copy_rols' %}
+{% define_urlname_action 'copy_rols' %}
 {% endblock %}
 
 {% block content %}
@@ -11,29 +11,33 @@
 
 <div class="list-group">
 
-{% for object in object_list %}
-    <div class="row p-1 border-bottom border-dark">
-        <div class="col-11">
-         <a  data-bs-toggle="collapse" href="#coll_{{object.pk}}" role="button" aria-expanded="false" aria-controls="coll_{{object.pk}}"> {{object.pk}} -- {{object.name}}</a>
-        </div>
+	{% for object in object_list %}
+	<div class="row p-1 border-bottom border-dark">
+		<div class="col-11">
+			<a data-bs-toggle="collapse" href="#coll_{{object.pk}}" role="button" aria-expanded="false"
+						aria-controls="coll_{{object.pk}}"> {{object.pk}} -- {{object.name}}</a>
+		</div>
 
-        {% if perms.auth_and_perms.delete_rol %}
-        <div class="col-1">
-            <a href="{% url 'auth_and_perms:del_rol_by_org' org_pk object.pk %}" class="text-danger"><i class="fa fa-close"></i></a>
-        </div>
-        {% endif %}
+		{% if perms.auth_and_perms.delete_rol %}
+		<div class="col-1">
+			<a href="{% url 'auth_and_perms:del_rol_by_org' org_pk object.pk %}" class="text-danger"><i class="fa fa-close"></i></a>
+		</div>
+		{% endif %}
 
-    <div class="collapse" id="coll_{{object.pk}}">
-      <div class="card card-body">
-          <div class="row border border-primary">
-            {% for perm in object.permissions.all %}
-              <div class="col-4 {% cycle 'border-primary' 'border-secondary' 'border-success' 'border-danger' 'border-warning' 'border-info' 'border-dark' %} border-end border-bottom">   {{perm.name }}</div>
-            {% endfor %}
-          </div>
-      </div>
-    </div>
-</div>
-    {% endfor %}
+		<div class="collapse" id="coll_{{object.pk}}">
+			<div class="card card-body">
+				<div class="row border border-primary">
+					{% for perm in object.permissions.all %}
+					<div
+						class="col-4 {% cycle 'border-primary' 'border-secondary' 'border-success' 'border-danger' 'border-warning' 'border-info' 'border-dark' %} border-end border-bottom">
+						{{perm.content_type.app_label }}.{{perm.codename }}
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
 
 
 </div>

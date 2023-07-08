@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings label_tags %}
+{% load timejs %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+{% define_true  "use_datatables" %}
+{% define_urlname_action 'detail_substance' %}
+{% define_urlname_action 'security_leaf_pdf' %}
+{% define_urlname_action 'get_preview' %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col-md-8">
+		<div class="page-header col-sm-13" align="center">
+			<h3>{% trans 'List of Substances' %}</h3>
+		</div>
+	</div>
+</div>
+<div class="row justify-content-left">
+	<div class="col-6 align-self-left">
+		<div class="panel-tag">
+			<div class="form-group">
+				<label for="showapprove">{% trans 'Show approved substances' %}</label>
+				No
+				<input id="showapprove" type="checkbox" data-widget="YesNoInput" {% if showapprove %}checked{%endif%}>
+				{% trans 'Yes' %}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-md-12">
+		<table id="substancetable" class="table table-sm table-striped w-100"></table>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-lg" id="svgtemplate" tabindex="-1"
+					role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="stylo modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{% trans 'Preview' %}</h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body text-center">
+				<img>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade bs-example-modal-sm" id="review_substance" tabindex="-1"
+					role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="stylo modal-dialog modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{% trans 'Substance' %}</h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form action="" method="post">
+					{% csrf_token %}
+					{{form.as_inline}}
+					<button class="btn btn-success"><i class="icons fa fa-check"></i> {% trans 'Approve'%}</button>
+				</form>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+<script>
+	document.datetime_format="{% get_datetime_format %}";
+	document.urls = {
+			review_datatable_url: "{% url 'sga:api-reviewsubstance-list' org_pk=org_pk %}",
+	}
+    document.url_get_preview = "{% url 'sga:get_preview' org_pk 0 %}";
+</script>
+<script type="text/javascript" src="{% static 'sga/js/review_flow_substance.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}?v={% get_organilab_version %}"></script>
+
+
+{% endblock %}

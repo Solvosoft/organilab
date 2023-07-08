@@ -48,7 +48,10 @@ class ReservationsTest(TestCase):
         self.assertTrue(json.loads(response.content)['product_name']=='Embudo espiga corta 10 cm')
 
     def test_validate_reservation(self):
-        response = self.client.get(reverse('reservations_management:validate_reservation', kwargs=self.url_attr)+'?id=1')
+        data = {
+            'id': 1
+        }
+        response = self.client.get(reverse('reservations_management:validate_reservation', kwargs=self.url_attr), data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(json.loads(response.content)['is_valid']==False)
 

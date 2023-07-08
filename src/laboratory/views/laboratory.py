@@ -8,7 +8,6 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.query_utils import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import get_template
@@ -22,11 +21,12 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile, ProfilePermission
 from laboratory import utils
-from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, OrganizationUserManagementForm, \
+from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, \
+    OrganizationUserManagementForm, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
-from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, OrganizationStructureRelations, \
+from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, \
     UserOrganization
-from laboratory.utils import organilab_logentry
+from laboratory.utils import organilab_logentry, get_laboratories_by_user_profile
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -168,14 +168,14 @@ class LaboratoryListView(ListView):
     ordering = ['name']
 
     def get_queryset(self):
-        queryset = OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.org)
-        rel_lab = OrganizationStructureRelations.objects.filter(organization=self.org,
-                                                                content_type__app_label='laboratory',
-                                                                content_type__model='laboratory').values_list(
-            'object_id', flat=True)
-
-        filters = Q(organization__pk=self.org, profile__user=self.request.user) | Q(pk__in=rel_lab)
-        queryset = queryset.filter(filters).distinct()
+        laboratories = get_laboratories_by_user_profile(self.request.user, self.org)
+        pp=ProfilePermission.objects.filter(
+            profile=self.request.user.profile,
+            content_type__app_label=self.model._meta.app_label,
+            content_type__model = self.model._meta.model_name,
+            object_id__in=laboratories
+        ).distinct('object_id').values_list('object_id', flat=True)
+        queryset=self.model.objects.filter(pk__in=pp)
         q = self.request.GET.get('search_fil', '')
         if q != "":
             queryset = queryset.filter(name__icontains=q)

@@ -1,15 +1,15 @@
 {% for comment in comments %}
 <div>
     <div class="row" style="border-radius:10px;">
-        <div class="{% if comment.creator == user %}col-sm-10{% else %} offset-md-2 col-sm-9 {% endif %} bg-light p-2">
+        <div class="{% if comment.created_by == user %}col-sm-10{% else %} offset-md-2 col-sm-9 {% endif %} bg-light p-2">
             <div class="float-start" style="font-weight: bold;">
-                {% if comment.creator == user %}
-                    {{comment.creator}}
+                {% if comment.created_by == user %}
+                    {{comment.created_by}}
                 {% else %} Desconocido {% endif %}
 
             </div>
             <div class="float-end">
-                <div class="text-end" style="top:0;">{% if comment.creator == user %}
+                <div class="text-end" style="top:0;">{% if comment.created_by == user %}
                     <i  class="fa fa-edit beditbtn" onclick="edit_comment({{comment.pk}})"></i>
                     <i  class="fa fa-trash deletebtn" onclick="delete_comment({{comment.pk}})"></i>{% endif %}</div>
                 <div>

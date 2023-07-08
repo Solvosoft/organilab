@@ -64,3 +64,41 @@ ul, #ullabroom {
     margin-left: auto;
     margin-right: auto;
 }
+
+div.representation_obj{
+    height: 12px;
+    width: 12px;
+    display: inline-block;
+    border-radius: 6px;
+}
+
+div.labroom_color{
+    background-color: #b8e4ff;
+}
+
+div.furniture_color{
+    background-color: #ff85d5;
+}
+
+div.shelf_color{
+    background-color: #ffe180;
+}
+
+div.shelfobject_color{
+    background-color: #95fab9;
+}
+
+div.object_color{
+    background-color: #f4fab4;
+}
+
+ul.colors_list {
+    text-align: left;
+    margin-left: 0%;
+    padding-left: 0%;
+}
+
+.alert {
+    color: #5A738E;
+    background-color: #e9ecef;
+}

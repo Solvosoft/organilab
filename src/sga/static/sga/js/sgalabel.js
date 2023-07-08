@@ -57,9 +57,9 @@ $("#id_substance").on('change', function(){
             url: url,
             type: 'GET',
             success: function(result) {
-              clean_complementform("#complementcontainer", ['warningword', 'pictograms']);
+              clean_complementform("#complementcontainer", ['warningword']);
               if(result){
-                update_complement_form(result, "#complementcontainer", ['warningword', 'pictograms']);
+                update_complement_form(result, "#complementcontainer", ['warningword']);
               }
             },
             error: function(xhr, resp, text) {

@@ -4,12 +4,11 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import TaggingInput
 
-from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, PersonalTemplateSGA, \
-    BuilderInformation, Label, SGAComplement, Provider, Pictogram
+from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, DisplayLabel, \
+    BuilderInformation, Label, SGAComplement, Provider
 
 
 class PersonalTemplateForm(GTForm):
@@ -20,7 +19,7 @@ class PersonalTemplateForm(GTForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(PersonalTemplateForm, self).__init__(*args, **kwargs)
-        filter = Q(community_share=True) | Q(creator=user)
+        filter = Q(community_share=True) | Q(created_by=user)
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
 
 
@@ -41,7 +40,7 @@ class PersonalEditorForm(forms.ModelForm, GTForm):
                                             label=_("Recipient size"))
 
     class Meta:
-        model = PersonalTemplateSGA
+        model = DisplayLabel
         fields = ('name',  'json_representation', 'preview', 'recipient_size')
         widgets = {
             'name': genwidgets.TextInput,
@@ -86,7 +85,7 @@ class PersonalForm(GTForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(PersonalForm, self).__init__(*args, **kwargs)
-        filter = Q(community_share=True) | Q(creator=user)
+        filter = Q(community_share=True) | Q(created_by=user)
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
         self.fields['address'].widget.attrs['rows'] = 4
         self.fields['commercial_information'].widget.attrs['rows'] = 4
@@ -111,7 +110,7 @@ class PersonalFormAcademic(GTForm):
         user = kwargs.pop('user')
         substance = kwargs.pop('substance')
         super(PersonalFormAcademic, self).__init__(*args, **kwargs)
-        filter = Q(community_share=True) | Q(creator=user)
+        filter = Q(community_share=True) | Q(created_by=user)
         self.fields['substance'].initial = substance
         self.fields['template'].queryset = TemplateSGA.objects.filter(filter)
         self.fields['address'].widget.attrs['rows'] = 4
@@ -122,7 +121,7 @@ class PersonalSGAForm(forms.ModelForm, GTForm):
     recipient_size = forms.ModelChoiceField(widget=genwidgets.Select, queryset=RecipientSize.objects.all(), required=True)
 
     class Meta:
-        model = PersonalTemplateSGA
+        model = DisplayLabel
         fields = ['name', 'json_representation', 'preview', 'recipient_size']
         widgets = {
             'name': genwidgets.TextInput,
@@ -132,7 +131,7 @@ class PersonalSGAForm(forms.ModelForm, GTForm):
 
 class PersonalSGAAddForm(forms.ModelForm, GTForm):
     class Meta:
-        model = PersonalTemplateSGA
+        model = DisplayLabel
         fields = ['logo', 'barcode']
         exclude = ['user']
         widgets = {
@@ -204,12 +203,11 @@ class RecipientSizeForm(forms.ModelForm, GTForm):
 class SGAComplementsForm(forms.ModelForm, GTForm):
     class Meta:
         model = SGAComplement
-        fields = ('prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
-        order_fields = ('prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        fields = ('prudence_advice', 'danger_indication', 'warningword',   'other_dangers')
+        order_fields = ('prudence_advice', 'danger_indication', 'warningword',  'other_dangers')
         widgets = {
             'prudence_advice': AutocompleteSelectMultiple('prudencesearch'),
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
-            'pictograms': genwidgets.SelectMultiple,
             'warningword': genwidgets.Select,
             'substance': genwidgets.HiddenInput,
             'other_dangers': genwidgets.Textarea
@@ -238,28 +236,9 @@ class ProviderSGAForm(forms.ModelForm, GTForm):
         }
 
 
-class PictogramForm(forms.ModelForm, GTForm):
-    image_upload = forms.CharField(max_length=100, widget=forms.HiddenInput, required=False)
-
-    def __init__(self, *args, **kwargs):
-        super(PictogramForm, self).__init__(*args, **kwargs)
-        self.fields['warning_word'].required = False
-
-    class Meta:
-        model = Pictogram
-        fields = '__all__'
-        exclude = ['id_pictogram']
-        widgets = {
-            "name": genwidgets.TextInput(),
-            "warning_word": genwidgets.Select(),
-            "image": FileChunkedUpload,
-            'upload_by': genwidgets.HiddenInput
-        }
-
-
 class SGALabelForm(forms.ModelForm, GTForm):
     class Meta:
-        model = PersonalTemplateSGA
+        model = DisplayLabel
         fields = ['name', 'template']
         widgets = {
             "name": genwidgets.TextInput(),
@@ -279,12 +258,12 @@ class SGALabelComplementsForm(forms.ModelForm, GTForm):
 
     class Meta:
         model = SGAComplement
-        fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
-        order_fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword', 'pictograms', 'other_dangers')
+        fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword',  'other_dangers')
+        order_fields = ('substance', 'prudence_advice', 'danger_indication', 'warningword',  'other_dangers')
         widgets = {
             'prudence_advice': AutocompleteSelectMultiple('prudencesearch'),
             'danger_indication': AutocompleteSelectMultiple('dangersearch'),
-            'pictograms': genwidgets.SelectMultiple,
+
             'warningword': genwidgets.Select,
             'substance': genwidgets.Select,
             'other_dangers': genwidgets.Textarea
@@ -336,3 +315,7 @@ class CompanyForm(forms.ModelForm, GTForm):
             'user': genwidgets.HiddenInput
 
         }
+
+
+class ValidateReviewSubstanceForm(forms.Form):
+    showapprove = forms.BooleanField(required=False)

@@ -9,11 +9,11 @@ from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Rol
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.forms import ValidateShelfForm
-from laboratory.models import Object, Catalog, Provider, OrganizationStructure, Laboratory
+from laboratory.models import Object, Catalog, Provider, OrganizationStructure, Laboratory, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
+from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
 from django.conf import settings
 
 
@@ -112,32 +112,55 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-@register_lookups(prefix="recipientsearch", basename="recipientsearch")
-class RecipientModelLookup(generics.RetrieveAPIView, BaseSelect2View):
-    model = Object
-    fields = ['code', 'name']
+@register_lookups(prefix="available-container-search", basename="available-container-search")
+class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = ShelfObject
+    fields = ['object__name', 'object__code']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
-    org = None
     laboratory = None
+    
+    def get_text_display(self, obj):
+        return f"{obj.object.code} {obj.object.name}"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
-        if self.org_pk and self.laboratory:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
-            queryset = queryset.filter(organization__in=organizations, type=1,
-                                       shelfobject__in_where_laboratory=self.laboratory)
+        if self.laboratory:
+            queryset = get_available_containers_for_selection(self.laboratory)
         else:
-            queryset = queryset.none()
+            queryset = ShelfObject.objects.none()
         return queryset
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
         if self.serializer.is_valid():
-            self.org_pk = self.serializer.validated_data['organization']
             self.laboratory = self.serializer.validated_data['laboratory']
+            return super().list(request, *args, **kwargs)
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+        
+@register_lookups(prefix="container-for-cloning-search", basename="container-for-cloning-search")
+class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
+    model = Object
+    fields = ['name', 'code']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer = None
+    org = None
+
+    def get_queryset(self):
+        if self.org:
+            queryset = get_containers_for_cloning(self.org.pk)
+        else:
+            queryset = Object.objects.none()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
+        if self.serializer.is_valid():
+            self.org = self.serializer.validated_data['organization']
             return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',
@@ -199,7 +222,7 @@ class ProviderLookup(BaseSelect2View):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 @register_lookups(prefix="objectorgavailable", basename="objectorgavailable")
-class ObjectAvailbeloLookup(BaseSelect2View):
+class ObjectAvailableLookup(BaseSelect2View):
     model = Object
     fields = ['code', 'name']
     org_pk = None

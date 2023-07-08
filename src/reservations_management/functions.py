@@ -3,10 +3,15 @@ import pytz
 from collections import namedtuple
 
 from django.contrib.admin.models import CHANGE
+from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework import status
 
-from laboratory.models import ShelfObject
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.models import ShelfObject, OrganizationStructure
 from laboratory.utils import organilab_logentry
+from .api.serializers import ValidateReservedProductsSerializer, ValidateReservedProductsAmountSerializer
 from .models import Reservations, ReservedProducts, ReservationTasks
 from .tasks import decrease_stock
 
@@ -269,8 +274,12 @@ def get_related_data_sets(requested_product):
         'related_different_reserved_products_list': related_different_reserved_products_list
     }
 
-
+@permission_required('laboratory.change_shelfobject')
 def validate_reservation(request, org_pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+
     is_valid = True
     # New posible product to add in the reservation
     products_to_request = []
@@ -278,89 +287,102 @@ def validate_reservation(request, org_pk):
     available_quantity_for_current_requested_product = 0
 
     if request.method == 'GET':
-        requested_product = ReservedProducts.objects.get(pk=request.GET['id'])
-        requested_initial_date = requested_product.initial_date
-       
-        if requested_initial_date - timedelta(hours=6) >= pytz.UTC.localize(datetime.now()):
+        serializer = ValidateReservedProductsSerializer(data=request.GET, context={'organization_id': org_pk})
 
-            requested_final_date = requested_product.final_date
-            requested_amount_required = requested_product.amount_required
-            requested_product_quantity = requested_product.shelf_object.quantity
-            available_quantity_for_current_requested_product = requested_amount_required
+        if serializer.is_valid():
 
-            # Data sets related with the requested product
-            data_sets = get_related_data_sets(requested_product)
+            requested_product = serializer.validated_data['id']
+            requested_initial_date = requested_product.initial_date
 
-            # Quantity of product that has been already reserved
-            reserved_product_quantity = verify_reserved_products_overlap(
-                requested_product,
-                data_sets['related_reserved_products_list']
-            )
+            if requested_initial_date - timedelta(hours=6) >= pytz.UTC.localize(datetime.now()):
 
-            # If there is reserved product or there is not enough product -> is necessary to verify if the stock of other reserved producst related to the quantity I want is enough
-            if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
+                requested_amount_required = requested_product.amount_required
+                requested_product_quantity = requested_product.shelf_object.quantity
+                available_quantity_for_current_requested_product = requested_amount_required
 
-                # Indicates how much quantity of product is neccesary to complete the reservation (negative number represents a lack of product)
-                product_missing_amount = \
-                    requested_product_quantity - \
-                    (reserved_product_quantity + requested_amount_required)
+                # Data sets related with the requested product
+                data_sets = get_related_data_sets(requested_product)
 
-                if product_missing_amount >= 0:
-                    available_quantity_for_current_requested_product = requested_amount_required
-                    product_missing_amount = 0
+                # Quantity of product that has been already reserved
+                reserved_product_quantity = verify_reserved_products_overlap(
+                    requested_product,
+                    data_sets['related_reserved_products_list']
+                )
 
-                elif product_missing_amount < 0:
-                    available_quantity_for_current_requested_product = (
-                        requested_product_quantity - reserved_product_quantity)
+                # If there is reserved product or there is not enough product -> is necessary to verify if the stock of other reserved producst related to the quantity I want is enough
+                if reserved_product_quantity > 0 or (requested_product_quantity - requested_amount_required) < 0:
 
-                    product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
-                        requested_product,
-                        product_missing_amount,
-                        data_sets['related_different_reserved_products_list']
-                    )
+                    # Indicates how much quantity of product is neccesary to complete the reservation (negative number represents a lack of product)
+                    product_missing_amount = \
+                        requested_product_quantity - \
+                        (reserved_product_quantity + requested_amount_required)
 
-                    # Stores the new possible products to request
-                    products_to_request += new_products_to_request
+                    if product_missing_amount >= 0:
+                        available_quantity_for_current_requested_product = requested_amount_required
+                        product_missing_amount = 0
 
-                # verifico si en los productos disponibles que no estan reservados puedo agarrar algo
-                # If there is not enough quantity in the reserved products and I have product missing -> verify if in the available products that have not been reserved there is enough quantity
-                if product_missing_amount < 0:
-                    product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
-                        requested_product,
-                        product_missing_amount,
-                        data_sets['related_available_shelf_objects']
-                    )
+                    elif product_missing_amount < 0:
+                        available_quantity_for_current_requested_product = (
+                            requested_product_quantity - reserved_product_quantity)
 
-                    products_to_request += new_products_to_request
+                        product_missing_amount, is_valid, new_products_to_request = verify_reserved_shelf_objects_stock(
+                            requested_product,
+                            product_missing_amount,
+                            data_sets['related_different_reserved_products_list']
+                        )
 
-                if product_missing_amount == 0 and is_valid:
-                    for new_requested_product in products_to_request:
-                        new_requested_product.save()
-                        add_decrease_stock_task(new_requested_product)
-                else:
-                    products_to_request.clear()
-        else:
-            is_valid = False
-            available_quantity_for_current_requested_product = -1
+                        # Stores the new possible products to request
+                        products_to_request += new_products_to_request
+
+                    # verifico si en los productos disponibles que no estan reservados puedo agarrar algo
+                    # If there is not enough quantity in the reserved products and I have product missing -> verify if in the available products that have not been reserved there is enough quantity
+                    if product_missing_amount < 0:
+                        product_missing_amount, is_valid, new_products_to_request = verify_available_shelf_objects_stock(
+                            requested_product,
+                            product_missing_amount,
+                            data_sets['related_available_shelf_objects']
+                        )
+
+                        products_to_request += new_products_to_request
+
+                    if product_missing_amount == 0 and is_valid:
+                        for new_requested_product in products_to_request:
+                            new_requested_product.save()
+                            add_decrease_stock_task(new_requested_product)
+                    else:
+                        products_to_request.clear()
+            else:
+                is_valid = False
+                available_quantity_for_current_requested_product = -1
 
     return JsonResponse({
         'is_valid': is_valid,
         'available_quantity': available_quantity_for_current_requested_product
     })
 
-
+@permission_required('laboratory.change_shelfobject')
 def increase_stock(request, org_pk):
-    # Validate if is possible to compute the sum
     was_increase = False
-    if request.method == 'GET':
-        product = ReservedProducts.objects.get(id=request.GET['id'])
-        amount_to_return = float(request.GET['amount_to_return'])
 
-        if (product.amount_required >= product.amount_returned + amount_to_return) and amount_to_return > 0:
-            product.shelf_object.quantity += amount_to_return
-            was_increase = True
-            product.shelf_object.save()
-            organilab_logentry(request.user, product.shelf_object, CHANGE, relobj=product.shelf_object)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+
+    # Validate if is possible to compute the sum
+    if request.method == 'GET':
+
+        serializer = ValidateReservedProductsAmountSerializer(data=request.GET, context={'organization_id': org_pk})
+
+        if serializer.is_valid():
+
+            product = serializer.validated_data['id']
+            amount_to_return = serializer.validated_data['amount_to_return']
+
+            if (product.amount_required >= product.amount_returned + amount_to_return):
+                product.shelf_object.quantity += amount_to_return
+                was_increase = True
+                product.shelf_object.save()
+                organilab_logentry(request.user, product.shelf_object, CHANGE, relobj=product.shelf_object)
 
     return JsonResponse({'was_increase': was_increase})
 

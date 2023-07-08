@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load gtsettings i18n static %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'security_leaf_pdf' %}
+    {% define_urlname_action 'substance_management' %}
+{% endblock %}
+
+{% block title %}{% trans 'List of Substances' %}{% endblock %}
+{% block container %}container-fluid{% endblock %}
+{% block content %}
+<input type="hidden" name="organization" id="id_organization" value="{{org_pk}}">
+<div class="row">
+<div class="offset-md-2 col-md-8">
+        <div class="page-header" align="center">
+          <h3 class="heading-1" ><span> {% trans 'List of Substances' %}  </span></h3>
+        </div>
+</div>
+</div>
+
+<div class="row">
+<table class="table table-striped" id="substance_table"></table>
+</div>
+
+{% endblock %}
+
+{% block js %}
+{{block.super}}
+<script>
+document.urls = {
+    substance_table_url: "{% url 'sga:api-substance-list' org_pk=org_pk %}",
+    substance_delete: "{% url 'sga:api-substance-detail' pk=0 org_pk=org_pk %}",
+    substance_create: "{% url 'sga:create_sustance' org_pk=org_pk %}"
+}
+</script>
+<script type="text/javascript" src="{% static 'sga/js/list_substance.js'%}?v={% get_organilab_version %}"></script>
+
+{%endblock %}

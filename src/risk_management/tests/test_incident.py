@@ -48,7 +48,7 @@ class IncidentReportTest(TestCase):
         del self.url_attr['lab_pk']
         self.assertRedirects(response, reverse('riskmanagement:riskzone_list', kwargs=self.url_attr))
 
-    def test_add_incident(self):
+    def test_update_incident(self):
         self.url_attr['pk']=IncidentReport.objects.last().pk
         data = {
             'short_description': 'Incendió',

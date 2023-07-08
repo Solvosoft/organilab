@@ -1,0 +1,33 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'prudence_advices' %}
+    {% define_urlname_action 'update_prudence_advice' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-sm-12">
+        <h1>{% trans 'Prudence Advices' %}</h1>
+        <table id="prudenceadvicetable" class="table table-striped"></table>
+    </div>
+</div>
+{% trans 'Prudence Advice' as modaltitle %}
+{% include 'modal_template.html' with form=form id="prudenceadvicemodal" title=modaltitle form_id="prudenceadvicemodal" url=api_prudence_advice_detail %}
+{% endblock %}
+
+{% block js %}
+<script>
+	document.url_advices_table = '{% url "laboratory:api-advices-table-list" org_pk=org_pk%}'
+	document.url_add_prudence_advice = '{% url 'laboratory:api-prudence-advice-list' org_pk=org_pk %}'
+	document.url_delete_prudence_advice = '{% url 'laboratory:api-prudence-advice-detail' org_pk=org_pk pk=0 %}'
+	document.url_get_prudence_advice = '{% url 'laboratory:api-prudence-advice-detail' org_pk=org_pk pk=0 %}'
+	document.url_update_prudence_advice = '{% url 'laboratory:api-prudence-advice-detail' org_pk=org_pk pk=0 %}'
+</script>
+
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/prudence_advice.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

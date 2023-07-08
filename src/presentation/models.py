@@ -6,11 +6,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 class AbstractOrganizationRef(models.Model):
-
-    organization = models.ForeignKey('laboratory.OrganizationStructure', null=True, on_delete=models.CASCADE)
+    organization = models.ForeignKey('laboratory.OrganizationStructure', null=True,
+                                     on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
+                                   on_delete=models.SET_NULL)
 
     class Meta:
         abstract = True
@@ -24,7 +25,8 @@ class FeedbackEntry(models.Model):
     laboratory_id = models.IntegerField(
         default=0, null=True, verbose_name=_("Laboratory id"))
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_("User"), null=True, blank=True, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, verbose_name=_("User"), null=True, blank=True,
+        on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _('Feedback entry')
@@ -39,9 +41,11 @@ class Donation(models.Model):
     email = models.CharField(max_length=100, verbose_name=_("Email"))
     amount = models.CharField(max_length=10, verbose_name=_("Amount"))
     details = models.TextField(max_length=255, verbose_name=_("Details"))
-    is_donator = models.BooleanField(default=True, verbose_name=_("Add me to the donators list"))
+    is_donator = models.BooleanField(default=True,
+                                     verbose_name=_("Add me to the donators list"))
     is_paid = models.BooleanField(default=False, verbose_name=_("Is paid?"))
-    donation_date = models.DateTimeField(auto_now_add=True, verbose_name=_('Donation date'))
+    donation_date = models.DateTimeField(auto_now_add=True,
+                                         verbose_name=_('Donation date'))
 
     class Meta:
         verbose_name = _("Donation")
@@ -60,4 +64,5 @@ class QRModel(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    organization = models.ForeignKey('laboratory.OrganizationStructure', null=True, on_delete=models.CASCADE)
+    organization = models.ForeignKey('laboratory.OrganizationStructure', null=True,
+                                     on_delete=models.CASCADE)

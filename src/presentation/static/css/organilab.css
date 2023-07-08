@@ -37,7 +37,7 @@ p.help-block {
 
 #mytab {
 	border: solid 1px #333;
-	
+
 	background: #cccccc;
 }
 
@@ -199,4 +199,8 @@ img {
 
 #textstatus{
     list-style-type: circle
+}
+
+.profile_info h2{
+    overflow: hidden;
 }
