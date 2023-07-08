@@ -22,9 +22,9 @@ def check_group_has_perm(group,codename):
         return group.permissions.filter(codename=perm).exists()
     return False
 
-def sum_ancestors_group(user_org,lab_org,perm):        
-    lab_parant = lab_org.get_ancestors(ascending=True, include_self=True) 
-    user_org = user_org.first()  # first have the first org 
+def sum_ancestors_group(user_org,lab_org,perm):
+    lab_parant = lab_org.get_ancestors(ascending=True, include_self=True)
+    user_org = user_org.first()  # first have the first org
     for org in lab_parant:
         if org.level >= user_org.level:
             group = org.group if hasattr(org, 'group') else None
@@ -42,7 +42,7 @@ def get_organizations_by_user(user):
     return user_org
 
 def get_user_laboratories(user, q=None):
-    user_org = OrganizationStructure.os_manager.filter_user(user) 
+    user_org = OrganizationStructure.os_manager.filter_user(user)
     return filter_laboratorist_profile_student(user, user_org, q)
 
 
@@ -61,27 +61,27 @@ def filter_laboratorist_profile(user, user_org=None):
     if user_org is None:
         user_org = OrganizationStructure.os_manager.filter_user(user)
     return Laboratory.objects.filter( Q(profile__user=user.pk) |
-                                      Q (organization__in=user_org) 
+                                      Q (organization__in=user_org)
                                     ).distinct()
 
 def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_profile):
     if not user or not lab:
         return False
-    
-    # django admins        
+
+    # django admins
     if user.is_superuser:
         return True
 
     if not user.is_authenticated:
-        return False 
+        return False
 
     # Check org of labs
     lab_org = lab.organization  if hasattr(lab, 'organization') else None
-    user_org = OrganizationStructure.os_manager.filter_user(user) 
-    
-    if not user_org:    
-        user_org=[]   
-        
+    user_org = OrganizationStructure.os_manager.filter_user(user)
+
+    if not user_org:
+        user_org=[]
+
     # if lab have an organizations, compare that perms with perm param
     if lab_org  and lab_org in  user_org:  # user have some organization
         if sum_ancestors_group(user_org,lab_org,perm): # check ancestor perms
@@ -91,7 +91,7 @@ def check_lab_group_has_perm(user,lab,perm,callback_filter=filter_laboratorist_p
     labs = callback_filter(user,user_org)
     return all([user_perm,lab in labs]) # User have perms to all action level
 
-    
+
 check_lab_perms = check_lab_group_has_perm
 
 
@@ -349,8 +349,9 @@ def get_laboratories_from_organization_profile(rootpk, user):
 
 def get_laboratories_by_user_profile(user, org_pk):
     queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk)
-    rel_lab = OrganizationStructureRelations.objects.filter(organization=org_pk, content_type__app_label='laboratory',
-    content_type__model='laboratory').values_list('object_id', flat=True)
+    rel_lab = OrganizationStructureRelations.objects.filter(
+        organization=org_pk, content_type__app_label='laboratory',
+        content_type__model='laboratory').values_list('object_id', flat=True)
     filters = Q(organization__pk=org_pk, profile__user=user) | Q(pk__in=rel_lab)
     return list(queryset.filter(filters).distinct().values_list('pk', flat=True))
 

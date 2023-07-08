@@ -50,7 +50,11 @@ class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewS
             queryset = queryset.filter(my_procedure=my_procedure)
         return queryset
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request, org_pk, lab_pk, *args, **kwargs):
+        self.organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+        self.laboratory = get_object_or_404(
+            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
         records_total = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)

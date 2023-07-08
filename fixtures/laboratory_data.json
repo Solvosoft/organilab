@@ -1914,6 +1914,26 @@
     }
   },
   {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    }
+  },
+  {
     "model": "laboratory.objectlogchange",
     "pk": 1,
     "fields": {
