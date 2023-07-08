@@ -5,27 +5,27 @@
 <div class="container ms-2">
     <div class="row">
         <div class="col-3"><label>{% trans 'Synonymous' %}</label></div>
-        <div class="col-9">: {% if substance.synonymous %}{{substance.synonymous}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.synonymous %}{{substance.synonymous}}{% else %}{% trans 'Data not available' %}{% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Molecular formula' %}</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.molecular_formula%}{{substance.substance.substancecharacteristics.molecular_formula}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.molecular_formula%}{{substance.substance.substancecharacteristics.molecular_formula}}{% else %}{% trans 'Data not available' %}{% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Molecular Weight' %}</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.molecular_weight %}{{substance.substancecharacteristics.molecular_weight}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.molecular_weight %}{{substance.substancecharacteristics.molecular_weight}}{% else %}{% trans 'Data not available' %}{% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>No.CAS</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{% else %}{% trans 'Data not available' %}{% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>No.CE</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.number_ce %}{{substance.substancecharacteristics.number_ce}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.number_ce %}{{substance.substancecharacteristics.number_ce}}{% else %}{% trans 'Data not available' %}{% endif %}</div>
     </div>
      <div class="row">
          <div class="col-3"><label>{% trans 'Number Index' %}</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}}{% else %}{% trans 'data not available' %}{% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}}{% else %}{% trans 'Data not available' %}{% endif %}</div>
     </div>
     <br>
         <label><strong>{% trans 'Hazardous ingredients according to Regulation (EC) No. 1272/2008' %}</strong></label>
@@ -44,19 +44,19 @@
                         <div class="container">
                             <div class="row">
                                 <label class="col-3">No CAS</label>
-                                <label class="col-9">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</label>
+                                <label class="col-9">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'Data not available' %}{%endif%}</label>
                             </div>
                             <div class="row">
                                 <label class="col-3">No CE</label>
-                                <label class="col-9">{% if substance.substancecharacteristics.number_ce %}{{substance.substancecharacteristics.number_ce}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                <label class="col-9">{% if substance.substancecharacteristics.number_ce %}{{substance.substancecharacteristics.number_ce}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                             </div>
                             <div class="row">
                                 <label class="col-3">{% trans 'Number Index' %}</label>
-                                <label class="col-9">{% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                <label class="col-9">{% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                             </div>
                         </div>
                     </td>
-                    <td>{%if lead.regulatory_information %}{{leaf.regulatory_information}}{% else %}{% trans 'data not available' %}{%endif%}</td>
+                    <td>{%if lead.regulatory_information %}{{leaf.regulatory_information}}{% else %}{% trans 'Data not available' %}{%endif%}</td>
                     <td>{% if substance.substancecharacteristics.concentration %}{{substance.substancecharacteristics.concentration}}{%else%}Datos no disponible{%endif%}</td>
                 </tr>
                 {% for comp in substance.components_sga.all %}
@@ -68,19 +68,19 @@
                             <div class="container">
                                 <div class="row">
                                     <label class="col-3">No CAS</label>
-                                    <label class="col-9">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</label>
+                                    <label class="col-9">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'Data not available' %}{%endif%}</label>
                                 </div>
                                 <div class="row">
                                     <label class="col-3">No CE</label>
-                                    <label class="col-9">{% if comp.substancecharacteristics.number_ce %}{{comp.substancecharacteristics.number_ce}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                    <label class="col-9">{% if comp.substancecharacteristics.number_ce %}{{comp.substancecharacteristics.number_ce}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                                 </div>
                                 <div class="row">
                                     <label class="col-3">{% trans 'Number Index' %}</label>
-                                    <label class="col-9">{% if comp.substancecharacteristics.number_index %}{{comp.substancecharacteristics.number_index}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                    <label class="col-9">{% if comp.substancecharacteristics.number_index %}{{comp.substancecharacteristics.number_index}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                                 </div>
                             </div>
                         </td>
-                        <td>{%if comp.lead.regulation_classification %}{{comp.regulation_classification}}{% else %}{% trans 'data not available' %}{%endif%}</td>
+                        <td>{%if comp.lead.regulation_classification %}{{comp.regulation_classification}}{% else %}{% trans 'Data not available' %}{%endif%}</td>
                         <td>{% if comp.substancecharacteristics.concentration %}{{comp.substancecharacteristics.concentration}}{%else%}Datos no disponible{%endif%}</td>
                     </tr>
                 {%endfor%}
@@ -104,19 +104,19 @@
                         <div class="container">
                             <div class="row">
                                 <label class="col-3">No CAS</label>
-                                <label class="col-9">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</label>
+                                <label class="col-9">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'Data not available' %}{%endif%}</label>
                             </div>
                             <div class="row">
                                 <label class="col-3">No CE</label>
-                                <label class="col-9">{% if substance.substancecharacteristics.number_ce %}{{substance.substancecharacteristics.number_ce}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                <label class="col-9">{% if substance.substancecharacteristics.number_ce %}{{substance.substancecharacteristics.number_ce}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                             </div>
                             <div class="row">
                                 <label class="col-3">{% trans 'Number Index' %}</label>
-                                <label class="col-9">{% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                <label class="col-9">{% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                             </div>
                         </div>
                     </td>
-                    <td>{%if lead.directives_classification %}{{leaf.directives_classification}}{% else %}{% trans 'data not available' %}{%endif%}</td>
+                    <td>{%if lead.directives_classification %}{{leaf.directives_classification}}{% else %}{% trans 'Data not available' %}{%endif%}</td>
                     <td>{% if substance.substancecharacteristics.concentration %}{{substance.substancecharacteristics.concentration}}{%else%}Datos no disponible{%endif%}</td>
                 </tr>
                 {% for comp in substance.components_sga.all %}
@@ -128,19 +128,19 @@
                             <div class="container">
                                 <div class="row">
                                     <label class="col-3">No CAS</label>
-                                    <label class="col-9">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</label>
+                                    <label class="col-9">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'Data not available' %}{%endif%}</label>
                                 </div>
                                 <div class="row">
                                     <label class="col-3">No CE</label>
-                                    <label class="col-9">{% if comp.substancecharacteristics.number_ce %}{{comp.substancecharacteristics.number_ce}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                    <label class="col-9">{% if comp.substancecharacteristics.number_ce %}{{comp.substancecharacteristics.number_ce}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                                 </div>
                                 <div class="row">
                                     <label class="col-3">{% trans 'Number Index' %}</label>
-                                    <label class="col-9">{% if comp.substancecharacteristics.number_index %}{{comp.substancecharacteristics.number_index}}{% else %}{% trans 'data not available' %}{%endif%}</label>
+                                    <label class="col-9">{% if comp.substancecharacteristics.number_index %}{{comp.substancecharacteristics.number_index}}{% else %}{% trans 'Data not available' %}{%endif%}</label>
                                 </div>
                             </div>
                         </td>
-                        <td>{%if comp.lead.directives_classification %}{{comp.directives_classification}}{% else %}{% trans 'data not available' %}{%endif%}</td>
+                        <td>{%if comp.lead.directives_classification %}{{comp.directives_classification}}{% else %}{% trans 'Data not available' %}{%endif%}</td>
                         <td>{% if comp.substancecharacteristics.concentration %}{{comp.substancecharacteristics.concentration}}{%else%}Datos no disponible{%endif%}</td>
                     </tr>
                 {%endfor%}
