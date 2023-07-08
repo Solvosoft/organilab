@@ -28,7 +28,7 @@ lint:
 	pycodestyle --max-line-length=88 src
 
 test:
-	cd src && python manage.py test
+	cd src && python manage.py test  --no-input
 
 docs:
 	$(MAKE) -C docs clean
@@ -37,8 +37,8 @@ docs:
 	sphinx-build -b linkcheck ./docs/source _build/
 	sphinx-build -b html ./docs/source _build/
 
-makemessage:
-	cd src && django-admin makemessages --all --no-location --no-obsolete && django-admin makemessages -d djangojs -l es  --ignore *.min.js
+messages:
+	cd src && django-admin makemessages --all --no-location --no-obsolete && django-admin makemessages -d djangojs -l es  --ignore *.min.js --no-location --no-obsolete
 
 trans:
 	cd src && django-admin compilemessages --locale es
