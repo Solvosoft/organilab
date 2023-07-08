@@ -18,7 +18,7 @@ from . import catalog
 
 
 class BaseCreationObj(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
 
@@ -210,7 +210,7 @@ class ShelfObject(models.Model):
                                    max_length=30)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
-    creator = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'),
+    created_by = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'),
                                 on_delete=models.CASCADE)
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
@@ -839,7 +839,7 @@ class Inform(AbstractOrganizationRef):
 
 
 class CommentInform(models.Model):
-    creator = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE,
+    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE,
                                 verbose_name=_("Creator"))
     create_at = models.DateTimeField(auto_now_add=True)
     comment = models.TextField(blank=True, verbose_name=_("Comment"))
@@ -847,7 +847,7 @@ class CommentInform(models.Model):
                                verbose_name=_('Inform'))
 
     def __str__(self):
-        return f'{self.creator} - {self.create_at}'
+        return f'{self.created_by} - {self.create_at}'
 
 
 class LabOrgLogEntry(models.Model):

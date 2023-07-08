@@ -17,7 +17,7 @@ $('.shelf_button').click(e=>{
                 let table = document.querySelector('#tbody_substance');
                 table.innerHTML="";
                 data.forEach(e=>
-                    rows+=`<tr><td>${e.object_name}</td><td>${e.quantity} ${e.unit}</td><td>${e.last_update}</td><td>${e.creator}</td><td>${e.action}</td></tr>`
+                    rows+=`<tr><td>${e.object_name}</td><td>${e.quantity} ${e.unit}</td><td>${e.last_update}</td><td>${e.created_by}</td><td>${e.action}</td></tr>`
                 );
                 table.innerHTML=rows;
                 const total = data.reduce((accumulator, currentValue) => accumulator + currentValue.quantity,0);

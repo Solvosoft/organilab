@@ -3160,7 +3160,7 @@ msgid "Number CE"
 msgstr "Numero CE"
 
 msgid "Molecular Weight"
-msgstr "Formula molecular"
+msgstr "Peso Molecular"
 
 msgid "Concentration"
 msgstr "Concentración"
@@ -3247,7 +3247,7 @@ msgid "Direction"
 msgstr "Descripción"
 
 msgid "Telephone number"
-msgstr "Teléfono de emergencia"
+msgstr "Teléfono"
 
 msgid "Emergency number"
 msgstr "Teléfono de emergencia"

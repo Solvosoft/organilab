@@ -37,6 +37,11 @@ docs:
 	sphinx-build -b linkcheck ./docs/source _build/
 	sphinx-build -b html ./docs/source _build/
 
+makemessage:
+	cd src && django-admin makemessages --all --no-location --no-obsolete && django-admin makemessages -d djangojs -l es  --ignore *.min.js
+
+trans:
+	cd src && django-admin compilemessages --locale es
 
 release: sdist
 	git tag -a "v`python setup.py --version`" -m "Bump version `python setup.py --version`"

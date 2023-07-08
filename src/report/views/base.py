@@ -70,7 +70,7 @@ def base_pdf(report, uri):
     report_name = get_report_name(report)
     context = {
         'datalist': get_pdf_table_content(report.table_content),
-        'user': report.creator,
+        'user': report.created_by,
         'title': title if title else report_name,
         'datetime': timezone.now(),
         'size_sheet': 'landscape'
@@ -113,7 +113,7 @@ def create_request_by_report(request, org_pk, lab_pk):
                         data.update(form.cleaned_data)
 
                         task = TaskReport.objects.create(
-                            creator=request.user,
+                            created_by=request.user,
                             type_report=form.cleaned_data['report_name'],
                             status=_("On hold"),
                             file_type=form.cleaned_data['format'],

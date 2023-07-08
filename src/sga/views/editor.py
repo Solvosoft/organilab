@@ -78,7 +78,7 @@ def template_editor(request, org_pk):
         "generalform": sgaform,
         "warningwords": WarningWord.objects.all(),
         'instance': finstance,
-        'templates': TemplateSGA.objects.filter(creator=request.user),
+        'templates': TemplateSGA.objects.filter(created_by=request.user),
         'clean_canvas_editor': clean_canvas_editor,
         'form_url': reverse('sga:editor', kwargs={'org_pk': org_pk}),
         'org_pk': org_pk
@@ -114,7 +114,7 @@ def create_personal_template(request, org_pk):
     user_is_allowed_on_organization(request.user, organization)
     user = request.user
     personal_templates = DisplayLabel.objects.filter(created_by=user)
-    filter = Q(community_share=True) | Q(creator=user)
+    filter = Q(community_share=True) | Q(created_by=user)
     sga_templates = TemplateSGA.objects.filter(filter)
     context = {"personal_templates": personal_templates, 'sga_templates': sga_templates,
                "form": PersonalTemplateForm(user=request.user), 'org_pk': org_pk}

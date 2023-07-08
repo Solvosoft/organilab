@@ -19,36 +19,36 @@ logger = logging.getLogger('organilab')
 
 
 class ProcedureStepCommentFilterSet(FilterSet):
-    creator_at = DateTimeFromToRangeFilter(
+    created_by_at = DateTimeFromToRangeFilter(
         widget=DateTimeRangeTextWidget(
             attrs={'placeholder': formats.get_format('DATETIME_INPUT_FORMATS')[0]}))
-    creator = CharFilter(field_name='creator', method='filter_user')
+    created_by = CharFilter(field_name='created_by', method='filter_user')
 
     def filter_user(self, queryset, name, value):
-        return queryset.filter(Q(creator__first_name__icontains=value) | Q(
-            creator__last_name__icontains=value) | Q(
-            creator__username__icontains=value))
+        return queryset.filter(Q(created_by__first_name__icontains=value) | Q(
+            created_by__last_name__icontains=value) | Q(
+            created_by__username__icontains=value))
 
     class Meta:
         model = CommentProcedureStep
-        fields = ['creator', 'creator_at', 'comment']
+        fields = ['created_by', 'created_by_at', 'comment']
 
 
 class ProcedureStepCommentSerializer(serializers.ModelSerializer):
-    creator = serializers.SerializerMethodField(required=False)
-    creator_at = serializers.DateTimeField(required=False, format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
+    created_by = serializers.SerializerMethodField(required=False)
+    created_by_at = serializers.DateTimeField(required=False, format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
     comment = serializers.CharField(required=True)
 
-    def get_creator(self, obj):
+    def get_created_by(self, obj):
         try:
             if not obj:
                 return _("No user found")
-            if not obj.creator:
+            if not obj.created_by:
                 return _("No user found")
 
-            name = obj.creator.get_full_name()
+            name = obj.created_by.get_full_name()
             if not name:
-                name = obj.creator.username
+                name = obj.created_by.username
             return name
         except AttributeError:
             return _("No user found")

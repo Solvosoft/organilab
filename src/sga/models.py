@@ -603,7 +603,7 @@ class ReviewSubstance(AbstractOrganizationRef):
 class SubstanceObservation(models.Model):
     substance = models.ForeignKey("sga.Substance", on_delete=models.CASCADE)
     description = models.TextField(verbose_name=_('Description'))
-    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True,
                                 verbose_name=_('Creator'))
     create_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Date'))
 
@@ -612,4 +612,4 @@ class SubstanceObservation(models.Model):
         verbose_name_plural = _('Observations')
 
     def __str__(self):
-        return f'{self.substance} {self.creator}'
+        return f'{self.substance} {self.created_by}'
