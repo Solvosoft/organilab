@@ -11,6 +11,7 @@ from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import get_user_laboratories, get_cas, get_molecular_formula, get_pk_org_ancestors, get_imdg, \
     get_users_from_organization
 from laboratory.views.djgeneric import ResultQueryElement
+from report.models import ObjectChangeLogReportBuilder
 from report.utils import filter_period, set_format_table_columns, get_report_name, load_dataset_by_column
 from report.views.object_changes import  get_dataset_objectlogchanges
 
@@ -90,32 +91,25 @@ def get_dataset_objectlogchange(report, column_list=None):
     return dataset
 
 def report_objectlogchange_html(report):
-    columns_fields = [
-        {'name': 'user', 'title':_("User")},
-        {'name': 'update_time', 'title':_("Day"), 'type': 'date'},
-        {'name': 'old_value', 'title':_("Old"), 'type':'number'},
-        {'name': 'new_value', 'title':_("New"),'type':'number'},
-        {'name': 'diff_value', 'title':_("Difference"),'type':'number'},
-        {'name': 'measurement_unit', 'title':_("Unit"),'type':'string'}
-    ]
-    columns_fields = set_format_table_columns(columns_fields)
-    column_list = list(map(lambda x: x['name'], columns_fields))
-    elements= get_dataset_objectlogchanges(report)
-    report.table_content = {
-        'columns': columns_fields,
-        'dataset': elements['content']
-    }
-    report.save()
-    return elements['record']
+    get_dataset_objectlogchanges(report)
+    record = ObjectChangeLogReportBuilder.objects.filter(report__task_report=report).\
+        count()
+    return record
+
+def report_objectlogchange_pdf(report):
+    get_dataset_objectlogchanges(report)
+    record = ObjectChangeLogReportBuilder.objects.filter(report__task_report=report).\
+        count()
+    return record
 
 def report_objectlogchange_doc(report):
     builder = ExcelGraphBuilder()
-    content = get_dataset_objectlogchanges(report, None)
+    content = get_dataset_objectlogchanges(report,True, None)
     record_total=content['record']
     file=None
     report_name = get_report_name(report)
 
-    file=builder.save_ods(content['doc_elements'], format_type=report.file_type)
+    file=builder.save_ods(content['content'], format_type=report.file_type)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
