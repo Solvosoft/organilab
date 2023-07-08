@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('laboratory', '0118_objectlogchange_shelf_object_id'),
+        ('laboratory', '0122_create_base_unit_values'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('report', '0001_initial'),
     ]
