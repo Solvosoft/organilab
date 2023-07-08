@@ -21,11 +21,11 @@
 
 
 
-<div aria-hidden="true" id="transfer-list-modal" class="modal fade" aria-labelledby="transfer-listmodal-form-title" role="dialog" tabindex="-1">
+<div aria-hidden="true" id="transfer-list-modal" class="modal fade" aria-labelledby="transfer-listmodal-title" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="transfer-listmodal-form-title">{% trans 'Transfer In' %}</h5>
+                <h5 class="modal-title" id="transfer-listmodal-title">{% trans 'Transfer In' %}</h5>
                 <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
                 </button>
             </div>
@@ -41,7 +41,7 @@
 
 {% url "laboratory:api-shelfobject-transfer-out" lab_pk=laboratory org_pk=org_pk as transfer_out_url %}
 {% trans "Transfer Out" as transfer_out_title %}
-{% include 'modal_template.html' with form=tranfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
+{% include 'modal_template.html' with form=transfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
 
 {% url 'laboratory:api-shelfobject-create-shelfobject' lab_pk=laboratory org_pk=org_pk  as create_shelfobject_url %}
 {% trans "Create Reactive" as reactive_title %}
@@ -54,3 +54,7 @@
 {% include 'modal_template.html' with id='equipment_refuse_modal' form_id='equipment_refuse_form' title=equipment_title  form=equipment_refuse_form url=create_shelfobject_url %}
 {% include 'modal_template.html' with id='material_modal' form_id='material_form' title=material_title form=material_form url=create_shelfobject_url %}
 {% include 'modal_template.html' with id='material_refuse_modal' form_id='material_refuse_form' title=material_title form=material_refuse_form url=create_shelfobject_url %}
+
+{% url "laboratory:api-shelfobject-transfer-in-approve" lab_pk=laboratory org_pk=org_pk as transfer_in_approve_url %}
+{% trans "Approve Transfer In - Container" as transfer_in_approve_with_container_title %}
+{% include 'modal_template.html' with form=transfer_in_approve_with_container_form id="transfer_in_approve_with_container_id_modal" title=transfer_in_approve_with_container_title form_id="transfer_in_approve_with_container_form" url=transfer_in_approve_url %}

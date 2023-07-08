@@ -15,10 +15,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.RenameField(
             model_name='builderinformation',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            old_name='user',
+            new_name='created_by',
         ),
         migrations.AddField(
             model_name='builderinformation',
@@ -36,10 +36,22 @@ class Migration(migrations.Migration):
             name='organization',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='laboratory.organizationstructure'),
         ),
-        migrations.AddField(
+        migrations.RunSQL(
+            "ALTER TABLE sga_substance ADD IF NOT EXISTS creator_id INTEGER;",
+            state_operations=[
+                migrations.AddField(
+                    "substance",
+                    "creator",
+                    models.ForeignKey(null=True,
+                                      on_delete=django.db.models.deletion.DO_NOTHING,
+                                      to=settings.AUTH_USER_MODEL, verbose_name='User'),
+                ),
+            ],
+        ),
+        migrations.RenameField(
             model_name='substance',
-            name='created_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            old_name='creator',
+            new_name='created_by',
         ),
         migrations.AddField(
             model_name='substance',
@@ -51,16 +63,6 @@ class Migration(migrations.Migration):
             model_name='substance',
             name='last_update',
             field=models.DateTimeField(auto_now=True),
-        ),
-        migrations.AlterField(
-            model_name='builderinformation',
-            name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='user_bi', to=settings.AUTH_USER_MODEL, verbose_name='User'),
-        ),
-        migrations.AlterField(
-            model_name='substance',
-            name='creator',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='creator', to=settings.AUTH_USER_MODEL, verbose_name='Creator'),
         ),
         migrations.AlterField(
             model_name='substance',

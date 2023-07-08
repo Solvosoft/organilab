@@ -15,12 +15,17 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
 from rest_framework import status
 
-from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, ObservationForm, StepForm, ReservationForm, \
-    MyProcedureForm, CommentProcedureStepForm, AddObjectStepForm, ValidateProcedureReservationForm
-from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, ProcedureObservations, MyProcedure, \
+from academic.forms import ProcedureForm, ProcedureStepForm, ObjectForm, \
+    ObservationForm, StepForm, ReservationForm, \
+    MyProcedureForm, CommentProcedureStepForm, AddObjectStepForm, \
+    ValidateProcedureReservationForm
+from academic.models import Procedure, ProcedureStep, ProcedureRequiredObject, \
+    ProcedureObservations, MyProcedure, \
     CommentProcedureStep
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import Object, Catalog, Furniture, ShelfObject, Laboratory, OrganizationStructure
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
+    organization_can_change_laboratory
+from laboratory.models import Object, Catalog, Furniture, ShelfObject, Laboratory, \
+    OrganizationStructure
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import (
     ListView as DJListView,
@@ -34,25 +39,27 @@ from . import convertions
 
 @login_required
 @permission_required('academic.add_procedurestep')
-def add_steps_wrapper(request,org_pk, lab_pk,pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def add_steps_wrapper(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
     procedure = get_object_or_404(Procedure, pk=pk)
-    procstep = ProcedureStep.objects.create(procedure=procedure)
-    organilab_logentry(request.user, procstep, ADDITION, relobj=lab_pk)
-    return redirect(reverse('academic:update_step', kwargs={'pk': procstep.pk, 'lab_pk': lab_pk,'org_pk':org_pk}))
+    proc_step = ProcedureStep.objects.create(procedure=procedure)
+    organilab_logentry(request.user, proc_step, ADDITION, relobj=org_pk)
+    return redirect(
+        reverse('academic:update_step', kwargs={'pk': proc_step.pk, 'org_pk': org_pk}))
 
 
 @permission_required('academic.view_myprocedure')
 def get_my_procedures(request, org_pk, lab_pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
     content = ContentType.objects.get(app_label="laboratory", model="laboratory")
-    my_procedures = MyProcedure.objects.filter(object_id=laboratory.pk, content_type=content).order_by('-pk')
+    my_procedures = MyProcedure.objects.filter(object_id=laboratory.pk,
+                                               content_type=content).order_by('-pk')
     context = {
         'my_procedures': my_procedures,
         'form': MyProcedureForm(org_pk=org_pk),
@@ -64,38 +71,46 @@ def get_my_procedures(request, org_pk, lab_pk):
 
 
 @permission_required('academic.add_myprocedure')
-def create_my_procedures(request, org_pk, lab_pk, *args, **kwargs):
+def create_my_procedures(request, org_pk, lab_pk, content_type, model):
     form = MyProcedureForm(request.POST, org_pk=org_pk)
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
     if form.is_valid():
         my_procedure = form.save(commit=False)
-        content = ContentType.objects.get(app_label=kwargs.get("content_type"), model=kwargs.get("model"))
+        content = ContentType.objects.get(app_label=content_type, model=model)
         my_procedure.content_type = content
         my_procedure.object_id = lab_pk
         my_procedure.organization = organization
         my_procedure.created_by = request.user
         my_procedure.save()
-        organilab_logentry(request.user, my_procedure, ADDITION, 'myprocedures', relobj=lab_pk)
-        return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
+        organilab_logentry(request.user, my_procedure, ADDITION, 'myprocedures',
+                           relobj=lab_pk)
+        return redirect(reverse('academic:get_my_procedures',
+                                kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
 
-    return render(request, 'academic/procedure.html', context={'laboratory': lab_pk, 'org_pk': org_pk})
+    return render(request, 'academic/procedure.html',
+                  context={'laboratory': lab_pk, 'org_pk': org_pk})
 
 
 @permission_required('academic.delete_myprocedure')
 def remove_my_procedure(request, org_pk, lab_pk, pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
     if my_procedure:
-        organilab_logentry(request.user, my_procedure, DELETION, 'myprocedures', relobj=lab_pk)
+        organilab_logentry(request.user, my_procedure, DELETION, 'myprocedures',
+                           relobj=lab_pk)
         my_procedure.delete()
-        return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
-    return redirect(reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
+        return redirect(reverse('academic:get_my_procedures',
+                                kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
+    return redirect(reverse('academic:get_my_procedures',
+                            kwargs={'lab_pk': lab_pk, 'org_pk': org_pk}))
 
 
 def update_my_procedure_data(item, data):
@@ -114,23 +129,25 @@ def update_my_procedure_data(item, data):
 
     if 'components' in item:
         for child in item['components']:
-            update_my_procedure_data(child,data)
+            update_my_procedure_data(child, data)
 
-    if 'rows' in item and isinstance(item['rows'], (list,tuple)):
+    if 'rows' in item and isinstance(item['rows'], (list, tuple)):
         for row in item['rows']:
             for child in row:
-                update_my_procedure_data(child,data)
+                update_my_procedure_data(child, data)
 
 
 @permission_required('academic.change_myprocedure')
 def complete_my_procedure(request, org_pk, lab_pk, pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
     my_procedure = get_object_or_404(MyProcedure, pk=pk)
     steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)
-    comments = CommentProcedureStep.objects.filter(procedure_step__procedure=my_procedure.custom_procedure)
+    comments = CommentProcedureStep.objects.filter(
+        procedure_step__procedure=my_procedure.custom_procedure)
     schema = my_procedure.schema
     form = json.dumps(schema, indent=2)
     context = {
@@ -152,13 +169,15 @@ def complete_my_procedure(request, org_pk, lab_pk, pk):
         result = {}
 
         for d in data.keys():
-            result[d[d.find("[")+1:d.find("]")]] = data[d]
+            result[d[d.find("[") + 1:d.find("]")]] = data[d]
 
         update_my_procedure_data(schema, result)
         my_procedure.schema = schema
         my_procedure.save()
 
-        return JsonResponse({'url': reverse('academic:get_my_procedures', kwargs={'lab_pk': lab_pk, 'org_pk': org_pk})})
+        return JsonResponse({'url': reverse('academic:get_my_procedures',
+                                            kwargs={'lab_pk': lab_pk,
+                                                    'org_pk': org_pk})})
 
     return render(request, 'academic/complete_my_procedure.html', context)
 
@@ -166,20 +185,11 @@ def complete_my_procedure(request, org_pk, lab_pk, pk):
 @method_decorator(permission_required('academic.view_procedure'), name='dispatch')
 class ProcedureListView(DJListView):
     model = Procedure
-    queryset = Procedure.objects.all()
+    queryset = Procedure.objects.none()
     template_name = 'academic/list.html'
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        content_type = ContentType.objects.get(app_label='laboratory', model="laboratory")
-        queryset = queryset.filter(content_type=content_type, object_id=self.lab)
-        return queryset
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ProcedureListView, self).get_context_data()
-        context['reservation_form'] = ReservationForm
-        return context
-
+@method_decorator(permission_required('academic.add_procedure'), name='dispatch')
 class ProcedureCreateView(DJCreateView):
     model = Procedure
     form_class = ProcedureForm
@@ -190,16 +200,19 @@ class ProcedureCreateView(DJCreateView):
         return context
 
     def get_success_url(self, **kwargs):
-        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
+        success_url = reverse_lazy('academic:procedure_list',
+                                   kwargs={'org_pk': self.org, })
         return success_url
 
     def form_valid(self, form):
         procedure = form.save(commit=False)
-        content_type = ContentType.objects.get(app_label='laboratory', model="laboratory")
+        content_type = ContentType.objects.get(app_label='laboratory',
+                                               model="organizationstructure")
         procedure.content_type = content_type
-        procedure.object_id = self.lab
+        procedure.object_id = self.org
         procedure.save()
-        organilab_logentry(self.request.user, procedure, ADDITION, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, procedure, ADDITION,
+                           changed_data=form.changed_data,
                            relobj=self.lab)
         return super(ProcedureCreateView, self).form_valid(form)
 
@@ -215,25 +228,27 @@ class ProcedureUpdateView(DJUpdateView):
         return context
 
     def get_success_url(self, **kwargs):
-        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
+        success_url = reverse_lazy('academic:procedure_list',
+                                   kwargs={'org_pk': self.org})
         return success_url
 
     def form_valid(self, form):
         procedure = form.save()
-        organilab_logentry(self.request.user, procedure, CHANGE, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, procedure, CHANGE,
+                           changed_data=form.changed_data,
                            relobj=self.lab)
         return super(ProcedureUpdateView, self).form_valid(form)
 
+
 @login_required
 @permission_required('academic.view_procedure')
-def procedureStepDetail(request,org_pk,lab_pk,pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def procedureStepDetail(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
     steps = Procedure.objects.filter(pk=pk).first()
     return render(request, 'academic/detail.html',
-                  {'object': steps, 'procedure': pk, 'laboratory': lab_pk, 'org_pk':org_pk, 'reservation_form': ReservationForm})
+                  {'object': steps, 'procedure': pk, 'org_pk': org_pk})
 
 
 @method_decorator(permission_required('academic.add_procedurestep'), name='dispatch')
@@ -251,18 +266,20 @@ class ProcedureStepCreateView(FormView):
         response = super().form_valid(form)
 
         procedure = get_object_or_404(Procedure, pk=int(self.kwargs['pk']))
-        step = ProcedureStep.objects.create(procedure=procedure, title=form.cleaned_data['title'],
-                                            description=form.cleaned_data['description'])
+        step = ProcedureStep.objects.create(procedure=procedure,
+                                            title=form.cleaned_data['title'],
+                                            description=form.cleaned_data[
+                                                'description'])
         step.save()
-        organilab_logentry(self.request.user, step, ADDITION, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, step, ADDITION,
+                           changed_data=form.changed_data,
                            relobj=procedure.content_object)
 
         return response
 
     def get_success_url(self):
-        lab_pk = self.kwargs['lab_pk']
         org = self.kwargs['org_pk']
-        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':org, 'lab_pk': lab_pk,})
+        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk': org})
         return success_url
 
 
@@ -280,71 +297,69 @@ class ProcedureStepUpdateView(DJUpdateView):
         return context
 
     def get_success_url(self, **kwargs):
-        success_url = reverse_lazy('academic:procedure_list', kwargs={'org_pk':self.org, 'lab_pk': self.lab,})
+        success_url = reverse_lazy('academic:procedure_list',
+                                   kwargs={'org_pk': self.org})
         return success_url
 
     def form_valid(self, form):
         procedurestep = form.save()
-        organilab_logentry(self.request.user, procedurestep, CHANGE, changed_data=form.changed_data,
+        organilab_logentry(self.request.user, procedurestep, CHANGE,
+                           changed_data=form.changed_data,
                            relobj=self.lab)
         return super(ProcedureStepUpdateView, self).form_valid(form)
 
+
 @login_required
 @permission_required('academic.add_procedurerequiredobject')
-def save_object(request,org_pk, lab_pk,pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def save_object(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
     """ Add a Required object """
     form = AddObjectStepForm(request.POST)
     step = get_object_or_404(ProcedureStep, pk=pk)
     state = status.HTTP_200_OK
-    form_errors=None
+    form_errors = None
     msg = _('There is no object in the inventory with this unit of measurement')
     if form.is_valid():
         unit = form.cleaned_data['unit']
         obj = form.cleaned_data['object']
         objects = ProcedureRequiredObject.objects.create(step=step, object=obj,
-                                                             quantity=form.cleaned_data['quantity'],
-                                                             measurement_unit=unit)
+                                                         quantity=form.cleaned_data[
+                                                             'quantity'],
+                                                         measurement_unit=unit)
 
         str_obj = f'{objects.object} {objects.quantity} {str(objects.measurement_unit)}'
         change_message = str_obj + " procedure required object has been added"
-        organilab_logentry(request.user, objects, ADDITION, changed_data=form.changed_data, change_message=change_message,
-                               relobj=lab_pk)
+        organilab_logentry(request.user, objects, ADDITION,
+                           changed_data=form.changed_data,
+                           change_message=change_message,
+                           relobj=org_pk)
     else:
-        form_errors= form.errors
-        state= status.HTTP_400_BAD_REQUEST
-    return JsonResponse({'data': get_objects(pk), 'msg': msg, "form":form_errors}, status=state)
+        form_errors = form.errors
+        state = status.HTTP_400_BAD_REQUEST
+    return JsonResponse({'data': get_objects(pk), 'msg': msg, "form": form_errors},
+                        status=state)
 
-
-def validate_unit(lab, obj):
-    """ Validate if the required object unit exist into the shelfobjects of the laboratory """
-    shelf_obj = ShelfObject.objects.filter(shelf__furniture__labroom__laboratory__id=int(lab), object__id=obj.id)
-    units = []
-    for obj in shelf_obj:
-        units.append(obj.measurement_unit.description)
-    return set(units)
 
 @login_required
 @permission_required('academic.delete_procedurestep')
-def delete_step(request, org_pk, lab_pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def delete_step(request, org_pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
     step = ProcedureStep.objects.get(pk=int(request.POST['pk']))
-    organilab_logentry(request.user, step, DELETION, relobj=step.procedure.content_object)
+    organilab_logentry(request.user, step, DELETION,
+                       relobj=step.procedure.content_object)
     step.delete()
     return JsonResponse({'data': True})
 
+
 @permission_required('academic.delete_procedurerequiredobject')
-def remove_object(request, org_pk, lab_pk, pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def remove_object(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
     obj = ProcedureRequiredObject.objects.get(pk=int(request.POST['pk']))
     obj.delete()
     organilab_logentry(request.user, obj, DELETION)
@@ -356,31 +371,36 @@ def get_objects(pk):
     aux = []
     for data in objects_list:
         aux.append(
-            {'obj': str(data.object), 'unit': str(data.measurement_unit), 'id': data.pk, 'amount': data.quantity})
+            {'obj': str(data.object), 'unit': str(data.measurement_unit), 'id': data.pk,
+             'amount': data.quantity})
     result = json.dumps(aux)
     return result
 
 
 @login_required
 @permission_required('academic.add_procedureobservations')
-def save_observation(request, org_pk, lab_pk,pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def save_observation(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
 
     step = get_object_or_404(ProcedureStep, pk=pk)
     form = ObservationForm(request.POST)
-    result=status.HTTP_200_OK
-    form_errors= {}
+    result = status.HTTP_200_OK
+    form_errors = {}
     if form.is_valid():
-        objects = ProcedureObservations.objects.create(step=step, description=form.cleaned_data['procedure_description'])
+        objects = ProcedureObservations.objects.create(step=step,
+                                                       description=form.cleaned_data[
+                                                           'procedure_description'])
         objects.save()
-        organilab_logentry(request.user,  objects, ADDITION, changed_data=['description'])
+        organilab_logentry(request.user, objects, ADDITION,
+                           changed_data=['description'])
     else:
-        form_errors=form.errors
-        result=status.HTTP_400_BAD_REQUEST
-    return JsonResponse({'data': get_observations(pk), 'errors':form_errors},status=result)
+        form_errors = form.errors
+        result = status.HTTP_400_BAD_REQUEST
+    return JsonResponse({'data': get_observations(pk), 'errors': form_errors},
+                        status=result)
+
 
 def get_observations(pk):
     obsevations = ProcedureObservations.objects.filter(step__id=pk)
@@ -390,50 +410,54 @@ def get_observations(pk):
     result = json.dumps(aux)
     return result
 
+
 @login_required
 @permission_required('academic.delete_procedureobservations')
-def remove_observation(request, org_pk, lab_pk,pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def remove_observation(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects
+                                     .using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
 
-    obj = get_object_or_404(ProcedureObservations,pk=int(request.POST['pk']))
+    obj = get_object_or_404(ProcedureObservations, pk=int(request.POST['pk']))
     obj.delete()
     organilab_logentry(request.user, obj, DELETION)
     return JsonResponse({'data': get_observations(pk)})
 
+
 @login_required
 @permission_required('academic.view_procedure')
-def get_procedure(request, org_pk, lab_pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def get_procedure(request, org_pk, pk):
+    organization = get_object_or_404(OrganizationStructure.objects.
+                                     using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
-    procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
+    procedure = get_object_or_404(Procedure, pk=pk)
     result_status = status.HTTP_200_OK
-    msg=""
+    msg = ""
     if not ProcedureRequiredObject.objects.filter(step__procedure=procedure).exists():
-        result_status= status.HTTP_400_BAD_REQUEST
-        msg= _("The procedure don't has objects, please add some objects in the procedure steps")
+        result_status = status.HTTP_400_BAD_REQUEST
+        msg = _("The procedure don't has objects, please add some "
+                "objects in the procedure steps")
 
-    return JsonResponse({'title': procedure.title, 'pk': procedure.pk,'msg':msg},status=result_status)
+    return JsonResponse({'title': procedure.title, 'pk': procedure.pk, 'msg': msg},
+                        status=result_status)
+
 
 @permission_required('academic.delete_procedure')
-def delete_procedure(request,org_pk, lab_pk):
-    laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+def delete_procedure(request, org_pk):
+    organization = get_object_or_404(OrganizationStructure.objects.
+                                     using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
-    organization_can_change_laboratory(laboratory, organization)
     procedure = get_object_or_404(Procedure, pk=int(request.POST['pk']))
     procedure.delete()
     organilab_logentry(request.user, procedure, DELETION)
     return JsonResponse({'data': True})
 
+
 @permission_required('reservations_management.add_reservedproducts')
 def generate_reservation(request, org_pk, lab_pk):
     lab = get_object_or_404(Laboratory, pk=lab_pk)
-    org = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    org = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, org)
     organization_can_change_laboratory(lab, org)
     form = ValidateProcedureReservationForm(request.POST)
@@ -444,13 +468,15 @@ def generate_reservation(request, org_pk, lab_pk):
 
     if form.is_valid():
         procedure = form.cleaned_data['procedure']
-        procedure_obj = ProcedureRequiredObject.objects.filter(step__procedure=procedure).distinct('pk')
-
+        procedure_obj = ProcedureRequiredObject.objects.filter(
+            step__procedure=procedure).exclude(quantity__lte=0).distinct('pk')
         if procedure_obj.exists():
 
             for obj in procedure_obj:
-                shelfobjects = ShelfObject.objects.filter(in_where_laboratory=lab,object=obj.object,
-                                                         measurement_unit=obj.measurement_unit).aggregate(total=Coalesce(Sum('quantity'), 0.0))
+                shelfobjects = ShelfObject.objects.filter(in_where_laboratory=lab,
+                                                          object=obj.object,
+                                                          measurement_unit=obj.measurement_unit).aggregate(
+                    total=Coalesce(Sum('quantity'), 0.0))
 
                 if shelfobjects['total'] < obj.quantity:
                     obj_unknown.append(obj.object.__str__())
@@ -459,23 +485,25 @@ def generate_reservation(request, org_pk, lab_pk):
 
             if not obj_unknown and form.is_valid():
                 state = True
-                result=status.HTTP_200_OK
-                add_procedure_reservation(request, procedure_obj,form, lab, org)
+                result = status.HTTP_200_OK
+                add_procedure_reservation(request, procedure_obj, form, lab, org)
         else:
             result = status.HTTP_400_BAD_REQUEST
             return JsonResponse({'msg': _("Don't has objects")}, status=result)
 
     else:
-        result=status.HTTP_400_BAD_REQUEST
-        form_error=form.errors
+        result = status.HTTP_400_BAD_REQUEST
+        form_error = form.errors
 
-    return JsonResponse({'state': state, 'errors':obj_unknown,'form':form_error},status=result)
+    return JsonResponse({'state': state, 'errors': obj_unknown, 'form': form_error},
+                        status=result)
 
 
 def add_procedure_reservation(request, objects, form, lab, org):
     for obj in objects:
-        shelf_objects = ShelfObject.objects.filter(in_where_laboratory=lab, object=obj.object,
-                                                  measurement_unit=obj.measurement_unit).distinct().\
+        shelf_objects = ShelfObject.objects.filter(in_where_laboratory=lab,
+                                                   object=obj.object,
+                                                   measurement_unit=obj.measurement_unit).distinct(). \
             order_by('quantity')
         obj_quantity = obj.quantity
         total = 0
@@ -485,18 +513,21 @@ def add_procedure_reservation(request, objects, form, lab, org):
 
             if total < obj_quantity:
                 if obj_quantity <= shelf_object_total:
-                    result = obj_quantity-total
-                elif total+shelf_object_total > obj_quantity:
-                    result = obj_quantity-total
+                    result = obj_quantity - total
+                elif total + shelf_object_total > obj_quantity:
+                    result = obj_quantity - total
                 else:
                     result += shelf_object_total
                 total += result
-
                 reserved = ReservedProducts.objects.create(shelf_object=shelf_object,
-                                                               user=request.user,
-                                                               initial_date=form.cleaned_data['initial_date'],
-                                                               final_date=form.cleaned_data['final_date'],
-                                                               amount_required=result,
-                                                               laboratory=lab,
-                                                               organization=org)
-                organilab_logentry(request.user, reserved, ADDITION, changed_data=form.changed_data)
+                                                           user=request.user,
+                                                           initial_date=
+                                                           form.cleaned_data[
+                                                               'initial_date'],
+                                                           final_date=form.cleaned_data[
+                                                               'final_date'],
+                                                           amount_required=result,
+                                                           laboratory=lab,
+                                                           organization=org)
+                organilab_logentry(request.user, reserved, ADDITION,
+                                   changed_data=form.changed_data)

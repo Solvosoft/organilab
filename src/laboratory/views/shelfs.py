@@ -6,8 +6,10 @@ Created on 26/12/2016
 '''
 
 from django import forms
+from django.conf import settings
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import permission_required
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -20,8 +22,11 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets import wysiwyg
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
+from rest_framework import status
 
-from laboratory.models import Shelf, Object
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
+    organization_can_change_laboratory
+from laboratory.models import Shelf, Object, Laboratory, OrganizationStructure
 from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
 from ..utils import organilab_logentry
@@ -29,14 +34,20 @@ from ..utils import organilab_logentry
 
 @ajax
 @permission_required('laboratory.delete_shelf')
-def ShelfDelete(request, lab_pk, pk, row, col, org_pk):
+def delete_shelf(request, org_pk, lab_pk, pk, row, col):
+    laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    organization_can_change_laboratory(laboratory, organization)
+
     if request.method == 'POST':
         shelf = get_object_or_404(Shelf, pk=pk)
         furniture = shelf.furniture
         furniture.remove_shelf_dataconfig(pk)
         shelf.delete()
         organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
-        return {'result': "OK"}
+        return JsonResponse({"result": "OK"}, status=status.HTTP_200_OK)
 
     row, col = int(row), int(col)
     url = reverse('laboratory:shelf_delete', kwargs={"lab_pk": lab_pk, "pk":pk, "row": row,

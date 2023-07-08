@@ -1,0 +1,31 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'danger_indications' %}
+    {% define_urlname_action 'update_danger_indication' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-md-12">
+        <h1>{% trans 'Danger Indication' %}</h1>
+        <table id="dangerindicationtable" class="table table-striped"></table>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+	document.url_dangers_table = '{% url 'laboratory:api-dangers-table-list' org_pk=org_pk %}'
+	document.url_add_danger_indication = '{% url 'sga:add_danger_indication' org_pk %}'
+	document.url_delete_danger_indication = '{% url 'laboratory:api-danger-indication-detail' org_pk=org_pk pk=0 %}'
+	document.url_get_danger_indication = '{% url 'laboratory:api-danger-indication-detail' org_pk=org_pk pk=0 %}'
+	document.url_update_danger_indication = '{% url 'laboratory:api-danger-indication-detail' org_pk=org_pk pk=0 %}'
+</script>
+
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/danger_indication.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

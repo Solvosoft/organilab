@@ -1,14 +1,13 @@
-var objecttype= ""
+var objecttype= "";
 document.shelf_discard = undefined;
-document.prefix=""
+document.prefix="";
 
 function shelf_action_modals(modalid){
     var label_a = document.createElement("a");
-    label_a.setAttribute("data-modalid", modalid)
-    show_me_modal(label_a,null)
+    label_a.setAttribute("data-modalid", modalid);
+    show_me_modal(label_a, null);
     form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
-    show_hide_limits($(`${document.prefix}without_limit`),document.prefix)
-
+    show_hide_limits($(`${document.prefix}without_limit`), document.prefix);
     return false;
 }
 const tableObject={
@@ -46,6 +45,12 @@ const tableObject={
             }
             document.prefix=id;
             shelf_action_modals(modalid)
+            if(!$(document.prefix+"without_limit").parent().hasClass('checked')){
+                $(document.prefix+"without_limit").parent().addClass('checked')
+            }
+            if($(document.prefix+"marked_as_discard").parent().hasClass('checked') && !discard){
+                $(document.prefix+"marked_as_discard").parent().removeClass('checked')
+            }
 
     },
     addObject: function( e, dt, node, config ){
@@ -93,7 +98,7 @@ function transferInObjectDeny(btn) {
     let transferListDataTable = $('#transfer-list-datatable').DataTable()
     let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
     let message = gettext("Are you sure you want to deny the transfer of")
-    message = `${message} "${transfer_data.object}"?`
+    message = `${message} "${transfer_data.object.name}"?`
     Swal.fire({ //Confirmation for delete
         icon: "warning",
         title: gettext("Are you sure?"),
@@ -108,7 +113,7 @@ function transferInObjectDeny(btn) {
                 fetch(document.urls.transfer_in_deny, {
                     method: "delete",
                     headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
-                    body: JSON.stringify({'transfer_object': transfer_data.id})})
+                    body: JSON.stringify({'transfer_object': transfer_data.id, 'shelf': tableObject.get_active_shelf()})})
                     .then(response => {
                         if(response.ok){ return response.json(); }
                         return Promise.reject(response);  // then it will go to the catch if it is an error code
@@ -141,6 +146,45 @@ function transferInObjectDeny(btn) {
     })
 }
 
+function transferInObjectApprove(btn, event){
+    let transferListDataTable = $('#transfer-list-datatable').DataTable()
+    let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
+    if(transfer_data.object.type === 'Reactive'){
+        show_hide_container_selects("#transfer_in_approve_with_container_form", 'none');
+        $("#transfer_in_approve_with_container_form #id_transfer_object").val(transfer_data.id);
+        $("#transfer_in_approve_with_container_form #id_shelf").val(tableObject.get_active_shelf());
+        $("#transfer-list-modal").modal('hide');
+        show_me_modal(btn, event);
+        form_modals[$(btn).data('modalid')].success = function(instance, data){
+            $("#transfer-list-modal").modal('show');
+        }
+        form_modals[$(btn).data('modalid')].hidemodal = function(){
+            this.instance.modal('hide');
+            $("#transfer-list-modal").modal('show');
+        }
+    }else{
+        $.ajax({
+            type: "POST",
+            headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+            url: document.urls.transfer_in_approve,
+            data: JSON.stringify({'transfer_object': transfer_data.id, 'shelf': tableObject.get_active_shelf()}),
+            success: function(data){
+                Swal.fire({ title: gettext('Success'), text: data['detail'], icon: 'success', timer: 1500 });
+                transferListDataTable.ajax.reload();
+            },
+            error: function(data){
+                let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                if(data.responseJSON.errors && data.responseJSON.errors.transfer_object){
+                    error_msg = data.responseJSON.errors.transfer_object[0];  // specific api validation errors
+                }else if(data.responseJSON.detail){
+                    error_msg = data.responseJSON.detail;
+                }
+                Swal.fire({ title: gettext('Error'), text: error_msg, icon: 'error' });
+            }
+        });
+    }
+}
+
 $(document).ready(function(){
     const searchLaboratory={
         init: function(){
@@ -163,12 +207,12 @@ $(document).ready(function(){
 
     datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
-            {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: false},
+            {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: true},
             {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
             {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
-            {data: "container", name: "shelfobjectcontainer__container__name", title: gettext("Container"), type: "string", visible: true},
+            {data: "container", name: "container__object__name", title: gettext("Container"), type: "string", visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [
@@ -228,13 +272,13 @@ $(document).ready(function(){
     createDataTable('#transfer-list-datatable', document.urls.transfer_list, {
         columns: [
             {data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-            {data: "object", name: "object__object__name", title: gettext("Object"), type: "string", visible: true},
+            {data: "object.name", name: "object__object__name", title: gettext("Object"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
             {data: "laboratory_send", name: "laboratory_send__name", title: gettext("Laboratory Send"), type: "string", visible: true },
             {data: "mark_as_discard", name: "mark_as_discard", title: gettext("Mark as Discard"), type: "boolean", render: objShowBool, visible: true },
             {data: "update_time", name: "update_time", title: gettext("Date"), type: "date", render: DataTable.render.datetime(), visible: true},
             {data: null, title: gettext('Actions'), sortable: false, filterable: false,
-             defaultContent: `<a href="#" class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
+             defaultContent: `<a onclick="transferInObjectApprove(this, event);" data-modalid="transfer_in_approve_with_container_id_modal" class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
                               <a onclick="transferInObjectDeny(this);" class='btn btn-sm btn-outline-danger' title='Deny'><i class="fa fa-times-circle"></i></a>`
             }
         ],
@@ -254,32 +298,71 @@ $(document).ready(function(){
                return data;
            }
        }
-    }, 
+    },
     addfilter=false);
 
     //shelfselected
     $('input[name="shelfselected"]').change(function(){
         datatableelement.ajax.reload();
     });
+
+    $('#shelfobjecttable').on( 'init.dt', function () {
+        if(document.search_by_url){
+            labviewSearch.select_objs(document.search_by_url);
+        }
+    });
 });
 
-$(document).ready(function(){
-    var $input = $('input[name=tags-search]')
-        .tagify({
-                whitelist : [
-                    {"id":1, "value":"some string"}
-                ]
-            })
-            .on('add', function(e, tagName){
-                console.log('JQUERY EVENT: ', 'added', tagName)
-            })
-            .on("invalid", function(e, tagName) {
-                console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
-            });
+var inputElm = document.querySelector('input[name=tags-search]');
 
-    // get the Tagify instance assigned for this jQuery input object so its methods could be accessed
-    var jqTagify = $input.data('tagify');
+
+
+const tagify = new Tagify(inputElm, {
+    templates : {
+        tag : function(tagData){
+            try{
+                return `<tag title='${tagData.value}' objtype='${tagData.objtype}' pk='${tagData.pk}' style='--tag-bg: ${tagData.color}' contenteditable='false' spellcheck="false" class='tagify__tag ${tagData.class ? tagData.class : ""}' ${this.getAttributes(tagData)}>
+                        <x title='remove tag' class='tagify__tag__removeBtn'></x>
+                        <div>
+                            <span class='tagify__tag-text fs-6'>${tagData.value}</span>
+                        </div>
+                    </tag>`
+            }
+            catch(err){}
+        },
+        dropdownItem : function(tagData){
+            try{
+                return `<div ${this.getAttributes(tagData)} class='tagify__dropdown__item ${tagData.class ? tagData.class : ""}' >
+
+                            <span class='fs-6' style='background-color: ${tagData.color}; color: black;'>${tagData.value}</span>
+                        </div>`
+            }
+            catch(err){ console.error(err)}
+        }
+    },
+    enforceWhitelist: true,
+    whitelist: document.suggestions_tag,
+    placeholder: gettext("Search")
 });
+
+$("#btnremovealltags").on('click', function(){
+    tagify.removeAllTags();
+    labviewSearch.restart_objs();
+});
+
+tagify.on('add', function(e){
+        labviewSearch.search(e.detail.tagify.value);
+    }).on("invalid", function(e, tagName){
+        console.log('JQUERY EVENT: ',"invalid", e, ' ', tagName);
+    }).on('remove', function(e){
+        var obj_list = e.detail.tagify.value;
+
+        if(obj_list.length){
+            labviewSearch.search(obj_list);
+        }else{
+            labviewSearch.restart_objs();
+        }
+    });
 
 $(".add_status").click(function(){
     add_status(document.url_status)
@@ -301,3 +384,189 @@ function show_hide_limits(e,prefix){
         $(prefix+'expiration_date').parent().parent().parent().show();
     }
 }
+
+
+
+const labviewSearch={
+    show_deselected_previous_shelfs: function(shelf_list, key, value){
+        var active_shelf = tableObject.get_active_shelf(show_alert=false);
+        var shelf_obj = $("#"+key+"_"+active_shelf);
+
+        if(active_shelf != undefined && value != active_shelf && shelf_list.hasOwnProperty('furniture')){
+            if(shelf_list['furniture'].hasOwnProperty('furniture')){
+                var furniture = $(shelf_obj).parents('li').children('span.furnitureroot');
+                if($(furniture).length){
+                    var furniture_parent = parseInt($(furniture)[0].id.split("_")[1]);
+                    if(shelf_list['furniture']['furniture'].includes(furniture_parent)){
+                        $(shelf_obj).parents('.shelfrow').children().show();
+                    }
+                }
+            }
+        }
+    },
+    check_objs: function(obj_list, key){
+        obj_list.forEach(function(value) {
+            span_obj = "#"+key+"_"+value;
+
+            if($(span_obj).length  && !$(span_obj).hasClass('check-box')){
+                $(span_obj).parent().show();
+                $(span_obj).click();
+            }
+
+            if(key === 'labroom'){
+                $(span_obj).next().children().show();
+            }else{
+                $(span_obj).next().children().find('div.input-group').show();
+            }
+
+        });
+    },
+    check_radios: function(shelf_list, obj_list, key, hide_related_shelf=true){
+        obj_list.forEach(function(value) {
+            var radio_obj = "#"+key+"_"+value;
+
+            if($(radio_obj).length){
+                labviewSearch.show_deselected_previous_shelfs(shelf_list, key, value);
+                if(hide_related_shelf){
+                    $(radio_obj).parents('.shelfrow').children().hide();
+                }else{
+                    $(radio_obj).removeClass('hideshelves');
+                }
+                $(radio_obj).parents('.col').show();
+                $(radio_obj).iCheck('check');
+                $(radio_obj).change();
+            }
+        });
+
+        if(!hide_related_shelf){
+            $(".hideshelves").parents('.col').hide();
+        }
+    },
+    select_labroom: function(labroom_list){
+        labviewSearch.check_objs(labroom_list, "labroom");
+    },
+    select_furniture: function(furniture_list){
+        if(furniture_list.hasOwnProperty('furniture')){
+            labviewSearch.check_objs(furniture_list['furniture'], "furniture");
+        }
+        if(furniture_list.hasOwnProperty('labroom')){
+            labviewSearch.select_labroom(furniture_list['labroom']);
+        }
+    },
+    select_shelf: function(shelf_list, hide_related_shelf=true){
+        if(shelf_list.hasOwnProperty('shelf')){
+            labviewSearch.select_furniture(shelf_list['shelf']);
+
+            if(shelf_list['shelf'].hasOwnProperty('shelf')){
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf']['shelf'], "shelf", hide_related_shelf=hide_related_shelf);
+            }else{
+                labviewSearch.check_radios(shelf_list, shelf_list['shelf'], "shelf", hide_related_shelf=hide_related_shelf);
+            }
+        }
+    },
+    select_shelfobject: function(shelfobject_list){
+        labviewSearch.select_furniture(shelfobject_list);
+        labviewSearch.select_shelf(shelfobject_list);
+        var table_filter_input = $('div#shelfobjecttable_filter input[type="search"]');
+        if(table_filter_input.length){
+            table_filter_input.val('pk='+shelfobject_list['shelfobject'].slice(-1)[0]);
+            table_filter_input.focus();
+            table_filter_input.keyup();
+        }
+    },
+    select_object: function(object_list){
+        labviewSearch.select_shelf(object_list, hide_related_shelf=false);
+        var table_filter_input = $('div#shelfobjecttable_filter input[type="search"]');
+        if(table_filter_input.length){
+            table_filter_input.val(object_list['object'][0]);
+            table_filter_input.focus();
+            table_filter_input.keyup();
+        }
+
+        if(object_list.hasOwnProperty('shelf')){
+            if(object_list['shelf'].hasOwnProperty('shelf')){
+                var shelf_result = object_list['shelf']['shelf'].length;
+               $("#alert_msg").html("<b>"+gettext("Showing first result from ")+ shelf_result +gettext(" matched shelves")+"</b>");
+               $("div.alert").addClass('show');
+            }
+        }
+    },
+    restart_objs: function(){
+        $('input[name="shelfselected"]').iCheck('uncheck').change();
+        $("span.check-box").click();
+        $('div#shelfobjecttable_filter input[type="search"]').val('').keyup();
+        $("span.box").parent().show();
+        $('input[type="radio"]').parents('.shelfrow').children().show();
+        $("div.alert").removeClass('show');
+    },
+    select_objs: function(search_list){
+        labviewSearch.restart_objs();
+        if(Object.keys(search_list).length){
+            $("span.box").parent().hide();
+            if('labroom' in search_list && Object.keys(search_list['labroom']).length){
+                labviewSearch.select_labroom(search_list['labroom']);
+            }
+            if('furniture' in search_list && Object.keys(search_list['furniture']).length){
+                labviewSearch.select_furniture(search_list['furniture']);
+            }
+            if('shelf' in search_list && Object.keys(search_list['shelf']).length){
+                labviewSearch.select_shelf(search_list);
+            }
+            if('shelfobject' in search_list && Object.keys(search_list['shelfobject']).length){
+                labviewSearch.select_shelfobject(search_list['shelfobject']);
+            }
+            if('object' in search_list && Object.keys(search_list['object']).length){
+                labviewSearch.select_object(search_list['object']);
+            }
+        }
+    },
+    search: function(q){
+        var data = "";
+
+        if(q.length){
+            q.forEach(function(item) {
+                if(item.objtype == 'laboratoryroom'){
+                    data += 'labroom=' + item.pk;
+                }else{
+                    data += item.objtype + "=" + item.pk;
+                }
+                data += '&';
+            });
+            data = data.slice(0, -1);
+        }
+
+        $.ajax({
+            url: document.urls.search_labview,
+            type: "GET",
+            dataType: "json",
+            data: data,
+            traditional: true,
+            headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
+            success: function(data){
+                labviewSearch.select_objs(data.search_list);
+            },
+            error: function(xhr, resp, text) {
+            }
+        });
+    }
+}
+
+$("#hide_alert").on('click', function(){
+    $("#alert_msg").html("");
+    $("div.alert").removeClass("show");
+});
+
+function show_hide_container_selects(selected_value){
+    // they are hidden for the other options, so hide them by default and just display one if required
+    $(form_id).find("#id_available_container").parents(".form-group").hide();
+    $(form_id).find("#id_container_for_cloning").parents(".form-group").hide();
+    if(selected_value === 'available'){
+        $(form_id).find("#id_available_container").parents('.form-group').show();
+    }else if(selected_value === 'clone'){
+        $(form_id).find("#id_container_for_cloning").parents('.form-group').show();
+    }
+}
+
+$("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
+    show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
+});

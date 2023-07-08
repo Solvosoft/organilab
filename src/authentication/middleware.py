@@ -1,22 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import Http404
 
 from auth_and_perms.models import ProfilePermission
-from django.shortcuts import redirect
-from django.urls import reverse
+from laboratory.utils import get_laboratories_by_user_profile
 
-"""
-view_shelf
-view_shelfobjects
-view_shelfobject
-view_laboratoryroom
-view_laboratory
-view_furniture
-
-"""
 
 class ProfileMiddleware:
     def __init__(self, get_response):
@@ -63,6 +52,11 @@ class ProfileMiddleware:
 
         if lab_pk:
             queryQ |= Q(profile=user.profile,object_id=lab_pk,
+                        content_type__app_label='laboratory',  content_type__model="laboratory")
+        elif org_pk:
+            # for my_labs selection and other steps without laboratory defined
+            laboratories = get_laboratories_by_user_profile(request.user, org_pk)
+            queryQ |= Q(profile=user.profile,object_id__in=laboratories,
                         content_type__app_label='laboratory',  content_type__model="laboratory")
         if org_pk:
             queryQ |= Q(profile=user.profile, object_id=org_pk,

@@ -1,0 +1,34 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+    {% define_urlname_action 'warning_words' %}
+    {% define_urlname_action 'add_warning_word' %}
+    {% define_urlname_action 'update_warning_word' %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-sm-12">
+        <h1> {% trans 'Warning Words' %}</h1>
+        <table id="warningwordtable" class="table table-striped"></table>
+    </div>
+</div>
+{% trans 'Warning word' as modaltitle %}
+{% include 'modal_template.html' with form=form id="warningwordmodal" title=modaltitle form_id="warningwordmodal" url=api_warning_word_detail %}
+{% endblock %}
+
+{% block js %}
+<script>
+	document.url_warnings_table = '{% url "laboratory:api-warnings-table-list" org_pk=org_pk%}'
+	document.url_add_warning_word = '{% url 'laboratory:api-warning-word-list' org_pk=org_pk %}'
+	document.url_delete_warning_word = '{% url 'laboratory:api-warning-word-detail' org_pk=org_pk pk=0 %}'
+	document.url_get_warning_word = '{% url 'laboratory:api-warning-word-detail' org_pk=org_pk pk=0 %}'
+	document.url_update_warning_word = '{% url 'laboratory:api-warning-word-detail' org_pk=org_pk pk=0 %}'
+</script>
+
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/warning_words.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

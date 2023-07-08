@@ -214,7 +214,7 @@ class ObjectFeaturesForm(forms.ModelForm, GTForm):
 class LaboratoryRoomForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        exclude = ['laboratory', 'creator']
+        exclude = ['laboratory', 'created_by']
         widgets = {
             'name': genwidgets.TextInput(),
             'legal_identity': genwidgets.NumberInput,
@@ -290,8 +290,8 @@ class InformForm(forms.ModelForm, GTForm):
 class CommentForm(forms.ModelForm, GTForm):
     class Meta:
         model = CommentInform
-        fields = ['creator', 'comment']
-        widgets = {'creator': genwidgets.HiddenInput,
+        fields = ['created_by', 'comment']
+        widgets = {'created_by': genwidgets.HiddenInput,
                    'comment': genwidgets.Textarea,
                    }
 
@@ -558,7 +558,7 @@ class ObservationShelfObjectForm(GTForm, forms.ModelForm):
 
     class Meta:
         model=ShelfObjectObservation
-        exclude=['shelf_object', 'creator']
+        exclude=['shelf_object', 'created_by']
         widgets={
             'action_taken': genwidgets.TextInput,
             'description': genwidgets.Textarea

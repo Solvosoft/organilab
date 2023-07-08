@@ -94,11 +94,15 @@ function BaseFormModal(modalid,  data_extras={})  {
                         if(errors){  // form errors
                             form.find('ul.form_errors').remove();
                             form_field_errors(form, errors, instance.prefix);
-                        }else{ // any other error
+                        }else{
+                            let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                            if(xhr.responseJSON.detail){
+                                error_msg = xhr.responseJSON.detail;
+                            }
                             Swal.fire({
                                 icon: 'error',
                                 title: gettext('Error'),
-                                text: gettext('There was a problem performing your request. Please try again later or contact the administrator.')
+                                text: error_msg
                             });
                         }
                         instance.error(instance, xhr, resp, text);

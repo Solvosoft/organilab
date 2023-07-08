@@ -93,27 +93,45 @@
     "model": "auth_and_perms.rol",
     "pk": 1,
     "fields": {
-        "name": "View Shelf",
-        "color": "#337193",
-        "permissions": [18]
+      "name": "View Shelf",
+      "color": "#337193",
+      "permissions": [
+        [
+          "view_shelf",
+          "laboratory",
+          "shelf"
+        ]
+      ]
     }
   },
   {
     "model": "auth_and_perms.rol",
     "pk": 2,
     "fields": {
-        "name": "Change Shelf Object",
-        "color": "#337193",
-        "permissions": [24]
+      "name": "Change Shelf Object",
+      "color": "#337193",
+      "permissions": [
+        [
+          "change_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ]
+      ]
     }
   },
   {
     "model": "auth_and_perms.rol",
     "pk": 3,
     "fields": {
-        "name": "Add Reserved Product",
-        "color": "#337193",
-        "permissions": [415]
+      "name": "Add Reserved Product",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
+        ]
+      ]
     }
   },
   {
@@ -124,7 +142,15 @@
       "name": "Organization 1",
       "position": 0,
       "level": 0,
-      "rol": [1, 2, 3]
+      "rol": [
+        1,
+        2,
+        3
+      ],
+      "users": [
+        1,
+        3
+      ]
     }
   },
   {
@@ -135,7 +161,11 @@
       "name": "Organization 2",
       "position": 0,
       "level": 0,
-      "rol": []
+      "rol": [],
+      "users": [
+        2,
+        4
+      ]
     }
   },
   {
@@ -168,7 +198,10 @@
       "name": "Organization 3",
       "position": 0,
       "level": 0,
-      "rol": []
+      "rol": [],
+      "users": [
+        5
+      ]
     }
   },
   {
@@ -327,7 +360,7 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
       "discard": false,
-      "measurement_unit": 64,
+      "measurement_unit": 62,
       "quantity": 100,
       "limit_only_objects": false,
       "infinity_quantity": false
@@ -345,7 +378,7 @@
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z",
       "discard": false,
-      "measurement_unit": 64,
+      "measurement_unit": 62,
       "quantity": 100,
       "limit_only_objects": false,
       "infinity_quantity": false
@@ -394,7 +427,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1]
+      "features": [
+        1
+      ]
     }
   },
   {
@@ -406,7 +441,7 @@
       "quantity": 23.0,
       "limit_quantity": 7.0,
       "in_where_laboratory": 1,
-      "measurement_unit": 64,
+      "measurement_unit": 62,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"
@@ -420,7 +455,11 @@
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [1, 3, 5]
+      "laboratories": [
+        1,
+        3,
+        5
+      ]
     }
   },
   {
@@ -431,7 +470,10 @@
       "phone_number": "7777-7777",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [2, 4]
+      "laboratories": [
+        2,
+        4
+      ]
     }
   },
   {
@@ -442,7 +484,10 @@
       "phone_number": "6666-6666",
       "id_card": "0-0000-0000",
       "job_position": "Student",
-      "laboratories": [1, 3]
+      "laboratories": [
+        1,
+        3
+      ]
     }
   },
   {
@@ -453,7 +498,10 @@
       "phone_number": "3333-3333",
       "id_card": "0-0000-0000",
       "job_position": "Student",
-      "laboratories": [2, 4]
+      "laboratories": [
+        2,
+        4
+      ]
     }
   },
   {
@@ -464,228 +512,34 @@
       "phone_number": "3333-3333",
       "id_card": "0-0000-0000",
       "job_position": "Admin",
-      "laboratories": [5]
+      "laboratories": [
+        5
+      ]
     }
   },
   {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
-        "profile": 1,
-        "content_type": 1,
-        "object_id": 1,
-        "rol": [1, 2, 3]
+      "profile": 1,
+      "content_type": 1,
+      "object_id": 1,
+      "rol": [
+        1,
+        2,
+        3
+      ]
     }
   },
   {
-    "model": "laboratory.userorganization",
-    "pk": 1,
-    "fields": {
-        "organization": 1,
-        "user": 1,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
+    "model": "auth_and_perms.profilepermission",
     "pk": 2,
     "fields": {
-        "organization": 3,
-        "user": 1,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 3,
-    "fields": {
-        "organization": 1,
-        "user": 3,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 4,
-    "fields": {
-        "organization": 3,
-        "user": 3,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 5,
-    "fields": {
-        "organization": 2,
-        "user": 2,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 6,
-    "fields": {
-        "organization": 4,
-        "user": 2,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 7,
-    "fields": {
-        "organization": 2,
-        "user": 4,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 8,
-    "fields": {
-        "organization": 4,
-        "user": 4,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 9,
-    "fields": {
-        "organization": 5,
-        "user": 5,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-  {
-    "model": "laboratory.userorganization",
-    "pk": 10,
-    "fields": {
-        "organization": 5,
-        "user": 1,
-        "status": true,
-        "type_in_organization": 3
-    }
-},
-   {
-    "model": "laboratory.userorganization",
-    "pk": 11,
-    "fields": {
-      "organization": 1,
-      "user": 1,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-   {
-    "model": "laboratory.userorganization",
-    "pk": 12,
-    "fields": {
-      "organization": 1,
-      "user":  3,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 13,
-    "fields": {
-      "organization": 3,
-      "user": 1,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 14,
-    "fields": {
-      "organization": 3,
-      "user":  3,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 15,
-    "fields": {
-      "organization": 2,
-      "user": 2,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 16,
-    "fields": {
-      "organization": 2,
-      "user": 4,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 17,
-    "fields": {
-      "organization": 4,
-      "user": 2,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 18,
-    "fields": {
-      "organization": 4,
-      "user":  4,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 19,
-    "fields": {
-      "organization": 5,
-      "user": 1,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 20,
-    "fields": {
-      "organization": 5,
-      "user": 5,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.organizationstructurerelations",
-    "pk": 20,
-    "fields": {
-      "organization": 2,
-      "object_id": 4,
-      "content_type": [
-        "laboratory",
-        "laboratory"
+      "profile": 4,
+      "content_type": 1,
+      "object_id": 1,
+      "rol": [
+        3
       ]
     }
   },
@@ -715,6 +569,83 @@
       "creator": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 1,
+    "fields": {
+      "title": "Prácticas Estudiantiles S2 2023",
+      "description": "Prácticas estudiantiles del segundo semestre en 2023",
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 1,
+    "fields": {
+      "procedure": 1,
+      "title": "Paso 1",
+      "description": "El paso 1 se compone de ..."
+    }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 2,
+    "fields": {
+      "title": "Prácticas Estudiantiles S1 2023",
+      "description": "Prácticas estudiantiles del primer semestre en 2023",
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 2,
+    "fields": {
+      "procedure": 2,
+      "title": "Paso 1",
+      "description": "El paso 1 se compone de ..."
+    }
+  },
+  {
+    "model": "academic.procedurerequiredobject",
+    "pk": 1,
+    "fields": {
+      "step": 2,
+      "object": 1,
+      "quantity": 0,
+      "measurement_unit": 62
+    }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 3,
+    "fields": {
+      "title": "Prácticas Estudiantiles S1 2021",
+      "description": "Prácticas estudiantiles del primer semestre en 2021",
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 3,
+    "fields": {
+      "procedure": 3,
+      "title": "Paso 1",
+      "description": "El paso 1 se compone de ..."
+    }
+  },
+  {
+    "model": "academic.procedurerequiredobject",
+    "pk": 2,
+    "fields": {
+      "step": 3,
+      "object": 1,
+      "quantity": 15,
+      "measurement_unit": 62
     }
   }
 ]
