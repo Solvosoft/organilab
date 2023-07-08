@@ -21,8 +21,8 @@
       <tbody>
       <tr>
           <td style="width:11%">{{substance.comercial_name}}</td>
-          <td style="width:11%">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</td>
-          <td style="width:10%">{% if substance.uipa_name %}{{substance.uipa_name}}{%else%}{% trans 'data not available' %}{%endif%}</td>
+          <td style="width:11%">{% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}}{%else%}{% trans 'Data not available' %}{%endif%}</td>
+          <td style="width:10%">{% if substance.uipa_name %}{{substance.uipa_name}}{%else%}{% trans 'Data not available' %}{%endif%}</td>
           <td style="width:8%">{{leaf.vla_ed_pp|default_if_none:""}}</td>
           <td style="width:8%">{{leaf.vla_ed_mg|default_if_none:""}}</td>
           <td style="width:8%">{{leaf.vla_ec_pp|default_if_none:""}}</td>
@@ -35,8 +35,8 @@
       {% for comp in substance.components_sga.all %}
       <tr>
           <td style="width:11%">{{comp.comercial_name}}</td>
-          <td style="width:11%">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'data not available' %}{%endif%}</td>
-          <td style="width:10%">{% if comp.uipa_name %}{{comp.uipa_name}}{%else%}{% trans 'data not available' %}{%endif%}</td>
+          <td style="width:11%">{% if comp.substancecharacteristics.cas_id_number %}{{comp.substancecharacteristics.cas_id_number}}{%else%}{% trans 'Data not available' %}{%endif%}</td>
+          <td style="width:10%">{% if comp.uipa_name %}{{comp.uipa_name}}{%else%}{% trans 'Data not available' %}{%endif%}</td>
           <td style="width:8%">{{comp.leaf.vla_ed_pp|default_if_none:""}}</td>
           <td style="width:8%">{{omp.leaf.vla_ed_mg|default_if_none:""}}</td>
           <td style="width:8%">{{comp.leaf.vla_ec_pp|default_if_none:""}}</td>

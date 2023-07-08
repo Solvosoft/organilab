@@ -21,7 +21,7 @@
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Warning Word' %}</label></div>
-        <div class="col-9">: {% if component.warningword.name %}{{component.warningword.name}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if component.warningword.name %}{{component.warningword.name}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
 
     <div class="row">
@@ -29,8 +29,8 @@
     </div>
     {% for danger_indication in component.danger_indication.all %}
         <div class="row">
-            <div class="col-3"><label>{% if danger_indication.code %}{{danger_indication.code}} {% else %} {% trans 'data not available' %} {% endif %}</label></div>
-            <div class="col-9">: {% if danger_indication.description %}{{danger_indication.description}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+            <div class="col-3"><label>{% if danger_indication.code %}{{danger_indication.code}} {% else %} {% trans 'Data not available' %} {% endif %}</label></div>
+            <div class="col-9">: {% if danger_indication.description %}{{danger_indication.description}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
         </div>
     {% endfor %}
 
@@ -39,13 +39,13 @@
     </div>
     {% for prudence_advice in component.prudence_advice.all %}
         <div class="row">
-            <div class="col-3"><label>{% if prudence_advice.code %}{{prudence_advice.code}} {% else %} {% trans 'data not available' %} {% endif %}</label></div>
-            <div class="col-9">: {% if prudence_advice.name %}{{prudence_advice.name}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+            <div class="col-3"><label>{% if prudence_advice.code %}{{prudence_advice.code}} {% else %} {% trans 'Data not available' %} {% endif %}</label></div>
+            <div class="col-9">: {% if prudence_advice.name %}{{prudence_advice.name}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
         </div>
     {% endfor %}
 
 </div>
 <label class="fw-bold">2.3 {% trans 'Other dangers' %}</label>
 <div class="container">
-    <label>{% if component.other_dangers %}{{component.other_dangers}} {% else %} {% trans 'data not available' %} {% endif %}</label>
+    <label>{% if component.other_dangers %}{{component.other_dangers}} {% else %} {% trans 'Data not available' %} {% endif %}</label>
 </div>

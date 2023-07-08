@@ -7,6 +7,9 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ProcedureStepCommentAPI, ProcedureStepCommentTableView
+from sga.api.sga_components_viewsets import WarningWordAPI, WarningWordTableView, \
+    DangerIndicationAPI, DangerIndicationTableView, \
+    PrudenceAdviceAPI, PrudenceAdviceTableView
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api import shelfobject as ShelfObjectApi
@@ -204,6 +207,13 @@ stepcommentsrouter = DefaultRouter()
 stepcommentsrouter.register('api_my_procedure', ProcedureStepCommentAPI, basename='api-my-procedure')
 stepcommentsrouter.register('api_procedure_comments', ProcedureStepCommentTableView, basename='api-procedure-comments')
 
+sgacomponentsrouter = DefaultRouter()
+sgacomponentsrouter.register('api_warning_word', WarningWordAPI, basename='api-warning-word')
+sgacomponentsrouter.register('api_warnings_table', WarningWordTableView, basename='api-warnings-table')
+sgacomponentsrouter.register('api_danger_indication', DangerIndicationAPI, basename='api-danger-indication')
+sgacomponentsrouter.register('api_dangers_table', DangerIndicationTableView, basename='api-dangers-table')
+sgacomponentsrouter.register('api_prudence_advice', PrudenceAdviceAPI, basename='api-prudence-advice')
+sgacomponentsrouter.register('api_advices_table', PrudenceAdviceTableView, basename='api-advices-table')
 
 shelfobjectrouter = DefaultRouter()
 shelfobjectrouter.register('api_shelfobject_table', ShelfObjectApi.ShelfObjectTableViewSet, basename='api-shelfobjecttable')
@@ -239,4 +249,5 @@ urlpatterns += organization_urls + [
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
     path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
+    path('sga_components/api/<int:org_pk>/', include(sgacomponentsrouter.urls)),
 ]

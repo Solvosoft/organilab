@@ -9,7 +9,7 @@ from rest_framework import serializers
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, \
     BuilderInformation, \
     RecipientSize, Substance, SubstanceObservation, SecurityLeaf, ReviewSubstance, \
-    DisplayLabel
+    DisplayLabel, WarningWord
 
 logger = logging.getLogger('organilab')
 
@@ -30,12 +30,42 @@ class DangerIndicationSerializer(serializers.ModelSerializer):
 
 
 class PrudenceAdviceSerializer(serializers.ModelSerializer):
+    code = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    prudence_advice_help = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_code(self, obj):
+        if obj.code:
+            return obj.code
+        return ''
+
     def get_name(self, obj):
-        return obj.code + ": " + obj.name
+        if obj.name:
+            return obj.name
+        return ''
+
+    def get_prudence_advice_help(self, obj):
+        if obj.prudence_advice_help:
+            return obj.prudence_advice_help
+
+    def get_actions(self, obj):
+        action = ""
+
+        action += """<a title='%s' class="pe-2" onclick="edit_prudence_advice('%d')">
+        <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+        </a>""" % (_('Edit'), obj.pk)
+
+        action += """<a title='%s' class="pe-2" onclick="delete_prudence_advice('%d')">
+        <i class="fa fa-close text-danger" aria-hidden="true"></i>
+        </a>""" % (_("Delete"), obj.pk)
+
+        return action
+
 
     class Meta:
         model = PrudenceAdvice
-        fields = ['id', 'name']
+        fields = ['id', 'code', 'name', 'prudence_advice_help', 'actions']
 
 
 class SGAComplementSerializer(serializers.ModelSerializer):
@@ -205,6 +235,106 @@ class DisplayLabelSerializer(serializers.ModelSerializer):
 
 class DisplayLabelDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=DisplayLabelSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class WarningWordSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    weigth = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        if obj.name:
+            return obj.name
+        return ''
+
+    def get_weigth(self, obj):
+        if obj.weigth:
+            return obj.weigth
+        return 0
+
+    def get_actions(self, obj):
+        org_pk = self.context['view'].kwargs.get('org_pk')
+        action = ""
+
+        action += """<a title='%s' class="pe-2" onclick="edit_warning_word('%d')">
+        <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+        </a>""" % (_('Edit'), obj.pk)
+
+        action += """<a title='%s' class="pe-2" onclick="delete_warning_word(%d)">
+        <i class="fa fa-close text-danger" aria-hidden="true"></i>
+        </a>""" % (_("Delete"), obj.pk)
+
+        return action
+
+    class Meta:
+        model = WarningWord
+        fields = ['pk', 'name', 'weigth', 'actions']
+
+
+class WarningWordDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=WarningWordSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class DangerIndicationSerializer(serializers.ModelSerializer):
+    code = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    warning_words = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_code(self, obj):
+        if obj.code:
+            return obj.code
+        return ''
+
+    def get_description(self, obj):
+        if obj.description:
+            return obj.description
+        return ''
+
+    def get_warning_words(self, obj):
+        if obj.warning_words:
+            return obj.warning_words.name
+        return ''
+
+    def get_actions(self, obj):
+        org_pk = self.context['view'].kwargs.get('org_pk')
+        kwargs = {
+            'org_pk': org_pk,
+            'pk': obj.pk
+        }
+        edit_url = reverse('sga:update_danger_indication', kwargs=kwargs)
+        action = ""
+        action += """<a title='%s' class="pe-2" href='%s'>
+                <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+                </a>""" % (_('Edit'), edit_url)
+
+        action += """<a title='%s' class="pe-2"
+                onclick="delete_danger_indication('%s')">
+                <i class="fa fa-close text-danger" aria-hidden="true"></i>
+                </a>""" % (_("Delete"), obj.pk)
+
+        return action
+
+    class Meta:
+        model = DangerIndication
+        fields = ['pk', 'code', 'description', 'warning_words', 'actions']
+
+
+class DangerIndicationDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DangerIndicationSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class PrudenceAdviceDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=PrudenceAdviceSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

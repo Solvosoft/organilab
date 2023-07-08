@@ -6,66 +6,66 @@
 <div class="container">
     <div class="row">
         <div class="col-3"><label> {% trans 'Product name' %}</label></div>
-        <div class="col-9">: {% if substance.comercial_name %}{{substance.comercial_name}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if substance.comercial_name %}{{substance.comercial_name}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label> {% trans 'Reference'%} </label></div>
-        <div class="col-9">: {% if leaf.reference %}{{leaf.reference}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if leaf.reference %}{{leaf.reference}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Brand' %}</label></div>
-        <div class="col-9"> : {% if substance.brand %}{{substance.brand}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9"> : {% if substance.brand %}{{substance.brand}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Number Index'%}</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.number_index %}{{substance.substancecharacteristics.number_index}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>REACH No.</label></div>
-        <div class="col-9">: {% if leaf.reach_number %}{{leaf.reach_number}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if leaf.reach_number %}{{leaf.reach_number}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>No. CAS</label></div>
-        <div class="col-9">: {% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if substance.substancecharacteristics.cas_id_number %}{{substance.substancecharacteristics.cas_id_number}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
 </div>
 
 <label class="fw-bold">1.2 {% trans 'Relevant identified uses of the substance or mixture and uses advised against' %}</label>
 <br>
-<label>{% if leaf.identified_uses %}{{leaf.identified_uses}} {% else %} {% trans 'data not available' %} {% endif %}</label>
+<label>{% if leaf.identified_uses %}{{leaf.identified_uses}} {% else %} {% trans 'Data not available' %} {% endif %}</label>
 <br>
 <label class="fw-bold">1.3 {% trans 'Details of the supplier of the safety data sheet' %}</label>
 <div class="container">
     <div class="row">
         <div class="col-3"><label>{% trans 'Company' %}</label></div>
-        <div class="col-9">: {% if provider.name %}{{provider.name}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if provider.name %}{{provider.name}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Direction'%}</label></div>
-        <div class="col-9">: {% if provider.direction %}{{provider.direction}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if provider.direction %}{{provider.direction}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Country' %}</label></div>
-        <div class="col-9"> : {% if provider.country %}{{provider.country}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9"> : {% if provider.country %}{{provider.country}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Telephone number' %}</label></div>
-        <div class="col-9">: {% if provider.telephone_number %}{{provider.telephone_number}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if provider.telephone_number %}{{provider.telephone_number}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>Fax</label></div>
-        <div class="col-9">: {% if provider.fax %}{{provider.fax}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if provider.fax %}{{provider.fax}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
     <div class="row">
         <div class="col-3"><label>{% trans 'Email' %}</label></div>
-        <div class="col-9">: {% if provider.email %}{{provider.email}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if provider.email %}{{provider.email}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
 </div>
 <label class="fw-bold">1.4 {% trans 'Emergency number' %}</label>
 <div class="container">
     <div class="row">
         <div class="col-3"><label>{% trans 'Emergency number' %}</label></div>
-        <div class="col-9">: {% if provider.emergency_phone %}{{provider.emergency_phone}} {% else %} {% trans 'data not available' %} {% endif %}</div>
+        <div class="col-9">: {% if provider.emergency_phone %}{{provider.emergency_phone}} {% else %} {% trans 'Data not available' %} {% endif %}</div>
     </div>
 </div>
 <hr>
