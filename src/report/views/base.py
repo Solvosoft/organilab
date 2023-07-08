@@ -8,7 +8,8 @@ from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 from laboratory.utils import check_user_access_kwargs_org_lab
 from report.forms import TasksForm
-from report.models import TaskReport
+from report.models import TaskReport, ObjectChangeLogReport, \
+    ObjectChangeLogReportBuilder
 from report import register
 from django.utils import translation, timezone
 from weasyprint import HTML
@@ -16,7 +17,7 @@ from io import BytesIO
 
 from report.models import DocumentReportStatus
 from report.utils import get_pdf_table_content, create_notification, get_report_name, \
-    document_status, calc_duration, check_import_obj
+    document_status, calc_duration, check_import_obj, get_pdf_log_change_table_content
 from django_celery_results.models import TaskResult
 
 
@@ -65,11 +66,21 @@ def build_report(pk, absolute_uri):
 
 def base_pdf(report, uri):
     title = ''
+    datalist = ""
+    total = 0
     if 'title' in report.data and report.data['title']:
         title = report.data['title']
     report_name = get_report_name(report)
+    if report.type_report == "report_objectschanges":
+        datalist = get_pdf_log_change_table_content(report)
+        total = ObjectChangeLogReportBuilder.objects.\
+            filter(report__task_report=report).count()
+
+    else:
+        datalist = get_pdf_table_content(report.table_content)
+        total=len(report.table_content['dataset'])
     context = {
-        'datalist': get_pdf_table_content(report.table_content),
+        'datalist': datalist,
         'user': report.created_by,
         'title': title if title else report_name,
         'datetime': timezone.now(),
@@ -85,7 +96,7 @@ def base_pdf(report, uri):
     report.file = content
     report.save()
     file.close()
-    return len(report.table_content['dataset'])
+    return total
 
 
 
@@ -187,16 +198,24 @@ def download_report(request, org_pk, lab_pk):
     response = JsonResponse(response, status=status_code, reason=reason)
     return response
 
+
 @login_required
 @permission_required('laboratory.do_report')
 def report_table(request, org_pk, lab_pk, pk):
     task = TaskReport.objects.filter(pk=pk).first()
-    return render(request, template_name='report/general_reports.html', context={
+    template_name = 'report/general_reports.html'
+    content = {
         'table': task.table_content,
         'lab_pk': lab_pk,
         'org_pk': org_pk,
-        'obj_task': task
-    })
+        'obj_task': task,
+        'changelogreport': None
+    }
+    if task.type_report == "report_objectschanges":
+        template_name= "report/log_change.html"
+        content['changelogreport'] = ObjectChangeLogReport.objects.\
+            filter(task_report=task)
+    return render(request, template_name=template_name, context=content)
 
 
 @login_required

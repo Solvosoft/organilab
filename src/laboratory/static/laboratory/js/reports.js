@@ -193,6 +193,41 @@ function update_selects(form_element){
     });
 }
 
+function add_log_change_datatables(id, lab, obj, diff,unit, url){
+    columns= [
+            {data: "user", name: "user", title: gettext("User"), type: "string", visible: true},
+            {data: "update_time", name: "update_time", title: gettext("Day"), type: "date", visible: true},
+            {data: "old_value", name: "old_value", title: gettext("Old"), type: "number", visible: true },
+            {data: "new_value", name: "new_value", title: gettext("New"), type: "number", visible: true},
+            {data: "diff_value", name: "diff_value", title: gettext("Difference"), type: "number", visible: true},
+        ],
+    html_card=`<div class="card mt-5">
+	<div class="card-title text-center fw-bold">
+	<p>${lab} | ${obj}  <br><p>${gettext("Difference")}: ${diff} ${unit}</p></p>
+	<hr>
+	</div>
+	<div class="card-body"><table id=${id} class="log_changes_table mt-0 p-0 display table table-striped table-bordered text-center dt-responsive"></table>
+	</div></div>`;
+	$('#body_tables').append(html_card);
+
+    data=createDataTable("#"+id, url, {
+           responsive: true,
+          columns: columns,
+
+		  ajax: {
+				url: url,
+				type: 'GET',
+				data: function(dataTableParams, settings) {
+					return formatDataTableParams(dataTableParams, settings);
+				}
+			},
+	dom: "<'d-flex justify-content-between'<'m-2'l>" +
+       "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
+       "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+
+	    }, addfilter=true,);
+
+}
 
 $('#id_all_labs_org').on('change', function(){
     document.select_data.all_labs_org = false;
