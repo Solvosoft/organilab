@@ -430,8 +430,7 @@ def get_companies(request, org_pk):
 def create_company(request, org_pk):
     form = CompanyForm(user=request.user)
     organization = get_object_or_404(
-        OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-        pk=org_pk, organization__pk=org_pk)
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     if request.method == 'POST':
         form = CompanyForm(request.POST)

@@ -12,7 +12,7 @@ STATUS_TEMPLATE=[(_('On hold'), WAIT),
                  ]
 
 class TaskReport(models.Model):
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     type_report = models.CharField(max_length=100, blank=False, null=False)
     form_name = models.TextField(null=True, blank=True)
     table_content = models.JSONField(null=True, blank=True)
