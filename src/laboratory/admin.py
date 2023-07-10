@@ -41,7 +41,6 @@ class InformSchedulerAdmin(admin.ModelAdmin):
     actions = [create_informs]
     inlines = [PeriodScheduledAdmin]
 
-
 @admin.action(description='Export Laboratory')
 def export_laboratory(admin, request, queryset):
     response = HttpResponse(
