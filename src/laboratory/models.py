@@ -654,7 +654,7 @@ class UserOrganization(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
 #    users = models.ManyToManyField(User, blank=True)
-
+#
 #    def __str__(self):
 #        return "%s" % self.organization.name
 
@@ -737,6 +737,7 @@ class ObjectLogChange(models.Model):
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action = models.IntegerField(default=0)
     note = models.CharField(default='', blank=True, null=True, max_length=255)
+    organization_where_action_taken = models.ForeignKey(OrganizationStructure, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.object.name

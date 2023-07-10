@@ -116,10 +116,6 @@ lab_features_urls = [
          name='object_feature_delete'),
 ]
 
-edit_objects = [
-    path('edit_object/<int:pk>/', shelfobject.add_object,  name="edit_object"),
-    path('get_object_detail', shelfobject.send_detail, name="get_object_detail")
-]
 
 reports_all_lab = [
     path('reports/hcode', laboratory.HCodeReports.as_view(), name='h_code_reports'),
@@ -238,7 +234,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
-    path('lab/<int:org_pk>/<int:lab_pk>/shelfedit/', include(edit_objects)),
+
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('so/api/<int:org_pk>/<int:lab_pk>/', include(shelfobjectrouter.urls)),
     path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),

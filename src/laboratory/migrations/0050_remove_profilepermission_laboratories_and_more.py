@@ -7,6 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('auth_and_perms', '0003_update_sequences'),
         ('laboratory', '0049_alter_organizationstructure_managers_and_more'),
     ]
 

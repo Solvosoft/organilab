@@ -40,7 +40,7 @@
 			<div class="fw-bold"><p>{% trans 'Organizations that works' %}:</p></div>
 			<div>
 				<ul class="list-group list-group-flush">
-				{% for orga in profile.user.organizationusermanagement_set.all %}
+				{% for orga in profile.user.organizationstructure_set.all.distinct %}
 					<li class="list-group-item">{{orga}}</li>
 					{% endfor %}
 				</ul>

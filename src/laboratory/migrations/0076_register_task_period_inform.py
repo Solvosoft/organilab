@@ -25,6 +25,7 @@ def register_task(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
+        ('django_celery_beat',  '0016_alter_crontabschedule_timezone'),
         ('laboratory', '0075_informscheduler_informsperiod'),
     ]
 
