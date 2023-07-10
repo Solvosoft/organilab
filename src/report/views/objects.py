@@ -193,17 +193,21 @@ def report_reactive_precursor_doc(report):
             content[0].insert(0, _('Laboratory'))
 
     content = content + get_dataset_reactive_precursor(report, None)
+
     record_total=len(content)-1
 
     report_name = get_report_name(report)
-    builder.add_table(content, report_name)
-    file=None
+    content.insert(0,[report_name])
+
+    """
     if report.file_type!= 'ods':
         builder.add_table(content, report_name)
         file=builder.save()
     else:
         content.insert(0,[report_name])
         file=builder.save_ods(content)
+    """
+    file=builder.save_ods(content, format_type=report.file_type)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -298,6 +302,7 @@ def report_objects_html(report):
     report.save()
     return len(report.table_content['dataset'])
 
+
 def report_objects_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
@@ -310,16 +315,11 @@ def report_objects_doc(report):
             content[0].insert(0,_('Laboratory'))
 
     content = content + get_dataset_objects(report, None)
-    record_total =len(content)-1
+    record_total = len(content)-1
     report_name = get_report_name(report)
-    builder.add_table(content, report_name)
-    file=None
-    if report.file_type!= 'ods':
-        builder.add_table(content, report_name)
-        file=builder.save()
-    else:
-        content.insert(0,[report_name])
-        file=builder.save_ods(content)
+    content.insert(0, [report_name])
+    file = builder.save_ods(content, format_type=report.file_type)
+    print(21212)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -327,6 +327,7 @@ def report_objects_doc(report):
     report.save()
     file.close()
     return record_total
+
 
 #report_limit_object
 def get_limited_shelf_objects(query):
@@ -381,24 +382,20 @@ def report_limit_object_html(report):
 def report_limit_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
-        _("Shelf"), _("Code"), _("Object"), _("Quantity"), _('Limit quantity'), _("Measurement Unit")
+        _("Shelf"), _("Code"), _("Object"), _("Quantity"), _('Limit quantity'),
+        _("Measurement Unit")
     ]]
     if 'laboratory' in report.data:
         labs = report.data['laboratory']
         if len(labs) > 1:
             content[0].insert(0,_('Laboratory'))
 
-    content =  content + get_dataset_limit_objects(report, None)
-    record_total=len(content)-1
+    content = content + get_dataset_limit_objects(report, None)
+    record_total = len(content)-1
     report_name = get_report_name(report)
-    builder.add_table(content, report_name)
+    content.insert(0, [report_name])
+    file = builder.save_ods(content, format_type=report.file_type)
 
-    if report.file_type!= 'ods':
-        builder.add_table(content, report_name)
-        file=builder.save()
-    else:
-        content.insert(0,[report_name])
-        file=builder.save_ods(content)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
