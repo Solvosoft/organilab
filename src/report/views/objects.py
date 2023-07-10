@@ -379,6 +379,8 @@ def report_limit_object_html(report):
     }
     report.save()
     return len(report.table_content['dataset'])
+
+
 def report_limit_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
@@ -395,7 +397,6 @@ def report_limit_object_doc(report):
     report_name = get_report_name(report)
     content.insert(0, [report_name])
     file = builder.save_ods(content, format_type=report.file_type)
-
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
@@ -403,6 +404,7 @@ def report_limit_object_doc(report):
     report.save()
     file.close()
     return record_total
+
 
 #report_organization_reactive
 def get_dataset_report_organization_reactive(report, column_list=None):
@@ -472,20 +474,19 @@ def report_reactive_exposition_html(report):
     report.save()
     return len(report.table_content['dataset'])
 
+
 def report_organization_reactive_list_doc(report):
     builder = ExcelGraphBuilder()
-    content = [[_('Laboratory name'), _('First Name'), _('Last Name'), _('Code'), _('Sustance'), _('CAS'),
-                _('White Organ'), _('Carcinogenic'), _('ID Card'), _('Job Position'), "#"+_("Exposition")]]
+    content = [[_('Laboratory name'), _('First Name'), _('Last Name'), _('Code'),
+                _('Sustance'), _('CAS'), _('White Organ'), _('Carcinogenic'),
+                _('ID Card'), _('Job Position'), "#"+_("Exposition")]]
+
     content = content + get_dataset_report_organization_reactive(report, None)
 
-    record_total=len(content)-1
+    record_total = len(content)-1
     report_name = get_report_name(report)
-    if report.file_type!= 'ods':
-        builder.add_table(content, report_name)
-        file=builder.save()
-    else:
-        content.insert(0,[report_name])
-        file=builder.save_ods(content)
+    content.insert(0, [report_name])
+    file = builder.save_ods(content, format_type=report.file_type)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)

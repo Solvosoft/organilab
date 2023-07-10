@@ -55,13 +55,8 @@ def furniture_doc(report):
     record_total=len(content)-1
 
     report_name = get_report_name(report)
-    file=None
-    if report.file_type != 'ods':
-        builder.add_table(content, report_name)
-        file = builder.save()
-    else:
-        content.insert(0, [report_name])
-        file = builder.save_ods(content)
+    content.insert(0, [report_name])
+    file = builder.save_ods(content, format_type=report.file_type)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
