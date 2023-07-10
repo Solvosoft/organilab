@@ -1,9 +1,31 @@
+import zipfile
+
 from django.contrib import admin
+from django.core import serializers
+from django.http import HttpResponse
+import io
 from auth_and_perms import models
+
+@admin.action(description='Export Laboratory')
+def export_rol_perms(admin, request, queryset):
+    buffer = io.BytesIO()
+    zip_file = zipfile.ZipFile(buffer, 'w')
+
+
+    for rol in queryset:
+        rols=models.ProfilePermission.objects.filter(rol=rol)
+        zip_file.writestr(rol.name+".json", serializers.serialize('json', rols))
+    zip_file.close()
+    buffer.seek(0)
+    response = HttpResponse(buffer.getvalue(),
+        content_type='application/x-zip-compressed',
+        headers={'Content-Disposition': 'attachment; filename="permissionsrol.zip"'})
+    return response
 
 
 class RolAdmin(admin.ModelAdmin):
     filter_horizontal = ['permissions']
+    actions = [export_rol_perms]
 
 
 class AuthorizedApplicationAdmin(admin.ModelAdmin):
