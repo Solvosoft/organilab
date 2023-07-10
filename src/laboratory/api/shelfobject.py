@@ -138,7 +138,7 @@ class ShelfObjectCreateMethods:
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
-                          0, "Create", create=True)
+                          0, "Create", create=True, organization=organization)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'limit_quantity',
@@ -179,7 +179,7 @@ class ShelfObjectCreateMethods:
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
-                          0, "Create", create=True)
+                          0, "Create", create=True, organization=organization)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'marked_as_discard',
@@ -212,7 +212,7 @@ class ShelfObjectCreateMethods:
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
-                          0, "Create", create=True)
+                          0, "Create", create=True, organization=organization)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -245,7 +245,7 @@ class ShelfObjectCreateMethods:
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
-                          0, "Create", create=True)
+                          0, "Create", create=True, organization=organization)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -278,7 +278,7 @@ class ShelfObjectCreateMethods:
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
-                          0, "Create", create=True)
+                          0, "Create", create=True, organization=organization)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -311,7 +311,7 @@ class ShelfObjectCreateMethods:
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
-                          0, "Create", create=True)
+                          0, "Create", create=True, organization=organization)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -488,7 +488,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             save_increase_decrease_shelf_object(request.user, serializer.validated_data,
                                                 self.laboratory,
-                                                is_increase_process=True)
+                                                self.organization,
+                                                is_increase_process=True,
+                                                )
         else:
             errors = serializer.errors
 
@@ -520,7 +522,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             save_increase_decrease_shelf_object(request.user, serializer.validated_data,
-                                                self.laboratory)
+                                                self.laboratory, self.organization)
         else:
             errors = serializer.errors
 

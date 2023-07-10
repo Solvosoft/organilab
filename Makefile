@@ -56,3 +56,10 @@ release: clean trans builddocker
 dist:
 	echo $(setup_version)
 
+
+start:
+	cd src && python manage.py migrate && python manage.py createcachetable
+	python manage.py load_urlname_permissions
+	python manage.py loadgroup
+	python manage.py load_sga
+	python manage.py loaddata sga_components.json

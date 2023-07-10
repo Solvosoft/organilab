@@ -238,6 +238,7 @@ class RoomCreateForm(forms.ModelForm, GTForm):
         exclude = ['laboratory']
         widgets = {
             'name': genwidgets.TextInput,
+            'created_by': genwidgets.HiddenInput
         }
 
 

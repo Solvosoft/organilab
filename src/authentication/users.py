@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import permission_required, login_required
@@ -12,8 +13,12 @@ from django.views.generic import UpdateView
 from django.shortcuts import get_object_or_404
 from auth_and_perms.models import Profile
 from django.utils.translation import gettext_lazy as _
+
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from authentication.forms import PasswordChangeForm, EditUserForm
 from django.http import JsonResponse
+
+from laboratory.models import OrganizationStructure
 
 
 @method_decorator(permission_required("auth.change_user"), name="dispatch")
@@ -45,6 +50,9 @@ class ChangeUser(UpdateView):
 @login_required
 @permission_required("auth_and_perms.view_profile")
 def get_profile(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     profile = get_object_or_404(Profile, user__pk=pk)
     context={
         'org_pk':org_pk,

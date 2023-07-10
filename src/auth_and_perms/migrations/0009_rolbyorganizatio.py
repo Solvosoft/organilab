@@ -3,26 +3,6 @@
 from django.db import migrations
 
 
-def set_organization_roles(apps, schema_editor):
-    # We can't import the Person model directly as it may be a newer
-    # version than this migration expects. We use the historical version.
-    ProfilePermission = apps.get_model('auth_and_perms', 'ProfilePermission')
-    OrganizationUserManagement = apps.get_model('laboratory', 'OrganizationUserManagement')
-    ContentType = apps.get_model('contenttypes', 'ContentType')
-
-    contenttype=ContentType.objects.filter(
-        app_label='laboratory',
-        model='organizationstructure'
-    ).first()
-    for orgman in OrganizationUserManagement.objects.all():
-        org=orgman.organization
-        for user in orgman.users.all():
-            ProfilePermission.objects.get_or_create(
-                profile=user.profile,
-                content_type=contenttype,
-                object_id=org.pk
-            )
-
 
 class Migration(migrations.Migration):
 
@@ -32,6 +12,5 @@ class Migration(migrations.Migration):
 
     operations = [
 
-        migrations.RunPython(set_organization_roles, reverse_code=migrations.RunPython.noop),
 
     ]

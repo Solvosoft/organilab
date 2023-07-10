@@ -177,6 +177,11 @@ class LabroomCreate(CreateView):
     form_class = LaboratoryRoomForm
     success_url = "/"
 
+    def get_form_kwargs(self):
+        kwargs= super().get_form_kwargs()
+        kwargs['initial']={'created_by': self.request.user}
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = CreateView.get_context_data(self, **kwargs)
         lab = get_object_or_404(Laboratory, pk=self.lab)
@@ -226,7 +231,9 @@ class LabroomUpdate(UpdateView):
         return reverse_lazy('laboratory:rooms_create', args=(self.org, self.lab))
 
     def get_form_kwargs(self):
-        return super().get_form_kwargs()
+        kwargs= super().get_form_kwargs()
+        kwargs['initial']={'created_by': self.request.user}
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
