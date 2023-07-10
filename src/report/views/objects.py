@@ -424,7 +424,7 @@ def get_dataset_report_organization_reactive(report, column_list=None):
         objs = ObjectLogChange.objects.filter(**filters, user__in=users).values('object','laboratory__name','object__code','object__name','user__pk','user__first_name','user__last_name').annotate(count=Count('object'))
         for reactive in objs:
             caracteristics = SustanceCharacteristics.objects.filter(obj__pk=reactive['object']).first()
-            white_organ = ", ".join(reactive.white_organ.all().values_list("description", flat=True))
+            white_organ = ", ".join(caracteristics.white_organ.all().values_list("description", flat=True))
             iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
             data_column = {
                 'laboratory_name': reactive['laboratory__name'],

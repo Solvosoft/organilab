@@ -174,8 +174,8 @@ document.table_default_dom = "<'row'<'col-sm-6 col-md-6 p-0' f>" +
 
 datatableelement=createDataTable('#datatableelement', urls['get_datatable_info'], {
  columns: [
-        {data: "creator", name: "creator", title: gettext("Creator"), type: "string", visible: true},
-        {data: "creator_at", name: "creator_at", title: gettext("Creation Date"), type: "date", visible: true, "dateformat":  urls['datetime_format']},
+        {data: "created_by", name: "created_by", title: gettext("Creator"), type: "string", visible: true},
+        {data: "created_by_at", name: "created_by_at", title: gettext("Creation Date"), type: "date", visible: true, "dateformat":  urls['datetime_format']},
         {data: "comment", name: "comment", title: gettext("Comment"), type: "string", visible: true}
     ],
     ajax: {
