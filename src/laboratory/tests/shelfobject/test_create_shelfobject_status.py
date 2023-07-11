@@ -51,7 +51,7 @@ class ShelfObjectStatusTest(BaseShelfobjectStatusSetUpTest):
         self.client.logout()
         self.client.force_login(self.user)
 
-        url = reverse("laboratory:api-shelfobject-create-status", kwargs={"org_pk": 4, "lab_pk": self.lab.pk})
+        url = reverse("laboratory:api-shelfobject-create-status", kwargs={"org_pk": 3, "lab_pk": self.lab.pk})
         response = self.client.post(url, data={'description': 'Buen Estado'})
         self.assertEqual(response.status_code, 403)
         self.assertTrue(Catalog.objects.filter(key="shelfobject_status").count() == 1)

@@ -199,7 +199,8 @@ class ShelfObjectCreateMethods:
         """
         created_by = self.context['request'].user
         laboratory = self.context['laboratory']
-        organization = self.context['organization']
+        organization = get_object_or_404(OrganizationStructure.objects.using(
+            settings.READONLY_DATABASE), pk=self.context['organization'])
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
@@ -208,7 +209,7 @@ class ShelfObjectCreateMethods:
             limits=limits
         )
 
-        build_shelfobject_qr(self.context['request'], shelfobject, organization,
+        build_shelfobject_qr(self.context['request'], shelfobject, organization.pk,
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
@@ -232,7 +233,9 @@ class ShelfObjectCreateMethods:
         """
         created_by = self.context['request'].user
         laboratory = self.context['laboratory']
-        organization = self.context['organization']
+        organization = get_object_or_404(OrganizationStructure.objects.using(
+            settings.READONLY_DATABASE), pk=self.context['organization'])
+
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
@@ -241,7 +244,7 @@ class ShelfObjectCreateMethods:
             limits=limits
         )
 
-        build_shelfobject_qr(self.context['request'], shelfobject, organization,
+        build_shelfobject_qr(self.context['request'], shelfobject, organization.pk,
                              laboratory)
 
         log_object_change(created_by, laboratory, shelfobject, 0, shelfobject.quantity, '',
@@ -265,7 +268,7 @@ class ShelfObjectCreateMethods:
         """
         created_by = self.context['request'].user
         laboratory = self.context['laboratory']
-        organization = self.context['organization']
+        organization = get_object_or_404(OrganizationStructure, pk=self.context['organization'])
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
@@ -298,7 +301,7 @@ class ShelfObjectCreateMethods:
         """
         created_by = self.context['request'].user
         laboratory = self.context['laboratory']
-        organization = self.context['organization']
+        organization = get_object_or_404(OrganizationStructure, pk=self.context['organization'])
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
 
         shelfobject = serializer.save(
@@ -355,8 +358,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
     # This is not an API endpoint
     def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
-        if request.user.has_perms(self.permissions_by_endpoint[
-                                      method_name]):  # user can actually perform the requested action, then check object access permissions
+        if request.user.has_perms(self.permissions_by_endpoint[method_name]):  # user can actually perform the requested action, then check object access permissions
             self.organization = get_object_or_404(
                 OrganizationStructure.objects.using(settings.READONLY_DATABASE),
                 pk=org_pk)
