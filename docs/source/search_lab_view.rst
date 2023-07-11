@@ -54,27 +54,27 @@ Action Buttons
 
 Search By Laboratory Room
 --------------------
-   It allows to relate and find and specific laboratory room inside a laboratory. Laboratory room element will be selected.
+   It allows to relate and find a specific laboratory room inside a laboratory. Laboratory room element will be selected.
 
    .. image:: ./_static/search_labroom.png
 
 Search By Furniture
 --------------------
-   It allows to relate and find and specific furniture inside a laboratory. Furniture element and its
+   It allows to relate and find a specific furniture inside a laboratory. Furniture element and its
    predecessor(laboratory room) will be selected.
 
    .. image:: ./_static/search_furniture.png
 
 Search By Shelf
 --------------------
-   It allows to relate and find and specific shelf inside a laboratory. Shelf element and its
+   It allows to relate and find a specific shelf inside a laboratory. Shelf element and its
    predecessors(furniture, laboratory room) will be selected and shelf object table is going to be update by this shelf.
 
    .. image:: ./_static/search_shelf.png
 
 Search By Shelf Object
 --------------------
-   It allows to relate and find and specific shelf object inside a laboratory. Shelf Object element and its
+   It allows to relate and find a specific shelf object inside a laboratory. Shelf Object element and its
    predecessors(shelf, furniture, laboratory room) will be selected and shelf object table is going to be update by this
    shelf object pk, where pk=11 represents a filter inside this table.
 
@@ -122,7 +122,7 @@ Search Priority Classification
 
  Logical search is going to find both elements but the second element(object) have priority. In the following picture
  ``Inventory Room`` tag was selected and its result is filtered by this laboratory room and hide the other ones
- but however the second tag ``Nitrogen`` search an specific object and it was found inside ``Inventory Room`` and
+ but however the second tag ``Nitrogen`` search a specific object and it was found inside ``Inventory Room`` and
  ``Test Room`` for default this element is going to be selected as a predecessor.
 
 
