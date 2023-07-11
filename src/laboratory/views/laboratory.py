@@ -118,7 +118,9 @@ class CreateLaboratoryFormView(FormView):
         return context
 
     def form_valid(self, form):
-        self.object = form.save()
+        self.object = form.save(commit=False)
+        self.object.created_by = self.request.user
+        self.object.save()
         utils.organilab_logentry(self.request.user, self.object, ADDITION, changed_data=form.changed_data,
                                  relobj=self.object)
 
