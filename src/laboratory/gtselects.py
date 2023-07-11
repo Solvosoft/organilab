@@ -126,7 +126,7 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
 
     def get_queryset(self):
         if self.laboratory:
-            queryset = get_available_containers_for_selection(self.laboratory)
+            queryset = get_available_containers_for_selection(self.laboratory.pk)
         else:
             queryset = ShelfObject.objects.none()
         return queryset
