@@ -447,7 +447,7 @@
     "model": "auth_and_perms.rol",
     "pk": 17,
     "fields": {
-      "name": "Gestión de Tranferencia de Objeto",
+      "name": "Gestión de Transferencia de Objeto",
       "color": "#337193",
       "permissions": [
         [
@@ -1928,6 +1928,28 @@
         11,
         12,
         13,
+        20,
+        14,
+        15
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+      "profile": 2,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        10,
+        11,
+        12,
+        13,
+        20,
         14,
         15
       ]
