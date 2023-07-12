@@ -68,7 +68,7 @@ To create a new API follow these steps:
         .. warning::
             * If the API needs extra data, a parameter for example, the corresponding fields must be implemented.
             * In the ``OnChange`` method, see if the url for the preview is being extracted correctly, if not, then implement the necessary extraction method.
-            If the data isn't showing in the preview doesn't mean that the ``url_name`` is wrong, test the functionality inside an inform instead.
+            * If the data isn't showing in the preview doesn't mean that the ``url_name`` is wrong, test the functionality inside an inform instead.
 
  - If the url has any other parameter that isn't organization, the ``get_components_url`` method that construct the url, must be modified.
  - This method can be found in the ``informs.py`` file inside the ``laboratory`` app.
