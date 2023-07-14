@@ -1,56 +1,11 @@
 {% load i18n %}
-
 <div class="container p-3 shelfinfocontainer">
-    <button class="btn bg-primary text-white" type="button" data-bs-toggle="collapse"
-            data-bs-target="#collapseshelfinfo"
-            aria-expanded="false" aria-controls="collapseshelfinfo">
-        {% trans "Shelf Information" %}
-    </button>
-    <div class="collapse" id="collapseshelfinfo">
-        <div class="card card-body bg-primary text-white">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Name" %}:</strong></label></div>
-                    <div class="col-sm-7"><p>{{shelf.name}}</p></div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Type" %}:</strong></label></div>
-                    <div class="col-sm-7"><p>{{shelf.type}}</p></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Quantity" %}:</strong></label></div>
-                    <div class="col-sm-7"><p>{{shelf.quantity}}</p></div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Measurement unit" %}:</strong></label></div>
-                    <div class="col-sm-7"><p>{{shelf.measurement_unit}}</p></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Quantity storage" %}:</strong></label></div>
-                    <div class="col-sm-7"><p>{{shelf.quantity_storage_status}}</p></div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Percentage storage" %}:</strong></label></div>
-                    <div class="col-sm-7"><p>{{shelf.percentage_storage_status}}</p></div>
-                </div>
-            </div>
-            {% if shelf.discard %}
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="col-sm-5"><label><strong>{% trans "Purpose" %}:</strong></label></div>
-                    <div class="col-sm-7">
-                        <div class="btn-group red">
-                            <span><i class="fa fa-trash red"
-                                     aria-hidden="true"></i> <strong>{% trans "Disposal" %}</strong></span>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+	<label>{% trans "Shelf Information" %}</label>
+	<div class="card card-body" style="border-color: #dee2e6;">
+		{% if shelf.position == "top" or shelf.position == "bottom" %}
+		{% include 'laboratory/shelfobject/top_bottom_shelf_info.html' %}
+		{% elif shelf.position == "left" or shelf.position == "right" %}
+		{% include 'laboratory/shelfobject/left_right_shelf_info.html' %}
+		{% endif %}
+	</div>
 </div>

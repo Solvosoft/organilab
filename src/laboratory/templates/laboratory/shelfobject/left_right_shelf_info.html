@@ -1,0 +1,35 @@
+{% load i18n %}
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Name" %}:</strong></label></div>
+	<div class="col-sm-6"><p>{{shelf.obj.name}}</p></div>
+</div>
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Type" %}:</strong></label></div>
+	<div class="col-sm-6"><p>{{shelf.type}}</p></div>
+</div>
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Measurement Unit" %}:</strong></label></div>
+	<div class="col-sm-6"><p>{{shelf.measurement_unit}}</p></div>
+</div>
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Quantity" %}:</strong></label></div>
+	<div class="col-sm-6"><p>{{shelf.quantity}}</p></div>
+</div>
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Quantity Storage" %}:</strong></label></div>
+	<div class="col-sm-6"><p>{{shelf.quantity_storage_status}}</p></div>
+</div>
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Percentage Storage" %}:</strong></label></div>
+	<div class="col-sm-6"><p>{{shelf.percentage_storage_status}}</p></div>
+</div>
+{% if shelf.obj.discard %}
+<div class="row">
+	<div class="col-sm-6"><label><strong>{% trans "Purpose" %}:</strong></label></div>
+	<div class="col-sm-6">
+		<div class="btn-group red">
+			<span><i class="fa fa-trash red" aria-hidden="true"></i> <strong>{% trans "Disposal" %}</strong></span>
+		</div>
+	</div>
+</div>
+{% endif %}
