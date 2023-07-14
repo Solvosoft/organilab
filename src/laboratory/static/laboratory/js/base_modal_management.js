@@ -14,13 +14,14 @@ function convertToStringJson(form, prefix="", extras={}){
     return JSON.stringify(formjson);
 }
 
-function load_errors(error_list, obj){
+function load_errors(error_list, obj, display_on_top=false){
     ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center'>";
     error_list.forEach((item)=>{
         ul_obj += "<li>"+item+"</li>";
     });
     ul_obj += "</ul>"
-    $(obj).parents('.form-group').prepend(ul_obj);
+    var obj_to_prepend = display_on_top ? $(obj) : $(obj).parents(".form-group");
+    obj_to_prepend.prepend(ul_obj);
     return ul_obj;
 }
 
@@ -29,7 +30,12 @@ function form_field_errors(target_form, form_errors, prefix){
     for (const [key, value] of Object.entries(form_errors)) {
         item = " #id_" +prefix+key;
         if(target_form.find(item).length > 0){
-            load_errors(form_errors[key], item);
+            if(target_form.find(item).attr("type") == "hidden"){
+                // for hidden elements the errors are displayed at the top of the form
+                load_errors(form_errors[key], target_form, display_on_top=true);
+            }else{
+               load_errors(form_errors[key], item);
+            } 
         }
     }
 }

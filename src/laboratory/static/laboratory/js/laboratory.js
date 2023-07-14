@@ -150,17 +150,16 @@ function transferInObjectDeny(btn) {
 function transferInObjectApprove(btn, event){
     let transferListDataTable = $('#transfer-list-datatable').DataTable()
     let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
-    if(transfer_data.object.type === 'Reactive'){
+    let shelfObjectDataTable = $("#shelfobjecttable").DataTable();
+    if(transfer_data.object.type === '0'){  // type - Reactive
         show_hide_container_selects("#transfer_in_approve_with_container_form", 'none');
         $("#transfer_in_approve_with_container_form #id_transfer_object").val(transfer_data.id);
         $("#transfer_in_approve_with_container_form #id_shelf").val(tableObject.get_active_shelf());
         $("#transfer-list-modal").modal('hide');
         show_me_modal(btn, event);
-        form_modals[$(btn).data('modalid')].success = function(instance, data){
-            $("#transfer-list-modal").modal('show');
-        }
-        form_modals[$(btn).data('modalid')].hidemodal = function(){
+        form_modals[$(btn).data('modalid')].hidemodal = function(){  // it is called also after the form is submitted
             this.instance.modal('hide');
+            transferListDataTable.ajax.reload();
             $("#transfer-list-modal").modal('show');
         }
     }else{
@@ -172,6 +171,7 @@ function transferInObjectApprove(btn, event){
             success: function(data){
                 Swal.fire({ title: gettext('Success'), text: data['detail'], icon: 'success', timer: 1500 });
                 transferListDataTable.ajax.reload();
+                shelfObjectDataTable.ajax.reload();
             },
             error: function(data){
                 let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
