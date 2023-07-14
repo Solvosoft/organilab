@@ -23,6 +23,7 @@ class ProviderCreate(CreateView):
 
         lab = get_object_or_404(Laboratory, pk=self.lab)
         provider.laboratory = lab
+        provider.created_by=self.request.user
         provider.save()
         organilab_logentry(self.request.user, provider, ADDITION, 'provider', changed_data=form.changed_data)
         return super(ProviderCreate, self).form_valid(provider)
