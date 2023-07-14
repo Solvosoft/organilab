@@ -23,7 +23,7 @@ from laboratory.api.serializers import ShelfLabViewSerializer, CreateObservation
 from laboratory.logsustances import log_object_change
 from laboratory.models import Catalog, ShelfObjectObservation, Object
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, TranferObject
-from laboratory.models import REQUESTED
+from laboratory.models import REQUESTED, ACCEPTED
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
@@ -32,8 +32,7 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, De
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, TransferInApproveWithContainerSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_shelfobject_partial_quantity_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
-    create_shelfobject_observation
-from laboratory.utils import organilab_logentry
+    create_shelfobject_observation, get_or_create_container_based_on_selected_option, move_shelfobject_to
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -462,7 +461,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             created_by = request.user
             )
 
-            organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[self.laboratory, instance])
+            utils.organilab_logentry(request.user, instance, ADDITION, 'reserved product', changed_data=changed_data, relobj=[self.laboratory, instance])
         else:
             errors = serializer.errors
 
@@ -533,7 +532,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     mark_as_discard=serializer.validated_data['mark_as_discard'],
                     creator=request.user
                 )
-                organilab_logentry(
+                utils.organilab_logentry(
                     request.user, transfer_obj, ADDITION, 'transferobject', 
                     changed_data=['object', 'laboratory_send', 'laboratory_received', 'quantity', 'mark_as_discard', 'creator'], 
                     relobj=[source_laboratory, target_laboratory]
@@ -588,15 +587,18 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.serializer_class = TransferInSerializer
         serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk})
         serializer.is_valid(raise_exception=True)
+        
         utils.organilab_logentry(self.request.user, serializer.validated_data['transfer_object'], DELETION, relobj=self.laboratory)
+        
         serializer.validated_data['transfer_object'].delete()
+        
         return JsonResponse({'detail': _('The transfer in was denied successfully.')}, status=status.HTTP_200_OK)
 
     
     @action(detail=False, methods=['post'])
     def transfer_in_approve(self, request, org_pk, lab_pk, **kwargs):
         """
-        Approves a transfer in, which means it will be moved/added to the new laboratory and decrement it from the source laboratory
+        Approves a transfer in, which means it will be moved/added to the new laboratory and decrement it/move it from the source laboratory
         :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
@@ -606,12 +608,34 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_approve")
         transfer_obj = get_object_or_404(TranferObject, pk=request.data.get('transfer_object'))
         self.serializer_class = TransferInApproveWithContainerSerializer if transfer_obj.object.object.type == Object.REACTIVE else TransferInSerializer
-        serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk, "organization_id": org_pk})
+        serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk, "organization_id": org_pk, "validate_for_approval": True})
         errors = {}
         if serializer.is_valid():
             transfer_object = serializer.validated_data['transfer_object']
             if transfer_object.quantity <= transfer_object.object.quantity:
-                pass
+                if transfer_object.quantity == transfer_object.object.quantity:
+                    # move the entire shelfobject instead of copy it, so history is not lost
+                    new_shelf_object = move_shelfobject_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], request)
+                else:
+                    # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
+                    new_shelf_object = move_shelfobject_partial_quantity_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], 
+                                                                            request, transfer_object.quantity)
+                
+                # setup the right option for mark as discard according to what the user selected for the transfer
+                new_shelf_object.marked_as_discard = transfer_object.mark_as_discard 
+                
+                # it is a transfer that has a container - get the container and assign it to the shelfobject, it will assign None if no container_select_option provided
+                new_shelf_object.container = get_or_create_container_based_on_selected_option(serializer.validated_data.get('container_select_option'), 
+                                                                                              org_pk, lab_pk, serializer.validated_data['shelf'], request,
+                                                                                              serializer.validated_data.get('container_for_cloning'),
+                                                                                              serializer.validated_data.get('available_container'), transfer_object.object)
+                new_shelf_object.save()
+                utils.organilab_logentry(request.user, new_shelf_object, CHANGE, changed_data=['container', 'marked_as_discard'], relobj=lab_pk)
+                    
+                # mark transfer as accepted
+                transfer_object.status = ACCEPTED
+                transfer_object.save()
+                utils.organilab_logentry(request.user, transfer_object, CHANGE, changed_data=['status'], relobj=lab_pk)
             else:
                 return JsonResponse({"detail": _("This transfer cannot be accepted since the transfer quantity is bigger " \
                                                  "than the quantity available in the source object.")}, status=status.HTTP_400_BAD_REQUEST)
@@ -637,8 +661,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete")
         serializer = ShelfObjectDeleteSerializer(data=request.data, context={"laboratory_id":self.laboratory.pk})
         serializer.is_valid(raise_exception=True)
+        shelfobject = serializer.validated_data['shelfobj']
+        
         utils.organilab_logentry(self.request.user, serializer.validated_data['shelfobj'], DELETION, relobj=self.laboratory)
-        serializer.validated_data['shelfobj'].delete()
+        log_object_change(request.user, lab_pk, shelfobject, shelfobject.quantity, 0, '', DELETION, _("Delete"))
+        
+        shelfobject.delete()
+        
         return JsonResponse({'detail': _('The item was deleted successfully')}, status=200)
 
     @action(detail=True, methods=['post'])
@@ -725,7 +754,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                   description=serializer.validated_data['description'],
                                                   shelf_object=shelfobject,
                                                   creator=request.user)
-            organilab_logentry(
+            utils.organilab_logentry(
                 request.user, shelfobject, CHANGE,
                 changed_data=['status'],
                 relobj=self.laboratory
@@ -757,7 +786,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             shelf_object = serializer.validated_data['shelf_object']
             shelf_object.shelf = serializer.validated_data['shelf']
             shelf_object.save()
-            organilab_logentry(request.user, shelf_object, CHANGE, 'shelf object', changed_data=['shelf'],
+            utils.organilab_logentry(request.user, shelf_object, CHANGE, 'shelf object', changed_data=['shelf'],
                                relobj=[self.laboratory, shelf_object])
         else:
             errors = serializer.errors

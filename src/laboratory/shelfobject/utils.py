@@ -1,6 +1,7 @@
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
+from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
-from laboratory.models import ShelfObjectObservation, ShelfObject, Object
+from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
@@ -82,11 +83,25 @@ def get_containers_for_cloning(organization_id):
     )
     return containers
 
-def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity):
-    # it will create a new shelfobject in the destination shelf and laboratory with provided quantity and decrease the quantity on the original shelfobject
+def get_or_create_container_based_on_selected_option(container_selected_option, destination_organization_id, destination_laboratory_id, destination_shelf, request,
+                                                     container_for_cloning=None, available_container=None, source_shelfobject=None):
+    container = None
+    if container_selected_option == 'clone':
+        container = create_new_shelfobject_from_object_in(container_for_cloning, destination_organization_id, destination_laboratory_id, destination_shelf, request)
+    elif container_selected_option == 'available':
+        container = available_container
+    elif container_selected_option == 'use_source':
+        container = move_shelfobject_to(source_shelfobject.container, destination_organization_id, destination_laboratory_id, destination_shelf, 
+                                        request, observation_text="Moved Container")
+    elif container_selected_option == 'new_based_source':
+        container = clone_shelfobject_to(source_shelfobject.container, destination_organization_id, destination_laboratory_id, destination_shelf, request)
+        
+    return container
+        
+def clone_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity=1):
+    # clones a shelfobject and saves it in the provided organization, laboratory and shelf
     
-    original_shelfobject = ShelfObject.objects.get(pk=shelfobject.pk)
-    new_limits = clone_shelfobject_limits(original_shelfobject, request.user)
+    new_limits = clone_shelfobject_limits(shelfobject, request.user)
     
     shelfobject.pk = None  # to save the container with some changes into a new one (clone it)
     shelfobject.shelf = destination_shelf
@@ -100,7 +115,7 @@ def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_i
     shelfobject.save()
     build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
     
-    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, "Create", create=True)
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True)
     organilab_logentry(request.user, shelfobject, ADDITION, 
                        changed_data=['shelf', 'object', 'batch', 'status', 'quantity', 'limit_quantity', 'limits', 
                                      'measurement_unit', 'in_where_laboratory', 'marked_as_discard', 'laboratory_name', 
@@ -108,15 +123,61 @@ def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_i
                        relobj=destination_laboratory_id)
     create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, destination_laboratory_id)
     
+    return shelfobject
+
+def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity):
+    # it will create a new shelfobject in the destination shelf and laboratory with provided quantity and decrease the quantity on the original shelfobject
+    
+    original_shelfobject = ShelfObject.objects.get(pk=shelfobject.pk)
+    
+    shelfobject = clone_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity)
+    
     update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - quantity, request.user)
     
     return shelfobject
 
-def create_new_shelfobject_from_object(object, destination_laboratory):
-    pass
+def create_new_shelfobject_from_object_in(object, destination_organization_id, destination_laboratory_id, destination_shelf, request, measurement_unit_description="Unidades"):
+    measurement_unit = get_object_or_404(Catalog, key="units", description=measurement_unit_description)
 
-def move_shelfobject_to(shelfobject, destination_laboratory):
-    pass
+    shelfobject = ShelfObject.objects.create(
+        shelf=destination_shelf,
+        object=object,
+        quantity=1,
+        measurement_unit=measurement_unit,
+        in_where_laboratory_id=destination_laboratory_id,
+        creator=request.user
+    )
+    build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
+    
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True)
+    organilab_logentry(request.user, shelfobject, ADDITION, 
+                       changed_data=['shelf', 'object', 'quantity', 'measurement_unit', 'in_where_laboratory', 
+                                     'creator', 'shelf_object_url', 'shelf_object_qr'], 
+                       relobj=destination_laboratory_id)
+    create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, destination_laboratory_id)
+    
+    return shelfobject
+    
+
+def move_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, observation_text="Moved Object"):
+    log_object_change(request.user, shelfobject.in_where_laboratory.pk, shelfobject, shelfobject.quantity, 0, '', CHANGE, _("Move out"))
+    
+    shelfobject.shelf = destination_shelf
+    shelfobject.in_where_laboratory_id = destination_laboratory_id
+    shelfobject.creator = request.user
+    shelfobject.shelf_object_qr = None
+    shelfobject.shelf_object_url = None
+    shelfobject.save()
+    build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
+    
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', CHANGE, _("Move in"))
+    organilab_logentry(request.user, shelfobject, CHANGE, 
+                       changed_data=['shelf', 'in_where_laboratory', 'creator', 'shelf_object_qr', 'shelf_object_url'], 
+                       relobj=destination_laboratory_id)
+    create_shelfobject_observation(shelfobject, shelfobject.course_name, _(observation_text), request.user, destination_laboratory_id)
+    
+    return shelfobject
+
 
 def update_shelfobject_quantity(shelfobject, new_quantity, user):
     if new_quantity > 0:
@@ -124,10 +185,10 @@ def update_shelfobject_quantity(shelfobject, new_quantity, user):
         shelfobject.quantity = new_quantity
         shelfobject.save()
         
-        log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, old_quantity, new_quantity, '', CHANGE, "Change quantity")
+        log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, old_quantity, new_quantity, '', CHANGE, _("Change quantity"))
         organilab_logentry(user, shelfobject, CHANGE, changed_data=['quantity'])
     else:  # delete those that will be left with quantity of 0 or less with the requested change
-        log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, shelfobject.quantity, 0, '', DELETION, "Delete ShelfObject with no quantity left")
+        log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, shelfobject.quantity, 0, '', DELETION, _("Delete ShelfObject with no quantity left"))
         organilab_logentry(user, shelfobject, DELETION)
         
         shelfobject.delete()
