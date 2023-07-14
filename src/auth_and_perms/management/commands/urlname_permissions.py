@@ -724,6 +724,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Risk Zone',
             'category': 'Risk Zone',
             'permission': 'risk_management.view_riskzone'
+        },
+        {
+            'name': 'Add ZoneType',
+            'category': 'ZoneType',
+            'permission': 'risk_management.add_zonetype'
         }
     ],
     'riskzone_delete': [
@@ -1262,6 +1267,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Template Inform',
             'category': 'Derb',
             'permission': 'derb.add_customform'
+        },
+        {
+            'name': 'View Risk Management',
+            'category': 'Risk Management',
+            'permission': 'risk_management.view_riskzone'
         },
     ],
     'addusersorganization': [
