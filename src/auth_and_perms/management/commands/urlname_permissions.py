@@ -216,6 +216,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_provider'
         },
         {
+            'name': 'Add Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.add_provider'
+        },
+        {
             'name': 'View Laboratory',
             'category': 'Laboratory',
             'permission': 'laboratory.view_laboratory'
@@ -256,6 +261,16 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_object'
         },
         {
+            'name': 'Add Object',
+            'category': 'Object',
+            'permission': 'laboratory.add_object'
+        },
+        {
+            'name': 'Add Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.add_objectfeatures'
+        },
+        {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
@@ -274,6 +289,11 @@ URLNAME_PERMISSIONS = {
             'name': 'List reservations',
             'category': 'Reservations',
             'permission': 'djreservation.add_reservation'
+        },
+        {
+            'name': 'View Informs',
+            'category': 'Informs',
+            'permission': 'laboratory.view_inform'
         }
     ],
     'list_provider': [
@@ -1228,6 +1248,21 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf',
             'permission': 'laboratory.can_add_disposal'
         },
+        {
+            'name': 'View SGA',
+            'category': 'SGA',
+            'permission': 'sga.view_label'
+        },
+        {
+            'name': 'View SGA Label',
+            'category': 'SGA',
+            'permission': 'sga.add_displaylabel'
+        },
+        {
+            'name': 'View Template Inform',
+            'category': 'Derb',
+            'permission': 'derb.add_customform'
+        },
     ],
     'addusersorganization': [
         {
@@ -2058,6 +2093,11 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf Object',
             'permission': 'laboratory.add_shelfobjectobservation'
         },
+        {
+            'name': 'Add ShelfObject Status',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.add_catalog'
+        },
     ],
     'get_shelfobject_limit': [
         {
@@ -2881,6 +2921,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View My Procedure',
             'category': 'My Procedure',
             'permission': 'academic.view_myprocedure'
+        },
+        {
+            'name': 'Add Reservation',
+            'category': 'Reservation',
+            'permission': 'reservations_management.add_reservedproducts'
         }
     ],
     'my_procedure_step_comments': [
