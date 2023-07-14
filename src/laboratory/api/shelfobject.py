@@ -165,8 +165,9 @@ class ShelfObjectCreateMethods:
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
-            serializer.validated_data['container'], serializer.validated_data['shelf'],
-            organization_id, laboratory_id, request,  quantity=1)
+            serializer.validated_data['container'],
+            organization_id, laboratory_id, serializer.validated_data['shelf'], request,
+            quantity=1)
 
         shelfobject = serializer.save(
             created_by=created_by,
@@ -936,7 +937,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             shelf = serializer.validated_data['shelf']
-            data = ShelfSerializer(shelf).data
+            position = serializer.validated_data.get('position', 'top')
+            data = ShelfSerializer(shelf, context={'position': position}).data
         else:
             errors = serializer.errors
 
