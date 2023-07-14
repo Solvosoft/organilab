@@ -424,6 +424,7 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
 
 class ValidateShelfSerializer(serializers.Serializer):
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
+    position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
     def validate_shelf(self, value):
         attr = super().validate(value)
@@ -498,28 +499,35 @@ class ShelfSerializer(serializers.ModelSerializer):
 
     def get_quantity(self, obj):
         quantity = obj.quantity
-        if quantity == -1:
-            quantity = _("Unlimited storage")
+        if quantity == -1 or obj.infinity_quantity:
+            quantity = _("Infinity")
         return quantity
 
     def get_measurement_unit(self, obj):
         return obj.get_measurement_unit_display()
 
     def get_quantity_storage_status(self, obj):
-        return f'{obj.get_total_refuse()} {_("of")} {obj.quantity}'
+        quantity = obj.quantity
+        if obj.infinity_quantity:
+            quantity = _("Infinity")
+        return f'{obj.get_total_refuse()} {_("of")} {quantity}'
 
     def get_percentage_storage_status(self, obj):
-        return f'{obj.get_refuse_porcentage()}% {_("of")} 100%'
+        percentage = f'{round(obj.get_refuse_porcentage(), 2)}% {_("of")} 100%'
+        if obj.infinity_quantity:
+            percentage = "-------"
+        return percentage
 
     def get_shelf_info(self, obj):
+        position = self.context['position']
         shelf = {
-            'name': obj.name,
+            'obj': obj,
             'type': self.get_type(obj),
             'quantity': self.get_quantity(obj),
-            'discard': obj.discard,
             'measurement_unit': self.get_measurement_unit(obj),
             'quantity_storage_status': self.get_quantity_storage_status(obj),
-            'percentage_storage_status': self.get_percentage_storage_status(obj)
+            'percentage_storage_status': self.get_percentage_storage_status(obj),
+            'position': position if position else 'top'
         }
         return render_to_string(
             'laboratory/shelfobject/shelf_availability_information.html',
