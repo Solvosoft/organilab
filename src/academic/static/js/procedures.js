@@ -253,6 +253,7 @@ function add_reservation(){
             $("#reservation_modal").modal("hide")
 
             }else{
+                if(errors){
                 let list=""
                 errors.forEach(element =>
                                     list += `<li class="list-group-item">${element}</li>`
@@ -261,6 +262,9 @@ function add_reservation(){
                 $("#reservation_modal").modal("hide")
 
                 $("#error_reserved").modal('show')
+                }else{
+                    alert(gettext("Don't have permissions"))
+                }
             }
             document.getElementById('reservation_form').reset();
 

@@ -31,10 +31,13 @@
 						href="#collapse_{{step.pk}}" role="button" aria-expanded="false" aria-controls="arial_{{step.pk}}">
 		<h2 class="card-title">{{forloop.counter}} - {{step.title|default:default_value}}</h2>
 	</div>
+
 	<div class="col-2">
+	{% if perms.academic.delete_procedurestep %}
 			<a class="btn float-end" title="{% trans 'Remove' %}" onclick="delete_step({{step.pk}}, '{{step.title}}')">
 				<span class="fa fa-trash text-danger" aria-hidden="true"></span>
 			</a>
+	{% endif %}
 			<a class="btn float-end" title="{% trans 'Edit' %}"
 						href="{% url 'academic:update_step' pk=step.pk org_pk=org_pk %}">
 				<span class="fa fa-edit text-success" title="{% trans 'Edit' %}" aria-hidden="true"></span>
