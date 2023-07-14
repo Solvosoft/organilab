@@ -102,3 +102,12 @@ ul.colors_list {
     color: #5A738E;
     background-color: #e9ecef;
 }
+
+
+.shelfinfocontainer .row{
+    height: 20px;
+}
+
+.shelfinfocontainer .card{
+    border-color: #dee2e6;
+}

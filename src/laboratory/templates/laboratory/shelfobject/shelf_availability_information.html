@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="container p-3 shelfinfocontainer">
 	<label>{% trans "Shelf Information" %}</label>
-	<div class="card card-body" style="border-color: #dee2e6;">
+	<div class="card card-body">
 		{% if shelf.position == "top" or shelf.position == "bottom" %}
 		{% include 'laboratory/shelfobject/top_bottom_shelf_info.html' %}
 		{% elif shelf.position == "left" or shelf.position == "right" %}
