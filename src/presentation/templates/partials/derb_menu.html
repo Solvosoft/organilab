@@ -15,12 +15,14 @@
             {% trans 'Report List' %}
                 </a>
             </li>
+									{% if perms.derb.add_customform %}
             <li>
                 <a class="nav-link" href="{% url 'derb:form_list' org_pk %}"  title="{% trans 'Report List' %}">
             <i class="fa fa-child"></i>
             {% trans 'Inform List' %}
                 </a>
             </li>
+									{% endif %}
               {% if perms.academic.view_procedure %}
                 <li class="list-group-item">
                   <a href="{% url 'academic:procedure_list' org_pk=org_pk %}">
