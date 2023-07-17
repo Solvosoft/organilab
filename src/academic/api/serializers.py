@@ -179,3 +179,10 @@ class ProcedureDataTableSerializer(serializers.Serializer):
 
 class ValidateUserAccessOrgSerializer(serializers.Serializer):
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+    def validate(self, data):
+        organization = data['organization']
+        user = self.context.get('user')
+        user_is_allowed_on_organization(user, organization)
+
+        return data
