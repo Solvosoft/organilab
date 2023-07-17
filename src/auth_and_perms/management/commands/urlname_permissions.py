@@ -1273,6 +1273,11 @@ URLNAME_PERMISSIONS = {
             'category': 'Risk Management',
             'permission': 'risk_management.view_riskzone'
         },
+        {
+            'name': 'View MSDS',
+            'category': 'MSDS',
+            'permission': 'msds.view_msdsobject'
+        },
     ],
     'addusersorganization': [
         {
