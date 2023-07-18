@@ -10,21 +10,21 @@
                 <div class="row" id="listado" style="overflow-y: scroll; max-height:600px;">
                     <ul class="list-unstyled msg_list">
                         {% for observation in observations %}
-                        <div data-pk="{{observation.pk}}" data-manage="{% if observation.creator == request.user %}1{%else%}0{%endif%}"   class="observacionklass">  <li style="border-radius: 5px;">
+                        <div data-pk="{{observation.pk}}" data-manage="{% if observation.created_by == request.user %}1{%else%}0{%endif%}"   class="observacionklass">  <li style="border-radius: 5px;">
                                     <a style="width: 100%;">
                                     <div class="row">
-                                        <div class="{% if observation.substance.creator == request.user %}col-sm-7{% else %} col-sm-8 {% endif %}">
+                                        <div class="{% if observation.substance.created_by == request.user %}col-sm-7{% else %} col-sm-8 {% endif %}">
 
                                             <div class="row" style="font-weight: bold;">
-                                                {% if observation.creator %}
-                                                {{observation.creator}}
+                                                {% if observation.created_by %}
+                                                {{observation.created_by}}
                                                 {% else %} Desconocido {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-sm-4 text-right">
                                             <div class="observacion_fecha">{% if observation.create_at %} {{observation.create_at}} {% else %} Fecha y hora desconocida {% endif %}</div>
                                         </div>
-                                        {% if observation.creator == user %}
+                                        {% if observation.created_by == user %}
                                             <div class="beditbtn col-sm-1 text-right">
                                                 <i class="fa fa-edit"></i>
                                             </div>

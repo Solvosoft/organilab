@@ -119,7 +119,7 @@ def clone_shelfobject_to(shelfobject, destination_organization_id, destination_l
     organilab_logentry(request.user, shelfobject, ADDITION,
                        changed_data=['shelf', 'object', 'batch', 'status', 'quantity', 'limit_quantity', 'limits',
                                      'measurement_unit', 'in_where_laboratory', 'marked_as_discard', 'laboratory_name',
-                                     'course_name', 'creator', 'shelf_object_url', 'shelf_object_qr'],
+                                     'course_name', 'created_by', 'shelf_object_url', 'shelf_object_qr'],
                        relobj=destination_laboratory_id)
     create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, destination_laboratory_id)
 
@@ -145,14 +145,14 @@ def create_new_shelfobject_from_object_in(object, destination_organization_id, d
         quantity=1,
         measurement_unit=measurement_unit,
         in_where_laboratory_id=destination_laboratory_id,
-        creator=request.user
+        created_by=request.user
     )
     build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
 
     log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True)
     organilab_logentry(request.user, shelfobject, ADDITION,
                        changed_data=['shelf', 'object', 'quantity', 'measurement_unit', 'in_where_laboratory',
-                                     'creator', 'shelf_object_url', 'shelf_object_qr'],
+                                     'created_by', 'shelf_object_url', 'shelf_object_qr'],
                        relobj=destination_laboratory_id)
     create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, destination_laboratory_id)
 
@@ -164,7 +164,7 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
 
     shelfobject.shelf = destination_shelf
     shelfobject.in_where_laboratory_id = destination_laboratory_id
-    shelfobject.creator = request.user
+    shelfobject.created_by = request.user
     shelfobject.shelf_object_qr = None
     shelfobject.shelf_object_url = None
     shelfobject.save()
@@ -172,7 +172,7 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
 
     log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', CHANGE, _("Move in"))
     organilab_logentry(request.user, shelfobject, CHANGE,
-                       changed_data=['shelf', 'in_where_laboratory', 'creator', 'shelf_object_qr', 'shelf_object_url'],
+                       changed_data=['shelf', 'in_where_laboratory', 'created_by', 'shelf_object_qr', 'shelf_object_url'],
                        relobj=destination_laboratory_id)
     create_shelfobject_observation(shelfobject, shelfobject.course_name, _(observation_text), request.user, destination_laboratory_id)
 

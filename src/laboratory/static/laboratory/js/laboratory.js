@@ -556,7 +556,7 @@ $("#hide_alert").on('click', function(){
     $("div.alert").removeClass("show");
 });
 
-function show_hide_container_selects(selected_value){
+function show_hide_container_selects(form_id, selected_value){
     // they are hidden for the other options, so hide them by default and just display one if required
     $(form_id).find("#id_available_container").parents(".form-group").hide();
     $(form_id).find("#id_container_for_cloning").parents(".form-group").hide();
