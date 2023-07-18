@@ -2,22 +2,22 @@
 
 {% url "laboratory:api-shelfobject-reserve" lab_pk=laboratory org_pk=org_pk as reserve_so_url %}
 {% trans 'Reserve' as reserve_so_tittle %}
-{% include 'modal_template.html' with form=reserve_object_form id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="right" form=reserve_object_form id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
 
 
 {% url "laboratory:api-shelfobject-fill-increase-shelfobject" lab_pk=laboratory org_pk=org_pk as increase_so_url %}
 {% trans 'Add' as increase_so_tittle %}
-{% include 'modal_template.html' with form=increase_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="left" form=increase_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
 
 
 {% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_so_url %}
 {% trans 'Substract' as decrease_so_tittle %}
-{% include 'modal_template.html' with form=decrease_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=decrease_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
 
 
 {% url "laboratory:api-shelfobject-move-shelfobject-to-shelf" lab_pk=laboratory org_pk=org_pk as move_so_url %}
 {% trans 'Move to other shelf' as move_so_tittle %}
-{% include 'modal_template.html' with form=move_object_form id="movesomodal" title=move_so_tittle form_id="movesoform" url=move_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="bottom" form=move_object_form id="movesomodal" title=move_so_tittle form_id="movesoform" url=move_so_url %}
 
 
 
