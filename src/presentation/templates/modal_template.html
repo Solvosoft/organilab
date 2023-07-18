@@ -1,24 +1,66 @@
 {% load static i18n %}
 
-<div aria-hidden="true" id="{{id}}" class="modal fade {{principal_class}}" aria-labelledby="{{id}}_title" data-bs-focus="false" role="dialog" tabindex="-1">
-    <div class="modal-dialog {{modal_class}}" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="{{id}}_title">{{title}}</h5>
-                <button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal" type="button">
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="{{form_id}}" method="POST" autocomplete="off" action="{{url}}">
-                    {% csrf_token %}
-                    {{ form.as_horizontal }}
-                    <input type="hidden" name="prefix" class="form_prefix" value="{{form.prefix|default_if_none:''}}">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}</button>
-                <button class="btn btn-primary formadd" type="button">{% trans 'Save changes' %}</button>
-            </div>
-        </div>
-    </div>
+<div aria-hidden="true" id="{{id}}" class="modal {% if add_shelf_info %}modal-lg{% endif %} fade {{principal_class}}"
+					aria-labelledby="{{id}}_title"
+					data-bs-focus="false" role="dialog" tabindex="-1">
+	<div class="modal-dialog {{modal_class}}" role="document">
+		<div class="modal-content">
+			{% if add_shelf_info %}
+			<input name="position" type="hidden" value="{{shelf_info_position}}"/>
+
+			{% if shelf_info_position == "right" %}
+			<div class="row">
+				<div class="col-md-6">
+
+					{% elif shelf_info_position == "left" %}
+					<div class="row">
+						<div class="col-md-6 info_shelf">
+						</div>
+						<div class="col-md-6">
+							{% endif %}
+							{% endif %}
+							<div class="modal-header">
+								<h5 class="modal-title" id="{{id}}_title">{{title}}</h5>
+								<button aria-label="{% trans 'Close' %}" class="btn-close" data-bs-dismiss="modal"
+																type="button">
+								</button>
+							</div>
+							<div class="modal-body">
+								{% if not shelf_info_position or shelf_info_position == "top" %}
+								<div class="row info_shelf">
+								</div>
+								{% endif %}
+
+
+								<form id="{{form_id}}" method="POST" autocomplete="off" action="{{url}}">
+									{% csrf_token %}
+									{{ form.as_horizontal }}
+									<input type="hidden" name="prefix" class="form_prefix"
+																value="{{form.prefix|default_if_none:''}}">
+								</form>
+								{% if shelf_info_position == "bottom" %}
+								<div class="row info_shelf">
+								</div>
+								{% endif %}
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">{% trans 'Close' %}
+								</button>
+								<button class="btn btn-primary formadd" type="button">{% trans 'Save changes' %}</button>
+							</div>
+							{% if add_shelf_info %}
+							{% if shelf_info_position == "right" %}
+						</div>
+						<div class="col-md-6 info_shelf">
+						</div>
+					</div>
+					{% elif shelf_info_position == "left" %}
+				</div>
+			</div>
+			{% endif %}
+
+			{% endif %}
+		</div>
+
+	</div>
 </div>
