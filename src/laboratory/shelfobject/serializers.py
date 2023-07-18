@@ -680,7 +680,7 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
             raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
         if self.context.get('validate_for_approval'):  # validations specific for transfer in approve, ignored for deny 
             if attr.object.in_where_laboratory != attr.laboratory_send:
-                raise serializers.ValidationError(_("The transfer in cannot be performed since the object no longer belongs to the laboratory that sent it."))
+                raise serializers.ValidationError(_("The transfer in cannot be performed since the source object no longer belongs to the laboratory that sent it."))
             if attr.quantity > attr.object.quantity:
                 raise serializers.ValidationError(_("The transfer in cannot be performed since the transfer quantity is bigger than the quantity available in the " \
                                                     "source object."))
@@ -704,6 +704,6 @@ class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectS
                 _("The selected option cannot be used since the source object does not have a container assigned.")})
         if container_select_option == 'use_source' and transfer_object.quantity < transfer_object.object.quantity:
             raise serializers.ValidationError({"container_select_option": 
-                _("The source container cannot be moved since the entire quantity available for the object was not transferred in.")})
+                _("The source container cannot be moved since the entire quantity available for the source object was not transferred in.")})
         return data
     
