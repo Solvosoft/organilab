@@ -1,82 +1,82 @@
 {% load static i18n gtsettings %}
 <div id="panelobservaciones" class="row p-5">
-    <div class="col-sm-7 col-xs-12">
+    <div class="col-sm-7 col-12">
         <div class="card">
             <div class="card-title">
-                <p class="float-right" style="color:red"><strong>{% trans 'If you want to edit or delete the observations that you have created, you must double click on it'%}</strong></p>
-                <div class="clearfix"></div>
+                <p class="float-end" style="color:red"><strong>{% trans 'If you want to edit or delete the observations that you have created, you must double click on it'%}</strong></p>
             </div>
             <div class="card-body">
                 <div class="row" id="listado" style="overflow-y: scroll; max-height:600px;">
                     <ul class="list-unstyled msg_list">
                         {% for observation in observations %}
-                        <div data-pk="{{observation.pk}}" data-manage="{% if observation.creator == request.user %}1{%else%}0{%endif%}"   class="observacionklass">  <li style="border-radius: 5px;">
-                                    <a style="width: 100%;">
-                                    <div class="row">
-                                        <div class="{% if observation.substance.creator == request.user %}col-sm-7{% else %} col-sm-8 {% endif %}">
-
-                                            <div class="row" style="font-weight: bold;">
-                                                {% if observation.creator %}
-                                                {{observation.creator}}
-                                                {% else %} Desconocido {% endif %}
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4 text-right">
-                                            <div class="observacion_fecha">{% if observation.create_at %} {{observation.create_at}} {% else %} Fecha y hora desconocida {% endif %}</div>
-                                        </div>
-                                        {% if observation.creator == user %}
-                                            <div class="beditbtn col-sm-1 text-right">
-                                                <i class="fa fa-edit"></i>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    <div class="row message" style="width:100%; font-size: 13px;">{% if observation.description %} {{observation.description}} {% else %} Sin descripción {% endif %}</div>
-                        </a>
-                                </li>
-                            </div>
+                        <div data-pk="{{observation.pk}}" data-manage="{% if observation.created_by == request.user %}1{%else%}0{%endif%}"   class="observacionklass">  <li style="border-radius: 5px;">
+																									<a style="width: 100%;">
+																										<div class="row">
+																											<div class="col-sm-7">
+																												<div class="fw-bold">
+																													{% if observation.created_by %}
+																													{{observation.created_by}}
+																													{% else %} {% trans 'Unknown' %} {% endif %}
+																												</div>
+																											</div>
+																											<div class="col-sm-4">
+																												<div class="observacion_fecha">{% if observation.create_at %} {{observation.create_at}} {% else %}
+																													{% trans 'unknown date and time' %} {% endif %}</div>
+																											</div>
+																											{% if observation.created_by == user %}
+																											<div class="beditbtn col-sm-1">
+																												<i class="fa fa-edit"></i>
+																											</div>
+																											{% endif %}
+																										</div>
+																										<div class="container message" style="width:100%; font-size: 13px;">{% if observation.description %} {{observation.description}} {% else %}
+																											{% trans 'Without description' %} {% endif %}</div>
+																									</a>
+																								</li>
+																								</div>
                         {% empty %}
-                            <div class="col-md-9" style="text-align:center;margin-top:15%;margin-left:10%">
-                                <div class="list-group-item list-group-item-danger">
-                                  <h2 style="display:inline-block">No hay observaciones registradas.</h2>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="pobservacion" class="col-sm-5  observaunpin">
-        <div class="card">
-            <div class="card-title">
-                <ul class="nav navbar-right panel_toolbox">
-                    <li>
-                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                </ul>
-                <h2 class="text-center" style="font-size: 20px; color: #1abb9c;">{% trans 'New observation' %}</h2>
-                <div class="clearfix"></div>
-            </div>
-            <div class="card-body">
-                <form method="post" action="{{url}}" id="form_observacion">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <div class="col-sm-4 dlabel">
-                            {{ observationForm.description.label_tag }}
-                        </div>
-                        <div class="col-sm-8 dfield">
-                            {{observationForm.description}}
-                            {{ observationForm.description.errors }}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="form-group text-center">
-                        <button class="btn btn-success" id="obs" type="submit">{% trans 'Add' %}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+																					<div class="col-md-9" style="text-align:center;margin-top:15%;margin-left:10%">
+																						<div class="list-group-item list-group-item-danger">
+																							<h2 style="display:inline-block">{% trans 'There are no recorded observations.' %}</h2>
+																						</div>
+																					</div>
+																					{% endfor %}
+																				</ul>
+																</div>
+												</div>
+								</div>
+				</div>
+	<div id="pobservacion" class="col-sm-5  observaunpin">
+		<div class="card">
+			<div class="card-title">
+				<ul class="nav navbar-right panel_toolbox">
+					<li>
+						<a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+					</li>
+				</ul>
+				<h2 class="text-center" style="font-size: 20px; color: #1abb9c;">{% trans 'New observation' %}</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="card-body">
+				<form method="post" action="{{url}}" id="form_observacion">
+					{% csrf_token %}
+					<div class="form-group row">
+						<div class="col-sm-4 dlabel">
+							{{ observationForm.description.label_tag }}
+						</div>
+						<div class="col-sm-8 dfield">
+							{{observationForm.description}}
+							{{ observationForm.description.errors }}
+						</div>
+					</div>
+					<br>
+					<div class="form-group text-center">
+						<button class="btn btn-success" id="obs" type="submit">{% trans 'Add' %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -92,12 +92,12 @@
           <input type="hidden" name="pk" id="observation_id" value="" />
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
         <button id="delete_observation"  type="button" class="btn btn-danger" data-url="{% url 'sga:delete_observation' org_pk %}">{% trans 'Remove' %}</button>
         <button id="obeditbtn"  type="button" class="btn btn-primary" data-url="{% url 'sga:update_observation' org_pk %}">{% trans 'Edit' %}</button>
       </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+  </div>
+</div>
 
 
