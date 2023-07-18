@@ -9,7 +9,7 @@ from auth_and_perms.models import Profile
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture, TranferObject
 from reservations_management.models import ReservedProducts
-from laboratory.shelfobject.serializers import TransferInApproveWithContainerSerializer
+from laboratory.shelfobject.serializers import TransferInShelfObjectApproveWithContainerSerializer
 
 class ReserveShelfObjectForm(ModelForm, GTForm):
     class Meta:
@@ -458,7 +458,7 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 class TransferInShelfObjectApproveWithContainerForm(GTForm):
     transfer_object = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.IntegerField(widget=forms.HiddenInput)
-    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
+    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
     available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))

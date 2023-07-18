@@ -28,9 +28,9 @@ from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject import serializers as shelfobject_serializers
 from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, DecreaseShelfObjectSerializer, \
     ReserveShelfObjectSerializer, UpdateShelfObjectStatusSerializer, ShelfObjectObservationDataTableSerializer, \
-    MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInSerializer, \
+    MoveShelfObjectSerializer, ShelfObjectDetailSerializer, ShelfSerializer, ValidateShelfSerializer, TransferInShelfObjectSerializer, \
     ShelfObjectLimitsSerializer, ShelfObjectStatusSerializer, ShelfObjectDeleteSerializer, \
-    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, TransferInApproveWithContainerSerializer
+    TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, TransferInShelfObjectApproveWithContainerSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_shelfobject_partial_quantity_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation, get_or_create_container_based_on_selected_option, move_shelfobject_to
 
@@ -584,7 +584,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :return: JsonResponse with result information (success or error info) 
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_deny")
-        self.serializer_class = TransferInSerializer
+        self.serializer_class = TransferInShelfObjectSerializer
         serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk})
         serializer.is_valid(raise_exception=True)
         
@@ -607,38 +607,36 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "transfer_in_approve")
         transfer_obj = get_object_or_404(TranferObject, pk=request.data.get('transfer_object'))
-        self.serializer_class = TransferInApproveWithContainerSerializer if transfer_obj.object.object.type == Object.REACTIVE else TransferInSerializer
+        self.serializer_class = TransferInShelfObjectApproveWithContainerSerializer if transfer_obj.object.object.type == Object.REACTIVE else TransferInShelfObjectSerializer
         serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk, "organization_id": org_pk, "validate_for_approval": True})
         errors = {}
         if serializer.is_valid():
+            # once we get here everything is validated and ready for the transfer in to happen
+            
             transfer_object = serializer.validated_data['transfer_object']
-            if transfer_object.quantity <= transfer_object.object.quantity:
-                if transfer_object.quantity == transfer_object.object.quantity:
-                    # move the entire shelfobject instead of copy it, so history is not lost
-                    new_shelf_object = move_shelfobject_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], request)
-                else:
-                    # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
-                    new_shelf_object = move_shelfobject_partial_quantity_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], 
-                                                                            request, transfer_object.quantity)
-                
-                # setup the right option for mark as discard according to what the user selected for the transfer
-                new_shelf_object.marked_as_discard = transfer_object.mark_as_discard 
-                
-                # it is a transfer that has a container - get the container and assign it to the shelfobject, it will assign None if no container_select_option provided
-                new_shelf_object.container = get_or_create_container_based_on_selected_option(serializer.validated_data.get('container_select_option'), 
-                                                                                              org_pk, lab_pk, serializer.validated_data['shelf'], request,
-                                                                                              serializer.validated_data.get('container_for_cloning'),
-                                                                                              serializer.validated_data.get('available_container'), transfer_object.object)
-                new_shelf_object.save()
-                utils.organilab_logentry(request.user, new_shelf_object, CHANGE, changed_data=['container', 'marked_as_discard'], relobj=lab_pk)
-                    
-                # mark transfer as accepted
-                transfer_object.status = ACCEPTED
-                transfer_object.save()
-                utils.organilab_logentry(request.user, transfer_object, CHANGE, changed_data=['status'], relobj=lab_pk)
+            if transfer_object.quantity == transfer_object.object.quantity:
+                # move the entire shelfobject instead of copy it, so history is not lost
+                new_shelf_object = move_shelfobject_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], request)
             else:
-                return JsonResponse({"detail": _("This transfer cannot be accepted since the transfer quantity is bigger " \
-                                                 "than the quantity available in the source object.")}, status=status.HTTP_400_BAD_REQUEST)
+                # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
+                new_shelf_object = move_shelfobject_partial_quantity_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], 
+                                                                        request, transfer_object.quantity)
+            
+            # setup the right option for mark as discard according to what the user selected for the transfer
+            new_shelf_object.marked_as_discard = transfer_object.mark_as_discard 
+            
+            # it is a transfer that has a container - get the container and assign it to the shelfobject, it will assign None if no container_select_option provided
+            new_shelf_object.container = get_or_create_container_based_on_selected_option(serializer.validated_data.get('container_select_option'), 
+                                                                                            org_pk, lab_pk, serializer.validated_data['shelf'], request,
+                                                                                            serializer.validated_data.get('container_for_cloning'),
+                                                                                            serializer.validated_data.get('available_container'), transfer_object.object)
+            new_shelf_object.save()
+            utils.organilab_logentry(request.user, new_shelf_object, CHANGE, changed_data=['container', 'marked_as_discard'], relobj=lab_pk)
+                
+            # mark transfer as accepted
+            transfer_object.status = ACCEPTED
+            transfer_object.save()
+            utils.organilab_logentry(request.user, transfer_object, CHANGE, changed_data=['status'], relobj=lab_pk)
         else:
            errors = serializer.errors 
         
