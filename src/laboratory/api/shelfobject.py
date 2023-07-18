@@ -165,8 +165,9 @@ class ShelfObjectCreateMethods:
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
-            serializer.validated_data['container'], serializer.validated_data['shelf'],
-            organization_id, laboratory_id, request,  quantity=1)
+            serializer.validated_data['container'],
+            organization_id, laboratory_id, serializer.validated_data['shelf'], request,
+            quantity=1)
 
         shelfobject = serializer.save(
             created_by=created_by,
@@ -936,7 +937,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             shelf = serializer.validated_data['shelf']
-            data = ShelfSerializer(shelf).data
+            position = serializer.validated_data.get('position', 'top')
+            data = ShelfSerializer(shelf, context={'position': position}).data
         else:
             errors = serializer.errors
 
@@ -970,13 +972,32 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
 
 class SearchLabView(viewsets.GenericViewSet):
+    """
+    This generic view set allows to find a specific element like a laboratory room,
+     furniture, shelf, shelf object or object by filters tags, those are compounds by
+     unique pk, value(join between pk and name), objtype and color.
+
+     User access will be checking on view permissions, laboratory and organization.
+
+     Priority search level:
+     1 - Object
+     2 - Shelf Object
+     3 - Shelf
+     4 - Furniture
+     5 - Laboratory Room
+
+     Priority search level represents a value object on laboratory search elements.
+     An example is multiple search tags like a laboratory room tag and an object tag,
+     the second tag will modify laboratory room result as a first tag.
+    """
+
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def _check_permission_on_laboratory(self, request, org_pk, lab_pk):
         perms_list = ['laboratory.view_laboratory', 'laboratory.view_laboratoryroom',
-                      'laboratory.view_furniture',
-                      'laboratory.view_shelf', 'laboratory.view_shelfobject']
+                      'laboratory.view_furniture', 'laboratory.view_shelf',
+                      'laboratory.view_shelfobject', 'laboratory.view_object']
         if request.user.has_perms(perms_list):
             self.organization = get_object_or_404(
                 OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -1078,6 +1099,23 @@ class SearchLabView(viewsets.GenericViewSet):
 
     @action(detail=False, methods=['get'])
     def get(self, request, org_pk, lab_pk):
+        """
+        Return an object with following structure
+
+        search_list = {
+            'labroom': [pk laboratory rooms],
+            'furniture': {'furniture': [], 'labroom': []},
+            'shelf': {'shelf': [], 'furniture': [], 'labroom': []},
+            'shelfobject': {'shelfobject': [], 'shelf': [], 'furniture': [], 'labroom': []},
+            'object': {'object': [], 'shelf': {'shelf': [], 'furniture': [], 'labroom': []}}
+        }
+
+        :param request: http request
+        :param org_pk: organization related user permissions
+        :param lab_pk: laboratory related to laboratory rooms, furniture, shelves,
+         shelf objects and objects.
+        :return: an object with possible matches related to get param
+        """
         self._check_permission_on_laboratory(request, org_pk, lab_pk)
         search_list, errors = {}, {}
         serializer = SearchShelfObjectSerializerMany(data=request.query_params,

@@ -110,11 +110,11 @@ function BaseFormModal(modalid,  data_extras={})  {
                 });
             }
         },
-        "showShelfInfo": function(div, id_shelf){
+        "showShelfInfo": function(div, id_shelf, position='top'){
             $.ajax({
                 url: document.urls.shelf_availability_information,
                 type: 'GET',
-                data: {'shelf': id_shelf},
+                data: {'shelf': id_shelf, 'position': position},
                 headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json"},
                 success: function(data){
                     if(div.find('div.shelfinfocontainer').length){
@@ -149,9 +149,18 @@ function BaseFormModal(modalid,  data_extras={})  {
         },
         "showmodal": function(btninstance){
             var shelf_object = $(btninstance).data('shelfobject');
+            var shelf = $(btninstance).data('shelf');
             if (shelf_object != undefined){
                 this.data_extras['shelf_object'] = shelf_object;
             }
+
+            var info_shelf = this.instance.find('div.info_shelf');
+            var position = this.instance.find('input[name="position"]');
+
+            if (info_shelf != undefined && shelf != undefined && position != undefined){
+                this.showShelfInfo($(info_shelf[0]), shelf, position=$(position[0]).val());
+            }
+
             this.instance.modal('show');
         }
 

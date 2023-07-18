@@ -117,7 +117,7 @@ class LaboratoryRoomsList(ListView):
         MODEL = contenttype.model_class()
         queryset = MODEL.objects.filter(**filters).values('pk', value).distinct()
         whitelist = [
-            {'pk': x['pk'], 'value': "%d: %s" % (x['pk'], x[value]), 'objtype': model}
+            {'pk': x['pk'], 'value': "%d: %s" % (x['pk'], x[value]), 'objtype': model, 'color': color}
             for x in queryset]
 
         if whitelist:

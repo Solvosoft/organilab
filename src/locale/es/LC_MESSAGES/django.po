@@ -538,7 +538,7 @@ msgid "SGA"
 msgstr "SGA"
 
 msgid "Disposal"
-msgstr "Es desecho"
+msgstr "Desecho"
 
 msgid "Organization doesn't exists"
 msgstr "Organización no existe"
@@ -1927,7 +1927,7 @@ msgid "Exit"
 msgstr "Salir"
 
 msgid "Shelf Information"
-msgstr "Información del estante"
+msgstr "Información del Estante"
 
 msgid "Quantity storage"
 msgstr "Cantidad de almacenamiento"
@@ -2795,7 +2795,7 @@ msgid "Limit quantity"
 msgstr "Cantidad límite"
 
 msgid "Measurement Unit"
-msgstr "Unidad de medida"
+msgstr "Unidad de Medida"
 
 msgid "First Name"
 msgstr "Nombre"
@@ -3985,3 +3985,12 @@ msgstr "Fecha y hora desconocida"
 
 msgid "There are no recorded observations."
 msgstr "No hay observaciones registradas."
+
+msgid "Infinity"
+msgstr "Infinito"
+
+msgid "Used Quantity"
+msgstr "Cantidad Utilizada"
+
+msgid "Used Percentage"
+msgstr "Porcentaje Utilizado"
