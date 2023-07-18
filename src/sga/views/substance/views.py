@@ -488,7 +488,7 @@ def add_observation(request, org_pk, substance):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.substance = substance_obj
-            obj.creator = request.user
+            obj.created_by = request.user
             obj.save()
             organilab_logentry(request.user, obj, ADDITION, "substance observation",
                                changed_data=form.changed_data)

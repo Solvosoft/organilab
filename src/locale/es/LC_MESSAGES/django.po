@@ -3976,3 +3976,12 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Without description"
+msgstr "Sin descripción"
+
+msgid "unknown date and time"
+msgstr "Fecha y hora desconocida"
+
+msgid "There are no recorded observations."
+msgstr "No hay observaciones registradas."
