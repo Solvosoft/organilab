@@ -89,7 +89,8 @@ class FurnitureCreateView(CreateView):
     def generate_qr(self):
         schema = self.request.scheme + "://"
         domain = schema + self.request.get_host()
-        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org,
+                                                                "lab_pk": self.lab})
         url = url + "#labroom=%d&furniture=%d" % (self.labroom, self.object.pk)
         build_qr_instance(url, self.object, self.org)
 
@@ -98,9 +99,11 @@ class FurnitureCreateView(CreateView):
 
         self.object.labroom = get_object_or_404(
             LaboratoryRoom, pk=self.labroom)
+        self.object.created_by = self.request.user
         self.object.save()
         self.generate_qr()
-        organilab_logentry(self.request.user, self.object, ADDITION, 'furniture', changed_data=form.changed_data,
+        organilab_logentry(self.request.user, self.object, ADDITION,
+                           'furniture', changed_data=form.changed_data,
                            relobj=self.lab)
         return redirect(self.get_success_url())
 

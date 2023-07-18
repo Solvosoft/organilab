@@ -444,3 +444,6 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Don't have permissions"
+msgstr "No tienes permisos"
