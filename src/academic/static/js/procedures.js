@@ -152,14 +152,19 @@ function delete_object(pk,obj_name){
     document.urls["remove_object"],1, gettext('The object was not removed'));
 }
 
-function sendrequest(element,url,action){
+function sendrequest(element,url,action, msg, swal){
      $.ajax({
         url: url,
         type:'POST',
         data: {'pk':element},
         headers: {'X-CSRFToken': getCookie('csrftoken') },
         success: function ({data}) {
-
+          if(data){
+            swal.fire({
+                title:gettext('Deleted!'),
+                text:msg,
+                type:'success'
+          }).then(function(){
           if(action==0){
                if(data){
                 location.reload();
@@ -170,6 +175,14 @@ function sendrequest(element,url,action){
                generate_observation_table(JSON.parse(data))
 
            }
+           });
+           }else{
+               swal.fire({
+                     title:gettext("Don't have permissions"),
+                     type:'error'
+              })
+           }
+
       }
       });
 
@@ -193,15 +206,7 @@ swalWithBootstrapButtons.fire({
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
-    swalWithBootstrapButtons.fire({
-      title:gettext('Deleted!'),
-      text:out_msg,
-      type:'success'
-    }).then(function(){
-     sendrequest(pk,url,action);
-     })
-
-
+     sendrequest(pk,url,action,out_msg,swalWithBootstrapButtons);
   } else if (
     result.dismiss === Swal.DismissReason.cancel
   ) {
@@ -253,6 +258,7 @@ function add_reservation(){
             $("#reservation_modal").modal("hide")
 
             }else{
+                if(errors){
                 let list=""
                 errors.forEach(element =>
                                     list += `<li class="list-group-item">${element}</li>`
@@ -261,6 +267,9 @@ function add_reservation(){
                 $("#reservation_modal").modal("hide")
 
                 $("#error_reserved").modal('show')
+                }else{
+                    alert(gettext("Don't have permissions"))
+                }
             }
             document.getElementById('reservation_form').reset();
 

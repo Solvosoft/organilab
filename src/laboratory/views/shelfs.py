@@ -214,7 +214,8 @@ class ShelfCreate(AJAXMixin, CreateView):
     def generate_qr(self):
         schema = self.request.scheme + "://"
         domain = schema + self.request.get_host()
-        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org, "lab_pk": self.lab})
+        url = domain + reverse('laboratory:rooms_list', kwargs={"org_pk": self.org,
+                                                                "lab_pk": self.lab})
         url = url + "#labroom=%d&furniture=%d&shelf=%d" % (self.object.furniture.labroom.pk,
                                                            self.object.furniture.pk, self.object.pk)
         build_qr_instance(url, self.object, self.org)
@@ -232,6 +233,7 @@ class ShelfCreate(AJAXMixin, CreateView):
             return self.form_invalid(form)
 
         self.object.furniture = furniture
+        self.object.created_by = self.request.user
         self.object.save()
         if form.cleaned_data['limit_only_objects']:
             for objlimt in form.cleaned_data['available_objects_when_limit']:
