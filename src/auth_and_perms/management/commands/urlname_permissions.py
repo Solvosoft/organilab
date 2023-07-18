@@ -2453,7 +2453,13 @@ URLNAME_PERMISSIONS = {
             'name': 'View Substance Characteristics',
             'category': 'Substance Characteristics',
             'permission': 'sga.view_substancecharacteristics'
-        }
+        },
+        {
+            'name': 'Add Display Label',
+            'category': 'Display Label',
+            'permission': 'sga.change_displaylabel'
+        },
+
     ],
     'step_two': [
         {
@@ -2470,7 +2476,12 @@ URLNAME_PERMISSIONS = {
             'name': 'View SGA Complement',
             'category': 'SGA Complement',
             'permission': 'sga.view_sgacomplement'
-        }
+        },
+        {
+            'name': 'Add Display Label',
+            'category': 'Display Label',
+            'permission': 'sga.change_displaylabel'
+        },
     ],
     'step_three': [
         {
@@ -2497,7 +2508,13 @@ URLNAME_PERMISSIONS = {
             'name': 'Add Label',
             'category': 'Label',
             'permission': 'sga.add_label'
-        }
+        },
+        {
+            'name': 'Add Display Label',
+            'category': 'Display Label',
+            'permission': 'sga.change_displaylabel'
+        },
+
     ],
     'step_four': [
         {
@@ -2524,7 +2541,13 @@ URLNAME_PERMISSIONS = {
             'name': 'View Provider',
             'category': 'Provider',
             'permission': 'sga.view_provider'
-        }
+        },
+        {
+            'name': 'Add Display Label',
+            'category': 'DisplayLabel',
+            'permission': 'sga.change_displaylabel'
+        },
+
     ],
     'add_warning_word': [
         {
