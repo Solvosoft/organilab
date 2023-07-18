@@ -276,7 +276,7 @@ def step_two(request, org_pk, pk):
 
 
 @login_required
-@permission_required('sga.change_display_label')
+@permission_required('sga.change_displaylabel')
 def step_three(request, org_pk, template, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
