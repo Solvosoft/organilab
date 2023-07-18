@@ -598,7 +598,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def transfer_in_approve(self, request, org_pk, lab_pk, **kwargs):
         """
-        Approves a transfer in, which means it will be moved/added to the new laboratory and decrement it/move it from the source laboratory
+        Approves a transfer in, which means it will be moved/added to the new laboratory and decrement/move it from the source laboratory
         :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
@@ -609,7 +609,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         transfer_obj = get_object_or_404(TranferObject, pk=request.data.get('transfer_object'))
         self.serializer_class = TransferInShelfObjectApproveWithContainerSerializer if transfer_obj.object.object.type == Object.REACTIVE else TransferInShelfObjectSerializer
         serializer = self.get_serializer(data=request.data, context={"laboratory_id": lab_pk, "organization_id": org_pk, "validate_for_approval": True})
-        errors = {}
+
         if serializer.is_valid():
             # once we get here everything is validated and ready for the transfer in to happen
             
@@ -638,11 +638,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             transfer_object.save()
             utils.organilab_logentry(request.user, transfer_object, CHANGE, changed_data=['status'], relobj=lab_pk)
         else:
-           errors = serializer.errors 
-        
-        if errors:
-            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-                    
+            return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                     
         return JsonResponse({"detail": _("The transfer in was approved successfully.")}, status=status.HTTP_200_OK)
         
 
