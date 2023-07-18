@@ -667,7 +667,7 @@ class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
     objecttype = serializers.ChoiceField(choices=OBJTYPE_CHOICES, required=True)
 
 
-class TransferInSerializer(ValidateShelfSerializer):
+class TransferInShelfObjectSerializer(ValidateShelfSerializer):
     # inherits the shelf field and its validation from parent serializer
     
     transfer_object = serializers.PrimaryKeyRelatedField(queryset=TranferObject.objects.using(settings.READONLY_DATABASE).filter(status=REQUESTED))
@@ -675,15 +675,19 @@ class TransferInSerializer(ValidateShelfSerializer):
     def validate_transfer_object(self, value):
         attr = super().validate(value)
         if attr.laboratory_received_id != self.context.get('laboratory_id'):
-            logger.debug(f'TransferInSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
+            logger.debug(f'TransferInShelfObjectSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
-        if self.context.get('validate_for_approval') and attr.object.in_where_laboratory != attr.laboratory_send:
-            raise serializers.ValidationError(_("The transfer in cannot be performed since the object no longer belongs to the laboratory that sent it."))
+        if self.context.get('validate_for_approval'):  # validations specific for transfer in approve, ignored for deny 
+            if attr.object.in_where_laboratory != attr.laboratory_send:
+                raise serializers.ValidationError(_("The transfer in cannot be performed since the object no longer belongs to the laboratory that sent it."))
+            if attr.quantity > attr.object.quantity:
+                raise serializers.ValidationError(_("The transfer in cannot be performed since the transfer quantity is bigger than the quantity available in the " \
+                                                    "source object."))
         return attr
 
 
-class TransferInApproveWithContainerSerializer(TransferInSerializer, ContainerSerializer):
+class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectSerializer, ContainerSerializer):
     TRANSFER_IN_CONTAINER_SELECT_CHOICES = [
         ('clone', _('Create new based on selected')), 
         ('available', _('Use selected')),
