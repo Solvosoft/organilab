@@ -2455,7 +2455,7 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_substancecharacteristics'
         },
         {
-            'name': 'Add Display Label',
+            'name': 'Change Display Label',
             'category': 'Display Label',
             'permission': 'sga.change_displaylabel'
         },
@@ -2478,7 +2478,7 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_sgacomplement'
         },
         {
-            'name': 'Add Display Label',
+            'name': 'Change Display Label',
             'category': 'Display Label',
             'permission': 'sga.change_displaylabel'
         },
@@ -2510,7 +2510,7 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.add_label'
         },
         {
-            'name': 'Add Display Label',
+            'name': 'Change Display Label',
             'category': 'Display Label',
             'permission': 'sga.change_displaylabel'
         },
@@ -2543,8 +2543,8 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_provider'
         },
         {
-            'name': 'Add Display Label',
-            'category': 'DisplayLabel',
+            'name': 'Change Display Label',
+            'category': 'Display Label',
             'permission': 'sga.change_displaylabel'
         },
 
