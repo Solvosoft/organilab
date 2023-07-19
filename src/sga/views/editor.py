@@ -267,7 +267,7 @@ def create_recipient(request, org_pk):
 
 
 @login_required
-@permission_required('sga.change_personaltemplate')
+@permission_required('sga.add_displaylabel')
 def create_sgalabel(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -290,7 +290,7 @@ def create_sgalabel(request, org_pk):
 
 
 @login_required
-@permission_required('sga.change_personaltemplate')
+@permission_required('sga.change_displaylabel')
 def sgalabel_step_one(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -353,7 +353,7 @@ def sgalabel_step_one(request, org_pk, pk):
 
 
 @login_required
-@permission_required('sga.change_personaltemplate')
+@permission_required('sga.change_displaylabel')
 def sgalabel_step_two(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
