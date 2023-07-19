@@ -26,7 +26,7 @@ class SubstanceViewSet(viewsets.ModelViewSet):
     queryset = Substance.objects.using(settings.READONLY_DATABASE)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['comercial_name', 'uipa_name', 'substancecharacteristics__cas_id_number']
+    search_fields = ['created_by','comercial_name', 'uipa_name']
     filterset_class = SubstanceFilterSet
     ordering_fields = ['-creation_date', 'comercial_name']
     ordering = ('-creation_date', 'comercial_name')
@@ -40,7 +40,7 @@ class SubstanceViewSet(viewsets.ModelViewSet):
         user_is_allowed_on_organization(request.user, self.organization)
         queryset = self.get_queryset()
         total_records = queryset.count()
-        queryset = self.filter_queryset(queryset)
+        queryset = self.filterset_class.filter_queryset(self,queryset)
         data = self.paginate_queryset(queryset)
         response = {'data': data, 'recordsTotal': total_records, 'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
