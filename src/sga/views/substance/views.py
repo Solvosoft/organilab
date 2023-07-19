@@ -156,6 +156,8 @@ def approve_substances(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     review_subs = get_object_or_404(ReviewSubstance, pk=pk)
     review_subs.is_approved = True
+    review_subs.organization = organization
+    review_subs.created_by = request.user
     review_subs.save()
     organilab_logentry(request.user, review_subs, CHANGE, "review substance",
                        changed_data=['is_approved'])
