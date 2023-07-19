@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import get_template
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from djgentelella.decorators.perms import any_permission_required
@@ -347,6 +348,7 @@ def step_four(request, org_pk, substance):
             return redirect(reverse('sga:get_substance', kwargs={'org_pk': org_pk}))
 
     form = SecurityLeafForm(instance=security_leaf)
+
     context = {'step': 4,
                'complement': complement.pk,
                'template': display_label.pk,
@@ -365,14 +367,15 @@ def security_leaf_pdf(request, org_pk, substance):
     user_is_allowed_on_organization(request.user, organization)
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     component = SGAComplement.objects.filter(substance__pk=substance).first()
-    date_print = now().strftime('%Y-%m-%d')
+
     if leaf:
         template = get_template('sga/substance/security_leaf_pdf.html')
         context = {'leaf': leaf,
                    'substance': leaf.substance,
                    'provider': leaf.provider,
                    'component': component,
-                   'date_print': date_print,
+                   'date_print': timezone.now(),
+                   'user': request.user,
                    'date_check': leaf.created_at.strftime('%Y-%m-%d'),
                    'org_pk': org_pk}
         html_template = template.render(context)
