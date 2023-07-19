@@ -89,7 +89,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(min_value=0.1)
     bill = serializers.CharField(required=False, allow_blank=True)
     provider = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE),
-                                                  required=False, allow_null=True)
+                                             required=False, allow_null=True)
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
@@ -263,7 +263,6 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
         fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
         return fields
 
-
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
     # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
@@ -396,7 +395,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    amount_to_transfer = serializers.FloatField(min_value=0.1)
+    amount_to_transfer = serializers.FloatField(min_value=0.01)
     mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
 
@@ -550,7 +549,7 @@ class TransferObjectSerializer(serializers.ModelSerializer):
     quantity = serializers.SerializerMethodField()
 
     def get_object(self, obj):
-        return {"name": obj.object.object.name, "type": obj.object.object.get_type_display()}
+        return {"name": obj.object.object.name, "type": obj.object.object.type}
 
     def get_laboratory_send(self, obj):
         return obj.laboratory_send.name
@@ -699,6 +698,8 @@ class TransferInSerializer(ValidateShelfSerializer):
             logger.debug(f'TransferInSerializer --> attr.laboratory_received ({attr.laboratory_received}) '
                          f'!= laboratory_id ({self.context.get("laboratory_id")})')
             raise serializers.ValidationError(_("Transfer was not sent to the laboratory."))
+        if self.context.get('validate_for_approval') and attr.object.in_where_laboratory != attr.laboratory_send:
+            raise serializers.ValidationError(_("The transfer in cannot be performed since the object no longer belongs to the laboratory that sent it."))
         return attr
 
 
@@ -838,7 +839,10 @@ class TransferInApproveWithContainerSerializer(TransferInSerializer, ContainerSe
     def validate(self, data):
         container_select_option = data['container_select_option']
         transfer_object = data['transfer_object']
-        if container_select_option == 'use_source' and transfer_object.quantity != transfer_object.object.quantity:
+        if container_select_option in ("use_source", "new_based_source") and not transfer_object.object.container:
+            raise serializers.ValidationError({'container_select_option':
+                _("The selected option cannot be used since the source object does not have a container assigned.")})
+        if container_select_option == 'use_source' and transfer_object.quantity < transfer_object.object.quantity:
             raise serializers.ValidationError({"container_select_option":
-                _("Source container cannot be moved since the entire quantity available for the object was not transferred in.")})
+                _("The source container cannot be moved since the entire quantity available for the object was not transferred in.")})
         return data
