@@ -4,87 +4,87 @@
 <label class="fw-bold">9.1 {% trans 'Information on basic physical and chemical properties' %}</label>
 <div class="container">
     <div class="row">
-        <div class="col-3"><label>a. {% trans 'Aspect' %}</label></div>
-        <div class="col-9">:  {% if leaf.aspect %} {{leaf.aspect}} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>a. {% trans 'Aspect' %}:</label></div>
+        <div class="col-9">{% if leaf.aspect %} {{leaf.aspect}} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>b. {% trans 'Smell' %}</label></div>
-        <div class="col-9">:  {% if leaf.smell %} {{leaf.smell }} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>b. {% trans 'Smell' %}:</label></div>
+        <div class="col-9">{% if leaf.smell %} {{leaf.smell }} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>c. {% trans 'Olfactory threshold' %}</label></div>
-        <div class="col-9">:  {% if leaf.olfactory_threshold %} {{leaf.olfactory_threshold}} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>c. {% trans 'Olfactory threshold' %}:</label></div>
+        <div class="col-9">{% if leaf.olfactory_threshold %} {{leaf.olfactory_threshold}} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>d. {% trans 'pH' %}</label></div>
-        <div class="col-9">:  {% if leaf.pH %} {{leaf.pH }} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>d. {% trans 'pH' %}:</label></div>
+        <div class="col-9">{% if leaf.pH %} {{leaf.pH }} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>e. {% trans 'Melting point/ point of freezing' %}</label></div>
-        <div class="col-9">:  {% if leaf.melting_point %} {{leaf.melting_point}} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>e. {% trans 'Melting point/ point of freezing' %}:</label></div>
+        <div class="col-9">{% if leaf.melting_point %} {{leaf.melting_point}} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>f. {% trans 'Starting point of boiling and range boiling' %}</label></div>
-        <div class="col-9">:  {% if leaf.starting_point_boiling %} {{leaf.starting_point_boiling }} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>f. {% trans 'Starting point of boiling and range boiling' %}:</label></div>
+        <div class="col-9">{% if leaf.starting_point_boiling %} {{leaf.starting_point_boiling }} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>g. {% trans 'Flashpoint' %}</label></div>
-        <div class="col-9">:  {% if leaf.flashpoint %} {{leaf.flashpoint}} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>g. {% trans 'Flashpoint' %}:</label></div>
+        <div class="col-9">{% if leaf.flashpoint %} {{leaf.flashpoint}} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>h. {% trans 'Evaporation rate' %}</label></div>
-        <div class="col-9">:  {% if leaf.evaporation_rate %} {{leaf.evaporation_rate }} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>h. {% trans 'Evaporation rate' %}:</label></div>
+        <div class="col-9">{% if leaf.evaporation_rate %} {{leaf.evaporation_rate }} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>i. {% trans 'Flammability (solid,gas)' %}</label></div>
-        <div class="col-9">:  {% if leaf.inflammability_solid_gas %} {{leaf.inflammability_solid_gas}} {% else %} {% trans 'no data available' %} {% endif %} </div>
+        <div class="col-3"><label>i. {% trans 'Flammability (solid,gas)' %}:</label></div>
+        <div class="col-9">{% if leaf.inflammability_solid_gas %} {{leaf.inflammability_solid_gas}} {% else %} {% trans 'no data available' %} {% endif %} </div>
     </div>
     <div class="row">
-        <div class="col-3"><label>j. {% trans 'Inflammability top/bottom or explosive limits' %}</label></div>
-        <div class="col-9">:  {% if leaf.Inflammability_top_bottom %} {{leaf.Inflammability_top_bottom }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>j. {% trans 'Inflammability top/bottom or explosive limits' %}:</label></div>
+        <div class="col-9">{% if leaf.Inflammability_top_bottom %} {{leaf.Inflammability_top_bottom }} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>k. {% trans 'Vapor pressure' %}</label></div>
-        <div class="col-9">:  {% if leaf.vapor_pressure %} {{leaf.vapor_pressure}} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>k. {% trans 'Vapor pressure' %}:</label></div>
+        <div class="col-9">{% if leaf.vapor_pressure %} {{leaf.vapor_pressure}} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>l. {% trans 'Vapor density' %}</label></div>
-        <div class="col-9">:  {% if leaf.vapor_density %} {{leaf.vapor_density }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>l. {% trans 'Vapor density' %}:</label></div>
+        <div class="col-9">{% if leaf.vapor_density %} {{leaf.vapor_density }} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>m. {% trans 'Relative density' %}</label></div>
-        <div class="col-9">:  {% if leaf.relative_density %} {{leaf.relative_density}} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>m. {% trans 'Relative density' %}:</label></div>
+        <div class="col-9">{% if leaf.relative_density %} {{leaf.relative_density}} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>n. {% trans 'Water solubility' %}</label></div>
-        <div class="col-9">:  {% if leaf.water_solubility %} {{leaf.water_solubility }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>n. {% trans 'Water solubility' %}:</label></div>
+        <div class="col-9">{% if leaf.water_solubility %} {{leaf.water_solubility }} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>o. {% trans 'Partition coefficient n-octanol/wate' %}</label></div>
-        <div class="col-9">:  {% if leaf.partition_coefficient %} {{leaf.partition_coefficient}} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>o. {% trans 'Partition coefficient n-octanol/wate' %}:</label></div>
+        <div class="col-9">{% if leaf.partition_coefficient %} {{leaf.partition_coefficient}} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>p. {% trans 'Auto-temperature inflammation' %}</label></div>
-        <div class="col-9">:  {% if leaf.auto_temperature_inflammation %} {{leaf.auto_temperature_inflammation }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>p. {% trans 'Auto-temperature inflammation' %}:</label></div>
+        <div class="col-9">{% if leaf.auto_temperature_inflammation %} {{leaf.auto_temperature_inflammation }} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>q. {% trans 'Temperature of decomposition' %}</label></div>
-        <div class="col-9">:  {% if leaf.temperature_decomposition %} {{leaf.temperature_decomposition}} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>q. {% trans 'Temperature of decomposition' %}:</label></div>
+        <div class="col-9">{% if leaf.temperature_decomposition %} {{leaf.temperature_decomposition}} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>r. {% trans 'Viscosity' %}</label></div>
-        <div class="col-9">:  {% if leaf.viscosity %} {{leaf.viscosity }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>r. {% trans 'Viscosity' %}:</label></div>
+        <div class="col-9">{% if leaf.viscosity %} {{leaf.viscosity }} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>s. {% trans 'Explosive properties' %}</label></div>
-        <div class="col-9">:  {% if leaf.explosive_properties %} {{leaf.explosive_properties}} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>s. {% trans 'Explosive properties' %}:</label></div>
+        <div class="col-9">{% if leaf.explosive_properties %} {{leaf.explosive_properties}} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
     <div class="row">
-        <div class="col-3"><label>t. {% trans 'Properties oxidising' %}</label></div>
-        <div class="col-9">:  {% if leaf.properties_oxidising %} {{leaf.properties_oxidising }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+        <div class="col-3"><label>t. {% trans 'Properties oxidising' %}:</label></div>
+        <div class="col-9">{% if leaf.properties_oxidising %} {{leaf.properties_oxidising }} {% else %} {% trans 'no data available' %} {% endif %}</div>
     </div>
 </div>
-<label class="fw-bold">9.2 {% trans 'Other security information' %}</label>
+<label class="fw-bold">9.2 {% trans 'Other security information' %}:</label>
 <div class="container">
     <label>{% if leaf.other_security_information %} {{leaf.other_security_information }} {% else %} {% trans 'no data available' %} {% endif %}</label>
 </div>
