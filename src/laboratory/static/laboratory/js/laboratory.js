@@ -2,9 +2,11 @@ var objecttype= "";
 document.shelf_discard = undefined;
 document.prefix="";
 
-function shelf_action_modals(modalid){
+function shelf_action_modals(modalid, shelf){
     var label_a = document.createElement("a");
     label_a.setAttribute("data-modalid", modalid);
+    label_a.setAttribute("data-shelf", shelf);
+    label_a.setAttribute("data-add_creation_help", true);
     show_me_modal(label_a, null);
     form_modals[modalid].data_extras['shelf']=$("#id_shelf").val();
     show_hide_limits($(`${document.prefix}without_limit`), document.prefix);
@@ -44,7 +46,7 @@ const tableObject={
                 }
             }
             document.prefix=id;
-            shelf_action_modals(modalid)
+            shelf_action_modals(modalid, datarequest['shelf'])
             if(!$(document.prefix+"without_limit").parent().hasClass('checked')){
                 $(document.prefix+"without_limit").parent().addClass('checked')
             }

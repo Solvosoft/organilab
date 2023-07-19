@@ -447,3 +447,31 @@ msgstr "Peso"
 
 msgid "Don't have permissions"
 msgstr "No tienes permisos"
+
+msgid "State"
+msgstr "Estado"
+
+msgid "Measurement Unit"
+msgstr "Unidad de Medida"
+
+msgid "General Information"
+msgstr "Información General"
+
+msgid "It is a feature related to physical property about this element, some examples could be volatile, fragile,"
+" poor state, good condition."
+msgstr "Es una característica relacionada a una propiedad física acerca de este elemento, algunos ejemplos pueden ser"
+" volátil, frágil, en mal estado, en buena condición."
+
+msgid "Measurement unit is filtered by shelf measurement unit."
+msgstr "La unidad de medida es filtrada por la unidad de medida del estante."
+
+msgid "Do not exists limit if shelf has infinite quantity property, in any other case the capacity is restricted."
+msgstr "No existe límite si el estante tiene la propiedad de cantidad infinita, en cualquier otro caso la capacidad"
+" esta restringida."
+
+msgid "This field represents a material object type like a box, a bottle, a tank, a tin who it will be responsible"
+" to containt a substance, as a requirement the container object needs to be register into this laboratory as a material"
+" container, also this field is filtered by measurement unit selected."
+msgstr "Este campo representa un objeto de tipo material como una caja, una botella, un tanque, una lata que será el"
+" responsable de contener una substancia, como requisito el objeto contenedor necesita estar registrado en este"
+" laboratorio como un contenedor material, además este caso es filtrado por la unidad de medida seleccionada."
