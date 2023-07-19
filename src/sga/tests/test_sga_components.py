@@ -46,7 +46,7 @@ class WarningWordAPITests(TestCase):
 
     def test_warning_words_api_list(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=7&ordering=creator' \
+        search_script = '?offset=0&limit=10&draw=7&ordering=created_by' \
                         '&my_procedure=1&_=1685373101914'
         url = reverse('laboratory:api-warning-word-list',
                       kwargs={"org_pk": self.organization.pk}) + search_script
@@ -151,7 +151,7 @@ class DangerIndicationAPITests(TestCase):
 
     def test_danger_indications_api_list(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=7&ordering=creator' \
+        search_script = '?offset=0&limit=10&draw=7&ordering=created_by' \
                         '&my_procedure=1&_=1685373101914'
         url = reverse('laboratory:api-danger-indication-list',
                       kwargs={"org_pk": self.organization.pk}) + search_script
@@ -250,7 +250,7 @@ class PrudenceAdviceAPITests(TestCase):
 
     def test_prudence_advices_api_list(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=7&ordering=creator' \
+        search_script = '?offset=0&limit=10&draw=7&ordering=created_by' \
                         '&my_procedure=1&_=1685373101914'
         url = reverse('laboratory:api-prudence-advice-list',
                       kwargs={"org_pk": self.organization.pk}) + search_script
