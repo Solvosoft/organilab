@@ -43,20 +43,3 @@
 <div class="modal fade" id="detail_modal_container" tabindex="-1" aria-labelledby="detail_modalLabel" aria-hidden="true">
     {% include 'laboratory/shelfobject/detail_modal.html' %}
 </div>
-<!--{% if shelf.discard %}-->
-<!--    {% if admin_add_disposal_perm %}-->
-<!--        <a class="float-end"-->
-<!--           data-bs-toggle="modal"-->
-<!--           data-bs-target="#modal_reservation"-->
-<!--           style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}','{{shelfobject.shelf.discard}}')">-->
-<!--            <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>-->
-<!--        </a>-->
-<!--    {% endif %}-->
-<!--{% elif perms.reservations_management.add_reservedproducts %}-->
-<!--<a class="float-end"-->
-<!--   data-bs-toggle="modal"-->
-<!--   data-bs-target="#modal_reservation"-->
-<!--   style="margin-right: 10px;" onclick="initialize_reservation_modal(this,{{shelfobject.pk}},{{ shelfobject.object.pk}}, {{request.user.id}},'{{shelfobject.get_measurement_unit_display}}','{{shelfobject.shelf.discard}}')">-->
-<!--    <i class="fa fa-book" aria-hidden="true" title="{% trans 'Reserve/Add/Transfer/Substract' %}"></i>-->
-<!--</a>-->
-<!--{% endif %}-->
