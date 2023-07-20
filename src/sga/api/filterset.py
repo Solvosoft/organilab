@@ -21,7 +21,7 @@ class ReviewSubstanceFilterSet(FilterSet):
         widget=DateTimeRangeTextWidget(
             attrs={'placeholder': formats.get_format('DATETIME_INPUT_FORMATS')[0]}))
     created_by = CharFilter(field_name='created_by', method='filter_user')
-    comercial_name = CharFilter(field_name='created_by', method='filter_comercial_name')
+    comercial_name = CharFilter(field_name='comercial_name', method='filter_comercial_name')
 
     def filter_user(self, queryset, name, value):
         return queryset.filter(Q(created_by__first_name__icontains=value) | Q(
