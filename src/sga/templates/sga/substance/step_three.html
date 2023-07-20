@@ -53,9 +53,9 @@
                 <p>{{pa}}</p>
   {% endfor%}
 <h5>{% trans "Other Dangers"%}</h5>
-<p>{{sga_elements.other_dangers}}</p>
+<p>{{sga_elements.other_dangers|default_if_none:""}}</p>
 <h5>{% trans "Other Dangers"%}</h5>
-<p> {{sga_elements.warningword}}</p>
+<p> {{sga_elements.warningword|default_if_none:""}}</p>
 
                         </div> </div>
 
