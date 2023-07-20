@@ -217,9 +217,9 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(poscount == precount)
-        self.assertTrue(json.loads(response.content)['errors']['measurement_unit'][0]=="Measurement unit can\'t different than shelf measurement unit")
-        self.assertTrue(json.loads(response.content)['errors']['quantity'][0], _("Quantity can\'t greater than shelf quantity limit 40.0"))
+        self.assertEqual(poscount, precount)
+        self.assertEqual(json.loads(response.content)['errors']['measurement_unit'][0], _("Measurement unit cannot be different than the shelf's measurement unit."))
+        self.assertEqual(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than the shelf's quantity limit: 40.0."))
 
     def test_create_shelfobject_limits_errors(self):
         """
@@ -248,7 +248,7 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(json.loads(response.content)['non_field_errors'], _("Minimum limit can't be greater than maximum limit"))
+        self.assertTrue(json.loads(response.content)['minimum_limit'], _("Minimum limit cannot be greater than maximum limit."))
         self.assertTrue(poscount == precount)
 
     def test_create_shelfobject_other_lab(self):
@@ -380,8 +380,8 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(json.loads(response.content)['errors']['measurement_unit'][0] == _("Measurement unit can't different than shelf measurement unit"))
-        self.assertTrue(poscount == precount)
+        self.assertEqual(json.loads(response.content)['errors']['measurement_unit'][0], _("Measurement unit cannot be different than the shelf's measurement unit."))
+        self.assertEqual(poscount, precount)
 
     def test_create_shelfobject_shelf_unlimit_units(self):
         """
@@ -593,7 +593,7 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code,400)
-        self.assertTrue(json.loads(response.content)["errors"]['object'][0]==_("Object is not available in these shelf"))
+        self.assertTrue(json.loads(response.content)["errors"]['object'][0]==_("Object is not available in the shelf."))
         self.assertTrue(poscount==precount)
 
     def test_create_shelfobject_object_available_in_shelf(self):
