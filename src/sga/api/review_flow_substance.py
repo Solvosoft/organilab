@@ -24,7 +24,7 @@ class ReviewSubstanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = ReviewSubstance.objects.using(settings.READONLY_DATABASE)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['creation_date', 'created_by', 'comercial_name']
+    search_fields = ['created_by__username', 'comercial_name']
     filterset_class = ReviewSubstanceFilterSet
     ordering_fields = ['creation_date', 'created_by']
     ordering = ('creation_date',)
