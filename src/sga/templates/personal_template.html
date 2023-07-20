@@ -1,60 +1,53 @@
-{% extends 'label_index.html' %}
-{% load i18n %}
-{% load static %}
+{% extends 'base.html' %}
+{% load static i18n gtsettings label_tags %}
 {% load urlname_tags %}
 {% load organilab_tags %}
 
 {% block pre_head %}
+    {% define_true  "use_datatables" %}
+
     {% define_urlname_action 'add_personal' %}
     {% define_urlname_action 'edit_personal' %}
     {% define_urlname_action 'template' %}
     {% define_urlname_action 'delete_sgalabel' %}
 {% endblock %}
-{# CSS #}
-{% block css %}
-<link href="{% static 'sga/css/label_template.css' %}?v={% get_organilab_version %}" rel="stylesheet">
-{% endblock css %}
 {% block js %}
 <script>
     document.url_get_preview = "{% url 'sga:get_preview' org_pk 0 %}";
     document.url_delete_sgalabel = "{% url 'sga:delete_sgalabel' org_pk 0 %}";
 </script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="{% static 'sga/js/personal_template.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
 
 
-{% block extrameta%}{% endblock extrameta %}
 
 {% block content %}
 
-    <div class="">
-        {% csrf_token %}
-        <h2 class="titles">{% trans 'List of SGA Labels' %}</h2>
-        <div class="float-end">
-            <button type="button" class="btn btn-success" id="newsgalabel" data-bs-toggle="modal" data-bs-target="#newsgalabelmodal">{% trans 'New SGA Label' %}</button>
-        </div>
-        <div class="clearfix"></div>
-
-        <table class="table table-bordered text-center" id="table_template_list">
-            <thead>
-            <tr>
-                <th class="text-center">{% trans 'Name' %}</th>
-                <th class="text-center">{% trans 'Actions' %}</th>
-            </tr>
-            </thead>
-            <tbody id="template_list">
-            {% for template in personal_templates %}
-            <tr>
-                <td>{{template.name}}</td>
-                <td><a class="btn  btn-md  btn-success" title="{% trans 'Edit' %}" href="{% url 'sga:sgalabel_step_one' org_pk template.pk %}" ><i class="icons fa fa-edit"></i></a>
-                    <a class="btn  btn-md  btn-danger"  title="{% trans 'Delete' %}" onclick="delete_template(this)" data-id="{{template.pk}}" ><i class="icons fa fa-trash"></i></a>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+	{% csrf_token %}
+	<h2 class="titles">{% trans 'List of SGA Labels' %}</h2>
+	<div class="float-end">
+		<button type="button" class="btn btn-success" id="newsgalabel" data-bs-toggle="modal" data-bs-target="#newsgalabelmodal">{% trans 'New SGA Label' %}</button>
+	</div>
+	<div class="clearfix"></div>
+	<table class="table table-bordered text-center table-striped" id="table_template_list">
+		<thead>
+		<tr>
+			<th class="text-center">{% trans 'Name' %}</th>
+			<th class="text-center">{% trans 'Actions' %}</th>
+		</tr>
+		</thead>
+		<tbody id="template_list">
+		{% for template in personal_templates %}
+		<tr>
+			<td>{{template.name}}</td>
+			<td><a class="btn  btn-md  btn-success" title="{% trans 'Edit' %}" href="{% url 'sga:sgalabel_step_one' org_pk template.pk %}" ><i class="icons fa fa-edit"></i></a>
+				<a class="btn  btn-md  btn-danger"  title="{% trans 'Delete' %}" onclick="delete_template(this)" data-id="{{template.pk}}" ><i class="icons fa fa-trash"></i></a>
+			</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
 
 <div id="svgtemplate" class="modal fade" tabindex="-1" aria-labelledby="previewmodalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

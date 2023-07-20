@@ -2,6 +2,43 @@
 
 
 <style>
+@page {
+       margin: 2cm 1cm;
+       size: a4 portrait;
+       @bottom-right{
+       							content: "{% trans 'Page' %} " counter(page) " {% trans 'of' %} " counter(pages);
+       							font-size: 12px;
+       							    }
+     @bottom-left{
+              content: "{% trans "User" %}: {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}";
+              font-size: 1em;
+                  }
+
+     @top-right{
+     								 content: "{{date_print}}";
+              width: 5.3cm;
+              font-family: "Arial", "sans-serif";
+              font-size: 1em;
+                 }
+
+					@top-center {
+														content:  "{% trans 'Security Leaf' %}";
+														width: 8cm;
+														font-family: "Arial", "sans-serif";
+														font-size: 1em;
+																}
+
+     @top-left {
+      								content: "";
+              background: url({% static 'img/logo_organilab.jpg' %}) no-repeat 0 0;
+              background-size: contain;
+              background-repeat: no-repeat;
+              width: 4cm;
+              height: 1cm;
+              margin-bottom: 0.5cm;
+                }
+            }
+
 .fw-bold{
       font-weight: bold;
 }
@@ -41,10 +78,15 @@
   display: table-cell;
   width: 36%;
 }
+.col-6{
+  display: table-cell;
+  width: 50%;
+}
 
 .col-9{
   display: table-cell;
   width: 64%;
+
 }
 
 .text-left{
@@ -61,18 +103,7 @@ section{
 ol{
     list-style-type: lower-alpha;
 }
-@page {
 
-    @bottom-right{
-        content: "{% trans 'Page' %} " counter(page) " {% trans 'of' %} " counter(pages);
-        font-size: 12px;
-    }
-    @bottom-left{
-        content: "{% if substance.brand %}{{substance.brand}}{% else %}No disponible{%endif%} - {% if leaf.reference %}{{leaf.reference}}{%else%}No disponible{%endif%}";
-        font-size: 12px;
-    }
-
-}
 #header .container p{
     font-size:12px;
     margin:0;

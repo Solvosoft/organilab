@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import get_template
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from djgentelella.decorators.perms import any_permission_required
@@ -155,6 +156,8 @@ def approve_substances(request, org_pk, pk):
     user_is_allowed_on_organization(request.user, organization)
     review_subs = get_object_or_404(ReviewSubstance, pk=pk)
     review_subs.is_approved = True
+    review_subs.organization = organization
+    review_subs.created_by = request.user
     review_subs.save()
     organilab_logentry(request.user, review_subs, CHANGE, "review substance",
                        changed_data=['is_approved'])
@@ -276,7 +279,7 @@ def step_two(request, org_pk, pk):
 
 
 @login_required
-@permission_required('sga.change_display_label')
+@permission_required('sga.change_displaylabel')
 def step_three(request, org_pk, template, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
@@ -347,6 +350,7 @@ def step_four(request, org_pk, substance):
             return redirect(reverse('sga:get_substance', kwargs={'org_pk': org_pk}))
 
     form = SecurityLeafForm(instance=security_leaf)
+
     context = {'step': 4,
                'complement': complement.pk,
                'template': display_label.pk,
@@ -365,14 +369,15 @@ def security_leaf_pdf(request, org_pk, substance):
     user_is_allowed_on_organization(request.user, organization)
     leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     component = SGAComplement.objects.filter(substance__pk=substance).first()
-    date_print = now().strftime('%Y-%m-%d')
+
     if leaf:
         template = get_template('sga/substance/security_leaf_pdf.html')
         context = {'leaf': leaf,
                    'substance': leaf.substance,
                    'provider': leaf.provider,
                    'component': component,
-                   'date_print': date_print,
+                   'date_print': timezone.now(),
+                   'user': request.user,
                    'date_check': leaf.created_at.strftime('%Y-%m-%d'),
                    'org_pk': org_pk}
         html_template = template.render(context)
