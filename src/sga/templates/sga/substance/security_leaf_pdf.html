@@ -1,9 +1,9 @@
-{% extends 'pdf/base_pdf.html' %}
 {% load i18n %}
 {% block head %}
 
  <title>{% trans 'Security sheet'%} {% trans 'of'%} {{substance.comercial_name}}</title>
 {% endblock %}
+{% include 'sga/substance/pdf/pdf_css.html' %}
 {% block pdf_content %}
 <section id="header">
     {% include 'sga/substance/pdf/header.html' %}

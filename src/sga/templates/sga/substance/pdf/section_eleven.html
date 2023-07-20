@@ -3,7 +3,54 @@
 <br>
 <label class="fw-bold">11.1 {% trans 'Information on toxicological effects'%}</label>
 <div class="container">
-    <label class="fw-bold">{% trans 'Acute toxicity' %}</label>
+    <div class="row">
+        <div class="col-6"><label>a. {% trans 'Acute toxicity' %}:</label></div>
+        <div class="col-6">{% if leaf.acute_toxicity %} {{leaf.acute_toxicity }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>b. {% trans 'Skin corrosion or irritation' %}:</label></div>
+        <div class="col-6">{% if leaf.skin_irritation %} {{leaf.skin_irritation }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>c. {% trans 'Serious eye damage or irritation' %}:</label></div>
+        <div class="col-6">{% if leaf.eye_irritation %} {{leaf.eye_irritation }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>d. {% trans 'Respiratory or skin sensitization' %}:</label></div>
+        <div class="col-6">{% if leaf.respiratory_sensitization %} {{leaf.respiratory_sensitization }} {% else %}
+									{% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>e. {% trans 'Germ cell mutagenicity' %}:</label></div>
+        <div class="col-6">{% if leaf.germ_mutagenicity %} {{leaf.germ_mutagenicity }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>f. {% trans 'Carcinogenicity' %}:</label></div>
+        <div class="col-6">{% if leaf.carcinogenicity %} {{leaf.carcinogenicity }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>g. {% trans 'Reproductive toxicity' %}:</label></div>
+        <div class="col-6">{% if leaf.reproductive_toxicity %} {{leaf.reproductive_toxicity }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>f. {% trans 'Specific target organ toxicity - single exposure' %}:</label></div>
+        <div class="col-6">{% if leaf.unique_exhibition %} {{leaf.unique_exhibition }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>g. {% trans 'Specific target organ toxicity - repeated exposure' %}:</label></div>
+        <div class="col-6">{% if leaf.repeated_exposures %} {{leaf.repeated_exposures }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>f. {% trans 'Aspiration hazard' %}:</label></div>
+        <div class="col-6">{% if leaf.aspiration_hazard %} {{leaf.aspiration_hazard }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+    <div class="row">
+        <div class="col-6"><label>g. {% trans 'Additional Information' %}:</label></div>
+        <div class="col-6">{% if leaf.additional_information %} {{leaf.additional_information }} {% else %} {% trans 'no data available' %} {% endif %}</div>
+    </div>
+	</div>
+<hr>
+			<!--<label class="fw-bold">{% trans 'Acute toxicity' %}</label>
     <br>
     <label>{% if leaf.acute_toxicity %} {{leaf.acute_toxicity }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
@@ -47,5 +94,4 @@
     <br>
     <label>{% if leaf.additional_information %} {{leaf.additional_information }} {% else %} {% trans 'no data available' %} {% endif %}</label>
     <br>
-</div>
-<hr>
+    -->

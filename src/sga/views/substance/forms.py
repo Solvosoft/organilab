@@ -143,5 +143,7 @@ class ReviewSubstanceForm(forms.ModelForm, GTForm):
         widgets = {
             'substance': genwidgets.HiddenInput,
             'note': genwidgets.NumberInput,
-            'is_approved': genwidgets.HiddenInput
+            'is_approved': genwidgets.HiddenInput,
+            'organization': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput
         }
