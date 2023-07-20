@@ -1148,11 +1148,8 @@ msgstr "Rol"
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
 
-msgid ""
-"This select only shows shelves with same measurement unit than current object"
-msgstr ""
-"Esta seleccion solo muestra los estantes que tengan la misma unidad de "
-"medida que el objeto actual."
+msgid "This select only shows shelves with same measurement unit than current object"
+msgstr "Esta selección solo muestra los estantes que tengan la misma unidad de medida que el objeto actual."
 
 msgid "Unlimited"
 msgstr "Ilimitado"
@@ -2143,7 +2140,7 @@ msgid "New Shelfobject status"
 msgstr "Nuevo estado de objecto"
 
 msgid "Laboratory was created successfully"
-msgstr "Substraído exitosamente"
+msgstr "Laboratorio creado exitosamente"
 
 msgid ""
 "Sorry, there is not available laboratory, please contact the administrator "
@@ -3997,3 +3994,15 @@ msgstr "Porcentaje Utilizado"
 
 msgid "Security Leaf"
 msgstr "Hoja de Seguridad"
+
+msgid "Initial date cannot be equal or lower than current date."
+msgstr "La fecha inicial no puede ser igual or menor a la fecha actual."
+
+msgid "Initial date cannot be greater than final date."
+msgstr "La fecha inicial no puede ser mayor a la fecha final."
+
+msgid "Final date cannot be equal to initial date."
+msgstr "La fecha final no puede ser igual a la fecha inicial."
+
+msgid "Final date cannot be equal or lower than current date."
+msgstr "La fecha final no puede ser igual o menor a la fecha actual."

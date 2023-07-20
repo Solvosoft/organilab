@@ -16,11 +16,11 @@
 	<div class="col-sm-6"><p>{{shelf.quantity}}</p></div>
 </div>
 <div class="row">
-	<div class="col-sm-6"><label><strong>{% trans "Quantity Storage" %}:</strong></label></div>
+	<div class="col-sm-6"><label><strong>{% trans "Used Quantity" %}:</strong></label></div>
 	<div class="col-sm-6"><p>{{shelf.quantity_storage_status}}</p></div>
 </div>
 <div class="row">
-	<div class="col-sm-6"><label><strong>{% trans "Percentage Storage" %}:</strong></label></div>
+	<div class="col-sm-6"><label><strong>{% trans "Used Percentage" %}:</strong></label></div>
 	<div class="col-sm-6"><p>{{shelf.percentage_storage_status}}</p></div>
 </div>
 {% if shelf.obj.discard %}
