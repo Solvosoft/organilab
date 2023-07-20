@@ -35,7 +35,7 @@ function form_field_errors(target_form, form_errors, prefix){
                 load_errors(form_errors[key], target_form, display_on_top=true);
             }else{
                load_errors(form_errors[key], item);
-            } 
+            }
         }
     }
 }
@@ -52,6 +52,47 @@ function clear_action_form(form){
     $(form).find("select option:selected").prop("selected", false);
     $(form).find("select").val(null).trigger('change');
     $(form).find("ul.form_errors").remove();
+}
+
+
+function get_creation_help(){
+    return [
+        ["State", "It is a feature related to physical property about this element, some examples could be volatile,"+
+        " fragile, poor state, good condition."],
+        ["Measurement Unit", "Measurement unit is filtered by shelf measurement unit."],
+        ["Quantity", "Do not exists limit if shelf has infinite quantity property, in any other case the capacity is restricted."],
+        ["Container", "This field represents a material object type like a box, a bottle, a tank, a tin"+
+        " who it will be responsible to containt a substance, as a requirement the container object needs to be register into"+
+        " this laboratory as a material container, also this field is filtered by measurement unit selected."],
+    ]
+}
+
+
+function add_creation_help_func(div){
+    if(div.find('div.shelfinfocontainer').length){
+        var creation_help_list = get_creation_help();
+        var title = "<label>"+gettext("General Information")+"</label>";
+        var creation_help = "<div class='container ps-3 pb-3 creation_help'>"+title+"<div class='card card-body'>";
+        var creation_length = creation_help_list.length - 1;
+
+        $.each(creation_help_list, function(value) {
+            var div_class = 'row';
+            if(value < creation_length) {
+                div_class += ' mb-3';
+            }
+            creation_help += "<div class='"+div_class+"'><div class='col-sm-4'>";
+            creation_help += "<label><b>"+gettext(creation_help_list[value][0])+"</b><label></div>";
+            creation_help += "<div class='col-sm-8'>"+gettext(creation_help_list[value][1])+"</div></div>";
+
+        });
+
+         creation_help += "</div></div>";
+        $(div).append(creation_help);
+    }else{
+        setTimeout(function(){
+            add_creation_help_func(div);
+        }, 10);
+    }
 }
 
 var form_modals = {}
@@ -126,7 +167,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                     if(div.find('div.shelfinfocontainer').length){
                         div.find('div.shelfinfocontainer').remove();
                     }
-                    div.append(data.shelf_info);
+                    div.prepend(data.shelf_info);
                 },
                 error: function(xhr, resp, text){
                     Swal.fire({
@@ -156,6 +197,8 @@ function BaseFormModal(modalid,  data_extras={})  {
         "showmodal": function(btninstance){
             var shelf_object = $(btninstance).data('shelfobject');
             var shelf = $(btninstance).data('shelf');
+            var add_creation_help = $(btninstance).data('add_creation_help');
+
             if (shelf_object != undefined){
                 this.data_extras['shelf_object'] = shelf_object;
             }
@@ -165,6 +208,9 @@ function BaseFormModal(modalid,  data_extras={})  {
 
             if (info_shelf != undefined && shelf != undefined && position != undefined){
                 this.showShelfInfo($(info_shelf[0]), shelf, position=$(position[0]).val());
+                if(add_creation_help && !$(info_shelf[0]).find("div.creation_help").length){
+                   add_creation_help_func($(info_shelf[0]));
+                }
             }
 
             this.instance.modal('show');
