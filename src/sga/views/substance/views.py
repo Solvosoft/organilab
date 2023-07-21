@@ -338,7 +338,7 @@ def step_four(request, org_pk, substance):
     user_is_allowed_on_organization(request.user, organization)
     security_leaf = get_object_or_404(SecurityLeaf, substance__pk=substance)
     display_label = DisplayLabel.objects.filter(
-        label__substance__pk=substance).first()
+        label__substance__pk=substance,created_by=request.user).first()
     complement = SGAComplement.objects.filter(substance__pk=substance).first()
     context = {}
     if request.method == 'POST':
