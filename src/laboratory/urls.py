@@ -29,7 +29,8 @@ from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications
-from laboratory.views.organizations import OrganizationDeleteView, OrganizationCreateView, OrganizationUpdateView
+from laboratory.views.organizations import OrganizationDeleteView, \
+    OrganizationCreateView, OrganizationUpdateView, OrganizationActionsFormview
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 
 objviews = ObjectView()
@@ -133,6 +134,8 @@ sustance_urls = [
 ]
 
 organization_urls = [
+    path('organization/manage/actions', OrganizationActionsFormview.as_view(),
+         name='organization_actions'),
     path('organization/<int:pk>/delete', OrganizationDeleteView.as_view(), name="delete_organization"),
     path('organization/create', OrganizationCreateView.as_view(), name="create_organization"),
     path('organization/<int:pk>/update', OrganizationUpdateView.as_view(), name="update_organization"),

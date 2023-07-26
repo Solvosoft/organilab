@@ -10,18 +10,21 @@ from django import forms
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DeleteView, CreateView, UpdateView
+from django.views.generic import DeleteView, CreateView, UpdateView, FormView
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from tree_queries.forms import TreeNodeChoiceField
 
+from auth_and_perms.forms import OrganizationActions
 from auth_and_perms.models import Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, \
+    OrganizationStructureRelations, UserOrganization
 from .djgeneric import ListView
 from ..forms import AddOrganizationForm
 from ..utils import organilab_logentry
@@ -29,7 +32,9 @@ from ..utils import organilab_logentry
 
 class OrganizationSelectableForm(GTForm, forms.Form):
     organizations = OrganizationStructure.objects.none()
-    filter_organization = TreeNodeChoiceField(queryset=organizations, widget=genwidgets.Select, label=_("Filter Organization"))
+    filter_organization = TreeNodeChoiceField(queryset=organizations,
+                                              widget=genwidgets.Select,
+                                              label=_("Filter Organization"))
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
@@ -38,9 +43,9 @@ class OrganizationSelectableForm(GTForm, forms.Form):
         if organizations:
             self.fields['filter_organization'].queryset = organizations.distinct()
         elif self.user.is_superuser:
-            self.fields['filter_organization'].queryset = OrganizationStructure.objects.all(
+            self.fields[
+                'filter_organization'].queryset = OrganizationStructure.objects.all(
             )
-
 
 
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
@@ -73,7 +78,8 @@ class OrganizationReportView(ListView):
                     labs = Laboratory.objects.filter(
                         organization__in=organizations_child)
                 else:  # show only assign laboratory
-                    labs = Profile.objects.filter(user=self.user).first().laboratories.all()
+                    labs = Profile.objects.filter(
+                        user=self.user).first().laboratories.all()
         #  when have nothing assign
         else:
             # Show all to admin user
@@ -115,7 +121,8 @@ class OrganizationReportView(ListView):
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
 
-@method_decorator(permission_required('laboratory.delete_organizationstructure'), name='dispatch')
+@method_decorator(permission_required('laboratory.delete_organizationstructure'),
+                  name='dispatch')
 class OrganizationDeleteView(DeleteView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
@@ -125,7 +132,6 @@ class OrganizationDeleteView(DeleteView):
         user_is_allowed_on_organization(request.user, self.object)
         return super().get(request, *args, **kwargs)
 
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         user_is_allowed_on_organization(request.user, self.object)
@@ -133,11 +139,14 @@ class OrganizationDeleteView(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, 'organization structure')
+        organilab_logentry(self.request.user, self.object, DELETION,
+                           'organization structure')
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
-@method_decorator(permission_required('laboratory.add_organizationstructure'), name='dispatch')
+
+@method_decorator(permission_required('laboratory.add_organizationstructure'),
+                  name='dispatch')
 class OrganizationCreateView(CreateView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
@@ -146,14 +155,84 @@ class OrganizationCreateView(CreateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         if self.object.parent:
-            self.object.position=self.object.parent.position+1
+            self.object.position = self.object.parent.last_child_position + 1
             self.object.save()
         set_rol_administrator_on_org(self.request.user.profile, self.object)
-        organilab_logentry(self.request.user, self.object, ADDITION, 'organization structure', changed_data=['organization', 'users'])
+        organilab_logentry(self.request.user, self.object, ADDITION,
+                           'organization structure',
+                           changed_data=['organization', 'users'])
         return response
 
 
-@method_decorator(permission_required('laboratory.change_organizationstructure'), name='dispatch')
+@method_decorator(permission_required('laboratory.change_organizationstructure'),
+                  name='dispatch')
+class OrganizationActionsFormview(FormView):
+    form_class = OrganizationActions
+
+    def inactive_organization(self, form):
+        self.org.active = False
+        if self.org.parent:
+            self.org.position = self.org.parent.min_child_position - 1
+        self.org.save()
+        organilab_logentry(self.request.user, self.org, CHANGE,
+                           'inactive organization',
+                           changed_data=['organization'])
+
+    def clone_organization(self, form):
+        newinstance = OrganizationStructure.objects.create(
+            name=self.org.name + "-clone",
+            position=self.org.position,
+            level=self.org.level,
+            active=True,
+            parent=self.org.parent
+        )
+        newinstance.users.add(self.request.user)
+        for orgrel in OrganizationStructureRelations.objects.filter(
+            organization=self.org):
+            OrganizationStructureRelations.objects.create(
+                organization=newinstance,
+                content_type=orgrel.content_type,
+                object_id=orgrel.object_id
+            )
+        for rol in self.org.rol.all():
+            newinstance.rol.add(rol)
+
+        for user in UserOrganization.objects.filter(organization=self.org,
+                                                    type_in_organization__in=[
+                                                        UserOrganization.ADMINISTRATOR,
+                                                        UserOrganization.LABORATORY_MANAGER]):
+            UserOrganization.objects.create(
+                organization=newinstance,
+                type_in_organization=user.type_in_organization,
+                user=user.user,
+                status=user.status)
+            newinstance.users.add(user.user)
+        organilab_logentry(self.request.user, newinstance, ADDITION,
+                           'clone organization',
+                           changed_data=['organization'])
+
+    def change_name_organization(self, form):
+        self.org.name = form.cleaned_data['name']
+        self.org.save()
+        organilab_logentry(self.request.user, self.org, ADDITION,
+                           'change name organization',
+                           changed_data=['organization'])
+
+    def form_valid(self, form):
+        self.org = form.cleaned_data['action_organization']
+        user_is_allowed_on_organization(self.request.user, self.org)
+        if form.cleaned_data['actions'] == '1':
+            self.inactive_organization(form)
+        elif form.cleaned_data['actions'] == '2':
+            self.clone_organization(form)
+        elif form.cleaned_data['actions'] == '3':
+            self.change_name_organization(form)
+
+        return redirect(reverse_lazy('auth_and_perms:organizationManager'))
+
+
+@method_decorator(permission_required('laboratory.change_organizationstructure'),
+                  name='dispatch')
 class OrganizationUpdateView(UpdateView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
@@ -171,5 +250,6 @@ class OrganizationUpdateView(UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        organilab_logentry(self.request.user, self.object, CHANGE, 'organization structure', changed_data=form.changed_data)
+        organilab_logentry(self.request.user, self.object, CHANGE,
+                           'organization structure', changed_data=form.changed_data)
         return response

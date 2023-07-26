@@ -31,13 +31,13 @@ def getNodeInformation(node):
     }
 
 
-def get_organization_tree(node, structure, user, pks, level=0, parents=[], append_info=True):
+def get_organization_tree(node, structure, user, pks, level=0, parents=[], append_info=True, extras={}):
     structure += [(getNodeInformation(node) if append_info else node,  getLevelClass(level))]
     pks.append(node.pk)
-    descendants=node.descendants()
+    descendants=node.descendants().distinct().order_by('-position')
     if descendants:
-        for child in descendants.filter(
-                Q(users=user) | Q(pk__in=parents)).distinct():
+        for child in descendants.filter(**extras).filter(
+                Q(users=user) | Q(pk__in=parents)).distinct().order_by('-position'):
             if child.pk not in pks:
                 get_organization_tree(child, structure, user, pks, level=level + 1, parents=parents,
-                                      append_info=append_info)
+                                      append_info=append_info, extras=extras)

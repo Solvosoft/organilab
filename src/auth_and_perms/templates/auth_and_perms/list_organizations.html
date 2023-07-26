@@ -30,7 +30,10 @@
             <div class="row" id="rols">
                 <div class="row">
                     <div class="col-11">
-                    <h6 data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.pk}}" class="w-100"
+                    <h6 {%if node.0.active %} data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.pk}}" class="w-100"
+																								{%else%}
+																								class="disabled text-decoration-line-through"
+																								{%endif%}
                         role="button" aria-expanded="false" aria-controls="collapse{{node.0.pk}}"
                     >{{node.0}}</h6>
                     </div>
@@ -81,6 +84,11 @@
                         {% include 'auth_and_perms/organization_permission_table.html' with object=node.0 %}
                     </div>
                     {% if perms.laboratory.change_organizationstructure %}
+																				<li class="list-group-item">
+																					<a class="orgactions" href="#{{node.0.pk}}"  data-org="{{node.0.pk}}" title="{% trans 'Actions' %}">
+																									<i class="fa fa-wrench"></i>
+																					</a>
+																				</li>
                     <li class="list-group-item">
                         <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.pk %}"  title="{% trans 'Log List' %}">
                             <i class="fa fa-file-text-o"></i></a>
@@ -305,6 +313,27 @@
                 <button id="relprofilewithlaboratorybtn" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button>
             </div>
                 {% csrf_token %}
+            </form>
+        </div>
+    </div>
+</div>
+<div id="actionsmodal" class="modal fade" tabindex="-1" aria-labelledby="actionsmodalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'laboratory:organization_actions'  %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h4 class="modal-title" id="actionsmodalLabel">{% trans 'Actions for Organization' %}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{actionform.as_horizontal}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                    <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+                </div>
             </form>
         </div>
     </div>

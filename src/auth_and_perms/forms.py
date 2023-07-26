@@ -12,8 +12,10 @@ from laboratory.models import Laboratory, OrganizationStructure
 
 
 class AddUserForm(GTForm, forms.Form):
-    users = forms.ModelMultipleChoiceField(queryset=User.objects.all(), label=_("Users"),
-                                           widget=AutocompleteSelectMultiple('orguserbase'))
+    users = forms.ModelMultipleChoiceField(queryset=User.objects.all(),
+                                           label=_("Users"),
+                                           widget=AutocompleteSelectMultiple(
+                                               'orguserbase'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,19 +24,22 @@ class AddUserForm(GTForm, forms.Form):
 
 class AddRolForm(GTForm, forms.Form):
     rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.all(), label=_("Rols"),
-                                          widget=AutocompleteSelectMultiple('roluserorgbase'), required=True)
+                                          widget=AutocompleteSelectMultiple(
+                                              'roluserorgbase'), required=True)
 
 
 class AddProfileRolForm(GTForm, forms.Form):
     rols = forms.ModelMultipleChoiceField(queryset=Rol.objects.none(), label=_("Rols"),
-                                          widget=AutocompleteSelectMultiple('rolbase'), required=True)
+                                          widget=AutocompleteSelectMultiple('rolbase'),
+                                          required=True)
     contentobj_pk = forms.CharField(widget=forms.HiddenInput(), required=False)
     contentobj_pk = forms.CharField(widget=forms.HiddenInput(), required=False)
     org_pk = forms.CharField(widget=forms.HiddenInput(), required=True)
 
 
 class CreationUserOrganization(UserCreationForm, GTForm):
-    organization_name = forms.CharField(max_length=255, widget=genwidgets.TextInput, label=_('Organization name'))
+    organization_name = forms.CharField(max_length=255, widget=genwidgets.TextInput,
+                                        label=_('Organization name'))
     validation_method = forms.ChoiceField(
         choices=((1, 'OTPT'), (2, _('Digital signature'))),
         # choices=((1, 'OTPT'),),
@@ -44,8 +49,10 @@ class CreationUserOrganization(UserCreationForm, GTForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'].widget = genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
-        self.fields['password2'].widget = genwidgets.PasswordInput(attrs={"autocomplete": _("new-password")})
+        self.fields['password1'].widget = genwidgets.PasswordInput(
+            attrs={"autocomplete": _("new-password")})
+        self.fields['password2'].widget = genwidgets.PasswordInput(
+            attrs={"autocomplete": _("new-password")})
         self.fields['username'].label = _("Email")
 
     class Meta(UserCreationForm.Meta):
@@ -59,15 +66,21 @@ class CreationUserOrganization(UserCreationForm, GTForm):
 
 # from django_otp.views import LoginView
 class AddProfileForm(OTPTokenForm, GTForm):
-    first_name = forms.CharField(label=_("First name"), max_length=150, widget=genwidgets.TextInput)
-    last_name = forms.CharField(label=_("Last name"), max_length=150, widget=genwidgets.TextInput)
+    first_name = forms.CharField(label=_("First name"), max_length=150,
+                                 widget=genwidgets.TextInput)
+    last_name = forms.CharField(label=_("Last name"), max_length=150,
+                                widget=genwidgets.TextInput)
     email = forms.EmailField(label=_("Email address"), widget=genwidgets.EmailInput)
-    phone_number = forms.CharField(label=_('Phone'), max_length=25, widget=genwidgets.TextInput)
-    id_card = forms.CharField(label=_('Identification'), max_length=100, widget=genwidgets.TextInput)
-    job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=genwidgets.TextInput)
+    phone_number = forms.CharField(label=_('Phone'), max_length=25,
+                                   widget=genwidgets.TextInput)
+    id_card = forms.CharField(label=_('Identification'), max_length=100,
+                              widget=genwidgets.TextInput)
+    job_position = forms.CharField(label=_('Job Position'), max_length=100,
+                                   widget=genwidgets.TextInput)
 
     field_order = [
-        'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'otp_device',
+        'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position',
+        'otp_device',
         'otp_challenge', 'otp_token'
     ]
 
@@ -79,17 +92,24 @@ class AddProfileForm(OTPTokenForm, GTForm):
 
 
 class AddProfileDigitalSignatureForm(GTForm):
-    first_name = forms.CharField(label=_("First name"), max_length=150, widget=genwidgets.TextInput)
-    last_name = forms.CharField(label=_("Last name"), max_length=150, widget=genwidgets.TextInput)
+    first_name = forms.CharField(label=_("First name"), max_length=150,
+                                 widget=genwidgets.TextInput)
+    last_name = forms.CharField(label=_("Last name"), max_length=150,
+                                widget=genwidgets.TextInput)
     email = forms.EmailField(label=_("Email address"), widget=genwidgets.EmailInput)
-    phone_number = forms.CharField(label=_('Phone'), max_length=25, widget=genwidgets.TextInput)
-    id_card = forms.CharField(label=_('Identification'), max_length=100, widget=genwidgets.TextInput,
-                              help_text=_('It will used to login when you want to login with digital signature'))
-    job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=genwidgets.TextInput)
+    phone_number = forms.CharField(label=_('Phone'), max_length=25,
+                                   widget=genwidgets.TextInput)
+    id_card = forms.CharField(label=_('Identification'), max_length=100,
+                              widget=genwidgets.TextInput,
+                              help_text=_(
+                                  'It will used to login when you want to login with digital signature'))
+    job_position = forms.CharField(label=_('Job Position'), max_length=100,
+                                   widget=genwidgets.TextInput)
     ds_transaction = forms.CharField(widget=genwidgets.HiddenInput, max_length=20)
 
     field_order = [
-        'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position', 'ds_transaction'
+        'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position',
+        'ds_transaction'
     ]
 
 
@@ -120,6 +140,24 @@ class ProfileListForm(GTForm):
                                          'data-dropdownparent': '#relprofilelabmodal'
                                      })
                                      )
+
+
+class OrganizationActions(GTForm):
+    ACTIONS = (
+        (1, _('Inactive organization')),
+        (2, _('Clone organization')),
+        (3, _('Change organization name')),
+    )
+    actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS)
+    action_organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.all(),
+        widget=genwidgets.HiddenInput)
+    name = forms.CharField(widget=genwidgets.TextInput, required=False)
+
+    def clean(self):
+        if self.cleaned_data['actions'] == 3 and (
+            'name' not in self.cleaned_data or not self.cleaned_data['name']):
+            self.add_error('name', 'Name not fount')
 
 
 class ContentypeForm(GTForm, forms.Form):

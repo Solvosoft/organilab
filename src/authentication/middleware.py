@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.http import Http404
 
 from auth_and_perms.models import ProfilePermission
+from laboratory.models import OrganizationStructure
 from laboratory.utils import get_laboratories_by_user_profile
 
 
@@ -54,6 +55,8 @@ class ProfileMiddleware:
             queryQ |= Q(profile=user.profile,object_id=lab_pk,
                         content_type__app_label='laboratory',  content_type__model="laboratory")
         elif org_pk:
+            if OrganizationStructure.objects.filter(pk=org_pk, active=False).exists():
+                raise Http404("Organization is inactive")
             # for my_labs selection and other steps without laboratory defined
             laboratories = get_laboratories_by_user_profile(request.user, org_pk)
             queryQ |= Q(profile=user.profile,object_id__in=laboratories,
