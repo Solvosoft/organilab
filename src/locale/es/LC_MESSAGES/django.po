@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-08 10:15-0600\n"
+"POT-Creation-Date: 2023-07-25 23:54-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -243,6 +243,12 @@ msgstr ""
 "El procedimiento no tiene objetos, agregue algunos objetos en los pasos del "
 "procedimiento"
 
+#, python-format
+msgid ""
+"The laboratory does not have enough of this object to be able to reserve it. "
+"<br>%(list)s"
+msgstr ""
+
 msgid "Organization can't change this laboratory"
 msgstr "La organización no puede editar este laboratorio"
 
@@ -293,6 +299,17 @@ msgstr "Puesto de trabajo"
 
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
+
+
+msgid "Inactive organization"
+msgstr "Desactivar Organización"
+
+ 
+msgid "Clone organization"
+msgstr "Clonar Organización"
+ 
+msgid "Change organization name"
+msgstr "Cambiar nombre de la organización"
 
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
@@ -485,6 +502,10 @@ msgstr "Seleccione una organización padre"
 
 msgid "Relate user to laboratory"
 msgstr "Relacionar usuario con laboratorio"
+
+
+msgid "Actions for Organization"
+msgstr "Acciones de la organización"
 
 msgid "Manage Rol"
 msgstr "Administrar perfil"
@@ -726,18 +747,13 @@ msgid ""
 "This value cannot be greater than the quantity available for the object."
 msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto."
 
-msgid "The transfer out was performed successfully."
+#, fuzzy
+#| msgid "The transfer out was performed successfully."
+msgid "The transfer out was saved successfully."
 msgstr "La transferencia fue enviada con éxito"
 
 msgid "The transfer in was denied successfully."
 msgstr "La transferencia fue denegada exitosamente."
-
-msgid ""
-"This transfer cannot be accepted since the transfer quantity is bigger than "
-"the quantity available in the object."
-msgstr ""
-"Esta transferencia no puede ser aceptada mientras la cantidad sea mayor a la "
-"cantidad disponible en el objeto."
 
 msgid "The transfer in was approved successfully."
 msgstr "La transferencia fue aprobada exitosamente."
@@ -1148,8 +1164,11 @@ msgstr "Rol"
 msgid "Product added successful"
 msgstr "Producto Agregado exitosamente"
 
-msgid "This select only shows shelves with same measurement unit than current object"
-msgstr "Esta selección solo muestra los estantes que tengan la misma unidad de medida que el objeto actual."
+msgid ""
+"This select only shows shelves with same measurement unit than current object"
+msgstr ""
+"Esta selección solo muestra los estantes que tengan la misma unidad de "
+"medida que el objeto actual."
 
 msgid "Unlimited"
 msgstr "Ilimitado"
@@ -1172,70 +1191,109 @@ msgstr "Crear nueva basada en la seleccionada"
 msgid "Use selected"
 msgstr "Usar seleccionado"
 
-msgid "Final date can't be equal to initial date"
-msgstr "La fecha final no puede ser igual a la fecha inicial"
+msgid "Final date cannot be equal to initial date."
+msgstr "La fecha final no puede ser igual a la fecha inicial."
 
-msgid "Initial date can't be greater than final date"
-msgstr "Fecha inicial no puede ser mayor a la fecha final"
+msgid "Initial date cannot be greater than final date."
+msgstr "La fecha inicial no puede ser mayor a la fecha final."
 
-msgid "Initial date can't be equal or lower to current date"
-msgstr "Fecha inicial no puede ser menor a la fecha actual"
+msgid "Initial date cannot be equal or lower than current date."
+msgstr "La fecha inicial no puede ser igual or menor a la fecha actual."
 
-msgid "Initial date can't be lower than current date"
-msgstr "Fecha inicial no puede ser menor a la fecha actual"
-
-msgid "Final date can't be lower than current date"
-msgstr "Fecha final no puede ser menor a la fecha actual"
-
-msgid "Object doesn't exists in this laboratory"
-msgstr "Objeto no existe en este laboratorio"
-
-msgid "Provider doesn't exists in this laboratory"
-msgstr "Proveedor no existe en este laboratorio"
-
-msgid "Measurement unit can't different than shelf measurement unit"
-msgstr ""
-"La unidad de medida es diferente a la que tiene el estante "
-"%(measurement_unit)s"
-
-#, python-format
-msgid "Quantity can't greater than shelf quantity limit %(limit)s"
-msgstr "La cantidad es mucho mayor al límite del estante %(limit)s"
-
-msgid "Substract amount can't be greater than available shelf amount"
-msgstr ""
-"El monto de la resta no puede ser mayor al monto disponible en el estante"
-
-msgid "Minimum limit can't be greater than maximum limit"
-msgstr "Límite mínimo no puede ser mayor al límite máximo"
-
-msgid "Object is not available in these shelf"
-msgstr "El objeto no está disponible en este estante"
+msgid "Final date cannot be equal or lower than current date."
+msgstr "La fecha final no puede ser igual o menor a la fecha actual."
 
 msgid "Object does not exist in the laboratory."
 msgstr "El objeto seleccionado no pertenece al laboratorio."
 
+#, fuzzy
+#| msgid "Provider doesn't exists in this laboratory"
+msgid "Provider does not exist in the laboratory."
+msgstr "Proveedor no existe en este laboratorio"
+
+#, fuzzy
+#| msgid "Measurement unit can't different than shelf measurement unit"
+msgid "Measurement unit cannot be different than the shelf's measurement unit."
+msgstr ""
+"La unidad de medida es diferente a la que tiene el estante "
+"%(measurement_unit)s"
+
+#, fuzzy, python-format
+#| msgid "Quantity can't greater than shelf quantity limit %(limit)s"
+msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
+msgstr "La cantidad es mucho mayor al límite del estante %(limit)s"
+
+#, fuzzy
+#| msgid "Substract amount can't be greater than available shelf amount"
+msgid "Subtract amount cannot be greater than the available shelf's amount."
+msgstr ""
+"El monto de la resta no puede ser mayor al monto disponible en el estante"
+
+#, fuzzy
+#| msgid "Minimum limit can't be greater than maximum limit"
+msgid "Minimum limit cannot be greater than maximum limit."
+msgstr "Límite mínimo no puede ser mayor al límite máximo"
+
+#, fuzzy
+#| msgid "Object is not available in these shelf"
+msgid "Object is not available in the shelf."
+msgstr "El objeto no está disponible en este estante"
+
 msgid "Unlimited storage"
 msgstr "Almacenamiento Ilimitado"
 
-msgid "Laboratory room doesn't exists in this laboratory"
+msgid "Infinity"
+msgstr "Infinito"
+
+#, fuzzy
+#| msgid "Laboratory room doesn't exists in this laboratory"
+msgid "Laboratory room does not exist in the laboratory."
 msgstr "Sala de laboratorio no existe en este laboratorio"
 
-msgid "Furniture doesn't exists in this laboratory"
+#, fuzzy
+#| msgid "Furniture doesn't exists in this laboratory"
+msgid "Furniture does not exist in the laboratory."
 msgstr "Mueble no existe en este laboratorio"
 
-msgid "Shelf doesn't exists in this laboratory"
+#, fuzzy
+#| msgid "Shelf doesn't exists in this laboratory"
+msgid "Shelf does not exist in the laboratory."
 msgstr "Estante no existe en este laboratorio"
 
-msgid "Object can't be moved to same shelf"
+#, fuzzy
+#| msgid "Object does not exist in the laboratory."
+msgid "Object does not exists in the laboratory."
+msgstr "El objeto seleccionado no pertenece al laboratorio."
+
+#, fuzzy
+#| msgid "Object can't be moved to same shelf"
+msgid "Object cannot be moved to same shelf."
 msgstr "Object no puede ser movido al mismo estante"
 
-msgid "Object can't be moved to shelf with different measurement unit"
+#, fuzzy
+#| msgid "Object can't be moved to shelf with different measurement unit"
+msgid "Object cannot be moved to a shelf with different measurement unit."
 msgstr ""
 "El objeto no puede ser movido a un estante con una unidad de medida diferente"
 
 msgid "Transfer was not sent to the laboratory."
 msgstr "Transferencia no fue enviada al laboratorio."
+
+msgid ""
+"The transfer in cannot be performed since the source object no longer "
+"belongs to the laboratory that sent it."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "This transfer cannot be accepted since the transfer quantity is bigger "
+#| "than the quantity available in the object."
+msgid ""
+"The transfer in cannot be performed since the transfer quantity is bigger "
+"than the quantity available in the source object."
+msgstr ""
+"Esta transferencia no puede ser aceptada mientras la cantidad sea mayor a la "
+"cantidad disponible en el objeto."
 
 msgid "Invalid search"
 msgstr "Búsqueda Inválida"
@@ -1262,6 +1320,9 @@ msgstr "Objeto no existe en este mueble"
 msgid "Object doesn't exists in this labroom"
 msgstr "Objeto no existe en esta sala de laboratorio"
 
+msgid "Object doesn't exists in this laboratory"
+msgstr "Objeto no existe en este laboratorio"
+
 msgid "Move the container from the source laboratory"
 msgstr "Mover el contenedor desde el laboratorio fuente"
 
@@ -1269,8 +1330,17 @@ msgid "Create new based on current container in the source laboratory"
 msgstr "Crear nuevo a partir del contenedor actual del laboratorio fuente"
 
 msgid ""
-"Source container cannot be moved since the entire quantity available for the "
-"object was not transferred in."
+"The selected option cannot be used since the source object does not have a "
+"container assigned."
+msgstr ""
+
+#, fuzzy
+#| msgid ""
+#| "Source container cannot be moved since the entire quantity available for "
+#| "the object was not transferred in."
+msgid ""
+"The source container cannot be moved since the entire quantity available for "
+"the source object was not transferred in."
 msgstr ""
 "El contenedor fuente no puede ser movido mientras no se transfiera la "
 "cantidad completa en la transferencia entrante."
@@ -1284,6 +1354,24 @@ msgstr "El objeto fue incrementado"
 #, python-format
 msgid "Current available objects: %(amount)d"
 msgstr "Objetos disponibles actualmente: %(amount)d"
+
+#, fuzzy
+#| msgid "Move"
+msgid "Move out"
+msgstr "Mover"
+
+#, fuzzy
+#| msgid "Move"
+msgid "Move in"
+msgstr "Mover"
+
+#, fuzzy
+#| msgid "Material quantity"
+msgid "Change quantity"
+msgstr "Cantidad de material"
+
+msgid "Delete ShelfObject with no quantity left"
+msgstr ""
 
 msgid "Sustance saved successfully"
 msgstr "Sustancia guardada satisfactoriamente"
@@ -1923,17 +2011,20 @@ msgstr "Objeto de estante"
 msgid "Exit"
 msgstr "Salir"
 
-msgid "Shelf Information"
-msgstr "Información del Estante"
+msgid "Measurement Unit"
+msgstr "Unidad de Medida"
 
-msgid "Quantity storage"
-msgstr "Cantidad de almacenamiento"
+msgid "Used Quantity"
+msgstr "Cantidad Utilizada"
 
-msgid "Percentage storage"
-msgstr "Porcentaje de almacenamiento"
+msgid "Used Percentage"
+msgstr "Porcentaje Utilizado"
 
 msgid "Purpose"
 msgstr "Propósito"
+
+msgid "Shelf Information"
+msgstr "Información del Estante"
 
 msgid "Logs"
 msgstr "Bitácora"
@@ -2105,6 +2196,11 @@ msgstr "Este campo es requerido."
 msgid "Quantity can't greater than shelf quantity limit 40.0"
 msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
 
+#, fuzzy
+#| msgid "Quantity can't greater than shelf quantity limit 40.0"
+msgid "Quantity cannot be greater than the shelf's quantity limit: 40.0."
+msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
+
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
 
@@ -2116,6 +2212,21 @@ msgstr "No se proporcionaron las credenciales de autenticación."
 
 msgid "This field may not be blank."
 msgstr "Este campo no debe estar vacío."
+
+msgid "Final date can't be equal to initial date"
+msgstr "La fecha final no puede ser igual a la fecha inicial"
+
+msgid "Initial date can't be greater than final date"
+msgstr "Fecha inicial no puede ser mayor a la fecha final"
+
+msgid "Initial date can't be equal or lower to current date"
+msgstr "Fecha inicial no puede ser menor a la fecha actual"
+
+msgid "Initial date can't be lower than current date"
+msgstr "Fecha inicial no puede ser menor a la fecha actual"
+
+msgid "Final date can't be lower than current date"
+msgstr "Fecha final no puede ser menor a la fecha actual"
 
 #, python-format
 msgid "%(value)s is not a valid molecular formula"
@@ -2166,6 +2277,11 @@ msgstr "Códigos H"
 
 msgid "Objects by Laboratory Room Report"
 msgstr "Reporte de Objetos por Sala de Laboratorio"
+
+#, fuzzy
+#| msgid "User Organization"
+msgid "Filter Organization"
+msgstr "Usuario de la Organización"
 
 msgid "Objects Report"
 msgstr "Reporte de Objetos"
@@ -2252,22 +2368,6 @@ msgid "The measurent unit is different of there shelf has %(measurement_unit)s"
 msgstr ""
 "La unidad de medida es diferente de la que tiene el estante "
 "%(measurement_unit)s"
-
-msgid "Added successfully"
-msgstr "Agregado exitosamente"
-
-msgid "The amount to be subtracted is more than the shelf has"
-msgstr "La cantidad a sustraer es más que el estante tiene"
-
-msgid "Sustracted successfully"
-msgstr "Substraído exitosamente"
-
-msgid "Only can accept whole numbers or decimal numbers with ."
-msgstr "Solo se pueden aceptar números enteros o números decimales con ."
-
-msgid "The amount sending is less that the amount we have in the Shelf"
-msgstr ""
-"La cantidad de envío es inferior a la cantidad que existe en la estantería"
 
 msgid "Transfer done successfully"
 msgstr "Transferencia realizada con éxito"
@@ -2790,9 +2890,6 @@ msgstr "Indicación de peligro"
 
 msgid "Limit quantity"
 msgstr "Cantidad límite"
-
-msgid "Measurement Unit"
-msgstr "Unidad de Medida"
 
 msgid "First Name"
 msgstr "Nombre"
@@ -3696,6 +3793,15 @@ msgstr ""
 "Si desea editar o eliminar los observaciones que usted ha creado debe dar "
 "doble click sobre el mismo"
 
+msgid "unknown date and time"
+msgstr "Fecha y hora desconocida"
+
+msgid "Without description"
+msgstr "Sin descripción"
+
+msgid "There are no recorded observations."
+msgstr "No hay observaciones registradas."
+
 msgid "New observation"
 msgstr "Nueva observación"
 
@@ -3713,6 +3819,9 @@ msgstr "Versión 1.0 Fecha de revisión"
 
 msgid "Printing date"
 msgstr "Fecha de impresión"
+
+msgid "Security Leaf"
+msgstr "Hoja de Seguridad"
 
 msgid "SECTION 8: Exposure controls/personal protection"
 msgstr "SECCIÓN 8: Controles de exposición/protección individual"
@@ -3973,36 +4082,3 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
-
-msgid "Without description"
-msgstr "Sin descripción"
-
-msgid "unknown date and time"
-msgstr "Fecha y hora desconocida"
-
-msgid "There are no recorded observations."
-msgstr "No hay observaciones registradas."
-
-msgid "Infinity"
-msgstr "Infinito"
-
-msgid "Used Quantity"
-msgstr "Cantidad Utilizada"
-
-msgid "Used Percentage"
-msgstr "Porcentaje Utilizado"
-
-msgid "Security Leaf"
-msgstr "Hoja de Seguridad"
-
-msgid "Initial date cannot be equal or lower than current date."
-msgstr "La fecha inicial no puede ser igual or menor a la fecha actual."
-
-msgid "Initial date cannot be greater than final date."
-msgstr "La fecha inicial no puede ser mayor a la fecha final."
-
-msgid "Final date cannot be equal to initial date."
-msgstr "La fecha final no puede ser igual a la fecha inicial."
-
-msgid "Final date cannot be equal or lower than current date."
-msgstr "La fecha final no puede ser igual o menor a la fecha actual."

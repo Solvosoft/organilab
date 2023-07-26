@@ -5,7 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Max, Min
 from django.db.models.expressions import F
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
@@ -597,7 +597,7 @@ class OrganizationStructure(TreeNode):
     level = models.SmallIntegerField(default=0)
     users = models.ManyToManyField(User, blank=True, through='UserOrganization',
                                    through_fields=('organization', 'user'))
-
+    active = models.BooleanField(default=True)
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
 
@@ -621,6 +621,19 @@ class OrganizationStructure(TreeNode):
             labs += lab.name
         return labs
 
+    @property
+    def last_child_position(self):
+        maxposition = self.descendants().aggregate(maxposition=Max('position'))['maxposition']
+        if maxposition is None:
+            maxposition = self.position
+        return maxposition
+
+    @property
+    def min_child_position(self):
+        maxposition = self.descendants().aggregate(maxposition=Min('position'))['maxposition']
+        if maxposition is None:
+            maxposition = self.position
+        return maxposition
 
 class UserOrganization(models.Model):
     ADMINISTRATOR = 1

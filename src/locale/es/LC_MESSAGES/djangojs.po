@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-08 10:15-0600\n"
+"POT-Creation-Date: 2023-07-25 23:54-0600\n"
 "PO-Revision-Date: 2023-07-08 09:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,11 +147,14 @@ msgstr "Objeto"
 msgid "The object was not removed"
 msgstr "El objecto no fue eliminado"
 
-msgid "You are in time to reverse this action!"
-msgstr "Estas a tiempo de revertir esta acción!"
-
 msgid "Deleted!"
 msgstr "Eliminado!"
+
+msgid "Don't have permissions"
+msgstr "No tienes permisos"
+
+msgid "You are in time to reverse this action!"
+msgstr "Estas a tiempo de revertir esta acción!"
 
 msgid "Cancelled"
 msgstr "Cancelado"
@@ -249,6 +252,9 @@ msgstr ""
 
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
+
+msgid "General Information"
+msgstr "Información General"
 
 msgid "Code"
 msgstr "Código"
@@ -444,34 +450,3 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
-
-msgid "Don't have permissions"
-msgstr "No tienes permisos"
-
-msgid "State"
-msgstr "Estado"
-
-msgid "Measurement Unit"
-msgstr "Unidad de Medida"
-
-msgid "General Information"
-msgstr "Información General"
-
-msgid "It is a feature related to physical property about this element, some examples could be volatile, fragile,"
-" poor state, good condition."
-msgstr "Es una característica relacionada a una propiedad física acerca de este elemento, algunos ejemplos pueden ser"
-" volátil, frágil, en mal estado, en buena condición."
-
-msgid "Measurement unit is filtered by shelf measurement unit."
-msgstr "La unidad de medida es filtrada por la unidad de medida del estante."
-
-msgid "Do not exists limit if shelf has infinite quantity property, in any other case the capacity is restricted."
-msgstr "No existe límite si el estante tiene la propiedad de cantidad infinita, en cualquier otro caso la capacidad"
-" esta restringida."
-
-msgid "This field represents a material object type like a box, a bottle, a tank, a tin who it will be responsible"
-" to containt a substance, as a requirement the container object needs to be register into this laboratory as a material"
-" container, also this field is filtered by measurement unit selected."
-msgstr "Este campo representa un objeto de tipo material como una caja, una botella, un tanque, una lata que será el"
-" responsable de contener una substancia, como requisito el objeto contenedor necesita estar registrado en este"
-" laboratorio como un contenedor material, además este caso es filtrado por la unidad de medida seleccionada."

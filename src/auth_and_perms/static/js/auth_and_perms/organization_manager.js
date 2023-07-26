@@ -500,3 +500,27 @@ $("input[name='relate_rols']").on('change', function(event){
 
     $("#orgbyusermodal").modal('show');
 });
+
+$(document).ready(function(){
+    $("#id_actions").on('select2:select', function(e){
+        var data = e.params.data;
+        if(data.id==="3"){
+           $("#actionsmodal #id_name").closest('.form-group').show();
+        }else{
+           $("#actionsmodal #id_name").closest('.form-group').hide();
+        }
+    });
+});
+
+$(".orgactions").on('click', function(event){
+    var org=event.currentTarget.dataset.org;
+    var name=$(event.currentTarget).closest('.row').find('h6').text();
+    $('#id_action_organization').val(org);
+    $("#actionsmodal #id_name").val(name);
+    if($("#id_actions").val() === "3"){
+        $("#actionsmodal #id_name").closest('.form-group').show();
+    }else{
+        $("#actionsmodal #id_name").closest('.form-group').hide();
+    }
+    $("#actionsmodal").modal('show');
+});

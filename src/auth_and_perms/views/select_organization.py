@@ -13,7 +13,7 @@ def select_organization_by_user(request, org_pk=None):
     pks=[]
     for node in parent_structure:
         if node.pk not in pks:
-            get_organization_tree(node, nodes, request.user, pks, level=0, parents=parents, append_info=False)
+            get_organization_tree(node, nodes, request.user, pks, level=0, parents=parents, append_info=False, extras={'active': True})
 
     context = {
         'nodes': nodes,
