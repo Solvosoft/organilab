@@ -9,6 +9,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from .api.labels_viewset import DisplayLabelViewSet
+from .api.recipients_viewset import RecipientSizeAPI
 from .api.review_flow_substance import ReviewSubstanceViewSet
 from .api.substance_viewset import SubstanceViewSet
 from .views import editor
@@ -18,6 +19,8 @@ router = DefaultRouter()
 router.register('api_substance', SubstanceViewSet, basename='api-substance')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_labels', DisplayLabelViewSet, basename='api-labels')
+router.register('api_recipient_size', RecipientSizeAPI, basename='api-recipient-size')
+
 # SGA
 app_name = 'sga'
 
@@ -109,4 +112,5 @@ urlpatterns = [
     path('substance/update_prudence_advice/<int:pk>/', substance.change_prudence_advice,
          name='update_prudence_advice'),
     path('substance/provider/', substance.add_sga_provider, name='add_sga_provider'),
+    path('substance/recipient/', substance.view_recipient_size, name='recipient_size'),
 ]
