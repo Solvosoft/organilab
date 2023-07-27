@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-25 23:54-0600\n"
+"POT-Creation-Date: 2023-07-27 16:47-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -748,8 +748,6 @@ msgid ""
 "This value cannot be greater than the quantity available for the object."
 msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto."
 
-#, fuzzy
-#| msgid "The transfer out was performed successfully."
 msgid "The transfer out was saved successfully."
 msgstr "La transferencia fue guardada exitosamente."
 
@@ -1205,37 +1203,26 @@ msgid "Final date cannot be equal or lower than current date."
 msgstr "La fecha final no puede ser igual o menor a la fecha actual."
 
 msgid "Object does not exist in the laboratory."
-msgstr "El objeto seleccionado no existe en el laboratorio."
+msgstr "El objeto no existe en el laboratorio."
 
-#, fuzzy
-#| msgid "Provider doesn't exists in this laboratory"
 msgid "Provider does not exist in the laboratory."
 msgstr "Proveedor no existe en el laboratorio."
 
-#, fuzzy
-#| msgid "Measurement unit can't different than shelf measurement unit"
 msgid "Measurement unit cannot be different than the shelf's measurement unit."
-msgstr ""
-"La unidad de medida no puede ser diferente a la del estante."
+msgstr "La unidad de medida no puede ser diferente a la del estante."
 
-#, fuzzy, python-format
-#| msgid "Quantity can't greater than shelf quantity limit %(limit)s"
+#, python-format
 msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
-msgstr "La cantidad no puede ser mayor a la cantidad límite del estante: %(limit)s."
+msgstr ""
+"La cantidad no puede ser mayor a la cantidad límite del estante: %(limit)s."
 
-#, fuzzy
-#| msgid "Substract amount can't be greater than available shelf amount"
 msgid "Subtract amount cannot be greater than the available shelf's amount."
 msgstr ""
-"El monto de la resta no puede ser mayor al monto disponible en el estante"
+"El monto a substraer no puede ser mayor al monto disponible en el estante."
 
-#, fuzzy
-#| msgid "Minimum limit can't be greater than maximum limit"
 msgid "Minimum limit cannot be greater than maximum limit."
 msgstr "Límite mínimo no puede ser mayor al límite máximo."
 
-#, fuzzy
-#| msgid "Object is not available in these shelf"
 msgid "Object is not available in the shelf."
 msgstr "El objeto no está disponible en el estante."
 
@@ -1245,36 +1232,22 @@ msgstr "Almacenamiento Ilimitado"
 msgid "Infinity"
 msgstr "Infinito"
 
-#, fuzzy
-#| msgid "Laboratory room doesn't exists in this laboratory"
 msgid "Laboratory room does not exist in the laboratory."
 msgstr "Sala de laboratorio no existe en el laboratorio."
 
-#, fuzzy
-#| msgid "Furniture doesn't exists in this laboratory"
 msgid "Furniture does not exist in the laboratory."
 msgstr "Mueble no existe en el laboratorio."
 
-#, fuzzy
-#| msgid "Shelf doesn't exists in this laboratory"
 msgid "Shelf does not exist in the laboratory."
 msgstr "Estante no existe en el laboratorio."
 
-#, fuzzy
-#| msgid "Object does not exist in the laboratory."
-msgid "Object does not exists in the laboratory."
-msgstr "El objeto no existe en el laboratorio."
-
-#, fuzzy
-#| msgid "Object can't be moved to same shelf"
 msgid "Object cannot be moved to same shelf."
 msgstr "Object no puede ser movido al mismo estante."
 
-#, fuzzy
-#| msgid "Object can't be moved to shelf with different measurement unit"
 msgid "Object cannot be moved to a shelf with different measurement unit."
 msgstr ""
-"El objeto no puede ser movido a un estante con una unidad de medida diferente."
+"El objeto no puede ser movido a un estante con una unidad de medida "
+"diferente."
 
 msgid "Transfer was not sent to the laboratory."
 msgstr "La transferencia no fue enviada al laboratorio."
@@ -1286,10 +1259,6 @@ msgstr ""
 "La transferencia no puede ser realizada ya que el objeto fuente ya no "
 "pertenece al laboratorio que lo envió."
 
-#, fuzzy
-#| msgid ""
-#| "This transfer cannot be accepted since the transfer quantity is bigger "
-#| "than the quantity available in the object."
 msgid ""
 "The transfer in cannot be performed since the transfer quantity is bigger "
 "than the quantity available in the source object."
@@ -1301,29 +1270,26 @@ msgid "Invalid search"
 msgstr "Búsqueda Inválida"
 
 #, python-format
-msgid "%s doesn't exists in this laboratory"
-msgstr "%s no existe en este laboratorio"
+msgid "%s does not exist in the laboratory."
+msgstr "%s no existe en el laboratorio."
 
-msgid "Furniture doesn't exists in this laboratory room"
-msgstr "Mueble no existe en esta sala de laboratorio"
+msgid "Furniture does not exist in the laboratory room."
+msgstr "El mueble no existe en la sala de laboratorio."
 
-msgid "Shelf doesn't exists in this furniture"
-msgstr "Estante no existe en este mueble"
+msgid "Shelf does not exist in the furniture."
+msgstr "El estante no existe en el mueble."
 
-msgid "Shelf doesn't exists in this labroom"
-msgstr "Estante no existe en esta sala de laboratorio"
+msgid "Shelf does not exist in the labroom."
+msgstr "El estante no existe en la sala de laboratorio."
 
-msgid "Object doesn't exists in this shelf"
-msgstr "Objeto no existe en este estamte"
+msgid "Object does not exist in the shelf."
+msgstr "El objeto no existe en el estante."
 
-msgid "Object doesn't exists in this furniture"
-msgstr "Objeto no existe en este mueble"
+msgid "Object does not exist in the furniture."
+msgstr "El objeto no existe en el laboratorio."
 
-msgid "Object doesn't exists in this labroom"
-msgstr "Objeto no existe en esta sala de laboratorio"
-
-msgid "Object doesn't exists in this laboratory"
-msgstr "Objeto no existe en este laboratorio"
+msgid "Object does not exist in the labroom."
+msgstr "El objeto no existe en la sala de laboratorio."
 
 msgid "Move the container from the source laboratory"
 msgstr "Mover el contenedor desde el laboratorio fuente"
@@ -1339,10 +1305,6 @@ msgstr ""
 "La opción seleccionada no puede ser utilizada dado que el objeto fuente no  "
 "tiene un contenedor asignado."
 
-#, fuzzy
-#| msgid ""
-#| "Source container cannot be moved since the entire quantity available for "
-#| "the object was not transferred in."
 msgid ""
 "The source container cannot be moved since the entire quantity available for "
 "the source object was not transferred in."
@@ -1360,18 +1322,12 @@ msgstr "El objeto fue incrementado"
 msgid "Current available objects: %(amount)d"
 msgstr "Objetos disponibles actualmente: %(amount)d"
 
-#, fuzzy
-#| msgid "Move"
 msgid "Move out"
-msgstr "Mover"
+msgstr "Mover hacia"
 
-#, fuzzy
-#| msgid "Move"
 msgid "Move in"
-msgstr "Mover"
+msgstr "Mover desde"
 
-#, fuzzy
-#| msgid "Material quantity"
 msgid "Change quantity"
 msgstr "Cantidad de material"
 
@@ -2199,14 +2155,6 @@ msgstr "Códigos UE"
 msgid "This field is required."
 msgstr "Este campo es requerido."
 
-msgid "Quantity can't greater than shelf quantity limit %(limit)s"
-msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
-
-#, fuzzy
-#| msgid "Quantity can't greater than shelf quantity limit 40.0"
-msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
-msgstr "La cantidad no puede ser mayor al límite del estante: %(limit)s."
-
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
 
@@ -2284,10 +2232,8 @@ msgstr "Códigos H"
 msgid "Objects by Laboratory Room Report"
 msgstr "Reporte de Objetos por Sala de Laboratorio"
 
-#, fuzzy
-#| msgid "User Organization"
 msgid "Filter Organization"
-msgstr "Usuario de la Organización"
+msgstr "Filtrar Organización"
 
 msgid "Objects Report"
 msgstr "Reporte de Objetos"
@@ -2809,7 +2755,7 @@ msgstr ""
 "Si deseas delimitar la consulta selecciona salas de laboratorio (Opcional)"
 
 msgid "Filter Laboratory Room"
-msgstr "Filtrar sala de laboratorio"
+msgstr "Filtrar Sala de Laboratorio"
 
 msgid "If you want to delimit this query select furnitures (Optional)"
 msgstr "Si deseas delimitar la consulta selecciona muebles (Opcional)"
