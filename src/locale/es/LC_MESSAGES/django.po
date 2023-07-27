@@ -49,10 +49,10 @@ msgid "Title"
 msgstr "Título"
 
 msgid "Initial Date"
-msgstr "Fecha inicial"
+msgstr "Fecha Inicial"
 
 msgid "Final Date"
-msgstr "Fecha final"
+msgstr "Fecha Final"
 
 msgid "Final date can't be lower than initial date"
 msgstr "La fecha final no puede ser inferior a la fecha inicial"
@@ -61,7 +61,7 @@ msgid "The quantity field receives only decimal numbers"
 msgstr "El campo cantidad solo recibe numeros decimales"
 
 msgid "Procedure"
-msgstr "Procedimientos"
+msgstr "Procedimiento"
 
 msgid "Procedures"
 msgstr "Procedimientos"
@@ -70,7 +70,7 @@ msgid "Eraser"
 msgstr "Borrador"
 
 msgid "In Review"
-msgstr "En revisión"
+msgstr "En Revisión"
 
 msgid "Finalized"
 msgstr "Finalizado"
@@ -88,7 +88,7 @@ msgid "Procedure step"
 msgstr "Paso en procedimiento"
 
 msgid "Procedure steps"
-msgstr "Pasos en los procedimientos"
+msgstr "Pasos en procedimiento"
 
 msgid "Created by"
 msgstr "Creado por"
@@ -109,16 +109,16 @@ msgid "Measurement unit"
 msgstr "Unidad de medida"
 
 msgid "Procedure Required Object"
-msgstr "Objetos requeridos en el procedimiento"
+msgstr "Objeto Requerido por el Procedimiento"
 
 msgid "Procedure Required Objects"
-msgstr "Objetos requeridos en el procedimiento"
+msgstr "Objetos Requeridos por el Procedimiento"
 
 msgid "Procedure Observation"
-msgstr "Observaciones del procedimiento"
+msgstr "Observación del Procedimiento"
 
 msgid "Procedure Observations"
-msgstr "Observaciones del procedimiento"
+msgstr "Observaciones del Procedimiento"
 
 msgid "Unknown"
 msgstr "Desconocido"
@@ -195,7 +195,9 @@ msgstr "Error"
 msgid ""
 "The requested quantity of the material is not found in the inventory of the "
 "following materials:"
-msgstr "La cantidad no disponibles en los siguientes materiales:"
+msgstr ""
+"La cantidad solicitada de material no se encuentra en el inventario de los "
+"siguientes materiales:"
 
 msgid "Edit procedure"
 msgstr "Editar procedimiento"
@@ -231,7 +233,7 @@ msgid "Remove object"
 msgstr "Eliminar Objecto"
 
 msgid "Do you want to remove the object?"
-msgstr "¿Deseas eliminar el objecto?"
+msgstr "¿Desea eliminar el objecto?"
 
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
@@ -248,6 +250,8 @@ msgid ""
 "The laboratory does not have enough of this object to be able to reserve it. "
 "<br>%(list)s"
 msgstr ""
+"El laboratorio no tiene suficiente de este objeto para ser capaz de "
+"reservarlo.<br>%(list)s"
 
 msgid "Organization can't change this laboratory"
 msgstr "La organización no puede editar este laboratorio"
@@ -277,7 +281,7 @@ msgid "new-password"
 msgstr "nueva-contraseña"
 
 msgid "Email"
-msgstr "Correo electrónico"
+msgstr "Correo Electrónico"
 
 msgid "First name"
 msgstr "Nombre"
@@ -295,19 +299,17 @@ msgid "Identification"
 msgstr "Identificación"
 
 msgid "Job Position"
-msgstr "Puesto de trabajo"
+msgstr "Puesto de Trabajo"
 
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
 
-
 msgid "Inactive organization"
 msgstr "Desactivar Organización"
 
- 
 msgid "Clone organization"
 msgstr "Clonar Organización"
- 
+
 msgid "Change organization name"
 msgstr "Cambiar nombre de la organización"
 
@@ -327,15 +329,15 @@ msgid "Profile"
 msgstr "Perfil"
 
 msgid "Profile Rol"
-msgstr "Rol de perfil"
+msgstr "Rol de Perfil"
 
 msgid "Profile Rols"
-msgstr "Roles de perfil"
+msgstr "Roles de Perfil"
 
 #, python-format
 msgid "User %(user)s not allowed on organization %(organization)r "
 msgstr ""
-"Usuario %(user)s noe está autorizado en la organización %(organization)r"
+"Usuario %(user)s no está autorizado en la organización %(organization)r"
 
 msgid "You can modify this laboratory"
 msgstr "Puede editar este laboratorio"
@@ -354,7 +356,7 @@ msgid ""
 "configure a Two-Factor Authentication"
 msgstr ""
 "Necesitamos validar que no sos un robot spammer, por eso necesitamos "
-"configurar un método de 2 pasos de autenticación"
+"configurar un método de autenticación de dos pasos"
 
 msgid ""
 "You need an OTP generator to login on the platform, you can use a free app "
@@ -503,7 +505,6 @@ msgstr "Seleccione una organización padre"
 msgid "Relate user to laboratory"
 msgstr "Relacionar usuario con laboratorio"
 
-
 msgid "Actions for Organization"
 msgstr "Acciones de la organización"
 
@@ -635,8 +636,8 @@ msgid ""
 "Hey, thanks for you interest in Organilab, we work hard to have a great "
 "software."
 msgstr ""
-"Hola, gracias por su interés en Organilab, trabajamos duro para tener un "
-"gran software."
+"Hola, gracias por su interés en Organilab, trabajamos mucho para tener un "
+"buen software."
 
 msgid "Thank you"
 msgstr "Gracias"
@@ -669,7 +670,7 @@ msgid "The form name has been updated."
 msgstr "El nombre del formulario ha sido actualizado."
 
 msgid "Updated!"
-msgstr "Actualizado!"
+msgstr "¡Actualizado!"
 
 msgid "Save or discard your changes to proceed"
 msgstr "Guarde o descarte sus cambios para continuar"
@@ -681,13 +682,13 @@ msgid "Discard"
 msgstr "Descartar"
 
 msgid "Saved!"
-msgstr "Guardado!"
+msgstr "¡Guardado!"
 
 msgid "The form name has been saved!"
-msgstr "El nombre del formulario se guardo!"
+msgstr "¡El nombre del formulario se guardó!"
 
 msgid "Report Template List"
-msgstr "Plantillas de reportes"
+msgstr "Lista de Plantillas de Reportes"
 
 msgid "Create Form"
 msgstr "Crear Formulario"
@@ -714,7 +715,7 @@ msgid "The form has been deleted."
 msgstr "El formulario fue eliminado."
 
 msgid "Deleted!"
-msgstr "Eliminado!"
+msgstr "¡Eliminado!"
 
 msgid "Organilab Administration site"
 msgstr "Sitio administrativo de Organilab"
@@ -750,7 +751,7 @@ msgstr "Este valor no puede ser mayor a la cantidad disponible para el objeto."
 #, fuzzy
 #| msgid "The transfer out was performed successfully."
 msgid "The transfer out was saved successfully."
-msgstr "La transferencia fue enviada con éxito"
+msgstr "La transferencia fue guardada exitosamente."
 
 msgid "The transfer in was denied successfully."
 msgstr "La transferencia fue denegada exitosamente."
@@ -762,7 +763,7 @@ msgid "The item was deleted successfully"
 msgstr "El elemento fue eliminado exitosamente"
 
 msgid "Observation was created successfully."
-msgstr "Observación fue creada exitosamente"
+msgstr "La observación fue creada exitosamente."
 
 msgid "No status"
 msgstr "Sin estado"
@@ -775,7 +776,7 @@ msgid "The object status was updated successfully"
 msgstr "El estado del objecto fue actualizado correctamente"
 
 msgid "Object was moved successfully."
-msgstr "El objeto fue movido exitosamente"
+msgstr "El objeto fue movido exitosamente."
 
 msgid "The item was created successfully"
 msgstr "El elemento fue creado exitosamente"
@@ -793,7 +794,7 @@ msgid "Group"
 msgstr "Grupo"
 
 msgid "Entered date should be greater than current date and time"
-msgstr "Fecha ingresada es mayor a la fecha actual"
+msgstr "Fecha ingresada debe ser mayor a la fecha actual"
 
 msgid "Use dot like 0.344 on decimal"
 msgstr "Use punto ej. 0.34 en decimales"
@@ -849,7 +850,7 @@ msgid ""
 "be case-sensitive."
 msgstr ""
 "Por favor, ingrese  %(username)s y contraseña.  Note que ambos campos son "
-"sensibles a minúsculas y mayúsculas"
+"sensibles a minúsculas y mayúsculas."
 
 msgid "This account is inactive."
 msgstr "Su cuenta está activa."
@@ -858,7 +859,7 @@ msgid "Code"
 msgstr "Código"
 
 msgid "Code didn't match."
-msgstr "Código no coincide."
+msgstr "El código no coincide."
 
 msgid "Reactive"
 msgstr "Reactivo"
@@ -940,7 +941,7 @@ msgid "Storage class"
 msgstr "Clases de almacenamientos"
 
 msgid "Is Seveso list III?"
-msgstr "Esta Seveso en la lista III?"
+msgstr "¿Está Seveso en la lista III?"
 
 msgid "Sustance representation"
 msgstr "Representación de la sustancia"
@@ -1087,10 +1088,10 @@ msgid "Accepted"
 msgstr "Aceptado"
 
 msgid "Laboratory Send"
-msgstr "Laboratorio que envía"
+msgstr "Laboratorio que Envía"
 
 msgid "Laboratory Received"
-msgstr "Laboratorio que recibe"
+msgstr "Laboratorio que Recibe"
 
 msgid "January"
 msgstr "Enero"
@@ -1183,10 +1184,10 @@ msgid "Search by name"
 msgstr "Buscar por nombre"
 
 msgid "Container Options"
-msgstr "Opciones del contenedor"
+msgstr "Opciones de Contenedor"
 
 msgid "Create new based on selected"
-msgstr "Crear nueva basada en la seleccionada"
+msgstr "Crear nuevo basado en el seleccionado"
 
 msgid "Use selected"
 msgstr "Usar seleccionado"
@@ -1204,24 +1205,23 @@ msgid "Final date cannot be equal or lower than current date."
 msgstr "La fecha final no puede ser igual o menor a la fecha actual."
 
 msgid "Object does not exist in the laboratory."
-msgstr "El objeto seleccionado no pertenece al laboratorio."
+msgstr "El objeto seleccionado no existe en el laboratorio."
 
 #, fuzzy
 #| msgid "Provider doesn't exists in this laboratory"
 msgid "Provider does not exist in the laboratory."
-msgstr "Proveedor no existe en este laboratorio"
+msgstr "Proveedor no existe en el laboratorio."
 
 #, fuzzy
 #| msgid "Measurement unit can't different than shelf measurement unit"
 msgid "Measurement unit cannot be different than the shelf's measurement unit."
 msgstr ""
-"La unidad de medida es diferente a la que tiene el estante "
-"%(measurement_unit)s"
+"La unidad de medida no puede ser diferente a la del estante."
 
 #, fuzzy, python-format
 #| msgid "Quantity can't greater than shelf quantity limit %(limit)s"
 msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
-msgstr "La cantidad es mucho mayor al límite del estante %(limit)s"
+msgstr "La cantidad no puede ser mayor a la cantidad límite del estante: %(limit)s."
 
 #, fuzzy
 #| msgid "Substract amount can't be greater than available shelf amount"
@@ -1232,12 +1232,12 @@ msgstr ""
 #, fuzzy
 #| msgid "Minimum limit can't be greater than maximum limit"
 msgid "Minimum limit cannot be greater than maximum limit."
-msgstr "Límite mínimo no puede ser mayor al límite máximo"
+msgstr "Límite mínimo no puede ser mayor al límite máximo."
 
 #, fuzzy
 #| msgid "Object is not available in these shelf"
 msgid "Object is not available in the shelf."
-msgstr "El objeto no está disponible en este estante"
+msgstr "El objeto no está disponible en el estante."
 
 msgid "Unlimited storage"
 msgstr "Almacenamiento Ilimitado"
@@ -1248,41 +1248,43 @@ msgstr "Infinito"
 #, fuzzy
 #| msgid "Laboratory room doesn't exists in this laboratory"
 msgid "Laboratory room does not exist in the laboratory."
-msgstr "Sala de laboratorio no existe en este laboratorio"
+msgstr "Sala de laboratorio no existe en el laboratorio."
 
 #, fuzzy
 #| msgid "Furniture doesn't exists in this laboratory"
 msgid "Furniture does not exist in the laboratory."
-msgstr "Mueble no existe en este laboratorio"
+msgstr "Mueble no existe en el laboratorio."
 
 #, fuzzy
 #| msgid "Shelf doesn't exists in this laboratory"
 msgid "Shelf does not exist in the laboratory."
-msgstr "Estante no existe en este laboratorio"
+msgstr "Estante no existe en el laboratorio."
 
 #, fuzzy
 #| msgid "Object does not exist in the laboratory."
 msgid "Object does not exists in the laboratory."
-msgstr "El objeto seleccionado no pertenece al laboratorio."
+msgstr "El objeto no existe en el laboratorio."
 
 #, fuzzy
 #| msgid "Object can't be moved to same shelf"
 msgid "Object cannot be moved to same shelf."
-msgstr "Object no puede ser movido al mismo estante"
+msgstr "Object no puede ser movido al mismo estante."
 
 #, fuzzy
 #| msgid "Object can't be moved to shelf with different measurement unit"
 msgid "Object cannot be moved to a shelf with different measurement unit."
 msgstr ""
-"El objeto no puede ser movido a un estante con una unidad de medida diferente"
+"El objeto no puede ser movido a un estante con una unidad de medida diferente."
 
 msgid "Transfer was not sent to the laboratory."
-msgstr "Transferencia no fue enviada al laboratorio."
+msgstr "La transferencia no fue enviada al laboratorio."
 
 msgid ""
 "The transfer in cannot be performed since the source object no longer "
 "belongs to the laboratory that sent it."
 msgstr ""
+"La transferencia no puede ser realizada ya que el objeto fuente ya no "
+"pertenece al laboratorio que lo envió."
 
 #, fuzzy
 #| msgid ""
@@ -1292,8 +1294,8 @@ msgid ""
 "The transfer in cannot be performed since the transfer quantity is bigger "
 "than the quantity available in the source object."
 msgstr ""
-"Esta transferencia no puede ser aceptada mientras la cantidad sea mayor a la "
-"cantidad disponible en el objeto."
+"La transferencia no puede ser aceptada ya que la cantidad a transferir es "
+"mayor a la cantidad disponible en el objeto fuente."
 
 msgid "Invalid search"
 msgstr "Búsqueda Inválida"
@@ -1327,12 +1329,15 @@ msgid "Move the container from the source laboratory"
 msgstr "Mover el contenedor desde el laboratorio fuente"
 
 msgid "Create new based on current container in the source laboratory"
-msgstr "Crear nuevo a partir del contenedor actual del laboratorio fuente"
+msgstr ""
+"Crear uno nuevo a partir del contenedor actual en el laboratorio fuente"
 
 msgid ""
 "The selected option cannot be used since the source object does not have a "
 "container assigned."
 msgstr ""
+"La opción seleccionada no puede ser utilizada dado que el objeto fuente no  "
+"tiene un contenedor asignado."
 
 #, fuzzy
 #| msgid ""
@@ -1342,8 +1347,8 @@ msgid ""
 "The source container cannot be moved since the entire quantity available for "
 "the source object was not transferred in."
 msgstr ""
-"El contenedor fuente no puede ser movido mientras no se transfiera la "
-"cantidad completa en la transferencia entrante."
+"El contenedor fuente no puede ser movido ya que no se transfirió toda la "
+"cantidad disponible en el objeto fuente."
 
 msgid "Object was decreased"
 msgstr "El objeto fue disminuido"
@@ -1439,7 +1444,8 @@ msgid ""
 "Please refill this product or contact the people that reserved it to balance "
 "the current quantity."
 msgstr ""
-"Por favor recargue este producto o contacte a la persona que pueda hacerlo."
+"Por favor recargue este producto o contacte a la persona que lo reservó para "
+"cambiar la cantidad disponible."
 
 msgid "If you don't want to recieve notifications of this object, please use"
 msgstr "Si no desea recibir notificaciones de este objeto, por favor utilice"
@@ -1560,16 +1566,16 @@ msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
 msgid "Do you want to send the report for review?"
-msgstr "¿Deseas enviar el reporte a Revisión?"
+msgstr "¿Desea enviar el reporte a revisión?"
 
 msgid "Do you want to finish the report?"
-msgstr "¿Deseas finalizar el reporte?"
+msgstr "¿Desea finalizar el reporte?"
 
 msgid "Delete the observation"
 msgstr "Eliminar Observación"
 
 msgid "Do you want to remove the observation?"
-msgstr "¿Deseas eliminar la observación?"
+msgstr "¿Desea eliminar la observación?"
 
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
@@ -1578,7 +1584,7 @@ msgid "Update the observation"
 msgstr "Actualizar Observación"
 
 msgid "Do you want to update the observation?"
-msgstr "¿Deseas actualizar la observación?"
+msgstr "¿Desea actualizar la observación?"
 
 msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
@@ -1587,7 +1593,7 @@ msgid "Download document"
 msgstr "Descargar  documento"
 
 msgid "Do you want to download the report"
-msgstr "¿Deseas descargar el reporte?"
+msgstr "¿Desea descargar el reporte?"
 
 msgid "The shelf dont have shelfobjects"
 msgstr "El estante no tiene objetos"
@@ -1629,13 +1635,13 @@ msgid "Edit shelf"
 msgstr "Editar estante"
 
 msgid "Do you want to remove this shelfs?"
-msgstr "¿Deseas eliminar estos estantes?"
+msgstr "¿Desea eliminar estos estantes?"
 
 msgid "Do you want to delete this shelf?"
-msgstr "¿Quieres eliminar este estante?"
+msgstr "¿Desea eliminar este estante?"
 
 msgid "Yes, delete it"
-msgstr "Si, eliminarlo"
+msgstr "Si, elimínelo"
 
 msgid "PDF"
 msgstr "PDF"
@@ -1967,13 +1973,13 @@ msgid "Not found"
 msgstr "No encontrado"
 
 msgid "Do you want to update the quantity limit?"
-msgstr "¿Deseas actualizar la cantidad limite?"
+msgstr "¿Desea actualizar la cantidad limite?"
 
 msgid "Enter whole numbers or with decimals"
 msgstr "Ingresar numeros enteros o con decimales"
 
 msgid "Transfer Out"
-msgstr "Transferir hacia otro laboratorio"
+msgstr "Transferir Hacia Otro Laboratorio"
 
 msgid "Substract"
 msgstr "Substraer"
@@ -1988,10 +1994,10 @@ msgid "Position:"
 msgstr "Posición:"
 
 msgid "Move to other shelf"
-msgstr "Mover a otro estante"
+msgstr "Mover a Otro Estante"
 
 msgid "Transfer In"
-msgstr "Transferir desde otro laboratorio"
+msgstr "Transferir Desde Otro Laboratorio"
 
 msgid "Create Reactive"
 msgstr "Crear Reactivo"
@@ -2003,7 +2009,7 @@ msgid "Create Material"
 msgstr "Crear Material"
 
 msgid "Approve Transfer In - Container"
-msgstr "Aprobar transferencias entrantes - Contenedor"
+msgstr "Aprobar Transferencias Entrantes - Contenedor"
 
 msgid "Shelf Object"
 msgstr "Objeto de estante"
@@ -2193,13 +2199,13 @@ msgstr "Códigos UE"
 msgid "This field is required."
 msgstr "Este campo es requerido."
 
-msgid "Quantity can't greater than shelf quantity limit 40.0"
+msgid "Quantity can't greater than shelf quantity limit %(limit)s"
 msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
 
 #, fuzzy
 #| msgid "Quantity can't greater than shelf quantity limit 40.0"
-msgid "Quantity cannot be greater than the shelf's quantity limit: 40.0."
-msgstr "La cantidad no puede ser mayor al límite del estante %(limit)s"
+msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
+msgstr "La cantidad no puede ser mayor al límite del estante: %(limit)s."
 
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
@@ -2467,7 +2473,7 @@ msgid "Details"
 msgstr "Detalles"
 
 msgid "Is paid?"
-msgstr "¿Es pago?"
+msgstr "¿Está pagado?"
 
 msgid "Donation date"
 msgstr "Fecha de donación"
@@ -2494,7 +2500,7 @@ msgid "View laboratory"
 msgstr "Ver laboratorio"
 
 msgid "All Rights Reserved."
-msgstr "Todos los derechos reservados."
+msgstr "Todos los Derechos Reservados."
 
 msgid "Furnitures"
 msgstr "Muebles"
@@ -2546,14 +2552,14 @@ msgid "Account activation on"
 msgstr "Activar cuenta en"
 
 msgid "Your username and password didn't match. Please try again."
-msgstr "Su usuario y contraseña no concuerdan. Por favor, inténtelo de nuevo."
+msgstr "Su usuario y contraseña no concuerdan. Por favor inténtelo de nuevo."
 
 msgid ""
 "Your account doesn't have access to this page. To proceed,\n"
 "                        please login with an account that has access."
 msgstr ""
 "Su cuenta no tiene permisos para acceder a esta página. Para proceder,\n"
-"                        Inicie sesión con una cuenta con mayores permisos."
+"                        Inicie sesión con una cuenta que tenga acceso."
 
 msgid "Lost your password?"
 msgstr "¿Olvidó su contraseña?"
@@ -2614,7 +2620,7 @@ msgstr "Contraseña cambiada"
 
 msgid "Email with password reset instructions has been sent."
 msgstr ""
-"Un correo con las instrucciones para reinicio de contraseña ha sido enviada."
+"Un correo con las instrucciones para reinicio de contraseña ha sido enviado."
 
 msgid "Go to home"
 msgstr "Ir al inicio"
@@ -2657,7 +2663,7 @@ msgid "Password reset on %(site_name)s"
 msgstr "Reinicio de contraseña en %(site_name)s"
 
 msgid "Registration is currently closed."
-msgstr "Registro es actualmente cerrado."
+msgstr "El registro es actualmente cerrado."
 
 msgid "You are now registered. Activation email sent."
 msgstr ""
@@ -2763,14 +2769,14 @@ msgid "Donation Details"
 msgstr "Detalle de la donación"
 
 msgid "Add to donators list?"
-msgstr "Agregar a lista de donantes?"
+msgstr "¿Agregar a lista de donantes?"
 
 msgid "MSDS Files"
 msgstr "Archivo MSDS"
 
 msgid ""
 "Your donation was completed successfully, thank you for support this project!"
-msgstr "Su donación fue completada, muchas gracias por apoyar este proyecto!"
+msgstr "¡Su donación fue completada, muchas gracias por apoyar este proyecto!"
 
 msgid "Thank you for your help. We will check your problem as soon as we can"
 msgstr ""
@@ -3215,13 +3221,13 @@ msgid "Generate PDF"
 msgstr "Uso general"
 
 msgid "Item created successfully."
-msgstr "Elemento creado exitosamente"
+msgstr "Elemento creado exitosamente."
 
 msgid "Item updated successfully."
-msgstr "Elemento actualizado exitosamente"
+msgstr "Elemento actualizado exitosamente."
 
 msgid "Item deleted successfully."
-msgstr "Elemento eliminado exitosamente"
+msgstr "Elemento eliminado exitosamente."
 
 msgid "Substance deleted successfully"
 msgstr "Sustancia guardada con éxito"
@@ -3724,7 +3730,7 @@ msgid "Remove company"
 msgstr "Eliminar Compañía"
 
 msgid "Do you want to remove the company?"
-msgstr "¿Deseas eliminar la compañía?"
+msgstr "¿Desea eliminar la compañía?"
 
 msgid "The company is removed successfully"
 msgstr "Se elimino correctamente la compañía"
@@ -3778,10 +3784,10 @@ msgid "Did you find H code component?"
 msgstr "¿Encontró el componente de códigos H?"
 
 msgid "Create it here!"
-msgstr "Crear lo aquí!"
+msgstr "¡Créelo aquí!"
 
 msgid "Information about the Substance"
-msgstr "Información sobre la sustancia"
+msgstr "Información sobre la Sustancia"
 
 msgid "Bioaccomulable"
 msgstr "Bioacumulable"
