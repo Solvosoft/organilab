@@ -338,3 +338,82 @@ class PrudenceAdviceDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+CHOICES = (
+        ('mm', _('Milimeters')),
+        ('cm', _('Centimeters')),
+        ('inch', _('inch')),
+    )
+class RecipientSizeDataSerializer(serializers.ModelSerializer):
+
+    name = serializers.SerializerMethodField()
+    height = serializers.SerializerMethodField()
+    height_unit = serializers.SerializerMethodField()
+    width = serializers.SerializerMethodField()
+    width_unit = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        if obj.name:
+            return obj.name
+        return ''
+
+    def get_height(self, obj):
+        if obj.height:
+            return obj.height
+        return 0
+
+    def get_height_unit(self, obj):
+        if obj.height_unit:
+            return obj.get_height_unit_display()
+        return ''
+
+    def get_width_unit(self, obj):
+        if obj.width_unit:
+            return obj.get_width_unit_display()
+        return ''
+
+    def get_width(self, obj):
+        if obj.width:
+            return obj.width
+        return 0
+
+    def get_actions(self, obj):
+        action = ""
+
+        action += """<a title='%s' class="text-center pe-2" onclick="edit_recipient_size('%d')">
+        <i class="fa fa-edit text-info" aria-hidden="true"></i>
+        </a>""" % (_('Edit'), obj.pk)
+
+        action += """<a title='%s' class=" text-center pe-2" onclick="delete_recipient_size('%d')">
+        <i class="fa fa-close text-danger" aria-hidden="true"></i>
+        </a>""" % (_("Delete"), obj.pk)
+
+        return action
+
+
+    class Meta:
+        model = RecipientSize
+        fields = ['name', 'height', 'height_unit', 'width', 'width_unit', 'actions']
+
+
+class RecipientSizeDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=RecipientSizeDataSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class RecipientSizeSerializer(serializers.ModelSerializer):
+    height = serializers.FloatField(min_value=0,allow_null=False, required=True)
+    width = serializers.FloatField(min_value=0, allow_null=False, required=True)
+    height_unit = serializers.ChoiceField(choices=CHOICES, allow_null=False,
+                                        allow_blank=False)
+    width_unit = serializers.ChoiceField(choices=CHOICES, allow_null=False,
+                                       allow_blank=False)
+    class Meta:
+        model = RecipientSize
+        fields = ['name', 'height', 'height_unit', 'width', 'width_unit']
+
+
+class RecipientSizeDeleteSerializer(serializers.Serializer):
+    pk = serializers.PrimaryKeyRelatedField(queryset=RecipientSize.objects.using(settings.READONLY_DATABASE))
