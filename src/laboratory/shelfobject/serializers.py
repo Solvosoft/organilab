@@ -229,7 +229,9 @@ def validate_measurement_unit_and_quantity(klass, data, attr):
             logger.debug(f'validate_measurement_unit_and_quantity --> shelf.limit_only_objects and not '
                          f'shelf.available_objects_when_limit.filter(pk=obj.pk ({obj.pk})).exists()')
             errors.update({'object': _("Object is not available in the shelf.")})
-
+    if quantity<0:
+        logger.debug(f'quantity<0 ')
+        errors.update({'quantity': _("Quantity cannot less than zero")})
     if errors:
         raise serializers.ValidationError(errors)
     return attr
