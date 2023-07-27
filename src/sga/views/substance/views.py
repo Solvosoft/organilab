@@ -18,7 +18,7 @@ from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from sga.forms import BuilderInformationForm, SGAComplementsForm, ProviderSGAForm, \
     PersonalSGAAddForm, \
-    PersonalEditorForm
+    PersonalEditorForm, RecipientSizeForm
 from sga.models import Substance, DisplayLabel, SGAComplement, \
     SecurityLeaf
 from sga.models import SubstanceCharacteristics, \
@@ -464,6 +464,13 @@ def view_warning_words(request, org_pk):
     form = WarningWordForm
     return render(request, 'sga/substance/warning_words.html',
                   context={'form': form, 'org_pk': org_pk})
+
+def view_recipient_size(request, org_pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
+    return render(request, 'sga/recipient_size.html',
+                  context={'org_pk': org_pk,'form':RecipientSizeForm})
 
 
 @login_required
