@@ -503,7 +503,7 @@ class ShelfSerializer(serializers.ModelSerializer):
     def get_quantity(self, obj):
         quantity = obj.quantity
         if quantity == -1 or obj.infinity_quantity:
-            quantity = _("Unlimited storage")
+            quantity = _("Infinity")
         return quantity
 
     def get_measurement_unit(self, obj):
