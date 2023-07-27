@@ -280,8 +280,8 @@ $(document).ready(function(){
             {data: "mark_as_discard", name: "mark_as_discard", title: gettext("Mark as Discard"), type: "boolean", render: objShowBool, visible: true },
             {data: "update_time", name: "update_time", title: gettext("Date"), type: "date", render: DataTable.render.datetime(), visible: true},
             {data: null, title: gettext('Actions'), sortable: false, filterable: false,
-             defaultContent: `<a onclick="transferInObjectApprove(this, event);" data-modalid="transfer_in_approve_with_container_id_modal" class='btn btn-sm btn-outline-success' title='Approve'><i class="fa fa-check-circle"></i></a>
-                              <a onclick="transferInObjectDeny(this);" class='btn btn-sm btn-outline-danger' title='Deny'><i class="fa fa-times-circle"></i></a>`
+             defaultContent: `<a onclick="transferInObjectApprove(this, event);" data-modalid="transfer_in_approve_with_container_id_modal" class='btn btn-sm btn-outline-success' title='` + gettext('Approve') + `'><i class="fa fa-check-circle"></i></a>
+                              <a onclick="transferInObjectDeny(this);" class='btn btn-sm btn-outline-danger' title='` + gettext('Deny') + `'><i class="fa fa-times-circle"></i></a>`
             }
         ],
         paging: true,
