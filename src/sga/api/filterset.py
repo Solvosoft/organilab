@@ -6,7 +6,7 @@ from django_filters import FilterSet, CharFilter
 from django.db.models import Q
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
 
-from sga.models import ReviewSubstance, DisplayLabel
+from sga.models import ReviewSubstance, DisplayLabel, RecipientSize
 from sga.models import Substance
 
 
@@ -52,3 +52,18 @@ class DisplayLabelFilterSet(FilterSet):
     class Meta:
         model = DisplayLabel
         fields = ['name', 'creation_date', 'created_by']
+
+class RecipientsFilterSet(FilterSet):
+
+    def filter_queryset(self, queryset):
+        search = self.request.GET.get('search', '')
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search) |
+                Q(width__icontains=search) |
+                Q(height__icontains=search)).distinct()
+        return queryset
+
+    class Meta:
+        model = RecipientSize
+        fields = ['name', 'width', 'height']
