@@ -2,12 +2,12 @@
 
 {% url "laboratory:api-shelfobject-reserve" lab_pk=laboratory org_pk=org_pk as reserve_so_url %}
 {% trans 'Reserve' as reserve_so_tittle %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="right" form=reserve_object_form id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=reserve_object_form id="reservesomodal" title=reserve_so_tittle form_id="reservesoform" url=reserve_so_url %}
 
 
 {% url "laboratory:api-shelfobject-fill-increase-shelfobject" lab_pk=laboratory org_pk=org_pk as increase_so_url %}
 {% trans 'Add' as increase_so_tittle %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="left" form=increase_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=increase_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
 
 
 {% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_so_url %}
@@ -17,7 +17,7 @@
 
 {% url "laboratory:api-shelfobject-move-shelfobject-to-shelf" lab_pk=laboratory org_pk=org_pk as move_so_url %}
 {% trans 'Move to other shelf' as move_so_tittle %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="bottom" form=move_object_form id="movesomodal" title=move_so_tittle form_id="movesoform" url=move_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=move_object_form id="movesomodal" title=move_so_tittle form_id="movesoform" url=move_so_url %}
 
 
 
@@ -41,7 +41,7 @@
 
 {% url "laboratory:api-shelfobject-transfer-out" lab_pk=laboratory org_pk=org_pk as transfer_out_url %}
 {% trans "Transfer Out" as transfer_out_title %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' form=transfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='top' form=transfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
 
 {% url 'laboratory:api-shelfobject-create-shelfobject' lab_pk=laboratory org_pk=org_pk  as create_shelfobject_url %}
 {% trans "Create Reactive" as reactive_title %}
