@@ -18,7 +18,8 @@ from sga.api.serializers import RecipientSizeSerializer, \
 from laboratory.models import OrganizationStructure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.utils import organilab_logentry
-from sga.models import RecipientSize
+from sga.models import RecipientSize, DisplayLabel, TemplateSGA
+
 
 class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication, BaseAuthentication]
@@ -29,7 +30,7 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         "create": ["sga.view_recipientsize", "sga.add_recipientsize"],
         "list": ["sga.view_recipientsize"],
         "update": ["sga.view_recipientsize", "sga.change_recipientsize"],
-        "destroy": ["sga.view_recipientsize", "sga.delete_recipientsize"]
+        "delete": ["sga.view_recipientsize", "sga.delete_recipientsize"]
     }
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['name', 'width', 'height','width_unit','height_unit']
@@ -62,14 +63,16 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         serializer = RecipientSizeSerializer(data= request.data)
 
         if serializer.is_valid():
+
             recipient = serializer.save()
             organilab_logentry(request.user, recipient, ADDITION,
                                'recipient size', relobj=[self.organization],
-                               changed_data=[""])
+                               changed_data=["name","heigth","height_unit",
+                                             "width","width_unit"])
 
             return JsonResponse({'detail': _("Item created successfully.")},
                                 status=status.HTTP_201_CREATED)
-        return JsonResponse(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"errors":serializer.errors},status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, org_pk, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'list')
@@ -82,6 +85,7 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
                     'draw': self.request.GET.get('draw', 1)}
 
         return Response(self.get_serializer(response).data)
+
     @action(detail=True, methods=['put'])
     def update_recipient(self, request, org_pk, pk=None, *args, **kwargs):
         self._check_permission_on_organization(request, org_pk, 'update')
@@ -98,22 +102,30 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
                 return JsonResponse({'detail':  _("Item updated successfully.")},
                                     status=status.HTTP_200_OK)
-
+            else:
+                return Response({'errors':serializer.errors},
+                                status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=False, methods=['delete'])
     def delete_recipient(self, request, org_pk):
-        self._check_permission_on_organization(request, org_pk, 'destroy')
+        self._check_permission_on_organization(request, org_pk, 'delete')
         serializer = RecipientSizeDeleteSerializer(data=request.data)
+
         if serializer.is_valid():
             recipient = serializer.validated_data['pk']
+            diplays= DisplayLabel.objects.filter(recipient_size=recipient)
+            templatesga = TemplateSGA.objects.filter(recipient_size=recipient)
+            if not diplays.exists() and not templatesga.exists():
 
-            organilab_logentry(request.user, recipient, DELETION,
-                               'recipient size', relobj=[self.organization])
-            recipient.delete()
+                organilab_logentry(request.user, recipient, DELETION,
+                                   'recipient size', relobj=[self.organization])
+                recipient.delete()
 
-            return JsonResponse({'detail': _('Item deleted successfully.')},
-                                status=status.HTTP_200_OK)
+                return JsonResponse({'detail': _('Item deleted successfully.')},
+                                    status=status.HTTP_200_OK)
+            else:
+               return Response({"errors": _("The container cannot be deleted of because it is being used.")},status=status.HTTP_409_CONFLICT)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
