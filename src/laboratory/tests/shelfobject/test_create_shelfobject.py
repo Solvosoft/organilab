@@ -185,7 +185,7 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(json.loads(response.content)['errors']['quantity'], _("Quantity can\'t greater than shelf quantity limit 40.0"))
+        self.assertTrue(json.loads(response.content)['errors']['quantity'], _("Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") %{"limit": 40.0})
         self.assertTrue(poscount == precount)
 
     def test_create_shelfobject_shelf_quantity_measurement_unit(self):
@@ -219,7 +219,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(poscount, precount)
         self.assertEqual(json.loads(response.content)['errors']['measurement_unit'][0], _("Measurement unit cannot be different than the shelf's measurement unit."))
-        self.assertEqual(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than the shelf's quantity limit: 40.0."))
+        self.assertEqual(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") %{"limit": 40.0})
 
     def test_create_shelfobject_limits_errors(self):
         """
@@ -509,7 +509,7 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code,400)
-        self.assertTrue(json.loads(response.content)['errors']['quantity'][0], _("Quantity can\'t greater than shelf quantity limit 40.0"))
+        self.assertTrue(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") %{"limit": 40.0})
         self.assertTrue(poscount==precount)
 
     def test_create_shelfobject_user_forbidden(self):
