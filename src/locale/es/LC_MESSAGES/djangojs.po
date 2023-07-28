@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-25 23:54-0600\n"
+"POT-Creation-Date: 2023-07-27 09:47-0600\n"
 "PO-Revision-Date: 2023-07-08 09:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,10 +19,10 @@ msgstr ""
 "X-Generator: Poedit 2.4.2\n"
 
 msgid "Do you want to send the report for review?"
-msgstr "¿Deseas enviar el reporte a Revisión?"
+msgstr "¿Desea enviar el reporte a revisión?"
 
 msgid "Do you want to finish the report?"
-msgstr "¿Deseas finalizar el reporte?"
+msgstr "¿Desea finalizar el reporte?"
 
 msgid "Added"
 msgstr "Agregado"
@@ -61,7 +61,7 @@ msgid "Delete the observation"
 msgstr "Eliminar Observación"
 
 msgid "Do you want to remove the observation?"
-msgstr "¿Deseas eliminar la observación?"
+msgstr "¿Desea eliminar la observación?"
 
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
@@ -148,13 +148,13 @@ msgid "The object was not removed"
 msgstr "El objecto no fue eliminado"
 
 msgid "Deleted!"
-msgstr "Eliminado!"
+msgstr "¡Eliminado!"
 
 msgid "Don't have permissions"
-msgstr "No tienes permisos"
+msgstr "No tiene permisos"
 
 msgid "You are in time to reverse this action!"
-msgstr "Estas a tiempo de revertir esta acción!"
+msgstr "¡Está todavía a tiempo de revertir esta acción!"
 
 msgid "Cancelled"
 msgstr "Cancelado"
@@ -184,7 +184,7 @@ msgstr ""
 "usuario con un laboratorio"
 
 msgid "Are you sure you want to delete?"
-msgstr "¿Está seguro/a de que desea eliminar ?"
+msgstr "¿Está seguro/a de que desea eliminar?"
 
 msgid " from "
 msgstr " desde "
@@ -235,7 +235,7 @@ msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
 msgid "Are you sure?"
-msgstr "¿Esta seguro?"
+msgstr "¿Está seguro?"
 
 msgid "Confirm"
 msgstr "Confirmar"
@@ -247,7 +247,7 @@ msgid ""
 "There was a problem performing your request. Please try again later or "
 "contact the administrator."
 msgstr ""
-"Hubo un problema realizando su solicitud. Por favor intente mas tarde o "
+"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
 "contacte al administrador."
 
 msgid "An error has occurred"
@@ -320,7 +320,7 @@ msgid "Bio Accumulable"
 msgstr "Bio acumulable"
 
 msgid "Is Seveso list III?"
-msgstr "Es Lista de Seveso III?"
+msgstr "¿Es Lista de Seveso III?"
 
 msgid "Molecular Formula"
 msgstr "Formula Molecular"
@@ -359,13 +359,19 @@ msgid "Transfer In"
 msgstr "Transferir aquí"
 
 msgid "Laboratory Send"
-msgstr "Laboratorio enviado"
+msgstr "Laboratorio que Envía"
 
 msgid "Mark as Discard"
-msgstr "Marcar como desecho"
+msgstr "Marcar como Desecho"
 
 msgid "Date"
 msgstr "Fecha"
+
+msgid "Approve"
+msgstr "Aprobar"
+
+msgid "Deny"
+msgstr "Denegar"
 
 msgid "Search"
 msgstr "Buscar"
@@ -410,7 +416,7 @@ msgid "Delete danger indication"
 msgstr "Eliminar indicacion de peligro"
 
 msgid "Do you want to remove the danger indication?"
-msgstr "¿Desea eliminar esta indicacion de peligro?"
+msgstr "¿Desea eliminar esta indicación de peligro?"
 
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
