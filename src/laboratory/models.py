@@ -183,7 +183,7 @@ class ShelfObject(models.Model):
     status = catalog.GTForeignKey(Catalog, null=True, on_delete=models.DO_NOTHING,
                                   verbose_name=_('Status'),
                                   key_name="key", key_value='shelfobject_status')
-    quantity = models.FloatField(_('Material quantity'),
+    quantity = models.FloatField(_('Quantity'),
                                  help_text=_('Use dot like 0.344 on decimal'))
     quantity_base_unit = models.FloatField(default=0,
                                            verbose_name=_('Quantity Base Unit'),
