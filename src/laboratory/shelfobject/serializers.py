@@ -506,6 +506,8 @@ class ShelfSerializer(serializers.ModelSerializer):
         quantity = obj.quantity
         if quantity == -1 or obj.infinity_quantity:
             quantity = _("Infinity")
+        elif quantity:
+            quantity = round(quantity, 3)
         return quantity
 
     def get_measurement_unit(self, obj):
@@ -515,7 +517,9 @@ class ShelfSerializer(serializers.ModelSerializer):
         quantity = obj.quantity
         if obj.infinity_quantity:
             quantity = _("Infinity")
-        return f'{obj.get_total_refuse()} {_("of")} {quantity}'
+        elif quantity:
+            quantity = round(quantity,  3)
+        return f'{round(obj.get_total_refuse(), 3)} {_("of")} {quantity}'
 
     def get_percentage_storage_status(self, obj):
         percentage = f'{round(obj.get_refuse_porcentage(), 2)}% {_("of")} 100%'
