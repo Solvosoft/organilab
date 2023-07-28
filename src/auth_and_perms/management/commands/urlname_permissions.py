@@ -1278,6 +1278,11 @@ URLNAME_PERMISSIONS = {
             'category': 'MSDS',
             'permission': 'msds.view_msdsobject'
         },
+        {
+        'name': 'View Recipient Size',
+        'category': 'Recipient Size',
+        'permission': 'sga.view_recipientsize'
+        },
     ],
     'addusersorganization': [
         {
@@ -3020,4 +3025,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.delete_recipientsize'
         },
     ],
+    'view_recipient_size': [
+        {
+        'name': 'View Recipient Size',
+        'category': 'Recipient Size',
+        'permission': 'sga.view_recipientsize'
+        }
+    ]
 }
