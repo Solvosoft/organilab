@@ -382,11 +382,11 @@ class RecipientSizeDataSerializer(serializers.ModelSerializer):
         action = ""
 
         action += """<a title='%s' class="text-center pe-2" onclick="edit_recipient_size('%d')">
-        <i class="fa fa-edit text-info" aria-hidden="true"></i>
+        <i class="fa fa-edit" aria-hidden="true"></i>
         </a>""" % (_('Edit'), obj.pk)
 
         action += """<a title='%s' class=" text-center pe-2" onclick="delete_recipient_size('%d')">
-        <i class="fa fa-close text-danger" aria-hidden="true"></i>
+        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
         </a>""" % (_("Delete"), obj.pk)
 
         return action
