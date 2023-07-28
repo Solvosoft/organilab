@@ -2997,5 +2997,27 @@ URLNAME_PERMISSIONS = {
             'category': 'Step Comment',
             'permission': 'academic.view_commentprocedurestep'
         }
-    ]
+    ],
+    'do_recipient_size': [
+        {
+            'name': 'View Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.view_recipientsize'
+        },
+        {
+            'name': 'Add Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.add_recipientsize'
+        },
+        {
+            'name': 'Change Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.change_recipientsize'
+        },
+        {
+            'name': 'Delete Recipient Size',
+            'category': 'Recipient Size',
+            'permission': 'sga.delete_recipientsize'
+        },
+    ],
 }

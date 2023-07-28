@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
@@ -6,7 +7,7 @@ from djgentelella.widgets.tagging import TaggingInput
 
 from sga.models import Substance, SubstanceCharacteristics, DangerIndication, \
     WarningWord, PrudenceAdvice, SecurityLeaf, \
-    ReviewSubstance
+    ReviewSubstance, RecipientSize
 from sga.models import SubstanceObservation
 
 
@@ -146,4 +147,17 @@ class ReviewSubstanceForm(forms.ModelForm, GTForm):
             'is_approved': genwidgets.HiddenInput,
             'organization': genwidgets.HiddenInput,
             'created_by': genwidgets.HiddenInput
+        }
+
+class RecipientSizeForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = RecipientSize
+        fields = '__all__'
+        widgets = {
+            'name': genwidgets.TextInput,
+            'heigth': genwidgets.NumberInput,
+            'heigth_unit': genwidgets.Select,
+            'width': genwidgets.NumberInput,
+            'width_unit': genwidgets.Select,
         }

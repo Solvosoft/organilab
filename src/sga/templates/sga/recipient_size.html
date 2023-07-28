@@ -1,0 +1,35 @@
+{% extends 'label_index.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+				{% define_urlname_action "do_recipient_size"%}
+
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-sm-12">
+        <h1 class="text-center"> {% trans 'Recipients Size' %}</h1>
+        <table id="recipienttable" class="table table-striped"></table>
+    </div>
+</div>
+{% trans 'Recipient size' as modaltitle %}
+{% include 'modal_template.html' with form=form id="recipientmodal" title=modaltitle form_id="recipientmodalform" url=api_recipient_size_create_recipient %}
+{% endblock %}
+
+{% block js %}
+<script>
+	document.urls={
+														table_url: '{% url "sga:api-recipient-size-list" org_pk=org_pk %}',
+														add: '{% url 'sga:api-recipient-size-create-recipient' org_pk=org_pk %}',
+														delete: '{% url 'sga:api-recipient-size-delete-recipient' org_pk=org_pk %}',
+														get: '{% url 'sga:api-recipient-size-get-recipient' org_pk=org_pk pk=0 %}',
+														update: '{% url 'sga:api-recipient-size-update-recipient' org_pk=org_pk pk=0 %}'
+
+	}
+</script>
+<script src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'sga/js/recipient_size.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}
