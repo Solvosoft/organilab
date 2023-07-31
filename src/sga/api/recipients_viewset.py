@@ -18,6 +18,7 @@ from sga.api.serializers import RecipientSizeSerializer, \
 from laboratory.models import OrganizationStructure
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.utils import organilab_logentry
+from sga.forms import RecipientSizeForm
 from sga.models import RecipientSize, DisplayLabel, TemplateSGA
 
 
@@ -92,13 +93,14 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         if pk:
             recipient = get_object_or_404(RecipientSize, pk=pk)
+            form = RecipientSizeForm(data=request.data,instance=recipient)
             serializer = RecipientSizeSerializer(data=request.data, instance=recipient)
 
-            if serializer.is_valid():
+            if serializer.is_valid() and form.is_valid():
                 recipient = serializer.save()
                 organilab_logentry(request.user, recipient, CHANGE,
                                    'recipient size', relobj=[self.organization],
-                                   changed_data=[""])
+                                   changed_data=form.changed_data)
 
                 return JsonResponse({'detail':  _("Item updated successfully.")},
                                     status=status.HTTP_200_OK)
