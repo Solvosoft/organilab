@@ -57,10 +57,10 @@ function clear_action_form(form){
 
 function get_creation_help(){
     return [
-        [gettext("Status"), gettext("It is a feature related to physical property about this element, some examples "+
+        [gettext("Status"), gettext("It is a feature related to the physical properties of this element, some examples "+
         "could be volatile, fragile, poor state, good condition.")],
-        [gettext("Measurement Unit"), gettext("Measurement unit is filtered by shelf measurement unit.")],
-        [gettext("Quantity"), gettext("Do not exists limit if shelf has infinite quantity property, in any other "+
+        [gettext("Measurement Unit"), gettext("It is filtered by the shelf's measurement unit.")],
+        [gettext("Quantity"), gettext("There is no limit if the shelf has infinite quantity setup, in any other "+
          "case the capacity is restricted.")]
     ]
 }
