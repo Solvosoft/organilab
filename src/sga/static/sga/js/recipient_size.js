@@ -2,17 +2,17 @@ var formmodal = BaseFormModal('#recipientmodal', {});
 var request_url = document.urls["add"];
 var request_type = "POST";
 var add_title = gettext("Added");
-
 formmodal.addBtnForm = function(instance) {
 
     return function(event) {
+        form = instance.form
         let url = request_url;
         request_url = document.urls["add"];
         $.ajax({
             url: url,
             type: request_type,
             dataType: "json",
-            data: convertToStringJson(instance.form, prefix=instance.prefix, extras=instance.data_extras),
+            data: convertToStringJson(form, prefix=instance.prefix, extras=instance.data_extras),
             headers: {
                     'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json",
             },
@@ -26,8 +26,24 @@ formmodal.addBtnForm = function(instance) {
                     datatableelement.ajax.reload();
                 });
             },
-            error: function( request, status, error ){
-            }
+            error: function(xhr, resp, text){
+                    var errors = xhr.responseJSON.errors;
+                    if(errors){
+                        form.find('ul.form_errors').remove();
+                        form_field_errors(form, errors, instance.prefix);
+                    }else{
+                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                        if(xhr.responseJSON.detail){
+                            error_msg = xhr.responseJSON.detail;
+                        }
+                        Swal.fire({
+                           icon: 'error',
+                           title: gettext('Error'),
+                           text: error_msg
+                        });
+                        }
+                        instance.error(instance, xhr, resp, text);
+                    }
         });
     }
 }
@@ -54,19 +70,37 @@ function edit_recipient_size(pk){
         type: "GET",
         dataType: "json",
         headers: {
-                    'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json",
+                  'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': "application/json",
         },
         success: (success) => {
             formmodal.showmodal();
-            $("#id_name").value = success.name;
-            $("#id_height").value = success.height;
-            $("#id_width").value = success.width;
+            $("#id_name").val(success.name);
+            $("#id_height").val(success.height);
+            $("#id_width").val(success.width);
             $("#id_height_unit").val(success.height_unit).change();
             $("#id_width_unit").val(success.width_unit).change();
             add_title = gettext("Updated");
         },
-        error: function( request, status, error ){
-        }
+        error: function(xhr, resp, text){
+                    var errors = xhr.responseJSON.errors;
+                    let form = $('#recipientmodalform')
+
+                    if(errors){
+                        form.find('ul.form_errors').remove();
+                        form_field_errors(form, errors, instance.prefix);
+                    }else{
+                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');
+                        if(xhr.responseJSON.detail){
+                            error_msg = xhr.responseJSON.detail;
+                        }
+                        Swal.fire({
+                           icon: 'error',
+                           title: gettext('Error'),
+                           text: error_msg
+                        });
+                        }
+                        instance.error(instance, xhr, resp, text);
+      }
     });
 }
 
@@ -74,7 +108,7 @@ function delete_recipient_size(pk){
     let url = document.urls['delete'];
     Swal.fire({
     title: gettext("Delete recipient size"),
-    text: gettext("Do you want to remove the recipient size?"),
+    text: gettext("Do you want to remove the recipient?"),
     icon: "error",
     confirmButtonText: gettext("Yes"),
     denyButtonText: gettext("No"),
@@ -87,18 +121,30 @@ function delete_recipient_size(pk){
             type: "DELETE",
             dataType: "json",
             headers: {
-                "X-CSRFToken": getCookie("csrftoken"),
+                    'X-CSRFToken': getCookie('csrftoken'),
             },
             data:{'pk':pk},
             success: (success) => {
-                Swal.fire(
-                   gettext("Successfully deleted"),
-                    ).then(function(result) {
+                Swal.fire({
+                   icon: 'success',
+                   title: gettext("Deleted!"),
+                   text:gettext("Successfully deleted")
+                   }).then(function(result) {
                     datatableelement.ajax.reload();
                 })
             },
-            error: function( request, status, error ){
-
+            error: function(xhr, resp, text){
+                    var errors = xhr.responseJSON.errors;
+                    console.log(xhr.responseJSON)
+                    if(errors){
+                        Swal.fire({
+                           icon: 'error',
+                           title: gettext('Error'),
+                           text: errors
+                        });
+                    }else{
+                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');
+                    }
             }
         });
     }

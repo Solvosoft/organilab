@@ -4037,3 +4037,6 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "The container cannot be deleted of because it is being used."
+msgstr "El recipiente no se puede eliminar, porque se está utilizando."
