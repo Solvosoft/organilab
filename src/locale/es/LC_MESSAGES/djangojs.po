@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-27 09:47-0600\n"
+"POT-Creation-Date: 2023-08-01 15:12-0600\n"
 "PO-Revision-Date: 2023-07-08 09:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -253,8 +253,45 @@ msgstr ""
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
+msgid ""
+"It is a feature related to the physical properties of this element, some "
+"examples could be volatile, fragile, poor state, good condition."
+msgstr ""
+"Es una característica relacionada con las propiedades físicas de este "
+"elemento, algunos ejemplos pueden ser volátil, frágil, mal estado, buena "
+"condición."
+
+msgid "Measurement Unit"
+msgstr "Unidad de Medida"
+
+msgid "It is filtered by the shelf's measurement unit."
+msgstr "Es filtrada por la unidad de medida del estante."
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid ""
+"There is no limit if the shelf has infinite quantity setup, in any other "
+"case the capacity is restricted."
+msgstr ""
+"No existe un límite si el estante tiene cantidad infinita establecida,  en "
+"cualquier otro caso la capacidad es restringida."
+
 msgid "General Information"
 msgstr "Información General"
+
+msgid "Container"
+msgstr "Contenedor"
+
+msgid ""
+"This field represents a material object like a box, a bottle, a tank, or a "
+"tin that will be responsible for containing a substance.  As a requirement, "
+"the container object needs to be registered on this laboratory as a material."
+msgstr ""
+"Este campo representa un objeto material como una caja, una botella, un "
+"tanque o una lata que sería responsable de contener una sustancia.  Como "
+"requerimiento el objeto contenedor necesita ser registrado en este "
+"laboratorio como material."
 
 msgid "Code"
 msgstr "Código"
@@ -339,12 +376,6 @@ msgstr "Id"
 
 msgid "Type"
 msgstr "Tipo"
-
-msgid "Quantity"
-msgstr "Cantidad"
-
-msgid "Container"
-msgstr "Contenedor"
 
 msgid "Create Equipment"
 msgstr "Crear Equipo"
@@ -444,6 +475,24 @@ msgstr "Mensaje de ayuda"
 
 msgid "Unknown"
 msgstr "Desconocido"
+
+msgid "Delete recipient size"
+msgstr "Eliminar tamaño de recipiente"
+
+msgid "Do you want to remove the recipient size?"
+msgstr "¿Desea eliminar este tamaño de recipiente?"
+
+msgid "Height"
+msgstr "Altura"
+
+msgid "Height Unit"
+msgstr "Unidad de Altura"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Width Unit"
+msgstr "Unidad de Ancho"
 
 msgid "Substance"
 msgstr "Sustancia"

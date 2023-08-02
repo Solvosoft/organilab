@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-27 16:47-0600\n"
+"POT-Creation-Date: 2023-08-01 15:03-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -962,6 +962,9 @@ msgstr "Equipo o reactivo o sustancia"
 msgid "Production batch"
 msgstr "Numero de lote"
 
+msgid "Quantity"
+msgstr "Cantidad"
+
 msgid "Quantity Base Unit"
 msgstr "Unidad base de cantidad"
 
@@ -1012,9 +1015,6 @@ msgstr "Mueble"
 
 msgid "Container shelf"
 msgstr "Estante del contenedor"
-
-msgid "Quantity"
-msgstr "Cantidad"
 
 msgid "Limit quantity of the shelf"
 msgstr "Cantidad límite del estante"
@@ -1226,8 +1226,8 @@ msgstr "Límite mínimo no puede ser mayor al límite máximo."
 msgid "Object is not available in the shelf."
 msgstr "El objeto no está disponible en el estante."
 
-msgid "Unlimited storage"
-msgstr "Almacenamiento Ilimitado"
+msgid "Quantity cannot be less than zero."
+msgstr "Cantidad no puede ser menor que cero."
 
 msgid "Infinity"
 msgstr "Infinito"
@@ -2687,6 +2687,9 @@ msgstr "Palabras de Advertencia"
 msgid "Prudence Advice"
 msgstr "Crear consejo de prudencia"
 
+msgid "Recipient Size"
+msgstr "Tamaño de Recipiente"
+
 msgid "SGA Management"
 msgstr "Gestión SGA"
 
@@ -3157,6 +3160,15 @@ msgstr "Existe un error en el formulario"
 msgid "Add a new zonetype"
 msgstr "Ingrese un tipo de zona"
 
+msgid "Item created successfully."
+msgstr "Elemento creado exitosamente."
+
+msgid "Item updated successfully."
+msgstr "Elemento actualizado exitosamente."
+
+msgid "Item deleted successfully."
+msgstr "Elemento eliminado exitosamente."
+
 msgid "Substance observation doesn't exists in this organization"
 msgstr "Observación de la sustancia no existe en esta organización"
 
@@ -3166,14 +3178,14 @@ msgstr "Aprobar"
 msgid "Generate PDF"
 msgstr "Uso general"
 
-msgid "Item created successfully."
-msgstr "Elemento creado exitosamente."
+msgid "Milimeters"
+msgstr "Milímetros"
 
-msgid "Item updated successfully."
-msgstr "Elemento actualizado exitosamente."
+msgid "Centimeters"
+msgstr "Centímetros"
 
-msgid "Item deleted successfully."
-msgstr "Elemento eliminado exitosamente."
+msgid "inch"
+msgstr "pulgada"
 
 msgid "Substance deleted successfully"
 msgstr "Sustancia guardada con éxito"
@@ -3301,15 +3313,6 @@ msgstr "Información del fabricante"
 msgid "Information of Builders"
 msgstr "Información de los fabricantes"
 
-msgid "Milimeters"
-msgstr "Milímetros"
-
-msgid "Centimeters"
-msgstr "Centímetros"
-
-msgid "inch"
-msgstr "inches"
-
 msgid "Height"
 msgstr "Alto"
 
@@ -3321,9 +3324,6 @@ msgstr "Ancho"
 
 msgid "Width Unit"
 msgstr "Unidad de anchura"
-
-msgid "Recipient Size"
-msgstr "Tamaño de recipiente"
 
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
@@ -3719,6 +3719,9 @@ msgstr "Previsualizar"
 
 msgid "This action is irreversible"
 msgstr "Esta acción es irreversible"
+
+msgid "Recipients Size"
+msgstr "Tamaño de Recipientes"
 
 msgid "List of Substances"
 msgstr "Listado de Sustancias"
