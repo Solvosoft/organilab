@@ -401,7 +401,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    amount_to_transfer = serializers.FloatField(min_value=0.01)
+    amount_to_transfer = serializers.FloatField(min_value=0.0001)
     mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
 
