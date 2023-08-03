@@ -204,42 +204,35 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         return data
 
 
-def validate_measurement_unit_and_quantity(klass, data, attr):
+def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
-    quantity = attr['quantity']
-    total = attr['shelf'].get_total_refuse() + quantity
-    shelf = attr['shelf']
-    obj = attr['object']
-    shelf_quantity = attr['shelf'].quantity
-    unit = attr['measurement_unit']
-    shelf_unit = attr['shelf'].measurement_unit
-    shelf_infinity = attr['shelf'].infinity_quantity
-    # discard = attr['marked_as_discard'] if 'marked_as_discard' and attr else False
-
-    if shelf_unit and unit != shelf_unit:
-        logger.debug(f'validate_measurement_unit_and_quantity --> shelf_unit and unit ({unit}) != shelf_unit ({shelf_unit})')
+    total = shelf.get_total_refuse() + quantity
+    
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
+        # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
+        logger.debug(f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
+                     f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
         errors.update({'measurement_unit': _("Measurement unit cannot be different than the shelf's measurement unit.")})
-    if total > shelf_quantity and not shelf_infinity:
-        logger.debug(f'validate_measurement_unit_and_quantity --> total ({total}) > shelf_quantity ({shelf_quantity}) and not shelf_infinity')
+    if total > shelf.quantity and not shelf.infinity_quantity:
+        logger.debug(f'validate_measurement_unit_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')
         errors.update({'quantity': _("Quantity cannot be greater than the shelf's quantity limit: %(limit)s.")%{
-            'limit': shelf_quantity,
+            'limit': shelf.quantity,
         }})
     if shelf.limit_only_objects:
-        if not shelf.available_objects_when_limit.filter(pk=obj.pk).exists():
+        if not shelf.available_objects_when_limit.filter(pk=object.pk).exists():
             logger.debug(f'validate_measurement_unit_and_quantity --> shelf.limit_only_objects and not '
-                         f'shelf.available_objects_when_limit.filter(pk=obj.pk ({obj.pk})).exists()')
-            errors.update({'object': _("Object is not available in the shelf.")})
-    if quantity<0:
-        logger.debug(f'quantity<0 ')
-        errors.update({'quantity': _("Quantity cannot be less than zero.")})
+                         f'shelf.available_objects_when_limit.filter(pk=object.pk ({object.pk})).exists()')
+            errors.update({'object': _("Object is not allowed in the shelf.")})
+    if quantity <= 0 :
+        logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
+        errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
     if errors:
         raise serializers.ValidationError(errors)
-    return attr
 
 
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
-    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
+    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete the field and the method from here
 
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),
                                                 required=True)
@@ -260,8 +253,9 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
                   'marked_as_discard', 'batch', 'container']
 
     def validate(self, data):
-        attr = super().validate(data)
-        return validate_measurement_unit_and_quantity(self, data, attr)
+        data = super().validate(data)
+        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'], data['measurement_unit'])
+        return data
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
@@ -271,7 +265,7 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
 
 class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
-    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete them from here
+    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete the field and the method from here
 
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -293,8 +287,9 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
                   "measurement_unit", "marked_as_discard", "course_name", 'batch', 'container']
 
     def validate(self, data):
-        attr = super().validate(data)
-        return validate_measurement_unit_and_quantity(self, data, attr)
+        data = super().validate(data)
+        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'], data['measurement_unit'])
+        return data
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
@@ -311,20 +306,18 @@ class MaterialShelfObjectSerializer(serializers.ModelSerializer):
                                                 required=True)
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
-    measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
-                                                          queryset=Catalog.objects.using(settings.READONLY_DATABASE),
-                                                          required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
 
     def validate(self, data):
-        attr = super().validate(data)
-        return validate_measurement_unit_and_quantity(self, data, attr)
+        data = super().validate(data)
+        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        return data
 
 
 class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
@@ -335,20 +328,18 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
                                                 required=True)
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
-    measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
-                                                          queryset=Catalog.objects.using(settings.READONLY_DATABASE),
-                                                          required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
 
     def validate(self, data):
-        attr = super().validate(data)
-        return validate_measurement_unit_and_quantity(self, data, attr)
+        data = super().validate(data)
+        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        return data
 
 
 class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
@@ -359,20 +350,18 @@ class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
                                                 required=True)
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
-    measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
-                                                          queryset=Catalog.objects.using(settings.READONLY_DATABASE),
-                                                          required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
 
     def validate(self, data):
-        attr = super().validate(data)
-        return validate_measurement_unit_and_quantity(self, data, attr)
+        data = super().validate(data)
+        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        return data
 
 
 class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
@@ -383,20 +372,18 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
                                                 required=True)
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
-    measurement_unit = serializers.PrimaryKeyRelatedField(many=False,
-                                                          queryset=Catalog.objects.using(settings.READONLY_DATABASE),
-                                                          required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
 
     def validate(self, data):
-        attr = super().validate(data)
-        return validate_measurement_unit_and_quantity(self, data, attr)
+        data = super().validate(data)
+        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        return data
 
 
 class TransferOutShelfObjectSerializer(serializers.Serializer):
@@ -716,7 +703,6 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
                 raise serializers.ValidationError(_("The transfer in cannot be performed since the transfer quantity is bigger than the quantity available in the " \
                                                     "source object."))
         return attr
-
 
 
 class ShelfObjectPk(serializers.Serializer):

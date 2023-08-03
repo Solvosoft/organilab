@@ -26,7 +26,7 @@ from ..shelfobject.forms import TransferOutShelfObjectForm, \
     MoveShelfObjectForm, ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, \
     ShelfObjectMaterialForm, \
     ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, \
-    ShelfObjectRefuseEquimentForm, ShelfObjectEquimentForm, \
+    ShelfObjectRefuseEquipmentForm, ShelfObjectEquipmentForm, \
     DecreaseShelfObjectForm, IncreaseShelfObjectForm, \
     TransferInShelfObjectApproveWithContainerForm
 from ..shelfobject.serializers import SearchShelfObjectSerializer
@@ -146,10 +146,10 @@ class LaboratoryRoomsList(ListView):
         context['increase_object_form'] = IncreaseShelfObjectForm(prefix="increase")
         context['decrease_object_form'] = DecreaseShelfObjectForm(prefix="decrease")
         context['move_object_form'] = MoveShelfObjectForm(prefix="move")
-        context['equipment_form'] = ShelfObjectEquimentForm(initial={"objecttype": 2},
+        context['equipment_form'] = ShelfObjectEquipmentForm(initial={"objecttype": 2},
                                                             org_pk=self.org,
                                                             prefix='ef')
-        context['equipment_refuse_form'] = ShelfObjectRefuseEquimentForm(
+        context['equipment_refuse_form'] = ShelfObjectRefuseEquipmentForm(
             initial={"objecttype": 2}, org_pk=self.org, prefix='erf')
         context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype": 0},
                                                            org_pk=self.org, prefix="rf")
