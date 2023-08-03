@@ -252,15 +252,6 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             label="Material")
 
         self.fields['course_name'].label = _("Description")
-        self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', attrs={
-                'data-dropdownparent': "#material_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
-            }),
-            label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('shelfobject_status_search', attrs={
@@ -273,7 +264,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
@@ -303,15 +294,6 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
 
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
-        self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', attrs={
-                'data-dropdownparent': "#material_refuse_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
-            }),
-            label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('shelfobject_status_search', attrs={
@@ -325,7 +307,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
@@ -335,7 +317,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'marked_as_discard': forms.HiddenInput
         }
 
-class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
+class ShelfObjectEquipmentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -353,16 +335,6 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
                                       }),
             label=_("Equipment"))
         self.fields['course_name'].label = _("Description")
-
-        self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', attrs={
-                'data-dropdownparent': "#equipment_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
-            }),
-            label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('shelfobject_status_search', attrs={
@@ -375,7 +347,7 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity","limit_quantity","measurement_unit","marked_as_discard","course_name"]
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard", "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
@@ -384,7 +356,7 @@ class ShelfObjectEquimentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
-class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
+class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -399,17 +371,6 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
                 'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
             label=_("Equipment"))
-
-
-        self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('catalogunit', attrs={
-                'data-dropdownparent': "#equipment_refuse_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
-            }),
-            label=_("Measurement unit"))
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('shelfobject_status_search', attrs={
@@ -423,7 +384,7 @@ class ShelfObjectRefuseEquimentForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "measurement_unit", "marked_as_discard",
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
                   "course_name"]
         widgets = {
             'shelf': forms.HiddenInput,

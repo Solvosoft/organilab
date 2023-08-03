@@ -362,7 +362,7 @@ class CreateShelfobjectTest(TestCase):
                 "shelf": 13,
                 "object": 2,
                 "batch": 2,
-                "objecttype": 1,
+                "objecttype": 0,
                 "status": 1,
                 "quantity": 90000.0,
                 "limit_quantity": 7.0,
@@ -461,8 +461,8 @@ class CreateShelfobjectTest(TestCase):
         shelf.save()
         data = {
                 "shelf": 13,
-                "object": 1,
-                "objecttype": 1,
+                "object": 2,
+                "objecttype": 0,
                 "status": 1,
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
@@ -593,7 +593,7 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code,400)
-        self.assertTrue(json.loads(response.content)["errors"]['object'][0]==_("Object is not available in the shelf."))
+        self.assertTrue(json.loads(response.content)["errors"]['object'][0]==_("Object is not allowed in the shelf."))
         self.assertTrue(poscount==precount)
 
     def test_create_shelfobject_object_available_in_shelf(self):
