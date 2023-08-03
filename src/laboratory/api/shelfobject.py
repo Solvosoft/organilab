@@ -202,11 +202,13 @@ class ShelfObjectCreateMethods:
         laboratory_id = self.context['laboratory_id']
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-
+        measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
+        
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
-            limits=limits
+            limits=limits,
+            measurement_unit=measurement_unit
         )
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
@@ -236,11 +238,13 @@ class ShelfObjectCreateMethods:
         laboratory_id = self.context['laboratory_id']
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
+        measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
-            limits=limits
+            limits=limits,
+            measurement_unit=measurement_unit
         )
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
@@ -270,11 +274,13 @@ class ShelfObjectCreateMethods:
         laboratory_id = self.context['laboratory_id']
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
+        measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
-            limits=limits
+            limits=limits,
+            measurement_unit=measurement_unit
         )
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
@@ -304,11 +310,13 @@ class ShelfObjectCreateMethods:
         laboratory_id = self.context['laboratory_id']
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
+        measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
-            limits=limits
+            limits=limits,
+            measurement_unit=measurement_unit
         )
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
