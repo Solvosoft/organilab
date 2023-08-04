@@ -207,8 +207,8 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
     total = shelf.get_total_refuse() + quantity
-    
-    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
+
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
         logger.debug(f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
                      f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
@@ -404,6 +404,7 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
 
 class ShelfObjectDeleteSerializer(serializers.Serializer):
     shelfobj = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
+    delete_container = serializers.BooleanField(default=False, required=False, allow_null=True)
 
     def validate_shelfobj(self, value):
         attr = super().validate(value)

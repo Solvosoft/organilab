@@ -117,7 +117,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-        
+
         # TODO probably update this to use the utils method get_or_create_container_based_on_selected_option considering it will allow more than one option
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
@@ -160,7 +160,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-        
+
         # TODO probably update this to use the utils method get_or_create_container_based_on_selected_option considering it will allow more than one option
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
@@ -203,7 +203,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
-        
+
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
@@ -793,6 +793,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                  relobj=self.laboratory)
         log_object_change(request.user, lab_pk, shelfobject, shelfobject.quantity, 0,
                           '', DELETION, _("Delete"))
+
+        delete_container = serializer.validated_data.get('delete_container', False)
+
+        if shelfobject.container and delete_container:
+            shelfobject.container.delete()
 
         shelfobject.delete()
 
