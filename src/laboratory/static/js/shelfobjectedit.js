@@ -6,56 +6,60 @@ function processResponseshelfobject(dat){
 }
 
 //Refactored delete method for Shelf Object
-function shelfObjectDelete(obj, shelf_object_id, text) {
-    let message = gettext("Are you sure you want to delete")
-    message = `${message} "${text}"?`
-    let url = $(obj).data('url')
-    Swal.fire({ //Confirmation for delete
-        icon: "warning",
-        title: gettext("Are you sure?"),
-        text: message,
-        confirmButtonText: gettext("Confirm"),
-        showCloseButton: true,
-        denyButtonText: gettext('Cancel'),
-        showDenyButton: true,
-        })
-        .then(function(result) {
-            if (result.isConfirmed) {
-                fetch(url, {
-                    method: "delete",
-                    headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
-                    body: JSON.stringify({'shelfobj': shelf_object_id})})
-                    .then(response => {
-                        if(response.ok){ return response.json(); }
-                        return Promise.reject(response);  // then it will go to the catch if it is an error code
-                    })
-                    .then(data => {
-                        Swal.fire({
-                            title: gettext('Success'),
-                            text: data['detail'],
-                            icon: 'success',
-                            timer: 1500
-                        });
-                        datatableelement.ajax.reload();
-                    })
-                    .catch(response => {
-                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
-                        response.json().then(data => {  // there was something in the response from the API regarding validation
-                            if(data['shelfobj']){
-                                error_msg = data['shelfobj'][0];  // specific api validation errors
-                            }
-                        })
-                        .finally(() => {
-                            Swal.fire({
-                                title: gettext('Error'),
-                                text: error_msg,
-                                icon: 'error'
-                            });
-                        });
-                    });
-            }
-        });
+function shelfObjectDelete(shelf_object_id, type, container=false) {
+    $("#id_delete_container").iCheck('uncheck').change();
+    $("#delete_shelfobject_modal .modal-body").hide();
+    if(type == '0' && container){
+        $("#delete_shelfobject_modal .modal-body").show();
+    }
+    $("#btndeleteso").data('shelfobject', shelf_object_id);
+    $("#delete_shelfobject_modal").modal('show');
 }
+
+
+$("#btndeleteso").on("click", function(){
+    $("#delete_shelfobject_modal").modal('hide');
+
+    var url = $(this).data('url');
+    var shelfobject = $(this).data('shelfobject');
+    var delete_container = $('#id_delete_container:checked').val();
+
+    if(url != undefined && shelfobject != undefined){
+        fetch(url, {
+        method: "delete",
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        body: JSON.stringify({'shelfobj': shelfobject, 'delete_container': delete_container})})
+        .then(response => {
+            if(response.ok){ return response.json(); }
+            return Promise.reject(response);  // then it will go to the catch if it is an error code
+        })
+        .then(data => {
+            Swal.fire({
+                title: gettext('Success'),
+                text: data['detail'],
+                icon: 'success',
+                timer: 1500
+            });
+            datatableelement.ajax.reload();
+        })
+        .catch(response => {
+            let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+            response.json().then(data => {  // there was something in the response from the API regarding validation
+                if(data['shelfobj']){
+                    error_msg = data['shelfobj'][0];  // specific api validation errors
+                }
+            })
+            .finally(() => {
+                Swal.fire({
+                    title: gettext('Error'),
+                    text: error_msg,
+                    icon: 'error'
+                });
+            });
+        });
+    }
+    $("#btndeleteso").data('shelfobject', '');
+});
 
 function shelfObjectDetail(obj,){
     let url = $(obj).data('url')
@@ -150,9 +154,9 @@ function wait_furniture(){
    setTimeout(wait_furniture, 1000);
  }else{
   $("#furniture_"+obj.furniture).click();
- 
+
  }
-}  
+}
 
 function wait_shelf(){
  if( $("#shelf_view_"+obj.shelf).length ==0){
