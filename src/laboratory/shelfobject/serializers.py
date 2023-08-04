@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 import re
 from django.conf import settings
+from django.db.models import Sum, Count
 from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -207,8 +208,8 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
     total = shelf.get_total_refuse() + quantity
-    
-    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
+
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
         logger.debug(f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
                      f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
@@ -506,11 +507,29 @@ class ShelfSerializer(serializers.ModelSerializer):
             quantity = _("Infinity")
         elif quantity:
             quantity = round(quantity,  3)
-        return f'{round(obj.get_total_refuse(), 3)} {_("of")} {quantity}'
+
+        shelfobjects = ShelfObject.objects.filter(shelf=obj, containershelfobject=None)
+
+        if obj.measurement_unit:
+            total = shelfobjects.filter(measurement_unit=obj.measurement_unit).aggregate(
+                amount=Sum('quantity', default=0))['amount']
+        else:
+            total_detail = ""
+            measurement_unit_list = list(shelfobjects.values_list('measurement_unit', flat=True).distinct())
+            catalog_unit = Catalog.objects.filter(pk__in=measurement_unit_list)
+
+            for unit in catalog_unit:
+                total_detail += "%s %d" % (
+                unit.description, shelfobjects.filter(measurement_unit=unit).aggregate(
+                    amount=Sum('quantity', default=0))['amount']) + ", "
+
+            return total_detail[:-2]
+
+        return f'{round(total, 3)} {_("of")} {quantity}'
 
     def get_percentage_storage_status(self, obj):
         percentage = f'{round(obj.get_refuse_porcentage(), 2)}% {_("of")} 100%'
-        if obj.infinity_quantity:
+        if obj.infinity_quantity or not obj.measurement_unit:
             percentage = "-------"
         return percentage
 
