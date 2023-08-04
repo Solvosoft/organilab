@@ -573,3 +573,36 @@ function show_hide_container_selects(form_id, selected_value){
 $("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
+
+
+
+function addContainer(btn, event){
+    let id = "#id_mff-shelf";
+    let modal_form= "#material_refuse_form";
+    let modal_id="material_refuse_modal";
+    let reactive_modal = "#reactive_refuse_modal";
+
+    if(document.shelf_discard.toLowerCase()==='false'){
+        id = "#id_mf-shelf";
+        modal_form = "#material_form";
+        modal_id="material_modal";
+        reactive_modal = "#reactive_modal";
+
+    }
+    console.log(reactive_modal)
+    $(reactive_modal).modal('hide');
+
+    $(modal_form+" "+id).val(tableObject.get_active_shelf());
+    $(btn).attr('data-modalid',modal_id)
+    $(btn).attr('data-shelf',tableObject.get_active_shelf())
+
+    show_me_modal(btn, event);
+
+    form_modals[$(btn).data('modalid')].hidemodal = function(){
+            this.instance.modal('hide');
+            $(reactive_modal).modal('show');
+        }
+    }
+
+
+

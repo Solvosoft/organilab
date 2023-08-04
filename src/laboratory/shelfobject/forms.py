@@ -139,8 +139,9 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization'
                                       }),
+            help_text='<a class="float-end fw-bold" onclick="addContainer(this,event)">%s</a>' % (
+                _("New container")),
             label=_("Container"),
-            help_text=_("Search by name")
         )
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
@@ -203,8 +204,9 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization'
                                       }),
+            help_text='<a class="float-end fw-bold" onclick="addContainer(this,event)">%s</a>' % (
+                _("New container")),
             label=_("Container"),
-            help_text=_("Search by name")
         )
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
