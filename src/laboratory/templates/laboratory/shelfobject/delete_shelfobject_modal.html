@@ -4,13 +4,14 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">{% trans 'Are you sure you want to delete this element?' %}</h4>
+				<h4 class="modal-title">{% trans 'Are you sure?' %}</h4>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
-
-					<label for="id_delete_container">{% trans 'Would you like to delete this container too?' %}:</label>
+				<div class="form-group" id="divobjname"></div>
+				<div class="form-group" id="divcontainer">
+					<div id="divcontainername"></div>
+					<label for="id_delete_container"><h6>{% trans 'Would you like to delete this container too?' %}: </h6></label>
 					No <input type="checkbox" id="id_delete_container" name="delete_container" data-widget="YesNoInput"/>
 					{% trans 'Yes' %}
 				</div>

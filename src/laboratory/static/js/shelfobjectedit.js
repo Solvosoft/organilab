@@ -6,11 +6,13 @@ function processResponseshelfobject(dat){
 }
 
 //Refactored delete method for Shelf Object
-function shelfObjectDelete(shelf_object_id, type, container=false) {
+function shelfObjectDelete(shelf_object_id, text, type, container=false, container_name="") {
+    $("#divobjname").html('<h6>'+gettext("Are you sure you want to delete")+' "'+text+'"?</h6>');
     $("#id_delete_container").iCheck('uncheck').change();
-    $("#delete_shelfobject_modal .modal-body").hide();
+    $("#delete_shelfobject_modal #divcontainer").hide();
     if(type == '0' && container){
-        $("#delete_shelfobject_modal .modal-body").show();
+        $("#delete_shelfobject_modal #divcontainername").html('<h6><b>'+gettext("Container")+": "+ container_name+'</b></h6>');
+        $("#delete_shelfobject_modal #divcontainer").show();
     }
     $("#btndeleteso").data('shelfobject', shelf_object_id);
     $("#delete_shelfobject_modal").modal('show');
