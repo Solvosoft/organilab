@@ -207,8 +207,8 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
     total = shelf.get_total_refuse() + quantity
-    
-    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
+
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
         logger.debug(f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
                      f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
@@ -229,6 +229,23 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
     if errors:
         raise serializers.ValidationError(errors)
 
+def validate_object_available_and_quantity(shelf, object, quantity):
+    errors= {}
+    if shelf.limit_only_objects:
+        if not shelf.available_objects_when_limit.filter(pk=object.pk).exists():
+            logger.debug(f'validate_object_available_and_quantity  --> shelf.limit_only_objects and not '
+                         f'shelf.available_objects_when_limit.filter(pk=object.pk ({object.pk})).exists()')
+            errors.update({'object': _("Object is not allowed in the shelf.")})
+
+    if shelf.measurement_unit.pk==64 and total > shelf.quantity and not shelf.infinity_quantity:
+        logger.debug(
+                f'validate_object_available_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')
+        errors.update({'quantity': _(
+                "Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") % {
+                                           'limit': shelf.quantity,
+                                       }})
+    if errors:
+        raise serializers.ValidationError(errors)
 
 class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
@@ -316,7 +333,9 @@ class MaterialShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        validate_object_available_and_quantity(data['shelf'],data['object'],
+                                               data['quantity'])
+
         return data
 
 
@@ -338,7 +357,8 @@ class MaterialRefuseShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        validate_object_available_and_quantity(data['shelf'], data['object'],
+                                               data['quantity'])
         return data
 
 
@@ -360,7 +380,8 @@ class EquipmentShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        validate_object_available_and_quantity(data['shelf'], data['object'],
+                                               data['quantity'])
         return data
 
 
@@ -382,7 +403,8 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'])
+        validate_object_available_and_quantity(data['shelf'], data['object'],
+                                               data['quantity'])
         return data
 
 
