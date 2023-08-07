@@ -515,15 +515,14 @@ class ShelfSerializer(serializers.ModelSerializer):
                 amount=Sum('quantity', default=0))['amount']
         else:
             total_detail = ""
-            measurement_unit_list = list(shelfobjects.values_list('measurement_unit', flat=True).distinct())
-            catalog_unit = Catalog.objects.filter(pk__in=measurement_unit_list)
+            measurement_unit_list = shelfobjects.values('measurement_unit', 'measurement_unit__description').distinct()
 
-            for unit in catalog_unit:
-                total_detail += "%s %d" % (
-                unit.description, shelfobjects.filter(measurement_unit=unit).aggregate(
-                    amount=Sum('quantity', default=0))['amount']) + ", "
-
-            return total_detail[:-2]
+            for unit in measurement_unit_list:
+                total_detail += "%d %s<br>" % (
+                shelfobjects.filter(measurement_unit=unit['measurement_unit']).aggregate(
+                    amount=Sum('quantity', default=0))['amount'],
+                unit['measurement_unit__description'])
+            return total_detail
 
         return f'{round(total, 3)} {_("of")} {quantity}'
 
