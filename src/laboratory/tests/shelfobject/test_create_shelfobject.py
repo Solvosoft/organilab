@@ -508,9 +508,8 @@ class CreateShelfobjectTest(TestCase):
                       kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
-        self.assertEqual(response.status_code,400)
-        self.assertTrue(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") %{"limit": 40.0})
-        self.assertTrue(poscount==precount)
+        self.assertEqual(response.status_code,201)
+        self.assertTrue(poscount>precount)
 
     def test_create_shelfobject_user_forbidden(self):
         self.client.logout()

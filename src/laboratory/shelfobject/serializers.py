@@ -237,13 +237,15 @@ def validate_object_available_and_quantity(shelf, object, quantity):
                          f'shelf.available_objects_when_limit.filter(pk=object.pk ({object.pk})).exists()')
             errors.update({'object': _("Object is not allowed in the shelf.")})
 
-    if shelf.measurement_unit.pk==64 and total > shelf.quantity and not shelf.infinity_quantity:
-        logger.debug(
-                f'validate_object_available_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')
-        errors.update({'quantity': _(
-                "Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") % {
-                                           'limit': shelf.quantity,
-                                       }})
+    total = shelf.get_total_refuse() + quantity
+    if shelf.measurement_unit:
+        if shelf.measurement_unit.pk==64 and total > shelf.quantity and not shelf.infinity_quantity:
+            logger.debug(
+                    f'validate_object_available_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')
+            errors.update({'quantity': _(
+                    "Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") % {
+                                               'limit': shelf.quantity,
+                                           }})
     if errors:
         raise serializers.ValidationError(errors)
 
