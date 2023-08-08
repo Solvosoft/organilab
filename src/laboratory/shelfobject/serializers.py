@@ -204,7 +204,7 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         return data
 
 
-def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
+def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None, container=None):
     errors = {}
     total = shelf.get_total_refuse() + quantity
 
@@ -226,28 +226,26 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
     if quantity <= 0 :
         logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
         errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
-    if errors:
-        raise serializers.ValidationError(errors)
+    print(container)
+    if container:
+        print(3163)
+        if hasattr(container.object, 'materialcapacity'):
+            container_capacity = container.object.materialcapacity.capacity
+            container_unit = container.object.materialcapacity.capacity_measurement_unit
+            if container_capacity < quantity:
+                logger.debug(
+                    f'validate --> total ({container_capacity}) < quantity ({quantity})')
+                errors.update({'quantity': _(
+                    "Quantity cannot be greater than the container capacity limit: %(capacity)s.") % {
+                                               'capacity': container_capacity,
+                                           }})
 
-def validate_container_capactity_unit(container, quantity, measurement_unit):
-    errors = {}
-    if hasattr(container.object, 'materialcapacity'):
-        container_capacity = container.object.materialcapacity.capacity
-        container_unit = container.object.materialcapacity.capacity_measurement_unit
-        if container_capacity < quantity:
-            logger.debug(
-                f'validate --> total ({container_capacity}) < quantity ({quantity})')
-            errors.update({'quantity': _(
-                "Quantity cannot be greater than the container capacity limit: %(capacity)s.") % {
-                                           'capacity': container_capacity,
-                                       }})
-
-        if container_unit != measurement_unit:
-            logger.debug(
-                f'validate --> total ({container_unit}) < quantity ({measurement_unit})')
-            errors.update({'measurement_unit': _(
-                "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
-                'unit': container_unit}})
+            if container_unit != measurement_unit:
+                logger.debug(
+                    f'validate --> total ({container_unit}) < quantity ({measurement_unit})')
+                errors.update({'measurement_unit': _(
+                    "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
+                    'unit': container_unit}})
     if errors:
         raise serializers.ValidationError(errors)
 
@@ -275,13 +273,10 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        container = data['container']
         validate_measurement_unit_and_quantity(data['shelf'], data['object'],
                                                data['quantity'],
-                                               data['measurement_unit'])
-
-        validate_container_capactity_unit(container,data['quantity'],
-                                          data['measurement_unit'])
+                                               data['measurement_unit'],
+                                               data['container'])
 
         return data
 
@@ -316,13 +311,11 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        container = data['container']
         validate_measurement_unit_and_quantity(data['shelf'], data['object'],
                                                data['quantity'],
-                                               data['measurement_unit'])
+                                               data['measurement_unit'],
+                                               data['container'])
 
-        validate_container_capactity_unit(container,data['quantity'],
-                                          data['measurement_unit'])
         return data
 
     def get_fields(self, *args, **kwargs):
