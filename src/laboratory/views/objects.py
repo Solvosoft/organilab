@@ -71,7 +71,7 @@ class ObjectView(object):
                     if capacity_form.is_valid():
                         capacity_form.save()
 
-                changed_data.extend(capacity_form.changed_data)
+                    changed_data.extend(capacity_form.changed_data)
 
 
                 organilab_logentry(self.request.user, object, ADDITION, changed_data=changed_data, relobj=self.lab)
@@ -100,18 +100,20 @@ class ObjectView(object):
             def form_valid(self, form):
                 object = form.save()
                 changed_data = form.changed_data
-                capacity_data = {'capacity': form.cleaned_data['capacity'],
-                                 'capacity_measurement_unit': form.cleaned_data[
-                                     'capacity_measurement_unit'].pk,
-                                 'object': object}
+
                 capacity_form = None
-                if hasattr(object,'materialcapacity'):
-                    capacity_form = MateriaCapacityObjectForms(data=capacity_data, instance=object.materialcapacity)
-                else:
-                    capacity_form = MateriaCapacityObjectForms(data=capacity_data)
-                if capacity_form.is_valid():
-                    capacity_form.save()
-                changed_data.extend(capacity_form.changed_data)
+                if object.type==Object.MATERIAL:
+                    capacity_data = {'capacity': form.cleaned_data['capacity'],
+                                     'capacity_measurement_unit': form.cleaned_data[
+                                         'capacity_measurement_unit'].pk,
+                                     'object': object}
+                    if hasattr(object,'materialcapacity'):
+                        capacity_form = MateriaCapacityObjectForms(data=capacity_data, instance=object.materialcapacity)
+                    else:
+                        capacity_form = MateriaCapacityObjectForms(data=capacity_data)
+                    if capacity_form.is_valid():
+                        capacity_form.save()
+                    changed_data.extend(capacity_form.changed_data)
                 organilab_logentry(self.request.user, object, CHANGE,  changed_data=changed_data, relobj=self.lab)
                 return super(ObjectUpdateView, self).form_valid(object)
 
