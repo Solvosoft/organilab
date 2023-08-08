@@ -16,8 +16,9 @@ from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
-from laboratory.models import OrganizationStructure, CommentInform, Catalog, InformScheduler, RegisterUserQR, \
-    ShelfObjectLimits, ShelfObject, ShelfObjectObservation
+from laboratory.models import OrganizationStructure, CommentInform, Catalog, \
+    InformScheduler, RegisterUserQR, \
+    ShelfObjectLimits, ShelfObject, ShelfObjectObservation, MaterialCapacity
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
@@ -563,4 +564,92 @@ class ObservationShelfObjectForm(GTForm, forms.ModelForm):
         widgets={
             'action_taken': genwidgets.TextInput,
             'description': genwidgets.Textarea
+        }
+
+class MateriaCapacityObjectForms(GTForm,forms.ModelForm):
+    class Meta:
+        model = MaterialCapacity
+        fields ='__all__'
+        widgets = {
+            'capacity': genwidgets.TextInput(attrs={'required':True}),
+            'object': genwidgets.Select(attrs={'required':True}),
+            'capacity_measurement_unit': genwidgets.Select(attrs={'required':True}),
+        }
+
+class MateriaCapacityObjectForm(GTForm,forms.Form):
+    capacity = forms.FloatField(required=False, widget=genwidgets.TextInput, min_value=0.1, validators=[
+        RegexValidator(
+                regex=r'^\d+(\.\d{1,2})?$',
+                message=_('The quantity field receives only decimal numbers'),
+            )],)
+    capacity_measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='units'),
+                                                       required=False,
+                                                       widget=genwidgets.Select())
+
+class ObjectForm(MateriaCapacityObjectForm, forms.ModelForm):
+    required_css_class = ''
+
+    def __init__(self, *args, **kwargs):
+
+        self.request = None
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
+        instance = None
+        if 'instance' in kwargs:
+            instance = kwargs.get('instance')
+        data_type = None
+        if 'data' in kwargs:
+            data_type = kwargs.get('data').get('type')
+
+        super(ObjectForm, self).__init__(*args, **kwargs)
+
+        if self.request:
+            if 'type_id' in self.request.GET:
+                self.type_id = self.request.GET.get('type_id', '')
+                if self.type_id:
+                    self.fields['type'] = forms.CharField(
+                        initial=self.type_id,
+                        widget=forms.HiddenInput()
+                    )
+                data_type = self.type_id
+        if data_type != Object.MATERIAL:
+            del self.fields['capacity']
+            del self.fields['capacity_measurement_unit']
+        else:
+            self.fields['capacity'].required = True
+            self.fields['capacity_measurement_unit'].required = True
+            if instance:
+                if hasattr(instance,'materialcapacity'):
+                    self.fields['capacity'].initial = instance.materialcapacity.capacity
+                    self.fields['capacity_measurement_unit'].initial = (
+                        instance.materialcapacity.capacity_measurement_unit.id)
+
+        if data_type == Object.EQUIPMENT:
+            self.fields['model'].required = True
+
+        else:
+            self.fields['model'] = forms.CharField(
+                widget=forms.HiddenInput(), required=False
+            )
+            self.fields['serie'] = forms.CharField(
+                widget=forms.HiddenInput(), required=False
+            )
+            self.fields['plaque'] = forms.CharField(
+                widget=forms.HiddenInput(), required=False
+            )
+
+    class Meta:
+        model = Object
+        exclude = ['organization', 'created_by']
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym':  genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            'model': genwidgets.TextInput,
+            'serie': genwidgets.TextInput,
+            'plaque': genwidgets.TextInput,
+            "type": genwidgets.HiddenInput
         }

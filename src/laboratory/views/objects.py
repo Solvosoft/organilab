@@ -12,9 +12,10 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import RegexValidator
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls import path
 from django.urls.base import reverse_lazy
@@ -22,7 +23,10 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core as genwidget
-from laboratory.models import Laboratory, BlockedListNotification, OrganizationStructure
+
+from laboratory.forms import MateriaCapacityObjectForms, ObjectForm
+from laboratory.models import Laboratory, BlockedListNotification, \
+    OrganizationStructure, MaterialCapacity, Catalog
 from laboratory.models import Object, SustanceCharacteristics
 from laboratory.utils import filter_laboratorist_profile, organilab_logentry, get_profile_by_organization, \
     get_pk_org_ancestors
@@ -35,11 +39,11 @@ class ObjectView(object):
     template_name_base = "laboratory/objectview"
 
     def __init__(self):
-        
+
         @method_decorator(permission_required('laboratory.add_object'), name='dispatch')
         class ObjectCreateView(CreateView):
             permission_required = ('laboratory.add_object',)
-            
+
             def get_success_url(self, *args, **kwargs):
                 redirect = reverse_lazy('laboratory:objectview_list', args=(
                     self.org, self.lab)) + "?type_id=" + self.object.type
@@ -54,7 +58,23 @@ class ObjectView(object):
                 object = form.save(commit=False)
                 organization = get_object_or_404(OrganizationStructure, pk=self.org)
                 object.organization=organization
-                organilab_logentry(self.request.user, object, ADDITION, changed_data=form.changed_data, relobj=self.lab)
+                changed_data = form.changed_data
+
+                if object.type == Object.MATERIAL:
+                    object.save()
+
+                    capacity_data = {'capacity':form.cleaned_data['capacity'],
+                                'capacity_measurement_unit': form.cleaned_data['capacity_measurement_unit'].pk,
+                                'object':object}
+
+                    capacity_form = MateriaCapacityObjectForms(data=capacity_data)
+                    if capacity_form.is_valid():
+                        capacity_form.save()
+
+                changed_data.extend(capacity_form.changed_data)
+
+
+                organilab_logentry(self.request.user, object, ADDITION, changed_data=changed_data, relobj=self.lab)
                 return super(ObjectCreateView, self).form_valid(form)
 
         self.create = ObjectCreateView.as_view(
@@ -63,7 +83,7 @@ class ObjectView(object):
             template_name=self.template_name_base + "_form.html",
         )
 
-        
+
         @method_decorator(permission_required('laboratory.change_object'), name='dispatch')
         class ObjectUpdateView(UpdateView):
 
@@ -79,17 +99,37 @@ class ObjectView(object):
 
             def form_valid(self, form):
                 object = form.save()
-                organilab_logentry(self.request.user, object, CHANGE,  changed_data=form.changed_data, relobj=self.lab)
+                changed_data = form.changed_data
+                capacity_data = {'capacity': form.cleaned_data['capacity'],
+                                 'capacity_measurement_unit': form.cleaned_data[
+                                     'capacity_measurement_unit'].pk,
+                                 'object': object}
+                capacity_form = None
+                if hasattr(object,'materialcapacity'):
+                    capacity_form = MateriaCapacityObjectForms(data=capacity_data, instance=object.materialcapacity)
+                else:
+                    capacity_form = MateriaCapacityObjectForms(data=capacity_data)
+                if capacity_form.is_valid():
+                    capacity_form.save()
+                changed_data.extend(capacity_form.changed_data)
+                organilab_logentry(self.request.user, object, CHANGE,  changed_data=changed_data, relobj=self.lab)
                 return super(ObjectUpdateView, self).form_valid(object)
 
+            def form_invalid(self, form):
+                response = super().form_invalid(form)
+                if self.request.accepts("text/html"):
+                    return response
+                else:
+                    return JsonResponse(form.errors, status=400)
 
+        capacity = None
         self.edit = ObjectUpdateView.as_view(
             model=self.model,
             form_class=ObjectForm,
             template_name=self.template_name_base + "_form.html"
         )
 
-        
+
         @method_decorator(permission_required('laboratory.delete_object'), name='dispatch')
         class ObjectDeleteView(DeleteView):
 
@@ -117,9 +157,9 @@ class ObjectView(object):
             template_name=self.template_name_base + "_delete.html"
         )
 
-        
-        
-        @method_decorator(permission_required('laboratory.view_object'), name='dispatch')    
+
+
+        @method_decorator(permission_required('laboratory.view_object'), name='dispatch')
         class ObjectListView(ListView):
 
             def get_queryset(self):
@@ -179,59 +219,6 @@ class SustanceCharacteristicsForm(ModelForm):
         fields = '__all__'
 
 
-class ObjectForm( CustomForm,ModelForm):
-    required_css_class = ''
-
-    def __init__(self, *args, **kwargs):
-        self.request = None
-        if 'request' in kwargs:
-            self.request = kwargs.pop('request')
-
-        data_type = None
-        if 'data' in kwargs:
-            data_type = kwargs.get('data').get('type')
-
-        super(ObjectForm, self).__init__(*args, **kwargs)
-
-        if self.request:
-            if 'type_id' in self.request.GET:
-                self.type_id = self.request.GET.get('type_id', '')
-                if self.type_id:
-                    self.fields['type'] = forms.CharField(
-                        initial=self.type_id,
-                        widget=forms.HiddenInput()
-                    )
-                data_type = self.type_id
-
-        if data_type == Object.EQUIPMENT:
-            self.fields['model'].required = True
-        else:
-            self.fields['model'] = forms.CharField(
-                widget=forms.HiddenInput(), required=False
-            )
-            self.fields['serie'] = forms.CharField(
-                widget=forms.HiddenInput(), required=False
-            )
-            self.fields['plaque'] = forms.CharField(
-                widget=forms.HiddenInput(), required=False
-            )
-
-    class Meta:
-        model = Object
-        exclude = ['organization', 'created_by']
-        widgets = {
-            'features': genwidget.SelectMultiple(),
-            'code': genwidget.TextInput,
-            'name': genwidget.TextInput,
-            'synonym':  genwidget.TextInput,
-            'is_public': genwidget.YesNoInput,
-            'description': genwidget.Textarea,
-            'model': genwidget.TextInput,
-            'serie': genwidget.TextInput,
-            'plaque': genwidget.TextInput
-        }
-
-
 @login_required
 
 def block_notifications(request, lab_pk, obj_pk):
@@ -241,3 +228,4 @@ def block_notifications(request, lab_pk, obj_pk):
         laboratory=laboratory, object=object, user=request.user)
     messages.success(request, "You won't be recieving notifications of this object anymore.")
     return render(request, 'laboratory/block_object_notification.html')
+
