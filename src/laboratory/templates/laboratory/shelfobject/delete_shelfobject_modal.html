@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="modal fade" id="delete_shelfobject_modal" role="dialog" aria-labelledby="deletesomodal" aria-hidden="true">
+<div class="modal fade modal-lg" id="delete_shelfobject_modal" role="dialog" aria-labelledby="deletesomodal" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -9,9 +9,9 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group" id="divobjname"></div>
+				<br>
 				<div class="form-group" id="divcontainer">
-					<div id="divcontainername"></div>
-					<label for="id_delete_container"><h6>{% trans 'Would you like to delete this container too?' %}: </h6></label>
+					<label for="id_delete_container"></label>
 					No <input type="checkbox" id="id_delete_container" name="delete_container" data-widget="YesNoInput"/>
 					{% trans 'Yes' %}
 				</div>

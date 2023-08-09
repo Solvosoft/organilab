@@ -11,7 +11,9 @@ function shelfObjectDelete(shelf_object_id, text, type, container=false, contain
     $("#id_delete_container").iCheck('uncheck').change();
     $("#delete_shelfobject_modal #divcontainer").hide();
     if(type == '0' && container){
-        $("#delete_shelfobject_modal #divcontainername").html('<h6><b>'+gettext("Container")+": "+ container_name+'</b></h6>');
+        var container_label = '<h6>'+gettext("Would you like to delete the container")+' "'+container_name+'" '+
+        gettext("as well?")+'</h6>';
+        $('label[for="id_delete_container"]').html(container_label);
         $("#delete_shelfobject_modal #divcontainer").show();
     }
     $("#btndeleteso").data('shelfobject', shelf_object_id);
