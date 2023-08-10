@@ -226,9 +226,7 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
     if quantity <= 0 :
         logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
         errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
-    print(container)
     if container:
-        print(3163)
         if hasattr(container.object, 'materialcapacity'):
             container_capacity = container.object.materialcapacity.capacity
             container_unit = container.object.materialcapacity.capacity_measurement_unit
