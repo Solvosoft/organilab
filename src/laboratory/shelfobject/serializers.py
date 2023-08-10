@@ -542,7 +542,7 @@ class ShelfSerializer(serializers.ModelSerializer):
             'measurement_unit': self.get_measurement_unit(obj),
             'quantity_storage_status': self.get_quantity_storage_status(obj),
             'percentage_storage_status': self.get_percentage_storage_status(obj),
-            'position': position if position else 'top'
+            'position': position if position in ['bottom', 'left', 'right'] else 'top'
         }
         return render_to_string(
             'laboratory/shelfobject/shelf_availability_information.html',
