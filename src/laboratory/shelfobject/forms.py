@@ -63,6 +63,7 @@ class MoveShelfObjectForm(GTForm):
                                           'data-related': 'true',
                                           'data-pos': 0,
                                           'data-groupname': 'moveshelfform',
+                                          'data-s2filter-shelfobject': '#id_shelfobject',
                                           'data-s2filter-organization': '#id_organization',
                                           'data-s2filter-laboratory': '#id_laboratory'
                                       })
@@ -72,6 +73,7 @@ class MoveShelfObjectForm(GTForm):
                                            'data-related': 'true',
                                            'data-pos': 1,
                                            'data-groupname': 'moveshelfform',
+                                           'data-s2filter-shelfobject': '#id_shelfobject',
                                            'data-s2filter-organization': '#id_organization',
                                            'data-s2filter-laboratory': '#id_laboratory'
                                        })
@@ -81,7 +83,7 @@ class MoveShelfObjectForm(GTForm):
                                        'data-related': 'true',
                                        'data-pos': 2,
                                        'data-groupname': 'moveshelfform',
-                                       'data-s2filter-shelf': '#id_shelf',
+                                       'data-s2filter-shelfobject': '#id_shelfobject',
                                        'data-s2filter-organization': '#id_organization',
                                        'data-s2filter-laboratory': '#id_laboratory'
                                    }), help_text=_("This select only shows shelves with same measurement unit than current object")
