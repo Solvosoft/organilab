@@ -207,8 +207,8 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
     total = shelf.get_total_refuse() + quantity
-    
-    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
+
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
         logger.debug(f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
                      f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
@@ -671,6 +671,10 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
+class ValidateUserAccessShelfObjectSerializer(ValidateUserAccessOrgLabSerializer):
+    shelfobject = serializers.PrimaryKeyRelatedField(
+        queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
+        required=False)
 
 class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
     OBJTYPE_CHOICES = (

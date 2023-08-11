@@ -7,10 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.models import LaboratoryRoom, Furniture, Shelf
-from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer
+from laboratory.shelfobject.serializers import ValidateUserAccessShelfObjectSerializer
 from laboratory.utils import get_laboratories_from_organization
 from report.api.serializers import ValidateUserAccessLabRoomSerializer
-
+from django.db.models import Q
 
 class GPaginatorMoreElements(GPaginator):
     page_size = 100
@@ -23,7 +23,8 @@ class LabRoomLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    organization, laboratory, lab_room, serializer, all_labs_org = None, None, None, None, False
+    organization, laboratory, lab_room, serializer, all_labs_org, shelfobject =\
+        None, None, None, None, False, None
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -34,6 +35,11 @@ class LabRoomLookup(BaseSelect2View):
         else:
             if self.laboratory:
                 queryset = queryset.filter(laboratory=self.laboratory)
+
+                if self.shelfobject:
+                    filters = Q(furniture__shelf__measurement_unit__isnull=True) | \
+                    Q(furniture__shelf__measurement_unit=self.shelfobject.measurement_unit)
+                    queryset = queryset.filter(filters).distinct()
 
         if self.lab_room:
             id_list = [lab_room.pk for lab_room in self.lab_room]
@@ -48,6 +54,7 @@ class LabRoomLookup(BaseSelect2View):
             self.laboratory = self.serializer.validated_data['laboratory']
             self.organization = self.serializer.validated_data['organization']
             self.all_labs_org = self.serializer.validated_data['all_labs_org']
+            self.shelfobject = self.serializer.validated_data.get('shelfobject', None)
             return super().list(request, *args, **kwargs)
 
         return Response({
@@ -64,12 +71,23 @@ class FurnitureLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer = None
+    serializer, shelfobject = None, None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.shelfobject:
+            filters = Q(shelf__measurement_unit__isnull=True) | \
+                      Q(shelf__measurement_unit=self.shelfobject.measurement_unit)
+            queryset = queryset.filter(filters).distinct()
+
+        return queryset
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
 
         if self.serializer.is_valid():
+            self.shelfobject = self.serializer.validated_data.get('shelfobject', None)
             return super().list(request, *args, **kwargs)
 
         return Response({
@@ -87,19 +105,22 @@ class ShelfLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    exclude_shelf, serializer = None, None
+    serializer, shelfobject = None, None
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.exclude_shelf:
-            queryset = queryset.filter(measurement_unit=self.exclude_shelf.measurement_unit).exclude(pk=self.exclude_shelf.pk)
+
+        if self.shelfobject:
+            filters = Q(measurement_unit__isnull=True) | \
+                      Q(measurement_unit=self.shelfobject.measurement_unit)
+            queryset = queryset.filter(filters).exclude(pk=self.shelfobject.shelf.pk).distinct()
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
+        self.serializer = ValidateUserAccessShelfObjectSerializer(data=request.GET, context={'user': request.user})
 
         if self.serializer.is_valid():
-            self.exclude_shelf = self.serializer.validated_data['shelf']
+            self.shelfobject = self.serializer.validated_data.get('shelfobject', None)
             return super().list(request, *args, **kwargs)
 
         return Response({

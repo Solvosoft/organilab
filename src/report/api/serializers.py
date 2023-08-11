@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.conf import settings
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
-from laboratory.models import LaboratoryRoom, Laboratory, Object, Catalog
+from laboratory.models import LaboratoryRoom, Laboratory, Object, Catalog, \
+    ShelfObject
 from report.models import ObjectChangeLogReportBuilder
 from django.utils.translation import gettext_lazy as _
 
@@ -15,6 +16,9 @@ class ReportDataTableSerializer(serializers.Serializer):
 class ValidateUserAccessLabRoomSerializer(ValidateUserAccessOrgLabSerializer):
     lab_room = serializers.PrimaryKeyRelatedField(many=True, queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE), allow_null=True, required=False)
     all_labs_org = serializers.BooleanField(default=False)
+    shelfobject = serializers.PrimaryKeyRelatedField(
+        queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
+        required=False)
 
 class ObjectChangeLogSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
