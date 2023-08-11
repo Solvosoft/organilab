@@ -86,7 +86,10 @@ class MoveShelfObjectForm(GTForm):
                                        'data-s2filter-shelfobject': '#id_shelfobject',
                                        'data-s2filter-organization': '#id_organization',
                                        'data-s2filter-laboratory': '#id_laboratory'
-                                   }), help_text=_("This select only shows shelves with same measurement unit than current object")
+                                   }), help_text=_("This select only shows shelves with some following features: "
+                                                   "1) Infinity quantity capacity and not defined measurement unit. "
+                                                   "2) Infinity quantity capacity and same measurement unit than selected shelf object. "
+                                                   "3) Same measurement unit than selected shelf object and available capacity shelf.")
                                    )
 
 class ShelfObjectExtraFields(GTForm, forms.Form):
