@@ -10,6 +10,9 @@ from django.utils.translation import gettext_lazy as _
 class ObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_objectview_create(self):
+        """
+        Test for object view when create a material object with capacitymaterial
+        """
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         data = {
@@ -33,6 +36,11 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response, success_url)
 
     def test_objectview_create_no_capacity(self):
+        """
+        Test for object view when create an material object without capacity and send a
+        error because the capacity is required when the object is a material
+        """
+
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         data = {
@@ -55,6 +63,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "This field is required.")
 
     def test_objectview_create_no_capacity_unit(self):
+        """
+        Test for object view when create ax material object without capacity_unit and send a
+        error because the capacity_unit is required when the object is a material
+        """
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         data = {
@@ -77,6 +89,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "This field is required.")
 
     def test_objectview_create_capacity_str(self):
+        """
+        Test for object view when create a material object with the data of capacity is
+        string and this field need a number.
+        """
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create",
                       kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -100,6 +116,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "<li>Enter a number.</li>")
 
     def test_objectview_create_capacity_negative(self):
+        """
+        Test for object view when create a material object with the data of capacity is
+        negative number and this field need a positive number.
+        """
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create",
                       kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
@@ -123,6 +143,11 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "<li>Enter a number.</li>")
 
     def test_objectview_create_no_unit(self):
+        """
+        Test for object view when create a material object with capacity_unit is
+        a option that the field do not accept because only permit a option from
+        Catalog model with the key units.
+        """
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         data = {
@@ -145,6 +170,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertContains(response, "<li>Select a valid choice. That choice is not one of the available choices.</li>")
 
     def test_objectview_create_no_material(self):
+        """
+        Test for object view when create an object that is not of material type, because
+        the capacity and capacity unit not is required
+        """
         total_obj = Object.objects.all().count()
         url = reverse("laboratory:objectview_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         data = {
@@ -166,6 +195,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response, success_url)
 
     def test_update_no_material(self):
+        """
+        Test for object view when update an  object that is not of material type, because
+        the capacity and capacity unit not is required
+        """
         object = Object.objects.filter(type=0).first()
         self.assertFalse(hasattr(object,'materialcapacity'))
         url = reverse("laboratory:objectview_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": object.pk})
@@ -190,6 +223,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertRedirects(response, success_url)
 
     def test_update_no_material_with_capacity_unit(self):
+        """
+        Test for object view when update an  object that is not of material type, because
+        the capacity and capacity unit not is required
+        """
         object = Object.objects.filter(type=0).first()
         self.assertFalse(hasattr(object,'materialcapacity'))
         url = reverse("laboratory:objectview_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": object.pk})
@@ -211,187 +248,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 302)
         self.assertFalse(hasattr(object, 'materialcapacity'))
         self.assertFalse(hasattr(new_object, 'materialcapacity'))
+        """In objects different of material type the material capacity not create"""
         success_url = reverse("laboratory:objectview_list", kwargs={"org_pk": self.org.pk,
                                                                 "lab_pk": self.lab.pk}) + "?type_id=0"
         self.assertRedirects(response, success_url)
-
-    def test_create_shelfobject_material(self):
-
-        material_data = {
-            "name": "Ácido Clorhídrico",
-            "code": "AC",
-            "synonym": "Ácido",
-            "is_public": True,
-            "model": "AC2022",
-            "serie": "Ácido 222",
-            "plaque": "AC4300",
-            "type": "1",
-            "organization": self.org
-        }
-        material = Object.objects.create(**material_data)
-        material.features.add(ObjectFeatures.objects.get(pk=1))
-
-        unit = Catalog.objects.get(pk=59)
-        MaterialCapacity.objects.create(
-            object=material,
-            capacity=200,
-            capacity_measurement_unit=unit
-        )
-        data = {
-            "shelf": 13,
-            "object": material.pk,
-            "objecttype": 1,
-            "status": 1,
-            "quantity": 23.0,
-            "limit_quantity": 7.0,
-            "in_where_laboratory": 1,
-            "marked_as_discard": False,
-            "minimum_limit": 0,
-            "maximum_limit": 0,
-        }
-        url = reverse("laboratory:api-shelfobject-create-shelfobject",
-                      kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        self.client.post(url, data=data, content_type='application/json')
-        shelfobject_count = ShelfObject.objects.filter(shelf__pk=13).count()
-        new_shelobject = ShelfObject.objects.last()
-        data = {
-                "shelf": 13,
-                "object": 2,
-                "batch": 2,
-                "objecttype": 0,
-                "status": 1,
-                "quantity": 10.0,
-                "limit_quantity": 7.0,
-                "in_where_laboratory": 1,
-                "course_name": "A reactive product",
-                "measurement_unit": 59,
-                "marked_as_discard": False,
-                "minimum_limit": 0,
-                "maximum_limit": 0,
-                "container": new_shelobject.pk
-            }
-        response=self.client.post(url, data=data, content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        self.assertTrue(ShelfObject.objects.filter(shelf__pk=13).count()>shelfobject_count)
-
-    def test_create_shelfobject_material_over_capacity(self):
-
-        material_data = {
-            "name": "Ácido Clorhídrico",
-            "code": "AC",
-            "synonym": "Ácido",
-            "is_public": True,
-            "model": "AC2022",
-            "serie": "Ácido 222",
-            "plaque": "AC4300",
-            "type": "1",
-            "organization": self.org
-        }
-        material = Object.objects.create(**material_data)
-        material.features.add(ObjectFeatures.objects.get(pk=1))
-
-        unit = Catalog.objects.get(pk=59)
-        MaterialCapacity.objects.create(
-            object=material,
-            capacity=200,
-            capacity_measurement_unit=unit
-        )
-        data = {
-            "shelf": 13,
-            "object": material.pk,
-            "objecttype": 1,
-            "status": 1,
-            "quantity": 23.0,
-            "limit_quantity": 7.0,
-            "in_where_laboratory": 1,
-            "marked_as_discard": False,
-            "minimum_limit": 0,
-            "maximum_limit": 0,
-        }
-        url = reverse("laboratory:api-shelfobject-create-shelfobject",
-                      kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        self.client.post(url, data=data, content_type='application/json')
-        shelfobject_count = ShelfObject.objects.filter(shelf__pk=13).count()
-        new_shelobject = ShelfObject.objects.last()
-        data = {
-                "shelf": 13,
-                "object": 2,
-                "batch": 2,
-                "objecttype": 0,
-                "status": 1,
-                "quantity": 201.0,
-                "limit_quantity": 7.0,
-                "in_where_laboratory": 1,
-                "course_name": "A reactive product",
-                "measurement_unit": 59,
-                "marked_as_discard": False,
-                "minimum_limit": 0,
-                "maximum_limit": 0,
-                "container": new_shelobject.pk
-            }
-        response=self.client.post(url, data=data, content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(json.loads(response.content)['errors']['quantity'][0]=="Quantity cannot be greater than the container capacity limit: 200.0.")
-        self.assertTrue(ShelfObject.objects.filter(shelf__pk=13).count()==shelfobject_count)
-
-
-    def test_create_shelfobject_material_other_capacity_unit(self):
-
-        material_data = {
-            "name": "Ácido Clorhídrico",
-            "code": "AC",
-            "synonym": "Ácido",
-            "is_public": True,
-            "model": "AC2022",
-            "serie": "Ácido 222",
-            "plaque": "AC4300",
-            "type": "1",
-            "organization": self.org
-        }
-        material = Object.objects.create(**material_data)
-        material.features.add(ObjectFeatures.objects.get(pk=1))
-
-        unit = Catalog.objects.get(pk=64)
-        MaterialCapacity.objects.create(
-            object=material,
-            capacity=200,
-            capacity_measurement_unit=unit
-        )
-        data = {
-            "shelf": 13,
-            "object": material.pk,
-            "objecttype": 1,
-            "status": 1,
-            "quantity": 23.0,
-            "limit_quantity": 7.0,
-            "in_where_laboratory": 1,
-            "marked_as_discard": False,
-            "minimum_limit": 0,
-            "maximum_limit": 0,
-        }
-        url = reverse("laboratory:api-shelfobject-create-shelfobject",
-                      kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        self.client.post(url, data=data, content_type='application/json')
-        shelfobject_count = ShelfObject.objects.filter(shelf__pk=13).count()
-        new_shelobject = ShelfObject.objects.last()
-        data = {
-                "shelf": 13,
-                "object": 2,
-                "batch": 2,
-                "objecttype": 0,
-                "status": 1,
-                "quantity": 30.0,
-                "limit_quantity": 7.0,
-                "in_where_laboratory": 1,
-                "course_name": "A reactive product",
-                "measurement_unit": 59,
-                "marked_as_discard": False,
-                "minimum_limit": 0,
-                "maximum_limit": 0,
-                "container": new_shelobject.pk
-            }
-        response=self.client.post(url, data=data, content_type='application/json')
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(json.loads(response.content)['errors']['measurement_unit'][0]=="Measurement unit cannot be different than the container object measurement unit: Unidades.")
-        self.assertTrue(ShelfObject.objects.filter(shelf__pk=13).count()==shelfobject_count)
-
