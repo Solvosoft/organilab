@@ -8,9 +8,11 @@ from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.models import LaboratoryRoom, Furniture, Shelf
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfObjectSerializer
+from laboratory.shelfobject.utils import get_available_objs_shelfobject
 from laboratory.utils import get_laboratories_from_organization
 from report.api.serializers import ValidateUserAccessLabRoomSerializer
-from django.db.models import Q
+from django.db.models import Q, Sum
+
 
 class GPaginatorMoreElements(GPaginator):
     page_size = 100
@@ -31,14 +33,27 @@ class LabRoomLookup(BaseSelect2View):
 
         if self.all_labs_org:
             labs_by_org = get_laboratories_from_organization(self.organization.pk)
-            queryset = LaboratoryRoom.objects.filter(laboratory__in=labs_by_org.filter(profile__user=self.request.user).using(settings.READONLY_DATABASE))
+            queryset = LaboratoryRoom.objects.filter(laboratory__in=labs_by_org.filter(
+                profile__user=self.request.user).using(settings.READONLY_DATABASE))
         else:
             if self.laboratory:
                 queryset = queryset.filter(laboratory=self.laboratory)
 
                 if self.shelfobject:
-                    filters = Q(furniture__shelf__measurement_unit__isnull=True) | \
-                    Q(furniture__shelf__measurement_unit=self.shelfobject.measurement_unit)
+                    labrooms = queryset.filter(furniture__shelf__measurement_unit=
+                                              self.shelfobject.measurement_unit).values(
+                        'furniture__shelf', 'pk').distinct()
+
+                    available_labrooms = get_available_objs_shelfobject(labrooms,
+                                                                self.shelfobject,
+                                                                'furniture__shelf')
+
+                    filters = Q(furniture__shelf__measurement_unit__isnull=True,
+                                furniture__shelf__infinity_quantity=True) | \
+                              Q(furniture__shelf__measurement_unit__isnull=False,
+                                furniture__shelf__infinity_quantity=True) | \
+                              Q(pk__in=available_labrooms)
+
                     queryset = queryset.filter(filters).distinct()
 
         if self.lab_room:
@@ -47,7 +62,9 @@ class LabRoomLookup(BaseSelect2View):
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateUserAccessLabRoomSerializer(data=request.GET, context={'user': request.user})
+        self.serializer = ValidateUserAccessLabRoomSerializer(data=request.GET,
+                                                              context={
+                                                                  'user': request.user})
 
         if self.serializer.is_valid():
             self.lab_room = self.serializer.validated_data['lab_room']
@@ -77,14 +94,27 @@ class FurnitureLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.shelfobject:
-            filters = Q(shelf__measurement_unit__isnull=True) | \
-                      Q(shelf__measurement_unit=self.shelfobject.measurement_unit)
+            furnitures = queryset.filter(shelf__measurement_unit=
+                                      self.shelfobject.measurement_unit).values(
+                'shelf', 'pk').distinct()
+
+            available_furnitures = get_available_objs_shelfobject(furnitures,
+                                                                self.shelfobject,
+                                                                'shelf')
+
+            filters = Q(shelf__measurement_unit__isnull=True,
+                        shelf__infinity_quantity=True) | \
+                      Q(shelf__measurement_unit__isnull=False,
+                        shelf__infinity_quantity=True) | \
+                      Q(pk__in=available_furnitures)
+
             queryset = queryset.filter(filters).distinct()
 
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={
+            'user': request.user})
 
         if self.serializer.is_valid():
             self.shelfobject = self.serializer.validated_data.get('shelfobject', None)
@@ -111,13 +141,24 @@ class ShelfLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.shelfobject:
-            filters = Q(measurement_unit__isnull=True) | \
-                      Q(measurement_unit=self.shelfobject.measurement_unit)
-            queryset = queryset.filter(filters).exclude(pk=self.shelfobject.shelf.pk).distinct()
+            shelves = queryset.filter(measurement_unit=
+                                      self.shelfobject.measurement_unit).values('pk')\
+                .distinct()
+
+            available_shelves = get_available_objs_shelfobject(shelves,
+                                                                self.shelfobject, 'pk')
+            filters = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
+                      Q(measurement_unit__isnull=False, infinity_quantity=True) | \
+                      Q(pk__in=available_shelves)
+
+            queryset = queryset.filter(filters).exclude(pk=self.shelfobject.shelf.pk)\
+                .distinct()
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateUserAccessShelfObjectSerializer(data=request.GET, context={'user': request.user})
+        self.serializer = ValidateUserAccessShelfObjectSerializer(data=request.GET,
+                                                                  context={
+                                                                      'user': request.user})
 
         if self.serializer.is_valid():
             self.shelfobject = self.serializer.validated_data.get('shelfobject', None)
