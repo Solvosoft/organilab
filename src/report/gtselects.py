@@ -50,8 +50,6 @@ class LabRoomLookup(BaseSelect2View):
 
                     filters = Q(furniture__shelf__measurement_unit__isnull=True,
                                 furniture__shelf__infinity_quantity=True) | \
-                              Q(furniture__shelf__measurement_unit__isnull=False,
-                                furniture__shelf__infinity_quantity=True) | \
                               Q(pk__in=available_labrooms)
 
                     queryset = queryset.filter(filters).distinct()
@@ -104,8 +102,6 @@ class FurnitureLookup(BaseSelect2View):
 
             filters = Q(shelf__measurement_unit__isnull=True,
                         shelf__infinity_quantity=True) | \
-                      Q(shelf__measurement_unit__isnull=False,
-                        shelf__infinity_quantity=True) | \
                       Q(pk__in=available_furnitures)
 
             queryset = queryset.filter(filters).distinct()
@@ -148,7 +144,6 @@ class ShelfLookup(BaseSelect2View):
             available_shelves = get_available_objs_shelfobject(shelves,
                                                                 self.shelfobject, 'pk')
             filters = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
-                      Q(measurement_unit__isnull=False, infinity_quantity=True) | \
                       Q(pk__in=available_shelves)
 
             queryset = queryset.filter(filters).exclude(pk=self.shelfobject.shelf.pk)\
