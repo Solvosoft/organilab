@@ -18,6 +18,7 @@
 {% url "laboratory:api-shelfobject-move-shelfobject-to-shelf" lab_pk=laboratory org_pk=org_pk as move_so_url %}
 {% trans 'Move to other shelf' as move_so_tittle %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=move_object_form id="movesomodal" title=move_so_tittle form_id="movesoform" url=move_so_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=move_object_container_form id="movesocontainermodal" title=move_so_tittle form_id="movesocontainerform" url=move_so_url %}
 
 
 

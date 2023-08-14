@@ -13,7 +13,12 @@
 <a class="ms-2" data-bs-toggle="modal" onclick="return show_me_modal(this, event);" data-modalid="transfer_out_obj_id_modal" title="{% trans 'Transfer Out' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="decreasesomodal" title="{% trans 'Substract' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
 <a class="ms-2" href="{% url 'laboratory:get_shelfobject_log' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
+
+{% if shelfobject.object.type == '0' %}
+<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal" title="{% trans 'Move' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-arrows" aria-hidden="true"></i></a>
+{% else %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesomodal" title="{% trans 'Move' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-arrows" aria-hidden="true"></i></a>
+{% endif %}
 
 {% if perms.laboratory.do_report %}
 <a class="ms-2" target="_blank" href="{% url 'laboratory:reports_shelf_objects' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" title="{% trans 'Download' %}">
