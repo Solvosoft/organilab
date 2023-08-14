@@ -616,7 +616,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_lab_room(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr:
             if attr.laboratory_id != source_laboratory_id:
                 logger.debug(f'MoveShelfObjectSerializer --> attr.laboratory_id ({attr.laboratory_id}) != '
@@ -626,7 +626,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_furniture(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr:
             if attr.labroom.laboratory_id != source_laboratory_id:
                 logger.debug(f'MoveShelfObjectSerializer --> attr.labroom.laboratory_id ({attr.labroom.laboratory_id}) != '
@@ -636,7 +636,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_shelf(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr:
             if attr.furniture.labroom.laboratory_id != source_laboratory_id:
                 logger.debug(f'MoveShelfObjectSerializer --> attr.furniture.labroom.laboratory_id ({attr.furniture.labroom.laboratory_id}) '
@@ -646,7 +646,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(f'MoveShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != '
                          f'source_laboratory_id ({source_laboratory_id})')
@@ -855,4 +855,24 @@ class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectS
                          f'transfer_object.quantity ({transfer_object.quantity}) < transfer_object.object.quantity ({transfer_object.object.quantity})')
             raise serializers.ValidationError({"container_select_option":
                 _("The source container cannot be moved since the entire quantity available for the source object was not transferred in.")})
+        return data
+
+
+class MoveShelfObjectWithContainerSerializer(MoveShelfObjectSerializer, ContainerSerializer):
+    MOVE_CONTAINER_SELECT_CHOICES = [
+        ('clone', _('Create new based on selected')),
+        ('available', _('Use selected')),
+        ('use_source', _('Move the container from the source laboratory')),
+        ('new_based_source', _('Create new based on current container in the source laboratory'))
+    ]
+    container_select_option = serializers.ChoiceField(required=True, choices=MOVE_CONTAINER_SELECT_CHOICES)
+
+    def validate(self, data):
+        container_select_option = data['container_select_option']
+        shelf_object = data['shelf_object']
+        if container_select_option in ("use_source", "new_based_source") and not shelf_object.container:
+            logger.debug(f'MoveShelfObjectWithContainerSerializer --> container_select_option in ("use_source", "new_based_source") '
+                         f'and not shelf_object.container')
+            raise serializers.ValidationError({'container_select_option':
+                _("The selected option cannot be used since the source object does not have a container assigned.")})
         return data

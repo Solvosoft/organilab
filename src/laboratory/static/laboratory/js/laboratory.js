@@ -559,17 +559,30 @@ $("#hide_alert").on('click', function(){
     $("div.alert").removeClass("show");
 });
 
-function show_hide_container_selects(form_id, selected_value){
+function show_hide_container_selects(form_id, selected_value, prefix=""){
     // they are hidden for the other options, so hide them by default and just display one if required
-    $(form_id).find("#id_available_container").parents(".form-group").hide();
-    $(form_id).find("#id_container_for_cloning").parents(".form-group").hide();
+    $(form_id).find("#id_"+prefix+"available_container").parents(".form-group").hide();
+    $(form_id).find("#id_"+prefix+"container_for_cloning").parents(".form-group").hide();
     if(selected_value === 'available'){
-        $(form_id).find("#id_available_container").parents('.form-group').show();
+        $(form_id).find("#id_"+prefix+"available_container").parents('.form-group').show();
     }else if(selected_value === 'clone'){
-        $(form_id).find("#id_container_for_cloning").parents('.form-group').show();
+        $(form_id).find("#id_"+prefix+"container_for_cloning").parents('.form-group').show();
     }
 }
 
 $("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
+});
+
+
+$("#movesocontainerform #id_movewithcontainer-container_select_option").on('change', function(event){
+    show_hide_container_selects("#movesocontainerform", event.target.value, prefix="movewithcontainer-");
+});
+
+$('#movesocontainermodal').on('show.bs.modal', function (e) {
+    var row = "<div class='form-group row my-3' id='div_separator_container' style='border-bottom: 1px solid #dee2e6;'></div>";
+    if($("#movesocontainerform #div_separator_container").length == 0){
+        $("#id_movewithcontainer-container_select_option").parents(".form-group").before(row);
+    }
+    show_hide_container_selects("#movesocontainerform", "none", prefix="movewithcontainer-");
 });
