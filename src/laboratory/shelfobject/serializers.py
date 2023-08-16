@@ -206,7 +206,7 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
-    total = shelf.get_total_refuse(include_containers=False, measurement_unit=measurement_unit) + quantity
+    total = shelf.get_total_refuse(include_containers=False, measurement_unit=shelf.measurement_unit) + quantity
     
     if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
@@ -723,9 +723,16 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
             # do it here instead of in validate_transfer_object so shelf is already validated when used
             errors = validate_measurement_unit_and_quantity(data['shelf'], transfer_object.object.object, transfer_object.quantity, transfer_object.object.measurement_unit)
             if errors:
-                # in this case all the possible errors are actually related to the transfer object element, so group them in that key before returning
-                updated_errors = {'transfer_object': []}
-                [updated_errors['transfer_object'].append(error) for key, error in errors.items()]
+                updated_errors = {}
+                transfer_object_errors = []
+                for key, error in errors.items():
+                    if key in ['quantity', 'object', 'measurement_unit']:
+                        # in this case all the possible errors are actually related to the transfer object element, so group them in that key before returning
+                        transfer_object_errors.append(error)
+                    else:
+                        updated_errors[key] = error
+                    if transfer_object_errors:
+                        updated_errors['transfer_object'] = transfer_object_errors
                 raise serializers.ValidationError(updated_errors)
         return data
 
