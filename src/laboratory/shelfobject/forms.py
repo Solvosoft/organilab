@@ -420,21 +420,19 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 
 
 class ContainerForm(GTForm):
-    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
+    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=ContainerSerializer.CONTAINER_SELECT_CHOICES,
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
     available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=ShelfObject.objects.none(), label=_("Container"))
 
     def __init__(self, *args, **kwargs):
         modal_id = kwargs.pop('modal_id')
-        set_container_options = kwargs.pop('set_container_options', False)
+        set_container_advanced_options = kwargs.pop('set_container_advanced_options', False)
         super(ContainerForm, self).__init__(*args, **kwargs)
 
-        if set_container_options:
-            self.fields['container_select_option'] = forms.ChoiceField(
-                widget=forms.RadioSelect,
-                choices=ContainerSerializer.CONTAINER_SELECT_CHOICES,
-                label=_("Container Options"))
+        if set_container_advanced_options:
+            self.fields['container_select_option'].choices = \
+                TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES
 
         self.fields['available_container'] = forms.ModelChoiceField(
             queryset=ShelfObject.objects.none(),
