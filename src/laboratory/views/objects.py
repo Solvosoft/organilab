@@ -6,13 +6,10 @@ Free as freedom will be 26/8/2016
 @author: luisza
 '''
 
-from django import forms
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
-from django.contrib.contenttypes.models import ContentType
-from django.core.validators import RegexValidator
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.http import HttpResponseRedirect, JsonResponse
@@ -20,16 +17,11 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
-from djgentelella.forms.forms import CustomForm, GTForm
-from djgentelella.widgets import core as genwidget
-
-from laboratory.forms import MateriaCapacityObjectForms, ObjectForm
+from laboratory.forms import ObjectForm
 from laboratory.models import Laboratory, BlockedListNotification, \
-    OrganizationStructure, MaterialCapacity, Catalog
+    OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
-from laboratory.utils import filter_laboratorist_profile, organilab_logentry, get_profile_by_organization, \
-    get_pk_org_ancestors
+from laboratory.utils import organilab_logentry, get_pk_org_ancestors
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 
 
@@ -62,16 +54,12 @@ class ObjectView(object):
 
                 if object.type == Object.MATERIAL:
                     object.save()
-
                     capacity_data = {'capacity':form.cleaned_data['capacity'],
-                                'capacity_measurement_unit': form.cleaned_data['capacity_measurement_unit'].pk,
+                                'capacity_measurement_unit': form.cleaned_data['capacity_measurement_unit'],
                                 'object':object}
 
-                    capacity_form = MateriaCapacityObjectForms(data=capacity_data)
-                    if capacity_form.is_valid():
-                        capacity_form.save()
+                    MaterialCapacity.objects.create(**capacity_data)
 
-                    changed_data.extend(capacity_form.changed_data)
 
 
                 organilab_logentry(self.request.user, object, ADDITION, changed_data=changed_data, relobj=self.lab)
@@ -105,15 +93,17 @@ class ObjectView(object):
                 if object.type==Object.MATERIAL:
                     capacity_data = {'capacity': form.cleaned_data['capacity'],
                                      'capacity_measurement_unit': form.cleaned_data[
-                                         'capacity_measurement_unit'].pk,
-                                     'object': object}
+                                         'capacity_measurement_unit'],
+                                     'object': form.cleaned_data['object']}
                     if hasattr(object,'materialcapacity'):
-                        capacity_form = MateriaCapacityObjectForms(data=capacity_data, instance=object.materialcapacity)
+                        material_capacity= object.materialcapacity
+                        material_capacity.capacity=capacity_data['capacity']
+                        material_capacity.capacity_measurement_unit = (
+                            form.cleaned_data)['capacity_measurement_unit']
+                        material_capacity.save()
                     else:
-                        capacity_form = MateriaCapacityObjectForms(data=capacity_data)
-                    if capacity_form.is_valid():
-                        capacity_form.save()
-                    changed_data.extend(capacity_form.changed_data)
+                        MaterialCapacity.objects.create(**capacity_data)
+
                 organilab_logentry(self.request.user, object, CHANGE,  changed_data=changed_data, relobj=self.lab)
                 return super(ObjectUpdateView, self).form_valid(object)
 
