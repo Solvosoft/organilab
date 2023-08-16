@@ -422,7 +422,7 @@ class TransferInShelfObjectApproveWithContainerForm(GTForm):
     container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
-    available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
+    available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=ShelfObject.objects.none(), label=_("Container"))
 
     def __init__(self, *args, **kwargs):
         laboratory_id = kwargs.pop('laboratory_id')
@@ -440,7 +440,7 @@ class TransferInShelfObjectApproveWithContainerForm(GTForm):
             help_text=_("Search by name")
         )
         self.fields['container_for_cloning'] = forms.ModelChoiceField(
-            queryset=ShelfObject.objects.none(),
+            queryset=Object.objects.none(),
             widget=AutocompleteSelect('container-for-cloning-search',
                                       attrs={
                                           'data-dropdownparent': "#transfer_in_approve_with_container_id_modal",
