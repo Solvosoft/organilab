@@ -339,8 +339,13 @@ class Shelf(BaseCreationObj):
         return '%s %s %s %s' % (
             self.furniture.labroom.name, self.furniture.name, str(self.type), self.name)
 
-    def get_total_refuse(self):
-        return ShelfObject.objects.filter(shelf=self).aggregate(
+    def get_total_refuse(self, include_containers=True):
+        filters = {'shelf': self}
+
+        if not include_containers:
+            filters['containershelfobject'] = None
+
+        return ShelfObject.objects.filter(**filters).aggregate(
             amount=Sum('quantity', default=0))['amount']
 
     def get_refuse_porcentage(self):
