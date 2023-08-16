@@ -508,26 +508,31 @@ class ShelfSerializer(serializers.ModelSerializer):
         elif quantity:
             quantity = round(quantity,  3)
 
-        shelfobjects = ShelfObject.objects.filter(shelf=obj, containershelfobject=None)
-
         if obj.measurement_unit:
-            total = shelfobjects.filter(measurement_unit=obj.measurement_unit).aggregate(
-                amount=Sum('quantity', default=0))['amount']
+            total = obj.get_total_refuse(include_containers=False, measurement_unit=obj.measurement_unit)
         else:
             total_detail = ""
-            measurement_unit_list = shelfobjects.values('measurement_unit', 'measurement_unit__description').distinct()
+            measurement_unit_list = obj.get_objects(containershelfobject=None).values(
+                'measurement_unit', 'measurement_unit__description').distinct()
 
             for unit in measurement_unit_list:
                 total_detail += "%d %s<br>" % (
-                shelfobjects.filter(measurement_unit=unit['measurement_unit']).aggregate(
-                    amount=Sum('quantity', default=0))['amount'],
-                unit['measurement_unit__description'])
+                    obj.get_total_refuse(include_containers=False,
+                                         measurement_unit=unit['measurement_unit']),
+                unit['measurement_unit__description']
+                )
             return total_detail
 
         return f'{round(total, 3)} {_("of")} {quantity}'
 
     def get_percentage_storage_status(self, obj):
-        percentage = f'{round(obj.get_refuse_porcentage(), 2)}% {_("of")} 100%'
+        percentage = ""
+
+        if obj.measurement_unit:
+            total = obj.get_refuse_porcentage(include_containers=False,
+                                              measurement_unit=obj.measurement_unit)
+            percentage = f'{round(total, 2)}% {_("of")} 100%'
+
         if obj.infinity_quantity or not obj.measurement_unit:
             percentage = "-------"
         return percentage
