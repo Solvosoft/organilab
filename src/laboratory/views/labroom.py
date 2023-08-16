@@ -161,7 +161,7 @@ class LaboratoryRoomsList(ListView):
             initial={"objecttype": 1}, org_pk=self.org, prefix="mff")
         context[
             'transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(
-            laboratory_id=self.lab)
+            modal_id="#transfer_in_approve_with_container_id_modal")
         context['options'] = ['Reservation', 'Add', 'Transfer', 'Substract']
         context['user'] = self.request.user
         context['search_by_url'] = self.search_by_url(self.request.GET)
