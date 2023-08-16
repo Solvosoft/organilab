@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="row">
+<div class="row m-0">
 	<div class="col-sm-6">
 		<div class="col-sm-6"><label><strong>{% trans "Name" %}:</strong></label></div>
 		<div class="col-sm-6"><p>{{shelf.obj.name}}</p></div>
@@ -9,7 +9,7 @@
 		<div class="col-sm-6"><p>{{shelf.type}}</p></div>
 	</div>
 </div>
-<div class="row">
+<div class="row m-0">
 	<div class="col-sm-6">
 		<div class="col-sm-6"><label><strong>{% trans "Measurement Unit" %}:</strong></label></div>
 		<div class="col-sm-6"><p>{{shelf.measurement_unit}}</p></div>
@@ -20,7 +20,7 @@
 	</div>
 </div>
 
-<div class="row">
+<div class="row m-0">
 	<div class="col-sm-6">
 		<div class="col-sm-6"><label><strong>{% trans "Used Quantity" %}:</strong></label></div>
 		<div class="col-sm-6"><p>{{shelf.quantity_storage_status}}</p></div>
@@ -31,7 +31,7 @@
 	</div>
 </div>
 {% if shelf.obj.discard %}
-<div class="row">
+<div class="row m-0">
 	<div class="col-sm-6">
 		<div class="col-sm-6"><label><strong>{% trans "Purpose" %}:</strong></label></div>
 		<div class="col-sm-6">
