@@ -109,10 +109,10 @@ class MoveShelfObjectForm(GTForm):
                 'data-s2filter-organization': '#id_organization',
                 'data-s2filter-laboratory': '#id_laboratory'
             }), help_text=_(
-                "This select only shows shelves with some following features: "
-                "1) Infinity quantity capacity and not defined measurement unit. "
-                "2) Infinity quantity capacity and same measurement unit than selected shelf object. "
-                "3) Same measurement unit than selected shelf object and available capacity shelf.")
+                "This select only shows shelves with some of the following features: "
+                "<br>1) Infinity quantity capacity and not defined measurement unit. "
+                "<br>2) Infinity quantity capacity and same measurement unit than selected shelf object. "
+                "<br>3) Same measurement unit than selected shelf object and available capacity in the shelf.")
         )
 
 class ShelfObjectExtraFields(GTForm, forms.Form):
@@ -449,7 +449,7 @@ class ContainerForm(GTForm):
     container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
-    available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
+    available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=ShelfObject.objects.none(), label=_("Container"))
 
     def __init__(self, *args, **kwargs):
         modal_id = kwargs.pop('modal_id')
@@ -467,7 +467,7 @@ class ContainerForm(GTForm):
             help_text=_("Search by name")
         )
         self.fields['container_for_cloning'] = forms.ModelChoiceField(
-            queryset=ShelfObject.objects.none(),
+            queryset=Object.objects.none(),
             widget=AutocompleteSelect('container-for-cloning-search',
                                       attrs={
                                           'data-dropdownparent': modal_id,
