@@ -566,27 +566,21 @@ class ObservationShelfObjectForm(GTForm, forms.ModelForm):
             'description': genwidgets.Textarea
         }
 
-class MateriaCapacityObjectForms(GTForm,forms.ModelForm):
-    class Meta:
-        model = MaterialCapacity
-        fields ='__all__'
-        widgets = {
-            'capacity': genwidgets.TextInput(attrs={'required':True}),
-            'object': genwidgets.Select(attrs={'required':True}),
-            'capacity_measurement_unit': genwidgets.Select(attrs={'required':True}),
-        }
 
-class MateriaCapacityObjectForm(GTForm,forms.Form):
+class MaterialCapacityObjectForm(GTForm,forms.Form):
     capacity = forms.FloatField(required=False, widget=genwidgets.TextInput, min_value=0.1, validators=[
         RegexValidator(
                 regex=r'^\d+(\.\d{1,2})?$',
                 message=_('The quantity field receives only decimal numbers'),
-            )],)
+            )], label=_("Capacity"))
     capacity_measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='units'),
                                                        required=False,
-                                                       widget=genwidgets.Select())
+                                                       widget=genwidgets.Select(),
+                                                       label=_("Capacity measurement unit"))
+    object = forms.ModelChoiceField(queryset=Object.objects.all(), required=False,
+                                    widget=genwidgets.HiddenInput)
 
-class ObjectForm(MateriaCapacityObjectForm, forms.ModelForm):
+class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
     required_css_class = ''
 
     def __init__(self, *args, **kwargs):
@@ -613,13 +607,16 @@ class ObjectForm(MateriaCapacityObjectForm, forms.ModelForm):
                     )
                 data_type = self.type_id
         if data_type != Object.MATERIAL:
+            del self.fields['object']
             del self.fields['capacity']
             del self.fields['capacity_measurement_unit']
         else:
             self.fields['capacity'].required = True
+            self.fields['object'].required = False
             self.fields['capacity_measurement_unit'].required = True
             if instance:
                 if hasattr(instance,'materialcapacity'):
+                    self.fields['object'].initial = (instance.id)
                     self.fields['capacity'].initial = instance.materialcapacity.capacity
                     self.fields['capacity_measurement_unit'].initial = (
                         instance.materialcapacity.capacity_measurement_unit.id)
