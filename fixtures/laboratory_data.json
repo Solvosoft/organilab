@@ -1339,6 +1339,19 @@
     }
   },
   {
+    "model": "laboratory.furniture",
+    "pk": 7,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 7",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[15],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
     "model": "laboratory.shelf",
     "pk": 10,
     "fields": {
@@ -2029,7 +2042,7 @@
     "model": "laboratory.shelf",
     "pk": 15,
     "fields": {
-      "furniture": 1,
+      "furniture": 7,
       "name": "Estante líquido",
       "container_shelf": null,
       "type": 75,
