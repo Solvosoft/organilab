@@ -3,13 +3,15 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from laboratory import utils
-from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture, TranferObject
+from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture
 from reservations_management.models import ReservedProducts
-from laboratory.shelfobject.serializers import TransferInShelfObjectApproveWithContainerSerializer
+from laboratory.shelfobject.serializers import \
+    TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
+
 
 class ReserveShelfObjectForm(ModelForm, GTForm):
     class Meta:
@@ -85,7 +87,7 @@ class MoveShelfObjectForm(GTForm):
                 'data-s2filter-organization': '#id_organization',
                 'data-s2filter-laboratory': '#id_laboratory'
             })
-            )
+        )
 
         self.fields["furniture"] = forms.ModelChoiceField(
             queryset=Furniture.objects.all(), label=_("Furniture"),
@@ -446,14 +448,19 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 
 
 class ContainerForm(GTForm):
-    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
+    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=ContainerSerializer.CONTAINER_SELECT_CHOICES,
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
     available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=ShelfObject.objects.none(), label=_("Container"))
 
     def __init__(self, *args, **kwargs):
         modal_id = kwargs.pop('modal_id')
+        set_container_advanced_options = kwargs.pop('set_container_advanced_options', False)
         super(ContainerForm, self).__init__(*args, **kwargs)
+
+        if set_container_advanced_options:
+            self.fields['container_select_option'].choices = \
+                TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES
 
         self.fields['available_container'] = forms.ModelChoiceField(
             queryset=ShelfObject.objects.none(),
@@ -477,8 +484,6 @@ class ContainerForm(GTForm):
             label=_("Container"),
             help_text=_("Search by name")
         )
-
-
 
 class TransferInShelfObjectApproveWithContainerForm(ContainerForm):
     transfer_object = forms.IntegerField(widget=forms.HiddenInput)
