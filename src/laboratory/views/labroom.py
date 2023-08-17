@@ -150,7 +150,7 @@ class LaboratoryRoomsList(ListView):
                                                           prefix="move")
         context['move_object_container_form'] = MoveShelfobjectWithContainerForm(
             group_name="groupmovesocontainer", modal_id="#movesocontainerform",
-            prefix="movewithcontainer")
+            set_container_advanced_options=True, prefix="movewithcontainer")
         context['equipment_form'] = ShelfObjectEquipmentForm(initial={"objecttype": 2},
                                                             org_pk=self.org,
                                                             prefix='ef')
@@ -164,8 +164,8 @@ class LaboratoryRoomsList(ListView):
                                                            org_pk=self.org, prefix="mf")
         context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mff")
-        context[
-            'transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(modal_id="#transfer_in_approve_with_container_id_modal")
+        context['transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(
+            modal_id="#transfer_in_approve_with_container_id_modal", set_container_advanced_options=True)
         context['options'] = ['Reservation', 'Add', 'Transfer', 'Substract']
         context['user'] = self.request.user
         context['search_by_url'] = self.search_by_url(self.request.GET)
