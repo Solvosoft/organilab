@@ -141,7 +141,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         shelf = shelf_object.shelf
         shelf_quantity = shelf.quantity
         amount = data['amount']
-        total = shelf.get_total_refuse() + amount
+        total = shelf.get_total_refuse(
+            include_containers=False, measurement_unit=shelf_object.measurement_unit)\
+                + amount
         check_measurement_unit = shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit
 
         if check_measurement_unit:

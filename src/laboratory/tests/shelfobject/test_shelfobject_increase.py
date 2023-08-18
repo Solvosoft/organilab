@@ -27,7 +27,10 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             "provider": self.provider.pk,
             "shelf_object": self.shelf_object.pk
         }
-        self.total = self.shelf.get_total_refuse() + self.data["amount"]
+        self.total = self.shelf.get_total_refuse(
+            include_containers=False,
+            measurement_unit=self.shelf_object.measurement_unit)\
+                     + self.data["amount"]
         self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
     def test_shelfobject_increase_case1(self):
