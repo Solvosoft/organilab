@@ -28,7 +28,7 @@ from ..shelfobject.forms import TransferOutShelfObjectForm, \
     ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, \
     ShelfObjectRefuseEquipmentForm, ShelfObjectEquipmentForm, \
     DecreaseShelfObjectForm, IncreaseShelfObjectForm, \
-    TransferInShelfObjectApproveWithContainerForm
+    TransferInShelfObjectApproveWithContainerForm, ContainerManagementForm
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
@@ -155,8 +155,10 @@ class LaboratoryRoomsList(ListView):
                                                            org_pk=self.org, prefix="rf",
                                                            modal_id="#reactive_form"
                                                            )
+        context['manage_container_form'] = ContainerManagementForm(prefix='mc')
         context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(
-            initial={"objecttype": 0}, org_pk=self.org, prefix="rff", modal_id="#reactive_refuse_form")
+            initial={"objecttype": 0}, org_pk=self.org, prefix="rff",
+            modal_id="#reactive_refuse_form")
         context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype": 1},
                                                            org_pk=self.org, prefix="mf")
         context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(
