@@ -939,8 +939,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     shelf_object.container = get_or_create_container_based_on_selected_option(
                         serializer_container.validated_data.get('container_select_option'),
                         org_pk, lab_pk, shelf, request,
-                        serializer_container.validated_data.get('container_for_cloning'),
-                        serializer_container.validated_data.get('available_container'),
+                        serializer_container.validated_data.get('container_for_cloning', None),
+                        serializer_container.validated_data.get('available_container', None),
                         shelf_object)
                     shelf_object.save()
                     utils.organilab_logentry(request.user, shelf_object, CHANGE,
