@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.models import LaboratoryRoom, Furniture, Shelf
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfObjectSerializer
-from laboratory.shelfobject.utils import get_available_objs_shelfobject
+from laboratory.shelfobject.utils import get_available_objs_by_shelfobject
 from laboratory.utils import get_laboratories_from_organization
 from report.api.serializers import ValidateUserAccessLabRoomSerializer
 from django.db.models import Q, Sum
@@ -44,7 +44,7 @@ class LabRoomLookup(BaseSelect2View):
                                               self.shelfobject.measurement_unit).values(
                         'furniture__shelf', 'pk').distinct()
 
-                    available_labrooms = get_available_objs_shelfobject(labrooms,
+                    available_labrooms = get_available_objs_by_shelfobject(labrooms,
                                                                 self.shelfobject,
                                                                 'furniture__shelf')
 
@@ -98,7 +98,7 @@ class FurnitureLookup(BaseSelect2View):
                                       self.shelfobject.measurement_unit).values(
                 'shelf', 'pk').distinct()
 
-            available_furnitures = get_available_objs_shelfobject(furnitures,
+            available_furnitures = get_available_objs_by_shelfobject(furnitures,
                                                                 self.shelfobject,
                                                                 'shelf')
 
@@ -145,7 +145,7 @@ class ShelfLookup(BaseSelect2View):
                                       self.shelfobject.measurement_unit).values('pk')\
                 .distinct()
 
-            available_shelves = get_available_objs_shelfobject(shelves,
+            available_shelves = get_available_objs_by_shelfobject(shelves,
                                                                 self.shelfobject, 'pk')
             filters = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
                       Q(measurement_unit=self.shelfobject.measurement_unit,

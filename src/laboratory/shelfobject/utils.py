@@ -197,14 +197,16 @@ def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
 
 
 
-def get_available_objs_shelfobject(lab_info, shelfobject, key):
+def get_available_objs_by_shelfobject(lab_info, shelfobject, key):
     obj_pk = []
 
     for lab in lab_info:
-        shelf = Shelf.objects.get(pk=lab[key])
-        items_object_shelf = shelf.get_total_refuse()
-        items_with_shelfobject = items_object_shelf + shelfobject.quantity
+        if lab[key] != shelfobject.shelf.pk:
+            shelf = Shelf.objects.get(pk=lab[key])
+            items_object_shelf = shelf.get_total_refuse(
+                include_containers=False, measurement_unit=shelf.measurement_unit)
+            items_with_shelfobject = items_object_shelf + shelfobject.quantity
 
-        if items_with_shelfobject <= shelf.quantity:
-            obj_pk.append(lab['pk'])
+            if items_with_shelfobject <= shelf.quantity:
+                obj_pk.append(lab['pk'])
     return obj_pk
