@@ -351,10 +351,10 @@ class Shelf(BaseCreationObj):
         return ShelfObject.objects.filter(**filters).aggregate(
             amount=Sum('quantity', default=0))['amount']
 
-    def get_refuse_porcentage(self):
+    def get_refuse_porcentage(self, include_containers=True, measurement_unit=None):
         result = 0
         try:
-            result = (self.get_total_refuse() / self.quantity) * 100
+            result = (self.get_total_refuse(include_containers, measurement_unit) / self.quantity) * 100
         except ZeroDivisionError:
             result = 0
         return result

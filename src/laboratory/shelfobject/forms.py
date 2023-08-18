@@ -9,7 +9,9 @@ from auth_and_perms.models import Profile
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture, TranferObject
 from reservations_management.models import ReservedProducts
-from laboratory.shelfobject.serializers import TransferInShelfObjectApproveWithContainerSerializer
+from laboratory.shelfobject.serializers import \
+    TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
+
 
 class ReserveShelfObjectForm(ModelForm, GTForm):
     class Meta:
@@ -416,23 +418,27 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
         model = ShelfObject
         fields = ['status']
 
-class TransferInShelfObjectApproveWithContainerForm(GTForm):
-    transfer_object = forms.IntegerField(widget=forms.HiddenInput)
-    shelf = forms.IntegerField(widget=forms.HiddenInput)
-    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES,
+
+class ContainerForm(GTForm):
+    container_select_option = forms.ChoiceField(widget=forms.RadioSelect, choices=ContainerSerializer.CONTAINER_SELECT_CHOICES,
                                                 label=_("Container Options"))
     container_for_cloning = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
-    available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Object.objects.none(), label=_("Container"))
+    available_container = forms.ModelChoiceField(widget=genwidgets.Select, queryset=ShelfObject.objects.none(), label=_("Container"))
 
     def __init__(self, *args, **kwargs):
-        laboratory_id = kwargs.pop('laboratory_id')
-        super(TransferInShelfObjectApproveWithContainerForm, self).__init__(*args, **kwargs)
+        modal_id = kwargs.pop('modal_id')
+        set_container_advanced_options = kwargs.pop('set_container_advanced_options', False)
+        super(ContainerForm, self).__init__(*args, **kwargs)
+
+        if set_container_advanced_options:
+            self.fields['container_select_option'].choices = \
+                TransferInShelfObjectApproveWithContainerSerializer.TRANSFER_IN_CONTAINER_SELECT_CHOICES
 
         self.fields['available_container'] = forms.ModelChoiceField(
             queryset=ShelfObject.objects.none(),
             widget=AutocompleteSelect('available-container-search',
                                       attrs={
-                                          'data-dropdownparent': "#transfer_in_approve_with_container_id_modal",
+                                          'data-dropdownparent': modal_id,
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization'
                                       }),
@@ -440,13 +446,52 @@ class TransferInShelfObjectApproveWithContainerForm(GTForm):
             help_text=_("Search by name")
         )
         self.fields['container_for_cloning'] = forms.ModelChoiceField(
-            queryset=ShelfObject.objects.none(),
+            queryset=Object.objects.none(),
             widget=AutocompleteSelect('container-for-cloning-search',
                                       attrs={
-                                          'data-dropdownparent': "#transfer_in_approve_with_container_id_modal",
+                                          'data-dropdownparent': modal_id,
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization'
                                       }),
             label=_("Container"),
             help_text=_("Search by name")
         )
+
+class TransferInShelfObjectApproveWithContainerForm(ContainerForm):
+    transfer_object = forms.IntegerField(widget=forms.HiddenInput)
+    shelf = forms.IntegerField(widget=forms.HiddenInput)
+
+
+class ContainerManagementForm(GTForm):
+    action = forms.ChoiceField(choices=(
+        (1, _('Create new based on selected')),
+        (2, _('Create new based on container in use and release old')),
+        (3, _('Change Container and release old')),
+    ), widget=genwidgets.RadioVerticalSelect)
+
+    shelfobject_container = forms.ModelChoiceField(
+        queryset=ShelfObject.objects.none(),
+        widget=AutocompleteSelect('available-container-search',
+                                  attrs={
+                                      'data-dropdownparent': "#managecontainermodal",
+                                      'data-s2filter-laboratory': '#id_laboratory',
+                                      'data-s2filter-organization': '#id_organization',
+                                      'data-s2filter-selected': '#id_container'
+                                  }),
+        label=_("Container"),
+        help_text=_("Search by name")
+    )
+
+    object_container = forms.ModelChoiceField(
+        queryset=Object.objects.none(),
+        widget=AutocompleteSelect('container-for-cloning-search',
+                                  attrs={
+                                      'data-dropdownparent': "#managecontainermodal",
+                                      'data-s2filter-laboratory': '#id_laboratory',
+                                      'data-s2filter-organization': '#id_organization'
+                                  }),
+        label=_("Object reference"),
+        help_text=_("Search by name")
+    )
+
+    shelf = forms.CharField(widget=genwidgets.HiddenInput)

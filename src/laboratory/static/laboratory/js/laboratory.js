@@ -178,7 +178,7 @@ function transferInObjectApprove(btn, event){
             error: function(data){
                 let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                 if(data.responseJSON.errors && data.responseJSON.errors.transfer_object){
-                    error_msg = data.responseJSON.errors.transfer_object[0];  // specific api validation errors
+                    error_msg = data.responseJSON.errors.transfer_object.join(" ");  // specific api validation errors
                 }else if(data.responseJSON.detail){
                     error_msg = data.responseJSON.detail;
                 }
@@ -573,3 +573,83 @@ function show_hide_container_selects(form_id, selected_value){
 $("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
+
+
+RADIO_BASE_SELECTED='1';
+RADIO_CONTAINER_IN_USE='2';
+RADIO_CHANGE_CONTAINER='3';
+function ContainerUpdateForm(elementid, shelfobject, container, containername){
+    let obj={
+        "elementid": elementid,
+        "element": $(elementid),
+        "shelfobject": shelfobject,
+        "container": container,
+        'radio_action_id': 'input[name="mc-action"]',
+        'select_shelfobject_c': 'select[name="mc-shelfobject_container"]',
+        'select_object_c': 'select[name="mc-object_container"]',
+        "init": function(){
+             $(this.radio_action_id).on('ifChanged', (function(instance){ return (event)=>{instance.onchange_event(event)};})(this));
+        },
+        'onchange_event': function(event){
+            let activeelement= $(event.target).val();
+            if($(event.target).prop('checked')){
+                if(activeelement==RADIO_BASE_SELECTED){
+                    $(this.select_shelfobject_c).closest('.form-group').hide()
+                    $(this.select_object_c).closest('.form-group').show()
+                }else if(activeelement==RADIO_CONTAINER_IN_USE){
+                    $(this.select_shelfobject_c).closest('.form-group').hide()
+                    $(this.select_object_c).closest('.form-group').hide()
+                }else{
+                    $(this.select_shelfobject_c).closest('.form-group').show()
+                    $(this.select_object_c).closest('.form-group').hide()
+                }
+            }
+        },
+        'set_shelfobject': function(shelfobject, container, containername){
+            this.shelfobject=shelfobject;
+            this.container=container;
+            $("#id_container").val(container);
+            if(container != "" && container != undefined){
+                var newOption = new Option(containername, container, true, true);
+                $(this.select_shelfobject_c).append(newOption);
+                $(this.select_shelfobject_c).trigger('change');
+
+            }
+            this.update_shelfobject_filters();
+        },
+        'update_shelfobject_filters': function(){
+            if(this.container == "" || this.container == undefined){
+                $('input[name="mc-action"][value=1]').prop('checked', true);
+                $(this.radio_action_id).iCheck('update');
+                $(this.radio_action_id).trigger('ifChanged');
+            }else{
+                $('input[name="mc-action"][value=3]').prop('checked', true);
+                $(this.radio_action_id).iCheck('update');
+                $(this.radio_action_id).trigger('ifChanged');
+
+
+            }
+        }
+
+    }
+    obj.init();
+    obj.set_shelfobject(shelfobject, container, containername);
+    return obj;
+}
+
+
+
+
+function updateContainerOfShelfObject(instance, event){
+    var modalid= $(instance).data('modalid');
+    let is_created = form_modals.hasOwnProperty(modalid);
+    show_me_modal(instance, event);
+    if(!is_created){
+        form_modals[modalid].containermanagement=ContainerUpdateForm
+        (modalid, $(instance).data('shelfobject'), $(instance).data('container'),  $(instance).data('containername'));
+    }else{
+        form_modals[modalid].containermanagement.set_shelfobject(
+        $(instance).data('shelfobject'), $(instance).data('container'),  $(instance).data('containername'));
+    }
+    $('input[name="mc-shelf"]').val($('#id_shelf').val());
+}

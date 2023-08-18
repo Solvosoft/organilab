@@ -219,7 +219,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(poscount, precount)
         self.assertEqual(json.loads(response.content)['errors']['measurement_unit'][0], _("Measurement unit cannot be different than the shelf's measurement unit."))
-        self.assertEqual(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") %{"limit": 40.0})
+        self.assertEqual(json.loads(response.content)['errors']['quantity'][0], _("Resulting quantity cannot be greater than the shelf's quantity limit: %(limit)s.") %{"limit": 40.0})
 
     def test_create_shelfobject_limits_errors(self):
         """
