@@ -1,7 +1,8 @@
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
-from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog
+from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
+    Shelf
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
@@ -74,24 +75,33 @@ def get_available_containers_for_selection(laboratory_id):
     )
     return containers
 
-def get_containers_for_cloning(organization_id):
+def get_containers_for_cloning(organization_id,shelf):
      # any object of type material that belongs to the organization (and its ancestors) can be a container
     organizations = get_pk_org_ancestors(organization_id)
-    containers = Object.objects.filter(
-        organization__in=organizations,
-        type=Object.MATERIAL
-    )
+    shelf = get_object_or_404(Shelf , pk=shelf)
+    if shelf.limit_only_objects:
+         containers = Object.objects.filter(
+            organization__in=organizations,
+            type=Object.MATERIAL,
+            shelf=shelf
+         )
+    else:
+         containers = Object.objects.filter(
+            organization__in=organizations,
+            type=Object.MATERIAL
+         )
+
     return containers
 
 def get_or_create_container_based_on_selected_option(container_selected_option, destination_organization_id, destination_laboratory_id, destination_shelf, request,
                                                      container_for_cloning=None, available_container=None, source_shelfobject=None):
     container = None
     if container_selected_option == 'clone':
-        container = create_new_shelfobject_from_object_in(container_for_cloning, destination_organization_id, destination_laboratory_id, 
+        container = create_new_shelfobject_from_object_in(container_for_cloning, destination_organization_id, destination_laboratory_id,
                                                           destination_shelf, request)
     elif container_selected_option == 'available':
         # it will create a new container in the shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
-        container = move_shelfobject_partial_quantity_to(available_container, destination_organization_id, destination_laboratory_id, 
+        container = move_shelfobject_partial_quantity_to(available_container, destination_organization_id, destination_laboratory_id,
                                                          destination_shelf, request, quantity=1)
     elif container_selected_option == 'use_source':
         container = move_shelfobject_to(source_shelfobject.container, destination_organization_id, destination_laboratory_id, destination_shelf,
