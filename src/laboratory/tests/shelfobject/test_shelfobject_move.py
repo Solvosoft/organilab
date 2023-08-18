@@ -25,7 +25,10 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
             "lab_room": self.new_shelf_3.furniture.labroom.pk,
             "furniture": self.new_shelf_3.furniture.pk,
             "shelf": self.new_shelf_3.pk,
-            "shelf_object": self.shelf_object.pk
+            "shelf_object": self.shelf_object.pk,
+            "container_select_option": 'use_source',
+            "container_for_cloning": '',
+            "available_container": ''
         }
         self.data_shelf_4 = {
             "lab_room": self.new_shelf_4.furniture.labroom.pk,
