@@ -779,16 +779,29 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         return attr
 
     def validate(self, data):
+        data = super().validate(data)
         shelf_object = data['shelf_object']
         shelf = data['shelf']
+        shelf_errors = []
+        updated_errors = {}
 
         if shelf.pk == shelf_object.shelf.pk:
             logger.debug(f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError({'shelf': _("Object cannot be moved to same shelf.")})
+            shelf_errors.append(_("Object cannot be moved to same shelf."))
 
-        if shelf.measurement_unit != shelf_object.measurement_unit:
-            logger.debug(f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError({'shelf': _("Object cannot be moved to a shelf with different measurement unit.")})
+        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object, shelf_object.quantity,
+                                               measurement_unit=shelf_object.measurement_unit)
+
+        if errors or shelf_errors:
+
+            for key, error in errors.items():
+                if key in ['quantity', 'object', 'measurement_unit']:
+                    shelf_errors.append(error)
+                else:
+                    updated_errors[key] = error
+            if shelf_errors:
+                updated_errors['shelf'] = shelf_errors
+            raise serializers.ValidationError(updated_errors)
 
         return data
 
