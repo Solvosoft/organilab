@@ -328,7 +328,6 @@ class TransferInShelfObjectApproveWithContainerForm(ContainerForm):
 
 
 class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelForm,GTForm):
-    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -389,7 +388,6 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
         }
 
 class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm, forms.ModelForm):
-    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
