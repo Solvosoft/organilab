@@ -117,19 +117,27 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-        
-        # TODO probably update this to use the utils method get_or_create_container_based_on_selected_option considering it will allow more than one option
-        # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
-        new_container = move_shelfobject_partial_quantity_to(
-            serializer.validated_data['container'], organization_id, laboratory_id,
-            serializer.validated_data['shelf'], request, quantity=1)
+
+        container_select_option=serializer.validated_data.get('container_select_option')
+        container_for_cloning= serializer.validated_data.get('container_for_cloning')
+        available_container = serializer.validated_data.get('available_container')
+
+        del serializer.validated_data["container_select_option"]
+        del serializer.validated_data["container_for_cloning"]
+        del serializer.validated_data["available_container"]
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
-            container=new_container
         )
+
+        shelfobject.container= get_or_create_container_based_on_selected_option(container_select_option,
+                                                                         organization_id, laboratory_id,
+                                                                         serializer.validated_data['shelf'],
+                                                                         request,container_for_cloning,
+                                                                        available_container, shelfobject)
+        shelfobject.save()
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
@@ -160,21 +168,27 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-        
-        # TODO probably update this to use the utils method get_or_create_container_based_on_selected_option considering it will allow more than one option
-        # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
-        new_container = move_shelfobject_partial_quantity_to(
-            serializer.validated_data['container'],
-            organization_id, laboratory_id, serializer.validated_data['shelf'], request,
-            quantity=1)
+
+        container_select_option=serializer.validated_data.get('container_select_option')
+        container_for_cloning= serializer.validated_data.get('container_for_cloning')
+        available_container = serializer.validated_data.get('available_container')
+        del serializer.validated_data["container_select_option"]
+        del serializer.validated_data["container_for_cloning"]
+        del serializer.validated_data["available_container"]
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
-            container=new_container
         )
 
+        shelfobject.container= get_or_create_container_based_on_selected_option(container_select_option,
+                                                                         organization_id, laboratory_id,
+                                                                         serializer.validated_data['shelf'],
+                                                                         request,container_for_cloning,
+                                                                        available_container, shelfobject)
+
+        shelfobject.save()
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
 
@@ -203,7 +217,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
-        
+
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
@@ -455,8 +469,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                                         lab_pk)
 
         serializer = self.serializer_class['serializer'](data=request.data,
-                                                         context={"org_pk": org_pk,
-                                                                  "lab_pk": lab_pk})
+                                                         context={"organization_id": org_pk,
+                                                                  "laboratory_id": lab_pk,
+                                                                  "shelf":request.data['shelf']})
         limit_serializer = ShelfObjectLimitsSerializer(data=request.data)
         errors = {}
         if serializer.is_valid():

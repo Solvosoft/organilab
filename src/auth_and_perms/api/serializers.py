@@ -7,7 +7,7 @@ from rest_framework.reverse import reverse_lazy
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
 from auth_and_perms.organization_utils import organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_in_html
-from laboratory.models import OrganizationStructure, Laboratory
+from laboratory.models import OrganizationStructure, Laboratory, Shelf
 from django.utils.translation import gettext_lazy as _
 import logging
 
@@ -152,6 +152,8 @@ class DeleteUserFromContenttypeSerializer(serializers.Serializer):
 class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE),
+                                               allow_null=True, required=False)
 
     def validate(self, data):
         laboratory = data['laboratory']

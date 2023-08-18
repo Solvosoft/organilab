@@ -30,20 +30,21 @@ class ContainerSerializer(serializers.Serializer):
                                                                queryset=Object.objects.none())
     available_container = serializers.PrimaryKeyRelatedField(many=False, allow_null=True,
                                                              queryset=ShelfObject.objects.none())
-
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         # allow select only available containers or containers for cloning depending on what the user wants and make the right field not nullable
         container_select_option = self.initial_data.get('container_select_option')
         if container_select_option == 'clone':
             # set queryset to validate that only those in the organization of type material are valid for selection
-            fields['container_for_cloning'].queryset = get_containers_for_cloning(self.context['organization_id'])
+            fields['container_for_cloning'].queryset = get_containers_for_cloning(self.context['organization_id'],
+                                                                                  self.context['shelf'])
             fields['container_for_cloning'].allow_null = False
         elif container_select_option == 'available':
             # set queryset to validate that only those in the laboratory of type material are valid for selection
             fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'])
             fields['available_container'].allow_null = False
         return fields
+
 
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
@@ -207,8 +208,8 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None):
     errors = {}
     total = shelf.get_total_refuse(include_containers=False, measurement_unit=shelf.measurement_unit) + quantity
-    
-    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:  
+
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
         logger.debug(f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
                      f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
@@ -226,13 +227,11 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
     if quantity <= 0 :
         logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
         errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
-        
+
     return errors
 
 
-class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
-    # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
-    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete the field and the method from here
+class ReactiveShelfObjectSerializer(ContainerSerializer,serializers.ModelSerializer):
 
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE),
                                                 required=True)
@@ -245,29 +244,30 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
-    container = serializers.PrimaryKeyRelatedField(many=False, required=True, queryset=ShelfObject.objects.none())
 
     class Meta:
         model = ShelfObject
-        fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit', 'limit_quantity', "course_name",
-                  'marked_as_discard', 'batch', 'container']
+        fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit',
+                  "container_for_cloning", "container_select_option",
+                  "available_container", 'limit_quantity', "course_name",
+                  'marked_as_discard', 'batch']
 
     def validate(self, data):
         data = super().validate(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'], data['measurement_unit'])
+        container=None
+        if data["available_container"]:
+            container =data['available_container']
+        if data["container_for_cloning"]:
+            container = data["container_for_cloning"]
+
+        errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'],
+                                                        data['quantity'], data['measurement_unit'],
+                                                        )
         if errors:
             raise serializers.ValidationError(errors)
         return data
 
-    def get_fields(self, *args, **kwargs):
-        fields = super().get_fields(*args, **kwargs)
-        # allow select only available containers
-        fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
-        return fields
-
-class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
-    # TODO - this serializer needs to be updated to also add a field for containers for cloning (or even use the container same one and update the queryset somehow)
-    # TODO  - inherit from the container serializer so we dont need to manage the container and get fields method everywhere - delete the field and the method from here
+class ReactiveRefuseShelfObjectSerializer(ContainerSerializer,serializers.ModelSerializer):
 
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(many=False, queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -281,26 +281,25 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     course_name = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
-    container = serializers.PrimaryKeyRelatedField(many=False, required=True, queryset=ShelfObject.objects.none())
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity",
-                  "measurement_unit", "marked_as_discard", "course_name", 'batch', 'container']
+        fields = ["object", "shelf", "status", "quantity","container_for_cloning","container_select_option",
+                  "available_container","measurement_unit", "marked_as_discard", "course_name", 'batch']
 
     def validate(self, data):
         data = super().validate(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'], data['quantity'], data['measurement_unit'])
+        container = None
+        if data["available_container"]:
+            container = data['available_container']
+        if data["container_for_cloning"]:
+            container = data["container_for_cloning"]
+
+        errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'],
+                                                        data['quantity'], data['measurement_unit'])
         if errors:
             raise serializers.ValidationError(errors)
         return data
-
-    def get_fields(self, *args, **kwargs):
-        fields = super().get_fields(*args, **kwargs)
-        # allow select only available containers
-        fields['container'].queryset = get_available_containers_for_selection(self.context['lab_pk'])
-        return fields
-
 
 class MaterialShelfObjectSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False, queryset=Object.objects.using(settings.READONLY_DATABASE))
@@ -715,7 +714,7 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
                 raise serializers.ValidationError(_("The transfer in cannot be performed since the transfer quantity is bigger than the quantity available in the " \
                                                     "source object."))
         return attr
-    
+
     def validate(self, data):
         data = super().validate(data)
         if self.context.get('validate_for_approval'):

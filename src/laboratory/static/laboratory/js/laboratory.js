@@ -30,7 +30,7 @@ const tableObject={
                     id='#id_rff-';
                 }
                 update_selects(id+"recipient",{})
-
+                show_hide_container_selects("#"+modalid,"none", id)
             }else if(objecttype==1){
                     modalid="material_modal";
                     id='#id_mf-';
@@ -559,17 +559,26 @@ $("#hide_alert").on('click', function(){
     $("div.alert").removeClass("show");
 });
 
-function show_hide_container_selects(form_id, selected_value){
+function show_hide_container_selects(form_id, selected_value, prefix="#id_"){
     // they are hidden for the other options, so hide them by default and just display one if required
-    $(form_id).find("#id_available_container").parents(".form-group").hide();
-    $(form_id).find("#id_container_for_cloning").parents(".form-group").hide();
+    console.log(prefix)
+    $(form_id).find(`${prefix}available_container`).parents(".form-group").hide();
+    $(form_id).find(`${prefix}container_for_cloning`).parents(".form-group").hide();
     if(selected_value === 'available'){
-        $(form_id).find("#id_available_container").parents('.form-group').show();
+        $(form_id).find(`${prefix}available_container`).parents('.form-group').show();
     }else if(selected_value === 'clone'){
-        $(form_id).find("#id_container_for_cloning").parents('.form-group').show();
+        $(form_id).find(`${prefix}container_for_cloning`).parents('.form-group').show();
     }
 }
 
 $("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
+});
+
+$("#reactive_refuse_form #id_rff-container_select_option").on('change', function(event){
+    show_hide_container_selects("#reactive_refuse_form", event.target.value,document.prefix);
+});
+
+$("#reactive_form #id_rf-container_select_option").on('change', function(event){
+    show_hide_container_selects("#reactive_form", event.target.value,document.prefix);
 });
