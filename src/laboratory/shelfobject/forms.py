@@ -98,142 +98,6 @@ class ShelfObjectExtraFields(GTForm, forms.Form):
     expiration_date = forms.DateField(widget=genwidgets.DateInput, required=False, label=_("Expiration date"))
 
 
-class ShelfObjectReactiveForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
-    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop('org_pk', None)
-
-        super().__init__(*args, **kwargs)
-
-        self.fields['object'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch',
-                                      attrs={
-                                          'data-dropdownparent': "#reactive_form",
-                                          'data-s2filter-shelf': '#id_shelf',
-                                          'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization',
-                                          'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
-                                      }),
-            label=_("Reactive"),
-            help_text=_("Search by name, code or CAS number")
-        )
-
-        self.fields['course_name'].label = _("Description")
-
-        self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('catalogunit',
-                                      attrs={
-                                          'data-dropdownparent': "#reactive_form",
-                                          'data-s2filter-shelf': '#id_shelf',
-                                          'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization'
-            }),
-            label=_("Measurement unit"))
-
-        self.fields['container'] = forms.ModelChoiceField(
-            queryset=ShelfObject.objects.none(),
-            widget=AutocompleteSelect('available-container-search',
-                                      attrs={
-                                          'data-dropdownparent': "#reactive_form",
-                                          'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization'
-                                      }),
-            label=_("Container"),
-            help_text=_("Search by name")
-        )
-        self.fields['status'] = forms.ModelChoiceField(
-            queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search',
-                                      attrs={
-                                          'data-dropdownparent': "#reactive_form",
-                                          'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization'
-                                      }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
-            label=_("Status")
-        )
-
-    class Meta:
-        model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit", "container", "course_name", "marked_as_discard", "batch", "objecttype"]
-        exclude =['laboratory_name','created_by', 'limit_quantity', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
-        widgets = {
-            'shelf': forms.HiddenInput,
-            'course_name': genwidgets.Textarea,
-            'quantity': genwidgets.TextInput,
-
-            'batch': genwidgets.TextInput,
-            'marked_as_discard': genwidgets.CheckboxInput,
-        }
-
-class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
-    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop('org_pk', None)
-
-        super().__init__(*args, **kwargs)
-        self.fields['object'] = forms.ModelChoiceField(
-            queryset=Object.objects.all(),
-            widget=AutocompleteSelect('objectorgsearch', attrs={
-                'data-dropdownparent': "#reactive_refuse_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization',
-                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
-            }),
-            label=_("Reactive"),
-            help_text=_("Search by name, code or CAS number")
-        )
-        self.fields['measurement_unit'] = forms.ModelChoiceField(
-            queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('catalogunit', attrs={
-                'data-dropdownparent': "#reactive_refuse_form",
-                'data-s2filter-shelf': '#id_shelf',
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
-            }),
-            label=_("Measurement unit"))
-        self.fields['container'] = forms.ModelChoiceField(
-            queryset=ShelfObject.objects.none(),
-            widget=AutocompleteSelect('available-container-search',
-                                      attrs={
-                                          'data-dropdownparent': "#reactive_refuse_form",
-                                          'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization'
-                                      }),
-            label=_("Container"),
-            help_text=_("Search by name")
-        )
-        self.fields['status'] = forms.ModelChoiceField(
-            queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', attrs={
-                'data-dropdownparent': "#reactive_refuse_form",
-                'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
-            }),
-            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
-        label=_("Status"))
-        self.fields['course_name'].label = _("Description")
-        self.fields['marked_as_discard'].initial=True
-
-
-    class Meta:
-        model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit","container","course_name","marked_as_discard","batch","objecttype"]
-        exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits']
-        widgets = {
-            'shelf': forms.HiddenInput,
-            'limit_quantity': forms.HiddenInput,
-            'quantity': genwidgets.TextInput,
-            'course_name': genwidgets.Textarea,
-            'marked_as_discard': genwidgets.HiddenInput,
-            'batch': genwidgets.TextInput
-
-        }
 
 class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
@@ -450,6 +314,7 @@ class ContainerForm(GTForm):
             widget=AutocompleteSelect('container-for-cloning-search',
                                       attrs={
                                           'data-dropdownparent': modal_id,
+                                          'data-s2filter-shelf': '#id_shelf',
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization'
                                       }),
@@ -460,3 +325,121 @@ class ContainerForm(GTForm):
 class TransferInShelfObjectApproveWithContainerForm(ContainerForm):
     transfer_object = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.IntegerField(widget=forms.HiddenInput)
+
+
+class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelForm,GTForm):
+    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch',
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+                                      }),
+            label=_("Reactive"),
+            help_text=_("Search by name, code or CAS number")
+        )
+
+        self.fields['course_name'].label = _("Description")
+
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('catalogunit',
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
+            }),
+            label=_("Measurement unit"))
+
+
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search',
+                                      attrs={
+                                          'data-dropdownparent': "#reactive_form",
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
+                                      }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
+            label=_("Status")
+        )
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object","shelf","status","quantity", "measurement_unit", "course_name", "marked_as_discard", "batch", "objecttype"]
+        exclude =['laboratory_name','created_by', 'limit_quantity',"container", 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'course_name': genwidgets.Textarea,
+            'quantity': genwidgets.TextInput,
+
+            'batch': genwidgets.TextInput,
+            'marked_as_discard': genwidgets.CheckboxInput,
+        }
+
+class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm, forms.ModelForm):
+    # TODO - this form needs to be updated to support also create a new container from an object and not only select it from the available shelfobjects in the lab
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['object'] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect('objectorgsearch', attrs={
+                'data-dropdownparent': "#reactive_refuse_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization',
+                'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
+            }),
+            label=_("Reactive"),
+            help_text=_("Search by name, code or CAS number")
+        )
+        self.fields['measurement_unit'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('catalogunit', attrs={
+                'data-dropdownparent': "#reactive_refuse_form",
+                'data-s2filter-shelf': '#id_shelf',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
+            }),
+            label=_("Measurement unit"))
+
+        self.fields['status'] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect('shelfobject_status_search', attrs={
+                'data-dropdownparent': "#reactive_refuse_form",
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
+            }),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
+        label=_("Status"))
+        self.fields['course_name'].label = _("Description")
+        self.fields['marked_as_discard'].initial=True
+
+
+    class Meta:
+        model = ShelfObject
+        fields = ["object","shelf","status","quantity", "measurement_unit","course_name","marked_as_discard","batch","objecttype"]
+        exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits',"container"]
+        widgets = {
+            'shelf': forms.HiddenInput,
+            'limit_quantity': forms.HiddenInput,
+            'quantity': genwidgets.TextInput,
+            'course_name': genwidgets.Textarea,
+            'marked_as_discard': genwidgets.HiddenInput,
+            'batch': genwidgets.TextInput
+
+        }
