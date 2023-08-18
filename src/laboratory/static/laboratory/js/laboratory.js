@@ -178,7 +178,7 @@ function transferInObjectApprove(btn, event){
             error: function(data){
                 let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                 if(data.responseJSON.errors && data.responseJSON.errors.transfer_object){
-                    error_msg = data.responseJSON.errors.transfer_object[0];  // specific api validation errors
+                    error_msg = data.responseJSON.errors.transfer_object.join(" ");  // specific api validation errors
                 }else if(data.responseJSON.detail){
                     error_msg = data.responseJSON.detail;
                 }
