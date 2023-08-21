@@ -105,6 +105,10 @@ class ShelfForm(forms.ModelForm, GTForm):
         elif quantity<0:
             self.add_error('quantity', _("The quantity need to be greater than 0"))
 
+        if unit == None and quantity <= 0 and not infinity:
+            self.add_error('quantity',_("The quantity need to be greater than 0, when dont select an unit and check the field infinity quantity."))
+            self.add_error('measurement_unit', _('Need a unit when the dont check the field infinity quantity.'))
+
     def clean_measurement_unit(self):
         discard = self.cleaned_data['discard']
         unit = self.cleaned_data['measurement_unit']
@@ -153,12 +157,17 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
 
     def clean_measurement_unit(self):
         discard = self.cleaned_data['discard']
+        infinity = self.cleaned_data['infinity_quantity']
         unit = self.cleaned_data['measurement_unit']
+        quantity = self.cleaned_data['quantity']
         shelfobjects = self.instance.get_objects().count()
         change_unit = unit != self.instance.measurement_unit
 
         if shelfobjects>0 and change_unit:
             self.add_error('measurement_unit',_("The shelf have objects need to removed them, before changes the measurement unit"))
+        elif unit==None and infinity==False and quantity<=0:
+            self.add_error('quantity',_("The quantity need to be greater than 0, when dont select an unit and check the field infinity quantity."))
+            self.add_error('measurement_unit', _('Need a unit when the dont check the field infinity quantity.'))
         if discard:
             if unit != None:
                 return unit
