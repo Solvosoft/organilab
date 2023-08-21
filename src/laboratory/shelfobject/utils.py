@@ -83,7 +83,7 @@ def get_containers_for_cloning(organization_id,shelf):
          containers = Object.objects.filter(
             organization__in=organizations,
             type=Object.MATERIAL,
-            shelf=shelf
+            limit_objects=shelf
          )
     else:
          containers = Object.objects.filter(
