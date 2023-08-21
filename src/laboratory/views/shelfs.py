@@ -190,6 +190,11 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
             else:
                 self.add_error('quantity', _('The quantity is less than the amount to the sum the objects'))
 
+        if quantity <= 0 and not infinity_quantity:
+            self.add_error('quantity', _("The quantity need to be greater than 0"))
+        else:
+            return quantity
+
         if amount or infinity_quantity:
             return quantity
         else:
