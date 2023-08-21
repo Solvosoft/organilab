@@ -377,7 +377,9 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit", "course_name", "marked_as_discard", "batch", "objecttype"]
+        fields = ["object","shelf","status","quantity", "measurement_unit",
+                  "container_select_option","container_for_cloning","available_container",
+                  "course_name","marked_as_discard","batch","objecttype"]
         exclude =['laboratory_name','created_by', 'limit_quantity',"container", 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
@@ -432,7 +434,9 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit","course_name","marked_as_discard","batch","objecttype"]
+        fields = ["object","shelf","status","quantity", "measurement_unit",
+                  "container_select_option","container_for_cloning","available_container",
+                  "course_name","marked_as_discard","batch","objecttype"]
         exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits',"container"]
         widgets = {
             'shelf': forms.HiddenInput,
