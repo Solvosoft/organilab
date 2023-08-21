@@ -280,7 +280,7 @@ class LaboratoryRoom(BaseCreationObj):
 class Shelf(BaseCreationObj):
     furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"),
                                   on_delete=models.CASCADE)
-    name = models.CharField(_("Name"), max_length=15, default="nd")
+    name = models.CharField(_("Name"), max_length=150, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
                                         verbose_name=_("Container shelf"),
                                         on_delete=models.CASCADE)
