@@ -8,7 +8,9 @@ from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.models import LaboratoryRoom, Furniture, Shelf
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfObjectSerializer
-from laboratory.shelfobject.utils import get_available_objs_by_shelfobject
+from laboratory.shelfobject.utils import get_available_objs_by_shelfobject, \
+    get_lab_room_queryset_by_filters, get_furniture_queryset_by_filters, \
+    get_shelf_queryset_by_filters
 from laboratory.utils import get_laboratories_from_organization
 from report.api.serializers import ValidateUserAccessLabRoomSerializer
 from django.db.models import Q, Sum
@@ -40,21 +42,12 @@ class LabRoomLookup(BaseSelect2View):
                 queryset = queryset.filter(laboratory=self.laboratory)
 
                 if self.shelfobject:
-                    labrooms = queryset.filter(furniture__shelf__measurement_unit=
-                                              self.shelfobject.measurement_unit).values(
-                        'furniture__shelf', 'pk').distinct()
-
-                    available_labrooms = get_available_objs_by_shelfobject(labrooms,
+                    filters = {"furniture__shelf__measurement_unit":
+                                   self.shelfobject.measurement_unit}
+                    queryset = get_lab_room_queryset_by_filters(queryset,
                                                                 self.shelfobject,
-                                                                'furniture__shelf')
-
-                    filters = Q(furniture__shelf__measurement_unit__isnull=True,
-                                furniture__shelf__infinity_quantity=True) | \
-                              Q(furniture__shelf__measurement_unit=self.shelfobject.measurement_unit,
-                                furniture__shelf__infinity_quantity=True) | \
-                              Q(pk__in=available_labrooms)
-
-                    queryset = queryset.filter(filters).distinct()
+                                                                "furniture__shelf",
+                                                                filters)
 
         if self.lab_room:
             id_list = [lab_room.pk for lab_room in self.lab_room]
@@ -94,22 +87,9 @@ class FurnitureLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.shelfobject:
-            furnitures = queryset.filter(shelf__measurement_unit=
-                                      self.shelfobject.measurement_unit).values(
-                'shelf', 'pk').distinct()
-
-            available_furnitures = get_available_objs_by_shelfobject(furnitures,
-                                                                self.shelfobject,
-                                                                'shelf')
-
-            filters = Q(shelf__measurement_unit__isnull=True,
-                        shelf__infinity_quantity=True) | \
-                      Q(shelf__measurement_unit=self.shelfobject.measurement_unit,
-                        shelf__infinity_quantity=True) | \
-                      Q(pk__in=available_furnitures)
-
-            queryset = queryset.filter(filters).distinct()
-
+            filters = {"shelf__measurement_unit": self.shelfobject.measurement_unit}
+            queryset = get_furniture_queryset_by_filters(queryset, self.shelfobject,
+                                                         "shelf", filters)
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -141,19 +121,9 @@ class ShelfLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.shelfobject:
-            shelves = queryset.filter(measurement_unit=
-                                      self.shelfobject.measurement_unit).values('pk')\
-                .distinct()
-
-            available_shelves = get_available_objs_by_shelfobject(shelves,
-                                                                self.shelfobject, 'pk')
-            filters = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
-                      Q(measurement_unit=self.shelfobject.measurement_unit,
-                        infinity_quantity=True) | \
-                      Q(pk__in=available_shelves)
-
-            queryset = queryset.filter(filters).exclude(pk=self.shelfobject.shelf.pk)\
-                .distinct()
+            filters = {"measurement_unit": self.shelfobject.measurement_unit}
+            queryset = get_shelf_queryset_by_filters(queryset, self.shelfobject, "pk",
+                                                     filters)
         return queryset
 
     def list(self, request, *args, **kwargs):

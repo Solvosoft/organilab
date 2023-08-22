@@ -1,4 +1,5 @@
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
@@ -197,8 +198,9 @@ def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
 
 
 
-def get_available_objs_by_shelfobject(lab_info, shelfobject, key):
+def get_available_objs_by_shelfobject(queryset, shelfobject, key, filters):
     obj_pk = []
+    lab_info = queryset.filter(**filters).values(key, 'pk').distinct()
 
     for lab in lab_info:
         if lab[key] != shelfobject.shelf.pk:
@@ -210,3 +212,39 @@ def get_available_objs_by_shelfobject(lab_info, shelfobject, key):
             if items_with_shelfobject <= shelf.quantity:
                 obj_pk.append(lab['pk'])
     return obj_pk
+
+
+def get_lab_room_queryset_by_filters(queryset, shelfobject, key, filters):
+    available_labrooms = get_available_objs_by_shelfobject(queryset, shelfobject, key,
+                                                           filters)
+    filters_lab_room = Q(furniture__shelf__measurement_unit__isnull=True,
+                furniture__shelf__infinity_quantity=True) | \
+              Q(furniture__shelf__measurement_unit=shelfobject.measurement_unit,
+                furniture__shelf__infinity_quantity=True) | \
+              Q(pk__in=available_labrooms)
+    return queryset.filter(filters_lab_room).distinct()
+
+
+def get_furniture_queryset_by_filters(queryset, shelfobject, key, filters):
+    available_furnitures = get_available_objs_by_shelfobject(queryset,
+                                                             shelfobject,
+                                                             key, filters)
+    filters_furniture = Q(shelf__measurement_unit__isnull=True,
+                shelf__infinity_quantity=True) | \
+              Q(shelf__measurement_unit=shelfobject.measurement_unit,
+                shelf__infinity_quantity=True) | \
+              Q(pk__in=available_furnitures)
+
+    return queryset.filter(filters_furniture).distinct()
+
+
+def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
+    available_shelves = get_available_objs_by_shelfobject(queryset,
+                                                             shelfobject,
+                                                             key, filters)
+    filters_shelves = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
+              Q(measurement_unit=shelfobject.measurement_unit,
+                infinity_quantity=True) | \
+              Q(pk__in=available_shelves)
+
+    return queryset.filter(filters_shelves).exclude(pk=shelfobject.shelf.pk).distinct()
