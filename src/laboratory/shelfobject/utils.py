@@ -87,11 +87,11 @@ def get_or_create_container_based_on_selected_option(container_selected_option, 
                                                      container_for_cloning=None, available_container=None, source_shelfobject=None):
     container = None
     if container_selected_option == 'clone':
-        container = create_new_shelfobject_from_object_in(container_for_cloning, destination_organization_id, destination_laboratory_id, 
+        container = create_new_shelfobject_from_object_in(container_for_cloning, destination_organization_id, destination_laboratory_id,
                                                           destination_shelf, request)
     elif container_selected_option == 'available':
         # it will create a new container in the shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
-        container = move_shelfobject_partial_quantity_to(available_container, destination_organization_id, destination_laboratory_id, 
+        container = move_shelfobject_partial_quantity_to(available_container, destination_organization_id, destination_laboratory_id,
                                                          destination_shelf, request, quantity=1)
     elif container_selected_option == 'use_source':
         container = move_shelfobject_to(source_shelfobject.container, destination_organization_id, destination_laboratory_id, destination_shelf,
