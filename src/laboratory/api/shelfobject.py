@@ -20,7 +20,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
 from laboratory import utils
 from laboratory.api import serializers
 from laboratory.api.serializers import ShelfLabViewSerializer, \
-    CreateObservationShelfObjectSerializer
+    CreateObservationShelfObjectSerializer, ManageContainerSerializer
 from laboratory.logsustances import log_object_change
 from laboratory.models import Catalog, ShelfObjectObservation, Object, Furniture, Shelf
 from laboratory.models import OrganizationStructure, ShelfObject, Laboratory, \
@@ -40,8 +40,11 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, \
     TransferInShelfObjectApproveWithContainerSerializer, ShelfObjectPk, \
     SearchShelfObjectSerializerMany
-from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, move_shelfobject_partial_quantity_to, build_shelfobject_qr, save_shelfobject_limits_from_serializer, \
-    create_shelfobject_observation, get_or_create_container_based_on_selected_option, move_shelfobject_to
+from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
+    move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
+    save_shelfobject_limits_from_serializer, \
+    create_shelfobject_observation, get_or_create_container_based_on_selected_option, \
+    move_shelfobject_to, create_new_shelfobject_from_object_in, clone_shelfobject_to
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -117,7 +120,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-        
+
         # TODO probably update this to use the utils method get_or_create_container_based_on_selected_option considering it will allow more than one option
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
@@ -160,7 +163,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         request = self.context['request']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
-        
+
         # TODO probably update this to use the utils method get_or_create_container_based_on_selected_option considering it will allow more than one option
         # it will create a new container in the destination shelf with quantity of 1 and decrease the quantity by 1 on the original shelfobject
         new_container = move_shelfobject_partial_quantity_to(
@@ -203,7 +206,7 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
-        
+
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
@@ -364,6 +367,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "update_status": ["laboratory.change_shelfobject"],
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
+        "manage_shelfobject_container": ["laboratory.change_shelfobject"],
+
     }
 
     # This is not an API endpoint
@@ -992,6 +997,56 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             Catalog.objects.create(key='shelfobject_status',
                                    description=serializer.data['description'])
             return JsonResponse({'detail': _('The item was created successfully')},
+                                status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(detail=False, methods=['post'])
+    def manage_shelfobject_container(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "manage_shelfobject_container")
+        self.serializer_class=ManageContainerSerializer
+        ok=False
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            if serializer.validated_data['action'] == serializer.RADIO_BASE_SELECTED:
+                new_container_object=get_or_create_container_based_on_selected_option(
+                    'clone', org_pk, lab_pk,
+                    serializer.validated_data['shelf'], request,
+                    container_for_cloning=serializer.validated_data['object_container'],
+                    available_container=None,
+                    source_shelfobject=None)
+
+                shelf_object = serializer.validated_data['shelf_object']
+                shelf_object.container = new_container_object
+                shelf_object.save()
+                ok=True
+            if serializer.validated_data['action'] == serializer.RADIO_CONTAINER_IN_USE:
+                new_container_object = get_or_create_container_based_on_selected_option(
+                    'clone', org_pk, lab_pk,
+                    serializer.validated_data['shelf'], request,
+                    container_for_cloning=serializer.validated_data['shelf_object'].container.object,
+                    available_container=None,
+                    source_shelfobject=None)
+
+                shelf_object = serializer.validated_data['shelf_object']
+                shelf_object.container = new_container_object
+                shelf_object.save()
+                ok=True
+            if serializer.validated_data['action'] == serializer.RADIO_CHANGE_CONTAINER:
+                shelf_object = serializer.validated_data['shelf_object']
+                new_container_object=get_or_create_container_based_on_selected_option(
+                    'available', org_pk, lab_pk,
+                    serializer.validated_data['shelf'], request,
+                    available_container=serializer.validated_data['shelfobject_container'],
+                    source_shelfobject=None)
+
+                old_container = shelf_object.container
+                # log change of the log container
+                shelf_object.container = new_container_object
+                shelf_object.save()
+                ok=True
+        if ok:
+            return JsonResponse({'detail': _('The item was updated successfully')},
                                 status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

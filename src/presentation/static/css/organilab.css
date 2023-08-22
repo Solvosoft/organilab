@@ -211,3 +211,7 @@ img {
 .profile_info h2{
     overflow: hidden;
 }
+
+.gtradio .active {
+    display: inline-block;
+}
