@@ -19,6 +19,7 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         self.client = self.client1_org1
         self.shelf_object = ShelfObject.objects.get(pk=1)
         self.shelf_object_material = ShelfObject.objects.get(pk=4)
+        self.shelf_object_equipment = ShelfObject.objects.get(pk=5)
         self.available_container = ShelfObject.objects.get(pk=3)
         self.container_for_cloning = Object.objects.get(pk=3)
         self.old_shelf = self.shelf_object.shelf
@@ -145,15 +146,15 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         5) Check if pk shelfobject is not in old shelf.
         6) Check if pk shelfobject is in new shelf.
         """
-        self.data_shelf_3['container_select_option'] = 'new_based_source'
-        response = self.client.post(self.url, data=self.data_shelf_3)
+        data = self.data_shelf_3
+        data['container_select_option'] = 'new_based_source'
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertEqual(self.shelf_object.measurement_unit.pk , self.new_shelf_3.measurement_unit.pk)
         self.assertNotIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
-
 
     def test_shelfobject_move_case6(self):
         """
@@ -169,11 +170,12 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         5) Check if pk shelfobject is not in old shelf.
         6) Check if pk shelfobject is in new shelf.
         """
-        self.data_shelf_3.update({
+        data = self.data_shelf_3
+        data.update({
             'container_select_option': 'clone',
             'container_for_cloning': self.container_for_cloning.pk
         })
-        response = self.client.post(self.url, data=self.data_shelf_3)
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
@@ -195,11 +197,12 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         5) Check if pk shelfobject is not in old shelf.
         6) Check if pk shelfobject is in new shelf.
         """
-        self.data_shelf_3.update({
+        data = self.data_shelf_3
+        data.update({
             'container_select_option': 'available',
             'available_container': self.available_container.pk
         })
-        response = self.client.post(self.url, data=self.data_shelf_3)
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
         self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
@@ -216,9 +219,8 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         1) Check response status code equal to 200.
         2) Check if user has permission to access this organization and laboratory.
         3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
-        4) Check if pk measurement unit related to this shelfobject is equal to measurement unit related to new shelf.
-        5) Check if pk shelfobject is not in old shelf.
-        6) Check if pk shelfobject is in new shelf.
+        4) Check if pk shelfobject is not in old shelf.
+        5) Check if pk shelfobject is in new shelf.
         """
         response = self.client.post(self.url, data=self.data_shelf_5)
         self.assertEqual(response.status_code, 200)
@@ -226,3 +228,47 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         self.assertEqual(self.shelf_object_material.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertNotIn(self.shelf_object_material.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertIn(self.shelf_object_material.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+
+    def test_shelfobject_move_case9(self):
+        """
+        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to move shelfobject to other shelf)
+        Material object with different measurement unit related to new shelf.
+
+        CHECK TESTS
+        1) Check response status code equal to 400.
+        2) Check if user has permission to access this organization and laboratory.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk shelfobject is in old shelf.
+        5) Check if pk shelfobject is not in new shelf.
+        """
+        old_shelf = self.shelf_object_material.shelf
+        data = self.data_shelf_4
+        data['shelf_object'] = self.shelf_object_material.pk
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object_material.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
+        self.assertIn(self.shelf_object_material.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
+        self.assertNotIn(self.shelf_object_material.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
+
+    def test_shelfobject_move_case10(self):
+        """
+        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to move shelfobject to other shelf)
+        Equipment object with different measurement unit related to new shelf.
+
+        CHECK TESTS
+        1) Check response status code equal to 400.
+        2) Check if user has permission to access this organization and laboratory.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk shelfobject is in old shelf.
+        5) Check if pk shelfobject is not in new shelf.
+        """
+        old_shelf = self.shelf_object_equipment.shelf
+        data = self.data_shelf_4
+        data['shelf_object'] = self.shelf_object_equipment.pk
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object_equipment.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
+        self.assertIn(self.shelf_object_equipment.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
+        self.assertNotIn(self.shelf_object_equipment.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
