@@ -23,13 +23,13 @@ from presentation.utils import build_qr_instance, update_qr_instance
 from report.forms import LaboratoryRoomReportForm
 from .djgeneric import CreateView, DeleteView, ListView, UpdateView
 from ..shelfobject.forms import TransferOutShelfObjectForm, \
-    ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, \
+    MoveShelfObjectForm, ReserveShelfObjectForm, ShelfObjectRefuseReactiveForm, \
     ShelfObjectMaterialForm, \
     ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, \
     ShelfObjectRefuseEquipmentForm, ShelfObjectEquipmentForm, \
     DecreaseShelfObjectForm, IncreaseShelfObjectForm, \
-    TransferInShelfObjectApproveWithContainerForm, \
-    MoveShelfobjectWithContainerForm, MoveShelfObjectForm
+    TransferInShelfObjectApproveWithContainerForm, ContainerManagementForm, \
+    MoveShelfobjectWithContainerForm
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
@@ -158,13 +158,15 @@ class LaboratoryRoomsList(ListView):
             initial={"objecttype": 2}, org_pk=self.org, prefix='erf')
         context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype": 0},
                                                            org_pk=self.org, prefix="rf")
+        context['manage_container_form'] = ContainerManagementForm(prefix='mc')
         context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(
             initial={"objecttype": 0}, org_pk=self.org, prefix="rff")
         context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype": 1},
                                                            org_pk=self.org, prefix="mf")
         context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mff")
-        context['transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(
+        context[
+            'transfer_in_approve_with_container_form'] = TransferInShelfObjectApproveWithContainerForm(
             modal_id="#transfer_in_approve_with_container_id_modal", set_container_advanced_options=True)
         context['options'] = ['Reservation', 'Add', 'Transfer', 'Substract']
         context['user'] = self.request.user
