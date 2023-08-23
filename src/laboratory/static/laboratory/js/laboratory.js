@@ -74,6 +74,11 @@ const tableObject={
             $("#transfer-list-modal").modal('show');
         }
     },
+    redirectContainer: function(data){
+        if (tableObject.get_active_shelf() != undefined){
+            window.location.href=document.url_container_list+"?shelf="+tableObject.get_active_shelf()
+        }
+    },
     get_active_shelf: function(show_alert=true){
          let value= $('input[name="shelfselected"]:checked').val();
          document.shelf_discard= $('input[name="shelfselected"]:checked').data('refuse');
@@ -247,6 +252,12 @@ $(document).ready(function(){
                     'data-type':'0'
                 }
 
+            },
+            {
+                action: tableObject.redirectContainer,
+                text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
+                titleAttr: gettext('Containers'),
+                className: 'btn-sm btn-success ml-4'
             },
             {
                 action: tableObject.showTransfers,
