@@ -8,8 +8,9 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, Shelf, Laboratory, \
-    ShelfObjectObservation
+from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, \
+    Shelf, Laboratory, \
+    ShelfObjectObservation, Object
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -351,3 +352,33 @@ class CreateObservationShelfObjectSerializer(serializers.ModelSerializer):
         model = ShelfObjectObservation
         fields = ['action_taken', 'description']
 
+class ManageContainerSerializer(serializers.Serializer):
+    RADIO_BASE_SELECTED = 1
+    RADIO_CONTAINER_IN_USE = 2
+    RADIO_CHANGE_CONTAINER = 3
+    action = serializers.ChoiceField(choices=(
+         (RADIO_BASE_SELECTED, _('Create new based on selected')),
+         (RADIO_CONTAINER_IN_USE, _('Create new based on container in use and release old')),
+         (RADIO_CHANGE_CONTAINER, _('Change Container and release old')),
+                                     )
+                                     )
+    shelfobject_container = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE),
+                                                               allow_null=True, allow_empty=True)
+    object_container = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE),
+                                                          allow_null=True, allow_empty=True)
+    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
+
+    def validate(self, attrs):
+        if self.RADIO_BASE_SELECTED == attrs['action']:
+            if attrs['object_container'] is None:
+                raise ValidationError(detail={'object_container': _('You need to specify a object reference')})
+        if self.RADIO_CONTAINER_IN_USE == attrs['action']:
+            if attrs['shelf_object'].container is None:
+                raise ValidationError(
+                    detail={'shelf_object',_('Reactive has not container to use as reference')})
+        if self.RADIO_CHANGE_CONTAINER == attrs['action']:
+            if attrs['shelfobject_container'] is None:
+                raise ValidationError(
+                    detail={'shelfobject_container': _('You need to select a container to be changed')})
+        return attrs
