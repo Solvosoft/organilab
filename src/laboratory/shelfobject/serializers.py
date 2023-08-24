@@ -117,8 +117,8 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         shelf_object = data['shelf_object']
         shelf = shelf_object.shelf
         amount = data['amount']
-
-        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object, amount, shelf_object.measurement_unit)
+        measurement_unit = shelf_object.measurement_unit if shelf_object.object.type == Object.REACTIVE else None
+        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object, amount, measurement_unit=measurement_unit)
 
         if errors:
             updated_errors = {}
