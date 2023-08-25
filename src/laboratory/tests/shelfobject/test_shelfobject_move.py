@@ -231,7 +231,7 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
     def test_shelfobject_move_case9(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to move shelfobject to other shelf)
+        #EXPECTED CASE(User 1 in this organization with permissions try to move shelfobject to other shelf)
         Material object with different measurement unit related to new shelf.
 
         CHECK TESTS
@@ -253,7 +253,7 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
 
     def test_shelfobject_move_case10(self):
         """
-        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to move shelfobject to other shelf)
+        #EXPECTED CASE(User 1 in this organization with permissions try to move shelfobject to other shelf)
         Equipment object with different measurement unit related to new shelf.
 
         CHECK TESTS
@@ -272,3 +272,53 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         self.assertEqual(self.shelf_object_equipment.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
         self.assertIn(self.shelf_object_equipment.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
         self.assertNotIn(self.shelf_object_equipment.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
+
+
+    def test_shelfobject_move_case11(self):
+        """
+        #EXPECTED CASE(User 1 in this organization with permissions try to move shelfobject to other shelf)
+        Material object with different measurement unit related to new shelf.
+
+        CHECK TESTS
+        1) Check response status code equal to 200.
+        2) Check if user has permission to access this organization and laboratory.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk shelfobject is not in old shelf.
+        5) Check if pk shelfobject is in new shelf.
+        """
+        old_shelf = self.shelf_object_material.shelf
+        data = self.data_shelf_3
+        data['shelf_object'] = self.shelf_object_material.pk
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(self.shelf_object_material.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
+        self.assertNotIn(self.shelf_object_material.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
+        self.assertIn(self.shelf_object_material.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+
+    def test_shelfobject_move_case12(self):
+        """
+        #EXPECTED CASE(User 1 in this organization with permissions try to move shelfobject to other shelf)
+        Equipment object with different measurement unit related to new shelf.
+
+        CHECK TESTS
+        1) Check response status code equal to 200.
+        2) Check if user has permission to access this organization and laboratory.
+        3) Check if pk laboratory related to this shelfobject is equal to declared pk laboratory in url.
+        4) Check if pk shelfobject is not in old shelf.
+        5) Check if pk shelfobject is in new shelf.
+        """
+        old_shelf = self.shelf_object_equipment.shelf
+        data = self.data_shelf_3
+        data['shelf_object'] = self.shelf_object_equipment.pk
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertEqual(
+            self.shelf_object_equipment.shelf.furniture.labroom.laboratory.pk,
+            self.lab.pk)
+        self.assertNotIn(self.shelf_object_equipment.pk,
+                      list(old_shelf.get_objects().values_list('pk', flat=True)))
+        self.assertIn(self.shelf_object_equipment.pk, list(
+            self.new_shelf_3.get_objects().values_list('pk', flat=True)))
