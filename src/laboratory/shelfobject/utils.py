@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
@@ -66,19 +67,30 @@ def clone_shelfobject_limits(shelfobject, user):
         organilab_logentry(user, new_limits, ADDITION, changed_data=['minimum_limit', 'maximum_limit', 'expiration_date'])
     return new_limits
 
-def get_available_containers_for_selection(laboratory_id):
+def get_available_containers_for_selection(laboratory_id, shelf):
     # all containers that belong to a laboratory that are not in use
-    containers = ShelfObject.objects.filter(
-        in_where_laboratory_id=laboratory_id,
-        object__type=Object.MATERIAL,
-        containershelfobject=None  # it's not used as container - query the reverse relationship
-    )
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf)
+    if shelf.limit_only_objects:
+        containers = ShelfObject.objects.filter(
+            in_where_laboratory_id=laboratory_id,
+            object__type=Object.MATERIAL,
+            containershelfobject=None,
+            object__pk__in=shelf.available_objects_when_limit.values_list('pk')
+            # it's not used as container - query the reverse relationship
+        )
+    else:
+        containers = ShelfObject.objects.filter(
+            in_where_laboratory_id=laboratory_id,
+            object__type=Object.MATERIAL,
+            containershelfobject=None  # it's not used as container - query the reverse relationship
+
+        )
     return containers
 
 def get_containers_for_cloning(organization_id,shelf):
      # any object of type material that belongs to the organization (and its ancestors) can be a container
     organizations = get_pk_org_ancestors(organization_id)
-    shelf = get_object_or_404(Shelf , pk=shelf)
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf)
     if shelf.limit_only_objects:
          containers = Object.objects.filter(
             organization__in=organizations,

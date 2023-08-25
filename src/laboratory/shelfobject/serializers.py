@@ -41,7 +41,8 @@ class ContainerSerializer(serializers.Serializer):
             fields['container_for_cloning'].allow_null = False
         elif container_select_option == 'available':
             # set queryset to validate that only those in the laboratory of type material are valid for selection
-            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'])
+            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'],
+                                                                                            self.context['shelf'])
             fields['available_container'].allow_null = False
         return fields
 
