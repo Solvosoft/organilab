@@ -827,13 +827,16 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         lab_room = data['lab_room']
         furniture = data['furniture']
         updated_errors = {}
+        measurement_unit = shelf_object.measurement_unit if shelf_object.object.type ==\
+                                                            Object.REACTIVE else None
         lab_room_errors = self.validate_lab_room_errors(laboratory, lab_room, shelf_object)
         furniture_errors = self.validate_furniture_errors(lab_room, furniture, shelf_object)
         shelf_errors = self.validate_shelf_errors(furniture, shelf, shelf_object)
 
 
-        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object, shelf_object.quantity,
-                                               measurement_unit=shelf_object.measurement_unit)
+        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object,
+                                                        shelf_object.quantity,
+                                               measurement_unit=measurement_unit)
 
         if errors or shelf_errors or lab_room_errors or furniture_errors:
 
