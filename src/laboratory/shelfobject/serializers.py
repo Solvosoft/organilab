@@ -1,9 +1,7 @@
-from datetime import datetime
 import logging
 import re
 from django.conf import settings
 from django.forms import model_to_dict
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -628,11 +626,34 @@ class ShelfSerializer(serializers.ModelSerializer):
             quantity = _("Infinity")
         elif quantity:
             quantity = round(quantity, 3)
-        return f'{round(obj.get_total_refuse(), 3)} {_("of")} {quantity}'
+
+        if obj.measurement_unit:
+            total = obj.get_total_refuse(include_containers=False,
+                                         measurement_unit=obj.measurement_unit)
+        else:
+            total_detail = ""
+            measurement_unit_list = obj.get_objects(containershelfobject=None).values(
+                'measurement_unit', 'measurement_unit__description').distinct()
+
+            for unit in measurement_unit_list:
+                total_detail += "%d %s<br>" % (
+                    obj.get_total_refuse(include_containers=False,
+                                         measurement_unit=unit['measurement_unit']),
+                    unit['measurement_unit__description']
+                )
+            return total_detail
+
+        return f'{round(total, 3)} {_("of")} {quantity}'
 
     def get_percentage_storage_status(self, obj):
-        percentage = f'{round(obj.get_refuse_porcentage(), 2)}% {_("of")} 100%'
-        if obj.infinity_quantity:
+        percentage = ""
+
+        if obj.measurement_unit:
+            total = obj.get_refuse_porcentage(include_containers=False,
+                                              measurement_unit=obj.measurement_unit)
+            percentage = f'{round(total, 2)}% {_("of")} 100%'
+
+        if obj.infinity_quantity or not obj.measurement_unit:
             percentage = "-------"
         return percentage
 
@@ -646,7 +667,7 @@ class ShelfSerializer(serializers.ModelSerializer):
             'measurement_unit': self.get_measurement_unit(obj),
             'quantity_storage_status': self.get_quantity_storage_status(obj),
             'percentage_storage_status': self.get_percentage_storage_status(obj),
-            'position': position if position else 'top'
+            'position': position if position in ['bottom', 'left', 'right'] else 'top'
         }
         return render_to_string(
             'laboratory/shelfobject/shelf_availability_information.html',
@@ -681,7 +702,8 @@ class TransferObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = TranferObject
         fields = (
-        "id", "object", "quantity", "laboratory_send", "update_time", "mark_as_discard")
+            "id", "object", "quantity", "laboratory_send", "update_time",
+            "mark_as_discard")
 
 
 class TransferObjectDataTableSerializer(serializers.Serializer):
