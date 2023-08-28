@@ -561,7 +561,6 @@ $("#hide_alert").on('click', function(){
 
 function show_hide_container_selects(form_id, selected_value, prefix="#id_"){
     // they are hidden for the other options, so hide them by default and just display one if required
-    console.log(prefix)
     $(form_id).find(`${prefix}available_container`).parents(".form-group").hide();
     $(form_id).find(`${prefix}container_for_cloning`).parents(".form-group").hide();
     if(selected_value === 'available'){

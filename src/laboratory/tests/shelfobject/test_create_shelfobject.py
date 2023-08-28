@@ -104,7 +104,6 @@ class CreateShelfobjectTest(TestCase):
 
         self.material.type=1
         self.material.save()
-        print(Shelf.objects.get(pk=13).limit_only_objects)
         data = {
                 "shelf": 13,
                 "object": 2,
