@@ -587,34 +587,21 @@ $('#movesocontainermodal').on('show.bs.modal', function (e) {
 });
 
 
-RADIO_BASE_SELECTED='1';
-RADIO_CONTAINER_IN_USE='2';
-RADIO_CHANGE_CONTAINER='3';
 function ContainerUpdateForm(elementid, shelfobject, container, containername){
     let obj={
         "elementid": elementid,
-        "element": $(elementid),
+        "element": $("#"+elementid),
         "shelfobject": shelfobject,
         "container": container,
-        'radio_action_id': 'input[name="mc-action"]',
-        'select_shelfobject_c': 'select[name="mc-shelfobject_container"]',
-        'select_object_c': 'select[name="mc-object_container"]',
+        'radio_action_id': 'input[name="mc-container_select_option"]',
+        'select_shelfobject_c': 'select[name="mc-available_container"]',
+        'select_object_c': 'select[name="mc-container_for_cloning"]',
         "init": function(){
              $(this.radio_action_id).on('ifChanged', (function(instance){ return (event)=>{instance.onchange_event(event)};})(this));
         },
         'onchange_event': function(event){
-            let activeelement= $(event.target).val();
             if($(event.target).prop('checked')){
-                if(activeelement==RADIO_BASE_SELECTED){
-                    $(this.select_shelfobject_c).closest('.form-group').hide()
-                    $(this.select_object_c).closest('.form-group').show()
-                }else if(activeelement==RADIO_CONTAINER_IN_USE){
-                    $(this.select_shelfobject_c).closest('.form-group').hide()
-                    $(this.select_object_c).closest('.form-group').hide()
-                }else{
-                    $(this.select_shelfobject_c).closest('.form-group').show()
-                    $(this.select_object_c).closest('.form-group').hide()
-                }
+                show_hide_container_selects('#managecontainermodal', $(event.target).val(), prefix="mc-");
             }
         },
         'set_shelfobject': function(shelfobject, container, containername){
@@ -631,15 +618,13 @@ function ContainerUpdateForm(elementid, shelfobject, container, containername){
         },
         'update_shelfobject_filters': function(){
             if(this.container == "" || this.container == undefined){
-                $('input[name="mc-action"][value=1]').prop('checked', true);
+                $(this.radio_action_id+'[value=clone]').prop('checked', true);
                 $(this.radio_action_id).iCheck('update');
                 $(this.radio_action_id).trigger('ifChanged');
             }else{
-                $('input[name="mc-action"][value=3]').prop('checked', true);
+                $(this.radio_action_id+'[value=available]').prop('checked', true);
                 $(this.radio_action_id).iCheck('update');
                 $(this.radio_action_id).trigger('ifChanged');
-
-
             }
         }
 
