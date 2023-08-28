@@ -18,6 +18,8 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         self.user = self.user1_org1
         self.client = self.client1_org1
         self.shelf_object = ShelfObject.objects.get(pk=1)
+        self.shelf_object_material = ShelfObject.objects.get(pk=4)
+        self.shelf_object_equipment = ShelfObject.objects.get(pk=5)
         self.shelf = self.shelf_object.shelf
         self.provider = Provider.objects.get(pk=1)
         self.old_quantity = self.shelf_object.quantity
@@ -28,8 +30,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             "shelf_object": self.shelf_object.pk
         }
         self.total = self.shelf.get_total_refuse(
-            include_containers=False,
-            measurement_unit=self.shelf_object.measurement_unit)\
+            include_containers=False, measurement_unit=self.shelf_object.measurement_unit) \
                      + self.data["amount"]
         self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
 
@@ -100,4 +101,107 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
         self.assertNotEqual(new_quantity, self.old_quantity + self.data["amount"])
+        self.assertEqual(new_quantity, self.old_quantity)
+
+
+    def test_shelfobject_increase_case4(self):
+        """
+        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
+        Material Object
+
+        CHECK TESTS
+        1) Check response status code equal to 200.
+        2) Check if user has permission to access this organization and laboratory.
+        3) Check if total_quantity is less or equal than shelf storage capacity.
+        4) Check if new quantity is equal to (old quantity + amount)
+        5) Check if new quantity is not equal to old quantity
+        """
+        data = self.data
+        self.old_quantity = self.shelf_object_material.quantity
+        data['shelf_object'] = self.shelf_object_material.pk
+        self.total = self.shelf_object_material.shelf.get_total_refuse(
+            include_containers=False) + self.data["amount"]
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(self.total <= self.shelf_object_material.shelf.quantity)
+        shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
+        new_quantity = shelf_object.quantity
+        self.assertEqual(new_quantity, self.old_quantity + self.data["amount"])
+        self.assertNotEqual(new_quantity, self.old_quantity)
+
+    def test_shelfobject_increase_case5(self):
+        """
+        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
+        Equipment Object
+
+        CHECK TESTS
+        1) Check response status code equal to 200.
+        2) Check if user has permission to access this organization and laboratory.
+        3) Check if total_quantity is less or equal than shelf storage capacity.
+        4) Check if new quantity is equal to (old quantity + amount)
+        5) Check if new quantity is not equal to old quantity
+        """
+        data = self.data
+        self.old_quantity = self.shelf_object_equipment.quantity
+        data['shelf_object'] = self.shelf_object_equipment.pk
+        self.total = self.shelf_object_equipment.shelf.get_total_refuse(
+            include_containers=False) + self.data["amount"]
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(self.total <= self.shelf_object_equipment.shelf.quantity)
+        shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
+        new_quantity = shelf_object.quantity
+        self.assertEqual(new_quantity, self.old_quantity + self.data["amount"])
+        self.assertNotEqual(new_quantity, self.old_quantity)
+
+    def test_shelfobject_increase_case6(self):
+        """
+        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
+        Material Object
+
+        CHECK TESTS
+        1) Check response status code equal to 403.
+        2) Check if user has permission to access this organization and laboratory.
+        5) Check if new quantity is equal to old quantity
+        """
+        data = self.data
+        self.old_quantity = self.shelf_object_material.quantity
+        data['shelf_object'] = self.shelf_object_material.pk
+        self.total = self.shelf_object_material.shelf.get_total_refuse(
+            include_containers=False)
+        self.lab = self.lab3_org1
+        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject",
+                           kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
+        new_quantity = shelf_object.quantity
+        self.assertEqual(new_quantity, self.old_quantity)
+
+    def test_shelfobject_increase_case7(self):
+        """
+        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
+        Equipment Object
+
+        CHECK TESTS
+        1) Check response status code equal to 403.
+        2) Check if user has permission to access this organization and laboratory.
+        5) Check if new quantity is equal to old quantity
+        """
+        data = self.data
+        self.old_quantity = self.shelf_object_equipment.quantity
+        data['shelf_object'] = self.shelf_object_equipment.pk
+        self.total = self.shelf_object_equipment.shelf.get_total_refuse(
+            include_containers=False)
+        self.lab = self.lab3_org1
+        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject",
+                           kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
+        new_quantity = shelf_object.quantity
         self.assertEqual(new_quantity, self.old_quantity)
