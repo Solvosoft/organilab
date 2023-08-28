@@ -975,3 +975,11 @@ class RegisterUserQR(models.Model):
 
     def __str__(self):
         return f"{self.url}"
+
+class MaterialCapacity(models.Model):
+    capacity = models.FloatField(null=True,blank=True)
+    capacity_measurement_unit = catalog.GTForeignKey(Catalog,
+                                            on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Capacity measurement unit'),
+                                            key_name="key", key_value='units')
+    object = models.OneToOneField(Object, on_delete=models.CASCADE, null=True)

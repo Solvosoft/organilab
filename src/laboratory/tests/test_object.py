@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from laboratory.models import ObjectFeatures, Object
+from laboratory.models import ObjectFeatures, Object, Catalog
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 class ObjectViewTest(BaseLaboratorySetUpTest):
@@ -79,10 +79,14 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "model": "AC2022",
             "serie": "Ácido 222",
             "plaque": "AC4300",
-            "type": "1"
+            "type": "1",
+            "capacity":200,
+            "capacity_measurement_unit":64,
+
         }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
+        self.assertTrue(Object.objects.last().materialcapacity.capacity==200)
         self.assertEqual(total_obj+1, Object.objects.all().count())
         success_url = reverse("laboratory:objectview_list", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})+"?type_id=1"
         self.assertRedirects(response, success_url)

@@ -242,7 +242,7 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 
 
 def validate_measurement_unit_and_quantity(shelf, object, quantity,
-                                           measurement_unit=None):
+                                           measurement_unit=None, container=None):
     errors = {}
     total = shelf.get_total_refuse(include_containers=False,
                                    measurement_unit=shelf.measurement_unit) + quantity
@@ -270,6 +270,26 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity,
     if quantity <= 0:
         logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
         errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
+    if container:
+        if hasattr(container.object, 'materialcapacity'):
+            container_capacity = container.object.materialcapacity.capacity
+            container_unit = container.object.materialcapacity.capacity_measurement_unit
+            if container_capacity < quantity:
+                logger.debug(
+                    f'validate --> total ({container_capacity}) < quantity ({quantity})')
+                errors.update({'quantity': _(
+                    "Quantity cannot be greater than the container capacity limit: %(capacity)s.") % {
+                                               'capacity': container_capacity,
+                                           }})
+
+            if container_unit != measurement_unit:
+                logger.debug(
+                    f'validate --> total ({container_unit}) < quantity ({measurement_unit})')
+                errors.update({'measurement_unit': _(
+                    "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
+                    'unit': container_unit}})
+    if errors:
+        raise serializers.ValidationError(errors)
 
     return errors
 
@@ -306,7 +326,8 @@ class ReactiveShelfObjectSerializer(serializers.ModelSerializer):
         data = super().validate(data)
         errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'],
                                                         data['quantity'],
-                                                        data['measurement_unit'])
+                                                        data['measurement_unit'],
+                                                        data['container'])
         if errors:
             raise serializers.ValidationError(errors)
         return data
@@ -353,8 +374,9 @@ class ReactiveRefuseShelfObjectSerializer(serializers.ModelSerializer):
     def validate(self, data):
         data = super().validate(data)
         errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'],
-                                                        data['quantity'],
-                                                        data['measurement_unit'])
+                                                        data['quantity'], data['measurement_unit'],
+                                                        data['container']
+                                                        )
         if errors:
             raise serializers.ValidationError(errors)
         return data
