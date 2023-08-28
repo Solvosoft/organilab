@@ -973,11 +973,9 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
         data = super().validate(data)
         if self.context.get('validate_for_approval'):
             transfer_object = data['transfer_object']
-            # do it here instead of in validate_transfer_object so shelf is already validated when used
-            errors = validate_measurement_unit_and_quantity(data['shelf'],
-                                                            transfer_object.object.object,
-                                                            transfer_object.quantity,
-                                                            transfer_object.object.measurement_unit)
+            # do it here instead of in validate_transfer_object so shelf is already validated when used - only validate measurement unit for reactive
+            measurement_unit = transfer_object.object.measurement_unit if transfer_object.object.object.type == Object.REACTIVE else None
+            errors = validate_measurement_unit_and_quantity(data['shelf'], transfer_object.object.object, transfer_object.quantity, measurement_unit)
             if errors:
                 updated_errors = {}
                 transfer_object_errors = []
