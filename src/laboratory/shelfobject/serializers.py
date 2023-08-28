@@ -139,29 +139,29 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         return attr
 
     def validate(self, data):
+        data = super().validate(data)
         shelf_object = data['shelf_object']
         shelf = shelf_object.shelf
-        shelf_quantity = shelf.quantity
         amount = data['amount']
-        total = shelf.get_total_refuse(
-            include_containers=False, measurement_unit=shelf_object.measurement_unit)\
-                + amount
-        check_measurement_unit = shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit
+        measurement_unit = shelf_object.measurement_unit if shelf_object.object.type == Object.REACTIVE else None
+        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object, amount, measurement_unit=measurement_unit)
 
-        if check_measurement_unit:
-            logger.debug(
-                f'IncreaseShelfObjectSerializer --> shelf_object.measurement_unit != '
-                f'shelf.measurement_unit and shelf.measurement_unit ({check_measurement_unit})')
-            raise serializers.ValidationError({'shelf_object': _(
-                "Measurement unit cannot be different than the shelf's measurement unit.")})
-        if total > shelf_quantity and not shelf.infinity_quantity:
-            logger.debug(
-                f'IncreaseShelfObjectSerializer --> total ({total}) > shelf_quantity ({shelf_quantity}) '
-                f'and not shelf.infinity_quantity')
-            raise serializers.ValidationError({'amount': _(
-                "Quantity cannot be greater than the shelf's quantity limit: %(limit)s.") % {
-                                                             'limit': shelf_quantity,
-                                                         }})
+        if errors:
+            updated_errors = {}
+            shelfobject_errors = []
+            amount_errors = []
+            for key, error in errors.items():
+                if key in ['object', 'measurement_unit']:
+                    shelfobject_errors.append(error)
+                elif key == 'quantity':
+                    amount_errors.append(error)
+                else:
+                    updated_errors[key] = error
+                if shelfobject_errors:
+                    updated_errors['shelf_object'] = shelfobject_errors
+                if amount_errors:
+                    updated_errors['amount'] = amount_errors
+            raise serializers.ValidationError(updated_errors)
         return data
 
 
@@ -893,6 +893,9 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         furniture_errors = self.validate_furniture_errors(lab_room, furniture, shelf_object)
         shelf_errors = self.validate_shelf_errors(furniture, shelf, shelf_object)
 
+        if shelf.pk == shelf_object.shelf.pk:
+            logger.debug(f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
+            raise serializers.ValidationError({'shelf': _("Object cannot be moved to same shelf.")})
 
         errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object,
                                                         shelf_object.quantity,
