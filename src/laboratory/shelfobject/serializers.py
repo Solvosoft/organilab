@@ -16,7 +16,9 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
-    get_containers_for_cloning
+    get_containers_for_cloning, get_available_objs_by_shelfobject, \
+    get_shelf_queryset_by_filters, get_furniture_queryset_by_filters, \
+    get_lab_room_queryset_by_filters
 
 logger = logging.getLogger('organilab')
 
@@ -141,7 +143,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         shelf = shelf_object.shelf
         shelf_quantity = shelf.quantity
         amount = data['amount']
-        total = shelf.get_total_refuse() + amount
+        total = shelf.get_total_refuse(
+            include_containers=False, measurement_unit=shelf_object.measurement_unit)\
+                + amount
         check_measurement_unit = shelf_object.measurement_unit != shelf.measurement_unit and shelf.measurement_unit
 
         if check_measurement_unit:
@@ -794,7 +798,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_lab_room(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr:
             if attr.laboratory_id != source_laboratory_id:
                 logger.debug(
@@ -806,7 +810,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_furniture(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr:
             if attr.labroom.laboratory_id != source_laboratory_id:
                 logger.debug(
@@ -818,7 +822,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_shelf(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr:
             if attr.furniture.labroom.laboratory_id != source_laboratory_id:
                 logger.debug(
@@ -830,7 +834,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
-        source_laboratory_id = self.context.get("source_laboratory_id")
+        source_laboratory_id = self.context.get("laboratory_id")
         if attr.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
                 f'MoveShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != '
@@ -839,22 +843,75 @@ class MoveShelfObjectSerializer(serializers.Serializer):
                 _("Object does not exist in the laboratory."))
         return attr
 
+    def validate_lab_room_errors(self, laboratory, lab_room, shelf_object):
+        lab_room_errors = []
+        queryset = LaboratoryRoom.objects.filter(laboratory=laboratory)
+        allowed_lab_rooms = get_lab_room_queryset_by_filters(queryset, shelf_object, "furniture__shelf",
+                                                        {"furniture__shelf__measurement_unit":
+                                                             shelf_object.measurement_unit})
+        if lab_room not in allowed_lab_rooms:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> laboratory room ({lab_room.pk}) is not in available laboratory rooms list')
+            lab_room_errors.append(_("Laboratory room is not in available laboratory rooms list."))
+        return lab_room_errors
+
+    def validate_furniture_errors(self, lab_room, furniture, shelf_object):
+        furniture_errors = []
+        queryset = Furniture.objects.filter(labroom=lab_room)
+        allowed_furnitures = get_furniture_queryset_by_filters(queryset, shelf_object, "shelf",
+                                                        {"shelf__measurement_unit":
+                                                             shelf_object.measurement_unit})
+        if furniture not in allowed_furnitures:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> furniture ({furniture.pk}) is not in available furnitures list')
+            furniture_errors.append(_("Furniture is not in available furnitures list."))
+        return furniture_errors
+
+    def validate_shelf_errors(self, furniture, shelf, shelf_object):
+        shelf_errors = []
+        queryset = Shelf.objects.filter(furniture=furniture)
+        allowed_shelves = get_shelf_queryset_by_filters(queryset, shelf_object, "pk",
+                                                        {"measurement_unit":
+                                                             shelf_object.measurement_unit})
+        if shelf not in allowed_shelves:
+            logger.debug(
+                f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) is not in available shelves list')
+            shelf_errors.append(_("Shelf is not in available shelves list."))
+        return shelf_errors
+
     def validate(self, data):
+        data = super().validate(data)
+        laboratory = self.context.get("laboratory_id")
         shelf_object = data['shelf_object']
         shelf = data['shelf']
+        lab_room = data['lab_room']
+        furniture = data['furniture']
+        updated_errors = {}
+        measurement_unit = shelf_object.measurement_unit if shelf_object.object.type ==\
+                                                            Object.REACTIVE else None
+        lab_room_errors = self.validate_lab_room_errors(laboratory, lab_room, shelf_object)
+        furniture_errors = self.validate_furniture_errors(lab_room, furniture, shelf_object)
+        shelf_errors = self.validate_shelf_errors(furniture, shelf, shelf_object)
 
-        if shelf.pk == shelf_object.shelf.pk:
-            logger.debug(
-                f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError(
-                {'shelf': _("Object cannot be moved to same shelf.")})
 
-        if shelf.measurement_unit != shelf_object.measurement_unit:
-            logger.debug(
-                f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
-            raise serializers.ValidationError({'shelf': _(
-                "Object cannot be moved to a shelf with different measurement unit.")})
+        errors = validate_measurement_unit_and_quantity(shelf, shelf_object.object,
+                                                        shelf_object.quantity,
+                                               measurement_unit=measurement_unit)
+        if errors or shelf_errors or lab_room_errors or furniture_errors:
 
+            for key, error in errors.items():
+                if key in ['quantity', 'object', 'measurement_unit']:
+                    shelf_errors.append(error)
+                else:
+                    updated_errors[key] = error
+
+            if shelf_errors:
+                updated_errors['shelf'] = shelf_errors
+            if lab_room_errors:
+                updated_errors['lab_room'] = lab_room_errors
+            if furniture_errors:
+                updated_errors['furniture'] = furniture_errors
+            raise serializers.ValidationError(updated_errors)
         return data
 
 
@@ -862,6 +919,10 @@ class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
     shelf = serializers.PrimaryKeyRelatedField(
         queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
+class ValidateUserAccessShelfObjectSerializer(ValidateUserAccessOrgLabSerializer):
+    shelfobject = serializers.PrimaryKeyRelatedField(
+        queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
+        required=False)
 
 class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
     OBJTYPE_CHOICES = (
@@ -1109,4 +1170,25 @@ class TransferInShelfObjectApproveWithContainerSerializer(
                 f'transfer_object.quantity ({transfer_object.quantity}) < transfer_object.object.quantity ({transfer_object.object.quantity})')
             raise serializers.ValidationError({"container_select_option":
                                                    _("The source container cannot be moved since the entire quantity available for the source object was not transferred in.")})
+        return data
+
+
+class MoveShelfObjectWithContainerSerializer(MoveShelfObjectSerializer, ContainerSerializer):
+    MOVE_CONTAINER_SELECT_CHOICES = [
+        ('clone', _('Create new based on selected')),
+        ('available', _('Use selected')),
+        ('use_source', _('Move the container from the source laboratory')),
+        ('new_based_source', _('Create new based on current container in the source laboratory'))
+    ]
+    container_select_option = serializers.ChoiceField(required=True, choices=MOVE_CONTAINER_SELECT_CHOICES)
+
+    def validate(self, data):
+        data = super().validate(data)
+        container_select_option = data['container_select_option']
+        shelf_object = data['shelf_object']
+        if container_select_option in ("use_source", "new_based_source") and not shelf_object.container:
+            logger.debug(f'MoveShelfObjectWithContainerSerializer --> container_select_option in ("use_source", "new_based_source") '
+                         f'and not shelf_object.container')
+            raise serializers.ValidationError({'container_select_option':
+                _("The selected option cannot be used since the source object does not have a container assigned.")})
         return data
