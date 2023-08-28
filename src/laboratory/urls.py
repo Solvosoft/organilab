@@ -7,6 +7,8 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ProcedureStepCommentAPI, ProcedureStepCommentTableView
+from laboratory.shelfobject_container.views import show_shelf_container
+from laboratory.shelfobject_container.viewsets import ContainerManagementViewset
 from sga.api.sga_components_viewsets import WarningWordAPI, WarningWordTableView, \
     DangerIndicationAPI, DangerIndicationTableView, \
     PrudenceAdviceAPI, PrudenceAdviceTableView
@@ -58,7 +60,8 @@ lab_shelf_urls = [
     #path('list/<int:furniture_pk>', shelfs.list_shelf, name="list_shelf"),
     path('create/', shelfs.ShelfCreate.as_view(), name="shelf_create"),
     path('delete/<int:pk>/<int:row>/<int:col>/', shelfs.delete_shelf, name="shelf_delete"),
-    path('edit/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfEdit.as_view(), name="shelf_edit")
+    path('edit/<int:pk>/<int:row>/<int:col>/', shelfs.ShelfEdit.as_view(), name="shelf_edit"),
+    path('containers/', show_shelf_container, name="shelf_containers"),
 
 ]
 
@@ -86,7 +89,7 @@ shelf_object_urls = [
     path('q/update/<int:pk>/', shelfobject.ShelfObjectSearchUpdate.as_view(), name="shelfobject_searchupdate"),
     path('get_shelfobject_limit/<int:pk>/', shelfobject.edit_limit_object, name="get_shelfobject_limit"),
     path('download_shelfobject_qr/<int:pk>/', shelfobject.download_shelfobject_qr, name="download_shelfobject_qr"),
-    path('<int:pk>/log', ShelfObjectObservationView, name='get_shelfobject_log')
+    path('<int:pk>/log', ShelfObjectObservationView, name='get_shelfobject_log'),
 ]
 
 lab_reports_urls = [
@@ -219,6 +222,10 @@ shelfobjectrouter.register('api_shelfobject_table', ShelfObjectApi.ShelfObjectTa
 shelfobjectrouter.register('api_shelfobject', ShelfObjectApi.ShelfObjectViewSet, basename='api-shelfobject')
 shelfobjectrouter.register('api_search_labview', ShelfObjectApi.SearchLabView, basename='api-search-labview')
 
+shelfcontainerrouter = DefaultRouter()
+shelfcontainerrouter.register('api_container_list', ContainerManagementViewset, basename='api-container-in-shelf')
+
+
 '''MULTILAB'''
 urlpatterns += organization_urls + [
     path('<int:org_pk>/', include(organization_urls_org_pk)),
@@ -240,6 +247,7 @@ urlpatterns += organization_urls + [
 
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('so/api/<int:org_pk>/<int:lab_pk>/', include(shelfobjectrouter.urls)),
+    path('so/api/<int:org_pk>/<int:lab_pk>/<int:shelf>/', include(shelfcontainerrouter.urls)),
     path('org/<int:org_pk>/api/shelfobject/',  ShelfObjectAPI.as_view(), name='api_shelfobject'),
     path('org/api/shelfobject/graphic',  ShelfObjectGraphicAPI.as_view(), name='api_shelfobject_graphic'),
     path('org/api/shels/list',  ShelfList.as_view(), name='get_shelfs_list'),

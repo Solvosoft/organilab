@@ -132,7 +132,7 @@ document.url_status = '{% url "laboratory:api-shelfobject-create-status" org_pk=
 const view_search = false;
 document.search_by_url = JSON.parse(document.getElementById('search_by_url').textContent);
 document.suggestions_tag = JSON.parse(document.getElementById('suggestions_tag').textContent);
-
+document.url_container_list = "{% url 'laboratory:shelf_containers' org_pk=org_pk lab_pk=laboratory %}";
 </script>
 
 <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
