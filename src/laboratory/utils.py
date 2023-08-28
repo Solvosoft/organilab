@@ -379,3 +379,9 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                 else:
                     user_access = True #REPORT VIEWS WITH LAB = 0
     return user_access
+
+
+def save_object_by_action(user, obj, relobj, changed_data, action_flag, object_repr):
+    obj.save()
+    organilab_logentry(user, obj, action_flag, object_repr, changed_data=changed_data,
+                       relobj=relobj)
