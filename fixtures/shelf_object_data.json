@@ -433,12 +433,139 @@
     }
   },
   {
+    "model": "laboratory.object",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "BCA65",
+      "name": "Botella 100 ml",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "TA6335",
+      "name": "Tanque",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 4,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "PE4435",
+      "name": "Pesa",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [
+        1
+      ]
+    }
+  },
+  {
     "model": "laboratory.shelfobject",
     "pk": 1,
     "fields": {
       "shelf": 2,
+      "object": 2,
+      "quantity": 24.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 62,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 2,
       "object": 1,
-      "quantity": 23.0,
+      "quantity": 53.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": 1
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 2,
+      "object": 3,
+      "quantity": 24.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 62,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 2,
+      "object": 3,
+      "quantity": 24.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 62,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 5,
+    "fields": {
+      "shelf": 2,
+      "object": 4,
+      "quantity": 3.0,
       "limit_quantity": 7.0,
       "in_where_laboratory": 1,
       "measurement_unit": 62,
@@ -645,7 +772,7 @@
       "step": 3,
       "object": 1,
       "quantity": 15,
-      "measurement_unit": 62
+      "measurement_unit": 64
     }
   }
 ]

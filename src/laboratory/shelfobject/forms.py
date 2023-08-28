@@ -3,11 +3,11 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from laboratory import utils
-from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture, TranferObject
+from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
@@ -60,34 +60,62 @@ class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
     laboratory = forms.IntegerField(widget=forms.HiddenInput)
     exclude_shelf = forms.IntegerField(widget=forms.HiddenInput)
-    lab_room = forms.ModelChoiceField(queryset=LaboratoryRoom.objects.all(), label=_("Laboratory Room"),
-                                      widget=AutocompleteSelect("lab_room", attrs={
-                                          'data-related': 'true',
-                                          'data-pos': 0,
-                                          'data-groupname': 'moveshelfform',
-                                          'data-s2filter-organization': '#id_organization',
-                                          'data-s2filter-laboratory': '#id_laboratory'
-                                      })
+    lab_room = forms.ModelChoiceField(queryset=LaboratoryRoom.objects.none(),
+                                      widget=genwidgets.Select,
+                                      label=_("Laboratory Room")
                                       )
-    furniture = forms.ModelChoiceField(queryset=Furniture.objects.all(), label=_("Furniture"),
-                                       widget=AutocompleteSelect("furniture", attrs={
-                                           'data-related': 'true',
-                                           'data-pos': 1,
-                                           'data-groupname': 'moveshelfform',
-                                           'data-s2filter-organization': '#id_organization',
-                                           'data-s2filter-laboratory': '#id_laboratory'
-                                       })
+    furniture = forms.ModelChoiceField(queryset=Furniture.objects.none(),
+                                       widget=genwidgets.Select,
+                                       label=_("Furniture")
                                        )
-    shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), label=_("Shelf"),
-                                   widget=AutocompleteSelect("shelf", attrs={
-                                       'data-related': 'true',
-                                       'data-pos': 2,
-                                       'data-groupname': 'moveshelfform',
-                                       'data-s2filter-shelf': '#id_shelf',
-                                       'data-s2filter-organization': '#id_organization',
-                                       'data-s2filter-laboratory': '#id_laboratory'
-                                   }), help_text=_("This select only shows shelves with same measurement unit than current object")
+    shelf = forms.ModelChoiceField(queryset=Shelf.objects.none(),
+                                   widget=genwidgets.Select,
+                                   label=_("Shelf")
                                    )
+
+    def __init__(self, *args, **kwargs):
+        group_name = kwargs.pop('group_name')
+        super(MoveShelfObjectForm, self).__init__(*args, **kwargs)
+
+        self.fields["lab_room"] = forms.ModelChoiceField(
+            queryset=LaboratoryRoom.objects.all(), label=_("Laboratory Room"),
+            widget=AutocompleteSelect("lab_room", attrs={
+                'data-related': 'true',
+                'data-pos': 0,
+                'data-groupname': group_name,
+                'data-s2filter-shelfobject': '#id_shelfobject',
+                'data-s2filter-organization': '#id_organization',
+                'data-s2filter-laboratory': '#id_laboratory'
+            })
+        )
+
+        self.fields["furniture"] = forms.ModelChoiceField(
+            queryset=Furniture.objects.all(), label=_("Furniture"),
+            widget=AutocompleteSelect("furniture", attrs={
+                'data-related': 'true',
+                'data-pos': 1,
+                'data-groupname': group_name,
+                'data-s2filter-shelfobject': '#id_shelfobject',
+                'data-s2filter-organization': '#id_organization',
+                'data-s2filter-laboratory': '#id_laboratory'
+            })
+        )
+
+        self.fields["shelf"] = forms.ModelChoiceField(
+            queryset=Shelf.objects.all(), label=_("Shelf"),
+            widget=AutocompleteSelect("shelf", attrs={
+                'data-related': 'true',
+                'data-pos': 2,
+                'data-groupname': group_name,
+                'data-s2filter-shelfobject': '#id_shelfobject',
+                'data-s2filter-organization': '#id_organization',
+                'data-s2filter-laboratory': '#id_laboratory'
+            }), help_text=_(
+                "This select only shows shelves with some of the following features: "
+                "<br>1) Infinity quantity capacity and not defined measurement unit. "
+                "<br>2) Infinity quantity capacity and same measurement unit than selected shelf object. "
+                "<br>3) Same measurement unit than selected shelf object and available capacity in the shelf.")
+        )
 
 class ShelfObjectExtraFields(GTForm, forms.Form):
     objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
@@ -460,6 +488,10 @@ class ContainerForm(GTForm):
 class TransferInShelfObjectApproveWithContainerForm(ContainerForm):
     transfer_object = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.IntegerField(widget=forms.HiddenInput)
+
+
+class MoveShelfobjectWithContainerForm(ContainerForm, MoveShelfObjectForm):
+    pass
 
 
 class ContainerManagementForm(GTForm):
