@@ -67,9 +67,9 @@ def clone_shelfobject_limits(shelfobject, user):
         organilab_logentry(user, new_limits, ADDITION, changed_data=['minimum_limit', 'maximum_limit', 'expiration_date'])
     return new_limits
 
-def get_available_containers_for_selection(laboratory_id, shelf):
+def get_available_containers_for_selection(laboratory_id, shelf_id):
     # all containers that belong to a laboratory that are not in use
-    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf)
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
     if shelf.limit_only_objects:
         containers = ShelfObject.objects.filter(
             in_where_laboratory_id=laboratory_id,
@@ -87,10 +87,10 @@ def get_available_containers_for_selection(laboratory_id, shelf):
         )
     return containers
 
-def get_containers_for_cloning(organization_id,shelf):
+def get_containers_for_cloning(organization_id,shelf_id):
      # any object of type material that belongs to the organization (and its ancestors) can be a container
     organizations = get_pk_org_ancestors(organization_id)
-    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf)
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
     if shelf.limit_only_objects:
          containers = Object.objects.filter(
             organization__in=organizations,
