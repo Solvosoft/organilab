@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load timejs %}
+{% load urlname_tags %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_urlname_action 'laboratory_view_principal' %}
+{% endblock %}
+
+{% block title %}{% trans 'Container on shelf' %}{% endblock %}
+
+{% block content %}
+<div class="row">
+	<table class="table table-striped w-100" id="container_table"></table>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+{{block.super}}
+<script>
+var object_urls = {
+	list_url: "{% url 'laboratory:api-container-in-shelf-list' org_pk=org_pk lab_pk=laboratory shelf=shelf.pk%}"
+}
+datatable_inits = {
+			columns: [
+							{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+							{data: "object", name: "object__name", title: gettext("Name"), type: "string", visible: true, render: gt_print_list_object('name')},
+							{data: "shelf", name: "shelf__name", title: gettext("Shelf"), type: "readonly", visible: true, render: gt_print_list_object('name')},
+							{data: "status", name: "status__description", title: gettext("Status"), type: "string", visible: true, render: gt_print_list_object('description')},
+							{data: "measurement_unit", name: "measurement_unit__description", title: gettext("Measurement Unit"), type: "string", visible: true},
+							{data: "created_by", name: "created_by", title: gettext("Created By"), type: "string", visible: true},
+							{data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "date",  render: DataTable.render.datetime(), visible: true}
+		],
+		addfilter: true
+}
+var container_modalids = {}
+
+var container_actions = {
+	 table_actions: [],  //table_actions
+	 object_actions: [],  // object_actions
+		title: gettext('Actions'),
+		className:  "no-export-col"
+}
+let objconfig={
+	urls: object_urls,
+	datatable_element:  "#container_table",
+	modal_ids: container_modalids,
+	actions: container_actions,
+	datatable_inits: datatable_inits,
+	add_filter: true
+}
+
+
+let ocrud=ObjectCRUD("containercrudobj", objconfig)
+ocrud.init();
+
+
+</script>
+{% endblock %}
