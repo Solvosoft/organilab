@@ -48,6 +48,11 @@ function clear_action_form(form){
         }
     });
 
+    // reset iCheck elements
+    $(form).find("input[type='radio']").prop('checked', false);
+    $(form).find("input[type='radio']").iCheck('update');
+
+    // reset everything else
     $(form).trigger('reset');
     $(form).find("select option:selected").prop("selected", false);
     $(form).find("select").val(null).trigger('change');
