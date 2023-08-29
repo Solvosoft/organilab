@@ -1339,6 +1339,19 @@
     }
   },
   {
+    "model": "laboratory.furniture",
+    "pk": 7,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 7",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[15],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
     "model": "laboratory.shelf",
     "pk": 10,
     "fields": {
@@ -2023,6 +2036,194 @@
       "description": "Test observation 3",
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 15,
+    "fields": {
+      "furniture": 7,
+      "name": "Estante líquido",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 5,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "RA254",
+      "name": "Botella 300 ml",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 7,
+    "fields": {
+      "shelf": 15,
+      "object": 5,
+      "quantity": 1.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 17.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": null
+    }
+  },
+    {
+    "model": "laboratory.shelfobject",
+    "pk": 8,
+    "fields": {
+      "shelf": 15,
+      "object": 4,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": 7
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 9,
+    "fields": {
+      "shelf": 15,
+      "object": 5,
+      "quantity": 1.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 17.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": null
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 10,
+    "fields": {
+      "shelf": 15,
+      "object": 4,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": 9
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 11,
+    "fields": {
+      "shelf": 15,
+      "object": 4,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": null
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 6,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "MA",
+      "name": "Caja",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 12,
+    "fields": {
+      "shelf": 15,
+      "object": 6,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": null
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 7,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "EQ",
+      "name": "Condensador",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 13,
+    "fields": {
+      "shelf": 15,
+      "object": 7,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": null
     }
   }
 ]

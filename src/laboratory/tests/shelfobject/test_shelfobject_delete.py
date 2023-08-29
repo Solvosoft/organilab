@@ -1,8 +1,9 @@
 from django.contrib.admin.models import LogEntry
-from laboratory.models import ShelfObjectObservation
+from laboratory.models import ShelfObjectObservation, ShelfObject
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from .test_shelfobject_api import ShelfObjectAPITest
+from ...utils import check_user_access_kwargs_org_lab
 
 
 class ShelfObjectDeleteTest(ShelfObjectAPITest):
@@ -88,3 +89,141 @@ class ShelfObjectDeleteTest(ShelfObjectAPITest):
         response = self.client.delete(delete_url, data={'shelfobj': 1})
         self.assertEqual(response.status_code, 415)
 
+    def test_delete_reactive_and_container(self):
+        """
+        Function test api shelf object delete
+
+        - Check response status code 200
+        - Check if user has permission to access this organization and laboratory.
+        - Check if a specific shelf object inside a laboratory was deleted.
+        - Check if a specific shelf object container inside a laboratory was or was not deleted.
+        """
+        old_total_shelfobject = ShelfObject.objects.all().count()
+        shelfobject = ShelfObject.objects.get(pk=8)
+        container = shelfobject.container
+        delete_url = reverse('laboratory:api-shelfobject-delete',
+                             kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
+        data = {'shelfobj': shelfobject.pk, 'delete_container': True}
+        response = self.client.delete(delete_url, data=data,
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org_pk, self.lab.pk, self.user))
+        new_total_shelfobject = ShelfObject.objects.all().count()
+
+        so_exists = ShelfObject.objects.filter(pk=shelfobject.pk).exists()
+        self.assertFalse(so_exists)
+
+        if container:
+
+            container_exists = ShelfObject.objects.filter(pk=container.pk).exists()
+            if data['delete_container']:
+                self.assertFalse(container_exists)
+            else:
+                self.assertTrue(container_exists)
+        self.assertEqual(old_total_shelfobject - 2, new_total_shelfobject)
+
+    def test_delete_reactive_exclude_container(self):
+        """
+        - Check response status code 200
+        - Check if user has permission to access this organization and laboratory.
+        - Check if a specific shelf object inside a laboratory was deleted.
+        - Check if a specific shelf object container inside a laboratory was or was not deleted.
+        """
+        old_total_shelfobject = ShelfObject.objects.all().count()
+        shelfobject = ShelfObject.objects.get(pk=10)
+        container = shelfobject.container
+        delete_url = reverse('laboratory:api-shelfobject-delete',
+                             kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
+        data = {'shelfobj': shelfobject.pk, 'delete_container': False}
+        response = self.client.delete(delete_url, data=data,
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org_pk, self.lab.pk, self.user))
+        new_total_shelfobject = ShelfObject.objects.all().count()
+
+        so_exists = ShelfObject.objects.filter(pk=shelfobject.pk).exists()
+        self.assertFalse(so_exists)
+
+        if container:
+
+            container_exists = ShelfObject.objects.filter(pk=container.pk).exists()
+            if data['delete_container']:
+                self.assertFalse(container_exists)
+            else:
+                self.assertTrue(container_exists)
+
+        self.assertEqual(old_total_shelfobject -1, new_total_shelfobject)
+
+    def test_delete_reactive_without_container(self):
+        """
+        Function test api shelf object delete
+
+        - Check response status code 200
+        - Check if user has permission to access this organization and laboratory.
+        - Check if a specific shelf object inside a laboratory was deleted.
+        """
+        old_total_shelfobject = ShelfObject.objects.all().count()
+        shelfobject = ShelfObject.objects.get(pk=11)
+        delete_url = reverse('laboratory:api-shelfobject-delete',
+                             kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
+        data = {'shelfobj': shelfobject.pk}
+        response = self.client.delete(delete_url, data=data,
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org_pk, self.lab.pk, self.user))
+        new_total_shelfobject = ShelfObject.objects.all().count()
+
+        so_exists = ShelfObject.objects.filter(pk=shelfobject.pk).exists()
+        self.assertFalse(so_exists)
+        self.assertEqual(old_total_shelfobject - 1, new_total_shelfobject)
+
+    def test_delete_material_obj(self):
+        """
+        Function test api shelf object delete
+
+        - Check response status code 200
+        - Check if user has permission to access this organization and laboratory.
+        - Check if a specific shelf object inside a laboratory was deleted.
+        """
+        old_total_shelfobject = ShelfObject.objects.all().count()
+        shelfobject = ShelfObject.objects.get(pk=12)
+        delete_url = reverse('laboratory:api-shelfobject-delete',
+                             kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
+        data = {'shelfobj': shelfobject.pk}
+        response = self.client.delete(delete_url, data=data,
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org_pk, self.lab.pk, self.user))
+        new_total_shelfobject = ShelfObject.objects.all().count()
+
+        so_exists = ShelfObject.objects.filter(pk=shelfobject.pk).exists()
+        self.assertFalse(so_exists)
+        self.assertEqual(old_total_shelfobject - 1, new_total_shelfobject)
+
+    def test_delete_equipment_obj(self):
+        """
+        Function test api shelf object delete
+
+        - Check response status code 200
+        - Check if user has permission to access this organization and laboratory.
+        - Check if a specific shelf object inside a laboratory was deleted.
+        """
+        old_total_shelfobject = ShelfObject.objects.all().count()
+        shelfobject = ShelfObject.objects.get(pk=13)
+        delete_url = reverse('laboratory:api-shelfobject-delete',
+                             kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
+        data = {'shelfobj': shelfobject.pk}
+        response = self.client.delete(delete_url, data=data,
+                                      content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org_pk, self.lab.pk, self.user))
+        new_total_shelfobject = ShelfObject.objects.all().count()
+
+        so_exists = ShelfObject.objects.filter(pk=shelfobject.pk).exists()
+        self.assertFalse(so_exists)
+        self.assertEqual(old_total_shelfobject - 1, new_total_shelfobject)

@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div class="modal fade modal-lg" id="delete_shelfobject_modal" role="dialog" aria-labelledby="deletesomodal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">{% trans 'Are you sure?' %}</h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" id="divobjname"></div>
+				<br>
+				<div class="form-group" id="divcontainer">
+					<label for="id_delete_container"></label>
+					No <input type="checkbox" id="id_delete_container" name="delete_container" data-widget="YesNoInput"/>
+					{% trans 'Yes' %}
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans "Close" %}</button>
+				<button type="button" id="btndeleteso" class="btn btn-primary" data-shelfobject=""
+												data-url="{% url 'laboratory:api-shelfobject-delete' lab_pk=laboratory org_pk=org_pk %}">
+					{% trans 'Save changes' %}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

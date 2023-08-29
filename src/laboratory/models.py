@@ -280,7 +280,7 @@ class LaboratoryRoom(BaseCreationObj):
 class Shelf(BaseCreationObj):
     furniture = models.ForeignKey('Furniture', verbose_name=_("Furniture"),
                                   on_delete=models.CASCADE)
-    name = models.CharField(_("Name"), max_length=15, default="nd")
+    name = models.CharField(_("Name"), max_length=150, default="nd")
     container_shelf = models.ForeignKey('Shelf', null=True, blank=True,
                                         verbose_name=_("Container shelf"),
                                         on_delete=models.CASCADE)
@@ -975,3 +975,11 @@ class RegisterUserQR(models.Model):
 
     def __str__(self):
         return f"{self.url}"
+
+class MaterialCapacity(models.Model):
+    capacity = models.FloatField(null=True,blank=True)
+    capacity_measurement_unit = catalog.GTForeignKey(Catalog,
+                                            on_delete=models.DO_NOTHING,
+                                            verbose_name=_('Capacity measurement unit'),
+                                            key_name="key", key_value='units')
+    object = models.OneToOneField(Object, on_delete=models.CASCADE, null=True)
