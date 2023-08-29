@@ -28,7 +28,8 @@ from ..shelfobject.forms import TransferOutShelfObjectForm, \
     ShelfObjectRefuseMaterialForm, ShelfObjectReactiveForm, \
     ShelfObjectRefuseEquipmentForm, ShelfObjectEquipmentForm, \
     DecreaseShelfObjectForm, IncreaseShelfObjectForm, \
-    TransferInShelfObjectApproveWithContainerForm, ContainerManagementForm
+    TransferInShelfObjectApproveWithContainerForm, ContainerManagementForm, \
+    MoveShelfobjectWithContainerForm
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
@@ -145,7 +146,11 @@ class LaboratoryRoomsList(ListView):
             users=self.request.user, lab_send=self.lab, org=self.org)
         context['increase_object_form'] = IncreaseShelfObjectForm(prefix="increase")
         context['decrease_object_form'] = DecreaseShelfObjectForm(prefix="decrease")
-        context['move_object_form'] = MoveShelfObjectForm(prefix="move")
+        context['move_object_form'] = MoveShelfObjectForm(group_name="groupmoveso",
+                                                          prefix="move")
+        context['move_object_container_form'] = MoveShelfobjectWithContainerForm(
+            group_name="groupmovesocontainer", modal_id="#movesocontainerform",
+            set_container_advanced_options=True, prefix="movewithcontainer")
         context['equipment_form'] = ShelfObjectEquipmentForm(initial={"objecttype": 2},
                                                             org_pk=self.org,
                                                             prefix='ef')
@@ -155,7 +160,9 @@ class LaboratoryRoomsList(ListView):
                                                            org_pk=self.org, prefix="rf",
                                                            modal_id="#reactive_form"
                                                            )
-        context['manage_container_form'] = ContainerManagementForm(prefix='mc')
+        context['manage_container_form'] = ContainerManagementForm(
+            modal_id='#managecontainermodal', prefix='mc')
+
         context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(
             initial={"objecttype": 0}, org_pk=self.org, prefix="rff",
             modal_id="#reactive_refuse_form")

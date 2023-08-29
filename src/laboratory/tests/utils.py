@@ -166,3 +166,20 @@ class BaseShelfobjectStatusSetUpTest(BaseSetUpTest):
                                                    type_in_organization=1)
         org.users.add(self.user)
         self.client.force_login(self.user)
+
+
+
+class ShelfSetUp(BaseOrganizatonManageSetUpTest):
+    fixtures = ["shelf_data.json"]
+
+    def setUp(self):
+        super().setUp()
+
+        self.client1_org1 = Client()
+        self.client2_org2 = Client()
+        self.client3_org1 = Client()
+        self.client4_org2 = Client()
+        self.client1_org1.force_login(self.user1_org1)
+        self.client2_org2.force_login(self.user2_org2)
+        self.client3_org1.force_login(self.user3_org1)
+        self.client4_org2.force_login(self.user4_org2)

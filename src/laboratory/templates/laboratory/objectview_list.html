@@ -12,8 +12,8 @@
 <div class="col-md-offset-1 col-md-10">
   <div class="page-header col-xs-12" align="center">
     <h3 class="heading-1" >
-        <span> 
-          {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %} 
+        <span>
+          {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
         </span>
 
     </h3>
@@ -80,8 +80,8 @@
       {% endif %}
     </ul>
   </nav>
+	{% endif %}
 </div>
-{% endif %}
 {% else %}
 {% include 'laboratory/action_denied.html' %}
 {% endif %}

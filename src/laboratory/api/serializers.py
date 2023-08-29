@@ -351,34 +351,3 @@ class CreateObservationShelfObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObjectObservation
         fields = ['action_taken', 'description']
-
-class ManageContainerSerializer(serializers.Serializer):
-    RADIO_BASE_SELECTED = 1
-    RADIO_CONTAINER_IN_USE = 2
-    RADIO_CHANGE_CONTAINER = 3
-    action = serializers.ChoiceField(choices=(
-         (RADIO_BASE_SELECTED, _('Create new based on selected')),
-         (RADIO_CONTAINER_IN_USE, _('Create new based on container in use and release old')),
-         (RADIO_CHANGE_CONTAINER, _('Change Container and release old')),
-                                     )
-                                     )
-    shelfobject_container = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE),
-                                                               allow_null=True, allow_empty=True)
-    object_container = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE),
-                                                          allow_null=True, allow_empty=True)
-    shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
-
-    def validate(self, attrs):
-        if self.RADIO_BASE_SELECTED == attrs['action']:
-            if attrs['object_container'] is None:
-                raise ValidationError(detail={'object_container': _('You need to specify a object reference')})
-        if self.RADIO_CONTAINER_IN_USE == attrs['action']:
-            if attrs['shelf_object'].container is None:
-                raise ValidationError(
-                    detail={'shelf_object',_('Reactive has not container to use as reference')})
-        if self.RADIO_CHANGE_CONTAINER == attrs['action']:
-            if attrs['shelfobject_container'] is None:
-                raise ValidationError(
-                    detail={'shelfobject_container': _('You need to select a container to be changed')})
-        return attrs

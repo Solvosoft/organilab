@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
@@ -67,24 +68,23 @@ def clone_shelfobject_limits(shelfobject, user):
         organilab_logentry(user, new_limits, ADDITION, changed_data=['minimum_limit', 'maximum_limit', 'expiration_date'])
     return new_limits
 
-def get_available_containers_for_selection(laboratory_id, shelf_id):
+def get_available_containers_for_selection(laboratory_id, shelf_id, exclude_used_as_container=True):
     # all containers that belong to a laboratory that are not in use
+    filters = {
+        'in_where_laboratory_id': laboratory_id,
+        'object__type':  Object.MATERIAL
+    }
+    # it's not used as container - query the reverse relationship
+    if exclude_used_as_container:
+        filters['containershelfobject']  = None
+
     shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
     if shelf.limit_only_objects:
-        containers = ShelfObject.objects.filter(
-            in_where_laboratory_id=laboratory_id,
-            object__type=Object.MATERIAL,
-            containershelfobject=None,
-            object__pk__in=shelf.available_objects_when_limit.values_list('pk')
-            # it's not used as container - query the reverse relationship
-        )
+        filters['object__pk__in'] ==shelf.available_objects_when_limit.values_list('pk')
+        containers = ShelfObject.objects.filter(**filters)
     else:
-        containers = ShelfObject.objects.filter(
-            in_where_laboratory_id=laboratory_id,
-            object__type=Object.MATERIAL,
-            containershelfobject=None  # it's not used as container - query the reverse relationship
+        containers = ShelfObject.objects.filter(**filters)
 
-        )
     return containers
 
 def get_containers_for_cloning(organization_id,shelf_id):
@@ -215,3 +215,56 @@ def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
         log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, shelfobject.quantity, 0, '', DELETION, _("Delete ShelfObject with no quantity left"), organization=organization)
         organilab_logentry(user, shelfobject, DELETION)
         shelfobject.delete()
+
+
+
+def get_available_objs_by_shelfobject(queryset, shelfobject, key, filters):
+    obj_pk = []
+    lab_info = queryset.filter(**filters).values(key, 'pk').distinct()
+
+    for lab in lab_info:
+        if lab[key] != shelfobject.shelf.pk:
+            shelf = Shelf.objects.get(pk=lab[key])
+            items_object_shelf = shelf.get_total_refuse(
+                include_containers=False, measurement_unit=shelf.measurement_unit)
+            items_with_shelfobject = items_object_shelf + shelfobject.quantity
+
+            if items_with_shelfobject <= shelf.quantity:
+                obj_pk.append(lab['pk'])
+    return obj_pk
+
+
+def get_lab_room_queryset_by_filters(queryset, shelfobject, key, filters):
+    available_labrooms = get_available_objs_by_shelfobject(queryset, shelfobject, key,
+                                                           filters)
+    filters_lab_room = Q(furniture__shelf__measurement_unit__isnull=True,
+                furniture__shelf__infinity_quantity=True) | \
+              Q(furniture__shelf__measurement_unit=shelfobject.measurement_unit,
+                furniture__shelf__infinity_quantity=True) | \
+              Q(pk__in=available_labrooms)
+    return queryset.filter(filters_lab_room).distinct()
+
+
+def get_furniture_queryset_by_filters(queryset, shelfobject, key, filters):
+    available_furnitures = get_available_objs_by_shelfobject(queryset,
+                                                             shelfobject,
+                                                             key, filters)
+    filters_furniture = Q(shelf__measurement_unit__isnull=True,
+                shelf__infinity_quantity=True) | \
+              Q(shelf__measurement_unit=shelfobject.measurement_unit,
+                shelf__infinity_quantity=True) | \
+              Q(pk__in=available_furnitures)
+
+    return queryset.filter(filters_furniture).distinct()
+
+
+def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
+    available_shelves = get_available_objs_by_shelfobject(queryset,
+                                                             shelfobject,
+                                                             key, filters)
+    filters_shelves = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
+              Q(measurement_unit=shelfobject.measurement_unit,
+                infinity_quantity=True) | \
+              Q(pk__in=available_shelves)
+
+    return queryset.filter(filters_shelves).exclude(pk=shelfobject.shelf.pk).distinct()
