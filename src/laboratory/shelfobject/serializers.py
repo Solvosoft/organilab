@@ -24,9 +24,6 @@ logger = logging.getLogger('organilab')
 
 
 class ContainerSerializer(serializers.Serializer):
-    OPTION_CLONE='clone'
-    OPTION_AVAILABLE='available'
-
     CONTAINER_SELECT_CHOICES = [
         ('clone', _('Create new based on selected')),
         ('available', _('Use selected')),
@@ -44,18 +41,14 @@ class ContainerSerializer(serializers.Serializer):
         fields = super().get_fields(*args, **kwargs)
         # allow select only available containers or containers for cloning depending on what the user wants and make the right field not nullable
         container_select_option = self.initial_data.get('container_select_option')
-        exclude_used_as_container=True
         if container_select_option == 'clone':
             # set queryset to validate that only those in the organization of type material are valid for selection
+            fields['container_for_cloning'].queryset = get_containers_for_cloning(self.context['organization_id'])
             fields['container_for_cloning'].allow_null = False
-            exclude_used_as_container=False
         elif container_select_option == 'available':
             # set queryset to validate that only those in the laboratory of type material are valid for selection
+            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'])
             fields['available_container'].allow_null = False
-        fields['available_container'].queryset = get_available_containers_for_selection(
-            self.context['laboratory_id'], exclude_used_as_container=exclude_used_as_container)
-        fields['container_for_cloning'].queryset = get_containers_for_cloning(
-            self.context['organization_id'])
         return fields
 
 
