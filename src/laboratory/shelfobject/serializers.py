@@ -295,8 +295,6 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity,
                 errors.update({'measurement_unit': _(
                     "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
                     'unit': container_unit}})
-    if errors:
-        raise serializers.ValidationError(errors)
 
     return errors
 
