@@ -90,7 +90,9 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
-                "container": new_shelobject.pk
+                "container_select_option": "clone",
+                "container_for_cloning":new_shelobject.object.id,
+                "available_container":""
             }
         response=self.client.post(url, data=data, content_type='application/json')
         self.assertEqual(response.status_code, 201)
@@ -154,8 +156,10 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
-                "container": new_shelobject.pk
-            }
+                "container_select_option": "clone",
+                "container_for_cloning":new_shelobject.object.id,
+                "available_container":""
+        }
         response=self.client.post(url, data=data, content_type='application/json')
         self.assertEqual(response.status_code, 400)
         self.assertTrue(json.loads(response.content)['errors']['quantity'][0]=="Quantity cannot be greater than the container capacity limit: 200.0.")
@@ -220,7 +224,9 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
-                "container": new_shelobject.pk
+                "container_select_option": "clone",
+                "container_for_cloning":new_shelobject.object.id,
+                "available_container":""
             }
         response=self.client.post(url, data=data, content_type='application/json')
         self.assertEqual(response.status_code, 400)
