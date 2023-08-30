@@ -45,10 +45,9 @@ class TransferOutShelfObjectForm(GTForm):
         lab = kwargs.pop('lab_send')
         org = kwargs.pop('org')
         super(TransferOutShelfObjectForm, self).__init__(*args, **kwargs)
-        profile = Profile.objects.filter(pk=users.profile.pk).first()
         orgs = utils.get_pk_org_ancestors_decendants(users, org)
 
-        self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
+        self.fields['laboratory'].queryset = users.profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
 
 class DecreaseShelfObjectForm(GTForm):
     amount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
