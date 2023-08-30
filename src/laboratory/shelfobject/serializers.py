@@ -281,23 +281,33 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity,
         errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
 
     if container:
-        if hasattr(container.object, 'materialcapacity'):
-            container_capacity = container.object.materialcapacity.capacity
-            container_unit = container.object.materialcapacity.capacity_measurement_unit
-            if container_capacity < quantity:
-                logger.debug(
-                    f'validate --> total ({container_capacity}) < quantity ({quantity})')
-                errors.update({'quantity': _(
-                    "Quantity cannot be greater than the container capacity limit: %(capacity)s.") % {
+
+        if not hasattr(container,'object'):
+            if hasattr(container,'materialcapacity'):
+                material_capacity = container.materialcapacity
+            else:
+                return errors
+        elif hasattr(container.object, 'materialcapacity'):
+            material_capacity = container.object.materialcapacity
+        else:
+            return errors
+
+        container_capacity = material_capacity.capacity
+        container_unit = material_capacity.capacity_measurement_unit
+        if container_capacity < quantity:
+            logger.debug(
+                f'validate --> total ({container_capacity}) < quantity ({quantity})')
+            errors.update({'quantity': _(
+                "Quantity cannot be greater than the container capacity limit: %(capacity)s.") % {
                                                'capacity': container_capacity,
                                            }})
 
-            if container_unit != measurement_unit:
-                logger.debug(
-                    f'validate --> total ({container_unit}) < quantity ({measurement_unit})')
-                errors.update({'measurement_unit': _(
-                    "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
-                    'unit': container_unit}})
+        if container_unit != measurement_unit:
+            logger.debug(
+                f'validate --> total ({container_unit}) < quantity ({measurement_unit})')
+            errors.update({'measurement_unit': _(
+                "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
+                'unit': container_unit}})
 
     return errors
 
