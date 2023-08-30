@@ -120,14 +120,13 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
     permission_classes = [IsAuthenticated]
     serializer = None
     laboratory = None
-    shelf = None
+
     def get_text_display(self, obj):
         return f"{obj.object.code} {obj.object.name}"
 
     def get_queryset(self):
         if self.laboratory:
-            queryset = get_available_containers_for_selection(self.laboratory.pk,
-                                                              self.shelf.pk)
+            queryset = get_available_containers_for_selection(self.laboratory.pk)
         else:
             queryset = ShelfObject.objects.none()
         return queryset
@@ -136,7 +135,7 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
         self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
         if self.serializer.is_valid():
             self.laboratory = self.serializer.validated_data['laboratory']
-            self.shelf = self.serializer.validated_data['shelf']
+
             return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',
