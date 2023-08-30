@@ -581,11 +581,11 @@ function show_hide_container_selects(form_id, selected_value, prefix=""){
     }
 }
 
-$("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
+$("#transfer_in_approve_with_container_form #id_container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
 
-$("#movesocontainerform #id_movewithcontainer-container_select_option").on('change', function(event){
+$("#movesocontainerform #id_movewithcontainer-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#movesocontainerform", event.target.value, prefix="movewithcontainer-");
 });
 
