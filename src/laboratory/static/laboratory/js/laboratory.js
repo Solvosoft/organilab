@@ -584,19 +584,24 @@ function show_hide_container_selects(form_id, selected_value, prefix=""){
     }
 }
 
-$("#transfer_in_approve_with_container_form #id_container_select_option").on('change', function(event){
+$("#transfer_in_approve_with_container_form #id_container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
 
 $("#reactive_refuse_form #id_rff-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#reactive_refuse_form", event.target.value, prefix="rff-");
+    clean_shelfobject_container_selects('#id_rff-',event.target.value)
+
 });
 
 $("#reactive_form #id_rf-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#reactive_form", event.target.value, prefix="rf-");
+    clean_shelfobject_container_selects('#id_rf-',event.target.value)
+
 });
 
-$("#movesocontainerform #id_movewithcontainer-container_select_option").on('change', function(event){
+
+$("#movesocontainerform #id_movewithcontainer-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#movesocontainerform", event.target.value, prefix="movewithcontainer-");
 });
 
@@ -671,4 +676,16 @@ function updateContainerOfShelfObject(instance, event){
         $(instance).data('shelfobject'), $(instance).data('container'),  $(instance).data('containername'));
     }
     $('input[name="mc-shelf"]').val($('#id_shelf').val());
+}
+
+
+function clean_shelfobject_container_selects(prefix, option){
+
+    if(option=='clone'){
+          $(`${prefix}container_for_cloning option:selected`).prop("selected", false);
+          $(`${prefix}container_for_cloning`).val(null).trigger('change');
+    }else{
+         $(`${prefix}available_container option:selected`).prop("selected", false);
+         $(`${prefix}available_container`).val(null).trigger('change');
+    }
 }
