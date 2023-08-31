@@ -5,12 +5,14 @@ from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
     Shelf
-from laboratory.utils import organilab_logentry, get_pk_org_ancestors
+from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
+    save_object_by_action
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 
 
-def save_increase_decrease_shelf_object(user, validated_data, laboratory, organization, is_increase_process=False):
+def save_increase_decrease_shelf_object(user, validated_data, laboratory, organization,
+                                        is_increase_process=False):
     provider = None
     if 'provider' in validated_data:
         provider = validated_data['provider']
@@ -27,20 +29,25 @@ def save_increase_decrease_shelf_object(user, validated_data, laboratory, organi
     if is_increase_process:
         new = old + amount
         action_taken = _("Object was increased")
-        log_object_add_change(user, laboratory.pk, shelfobject, old, new, "Add", provider, bill, create=False, organization=organization)
+        log_object_add_change(user, laboratory.pk, shelfobject, old, new, "Add",
+                              provider, bill, create=False, organization=organization)
 
     else:
-        log_object_change(user, laboratory.pk, shelfobject, old, new, description, 2, "Substract", create=False, organization=organization)
+        log_object_change(user, laboratory.pk, shelfobject, old, new, description, 2,
+                          "Substract", create=False, organization=organization)
 
     shelfobject.quantity = new
-    shelfobject.save()
 
     changed_data = list(validated_data.keys())
-    organilab_logentry(user, shelfobject, CHANGE, 'shelfobject', changed_data=changed_data,relobj=[laboratory, shelfobject, organization])
+    save_object_by_action(user, shelfobject, [laboratory, shelfobject, organization],
+                          changed_data, CHANGE, 'shelfobject')
 
     if not description:
         description = _("Current available objects: %(amount)d") % {'amount': new}
-    ShelfObjectObservation.objects.create(action_taken=action_taken, description=description, shelf_object=shelfobject, created_by=user)
+    ShelfObjectObservation.objects.create(action_taken=action_taken,
+                                          description=description,
+                                          shelf_object=shelfobject, created_by=user)
+
 
 def build_shelfobject_qr(request, shelfobject, organization, laboratory):
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, organization, laboratory)
