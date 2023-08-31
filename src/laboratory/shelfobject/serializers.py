@@ -43,11 +43,12 @@ class ContainerSerializer(serializers.Serializer):
         if container_select_option == 'clone':
             # set queryset to validate that only those in the organization of type material are valid for selection
             fields['container_for_cloning'].queryset = get_containers_for_cloning(self.context['organization_id'],
-                                                                                  self.context['shelf'])
+                                                                                  self.context['shelf_id'])
             fields['container_for_cloning'].allow_null = False
         elif container_select_option == 'available':
             # set queryset to validate that only those in the laboratory of type material are valid for selection
-            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'])
+            fields['available_container'].queryset = get_available_containers_for_selection(self.context['laboratory_id'],
+                                                                                            self.context['shelf_id'])
             fields['available_container'].allow_null = False
         return fields
 
@@ -333,9 +334,9 @@ class ReactiveShelfObjectSerializer(ContainerSerializer,serializers.ModelSeriali
     def validate(self, data):
         data = super().validate(data)
         container=None
-        if data["available_container"]:
-            container =data['available_container']
-        if data["container_for_cloning"]:
+        if data["available_container"] and data['container_select_option']=='available':
+            container = ['available_container']
+        if data["container_for_cloning"] and data['container_select_option']=='clone':
             container = data["container_for_cloning"]
 
         errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'],
@@ -376,9 +377,9 @@ class ReactiveRefuseShelfObjectSerializer(ContainerSerializer,serializers.ModelS
     def validate(self, data):
         data = super().validate(data)
         container = None
-        if data["available_container"]:
+        if data["available_container"] and data['container_select_option']=='available':
             container = data['available_container']
-        if data["container_for_cloning"]:
+        if data["container_for_cloning"] and data['container_select_option']=='clone':
             container = data["container_for_cloning"]
 
         errors = validate_measurement_unit_and_quantity(data['shelf'], data['object'],
@@ -553,7 +554,6 @@ class ShelfObjectDeleteSerializer(serializers.Serializer):
 class ValidateShelfSerializer(serializers.Serializer):
     shelf = serializers.PrimaryKeyRelatedField(
         queryset=Shelf.objects.using(settings.READONLY_DATABASE).order_by('pk'))
-    position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
     def validate_shelf(self, value):
         attr = super().validate(value)
@@ -1194,3 +1194,8 @@ class MoveShelfObjectWithContainerSerializer(MoveShelfObjectSerializer, Containe
 class ManageContainerSerializer(ContainerSerializer):
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=True)
+
+
+class ValidateShelfInformationPositionSerializer(ValidateShelfSerializer):
+    position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+
