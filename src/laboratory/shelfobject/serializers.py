@@ -13,7 +13,6 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectLimits, \
     TranferObject, ShelfObjectObservation, Provider, Furniture, LaboratoryRoom, \
     SustanceCharacteristics, REQUESTED
-from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_available_objs_by_shelfobject, \
@@ -53,11 +52,11 @@ class ContainerSerializer(serializers.Serializer):
 
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
-    amount_required = serializers.FloatField(min_value=0.1)
+    amount_required = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
-    final_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
+    initial_date = serializers.DateTimeField(input_formats=settings.DATETIME_INPUT_FORMATS)
+    final_date = serializers.DateTimeField(input_formats=settings.DATETIME_INPUT_FORMATS)
 
     def validate(self, data):
         current_date = now().date()
@@ -104,7 +103,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
 
 class IncreaseShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField(min_value=0.1)
+    amount = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     bill = serializers.CharField(required=False, allow_blank=True)
     provider = serializers.PrimaryKeyRelatedField(
         queryset=Provider.objects.using(settings.READONLY_DATABASE),
@@ -163,7 +162,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 
 
 class DecreaseShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField(min_value=0.1)
+    amount = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     description = serializers.CharField(required=False, allow_blank=True)
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
@@ -514,7 +513,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
 class TransferOutShelfObjectSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    amount_to_transfer = serializers.FloatField(min_value=0.0001)
+    amount_to_transfer = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(
         queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
