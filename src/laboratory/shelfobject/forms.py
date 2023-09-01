@@ -32,6 +32,7 @@ class IncreaseShelfObjectForm(GTForm):
                                           'data-s2filter-organization': '#id_organization',
                                       })
                                       )
+    shelf_object = forms.IntegerField(widget=forms.HiddenInput)
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
@@ -54,6 +55,7 @@ class DecreaseShelfObjectForm(GTForm):
                                 label=_('Amount'))
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
+    shelf_object = forms.IntegerField(widget=forms.HiddenInput)
 
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
@@ -87,6 +89,7 @@ class MoveShelfObjectForm(GTForm):
                                        'data-s2filter-laboratory': '#id_laboratory'
                                    }), help_text=_("This select only shows shelves with same measurement unit than current object")
                                    )
+    shelf_object = forms.IntegerField(widget=forms.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         group_name = kwargs.pop('group_name')
