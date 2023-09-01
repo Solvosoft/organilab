@@ -144,17 +144,12 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 
         if errors:
             updated_errors = {}
-            shelfobject_errors = []
             amount_errors = []
             for key, error in errors.items():
-                if key in ['object', 'measurement_unit']:
-                    shelfobject_errors.append(error)
-                elif key == 'quantity':
+                if key in ['quantity', 'object', 'measurement_unit']:
                     amount_errors.append(error)
                 else:
                     updated_errors[key] = error
-                if shelfobject_errors:
-                    updated_errors['shelf_object'] = shelfobject_errors
                 if amount_errors:
                     updated_errors['amount'] = amount_errors
             raise serializers.ValidationError(updated_errors)
