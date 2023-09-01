@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.core.validators import RegexValidator
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
@@ -7,7 +8,6 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from laboratory.models import Object,Catalog,Shelf
 from django.utils.translation import gettext_lazy as _
-from organilab.settings import DATETIME_INPUT_FORMATS
 
 
 class MyProcedureForm(forms.ModelForm, GTForm):
@@ -74,8 +74,8 @@ class StepForm(GTForm, forms.Form):
 
 
 class ReservationForm(GTForm, forms.Form):
-    initial_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=True, label=_("Initial Date"))
-    final_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=DATETIME_INPUT_FORMATS, required=True, label=_("Final Date"))
+    initial_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=settings.DATETIME_INPUT_FORMATS, required=True, label=_("Initial Date"))
+    final_date = forms.DateTimeField(widget=genwidgets.DateTimeInput, input_formats=settings.DATETIME_INPUT_FORMATS, required=True, label=_("Final Date"))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -94,10 +94,5 @@ class ValidateProcedureReservationForm(ReservationForm):
 class AddObjectStepForm(GTForm, forms.Form):
     unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key="units"), required=True)
     object = forms.ModelChoiceField(queryset=Object.objects.all(), required=True)
-    quantity = forms.FloatField(widget=genwidgets.TextInput, required=True, min_value=0.1, validators=[
-        RegexValidator(
-                regex=r'^\d+(\.\d{1,2})?$',
-                message=_('The quantity field receives only decimal numbers'),
-            )],
-    )
+    quantity = forms.FloatField(widget=genwidgets.TextInput, required=True, min_value=settings.DEFAULT_MIN_QUANTITY)
 

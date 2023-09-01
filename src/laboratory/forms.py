@@ -1,6 +1,7 @@
 import re
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
@@ -568,11 +569,7 @@ class ObservationShelfObjectForm(GTForm, forms.ModelForm):
 
 
 class MaterialCapacityObjectForm(GTForm,forms.Form):
-    capacity = forms.FloatField(required=False, widget=genwidgets.TextInput, min_value=0.1, validators=[
-        RegexValidator(
-                regex=r'^\d+(\.\d{1,2})?$',
-                message=_('The quantity field receives only decimal numbers'),
-            )], label=_("Capacity"))
+    capacity = forms.FloatField(required=False, widget=genwidgets.TextInput, min_value=settings.DEFAULT_MIN_QUANTITY, label=_("Capacity"))
     capacity_measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='units'),
                                                        required=False,
                                                        widget=genwidgets.Select(),
