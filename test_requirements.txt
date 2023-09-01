@@ -3,5 +3,5 @@ coverage==7.0.5
 pylint-django
 pylint
 virtualenv==20.24.4
-
+pyproject-api==1.5.4
 
