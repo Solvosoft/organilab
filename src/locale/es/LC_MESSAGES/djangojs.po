@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-27 09:47-0600\n"
+"POT-Creation-Date: 2023-09-06 15:17-0600\n"
 "PO-Revision-Date: 2023-07-08 09:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -234,11 +234,13 @@ msgstr "Sustraer"
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
-msgid "Are you sure?"
-msgstr "¿Está seguro?"
+#, fuzzy
+#| msgid "Are you sure to delete the step"
+msgid "Would you like to delete the container"
+msgstr "Estas seguro de eliminar el paso"
 
-msgid "Confirm"
-msgstr "Confirmar"
+msgid "as well?"
+msgstr ""
 
 msgid "Success"
 msgstr "Éxito"
@@ -371,6 +373,12 @@ msgstr "Necesita seleccionar un estante antes de realizar esta acción."
 msgid "Are you sure you want to deny the transfer of"
 msgstr "¿Está seguro/a de que desea denegar la transferencia de"
 
+msgid "Are you sure?"
+msgstr "¿Está seguro?"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
 msgid "Id"
 msgstr "Id"
 
@@ -385,6 +393,11 @@ msgstr "Crear Material"
 
 msgid "Create Substance"
 msgstr "Crear Sustancia"
+
+#, fuzzy
+#| msgid "Container"
+msgid "Containers"
+msgstr "Contenedor"
 
 msgid "Transfer In"
 msgstr "Transferir aquí"
@@ -479,20 +492,20 @@ msgstr "Desconocido"
 msgid "Delete recipient size"
 msgstr "Eliminar tamaño de recipiente"
 
-msgid "Do you want to remove the recipient size?"
-msgstr "¿Desea eliminar este tamaño de recipiente?"
+msgid "Do you want to remove the recipient?"
+msgstr "¿Deseas eliminar el recipiente?"
 
 msgid "Height"
 msgstr "Altura"
 
 msgid "Height Unit"
-msgstr "Unidad de Altura"
+msgstr "Unidad de Medida de Altura"
 
 msgid "Width"
 msgstr "Ancho"
 
 msgid "Width Unit"
-msgstr "Unidad de Ancho"
+msgstr "Unidad de Medida de Ancho"
 
 msgid "Substance"
 msgstr "Sustancia"
@@ -505,21 +518,3 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
-
-msgid "Height"
-msgstr "Alto"
-
-msgid "Height Unit"
-msgstr "Unidad de medida de Alto"
-
-msgid "Width"
-msgstr "Ancho"
-
-msgid "Width Unit"
-msgstr "Unidad de medida de Ancho"
-
-msgid "Delete recipient size"
-msgstr "Eliminar Recipiente"
-
-msgid "Do you want to remove the recipient?"
-msgstr "¿Deseas eliminar el recipiente?"
