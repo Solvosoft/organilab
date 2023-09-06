@@ -573,15 +573,26 @@ $("#hide_alert").on('click', function(){
     $("div.alert").removeClass("show");
 });
 
+function reset_container_selects(form_id,select_id){
+     $(form_id).find(select_id+" option:selected").prop("selected", false);
+      $(form_id).find(select_id).val(null).trigger('change');
+}
 function show_hide_container_selects(form_id, selected_value, prefix=""){
     // they are hidden for the other options, so hide them by default and just display one if required
     $(form_id).find("#id_"+prefix+"available_container").parents(".form-group").hide();
     $(form_id).find("#id_"+prefix+"container_for_cloning").parents(".form-group").hide();
     if(selected_value === 'available'){
         $(form_id).find("#id_"+prefix+"available_container").parents('.form-group').show();
+        reset_container_selects(form_id,"#id_"+prefix+"container_for_cloning")
     }else if(selected_value === 'clone'){
         $(form_id).find("#id_"+prefix+"container_for_cloning").parents('.form-group').show();
-    }
+        reset_container_selects(form_id,"#id_"+prefix+"available_container")
+    }else{
+        reset_container_selects(form_id,"#id_"+prefix+"container_for_cloning")
+        reset_container_selects(form_id,"#id_"+prefix+"available_container")
+
+
+   }
 }
 
 $("#transfer_in_approve_with_container_form #id_container_select_option").on('ifChanged', function(event){
@@ -590,14 +601,11 @@ $("#transfer_in_approve_with_container_form #id_container_select_option").on('if
 
 $("#reactive_refuse_form #id_rff-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#reactive_refuse_form", event.target.value, prefix="rff-");
-    clean_shelfobject_container_selects('#id_rff-',event.target.value)
 
 });
 
 $("#reactive_form #id_rf-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#reactive_form", event.target.value, prefix="rf-");
-    clean_shelfobject_container_selects('#id_rf-',event.target.value)
-
 });
 
 
@@ -678,14 +686,3 @@ function updateContainerOfShelfObject(instance, event){
     $('input[name="mc-shelf"]').val($('#id_shelf').val());
 }
 
-
-function clean_shelfobject_container_selects(prefix, option){
-
-    if(option=='clone'){
-          $(`${prefix}container_for_cloning option:selected`).prop("selected", false);
-          $(`${prefix}container_for_cloning`).val(null).trigger('change');
-    }else{
-         $(`${prefix}available_container option:selected`).prop("selected", false);
-         $(`${prefix}available_container`).val(null).trigger('change');
-    }
-}

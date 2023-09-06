@@ -79,30 +79,29 @@ def clone_shelfobject_limits(shelfobject, user):
         organilab_logentry(user, new_limits, ADDITION, changed_data=['minimum_limit', 'maximum_limit', 'expiration_date'])
     return new_limits
 
-def get_available_containers_for_selection(laboratory_id):
+def get_available_containers_for_selection(laboratory_id, shelf_id):
     # all containers that belong to a laboratory that are not in use
-    containers = ShelfObject.objects.filter(
-        in_where_laboratory_id=laboratory_id,
-        object__type=Object.MATERIAL,
-        containershelfobject=None  # it's not used as container - query the reverse relationship
-    )
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
+    filters = { 'in_where_laboratory_id': laboratory_id, 'object__type': Object.MATERIAL,
+                'containershelfobject':None}
+    if shelf.limit_only_objects:
+        filters['object__pk__in'] =shelf.available_objects_when_limit.values_list('pk')
+        containers = ShelfObject.objects.filter(**filters)
+    else:
+        containers = ShelfObject.objects.filter(**filters)
+
     return containers
 
-def get_containers_for_cloning(organization_id,shelf_id):
+def get_containers_for_cloning(organization_id, shelf_id):
      # any object of type material that belongs to the organization (and its ancestors) can be a container
     organizations = get_pk_org_ancestors(organization_id)
     shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
+    filters = { 'organization__in': organizations, 'type': Object.MATERIAL }
     if shelf.limit_only_objects:
-         containers = Object.objects.filter(
-            organization__in=organizations,
-            type=Object.MATERIAL,
-            limit_objects=shelf
-         )
+        filters['limit_objects']=shelf
+        containers = Object.objects.filter(**filters)
     else:
-         containers = Object.objects.filter(
-            organization__in=organizations,
-            type=Object.MATERIAL
-         )
+         containers = Object.objects.filter(**filters)
 
     return containers
 

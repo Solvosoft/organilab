@@ -350,6 +350,7 @@ class ContainerForm(GTForm):
             widget=AutocompleteSelect('available-container-search',
                                       attrs={
                                           'data-dropdownparent': modal_id,
+                                          'data-s2filter-shelf': '#id_shelf',
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization'
                                       }),
