@@ -13,12 +13,11 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectLimits, \
     TranferObject, ShelfObjectObservation, Provider, Furniture, LaboratoryRoom, \
     SustanceCharacteristics, REQUESTED
-from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
-    get_containers_for_cloning, get_available_objs_by_shelfobject, \
+    get_containers_for_cloning, \
     get_shelf_queryset_by_filters, get_furniture_queryset_by_filters, \
-    get_lab_room_queryset_by_filters
+    get_lab_room_queryset_by_filters, limit_objects_by_shelf
 
 logger = logging.getLogger('organilab')
 
@@ -54,11 +53,11 @@ class ContainerSerializer(serializers.Serializer):
 
 
 class ReserveShelfObjectSerializer(serializers.ModelSerializer):
-    amount_required = serializers.FloatField(min_value=0.1)
+    amount_required = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
-    final_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
+    initial_date = serializers.DateTimeField(input_formats=settings.DATETIME_INPUT_FORMATS)
+    final_date = serializers.DateTimeField(input_formats=settings.DATETIME_INPUT_FORMATS)
 
     def validate(self, data):
         current_date = now().date()
@@ -105,7 +104,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
 
 class IncreaseShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField(min_value=0.1)
+    amount = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     bill = serializers.CharField(required=False, allow_blank=True)
     provider = serializers.PrimaryKeyRelatedField(
         queryset=Provider.objects.using(settings.READONLY_DATABASE),
@@ -164,7 +163,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 
 
 class DecreaseShelfObjectSerializer(serializers.Serializer):
-    amount = serializers.FloatField(min_value=0.1)
+    amount = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     description = serializers.CharField(required=False, allow_blank=True)
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
@@ -183,12 +182,23 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
     def validate(self, data):
         amount = data['amount']
         shelf_object = data['shelf_object']
+        decrease_errors = {}
 
         if shelf_object.quantity < amount:
             logger.debug(
-                f'DecreaseShelfObjectSerializer --> shelf_object.quantity ({shelf_object.quantity}) < amount ({amount})')
-            raise serializers.ValidationError({'amount': _(
-                "Subtract amount cannot be greater than the available shelf's amount.")})
+                f'DecreaseShelfObjectSerializer --> shelf_object.quantity'
+                f' ({shelf_object.quantity}) < amount ({amount})')
+            decrease_errors.update({'amount': _("Subtract amount cannot be greater than"
+                                                " the available shelf's amount.")})
+
+        limit_obj_error = limit_objects_by_shelf(shelf_object.shelf, shelf_object.object)
+
+        if limit_obj_error:
+            decrease_errors.update({'shelf_object': limit_obj_error})
+
+        if decrease_errors:
+            raise serializers.ValidationError(decrease_errors)
+
         return data
 
 
@@ -262,12 +272,12 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity,
             "Resulting quantity cannot be greater than the shelf's quantity limit: %(limit)s.") % {
                                        'limit': shelf.quantity,
                                    }})
-    if shelf.limit_only_objects:
-        if not shelf.available_objects_when_limit.filter(pk=object.pk).exists():
-            logger.debug(
-                f'validate_measurement_unit_and_quantity --> shelf.limit_only_objects and not '
-                f'shelf.available_objects_when_limit.filter(pk=object.pk ({object.pk})).exists()')
-            errors.update({'object': _("Object is not allowed in the shelf.")})
+
+    limit_object_error = limit_objects_by_shelf(shelf, object)
+
+    if limit_object_error:
+        errors.update({'object': limit_object_error})
+
     if quantity <= 0:
         logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
         errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
@@ -516,7 +526,7 @@ class EquipmentRefuseShelfObjectSerializer(serializers.ModelSerializer):
 class TransferOutShelfObjectSerializer(serializers.Serializer):
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    amount_to_transfer = serializers.FloatField(min_value=0.0001)
+    amount_to_transfer = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)
     mark_as_discard = serializers.BooleanField(default=False)
     laboratory = serializers.PrimaryKeyRelatedField(
         queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
@@ -654,8 +664,8 @@ class ShelfSerializer(serializers.ModelSerializer):
                                          measurement_unit=obj.measurement_unit)
         else:
             total_detail = ""
-            measurement_unit_list = obj.get_objects(containershelfobject=None).values(
-                'measurement_unit', 'measurement_unit__description').distinct()
+            measurement_unit_list = obj.get_objects().filter(containershelfobject=None)\
+                .values('measurement_unit', 'measurement_unit__description').distinct()
 
             for unit in measurement_unit_list:
                 total_detail += "%d %s<br>" % (
@@ -883,6 +893,7 @@ class MoveShelfObjectSerializer(serializers.Serializer):
         lab_room = data['lab_room']
         furniture = data['furniture']
         updated_errors = {}
+        shelfobject_errors = []
         measurement_unit = shelf_object.measurement_unit if shelf_object.object.type ==\
                                                             Object.REACTIVE else None
         lab_room_errors = self.validate_lab_room_errors(laboratory, lab_room, shelf_object)
@@ -900,10 +911,12 @@ class MoveShelfObjectSerializer(serializers.Serializer):
 
             for key, error in errors.items():
                 if key in ['quantity', 'object', 'measurement_unit']:
-                    shelf_errors.append(error)
+                    shelfobject_errors.append(error)
                 else:
                     updated_errors[key] = error
 
+            if shelfobject_errors:
+                updated_errors['shelf_object'] = shelfobject_errors
             if shelf_errors:
                 updated_errors['shelf'] = shelf_errors
             if lab_room_errors:

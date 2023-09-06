@@ -27,4 +27,4 @@ class ValidateReservedProductsSerializer(serializers.Serializer):
         return attr
 
 class ValidateReservedProductsAmountSerializer(ValidateReservedProductsSerializer):
-    amount_to_return = serializers.FloatField(min_value=0.1)
+    amount_to_return = serializers.FloatField(min_value=settings.DEFAULT_MIN_QUANTITY)

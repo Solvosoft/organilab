@@ -140,7 +140,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(not hasattr(Object.objects.last(), 'materialcapacity'))
         self.assertTrue(total_obj, Object.objects.all().count())
-        self.assertContains(response, "<li>Enter a number.</li>")
+        self.assertContains(response, "<li>Ensure this value is greater than or equal to 1e-07.</li>")
 
     def test_objectview_create_no_unit(self):
         """
