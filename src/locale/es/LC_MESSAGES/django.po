@@ -776,10 +776,9 @@ msgstr "El objeto fue movido exitosamente."
 msgid "The item was created successfully"
 msgstr "El elemento fue creado exitosamente"
 
-#, fuzzy
-#| msgid "The item was created successfully"
+
 msgid "The item was updated successfully"
-msgstr "El elemento fue creado exitosamente"
+msgstr "El elemento fue actualizado exitosamente"
 
 msgid "Search by name, code or CAS number"
 msgstr "Buscar por nombre, código o número de CAS"
@@ -1234,14 +1233,12 @@ msgstr "Límite mínimo no puede ser mayor al límite máximo."
 msgid "Measurement unit cannot be different than the shelf's measurement unit."
 msgstr "La unidad de medida no puede ser diferente a la del estante."
 
-#, fuzzy, python-format
-#| msgid ""
-#| "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
+#, python-format
 msgid ""
 "Resulting quantity cannot be greater than the shelf's quantity limit: "
 "%(limit)s."
 msgstr ""
-"La cantidad no puede ser mayor a la cantidad límite del estante: %(limit)s."
+"La cantidad resultante no puede ser mayor a la cantidad límite del estante: %(limit)s."
 
 msgid "Object is not allowed in the shelf."
 msgstr "El objeto no está permitido en el estante."
@@ -1276,15 +1273,11 @@ msgstr "Mueble no existe en el laboratorio."
 msgid "Shelf does not exist in the laboratory."
 msgstr "Estante no existe en el laboratorio."
 
-#, fuzzy
-#| msgid "Laboratory room does not exist in the laboratory."
 msgid "Laboratory room is not in available laboratory rooms list."
-msgstr "Sala de laboratorio no existe en el laboratorio."
+msgstr "Sala de laboratorio no está en la lista de salas de laboratorio disponibles."
 
-#, fuzzy
-#| msgid "Furniture is not allowed"
 msgid "Furniture is not in available furnitures list."
-msgstr "Mueble no permitido"
+msgstr "Mueble no está en la lista de muebles disponibles."
 
 msgid "Shelf is not in available shelves list."
 msgstr ""
@@ -1597,10 +1590,8 @@ msgstr "¿Desea descargar el reporte?"
 msgid "The shelf dont have shelfobjects"
 msgstr "El estante no tiene objetos"
 
-#, fuzzy
-#| msgid "Container shelf"
 msgid "Container on shelf"
-msgstr "Estante del contenedor"
+msgstr "Contenedor en estante"
 
 msgid "Add Shelf"
 msgstr "Agregar estante"
@@ -1991,10 +1982,8 @@ msgstr "Substraer"
 msgid "Log"
 msgstr "Bitácora"
 
-#, fuzzy
-#| msgid "Container"
 msgid "Manage Container"
-msgstr "Contenedor"
+msgstr "Manejar Contenedor"
 
 msgid "Move"
 msgstr "Mover"
@@ -2005,10 +1994,8 @@ msgstr "Posición:"
 msgid "Move to other shelf"
 msgstr "Mover a Otro Estante"
 
-#, fuzzy
-#| msgid "Manage Reservation"
 msgid "Manage reactive container"
-msgstr "Administrar reservaciones"
+msgstr "Administrar contenedor del reactivo"
 
 msgid "Transfer In"
 msgstr "Transferir Desde Otro Laboratorio"
