@@ -234,7 +234,6 @@ msgstr "Sustraer"
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
-
 msgid "Would you like to delete the container"
 msgstr "Le gustaría eliminar el contenedor"
 
@@ -392,7 +391,6 @@ msgstr "Crear Material"
 
 msgid "Create Substance"
 msgstr "Crear Sustancia"
-
 
 msgid "Containers"
 msgstr "Contenedores"
