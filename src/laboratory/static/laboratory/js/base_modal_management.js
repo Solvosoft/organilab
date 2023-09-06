@@ -217,6 +217,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             if (shelf_object != undefined){
                 this.data_extras['shelf_object'] = shelf_object;
                 $("#id_shelfobject").val(shelf_object);
+                $("#id_"+prefix+"-shelf_object").val(shelf_object);
             }
 
             var info_shelf = this.instance.find('div.info_shelf');

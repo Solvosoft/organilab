@@ -1,3 +1,4 @@
+import logging
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -8,6 +9,8 @@ from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
     save_object_by_action
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
+
+logger = logging.getLogger('organilab')
 
 
 def save_increase_decrease_shelf_object(user, validated_data, laboratory, organization,
@@ -255,3 +258,17 @@ def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
               Q(pk__in=available_shelves)
 
     return queryset.filter(filters_shelves).exclude(pk=shelfobject.shelf.pk).distinct()
+
+
+
+def limit_objects_by_shelf(shelf, object):
+    error_msg = ""
+
+    if shelf.limit_only_objects:
+        if not shelf.available_objects_when_limit.filter(pk=object.pk).exists():
+            logger.debug(
+                f'limit_objects_by_shelf --> shelf.limit_only_objects and not '
+                f'shelf.available_objects_when_limit.filter(pk=object.pk ({object.pk})).exists()')
+            error_msg = _("Object is not allowed in the shelf.")
+
+    return error_msg
