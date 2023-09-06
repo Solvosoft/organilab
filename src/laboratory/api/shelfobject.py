@@ -46,6 +46,7 @@ from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation, get_or_create_container_based_on_selected_option, \
     move_shelfobject_to, create_new_shelfobject_from_object_in, clone_shelfobject_to
+from laboratory.utils import save_object_by_action
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -808,9 +809,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "laboratory_id": self.laboratory.pk})
         serializer.is_valid(raise_exception=True)
         shelfobject = serializer.validated_data['shelfobj']
-
-        utils.organilab_logentry(self.request.user,
-                                 serializer.validated_data['shelfobj'], DELETION,
+        utils.organilab_logentry(self.request.user, shelfobject, DELETION,
                                  relobj=self.laboratory)
         log_object_change(request.user, lab_pk, shelfobject, shelfobject.quantity, 0,
                           '', DELETION, _("Delete"))
@@ -958,31 +957,33 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             shelf = serializer.validated_data['shelf']
             shelf_object = serializer.validated_data['shelf_object']
             shelf_object.shelf = shelf
+            changed_data = ['shelf']
+            relobj = [self.laboratory, shelf_object]
+            object_repr = 'shelf object'
+            user = request.user
 
             if shelf_object.object.type == Object.REACTIVE:
                 if serializer_container.is_valid():
+                    container_option = serializer_container.validated_data.get(
+                        'container_select_option')
+                    if  container_option != "use_source":
+                        changed_data.append("container")
+
                     shelf_object.container = get_or_create_container_based_on_selected_option(
-                        serializer_container.validated_data.get(
-                            'container_select_option'),
+                        container_option,
                         org_pk, lab_pk, shelf, request,
                         serializer_container.validated_data.get('container_for_cloning',
                                                                 None),
                         serializer_container.validated_data.get('available_container',
                                                                 None),
                         shelf_object)
-                    shelf_object.save()
-                    utils.organilab_logentry(request.user, shelf_object, CHANGE,
-                                             'shelf object',
-                                             changed_data=['shelf'],
-                                             relobj=[self.laboratory, shelf_object])
+                    save_object_by_action(user, shelf_object, relobj, changed_data,
+                                          CHANGE, object_repr)
                 else:
                     errors = serializer_container.errors
             else:
-                shelf_object.save()
-                utils.organilab_logentry(request.user, shelf_object, CHANGE,
-                                         'shelf object',
-                                         changed_data=['shelf'],
-                                         relobj=[self.laboratory, shelf_object])
+                save_object_by_action(user, shelf_object, relobj, changed_data, CHANGE,
+                                      object_repr)
         else:
             errors = serializer.errors
 

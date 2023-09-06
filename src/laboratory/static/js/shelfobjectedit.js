@@ -8,12 +8,18 @@ function processResponseshelfobject(dat){
 //Refactored delete method for Shelf Object
 function shelfObjectDelete(shelf_object_id, text, type, container=false, container_name="") {
     $("#divobjname").html('<h6>'+gettext("Are you sure you want to delete")+' "'+text+'"?</h6>');
-    $("#id_delete_container").iCheck('uncheck').change();
+    var delete_container = $("#delete_shelfobject_modal #id_delete_container");
     $("#delete_shelfobject_modal #divcontainer").hide();
+
     if(type == '0' && container){
         var container_label = '<h6>'+gettext("Would you like to delete the container")+' "'+container_name+'" '+
         gettext("as well?")+'</h6>';
         $('label[for="id_delete_container"]').html(container_label);
+
+        if(delete_container.length && $(delete_container[0]).prop("checked")){
+            $(delete_container[0]).trigger("click").prop("checked", false);
+        }
+
         $("#delete_shelfobject_modal #divcontainer").show();
     }
     $("#btndeleteso").data('shelfobject', shelf_object_id);
