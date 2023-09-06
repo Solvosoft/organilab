@@ -207,12 +207,12 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
         objects = self.cleaned_data["available_objects_when_limit"]
         shelfobject = self.instance.get_objects()
         if is_limit:
-            other_objects=shelfobject.exclude(object__in=objects)
+            other_objects = shelfobject.exclude(object__in=objects)
             if other_objects.exists():
                 self.add_error("available_objects_when_limit", _("The shelf has other objects besides those selected that should be added or removed from it: "))
 
-                for msg in other_objects.distinct('object'):
-                    self.add_error("available_objects_when_limit","- "+msg.object.name)
+                for obj in other_objects.distinct('object'):
+                    self.add_error("available_objects_when_limit", "- " + obj.object.name)
         return objects
 
 
