@@ -239,7 +239,7 @@ msgid "Would you like to delete the container"
 msgstr "Le gustaría eliminar el contenedor"
 
 msgid "as well?"
-msgstr ""
+msgstr "también?"
 
 msgid "Success"
 msgstr "Éxito"
