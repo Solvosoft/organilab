@@ -234,10 +234,9 @@ msgstr "Sustraer"
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
-#, fuzzy
-#| msgid "Are you sure to delete the step"
+
 msgid "Would you like to delete the container"
-msgstr "Estas seguro de eliminar el paso"
+msgstr "Le gustaría eliminar el contenedor"
 
 msgid "as well?"
 msgstr ""
@@ -394,10 +393,9 @@ msgstr "Crear Material"
 msgid "Create Substance"
 msgstr "Crear Sustancia"
 
-#, fuzzy
-#| msgid "Container"
+
 msgid "Containers"
-msgstr "Contenedor"
+msgstr "Contenedores"
 
 msgid "Transfer In"
 msgstr "Transferir aquí"
