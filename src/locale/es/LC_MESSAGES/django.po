@@ -776,7 +776,6 @@ msgstr "El objeto fue movido exitosamente."
 msgid "The item was created successfully"
 msgstr "El elemento fue creado exitosamente"
 
-
 msgid "The item was updated successfully"
 msgstr "El elemento fue actualizado exitosamente"
 
@@ -1238,7 +1237,8 @@ msgid ""
 "Resulting quantity cannot be greater than the shelf's quantity limit: "
 "%(limit)s."
 msgstr ""
-"La cantidad resultante no puede ser mayor a la cantidad límite del estante: %(limit)s."
+"La cantidad resultante no puede ser mayor a la cantidad límite del estante: "
+"%(limit)s."
 
 msgid "Object is not allowed in the shelf."
 msgstr "El objeto no está permitido en el estante."
@@ -1274,7 +1274,8 @@ msgid "Shelf does not exist in the laboratory."
 msgstr "Estante no existe en el laboratorio."
 
 msgid "Laboratory room is not in available laboratory rooms list."
-msgstr "Sala de laboratorio no está en la lista de salas de laboratorio disponibles."
+msgstr ""
+"Sala de laboratorio no está en la lista de salas de laboratorio disponibles."
 
 msgid "Furniture is not in available furnitures list."
 msgstr "Mueble no está en la lista de muebles disponibles."
