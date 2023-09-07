@@ -142,8 +142,10 @@ function transferInObjectDeny(btn) {
                     .catch(response => {
                         let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                         response.json().then(data => {  // there was something in the response from the API regarding validation
-                            if(data.errors['transfer_object']){
+                            if(data['errors'] && data.errors['transfer_object']){
                                 error_msg = data.errors['transfer_object'][0];  // specific api validation errors
+                            }else if(data['detail']){
+                                error_msg = data['detail'];
                             }
                         })
                         .finally(() => {

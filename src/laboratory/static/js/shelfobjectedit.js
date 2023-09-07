@@ -54,9 +54,11 @@ $("#btndeleteso").on("click", function(){
         })
         .catch(response => {
             let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
-            response.json().then(data => {  // there was something in the response from the API regarding validation
-                if(data.errors['shelfobj']){
+            response.json().then(data => {  // there was something in the response from the API regarding errors
+                if(data['errors'] && data.errors['shelfobj']){
                     error_msg = data.errors['shelfobj'][0];  // specific api validation errors
+                }else if(data['detail']){
+                    error_msg = data['detail'];
                 }
             })
             .finally(() => {

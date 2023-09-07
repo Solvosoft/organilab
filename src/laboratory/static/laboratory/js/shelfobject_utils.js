@@ -23,9 +23,11 @@ function add_status(url){
             }).catch(response =>{
                     let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                     response.json().then(data => {  // there was something in the response from the API regarding validation
-                    if(data.errors['description']){
-                        error_msg = data.errors['description'][0];  // specific api validation errors
-                    }
+                        if(data["errors"] && data.errors['description']){
+                            error_msg = data.errors['description'][0];  // specific api validation errors
+                        }else if(data['detail']){
+                            error_msg = data['detail'];
+                        }
                     })
                     .finally(()=>{
                             Swal.fire({
