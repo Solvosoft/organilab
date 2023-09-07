@@ -15,7 +15,7 @@ function convertToStringJson(form, prefix="", extras={}){
 }
 
 function load_errors(error_list, obj, display_on_top=false){
-    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center'>";
+    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center flex-wrap'>";
     error_list.forEach((item)=>{
         ul_obj += "<li>"+item+"</li>";
     });

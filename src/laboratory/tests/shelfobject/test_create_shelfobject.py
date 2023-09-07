@@ -118,7 +118,10 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
-                "container": self.material.pk
+                "container_select_option": "clone",
+                "container_for_cloning":self.material.object.id,
+                "available_container":""
+
             }
         precount=ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
@@ -148,12 +151,15 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
+                 "container_select_option": "clone",
+
+                "available_container": ""
             }
         precount=ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data, content_type='application/json')
         poscount=ShelfObject.objects.filter(shelf=13).count()
-        self.assertTrue(json.loads(response.content)['errors']['container'][0], _("This field is required."))
+        self.assertTrue(json.loads(response.content)['errors']['container_for_cloning'][0], _("This field is required."))
         self.assertTrue(poscount==precount)
         self.assertEqual(response.status_code,400)
 
@@ -177,7 +183,9 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
-                "container": self.material.pk
+                "container_select_option": "clone",
+                "container_for_cloning":self.material.object.id,
+                "available_container":""
         }
         precount = ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",
@@ -209,7 +217,9 @@ class CreateShelfobjectTest(TestCase):
                 "course_name": "A reactive product",
                 "minimum_limit": 0,
                 "maximum_limit": 0,
-                "container": self.material.pk
+                "container_select_option": "clone",
+                "container_for_cloning":self.material.object.id,
+                "available_container":""
         }
         precount = ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",
@@ -240,7 +250,9 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 39,
                 "maximum_limit": 5,
-                "container": self.material.pk
+                "container_select_option": "clone",
+                "container_for_cloning":self.material.object.id,
+                "available_container":""
         }
         precount = ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",
@@ -371,7 +383,9 @@ class CreateShelfobjectTest(TestCase):
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 5,
-                "container": self.material.pk
+                "container_select_option": "clone",
+                "container_for_cloning":self.material.object.id,
+                "available_container":""
         }
 
         precount = ShelfObject.objects.filter(shelf=13).count()
@@ -627,3 +641,127 @@ class CreateShelfobjectTest(TestCase):
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code,201)
         self.assertTrue(poscount>precount)
+
+
+    def test_create_shelfobject_reactive_not_select_option(self):
+        """
+        Test for API create_shelfobject when the objecttype is a reactive and the
+        container_select_option is empty
+        """
+        data = {
+                "shelf": 13,
+                "object": 2,
+                "batch": 2,
+                "objecttype": 0,
+                "status": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "course_name": "A reactive product",
+                "measurement_unit": 59,
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+                "container_select_option": "",
+                "available_container": ""
+            }
+        precount=ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount=ShelfObject.objects.filter(shelf=13).count()
+        self.assertTrue(json.loads(response.content)['errors']['container_select_option'][0], _("This field is required."))
+        self.assertTrue(poscount==precount)
+        self.assertEqual(response.status_code,400)
+
+    def test_create_shelfobject_reactive_not_available_container(self):
+        """
+        Test for API create_shelfobject when the objecttype is a reactive and the
+        container_select_option choices available but the container is null
+        """
+        data = {
+                "shelf": 13,
+                "object": 2,
+                "batch": 2,
+                "objecttype": 0,
+                "status": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "course_name": "A reactive product",
+                "measurement_unit": 59,
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+                "container_select_option": "available",
+            }
+        precount=ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount=ShelfObject.objects.filter(shelf=13).count()
+        self.assertTrue(json.loads(response.content)['errors']['available_container'][0], _("This field is required."))
+        self.assertTrue(poscount==precount)
+        self.assertEqual(response.status_code,400)
+
+    def test_create_shelfobject_reactive_available_cloning(self):
+        """
+        Test for API create_shelfobject when the objecttype is a reactive and the
+        container_select_option choices clone but the container_for_cloning and
+        available_container field have elements
+        """
+        data = {
+                "shelf": 13,
+                "object": 2,
+                "batch": 2,
+                "objecttype": 0,
+                "status": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "course_name": "A reactive product",
+                "measurement_unit": 59,
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+                "container_select_option": "clone",
+                "container_for_cloning":self.material.object.id,
+                "available_container":self.material.id
+        }
+        precount=ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount=ShelfObject.objects.filter(shelf=13).count()
+        self.assertTrue(json.loads(response.content)['errors']['available_container'][0], f'Invalid pk "{self.material.pk}" - object does not exist.')
+        self.assertTrue(poscount==precount)
+        self.assertEqual(response.status_code,400)
+
+
+    def test_create_shelfobject_without_shelf(self):
+        """
+        Test for API create_shelfobject when the objecttype is a reactive and the
+        container_select_option choices available but the container_for_cloning and
+        available_container field have elements
+        """
+        data = {
+                "object": 2,
+                "batch": 2,
+                "objecttype": 0,
+                "status": 1,
+                "quantity": 23.0,
+                "limit_quantity": 7.0,
+                "in_where_laboratory": 1,
+                "course_name": "A reactive product",
+                "measurement_unit": 59,
+                "marked_as_discard": False,
+                "minimum_limit": 0,
+                "maximum_limit": 0,
+                "container_select_option": "available",
+                "container_for_cloning":self.material.object.id,
+                "available_container":self.material.id
+        }
+        precount=ShelfObject.objects.filter(shelf=13).count()
+        url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
+        response = self.client.post(url, data=data, content_type='application/json')
+        poscount=ShelfObject.objects.filter(shelf=13).count()
+        self.assertTrue(json.loads(response.content)['shelf'], _('This field is required.'))
+        self.assertTrue(poscount==precount)
+        self.assertEqual(response.status_code,400)

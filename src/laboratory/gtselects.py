@@ -120,13 +120,14 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
     permission_classes = [IsAuthenticated]
     serializer = None
     laboratory = None
-    
+    shelf = None
+
     def get_text_display(self, obj):
         return f"{obj.object.code} {obj.object.name}"
 
     def get_queryset(self):
-        if self.laboratory:
-            queryset = get_available_containers_for_selection(self.laboratory.pk)
+        if self.laboratory and self.shelf:
+            queryset = get_available_containers_for_selection(self.laboratory.pk, self.shelf.pk)
         else:
             queryset = ShelfObject.objects.none()
         return queryset
@@ -135,12 +136,13 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
         self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
         if self.serializer.is_valid():
             self.laboratory = self.serializer.validated_data['laboratory']
+            self.shelf = self.serializer.validated_data['shelf']
             return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',
             'errors': self.serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
-        
+
 @register_lookups(prefix="container-for-cloning-search", basename="container-for-cloning-search")
 class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = Object
@@ -149,18 +151,21 @@ class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
     permission_classes = [IsAuthenticated]
     serializer = None
     org = None
+    shelf = None
 
     def get_queryset(self):
-        if self.org:
-            queryset = get_containers_for_cloning(self.org.pk)
+        if self.org and self.shelf:
+            queryset = get_containers_for_cloning(self.org.pk, self.shelf.pk)
         else:
             queryset = Object.objects.none()
         return queryset
 
     def list(self, request, *args, **kwargs):
         self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET, context={'user': request.user})
+
         if self.serializer.is_valid():
             self.org = self.serializer.validated_data['organization']
+            self.shelf= self.serializer.validated_data['shelf']
             return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',

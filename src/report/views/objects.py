@@ -319,7 +319,6 @@ def report_objects_doc(report):
     report_name = get_report_name(report)
     content.insert(0, [report_name])
     file = builder.save_ods(content, format_type=report.file_type)
-    print(21212)
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
