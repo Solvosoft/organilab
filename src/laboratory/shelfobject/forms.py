@@ -498,38 +498,5 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
 
         }
 
-
-class ContainerManagementForm(GTForm):
-    action = forms.ChoiceField(choices=(
-        (1, _('Create new based on selected')),
-        (2, _('Create new based on container in use and release old')),
-        (3, _('Change Container and release old')),
-    ), widget=genwidgets.RadioVerticalSelect)
-
-    shelfobject_container = forms.ModelChoiceField(
-        queryset=ShelfObject.objects.none(),
-        widget=AutocompleteSelect('available-container-search',
-                                  attrs={
-                                      'data-dropdownparent': "#managecontainermodal",
-                                      'data-s2filter-laboratory': '#id_laboratory',
-                                      'data-s2filter-organization': '#id_organization',
-                                      'data-s2filter-selected': '#id_container'
-                                  }),
-        label=_("Container"),
-        help_text=_("Search by name")
-    )
-
-    object_container = forms.ModelChoiceField(
-        queryset=Object.objects.none(),
-        widget=AutocompleteSelect('container-for-cloning-search',
-                                  attrs={
-                                      'data-dropdownparent': "#managecontainermodal",
-                                      'data-s2filter-laboratory': '#id_laboratory',
-                                      'data-s2filter-organization': '#id_organization'
-                                  }),
-        label=_("Object reference"),
-        help_text=_("Search by name")
-    )
-
 class ContainerManagementForm(ContainerForm):
     shelf = forms.CharField(widget=genwidgets.HiddenInput)

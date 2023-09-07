@@ -127,7 +127,7 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
 
     def get_queryset(self):
         if self.laboratory and self.shelf:
-            queryset = get_available_containers_for_selection(self.laboratory.pk,self.shelf.pk)
+            queryset = get_available_containers_for_selection(self.laboratory.pk, self.shelf.pk)
         else:
             queryset = ShelfObject.objects.none()
         return queryset
@@ -137,7 +137,6 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
         if self.serializer.is_valid():
             self.laboratory = self.serializer.validated_data['laboratory']
             self.shelf = self.serializer.validated_data['shelf']
-
             return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',
@@ -155,7 +154,7 @@ class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
     shelf = None
 
     def get_queryset(self):
-        if self.org:
+        if self.org and self.shelf:
             queryset = get_containers_for_cloning(self.org.pk, self.shelf.pk)
         else:
             queryset = Object.objects.none()
