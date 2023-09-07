@@ -69,5 +69,5 @@ class ShelfObjectStatusTest(BaseShelfobjectStatusSetUpTest):
         response = self.client.post(url, data={'description': ''})
         self.assertEqual(response.status_code, 400)
         self.assertTrue(Catalog.objects.filter(key="shelfobject_status").count() == 1)
-        self.assertTrue(json.loads(response.content)['description'][0] == _('This field may not be blank.'))
+        self.assertTrue(json.loads(response.content)['errors']['description'][0] == _('This field may not be blank.'))
 
