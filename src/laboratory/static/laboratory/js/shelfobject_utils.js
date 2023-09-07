@@ -16,15 +16,15 @@ function add_status(url){
                 return Promise.reject(response);  // then it will go to the catch if it is an error code
             }).then(data=>{
                   Swal.fire({
-                            text: gettext('Saved the new shelfobject status'),
-                            icon: 'success',
-                            timer: 1500,
+                    text: gettext('Saved the new shelfobject status'),
+                    icon: 'success',
+                    timer: 1500,
                   })
             }).catch(response =>{
                     let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                     response.json().then(data => {  // there was something in the response from the API regarding validation
-                    if(data['description']){
-                        error_msg = data['description'][0];  // specific api validation errors
+                    if(data.errors['description']){
+                        error_msg = data.errors['description'][0];  // specific api validation errors
                     }
                     })
                     .finally(()=>{

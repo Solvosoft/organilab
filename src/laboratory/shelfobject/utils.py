@@ -80,29 +80,27 @@ def clone_shelfobject_limits(shelfobject, user):
     return new_limits
 
 def get_available_containers_for_selection(laboratory_id, shelf_id):
-    # all containers that belong to a laboratory that are not in use
-    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
+    # all containers that belong to a laboratory that are not in use.  If shelf is limited it only returns those allowed.
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE), pk=shelf_id)
+    
     filters = { 'in_where_laboratory_id': laboratory_id, 'object__type': Object.MATERIAL,
-                'containershelfobject':None}
+                'containershelfobject':None }
     if shelf.limit_only_objects:
-        filters['object__pk__in'] =shelf.available_objects_when_limit.values_list('pk')
-        containers = ShelfObject.objects.filter(**filters)
-    else:
-        containers = ShelfObject.objects.filter(**filters)
+        filters['object__pk__in'] = shelf.available_objects_when_limit.values_list('pk')
 
+    containers = ShelfObject.objects.filter(**filters)
     return containers
 
 def get_containers_for_cloning(organization_id, shelf_id):
-     # any object of type material that belongs to the organization (and its ancestors) can be a container
+     # any object of type material that belongs to the organization (and its ancestors) can be a container.  If shelf is limited it only returns those allowed.
     organizations = get_pk_org_ancestors(organization_id)
-    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE) , pk=shelf_id)
+    shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE), pk=shelf_id)
+    
     filters = { 'organization__in': organizations, 'type': Object.MATERIAL }
     if shelf.limit_only_objects:
-        filters['limit_objects']=shelf
-        containers = Object.objects.filter(**filters)
-    else:
-         containers = Object.objects.filter(**filters)
-
+        filters['limit_objects'] = shelf
+        
+    containers = Object.objects.filter(**filters)
     return containers
 
 def get_or_create_container_based_on_selected_option(container_selected_option, destination_organization_id, destination_laboratory_id, destination_shelf, request,
@@ -270,7 +268,6 @@ def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
     return queryset.filter(filters_shelves).exclude(pk=shelfobject.shelf.pk).distinct()
 
 
-
 def limit_objects_by_shelf(shelf, object):
     error_msg = ""
 
@@ -282,3 +279,61 @@ def limit_objects_by_shelf(shelf, object):
             error_msg = _("Object is not allowed in the shelf.")
 
     return error_msg
+
+
+def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None, container=None):
+    errors = {}
+    total = shelf.get_total_refuse(include_containers=False, measurement_unit=shelf.measurement_unit) + quantity
+
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
+        # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
+        logger.debug(
+            f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
+            f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
+        errors.update({'measurement_unit': _(
+            "Measurement unit cannot be different than the shelf's measurement unit.")})
+    if total > shelf.quantity and not shelf.infinity_quantity:
+        logger.debug(
+            f'validate_measurement_unit_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')
+        errors.update({'quantity': _(
+            "Resulting quantity cannot be greater than the shelf's quantity limit: %(limit)s.") % {
+                                       'limit': shelf.quantity,
+                                   }})
+
+    limit_object_error = limit_objects_by_shelf(shelf, object)
+    if limit_object_error:
+        errors.update({'object': limit_object_error})
+
+    if quantity <= 0:
+        logger.debug('validate_measurement_unit_and_quantity --> quantity <= 0')
+        errors.update({'quantity': _("Quantity cannot be less or equal to zero.")})
+
+    if container:
+        if not hasattr(container,'object'):
+            if hasattr(container,'materialcapacity'):
+                material_capacity = container.materialcapacity
+            else:
+                return errors
+        elif hasattr(container.object, 'materialcapacity'):
+            material_capacity = container.object.materialcapacity
+        else:
+            return errors
+
+        container_capacity = material_capacity.capacity
+        container_unit = material_capacity.capacity_measurement_unit
+        if container_capacity < quantity:
+            logger.debug(
+                f'validate --> total ({container_capacity}) < quantity ({quantity})')
+            errors.update({'quantity': _(
+                "Quantity cannot be greater than the container capacity limit: %(capacity)s.") % {
+                                               'capacity': container_capacity,
+                                           }})
+
+        if container_unit != measurement_unit:
+            logger.debug(
+                f'validate --> total ({container_unit}) < quantity ({measurement_unit})')
+            errors.update({'measurement_unit': _(
+                "Measurement unit cannot be different than the container object measurement unit: %(unit)s.") % {
+                'unit': container_unit}})
+
+    return errors

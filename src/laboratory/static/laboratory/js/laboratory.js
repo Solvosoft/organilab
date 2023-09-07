@@ -13,6 +13,7 @@ function shelf_action_modals(modalid, shelf, objecttype){
     show_hide_limits($(`${document.prefix}without_limit`), document.prefix);
     return false;
 }
+
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
@@ -141,8 +142,8 @@ function transferInObjectDeny(btn) {
                     .catch(response => {
                         let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                         response.json().then(data => {  // there was something in the response from the API regarding validation
-                            if(data['transfer_object']){
-                                error_msg = data['transfer_object'][0];  // specific api validation errors
+                            if(data.errors['transfer_object']){
+                                error_msg = data.errors['transfer_object'][0];  // specific api validation errors
                             }
                         })
                         .finally(() => {
@@ -402,8 +403,6 @@ function show_hide_limits(e,prefix){
     }
 }
 
-
-
 const labviewSearch={
     show_deselected_previous_shelfs: function(shelf_list, key, value){
         var active_shelf = tableObject.get_active_shelf(show_alert=false);
@@ -574,8 +573,8 @@ $("#hide_alert").on('click', function(){
 });
 
 function reset_container_selects(form_id,select_id){
-     $(form_id).find(select_id+" option:selected").prop("selected", false);
-      $(form_id).find(select_id).val(null).trigger('change');
+    $(form_id).find(select_id+" option:selected").prop("selected", false);
+    $(form_id).find(select_id).val(null).trigger('change');
 }
 function show_hide_container_selects(form_id, selected_value, prefix=""){
     // they are hidden for the other options, so hide them by default and just display one if required
@@ -590,8 +589,6 @@ function show_hide_container_selects(form_id, selected_value, prefix=""){
     }else{
         reset_container_selects(form_id,"#id_"+prefix+"container_for_cloning")
         reset_container_selects(form_id,"#id_"+prefix+"available_container")
-
-
    }
 }
 
@@ -668,9 +665,6 @@ function ContainerUpdateForm(elementid, shelfobject, container, containername){
     obj.set_shelfobject(shelfobject, container, containername);
     return obj;
 }
-
-
-
 
 function updateContainerOfShelfObject(instance, event){
     var modalid= $(instance).data('modalid');
