@@ -94,7 +94,7 @@ class ObjectView(object):
                     capacity_data = {'capacity': form.cleaned_data['capacity'],
                                      'capacity_measurement_unit': form.cleaned_data[
                                          'capacity_measurement_unit'],
-                                     'object': form.cleaned_data['object']}
+                                     'object': object}
                     if hasattr(object,'materialcapacity'):
                         material_capacity= object.materialcapacity
                         material_capacity.capacity=capacity_data['capacity']

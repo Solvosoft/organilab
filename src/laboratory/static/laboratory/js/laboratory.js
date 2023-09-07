@@ -13,6 +13,7 @@ function shelf_action_modals(modalid, shelf, objecttype){
     show_hide_limits($(`${document.prefix}without_limit`), document.prefix);
     return false;
 }
+
 const tableObject={
     clearFilters: function ( e, dt, node, config ) {clearDataTableFilters(dt, id)},
     addObjectOk: function(data){
@@ -21,16 +22,19 @@ const tableObject={
     addObjectResponse: function(datarequest){
             let id=""
             let modalid=""
+            let prefix_id=""
             discard= document.shelf_discard.toLowerCase()==='true';
             if(objecttype==0){
                 modalid="reactive_modal";
                   id='#id_rf-';
+                  prefix_id = "rf-"
                 if(discard){
                   modalid="reactive_refuse_modal";
                     id='#id_rff-';
+                    prefix_id="rff-"
                 }
                 update_selects(id+"recipient",{})
-
+                show_hide_container_selects("#"+modalid,"none", prefix=prefix_id)
             }else if(objecttype==1){
                     modalid="material_modal";
                     id='#id_mf-';
@@ -138,8 +142,10 @@ function transferInObjectDeny(btn) {
                     .catch(response => {
                         let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
                         response.json().then(data => {  // there was something in the response from the API regarding validation
-                            if(data['transfer_object']){
-                                error_msg = data['transfer_object'][0];  // specific api validation errors
+                            if(data['errors'] && data.errors['transfer_object']){
+                                error_msg = data.errors['transfer_object'][0];  // specific api validation errors
+                            }else if(data['detail']){
+                                error_msg = data['detail'];
                             }
                         })
                         .finally(() => {
@@ -399,8 +405,6 @@ function show_hide_limits(e,prefix){
     }
 }
 
-
-
 const labviewSearch={
     show_deselected_previous_shelfs: function(shelf_list, key, value){
         var active_shelf = tableObject.get_active_shelf(show_alert=false);
@@ -570,20 +574,39 @@ $("#hide_alert").on('click', function(){
     $("div.alert").removeClass("show");
 });
 
+function reset_container_selects(form_id,select_id){
+    $(form_id).find(select_id+" option:selected").prop("selected", false);
+    $(form_id).find(select_id).val(null).trigger('change');
+}
 function show_hide_container_selects(form_id, selected_value, prefix=""){
     // they are hidden for the other options, so hide them by default and just display one if required
     $(form_id).find("#id_"+prefix+"available_container").parents(".form-group").hide();
     $(form_id).find("#id_"+prefix+"container_for_cloning").parents(".form-group").hide();
     if(selected_value === 'available'){
         $(form_id).find("#id_"+prefix+"available_container").parents('.form-group').show();
+        reset_container_selects(form_id,"#id_"+prefix+"container_for_cloning")
     }else if(selected_value === 'clone'){
         $(form_id).find("#id_"+prefix+"container_for_cloning").parents('.form-group').show();
-    }
+        reset_container_selects(form_id,"#id_"+prefix+"available_container")
+    }else{
+        reset_container_selects(form_id,"#id_"+prefix+"container_for_cloning")
+        reset_container_selects(form_id,"#id_"+prefix+"available_container")
+   }
 }
 
 $("#transfer_in_approve_with_container_form #id_container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#transfer_in_approve_with_container_form", event.target.value);
 });
+
+$("#reactive_refuse_form #id_rff-container_select_option").on('ifChanged', function(event){
+    show_hide_container_selects("#reactive_refuse_form", event.target.value, prefix="rff-");
+
+});
+
+$("#reactive_form #id_rf-container_select_option").on('ifChanged', function(event){
+    show_hide_container_selects("#reactive_form", event.target.value, prefix="rf-");
+});
+
 
 $("#movesocontainerform #id_movewithcontainer-container_select_option").on('ifChanged', function(event){
     show_hide_container_selects("#movesocontainerform", event.target.value, prefix="movewithcontainer-");
@@ -645,9 +668,6 @@ function ContainerUpdateForm(elementid, shelfobject, container, containername){
     return obj;
 }
 
-
-
-
 function updateContainerOfShelfObject(instance, event){
     var modalid= $(instance).data('modalid');
     let is_created = form_modals.hasOwnProperty(modalid);
@@ -661,3 +681,4 @@ function updateContainerOfShelfObject(instance, event){
     }
     $('input[name="mc-shelf"]').val($('#id_shelf').val());
 }
+

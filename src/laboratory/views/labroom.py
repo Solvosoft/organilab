@@ -157,11 +157,15 @@ class LaboratoryRoomsList(ListView):
         context['equipment_refuse_form'] = ShelfObjectRefuseEquipmentForm(
             initial={"objecttype": 2}, org_pk=self.org, prefix='erf')
         context['reactive_form'] = ShelfObjectReactiveForm(initial={"objecttype": 0},
-                                                           org_pk=self.org, prefix="rf")
+                                                           org_pk=self.org, prefix="rf",
+                                                           modal_id="#reactive_form"
+                                                           )
         context['manage_container_form'] = ContainerManagementForm(
             modal_id='#managecontainermodal', prefix='mc')
+
         context['reactive_refuse_form'] = ShelfObjectRefuseReactiveForm(
-            initial={"objecttype": 0}, org_pk=self.org, prefix="rff")
+            initial={"objecttype": 0}, org_pk=self.org, prefix="rff",
+            modal_id="#reactive_refuse_form")
         context['material_form'] = ShelfObjectMaterialForm(initial={"objecttype": 1},
                                                            org_pk=self.org, prefix="mf")
         context['material_refuse_form'] = ShelfObjectRefuseMaterialForm(
