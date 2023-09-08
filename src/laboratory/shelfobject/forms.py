@@ -499,4 +499,5 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
         }
 
 class ContainerManagementForm(ContainerForm):
+    shelf_object = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.CharField(widget=genwidgets.HiddenInput)
