@@ -337,3 +337,27 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
                 'unit': container_unit}})
 
     return errors
+
+
+def get_selected_container(data):
+    container = None
+    container_select_option = data.get('container_select_option')
+    if container_select_option == 'available':
+        container = data.get('available_container')
+    elif container_select_option == 'clone':
+        container = data["container_for_cloning"]
+    return container
+
+
+def group_object_errors_for_serializer(errors, save_to_key="shelf_object", keys_to_group=('quantity', 'object', 'measurement_unit')):
+    object_errors = []
+    updated_errors = {}
+    for key, error in errors.items():
+        if key in keys_to_group:
+            object_errors.append(error)
+        else:  # any other error goes in its own key
+            updated_errors[key] = error
+            
+        if object_errors:
+            updated_errors[save_to_key] = object_errors
+    return updated_errors
