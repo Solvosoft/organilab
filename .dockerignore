@@ -1,5 +1,12 @@
 */src/media
 src/media
+src/*/tests
+src/organilab_test
+src/organilab/test_settings.py
 src/coverage.json
 src/auth_and_perms/management/commands/create_demo_organizations.py
 src/auth_and_perms/management/commands/update_profile.py
+docker/*.env
+**/.env
+**/.aws
+**/.ssh
