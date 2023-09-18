@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics, status
@@ -115,7 +116,9 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
 @register_lookups(prefix="available-container-search", basename="available-container-search")
 class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = ShelfObject
-    fields = ['object__name', 'object__code']
+    fields = ['object__name', 
+              'object__code', 
+              'object__materialcapacity__capacity_measurement_unit__description']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
@@ -123,7 +126,10 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
     shelf = None
 
     def get_text_display(self, obj):
-        return f"{obj.object.code} {obj.object.name}"
+        text_display = f"[" + _("Shelf") + f" {obj.shelf.name}] - {obj.object.code} {obj.object.name}"
+        if hasattr(obj.object, 'materialcapacity'):
+            text_display += f" - {obj.object.materialcapacity.capacity} {obj.object.materialcapacity.capacity_measurement_unit.description}"
+        return text_display
 
     def get_queryset(self):
         if self.laboratory and self.shelf:
@@ -146,12 +152,20 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
 @register_lookups(prefix="container-for-cloning-search", basename="container-for-cloning-search")
 class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = Object
-    fields = ['name', 'code']
+    fields = ['name', 
+              'code', 
+              'materialcapacity__capacity_measurement_unit__description']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
     org = None
     shelf = None
+    
+    def get_text_display(self, obj):
+        text_display = f"{obj.code} {obj.name}"
+        if hasattr(obj, 'materialcapacity'):
+            text_display += f" - {obj.materialcapacity.capacity} {obj.materialcapacity.capacity_measurement_unit.description}"
+        return text_display
 
     def get_queryset(self):
         if self.org and self.shelf:
