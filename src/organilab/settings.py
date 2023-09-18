@@ -15,10 +15,10 @@ SECRET_KEY = os.getenv('SECRET_KEY',
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-
+CSRF_TRUSTED_SCHEME=os.getenv('CSRF_TRUSTED_SCHEME', 'https')
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
-    CSRF_TRUSTED_ORIGINS = ["https://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
 
 else:
     ALLOWED_HOSTS = []
@@ -312,35 +312,60 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
+DJANGO_LOG_LEVEL=os.getenv('DJANGO_LOG_LEVEL', 'INFO')
+DEFAULT_LOGGER_NAME='organilab'
+
 LOGGING = {
    'version': 1,
    'disable_existing_loggers': False,
+   'filters': {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
+        },
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
    'formatters': {
-       'verbose': {
-           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       "console": {
+           "format": "{levelname} {asctime} {pathname} - line {lineno}: {message}",
+           "style": "{",
+       },
+       'json': {
+           'format': '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "message": "%(message)s"}',
        },
    },
    'handlers': {
        'console': {
-           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
            'class': 'logging.StreamHandler',
            'stream': sys.stdout,
-           'formatter': 'verbose'
+           'formatter': 'json'
        },
+
+       "mail_admins": {
+           "level": "ERROR",
+           "filters": ["require_debug_false"],
+           "class": "django.utils.log.AdminEmailHandler",
+       }
    },
    'loggers': {
-       '': {
+        DEFAULT_LOGGER_NAME: {
            'handlers': ['console'],
-           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+           'level': DJANGO_LOG_LEVEL,
            'propagate': True,
-       },
-    'celery': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         },
-    'organilab_celery': {
+        'django': {
+           'handlers': ['console', "mail_admins"],
+           'level': DJANGO_LOG_LEVEL,
+           'propagate': True,
+        },
+        'celery': {
             'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'level': DJANGO_LOG_LEVEL,
+        },
+        'organilab_celery': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
         }
    },
 }
