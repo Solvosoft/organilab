@@ -48,7 +48,7 @@ messages:
 trans:
 	cd src && django-admin compilemessages --locale es
 
-build_docker:
+build_docker: clean trans
 	docker build  -t organilab:$(setup_version)  .
 
 release: clean trans builddocker
