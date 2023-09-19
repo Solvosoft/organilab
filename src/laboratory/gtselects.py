@@ -10,12 +10,10 @@ from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Rol
-from laboratory.forms import ValidateShelfForm
-from laboratory.models import Object, Catalog, Provider, OrganizationStructure, Laboratory, ShelfObject
+from laboratory.models import Object, Catalog, Provider, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
 from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
-from django.conf import settings
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -35,7 +33,7 @@ class ObjectGModelLookup(BaseSelect2View):
 
 
 @register_lookups(prefix="objectorgsearch", basename="objectorgsearch")
-class ObjectGModelLookup(generics.RetrieveAPIView, BaseSelect2View):
+class ObjectGModelLookup(BaseSelect2View):
     model = Object
     fields = ['code', 'name']
     org_pk = None
@@ -81,10 +79,9 @@ class User(BaseSelect2View):
 
 
 @register_lookups(prefix="catalogunit", basename="catalogunit")
-class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
+class CatalogUnitLookup(BaseSelect2View):
     model = Catalog
     fields = ['description']
-    shelf = None
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
@@ -99,7 +96,6 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
                 return queryset
         else:
             return queryset.none()
-        return queryset
 
     def list(self, request, *args, **kwargs):
 
@@ -114,10 +110,10 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
 
 
 @register_lookups(prefix="available-container-search", basename="available-container-search")
-class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
+class AvailableContainerLookup(BaseSelect2View):
     model = ShelfObject
-    fields = ['object__name', 
-              'object__code', 
+    fields = ['object__name',
+              'object__code',
               'object__materialcapacity__capacity_measurement_unit__description']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -150,17 +146,17 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 @register_lookups(prefix="container-for-cloning-search", basename="container-for-cloning-search")
-class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
+class ContainersForCloningLookup(BaseSelect2View):
     model = Object
-    fields = ['name', 
-              'code', 
+    fields = ['name',
+              'code',
               'materialcapacity__capacity_measurement_unit__description']
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
     org = None
     shelf = None
-    
+
     def get_text_display(self, obj):
         text_display = f"{obj.code} {obj.name}"
         if hasattr(obj, 'materialcapacity'):
