@@ -3,13 +3,13 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "password": "user1org1pass",
+      "password": "user1pass",
       "last_login": "2023-01-10T22:49:30.603Z",
       "is_superuser": false,
-      "username": "user1org1",
-      "first_name": "User 1",
-      "last_name": "Org 1",
-      "email": "user1org1@gmail.com",
+      "username": "user1",
+      "first_name": "User",
+      "last_name": "1",
+      "email": "user1@gmail.com",
       "is_staff": false,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -21,13 +21,49 @@
     "model": "auth.user",
     "pk": 2,
     "fields": {
-      "password": "user2org2pass",
+      "password": "user2pass",
       "last_login": "2023-01-10T22:49:30.603Z",
       "is_superuser": false,
-      "username": "user2org2",
-      "first_name": "User 2",
-      "last_name": "Org 2",
-      "email": "user2org2@gmail.com",
+      "username": "user2",
+      "first_name": "User",
+      "last_name": "2",
+      "email": "user2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "user3pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user3",
+      "first_name": "User",
+      "last_name": "3",
+      "email": "user3@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "user4pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user4",
+      "first_name": "User",
+      "last_name": "4",
+      "email": "user4@gmail.com",
       "is_staff": false,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
@@ -45,7 +81,7 @@
       "level": 0,
       "rol": [
       ],
-      "users": [1]
+      "users": [1, 2]
     }
   },
   {
@@ -57,7 +93,8 @@
       "position": 0,
       "level": 0,
       "rol": [
-      ]
+      ],
+      "users": [1, 2]
     }
   },
   {
@@ -87,7 +124,23 @@
       "email": "",
       "coordinator": "",
       "unit": "",
-      "organization": 1,
+      "organization": 2,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 3,
+    "fields": {
+      "name": "Lab 3",
+      "phone_number": "44444444",
+      "location": "San Pedro",
+      "geolocation": "9.32442142332,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 2,
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
@@ -100,7 +153,7 @@
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [1]
+      "laboratories": [1, 2]
     }
   },
   {
@@ -113,6 +166,28 @@
       "job_position": "Administrator",
       "laboratories": [
       ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [1, 2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": []
     }
   },
   {
@@ -136,6 +211,16 @@
     }
   },
   {
+    "model": "laboratory.laboratoryroom",
+    "pk": 3,
+    "fields": {
+      "name": "Sala de desechos",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 3
+    }
+  },
+  {
     "model": "laboratory.furniture",
     "pk": 1,
     "fields": {
@@ -143,7 +228,7 @@
       "name": "Mueble 1",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[]",
+      "dataconfig": "[[[1, 2]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -156,7 +241,7 @@
       "name": "Mueble 2",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[]",
+      "dataconfig": "[[[3]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -169,7 +254,20 @@
       "name": "Mueble 3",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[]",
+      "dataconfig": "[[[4]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 4,
+    "fields": {
+      "labroom": 3,
+      "name": "Mueble 4",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[5]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -287,6 +385,24 @@
     }
   },
   {
+    "model": "laboratory.shelf",
+    "pk": 5,
+    "fields": {
+      "furniture": 4,
+      "name": "Cuarto Estante",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 63,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+  {
     "model": "laboratory.shelfobject",
     "pk": 1,
     "fields": {
@@ -310,6 +426,21 @@
       "quantity": 23.0,
       "limit_quantity": 7.0,
       "in_where_laboratory": 2,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 5,
+      "object": 2,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 3,
       "measurement_unit": 63,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
