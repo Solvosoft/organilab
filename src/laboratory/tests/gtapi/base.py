@@ -1,12 +1,15 @@
+import json
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, Client
+from django.urls import reverse
 
-from laboratory.models import OrganizationStructure, Laboratory
+from auth_and_perms.organization_utils import organization_can_change_laboratory
+from laboratory.models import OrganizationStructure, Laboratory, Furniture, ShelfObject
+from laboratory.utils import check_user_access_kwargs_org_lab
 
 
 class TestCaseBase(TestCase):
-    fixtures = ["gtapi_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -24,6 +27,8 @@ class TestCaseBase(TestCase):
         # PROFILE
         self.profile1 = self.user1.profile
         self.profile2 = self.user2.profile
+        self.profile3 = self.user3.profile
+        self.profile4 = self.user4.profile
 
         # ORGS BY USER
         self.user1_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(
@@ -51,3 +56,53 @@ class TestCaseBase(TestCase):
         self.client2.force_login(self.user2)
         self.client3.force_login(self.user3)
         self.client4.force_login(self.user4)
+
+        #DEFAULT DATA
+        self.lab = self.lab1_org1
+        self.org = self.org1
+        self.user = self.user1
+        self.client = self.client1
+
+
+    def check_tests(self, response, status_code, org_can_change, user_access, results_data=True):
+        results = []
+
+        self.assertEqual(response.status_code, status_code)
+
+        has_permission = organization_can_change_laboratory(self.lab, self.org)
+        check_user_access = check_user_access_kwargs_org_lab(self.org.pk,
+                                                             self.lab.pk, self.user)
+        self.assertEqual(has_permission, org_can_change)
+        self.assertEqual(check_user_access, user_access)
+
+        if response.content:
+            response_data = json.loads(response.content)
+            self.assertEqual("results" not in response_data, results_data)
+
+            if not results_data:
+                results = response_data["results"]
+
+        return results
+
+
+class ShelfViewTest(TestCaseBase):
+    fixtures = ["gtapi/gtapi_shelf_data.json"]
+
+    def setUp(self):
+        super().setUp()
+        self.furniture = Furniture.objects.get(pk=1)
+        self.shelfobject = ShelfObject.objects.get(pk=1)
+        self.url = reverse("shelf-list")
+        self.data = {
+            "shelfobject": self.shelfobject.pk,
+            "relfield": self.furniture.pk,
+            "page": 1,
+            "laboratory": self.lab.pk,
+            "organization": self.org.pk
+        }
+
+class FurnitureTestCaseBase(TestCaseBase):
+    fixtures = ["gtapi/gtapi_furniture_data.json"]
+
+    def setUp(self):
+        super().setUp()
