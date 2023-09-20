@@ -5,9 +5,9 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from auth_and_perms.organization_utils import organization_can_change_laboratory
-from laboratory.models import OrganizationStructure, Laboratory, Furniture, ShelfObject
+from laboratory.models import OrganizationStructure, Laboratory, Furniture, ShelfObject, \
+    LaboratoryRoom, Shelf
 from laboratory.utils import check_user_access_kwargs_org_lab
-
 
 class TestCaseBase(TestCase):
 
@@ -62,9 +62,27 @@ class TestCaseBase(TestCase):
         self.org = self.org1
         self.user = self.user1
         self.client = self.client1
+        self.furniture = Furniture.objects.get(pk=1)
+        self.labroom = LaboratoryRoom.objects.get(pk=1)
+        self.shelfobject = ShelfObject.objects.get(pk=1)
+
+        self.data = {
+            "shelfobject": self.shelfobject.pk,
+            "page": 1,
+            "laboratory": self.lab.pk,
+            "organization": self.org.pk
+        }
 
 
     def check_tests(self, response, status_code, org_can_change, user_access, results_data=True):
+        """
+        CHECK TESTS
+        1) Check response status code equal to expected status code.
+        2) Check if organization can or cannot change this laboratory.
+        3) Check if user have or does not have permission to access in this organization and laboratory.
+        4) Check if 'results' key exists in response serializer data.
+        """
+
         results = []
 
         self.assertEqual(response.status_code, status_code)
@@ -90,19 +108,114 @@ class ShelfViewTest(TestCaseBase):
 
     def setUp(self):
         super().setUp()
-        self.furniture = Furniture.objects.get(pk=1)
-        self.shelfobject = ShelfObject.objects.get(pk=1)
         self.url = reverse("shelf-list")
-        self.data = {
-            "shelfobject": self.shelfobject.pk,
-            "relfield": self.furniture.pk,
-            "page": 1,
-            "laboratory": self.lab.pk,
-            "organization": self.org.pk
-        }
+        self.data.update({
+            "relfield": self.furniture.pk
+        })
 
-class FurnitureTestCaseBase(TestCaseBase):
-    fixtures = ["gtapi/gtapi_furniture_data.json"]
+class ShelfViewTestOrgCanManageLab(ShelfViewTest):
+
+    def get_shelf_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        5) Check if first element in results object is in available shelves list.
+        """
+
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        results = self.check_tests(response, status_code, True, user_access, results_data)
+
+        if results and "relfield" in self.data:
+            available_shelves = list(
+                Shelf.objects.filter(furniture=self.data["relfield"]).values_list(
+                    "pk", flat=True).exclude(pk=self.shelfobject.shelf.pk))
+            self.assertTrue(results[0]["id"] in available_shelves)
+
+
+class ShelfViewTestOrgCannotManageLab(ShelfViewTest):
 
     def setUp(self):
         super().setUp()
+        self.lab = self.lab2_org2
+        self.data.update({
+            "laboratory": self.lab.pk
+        })
+
+
+    def get_shelf_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        """
+
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        self.check_tests(response, status_code, org_can_manage, user_access)
+
+
+class FurnitureViewTest(TestCaseBase):
+    fixtures = ["gtapi/gtapi_shelf_data.json"]
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("furniture-list")
+        self.data.update({
+            "relfield": self.labroom.pk
+        })
+
+
+class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
+
+    def get_furniture_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        5) Check if first element in results object is in available furniture list.
+        """
+
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        results = self.check_tests(response, status_code, True, user_access, results_data)
+
+        if results and "relfield" in self.data:
+            available_furniture = list(Furniture.objects.filter(labroom=self.data["relfield"]).values_list(
+                "pk", flat=True
+            ))
+            self.assertTrue(results[0]["id"] in available_furniture)
+
+
+class FurnitureViewTestOrgCannotManageLab(ShelfViewTest):
+
+    def setUp(self):
+        super().setUp()
+        self.lab = self.lab2_org2
+        self.data.update({
+            "laboratory": self.lab.pk
+        })
+
+
+    def get_furniture_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        """
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        self.check_tests(response, status_code, org_can_manage, user_access)
