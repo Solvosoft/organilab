@@ -219,3 +219,57 @@ class FurnitureViewTestOrgCannotManageLab(ShelfViewTest):
             self.client = client
         response = self.client.get(self.url, data=self.data)
         self.check_tests(response, status_code, org_can_manage, user_access)
+
+class LabRoomViewTest(TestCaseBase):
+    fixtures = ["gtapi/gtapi_shelf_data.json"]
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("lab_room-list")
+
+class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
+
+    def get_labroom_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        5) Check if first element in results object is in available laboratory room list.
+        """
+
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        results = self.check_tests(response, status_code, True, user_access, results_data)
+
+        if results:
+            available_labroom = list(LaboratoryRoom.objects.filter(laboratory=self.lab).values_list(
+                "pk", flat=True
+            ))
+            self.assertTrue(results[0]["id"] in available_labroom)
+
+
+class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
+
+    def setUp(self):
+        super().setUp()
+        self.lab = self.lab2_org2
+        self.data.update({
+            "laboratory": self.lab.pk
+        })
+
+
+    def get_labroom_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        """
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        self.check_tests(response, status_code, org_can_manage, user_access)
