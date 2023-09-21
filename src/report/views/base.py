@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse, Http404
+from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.timezone import now
@@ -202,7 +203,9 @@ def download_report(request, org_pk, lab_pk):
 @login_required
 @permission_required('laboratory.do_report')
 def report_table(request, org_pk, lab_pk, pk):
-    task = TaskReport.objects.filter(pk=pk).first()
+    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+        raise Http404()
+    task = get_object_or_404(TaskReport.objects.using(settings.READONLY_DATABASE),pk=pk)
     template_name = 'report/general_reports.html'
     content = {
         'table': task.table_content,
