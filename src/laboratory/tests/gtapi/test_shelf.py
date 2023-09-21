@@ -188,7 +188,7 @@ class ShelfViewTest9(ShelfViewTestOrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
-        * Shelf Object is located to other laboratory in other organization
+        * Shelf Object is located to other laboratory in this same organization
     """
 
     def setUp(self):
