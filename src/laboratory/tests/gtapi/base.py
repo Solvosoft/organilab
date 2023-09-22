@@ -90,11 +90,12 @@ class TestCaseBase(TestCase):
 
         self.assertEqual(response.status_code, status_code)
 
-        has_permission = organization_can_change_laboratory(self.lab, self.org)
-        check_user_access = check_user_access_kwargs_org_lab(self.org.pk,
-                                                             self.lab.pk, self.user)
-        self.assertEqual(has_permission, org_can_change)
-        self.assertEqual(check_user_access, user_access)
+        if "organization" in self.data and "laboratory" in self.data:
+            has_permission = organization_can_change_laboratory(self.lab, self.org)
+            check_user_access = check_user_access_kwargs_org_lab(self.org.pk,
+                                                                 self.lab.pk, self.user)
+            self.assertEqual(has_permission, org_can_change)
+            self.assertEqual(check_user_access, user_access)
 
         if response.content:
             response_data = json.loads(response.content)
@@ -104,6 +105,20 @@ class TestCaseBase(TestCase):
                 results = response_data["results"]
 
         return results
+
+
+    def get_obj_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        """
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        self.check_tests(response, status_code, org_can_manage, user_access)
 
 
 class ShelfViewTest(TestCaseBase):
@@ -117,9 +132,10 @@ class ShelfViewTest(TestCaseBase):
         })
         del self.data["shelf"]
 
+
 class ShelfViewTestOrgCanManageLab(ShelfViewTest):
 
-    def get_shelf_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_obj_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
         """
         CHECK TESTS
         ...
@@ -150,20 +166,23 @@ class ShelfViewTestOrgCannotManageLab(ShelfViewTest):
             "laboratory": self.lab.pk
         })
 
+class ShelfViewTestWithoutOrg(ShelfViewTest):
 
-    def get_shelf_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
-        """
-        CHECK TESTS
-        ...
-        Previous detail checks are in check tests function
-        ...
-        """
+    def setUp(self):
+        super().setUp()
+        del self.data["organization"]
 
-        if user and client:
-            self.user = user
-            self.client = client
-        response = self.client.get(self.url, data=self.data)
-        self.check_tests(response, status_code, org_can_manage, user_access)
+class ShelfViewTestWithoutLab(ShelfViewTest):
+
+    def setUp(self):
+        super().setUp()
+        del self.data["laboratory"]
+
+
+class ShelfViewTestWithoutOrgLab(ShelfViewTestWithoutOrg, ShelfViewTestWithoutLab):
+
+    def setUp(self):
+        super().setUp()
 
 
 class FurnitureViewTest(TestCaseBase):
@@ -180,7 +199,7 @@ class FurnitureViewTest(TestCaseBase):
 
 class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
 
-    def get_furniture_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_obj_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
         """
         CHECK TESTS
         ...
@@ -202,7 +221,7 @@ class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
             self.assertTrue(results[0]["id"] in available_furniture)
 
 
-class FurnitureViewTestOrgCannotManageLab(ShelfViewTest):
+class FurnitureViewTestOrgCannotManageLab(FurnitureViewTest):
 
     def setUp(self):
         super().setUp()
@@ -212,18 +231,24 @@ class FurnitureViewTestOrgCannotManageLab(ShelfViewTest):
         })
 
 
-    def get_furniture_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
-        """
-        CHECK TESTS
-        ...
-        Previous detail checks are in check tests function
-        ...
-        """
-        if user and client:
-            self.user = user
-            self.client = client
-        response = self.client.get(self.url, data=self.data)
-        self.check_tests(response, status_code, org_can_manage, user_access)
+class FurnitureViewTestWithoutOrg(FurnitureViewTest):
+
+    def setUp(self):
+        super().setUp()
+        del self.data["organization"]
+
+class FurnitureViewTestWithoutLab(FurnitureViewTest):
+
+    def setUp(self):
+        super().setUp()
+        del self.data["laboratory"]
+
+
+class FurnitureViewTestWithoutOrgLab(FurnitureViewTestWithoutOrg, FurnitureViewTestWithoutLab):
+
+    def setUp(self):
+        super().setUp()
+
 
 class LabRoomViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
@@ -233,9 +258,10 @@ class LabRoomViewTest(TestCaseBase):
         self.url = reverse("lab_room-list")
         del self.data["shelf"]
 
+
 class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
 
-    def get_labroom_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_obj_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
         """
         CHECK TESTS
         ...
@@ -256,7 +282,6 @@ class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
             ))
             self.assertTrue(results[0]["id"] in available_labroom)
 
-
 class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
 
     def setUp(self):
@@ -266,20 +291,22 @@ class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
             "laboratory": self.lab.pk
         })
 
+class LabRoomViewTestWithoutOrg(LabRoomViewTest):
 
-    def get_labroom_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
-        """
-        CHECK TESTS
-        ...
-        Previous detail checks are in check tests function
-        ...
-        """
-        if user and client:
-            self.user = user
-            self.client = client
-        response = self.client.get(self.url, data=self.data)
-        self.check_tests(response, status_code, org_can_manage, user_access)
+    def setUp(self):
+        super().setUp()
+        del self.data["organization"]
 
+class LabRoomViewTestWithoutLab(LabRoomViewTest):
+
+    def setUp(self):
+        super().setUp()
+        del self.data["laboratory"]
+
+class LabRoomViewTestWithoutOrgLab(LabRoomViewTestWithoutOrg, LabRoomViewTestWithoutLab):
+
+    def setUp(self):
+        super().setUp()
 
 class ShelfObjectViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
@@ -313,7 +340,6 @@ class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
             available_shelfobject = list(get_available_containers_for_selection(
                 self.lab.pk, self.shelf.pk).values_list("pk", flat=True))
             self.assertTrue(results[0]["id"] in available_shelfobject)
-
 
 class ShelfObjectViewTestOrgCannotManageLab(ShelfObjectViewTest):
 

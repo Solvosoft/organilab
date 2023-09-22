@@ -1,5 +1,7 @@
 from laboratory.models import ShelfObject
-from laboratory.tests.gtapi.base import ShelfViewTestOrgCanManageLab, ShelfViewTestOrgCannotManageLab
+from laboratory.tests.gtapi.base import ShelfViewTestOrgCanManageLab,\
+    ShelfViewTestOrgCannotManageLab, ShelfViewTestWithoutOrg, ShelfViewTestWithoutLab, \
+    ShelfViewTestWithoutOrgLab
 
 class ShelfViewTest1(ShelfViewTestOrgCanManageLab):
     """
@@ -10,17 +12,17 @@ class ShelfViewTest1(ShelfViewTestOrgCanManageLab):
     def setUp(self):
         super().setUp()
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject(user_access=True, status_code=200, results_data=False)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True, status_code=200, results_data=False)
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest2(ShelfViewTestOrgCanManageLab):
     """
@@ -32,17 +34,17 @@ class ShelfViewTest2(ShelfViewTestOrgCanManageLab):
         super().setUp()
         self.data = {}
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject(user_access=True)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True)
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest3(ShelfViewTestOrgCanManageLab):
     """
@@ -54,17 +56,17 @@ class ShelfViewTest3(ShelfViewTestOrgCanManageLab):
         super().setUp()
         del self.data["relfield"]
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject(user_access=True, status_code=200, results_data=False)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True, status_code=200, results_data=False)
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest4(ShelfViewTestOrgCanManageLab):
     """
@@ -84,17 +86,17 @@ class ShelfViewTest4(ShelfViewTestOrgCanManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject(user_access=True, status_code=400)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True, status_code=400)
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest5(ShelfViewTestOrgCanManageLab):
     """
@@ -110,17 +112,17 @@ class ShelfViewTest5(ShelfViewTestOrgCanManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject(user_access=True, status_code=400)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True, status_code=400)
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest6(ShelfViewTestOrgCannotManageLab):
     """
@@ -128,17 +130,17 @@ class ShelfViewTest6(ShelfViewTestOrgCannotManageLab):
         * With required data
     """
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest7(ShelfViewTestOrgCannotManageLab):
     """
@@ -150,17 +152,17 @@ class ShelfViewTest7(ShelfViewTestOrgCannotManageLab):
         super().setUp()
         self.data = {}
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest8(ShelfViewTestOrgCannotManageLab):
     """
@@ -172,17 +174,17 @@ class ShelfViewTest8(ShelfViewTestOrgCannotManageLab):
         super().setUp()
         del self.data["relfield"]
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class ShelfViewTest9(ShelfViewTestOrgCannotManageLab):
     """
@@ -200,14 +202,65 @@ class ShelfViewTest9(ShelfViewTestOrgCannotManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_shelf_by_shelfobject_case1(self):
-        self.get_shelf_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_shelf_by_shelfobject_case2(self):
-        self.get_shelf_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_shelf_by_shelfobject_case3(self):
-        self.get_shelf_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_shelf_by_shelfobject_case4(self):
-        self.get_shelf_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class ShelfViewTest10(ShelfViewTestWithoutOrg):
+    """
+        * Without organization param
+    """
+
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class ShelfViewTest11(ShelfViewTestWithoutLab):
+    """
+        * Without laboratory param
+    """
+
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class ShelfViewTest12(ShelfViewTestWithoutOrgLab):
+    """
+        * Without organization and laboratory params
+    """
+
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
