@@ -63,7 +63,7 @@ class LabRoomViewTest3(LabRoomViewTestOrgCanManageLab):
         })
 
     def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject(user_access=True, status_code=400)
+        self.get_labroom_by_shelfobject(user_access=True)
 
     def test_get_labroom_by_shelfobject_case2(self):
         self.get_labroom_by_shelfobject(self.user2, self.client2)
