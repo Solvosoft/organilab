@@ -1,5 +1,7 @@
 from laboratory.models import ShelfObject
-from laboratory.tests.gtapi.base import LabRoomViewTestOrgCanManageLab, LabRoomViewTestOrgCannotManageLab
+from laboratory.tests.gtapi.base import LabRoomViewTestOrgCanManageLab,\
+    LabRoomViewTestOrgCannotManageLab, LabRoomViewTestWithoutOrg,\
+    LabRoomViewTestWithoutLab, LabRoomViewTestWithoutOrgLab
 
 class LabRoomViewTest1(LabRoomViewTestOrgCanManageLab):
     """
@@ -10,17 +12,17 @@ class LabRoomViewTest1(LabRoomViewTestOrgCanManageLab):
     def setUp(self):
         super().setUp()
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject(user_access=True, status_code=200, results_data=False)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True, status_code=200, results_data=False)
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class LabRoomViewTest2(LabRoomViewTestOrgCanManageLab):
     """
@@ -32,17 +34,17 @@ class LabRoomViewTest2(LabRoomViewTestOrgCanManageLab):
         super().setUp()
         self.data = {}
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject(user_access=True)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True)
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class LabRoomViewTest3(LabRoomViewTestOrgCanManageLab):
     """
@@ -62,17 +64,17 @@ class LabRoomViewTest3(LabRoomViewTestOrgCanManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject(user_access=True)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True)
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class LabRoomViewTest4(LabRoomViewTestOrgCanManageLab):
     """
@@ -88,17 +90,17 @@ class LabRoomViewTest4(LabRoomViewTestOrgCanManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject(user_access=True, status_code=400)
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject(user_access=True, status_code=400)
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class LabRoomViewTest5(LabRoomViewTestOrgCannotManageLab):
     """
@@ -106,17 +108,17 @@ class LabRoomViewTest5(LabRoomViewTestOrgCannotManageLab):
         * With required data
     """
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class LabRoomViewTest6(LabRoomViewTestOrgCannotManageLab):
     """
@@ -128,17 +130,17 @@ class LabRoomViewTest6(LabRoomViewTestOrgCannotManageLab):
         super().setUp()
         self.data = {}
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class LabRoomViewTest7(LabRoomViewTestOrgCannotManageLab):
     """
@@ -156,14 +158,65 @@ class LabRoomViewTest7(LabRoomViewTestOrgCannotManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_labroom_by_shelfobject_case1(self):
-        self.get_labroom_by_shelfobject()
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
 
-    def test_get_labroom_by_shelfobject_case2(self):
-        self.get_labroom_by_shelfobject(self.user2, self.client2)
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_labroom_by_shelfobject_case3(self):
-        self.get_labroom_by_shelfobject(self.user3, self.client3)
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_labroom_by_shelfobject_case4(self):
-        self.get_labroom_by_shelfobject(self.user4, self.client4)
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class LabRoomViewTest8(LabRoomViewTestWithoutOrg):
+    """
+        * Without organization param
+    """
+
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class LabRoomViewTest9(LabRoomViewTestWithoutLab):
+    """
+        * Without laboratory param
+    """
+
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class LabRoomViewTest10(LabRoomViewTestWithoutOrgLab):
+    """
+        * Without organization and laboratory params
+    """
+
+    def test_get_obj_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_obj_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_obj_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_obj_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
