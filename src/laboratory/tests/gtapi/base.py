@@ -291,13 +291,13 @@ class ShelfObjectViewTest(TestCaseBase):
 
 class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
 
-    def get_available_container_by_lab_and_shelf(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_available_container_by_lab_and_shelf(self, user=None, client=None, user_access=False, status_code=400, results_data=True, same_lab=False):
         """
         CHECK TESTS
         ...
         Previous detail checks are in check tests function
         ...
-        5)
+        5) Check if first element in results object is in available container list.
         """
 
         if user and client:
@@ -306,9 +306,37 @@ class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
         response = self.client.get(self.url, data=self.data)
         results = self.check_tests(response, status_code, True, user_access, results_data)
 
-        self.assertEqual(self.lab.pk, self.shelf.furniture.labroom.laboratory.pk)
+        if "laboratory" in self.data and "shelf" in self.data:
+            self.assertEqual(self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk, same_lab)
 
         if results:
             available_shelfobject = list(get_available_containers_for_selection(
                 self.lab.pk, self.shelf.pk).values_list("pk", flat=True))
             self.assertTrue(results[0]["id"] in available_shelfobject)
+
+
+class ShelfObjectViewTestOrgCannotManageLab(ShelfObjectViewTest):
+
+    def setUp(self):
+        super().setUp()
+        self.lab = self.lab2_org2
+        self.data.update({
+            "laboratory": self.lab.pk
+        })
+
+    def get_available_container_by_lab_and_shelf(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400, same_lab=False):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        """
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        self.check_tests(response, status_code, org_can_manage, user_access)
+        if "laboratory" in self.data and "shelf" in self.data:
+            self.assertEqual(
+                self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk,
+                same_lab)
