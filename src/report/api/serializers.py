@@ -5,6 +5,9 @@ from laboratory.models import LaboratoryRoom, Laboratory, Object, Catalog, \
     ShelfObject
 from report.models import ObjectChangeLogReportBuilder
 from django.utils.translation import gettext_lazy as _
+import logging
+
+logger = logging.getLogger('organilab')
 
 
 class ReportDataTableSerializer(serializers.Serializer):
@@ -19,6 +22,27 @@ class ValidateUserAccessLabRoomSerializer(ValidateUserAccessOrgLabSerializer):
     shelfobject = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
         required=False)
+
+    def validate(self, data):
+        laboratory = data['laboratory']
+        organization = data['organization']
+        lab_room = data['lab_room'] if "lab_room" in data else None
+
+        if lab_room:
+            if lab_room.laboratory != laboratory:
+                logger.debug(
+                    f'ValidateUserAccessLabRoomSerializer --> labroom.laboratory != laboratory')
+                raise serializers.ValidationError(
+                    {'lab_room': _("Laboratory Room not belongs to that laboratory")})
+
+            if lab_room.laboratory.organization != organization:
+                logger.debug(
+                    f'ValidateUserAccessLabRoomSerializer --> lab_room.laboratory.organization != organization')
+                raise serializers.ValidationError(
+                    {'shelfobject': _("Laboratory Room not belongs to that organization")})
+
+
+        return data
 
 class ObjectChangeLogSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
