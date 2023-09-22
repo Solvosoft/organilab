@@ -313,6 +313,26 @@
     }
   },
   {
+    "model": "laboratory.object",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "B1000",
+      "name": "Botella 1000 mL",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
     "model": "laboratory.shelf",
     "pk": 1,
     "fields": {
@@ -442,6 +462,21 @@
       "limit_quantity": 7.0,
       "in_where_laboratory": 3,
       "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 3,
+      "quantity": 3.0,
+      "limit_quantity": 5.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 64,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"

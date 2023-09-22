@@ -7,6 +7,7 @@ from django.urls import reverse
 from auth_and_perms.organization_utils import organization_can_change_laboratory
 from laboratory.models import OrganizationStructure, Laboratory, Furniture, ShelfObject, \
     LaboratoryRoom, Shelf
+from laboratory.shelfobject.utils import get_available_containers_for_selection
 from laboratory.utils import check_user_access_kwargs_org_lab
 
 class TestCaseBase(TestCase):
@@ -65,12 +66,14 @@ class TestCaseBase(TestCase):
         self.furniture = Furniture.objects.get(pk=1)
         self.labroom = LaboratoryRoom.objects.get(pk=1)
         self.shelfobject = ShelfObject.objects.get(pk=1)
+        self.shelf = Shelf.objects.get(pk=1)
 
         self.data = {
             "shelfobject": self.shelfobject.pk,
             "page": 1,
             "laboratory": self.lab.pk,
-            "organization": self.org.pk
+            "organization": self.org.pk,
+            "shelf": self.shelf.pk
         }
 
 
@@ -112,6 +115,7 @@ class ShelfViewTest(TestCaseBase):
         self.data.update({
             "relfield": self.furniture.pk
         })
+        del self.data["shelf"]
 
 class ShelfViewTestOrgCanManageLab(ShelfViewTest):
 
@@ -171,6 +175,7 @@ class FurnitureViewTest(TestCaseBase):
         self.data.update({
             "relfield": self.labroom.pk
         })
+        del self.data["shelf"]
 
 
 class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
@@ -226,6 +231,7 @@ class LabRoomViewTest(TestCaseBase):
     def setUp(self):
         super().setUp()
         self.url = reverse("lab_room-list")
+        del self.data["shelf"]
 
 class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
 
@@ -273,3 +279,36 @@ class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
             self.client = client
         response = self.client.get(self.url, data=self.data)
         self.check_tests(response, status_code, org_can_manage, user_access)
+
+
+class ShelfObjectViewTest(TestCaseBase):
+    fixtures = ["gtapi/gtapi_shelf_data.json"]
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("available-container-search-list")
+        del self.data["shelfobject"]
+
+class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
+
+    def get_available_container_by_lab_and_shelf(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        5)
+        """
+
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        results = self.check_tests(response, status_code, True, user_access, results_data)
+
+        self.assertEqual(self.lab.pk, self.shelf.furniture.labroom.laboratory.pk)
+
+        if results:
+            available_shelfobject = list(get_available_containers_for_selection(
+                self.lab.pk, self.shelf.pk).values_list("pk", flat=True))
+            self.assertTrue(results[0]["id"] in available_shelfobject)
