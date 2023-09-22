@@ -146,6 +146,22 @@
     }
   },
   {
+    "model": "laboratory.laboratory",
+    "pk": 4,
+    "fields": {
+      "name": "Lab 4",
+      "phone_number": "44444444",
+      "location": "San Pedro",
+      "geolocation": "9.32442142332,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
@@ -221,6 +237,16 @@
     }
   },
   {
+    "model": "laboratory.laboratoryroom",
+    "pk": 4,
+    "fields": {
+      "name": "Sala de desechos",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 4
+    }
+  },
+  {
     "model": "laboratory.furniture",
     "pk": 1,
     "fields": {
@@ -268,6 +294,19 @@
       "type": 75,
       "color": "#73879C",
       "dataconfig": "[[[5]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 5,
+    "fields": {
+      "labroom": 4,
+      "name": "Mueble 5",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[6]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -409,7 +448,25 @@
     "pk": 5,
     "fields": {
       "furniture": 4,
-      "name": "Cuarto Estante",
+      "name": "Quinto Estante",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 63,
+      "quantity": 100,
+      "limit_only_objects": false,
+      "infinity_quantity": false
+    }
+  },
+   {
+    "model": "laboratory.shelf",
+    "pk": 6,
+    "fields": {
+      "furniture": 5,
+      "name": "Sexto Estante",
       "container_shelf": null,
       "type": 75,
       "color": "#73879C",
@@ -472,6 +529,21 @@
     "pk": 4,
     "fields": {
       "shelf": 1,
+      "object": 3,
+      "quantity": 3.0,
+      "limit_quantity": 5.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 5,
+    "fields": {
+      "shelf": 6,
       "object": 3,
       "quantity": 3.0,
       "limit_quantity": 5.0,
