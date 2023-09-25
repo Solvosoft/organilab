@@ -91,10 +91,12 @@ class TestCaseBase(TestCase):
         self.assertEqual(response.status_code, status_code)
 
         if "organization" in self.data and "laboratory" in self.data:
-            has_permission = organization_can_change_laboratory(self.lab, self.org)
-            check_user_access = check_user_access_kwargs_org_lab(self.org.pk,
-                                                                 self.lab.pk, self.user)
-            self.assertEqual(has_permission, org_can_change)
+            if self.org and self.lab:
+                has_permission = organization_can_change_laboratory(self.lab, self.org)
+                self.assertEqual(has_permission, org_can_change)
+
+            check_user_access = check_user_access_kwargs_org_lab(
+            self.data["organization"], self.data["laboratory"], self.user)
             self.assertEqual(check_user_access, user_access)
 
         if response.content:
@@ -119,6 +121,35 @@ class TestCaseBase(TestCase):
             self.client = client
         response = self.client.get(self.url, data=self.data)
         self.check_tests(response, status_code, org_can_manage, user_access)
+
+
+class OrgDoesNotExists(TestCaseBase):
+    def setUp(self):
+        super().setUp()
+        self.org = None
+        self.data.update({
+            "organization": 9867
+        })
+
+class LabDoesNotExists(TestCaseBase):
+    def setUp(self):
+        super().setUp()
+        self.lab = None
+        self.data.update({
+            "laboratory": 3678
+        })
+
+class WithoutOrg(TestCaseBase):
+
+    def setUp(self):
+        super().setUp()
+        del self.data["organization"]
+
+class WithoutLab(TestCaseBase):
+
+    def setUp(self):
+        super().setUp()
+        del self.data["laboratory"]
 
 
 class ShelfViewTest(TestCaseBase):
@@ -166,23 +197,30 @@ class ShelfViewTestOrgCannotManageLab(ShelfViewTest):
             "laboratory": self.lab.pk
         })
 
-class ShelfViewTestWithoutOrg(ShelfViewTest):
 
-    def setUp(self):
-        super().setUp()
-        del self.data["organization"]
+class ShelfViewTestWithoutOrg(ShelfViewTest, WithoutOrg):
+    pass
 
-class ShelfViewTestWithoutLab(ShelfViewTest):
 
-    def setUp(self):
-        super().setUp()
-        del self.data["laboratory"]
+class ShelfViewTestWithoutLab(ShelfViewTest, WithoutLab):
+    pass
 
 
 class ShelfViewTestWithoutOrgLab(ShelfViewTestWithoutOrg, ShelfViewTestWithoutLab):
+    pass
 
-    def setUp(self):
-        super().setUp()
+
+class ShelfViewTestLabDoesNotExists(ShelfViewTest, LabDoesNotExists):
+    pass
+
+
+class ShelfViewTestOrgDoesNotExists(ShelfViewTest, OrgDoesNotExists):
+    pass
+
+
+class ShelfViewTestOrgLabDoNotExist(ShelfViewTestLabDoesNotExists,
+                                    ShelfViewTestOrgDoesNotExists):
+    pass
 
 
 class FurnitureViewTest(TestCaseBase):
@@ -231,24 +269,27 @@ class FurnitureViewTestOrgCannotManageLab(FurnitureViewTest):
         })
 
 
-class FurnitureViewTestWithoutOrg(FurnitureViewTest):
+class FurnitureViewTestWithoutOrg(FurnitureViewTest, WithoutOrg):
+    pass
 
-    def setUp(self):
-        super().setUp()
-        del self.data["organization"]
 
-class FurnitureViewTestWithoutLab(FurnitureViewTest):
-
-    def setUp(self):
-        super().setUp()
-        del self.data["laboratory"]
+class FurnitureViewTestWithoutLab(FurnitureViewTest, WithoutLab):
+    pass
 
 
 class FurnitureViewTestWithoutOrgLab(FurnitureViewTestWithoutOrg, FurnitureViewTestWithoutLab):
+    pass
 
-    def setUp(self):
-        super().setUp()
+class FurnitureViewTestLabDoesNotExists(FurnitureViewTest, LabDoesNotExists):
+    pass
 
+
+class FurnitureViewTestOrgDoesNotExists(FurnitureViewTest, OrgDoesNotExists):
+    pass
+
+class FurnitureViewTestOrgLabDoNotExist(FurnitureViewTestLabDoesNotExists,
+                                    FurnitureViewTestOrgDoesNotExists):
+    pass
 
 class LabRoomViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
@@ -291,22 +332,25 @@ class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
             "laboratory": self.lab.pk
         })
 
-class LabRoomViewTestWithoutOrg(LabRoomViewTest):
+class LabRoomViewTestWithoutOrg(LabRoomViewTest, WithoutOrg):
+    pass
 
-    def setUp(self):
-        super().setUp()
-        del self.data["organization"]
-
-class LabRoomViewTestWithoutLab(LabRoomViewTest):
-
-    def setUp(self):
-        super().setUp()
-        del self.data["laboratory"]
+class LabRoomViewTestWithoutLab(LabRoomViewTest, WithoutLab):
+    pass
 
 class LabRoomViewTestWithoutOrgLab(LabRoomViewTestWithoutOrg, LabRoomViewTestWithoutLab):
+    pass
 
-    def setUp(self):
-        super().setUp()
+class LabRoomViewTestLabDoesNotExists(LabRoomViewTest, LabDoesNotExists):
+    pass
+
+class LabRoomViewTestOrgDoesNotExists(LabRoomViewTest, OrgDoesNotExists):
+    pass
+
+class LabRoomViewTestOrgLabDoNotExist(LabRoomViewTestLabDoesNotExists,
+                                    LabRoomViewTestOrgDoesNotExists):
+    pass
+
 
 class ShelfObjectViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
