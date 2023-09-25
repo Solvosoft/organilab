@@ -1,7 +1,10 @@
 from laboratory.models import ShelfObject
-from laboratory.tests.gtapi.base import FurnitureViewTestOrgCanManageLab,\
-    FurnitureViewTestOrgCannotManageLab, FurnitureViewTestWithoutOrg,\
-    FurnitureViewTestWithoutLab, FurnitureViewTestWithoutOrgLab
+from laboratory.tests.gtapi.base import FurnitureViewTestOrgCanManageLab, \
+    FurnitureViewTestOrgCannotManageLab, FurnitureViewTestWithoutOrg, \
+    FurnitureViewTestWithoutLab, FurnitureViewTestWithoutOrgLab, \
+    FurnitureViewTestOrgLabDoNotExist, FurnitureViewTestLabDoesNotExists, \
+    FurnitureViewTestOrgDoesNotExists
+
 
 class FurnitureViewTest1(FurnitureViewTestOrgCanManageLab):
     """
@@ -12,16 +15,16 @@ class FurnitureViewTest1(FurnitureViewTestOrgCanManageLab):
     def setUp(self):
         super().setUp()
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject(user_access=True, status_code=200, results_data=False)
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest2(FurnitureViewTestOrgCanManageLab):
@@ -34,16 +37,16 @@ class FurnitureViewTest2(FurnitureViewTestOrgCanManageLab):
         super().setUp()
         self.data = {}
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject(user_access=True)
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest3(FurnitureViewTestOrgCanManageLab):
@@ -56,16 +59,16 @@ class FurnitureViewTest3(FurnitureViewTestOrgCanManageLab):
         super().setUp()
         del self.data["relfield"]
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject(user_access=True, status_code=200, results_data=False)
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest4(FurnitureViewTestOrgCanManageLab):
@@ -86,16 +89,16 @@ class FurnitureViewTest4(FurnitureViewTestOrgCanManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject(user_access=True, status_code=400)
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest5(FurnitureViewTestOrgCanManageLab):
@@ -112,16 +115,16 @@ class FurnitureViewTest5(FurnitureViewTestOrgCanManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject(user_access=True, status_code=400)
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest6(FurnitureViewTestOrgCannotManageLab):
@@ -130,16 +133,16 @@ class FurnitureViewTest6(FurnitureViewTestOrgCannotManageLab):
         * With required data
     """
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest7(FurnitureViewTestOrgCannotManageLab):
@@ -152,16 +155,16 @@ class FurnitureViewTest7(FurnitureViewTestOrgCannotManageLab):
         super().setUp()
         self.data = {}
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest8(FurnitureViewTestOrgCannotManageLab):
@@ -174,16 +177,16 @@ class FurnitureViewTest8(FurnitureViewTestOrgCannotManageLab):
         super().setUp()
         del self.data["relfield"]
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest9(FurnitureViewTestOrgCannotManageLab):
@@ -202,16 +205,16 @@ class FurnitureViewTest9(FurnitureViewTestOrgCannotManageLab):
             "shelfobject": self.shelfobject.pk
         })
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest10(FurnitureViewTestWithoutOrg):
@@ -219,16 +222,16 @@ class FurnitureViewTest10(FurnitureViewTestWithoutOrg):
         * Without organization param
     """
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest11(FurnitureViewTestWithoutLab):
@@ -236,16 +239,16 @@ class FurnitureViewTest11(FurnitureViewTestWithoutLab):
         * Without laboratory param
     """
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 class FurnitureViewTest12(FurnitureViewTestWithoutOrgLab):
@@ -253,14 +256,67 @@ class FurnitureViewTest12(FurnitureViewTestWithoutOrgLab):
         * Without organization and laboratory params
     """
 
-    def test_get_obj_by_shelfobject_case1(self):
+    def test_get_furniture_by_shelfobject_case1(self):
         self.get_obj_by_shelfobject()
 
-    def test_get_obj_by_shelfobject_case2(self):
+    def test_get_furniture_by_shelfobject_case2(self):
         self.get_obj_by_shelfobject(self.user2, self.client2)
 
-    def test_get_obj_by_shelfobject_case3(self):
+    def test_get_furniture_by_shelfobject_case3(self):
         self.get_obj_by_shelfobject(self.user3, self.client3)
 
-    def test_get_obj_by_shelfobject_case4(self):
+    def test_get_furniture_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+class FurnitureViewTest13(FurnitureViewTestOrgLabDoNotExist):
+    """
+        * Organization and laboratory do not exist
+    """
+
+    def test_get_furniture_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_furniture_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_furniture_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_furniture_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+
+class FurnitureViewTest14(FurnitureViewTestLabDoesNotExists):
+    """
+        * Laboratory does not exists
+    """
+
+    def test_get_furniture_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_furniture_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_furniture_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_furniture_by_shelfobject_case4(self):
+        self.get_obj_by_shelfobject(self.user4, self.client4)
+
+
+class FurnitureViewTest15(FurnitureViewTestOrgDoesNotExists):
+    """
+        * Organization does not exists
+    """
+
+    def test_get_furniture_by_shelfobject_case1(self):
+        self.get_obj_by_shelfobject()
+
+    def test_get_furniture_by_shelfobject_case2(self):
+        self.get_obj_by_shelfobject(self.user2, self.client2)
+
+    def test_get_furniture_by_shelfobject_case3(self):
+        self.get_obj_by_shelfobject(self.user3, self.client3)
+
+    def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
