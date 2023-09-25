@@ -81,7 +81,7 @@ class User(BaseSelect2View):
 
 
 @register_lookups(prefix="catalogunit", basename="catalogunit")
-class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
+class CatalogUnitLookup(BaseSelect2View):
     model = Catalog
     fields = ['description']
     shelf = None
@@ -114,11 +114,12 @@ class CatalogUnitLookup(generics.RetrieveAPIView, BaseSelect2View):
 
 
 @register_lookups(prefix="available-container-search", basename="available-container-search")
-class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
+class AvailableContainerLookup(BaseSelect2View):
     model = ShelfObject
-    fields = ['object__name', 
-              'object__code', 
+    fields = ['object__name',
+              'object__code',
               'object__materialcapacity__capacity_measurement_unit__description']
+    pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
@@ -150,17 +151,18 @@ class AvailableContainerLookup(generics.RetrieveAPIView, BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 @register_lookups(prefix="container-for-cloning-search", basename="container-for-cloning-search")
-class ContainersForCloningLookup(generics.RetrieveAPIView, BaseSelect2View):
+class ContainersForCloningLookup(BaseSelect2View):
     model = Object
-    fields = ['name', 
-              'code', 
+    fields = ['name',
+              'code',
               'materialcapacity__capacity_measurement_unit__description']
+    pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer = None
     org = None
     shelf = None
-    
+
     def get_text_display(self, obj):
         text_display = f"{obj.code} {obj.name}"
         if hasattr(obj, 'materialcapacity'):
@@ -245,6 +247,7 @@ class ObjectAvailableLookup(BaseSelect2View):
     model = Object
     fields = ['code', 'name']
     org_pk = None
+    pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
