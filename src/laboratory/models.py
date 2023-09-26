@@ -104,6 +104,7 @@ class Object(AbstractOrganizationRef):
     class Meta:
         verbose_name = _('Object')
         verbose_name_plural = _('Objects')
+        ordering = ['name']
 
     def __str__(self):
         return '%s %s' % (self.code, self.name,)
@@ -237,6 +238,7 @@ class ShelfObject(models.Model):
     class Meta:
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
+        ordering = ['object__name']
 
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
