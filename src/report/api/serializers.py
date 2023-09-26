@@ -22,27 +22,6 @@ class ValidateUserAccessLabRoomSerializer(ValidateUserAccessOrgLabSerializer):
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
         required=False)
 
-    def validate(self, data):
-        data = super().validate(data)
-        laboratory = data['laboratory']
-        organization = data['organization']
-        lab_room = data['lab_room'] if "lab_room" in data else None
-
-        if lab_room:
-            if lab_room.laboratory != laboratory:
-                logger.debug(
-                    f'ValidateUserAccessLabRoomSerializer --> labroom.laboratory != laboratory')
-                raise serializers.ValidationError(
-                    {'lab_room': _("Laboratory Room not belongs to that laboratory")})
-
-            if lab_room.laboratory.organization != organization:
-                logger.debug(
-                    f'ValidateUserAccessLabRoomSerializer --> lab_room.laboratory.organization != organization')
-                raise serializers.ValidationError(
-                    {'lab_room': _("Laboratory Room not belongs to that organization")})
-
-
-        return data
 
 class ObjectChangeLogSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
