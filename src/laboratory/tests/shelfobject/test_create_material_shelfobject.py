@@ -91,7 +91,7 @@ class CreateShelfobjectTest(TestCase):
                 "minimum_limit": 0,
                 "maximum_limit": 0,
                 "container_select_option": "clone",
-                "container_for_cloning":new_shelobject.object.id,
+                "container_for_cloning":material.id,
                 "available_container":""
             }
         response=self.client.post(url, data=data, content_type='application/json')
@@ -157,7 +157,7 @@ class CreateShelfobjectTest(TestCase):
                 "minimum_limit": 0,
                 "maximum_limit": 0,
                 "container_select_option": "clone",
-                "container_for_cloning":new_shelobject.object.id,
+                "container_for_cloning":material.id,
                 "available_container":""
         }
         response=self.client.post(url, data=data, content_type='application/json')
@@ -210,6 +210,7 @@ class CreateShelfobjectTest(TestCase):
         self.client.post(url, data=data, content_type='application/json')
         shelfobject_count = ShelfObject.objects.filter(shelf__pk=13).count()
         new_shelobject = ShelfObject.objects.last()
+
         data = {
                 "shelf": 13,
                 "object": 2,
@@ -225,10 +226,11 @@ class CreateShelfobjectTest(TestCase):
                 "minimum_limit": 0,
                 "maximum_limit": 0,
                 "container_select_option": "clone",
-                "container_for_cloning":new_shelobject.object.id,
+                "container_for_cloning":material.id,
                 "available_container":""
             }
         response=self.client.post(url, data=data, content_type='application/json')
+
         self.assertEqual(response.status_code, 400)
         self.assertTrue(json.loads(response.content)['errors']['measurement_unit'][0]=="Measurement unit cannot be different than the container object measurement unit: Unidades.")
         self.assertTrue(ShelfObject.objects.filter(shelf__pk=13).count()==shelfobject_count)
