@@ -1,5 +1,8 @@
 from laboratory.models import Shelf
-from laboratory.tests.gtapi.base import ShelfObjectViewTestOrgCanManageLab, ShelfObjectViewTestOrgCannotManageLab
+from laboratory.tests.gtapi.base import ShelfObjectViewTestOrgCanManageLab, \
+    ShelfObjectViewTestOrgCannotManageLab, ShelfObjectViewTest, WithoutOrg, WithoutLab, \
+    OrgDoesNotExists, LabDoesNotExists
+
 
 class ShelfObjectViewTest1(ShelfObjectViewTestOrgCanManageLab):
     """
@@ -166,3 +169,105 @@ class ShelfObjectViewTest7(ShelfObjectViewTestOrgCannotManageLab):
 
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
+
+class ShelfObjectViewTest8(ShelfObjectViewTest, WithoutOrg):
+    """
+        * Without organization param
+    """
+
+    def test_get_available_container_by_lab_and_shelf_case1(self):
+        self.get_available_container_by_lab_and_shelf(same_lab=True)
+
+    def test_get_available_container_by_lab_and_shelf_case2(self):
+        self.get_available_container_by_lab_and_shelf(self.user2, self.client2, same_lab=True)
+
+    def test_get_available_container_by_lab_and_shelf_case3(self):
+        self.get_available_container_by_lab_and_shelf(self.user3, self.client3, same_lab=True)
+
+    def test_get_available_container_by_lab_and_shelf_case4(self):
+        self.get_available_container_by_lab_and_shelf(self.user4, self.client4, same_lab=True)
+
+class ShelfObjectViewTest9(ShelfObjectViewTest, WithoutLab):
+    """
+        * Without laboratory param
+    """
+
+    def test_get_available_container_by_lab_and_shelf_case1(self):
+        self.get_available_container_by_lab_and_shelf()
+
+    def test_get_available_container_by_lab_and_shelf_case2(self):
+        self.get_available_container_by_lab_and_shelf(self.user2, self.client2)
+
+    def test_get_available_container_by_lab_and_shelf_case3(self):
+        self.get_available_container_by_lab_and_shelf(self.user3, self.client3)
+
+    def test_get_available_container_by_lab_and_shelf_case4(self):
+        self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
+
+class ShelfObjectViewTest10(ShelfObjectViewTest, WithoutOrg, WithoutLab):
+    """
+        * Without organization and laboratory params
+    """
+
+    def test_get_available_container_by_lab_and_shelf_case1(self):
+        self.get_available_container_by_lab_and_shelf()
+
+    def test_get_available_container_by_lab_and_shelf_case2(self):
+        self.get_available_container_by_lab_and_shelf(self.user2, self.client2)
+
+    def test_get_available_container_by_lab_and_shelf_case3(self):
+        self.get_available_container_by_lab_and_shelf(self.user3, self.client3)
+
+    def test_get_available_container_by_lab_and_shelf_case4(self):
+        self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
+
+class ShelfObjectViewTest11(ShelfObjectViewTest, OrgDoesNotExists, LabDoesNotExists):
+    """
+        * Organization and laboratory do not exist
+    """
+
+    def test_get_available_container_by_lab_and_shelf_case1(self):
+        self.get_available_container_by_lab_and_shelf()
+
+    def test_get_available_container_by_lab_and_shelf_case2(self):
+        self.get_available_container_by_lab_and_shelf(self.user2, self.client2)
+
+    def test_get_available_container_by_lab_and_shelf_case3(self):
+        self.get_available_container_by_lab_and_shelf(self.user3, self.client3)
+
+    def test_get_available_container_by_lab_and_shelf_case4(self):
+        self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
+
+class ShelfObjectViewTest12(ShelfObjectViewTest, LabDoesNotExists):
+    """
+        * Laboratory does not exist
+    """
+
+    def test_get_available_container_by_lab_and_shelf_case1(self):
+        self.get_available_container_by_lab_and_shelf()
+
+    def test_get_available_container_by_lab_and_shelf_case2(self):
+        self.get_available_container_by_lab_and_shelf(self.user2, self.client2)
+
+    def test_get_available_container_by_lab_and_shelf_case3(self):
+        self.get_available_container_by_lab_and_shelf(self.user3, self.client3)
+
+    def test_get_available_container_by_lab_and_shelf_case4(self):
+        self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
+
+class ShelfObjectViewTest13(ShelfObjectViewTest, OrgDoesNotExists):
+    """
+        * Organization does not exist
+    """
+
+    def test_get_available_container_by_lab_and_shelf_case1(self):
+        self.get_available_container_by_lab_and_shelf(same_lab=True)
+
+    def test_get_available_container_by_lab_and_shelf_case2(self):
+        self.get_available_container_by_lab_and_shelf(self.user2, self.client2, same_lab=True)
+
+    def test_get_available_container_by_lab_and_shelf_case3(self):
+        self.get_available_container_by_lab_and_shelf(self.user3, self.client3, same_lab=True)
+
+    def test_get_available_container_by_lab_and_shelf_case4(self):
+        self.get_available_container_by_lab_and_shelf(self.user4, self.client4, same_lab=True)
