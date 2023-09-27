@@ -1,9 +1,7 @@
 from laboratory.models import ShelfObject
 from laboratory.tests.gtapi.base import FurnitureViewTestOrgCanManageLab, \
-    FurnitureViewTestOrgCannotManageLab, FurnitureViewTestWithoutOrg, \
-    FurnitureViewTestWithoutLab, FurnitureViewTestWithoutOrgLab, \
-    FurnitureViewTestOrgLabDoNotExist, FurnitureViewTestLabDoesNotExists, \
-    FurnitureViewTestOrgDoesNotExists
+    FurnitureViewTestOrgCannotManageLab, FurnitureViewTest, OrgDoesNotExists, \
+    LabDoesNotExists, WithoutOrg, WithoutLab
 
 
 class FurnitureViewTest1(FurnitureViewTestOrgCanManageLab):
@@ -217,7 +215,7 @@ class FurnitureViewTest9(FurnitureViewTestOrgCannotManageLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest10(FurnitureViewTestWithoutOrg):
+class FurnitureViewTest10(FurnitureViewTest, WithoutOrg):
     """
         * Without organization param
     """
@@ -234,7 +232,7 @@ class FurnitureViewTest10(FurnitureViewTestWithoutOrg):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest11(FurnitureViewTestWithoutLab):
+class FurnitureViewTest11(FurnitureViewTest, WithoutLab):
     """
         * Without laboratory param
     """
@@ -251,7 +249,7 @@ class FurnitureViewTest11(FurnitureViewTestWithoutLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest12(FurnitureViewTestWithoutOrgLab):
+class FurnitureViewTest12(FurnitureViewTest, WithoutOrg, WithoutLab):
     """
         * Without organization and laboratory params
     """
@@ -268,7 +266,7 @@ class FurnitureViewTest12(FurnitureViewTestWithoutOrgLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest13(FurnitureViewTestOrgLabDoNotExist):
+class FurnitureViewTest13(FurnitureViewTest, OrgDoesNotExists, LabDoesNotExists):
     """
         * Organization and laboratory do not exist
     """
@@ -286,7 +284,7 @@ class FurnitureViewTest13(FurnitureViewTestOrgLabDoNotExist):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 
-class FurnitureViewTest14(FurnitureViewTestLabDoesNotExists):
+class FurnitureViewTest14(FurnitureViewTest, LabDoesNotExists):
     """
         * Laboratory does not exists
     """
@@ -304,7 +302,7 @@ class FurnitureViewTest14(FurnitureViewTestLabDoesNotExists):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 
-class FurnitureViewTest15(FurnitureViewTestOrgDoesNotExists):
+class FurnitureViewTest15(FurnitureViewTest, OrgDoesNotExists):
     """
         * Organization does not exists
     """

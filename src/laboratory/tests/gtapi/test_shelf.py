@@ -1,8 +1,9 @@
 from laboratory.models import ShelfObject
 from laboratory.tests.gtapi.base import ShelfViewTestOrgCanManageLab, \
     ShelfViewTestOrgCannotManageLab, ShelfViewTestWithoutOrg, ShelfViewTestWithoutLab, \
-    ShelfViewTestWithoutOrgLab, ShelfViewTestOrgLabDoNotExist,\
-    ShelfViewTestLabDoesNotExists, ShelfViewTestOrgDoesNotExists
+    ShelfViewTestWithoutOrgLab, ShelfViewTestOrgLabDoNotExist, \
+    ShelfViewTestLabDoesNotExists, ShelfViewTestOrgDoesNotExists, ShelfViewTest, \
+    OrgDoesNotExists, LabDoesNotExists, WithoutOrg, WithoutLab
 
 
 class ShelfViewTest1(ShelfViewTestOrgCanManageLab):
@@ -213,7 +214,7 @@ class ShelfViewTest9(ShelfViewTestOrgCannotManageLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest10(ShelfViewTestWithoutOrg):
+class ShelfViewTest10(ShelfViewTest, WithoutOrg):
     """
         * Without organization param
     """
@@ -230,7 +231,7 @@ class ShelfViewTest10(ShelfViewTestWithoutOrg):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest11(ShelfViewTestWithoutLab):
+class ShelfViewTest11(ShelfViewTest, WithoutLab):
     """
         * Without laboratory param
     """
@@ -247,7 +248,7 @@ class ShelfViewTest11(ShelfViewTestWithoutLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest12(ShelfViewTestWithoutOrgLab):
+class ShelfViewTest12(ShelfViewTest, WithoutOrg, WithoutLab):
     """
         * Without organization and laboratory params
     """
@@ -264,7 +265,7 @@ class ShelfViewTest12(ShelfViewTestWithoutOrgLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest13(ShelfViewTestOrgLabDoNotExist):
+class ShelfViewTest13(ShelfViewTest, OrgDoesNotExists, LabDoesNotExists):
     """
         * Organization and laboratory do not exist
     """
@@ -281,7 +282,7 @@ class ShelfViewTest13(ShelfViewTestOrgLabDoNotExist):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest14(ShelfViewTestLabDoesNotExists):
+class ShelfViewTest14(ShelfViewTest, LabDoesNotExists):
     """
         * Laboratory does not exists
     """
@@ -299,7 +300,7 @@ class ShelfViewTest14(ShelfViewTestLabDoesNotExists):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
 
-class ShelfViewTest15(ShelfViewTestOrgDoesNotExists):
+class ShelfViewTest15(ShelfViewTest, OrgDoesNotExists):
     """
         * Organization does not exists
     """

@@ -131,6 +131,7 @@ class OrgDoesNotExists(TestCaseBase):
             "organization": 9867
         })
 
+
 class LabDoesNotExists(TestCaseBase):
     def setUp(self):
         super().setUp()
@@ -139,11 +140,13 @@ class LabDoesNotExists(TestCaseBase):
             "laboratory": 3678
         })
 
+
 class WithoutOrg(TestCaseBase):
 
     def setUp(self):
         super().setUp()
         del self.data["organization"]
+
 
 class WithoutLab(TestCaseBase):
 
@@ -198,31 +201,6 @@ class ShelfViewTestOrgCannotManageLab(ShelfViewTest):
         })
 
 
-class ShelfViewTestWithoutOrg(ShelfViewTest, WithoutOrg):
-    pass
-
-
-class ShelfViewTestWithoutLab(ShelfViewTest, WithoutLab):
-    pass
-
-
-class ShelfViewTestWithoutOrgLab(ShelfViewTestWithoutOrg, ShelfViewTestWithoutLab):
-    pass
-
-
-class ShelfViewTestLabDoesNotExists(ShelfViewTest, LabDoesNotExists):
-    pass
-
-
-class ShelfViewTestOrgDoesNotExists(ShelfViewTest, OrgDoesNotExists):
-    pass
-
-
-class ShelfViewTestOrgLabDoNotExist(ShelfViewTestLabDoesNotExists,
-                                    ShelfViewTestOrgDoesNotExists):
-    pass
-
-
 class FurnitureViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
 
@@ -269,28 +247,6 @@ class FurnitureViewTestOrgCannotManageLab(FurnitureViewTest):
         })
 
 
-class FurnitureViewTestWithoutOrg(FurnitureViewTest, WithoutOrg):
-    pass
-
-
-class FurnitureViewTestWithoutLab(FurnitureViewTest, WithoutLab):
-    pass
-
-
-class FurnitureViewTestWithoutOrgLab(FurnitureViewTestWithoutOrg, FurnitureViewTestWithoutLab):
-    pass
-
-class FurnitureViewTestLabDoesNotExists(FurnitureViewTest, LabDoesNotExists):
-    pass
-
-
-class FurnitureViewTestOrgDoesNotExists(FurnitureViewTest, OrgDoesNotExists):
-    pass
-
-class FurnitureViewTestOrgLabDoNotExist(FurnitureViewTestLabDoesNotExists,
-                                    FurnitureViewTestOrgDoesNotExists):
-    pass
-
 class LabRoomViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
 
@@ -323,6 +279,7 @@ class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
             ))
             self.assertTrue(results[0]["id"] in available_labroom)
 
+
 class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
 
     def setUp(self):
@@ -332,25 +289,6 @@ class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
             "laboratory": self.lab.pk
         })
 
-class LabRoomViewTestWithoutOrg(LabRoomViewTest, WithoutOrg):
-    pass
-
-class LabRoomViewTestWithoutLab(LabRoomViewTest, WithoutLab):
-    pass
-
-class LabRoomViewTestWithoutOrgLab(LabRoomViewTestWithoutOrg, LabRoomViewTestWithoutLab):
-    pass
-
-class LabRoomViewTestLabDoesNotExists(LabRoomViewTest, LabDoesNotExists):
-    pass
-
-class LabRoomViewTestOrgDoesNotExists(LabRoomViewTest, OrgDoesNotExists):
-    pass
-
-class LabRoomViewTestOrgLabDoNotExist(LabRoomViewTestLabDoesNotExists,
-                                    LabRoomViewTestOrgDoesNotExists):
-    pass
-
 
 class ShelfObjectViewTest(TestCaseBase):
     fixtures = ["gtapi/gtapi_shelf_data.json"]
@@ -359,6 +297,24 @@ class ShelfObjectViewTest(TestCaseBase):
         super().setUp()
         self.url = reverse("available-container-search-list")
         del self.data["shelfobject"]
+
+    def get_available_container_by_lab_and_shelf(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400, same_lab=False):
+        """
+        CHECK TESTS
+        ...
+        Previous detail checks are in check tests function
+        ...
+        """
+        if user and client:
+            self.user = user
+            self.client = client
+        response = self.client.get(self.url, data=self.data)
+        self.check_tests(response, status_code, org_can_manage, user_access)
+        if "laboratory" in self.data and "shelf" in self.data:
+            self.assertEqual(
+                self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk,
+                same_lab)
+
 
 class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
 
@@ -385,6 +341,7 @@ class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
                 self.lab.pk, self.shelf.pk).values_list("pk", flat=True))
             self.assertTrue(results[0]["id"] in available_shelfobject)
 
+
 class ShelfObjectViewTestOrgCannotManageLab(ShelfObjectViewTest):
 
     def setUp(self):
@@ -393,20 +350,3 @@ class ShelfObjectViewTestOrgCannotManageLab(ShelfObjectViewTest):
         self.data.update({
             "laboratory": self.lab.pk
         })
-
-    def get_available_container_by_lab_and_shelf(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400, same_lab=False):
-        """
-        CHECK TESTS
-        ...
-        Previous detail checks are in check tests function
-        ...
-        """
-        if user and client:
-            self.user = user
-            self.client = client
-        response = self.client.get(self.url, data=self.data)
-        self.check_tests(response, status_code, org_can_manage, user_access)
-        if "laboratory" in self.data and "shelf" in self.data:
-            self.assertEqual(
-                self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk,
-                same_lab)
