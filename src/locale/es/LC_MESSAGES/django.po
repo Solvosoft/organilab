@@ -4107,23 +4107,23 @@ msgstr "Actualizar consejo de prudencia"
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
 
-msgid "Laboratory Room not belongs to that laboratory"
+msgid "Laboratory Room not belongs to this laboratory"
 msgstr "La sala de laboratorio no pertenece al laboratorio"
 
 msgid "Laboratory Room does not belongs to this organization"
 msgstr "La sala de laboratorio no pertenece a la organización"
 
-msgid "Shelfobject does not belongs to that laboratory."
+msgid "Shelfobject does not belongs to this laboratory."
 msgstr "El objecto de estante no pertenece al laboratorio."
 
-msgid "Shelfobject does not belongs to that organization."
+msgid "Shelfobject does not belongs to this organization."
 msgstr "El objecto de estante no pertenece a la organización."
 
-msgid "Shelfobject does not belongs to that shelf."
+msgid "Shelfobject does not belongs to this shelf."
 msgstr "El objecto de estante no pertenece al estante."
 
-msgid "Shelf does not belongs to that laboratory."
+msgid "Shelf does not belongs to this laboratory."
 msgstr "El estante no pertenece al laboratorio."
 
-msgid "Shelf does not belongs to that organization."
+msgid "Shelf does not belongs to this organization."
 msgstr "El estante no pertenece a la organización."
