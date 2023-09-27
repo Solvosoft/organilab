@@ -1,9 +1,7 @@
 from laboratory.models import ShelfObject
 from laboratory.tests.gtapi.base import ShelfViewTestOrgCanManageLab, \
-    ShelfViewTestOrgCannotManageLab, ShelfViewTestWithoutOrg, ShelfViewTestWithoutLab, \
-    ShelfViewTestWithoutOrgLab, ShelfViewTestOrgLabDoNotExist, \
-    ShelfViewTestLabDoesNotExists, ShelfViewTestOrgDoesNotExists, ShelfViewTest, \
-    OrgDoesNotExists, LabDoesNotExists, WithoutOrg, WithoutLab
+    ShelfViewTestOrgCannotManageLab, ShelfViewTest, OrgDoesNotExists, LabDoesNotExists,\
+    WithoutOrg, WithoutLab
 
 
 class ShelfViewTest1(ShelfViewTestOrgCanManageLab):
