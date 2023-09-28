@@ -37,11 +37,11 @@ class ValidateShelfSerializer(serializers.Serializer):
             raise serializers.ValidationError(
                 _("Object does not exist in the laboratory."))
         return attr
-    
-    
+
+
 class ContainerSerializer(ValidateShelfSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     CONTAINER_SELECT_CHOICES = [
         ('clone', _('Create new based on selected')),
         ('available', _('Use selected')),
@@ -159,9 +159,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         shelf = shelf_object.shelf
         amount = data['amount']
         measurement_unit = shelf_object.measurement_unit if shelf_object.object.type == Object.REACTIVE else None
-        errors = validate_measurement_unit_and_quantity(shelf, 
-                                                        shelf_object.object, 
-                                                        amount, 
+        errors = validate_measurement_unit_and_quantity(shelf,
+                                                        shelf_object.object,
+                                                        amount,
                                                         measurement_unit=measurement_unit)
 
         if errors:
@@ -272,7 +272,7 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"minimum_limit": _(
                 "Minimum limit cannot be greater than maximum limit.")})
         return data
-    
+
 
 class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False,
@@ -299,7 +299,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
     def validate(self, data):
         data = super().validate(data)
         container = get_selected_container(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         data['object'],
                                                         data['quantity'],
                                                         measurement_unit=data['measurement_unit'],
@@ -333,7 +333,7 @@ class ReactiveRefuseShelfObjectSerializer(ContainerSerializer, serializers.Model
     def validate(self, data):
         data = super().validate(data)
         container = get_selected_container(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         data['object'],
                                                         data['quantity'],
                                                         measurement_unit=data['measurement_unit'],
@@ -342,9 +342,9 @@ class ReactiveRefuseShelfObjectSerializer(ContainerSerializer, serializers.Model
             raise serializers.ValidationError(errors)
         return data
 
-class MaterialShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):    
+class MaterialShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     object = serializers.PrimaryKeyRelatedField(many=False,
                                                 queryset=Object.objects.using(
                                                     settings.READONLY_DATABASE))
@@ -365,7 +365,7 @@ class MaterialShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSe
 
     def validate(self, data):
         data = super().validate(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         data['object'],
                                                         data['quantity'])
         if errors:
@@ -375,7 +375,7 @@ class MaterialShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSe
 
 class MaterialRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     object = serializers.PrimaryKeyRelatedField(many=False,
                                                 queryset=Object.objects.using(
                                                     settings.READONLY_DATABASE))
@@ -396,7 +396,7 @@ class MaterialRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.M
 
     def validate(self, data):
         data = super().validate(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         data['object'],
                                                         data['quantity'])
         if errors:
@@ -406,7 +406,7 @@ class MaterialRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.M
 
 class EquipmentShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     object = serializers.PrimaryKeyRelatedField(many=False,
                                                 queryset=Object.objects.using(
                                                     settings.READONLY_DATABASE))
@@ -427,7 +427,7 @@ class EquipmentShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelS
 
     def validate(self, data):
         data = super().validate(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         data['object'],
                                                         data['quantity'])
         if errors:
@@ -437,7 +437,7 @@ class EquipmentShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelS
 
 class EquipmentRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     object = serializers.PrimaryKeyRelatedField(many=False,
                                                 queryset=Object.objects.using(
                                                     settings.READONLY_DATABASE))
@@ -458,7 +458,7 @@ class EquipmentRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.
 
     def validate(self, data):
         data = super().validate(data)
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         data['object'],
                                                         data['quantity'])
         if errors:
@@ -720,7 +720,7 @@ class UpdateShelfObjectStatusSerializer(serializers.Serializer):
 
 class MoveShelfObjectSerializer(ValidateShelfSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     lab_room = serializers.PrimaryKeyRelatedField(
         queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE))
     furniture = serializers.PrimaryKeyRelatedField(
@@ -819,7 +819,7 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
             logger.debug(f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
             raise serializers.ValidationError({'shelf': _("Object cannot be moved to same shelf.")})
 
-        errors = validate_measurement_unit_and_quantity(shelf, 
+        errors = validate_measurement_unit_and_quantity(shelf,
                                                         shelf_object.object,
                                                         shelf_object.quantity,
                                                         measurement_unit=measurement_unit,
@@ -827,7 +827,7 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
         if errors or shelf_errors or lab_room_errors or furniture_errors:
 
             updated_errors = group_object_errors_for_serializer(errors)
-            
+
             if shelf_errors:
                 updated_errors['shelf'] = shelf_errors
             if lab_room_errors:
@@ -842,10 +842,6 @@ class ValidateUserAccessShelfSerializer(ValidateUserAccessOrgLabSerializer):
     shelf = serializers.PrimaryKeyRelatedField(
         queryset=Shelf.objects.using(settings.READONLY_DATABASE))
 
-class ValidateUserAccessShelfObjectSerializer(ValidateUserAccessOrgLabSerializer):
-    shelfobject = serializers.PrimaryKeyRelatedField(
-        queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
-        required=False)
 
 class ValidateUserAccessShelfTypeSerializer(ValidateUserAccessOrgLabSerializer):
     OBJTYPE_CHOICES = (
@@ -896,10 +892,10 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
             # do it here instead of in validate_transfer_object so shelf is already validated when used - only validate measurement unit for reactive
             measurement_unit = transfer_object.object.measurement_unit if transfer_object.object.object.type == Object.REACTIVE else None
             container = get_selected_container(data)
-            errors = validate_measurement_unit_and_quantity(data['shelf'], 
-                                                            transfer_object.object.object, 
-                                                            transfer_object.quantity, 
-                                                            measurement_unit=measurement_unit, 
+            errors = validate_measurement_unit_and_quantity(data['shelf'],
+                                                            transfer_object.object.object,
+                                                            transfer_object.quantity,
+                                                            measurement_unit=measurement_unit,
                                                             container=container)
             if errors:
                 updated_errors = group_object_errors_for_serializer(errors, save_to_key="transfer_object")
@@ -1110,14 +1106,14 @@ class MoveShelfObjectWithContainerSerializer(MoveShelfObjectSerializer, Containe
         return data
 
 
-class ManageContainerSerializer(ContainerSerializer):    
+class ManageContainerSerializer(ContainerSerializer):
     shelf_object = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
-    
+
     def validate(self, data):
         data = super().validate(data)
         shelf_object = data['shelf_object']
-        container = get_selected_container(data)      
-        errors = validate_measurement_unit_and_quantity(data['shelf'], 
+        container = get_selected_container(data)
+        errors = validate_measurement_unit_and_quantity(data['shelf'],
                                                         shelf_object.object,
                                                         shelf_object.quantity,
                                                         measurement_unit=shelf_object.measurement_unit,
@@ -1130,6 +1126,6 @@ class ManageContainerSerializer(ContainerSerializer):
 
 class ValidateShelfInformationPositionSerializer(ValidateShelfSerializer):
     # it inherits the shelf field and its validation from the parent serializer
-    
+
     position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
