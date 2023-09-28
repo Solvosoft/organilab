@@ -162,8 +162,9 @@ class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
         laboratory = data['laboratory']
         organization = data['organization']
         user = self.context.get('user')
-        shelf_object = data["shelfobject"] if "shelfobject" in data else None
-        shelf = data["shelf"] if "shelf" in data else None
+        shelf_object = data.get("shelfobject")
+        shelf = data.get("shelf")
+
         has_permission = organization_can_change_laboratory(laboratory, organization)
         check_user_access = check_user_access_kwargs_org_lab(organization.pk, laboratory.pk, user)
 
@@ -182,33 +183,32 @@ class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
                 logger.debug(
                     f'ValidateUserAccessOrgLabSerializer --> shelfobject.in_where_laboratory!=laboratory')
                 raise serializers.ValidationError(
-                    {'shelfobject': _("Shelfobject does not belongs to this laboratory.")})
+                    {'shelfobject': _("Shelfobject does not belong to this laboratory.")})
 
             if shelf_object.in_where_laboratory.organization != organization:
                 logger.debug(
                     f'ValidateUserAccessOrgLabSerializer --> shelfobject.in_where_laboratory.organization!= organization')
                 raise serializers.ValidationError(
-                    {'shelfobject': _("Shelfobject does not belongs to this organization.")})
+                    {'shelfobject': _("Shelfobject does not belong to this organization.")})
 
             if shelf:
                 if shelf != shelf_object.shelf:
                     logger.debug(
                         f'ValidateUserAccessOrgLabSerializer --> shelf != shelf_object.shelf')
                     raise serializers.ValidationError(
-                        {'shelfobject': _(
-                            "Shelfobject does not belongs to that shelf.")})
+                        {'shelfobject': _("Shelfobject does not belong to this shelf.")})
 
         if shelf:
             if shelf.furniture.labroom.laboratory != laboratory:
                 logger.debug(
                     f'ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory != laboratory')
                 raise serializers.ValidationError(
-                    {'shelf': _("Shelf does not belongs to this laboratory.")})
+                    {'shelf': _("Shelf does not belong to this laboratory.")})
 
             if shelf.furniture.labroom.laboratory.organization != organization:
                 logger.debug(
                     f'ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory.organization != organization')
                 raise serializers.ValidationError(
-                    {'shelf': _("Shelf does not belongs to this organization")})
+                    {'shelf': _("Shelf does not belong to this organization.")})
 
         return data
