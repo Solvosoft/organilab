@@ -1,7 +1,7 @@
 from laboratory.models import Shelf
 from laboratory.tests.gtapi.base import ShelfObjectViewTestOrgCanManageLab, \
-    ShelfObjectViewTestOrgCannotManageLab, ShelfObjectViewTest, WithoutOrg, WithoutLab, \
-    OrgDoesNotExists, LabDoesNotExists
+    ShelfObjectViewTest, WithoutOrg, WithoutLab, OrgDoesNotExists, LabDoesNotExists,\
+    OrgCannotManageLab
 
 
 class ShelfObjectViewTest1(ShelfObjectViewTestOrgCanManageLab):
@@ -25,7 +25,6 @@ class ShelfObjectViewTest1(ShelfObjectViewTestOrgCanManageLab):
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4, same_lab=True)
 
-
 class ShelfObjectViewTest2(ShelfObjectViewTestOrgCanManageLab):
     """
         * Organization can manage this laboratory
@@ -47,7 +46,6 @@ class ShelfObjectViewTest2(ShelfObjectViewTestOrgCanManageLab):
 
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
-
 
 class ShelfObjectViewTest3(ShelfObjectViewTestOrgCanManageLab):
     """
@@ -73,7 +71,6 @@ class ShelfObjectViewTest3(ShelfObjectViewTestOrgCanManageLab):
 
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
-
 
 class ShelfObjectViewTest4(ShelfObjectViewTestOrgCanManageLab):
     """
@@ -102,7 +99,7 @@ class ShelfObjectViewTest4(ShelfObjectViewTestOrgCanManageLab):
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
 
-class ShelfObjectViewTest5(ShelfObjectViewTestOrgCannotManageLab):
+class ShelfObjectViewTest5(ShelfObjectViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
@@ -123,7 +120,7 @@ class ShelfObjectViewTest5(ShelfObjectViewTestOrgCannotManageLab):
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
 
-class ShelfObjectViewTest6(ShelfObjectViewTestOrgCannotManageLab):
+class ShelfObjectViewTest6(ShelfObjectViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * Without required data
@@ -145,7 +142,7 @@ class ShelfObjectViewTest6(ShelfObjectViewTestOrgCannotManageLab):
     def test_get_available_container_by_lab_and_shelf_case4(self):
         self.get_available_container_by_lab_and_shelf(self.user4, self.client4)
 
-class ShelfObjectViewTest7(ShelfObjectViewTestOrgCannotManageLab):
+class ShelfObjectViewTest7(ShelfObjectViewTest, OrgCannotManageLab):
     """
         * Organization can manage this laboratory
         * Shelf is in other laboratory in this same organization

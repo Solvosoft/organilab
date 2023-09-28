@@ -1,7 +1,6 @@
 from laboratory.models import ShelfObject
-from laboratory.tests.gtapi.base import ShelfViewTestOrgCanManageLab, \
-    ShelfViewTestOrgCannotManageLab, ShelfViewTest, OrgDoesNotExists, LabDoesNotExists,\
-    WithoutOrg, WithoutLab
+from laboratory.tests.gtapi.base import ShelfViewTestOrgCanManageLab, ShelfViewTest,\
+    OrgDoesNotExists, LabDoesNotExists, WithoutOrg, WithoutLab, OrgCannotManageLab
 
 
 class ShelfViewTest1(ShelfViewTestOrgCanManageLab):
@@ -122,7 +121,7 @@ class ShelfViewTest5(ShelfViewTestOrgCanManageLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest6(ShelfViewTestOrgCannotManageLab):
+class ShelfViewTest6(ShelfViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
@@ -140,7 +139,7 @@ class ShelfViewTest6(ShelfViewTestOrgCannotManageLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest7(ShelfViewTestOrgCannotManageLab):
+class ShelfViewTest7(ShelfViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * Without required data
@@ -162,7 +161,7 @@ class ShelfViewTest7(ShelfViewTestOrgCannotManageLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest8(ShelfViewTestOrgCannotManageLab):
+class ShelfViewTest8(ShelfViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * Without related furniture(relfield)
@@ -184,7 +183,7 @@ class ShelfViewTest8(ShelfViewTestOrgCannotManageLab):
     def test_get_shelf_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class ShelfViewTest9(ShelfViewTestOrgCannotManageLab):
+class ShelfViewTest9(ShelfViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
