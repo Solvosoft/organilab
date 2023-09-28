@@ -1,7 +1,7 @@
 from laboratory.models import ShelfObject
 from laboratory.tests.gtapi.base import FurnitureViewTestOrgCanManageLab, \
-    FurnitureViewTestOrgCannotManageLab, FurnitureViewTest, OrgDoesNotExists, \
-    LabDoesNotExists, WithoutOrg, WithoutLab
+    FurnitureViewTest, OrgDoesNotExists, LabDoesNotExists, WithoutOrg, WithoutLab,\
+    OrgCannotManageLab
 
 
 class FurnitureViewTest1(FurnitureViewTestOrgCanManageLab):
@@ -125,7 +125,7 @@ class FurnitureViewTest5(FurnitureViewTestOrgCanManageLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest6(FurnitureViewTestOrgCannotManageLab):
+class FurnitureViewTest6(FurnitureViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
@@ -143,7 +143,7 @@ class FurnitureViewTest6(FurnitureViewTestOrgCannotManageLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest7(FurnitureViewTestOrgCannotManageLab):
+class FurnitureViewTest7(FurnitureViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * Without required data
@@ -165,7 +165,7 @@ class FurnitureViewTest7(FurnitureViewTestOrgCannotManageLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest8(FurnitureViewTestOrgCannotManageLab):
+class FurnitureViewTest8(FurnitureViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * Without related labroom(relfield)
@@ -187,7 +187,7 @@ class FurnitureViewTest8(FurnitureViewTestOrgCannotManageLab):
     def test_get_furniture_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class FurnitureViewTest9(FurnitureViewTestOrgCannotManageLab):
+class FurnitureViewTest9(FurnitureViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data

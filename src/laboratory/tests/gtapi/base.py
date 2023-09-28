@@ -11,6 +11,7 @@ from laboratory.shelfobject.utils import get_available_containers_for_selection
 from laboratory.utils import check_user_access_kwargs_org_lab
 
 class TestCaseBase(TestCase):
+    fixtures = ["gtapi/gtapi_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -155,8 +156,17 @@ class WithoutLab(TestCaseBase):
         del self.data["laboratory"]
 
 
+class OrgCannotManageLab(TestCaseBase):
+
+    def setUp(self):
+        super().setUp()
+        self.lab = self.lab2_org2
+        self.data.update({
+            "laboratory": self.lab.pk
+        })
+
+
 class ShelfViewTest(TestCaseBase):
-    fixtures = ["gtapi/gtapi_shelf_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -191,18 +201,7 @@ class ShelfViewTestOrgCanManageLab(ShelfViewTest):
             self.assertTrue(results[0]["id"] in available_shelves)
 
 
-class ShelfViewTestOrgCannotManageLab(ShelfViewTest):
-
-    def setUp(self):
-        super().setUp()
-        self.lab = self.lab2_org2
-        self.data.update({
-            "laboratory": self.lab.pk
-        })
-
-
 class FurnitureViewTest(TestCaseBase):
-    fixtures = ["gtapi/gtapi_shelf_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -237,18 +236,7 @@ class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
             self.assertTrue(results[0]["id"] in available_furniture)
 
 
-class FurnitureViewTestOrgCannotManageLab(FurnitureViewTest):
-
-    def setUp(self):
-        super().setUp()
-        self.lab = self.lab2_org2
-        self.data.update({
-            "laboratory": self.lab.pk
-        })
-
-
 class LabRoomViewTest(TestCaseBase):
-    fixtures = ["gtapi/gtapi_shelf_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -280,18 +268,7 @@ class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
             self.assertTrue(results[0]["id"] in available_labroom)
 
 
-class LabRoomViewTestOrgCannotManageLab(LabRoomViewTest):
-
-    def setUp(self):
-        super().setUp()
-        self.lab = self.lab2_org2
-        self.data.update({
-            "laboratory": self.lab.pk
-        })
-
-
 class ShelfObjectViewTest(TestCaseBase):
-    fixtures = ["gtapi/gtapi_shelf_data.json"]
 
     def setUp(self):
         super().setUp()
@@ -342,11 +319,22 @@ class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
             self.assertTrue(results[0]["id"] in available_shelfobject)
 
 
-class ShelfObjectViewTestOrgCannotManageLab(ShelfObjectViewTest):
+class ObjectOrgSearchViewTest(TestCaseBase):
 
     def setUp(self):
         super().setUp()
-        self.lab = self.lab2_org2
-        self.data.update({
-            "laboratory": self.lab.pk
-        })
+        self.url = reverse("objectorgsearch-list")
+
+
+class ObjectContainerCloningViewTest(TestCaseBase):
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("container-for-cloning-search-list")
+
+
+class ObjectOrgAvailableViewTest(TestCaseBase):
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("objectorgavailable-list")

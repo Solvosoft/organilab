@@ -1,7 +1,6 @@
 from laboratory.models import ShelfObject
-from laboratory.tests.gtapi.base import LabRoomViewTestOrgCanManageLab, \
-    LabRoomViewTestOrgCannotManageLab, LabRoomViewTest, WithoutOrg, WithoutLab, \
-    LabDoesNotExists, OrgDoesNotExists
+from laboratory.tests.gtapi.base import LabRoomViewTestOrgCanManageLab, LabRoomViewTest,\
+    WithoutOrg, WithoutLab, LabDoesNotExists, OrgDoesNotExists, OrgCannotManageLab
 
 
 class LabRoomViewTest1(LabRoomViewTestOrgCanManageLab):
@@ -103,7 +102,7 @@ class LabRoomViewTest4(LabRoomViewTestOrgCanManageLab):
     def test_get_labroom_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class LabRoomViewTest5(LabRoomViewTestOrgCannotManageLab):
+class LabRoomViewTest5(LabRoomViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
@@ -121,7 +120,7 @@ class LabRoomViewTest5(LabRoomViewTestOrgCannotManageLab):
     def test_get_labroom_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class LabRoomViewTest6(LabRoomViewTestOrgCannotManageLab):
+class LabRoomViewTest6(LabRoomViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * Without required data
@@ -143,7 +142,7 @@ class LabRoomViewTest6(LabRoomViewTestOrgCannotManageLab):
     def test_get_labroom_by_shelfobject_case4(self):
         self.get_obj_by_shelfobject(self.user4, self.client4)
 
-class LabRoomViewTest7(LabRoomViewTestOrgCannotManageLab):
+class LabRoomViewTest7(LabRoomViewTest, OrgCannotManageLab):
     """
         * Organization cannot manage this laboratory
         * With required data
