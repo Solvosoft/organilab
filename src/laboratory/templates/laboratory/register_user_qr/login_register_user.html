@@ -1,102 +1,109 @@
 {% extends "base.html" %}
 {% load i18n static %}
 {% block title %}{% trans 'Register User' %}{% endblock %}
-{% block content_block_wrap %}{% endblock %}
-{% block body_class %}login{% endblock body_class %}
 {% block body %}
+{% block sidebar %}
+{% endblock sidebar %}
+{% block top_navigation %}
+{% endblock top_navigation %}
+
+{% block content %}
+
 <div class="container page-wrap">
-    <div class="row justify-content-center">
-        <div class="col-3 text-center">
-            <div class="navbar nav_title">
-                <a class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class='col-md-8'>
-            <div class="card">
-                <div class="card-body">
+	<div class="row justify-content-center">
+		<div class="col-3 text-center">
+			<div class="navbar nav_title">
+				<a class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class='col-md-8'>
+			<div class="card">
+				<div class="card-body">
 
-                    <form action="{% url 'laboratory:create_user_qr' org_pk lab_pk pk instance %}" method="POST" id="registerform">
-                        {% csrf_token %}
-                        <div class="row">
-                            <h2 class="text-center"><strong>{% trans 'Register User' %}</strong></h2>
-                            <div class='col-md-6'>
-                                {{ register_form.as_horizontal }}
-                            </div>
-                            <div class='col-md-6'>
-                                {{ password_form.as_horizontal }}
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        {% trans 'Your password may not closely resemble your other personal information.' %}<br>
-                                        {% trans 'Your password must contain at least 8 characters.' %}<br>
-                                        {% trans 'Your password cannot be a commonly used password.' %}<br>
-                                        {% trans 'Your password cannot be completely numeric.' %}<br>
+					<form action="{% url 'laboratory:create_user_qr' org_pk lab_pk pk instance %}" method="POST" id="registerform">
+						{% csrf_token %}
+						<div class="row">
+							<h2 class="text-center"><strong>{% trans 'Register User' %}</strong></h2>
+							<div class='col-md-6'>
+								{{ register_form.as_horizontal }}
+							</div>
+							<div class='col-md-6'>
+								{{ password_form.as_horizontal }}
+								<div class="form-group row">
+									<div class="col-sm-12">
+										{% trans 'Your password may not closely resemble your other personal information.' %}<br>
+										{% trans 'Your password must contain at least 8 characters.' %}<br>
+										{% trans 'Your password cannot be a commonly used password.' %}<br>
+										{% trans 'Your password cannot be completely numeric.' %}<br>
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row justify-content-end">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group row justify-content-end">
 
-                            <div class="col-4">
-                                <input type="submit" class="btn btn-success" value="{% trans 'Register' %}"/>
-                            </div>
-                        </div>
+							<div class="col-4">
+								<input type="submit" class="btn btn-success" value="{% trans 'Register' %}"/>
+							</div>
+						</div>
 
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class='col-md-4'>
-            <div class="card">
-                <div class="card-body">
-                    <form method="post" action="{% url 'login' %}" id="loginform">
-                        {% csrf_token %}
-                        <div class="row">
-                            <input type="hidden" name="next" value="{{ next }}">
-                            <h2 class="text-center"><strong>{% trans 'Login' %}</strong></h2>
-                            <div>
-                                {% if login_form.errors %}
-                                <p class="text-warning">{% trans "Your username and password didn't match. Please try
-                                    again." %}</p>
-                                {% endif %}
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class='col-md-4'>
+			<div class="card">
+				<div class="card-body">
+					<form method="post" action="{% url 'login' %}" id="loginform">
+						{% csrf_token %}
+						<div class="row">
+							<input type="hidden" name="next" value="{{ next }}">
+							<h2 class="text-center"><strong>{% trans 'Login' %}</strong></h2>
+							<div>
+								{% if login_form.errors %}
+								<p class="text-warning">{% trans "Your username and password didn't match. Please try
+									again." %}</p>
+								{% endif %}
 
-                                {% if next %}
-                                    <p class="text-warning">{% trans "Please login to see this page." %}</p>
-                                {% endif %}
+								{% if next %}
+								<p class="text-warning">{% trans "Please login to see this page." %}</p>
+								{% endif %}
 
-                            </div>
-                            {{login_form.as_horizontal}}
-                            <div class="form-group row justify-content-end">
-                                <div class="col-4">
-                                    <input type="submit" class="btn btn-success" value="{% trans 'Log in' %}"/>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+							</div>
+							{{login_form.as_horizontal}}
+							<div class="form-group row justify-content-end">
+								<div class="col-4">
+									<input type="submit" class="btn btn-success" value="{% trans 'Log in' %}"/>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 </div>
-<footer class="footer_nosidebar">
-    {% include "gentelella/app/footer.html" %}
+{% endblock content %}
+{% block footer %}
+
+<footer>
+	{% include "gentelella/app/footer.html" %}
 </footer>
+{% endblock footer %}
+
+<div class="jsmessage"></div>
+
+{% block javascript %}
+{% include 'gentelella/statics/javascript.html' %}
 {% endblock %}
+
+{% endblock body %}
 {% block css %}
 <style>
-    * {
-  margin: 0;
-}
-html, body {
-  height: 100%;
-}
-.login {
-    background: #2a3f54;
-}
 
 #registerform h2, #loginform h2 {
     margin-bottom: 10%;
@@ -119,19 +126,15 @@ html, body {
     padding-top: 0;
 }
 
-.page-wrap:after {
-  content: "";
-  display: block;
-  background: #2a3f54;
-}
 footer, .page-wrap:after {
   height: 10%;
   background: #2a3f54;
 }
 
-.footer_nosidebar a {
+footer a {
     color: #ECF0F1;
 }
+
 
 </style>
 {% endblock %}
