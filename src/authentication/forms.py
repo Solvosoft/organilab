@@ -37,8 +37,11 @@ class EditUserForm(forms.ModelForm, GTForm):
 
 
 class PasswordChangeForm(GTForm, forms.Form):
-    password = forms.CharField(widget=djgenwidgets.PasswordInput, required=True, label=_('Password'))
-    password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput, required=True, label=_('Confirm Password'))
+    password = forms.CharField(widget=djgenwidgets.PasswordInput, max_length=128,
+                               required=True, label=_('Password'))
+    password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput,
+                                       max_length=128, required=True,
+                                       label=_('Confirm Password'))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
