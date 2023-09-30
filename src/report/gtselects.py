@@ -7,7 +7,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from laboratory.models import LaboratoryRoom, Furniture, Shelf
-from laboratory.shelfobject.serializers import ValidateUserAccessShelfObjectSerializer
 from laboratory.shelfobject.utils import get_available_objs_by_shelfobject, \
     get_lab_room_queryset_by_filters, get_furniture_queryset_by_filters, \
     get_shelf_queryset_by_filters
@@ -127,7 +126,7 @@ class ShelfLookup(BaseSelect2View):
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateUserAccessShelfObjectSerializer(data=request.GET,
+        self.serializer = ValidateUserAccessOrgLabSerializer(data=request.GET,
                                                                   context={
                                                                       'user': request.user})
 
