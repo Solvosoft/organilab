@@ -1,44 +1,106 @@
-{% extends 'pdf/base_pdf.html' %}
+{% extends 'report/base_pdf.html' %}
 {% load i18n %}
-
 {% block extra_css %}
-.label{
-    font-size: 1.3em;
-    display: block;
-    color: blue;
+.incident_table tr {
+	font-family: "Arial", "sans-serif";
+	font-size: 0.8em;
 }
-.response{
-    display: block;
-}
-{% endblock%}
-
-{% block pdf_content %}
-    {% for object in object_list %}
-        <h1>{{object.short_description}}</h1>
-        <br><br>
-        <div class="label">{% trans 'Fecha del incidente' %}</div>
-        <div class="response">{{object.incident_date|date }}</div>
-        <div class="label">{% trans 'Laboratories' %} </div>
-        <div class="response">
-            <ul>
-                {% for lab in object.laboratories.all %}
-                <li>{{lab}}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="label">{% trans 'Causas del accidente' %}</div>
-        <div class="response">{{object.causes|safe  }}</div>
-        <div class="label">{% trans 'Impacto a la infraestructura' %}</div>
-        <div class="response">{{object.infraestructure_impact|safe  }}</div>
-        <div class="label">{% trans 'Impacto a las personas (empleados, visitantes y comunidad afectada)' %}</div>
-        <div class="response">{{object.people_impact|safe  }}</div>
-        <div class="label">{% trans 'Impacto ambiental' %}</div>
-        <div class="response">{{object.environment_impact|safe  }}</div>
-        <div class="label">{% trans 'Resultado de la implementación del Plan de Prevención, Preparación y Respuesta ante Accidentes Químicos.' %}</div>
-        <div class="response">{{object.result_of_plans|safe  }}</div>
-        <div class="label">{% trans 'Medidas adoptadas para corregir la situación y para atenuar sus efectos.' %}</div>
-        <div class="response">{{object.mitigation_actions|safe  }}</div>
-        <div class="label">{% trans 'Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse.' %}</div>
-        <div class="response">{{object.recomendations|safe  }}</div>
-    {% endfor %}
 {% endblock %}
+{% block pdf_content %}
+<table>
+	<thead>
+	<tr>
+		<th>
+			<h2 style="margin-left: 34%;">{{title}}</h2>
+		</th>
+	</tr>
+	</thead>
+</table>
+{% for object in object_list %}
+<table class="incident_table">
+	<tr><td>
+		<b>{% trans 'Short Description' %}:</b>
+		<br>
+		<br>
+	</td></tr>
+	<tr style="margin-bottom: 15%;">
+		<td>{{object.short_description}}
+		<br>
+		<br>
+		</td>
+	</tr>
+</table>
+<table class="incident_table">
+	<tr style="margin-bottom: 15%;"><td>
+		<b>{% trans 'Incident Date' %}:</b>
+	<br>
+		<br>
+	</td></tr>
+	<tr style="margin-bottom: 15%;"><td>
+		{{object.incident_date|date}}
+	<br>
+		<br>
+	</td></tr>
+	</table>
+	<table class="incident_table">
+	<tr>
+		<td style="margin-bottom: 15%;"><b>{% trans 'Laboratories' %}:</b>
+		<br>
+		<br>
+		</td>
+		</tr>
+		</table>
+		<table class="incident_table">
+				{% for lab in object.laboratories.all %}
+				<tr><td>* {{lab}}</td></tr>
+				{% endfor %}
+		</table>
+		<table class="incident_table">
+	<tr>
+		<td>
+			<br>
+			<b>{% trans 'Incident Causes' %}:</b></td>
+		</tr>
+	<tr>
+		<td>{{object.causes|safe}}</td>
+	</tr>
+	<tr>
+		<td><b>{% trans 'Infraestructure Impact' %}:</b></td>
+			</tr>
+	<tr>
+		<td>{{object.infraestructure_impact|safe}}</td>
+	</tr>
+	<tr>
+		<td><b>{% trans 'People Impact(Employees, visitors, affected community)' %}:</b></td>
+			</tr>
+	<tr>
+		<td>{{object.people_impact|safe}}</td>
+	</tr>
+	<tr>
+		<td><b>{% trans 'Environment Impact' %}:</b></td>
+			</tr>
+	<tr>
+		<td>{{object.environment_impact|safe }}</td>
+	</tr>
+	<tr>
+		<td><b>{% trans 'Result of the implementation of prevention, preparation and response plans for chemical accidents' %}:</b></td>
+			</tr>
+	<tr>
+		<td>{{object.result_of_plans|safe }}</td>
+	</tr>
+	<tr>
+		<td><b>{% trans 'Adopted measures for correct the situation and mitigate its effects' %}:</b></td>
+			</tr>
+	<tr>
+		<td>{{object.mitigation_actions|safe }}</td>
+	</tr>
+	<tr>
+		<td><b>{% trans 'Recommendations which describes the measures to do for mitigate risks similar accidents and its produces again' %}:</b></td>
+			</tr>
+	<tr>
+		<td>{{object.recomendations|safe }}</td>
+	</tr>
+</table>
+{% endfor %}
+{% endblock %}
+
