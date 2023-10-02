@@ -12,11 +12,13 @@
                 @bottom-right{
                     content: "{% trans 'Page' %} " counter(page) " {% trans "of" %} " counter(pages);
                     font-size: 1em;
+                    font-family: "Arial", "sans-serif";
                 }
 
                 @bottom-left{
                     content: "{% trans "User:" %} {% if user.get_full_name %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}";
                     font-size: 1em;
+                    font-family: "Arial", "sans-serif";
                 }
 
                 @top-right{

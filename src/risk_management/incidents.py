@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from rest_framework import status
 from weasyprint import HTML
+from django.conf import settings
 
 
 from laboratory.models import OrganizationStructure, Laboratory
@@ -183,17 +184,15 @@ def report_incidentreport(request, org_pk, lab_pk, pk):
     template = get_template('risk_management/incidentreport_pdf.html')
 
     context = {
-        'verbose_name': "Incident report",
         'object_list': incidentreport,
         'datetime': timezone.now(),
-        'request': request,
-        'laboratory': lab
+        'user': request.user,
+        'title': _("Incident Report"),
     }
 
     html = template.render(context=context)
-    page = HTML(string=html, encoding='utf-8').write_pdf()
-
+    page = HTML(string=html, base_url=request.build_absolute_uri(),
+                encoding='utf-8').write_pdf()
     response = HttpResponse(page, content_type='application/pdf')
-
     response['Content-Disposition'] = 'attachment; filename="incident_report.pdf"'
     return response
