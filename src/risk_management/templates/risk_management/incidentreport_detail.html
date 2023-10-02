@@ -16,7 +16,10 @@
     </div>
     <div class="float-end">
         <a class="btn btn-sm btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk laboratory object.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>   {% trans 'Edit' %}</a>
-    </div>
+    				{% if perms.add_riskzone %}
+					<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}"> <i class="fa fa-plus" aria-hidden="true"></i>  </a>
+					{% endif %}
+				</div>
 </div>
 <div class="row">
 	<div class="offset-md-2 col-md-8">
@@ -24,9 +27,6 @@
 			<h3 class="heading-1">
 				<span>
 					{{object}}
-					{% if perms.add_riskzone %}
-					<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}"> <i class="fa fa-plus" aria-hidden="true"></i>  </a>
-					{% endif %}
 				</span>
 			</h3>
 		</div>
