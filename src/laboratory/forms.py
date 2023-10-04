@@ -24,27 +24,6 @@ from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
 
-
-class ObjectSearchForm(GTForm, forms.Form):
-    q = forms.ModelMultipleChoiceField(queryset=Object.objects.none(), widget=genwidgets.SelectMultiple,
-                                       required=False, label=_("Search by name, code or CAS number"))
-
-    all_labs = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("All labs"))
-
-    def __init__(self, *args, **kwargs):
-        org = None
-        user = None
-
-        if 'org_pk' in kwargs:
-            org=kwargs.pop('org_pk')
-        if 'user' in kwargs:
-            user=kwargs.pop('user')
-
-        super(ObjectSearchForm, self).__init__(*args, **kwargs)
-        if org:
-            org=utils.get_pk_org_ancestors_decendants(user, org)
-            self.fields['q'].queryset = Object.objects.filter(organization__in=org, organization__users=user).distinct()
-
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
         attrs={'id': 'user_cb_'}))  # User_checkbox_id

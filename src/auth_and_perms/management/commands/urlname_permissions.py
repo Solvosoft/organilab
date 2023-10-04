@@ -529,33 +529,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_objectfeatures'
         }
     ],
-    'reports_laboratory': [
-        {
-            'name': 'View Laboratory',
-            'category': 'Laboratory',
-            'permission': 'laboratory.view_laboratory'
-        },
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Laboratory Room',
-            'category': 'Laboratory Room',
-            'permission': 'laboratory.view_laboratoryroom'
-        },
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-    ],
     'rooms_delete': [
         {
             'name': 'Delete Laboratory Room',
@@ -592,28 +565,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_laboratoryroom'
         }
     ],
-    'room_list': [
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'Add Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_shelfobject'
-        },
-        {
-            'name': 'Delete Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.delete_shelfobject'
-        }
-    ],
     'objectview_list': [
         {
             'name': 'Add Object',
@@ -634,62 +585,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Object',
             'category': 'Object',
             'permission': 'laboratory.view_object'
-        }
-    ],
-    'sustance_list': [
-        {
-            'name': 'Add Object',
-            'category': 'Object',
-            'permission': 'laboratory.add_object'
-        },
-        {
-            'name': 'Change Object',
-            'category': 'Object',
-            'permission': 'laboratory.change_object'
-        },
-        {
-            'name': 'Delete Object',
-            'category': 'Object',
-            'permission': 'laboratory.delete_object'
-        },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        }
-    ],
-    'transfer_objects': [
-        {
-            'name': 'Delete Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.delete_tranferobject'
-        },
-        {
-            'name': 'View Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.view_tranferobject'
-        }
-    ],
-    'update_transfer': [
-        {
-            'name': 'Add Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_shelfobject'
-        },
-        {
-            'name': 'Change Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.change_shelfobject'
-        },
-        {
-            'name': 'Change Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.change_tranferobject'
-        },
-        {
-            'name': 'View Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.view_tranferobject'
         }
     ],
     'riskzone_list': [
@@ -1090,28 +985,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'djreservation.add_reservation'
         }
     ],
-    'rooms_list': [
-        {
-            'name': 'View Laboratory',
-            'category': 'Laboratory',
-            'permission': 'laboratory.view_laboratory'
-        },
-        {
-            'name': 'View Laboratory Room',
-            'category': 'Laboratory Room',
-            'permission': 'laboratory.view_laboratoryroom'
-        },
-        {
-            'name': 'Add Reserved Products',
-            'category': 'Reservations',
-            'permission': 'reservations_management.add_reservedproducts'
-        },
-        {
-            'name': 'List my reservations',
-            'category': 'Reservations',
-            'permission': 'djreservation.add_reservation'
-        }
-    ],
     'organizationManager': [
         {
             'name': 'Add Laboratory',
@@ -1284,69 +1157,7 @@ URLNAME_PERMISSIONS = {
         'permission': 'sga.view_recipientsize'
         },
     ],
-    'addusersorganization': [
-        {
-            'name': 'Change Organization User Management',
-            'category': 'Organization User Management',
-            'permission': 'laboratory.change_organizationstructure'
-        },
-        {
-            'name': 'Change Profile Permission',
-            'category': 'Profile Permission',
-            'permission': 'auth_and_perms.change_profilepermission'
-        },
-        {
-            'name': 'Delete Profile Permission',
-            'category': 'Profile Permission',
-            'permission': 'auth_and_perms.delete_profilepermission'
-        },
-        {
-            'name': 'View Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.view_organizationstructure'
-        },
-        {
-            'name': 'Change User',
-            'category': 'User',
-            'permission': 'auth.change_user'
-        },
-        {
-            'name': 'View User',
-            'category': 'User',
-            'permission': 'auth.view_user'
-        },
-
-    ],
-    'add_user': [
-        {
-            'name': 'Add User',
-            'category': 'User',
-            'permission': 'auth.add_user'
-        },
-        {
-            'name': 'Add Profile',
-            'category': 'Profile',
-            'permission': 'auth_and_perms.add_profile'
-        },
-        {
-            'name': 'View Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.view_organizationstructure'
-        }
-    ],
     'copy_rols': [
-        {
-            'name': 'Change Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.change_organizationstructure'
-        },
-        {
-            'name': 'View Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.view_organizationstructure'
-        }
-    ],
-    'add_contenttype_to_org': [
         {
             'name': 'Change Organization Structure',
             'category': 'Organization Structure',
@@ -1451,13 +1262,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_report'
         }
     ],
-    'organizationreactivepresence': [
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        }
-    ],
     'my_reservations': [
         {
             'name': 'View Reserved Products',
@@ -1520,83 +1324,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.do_report'
         }
     ],
-    'reports_organization': [
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        }
-    ],
-    'reports_furniture_detail': [
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'View Laboratory Room',
-            'category': 'Laboratory Room',
-            'permission': 'laboratory.view_laboratoryroom'
-        },
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        }
-    ],
-    'reports_objects_list': [
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        },
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        }
-    ],
-    'reactive_precursor_object_list': [
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        },
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        }
-    ],
-    'object_change_logs': [
-        {
-            'name': 'View Object Log Change',
-            'category': 'Object Log Change',
-            'permission': 'laboratory.view_objectlogchange'
-        },
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        }
-    ],
-    'reports_limited_shelf_objects_list': [
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'View Report',
-            'category': 'Report',
-            'permission': 'laboratory.view_report'
-        }
-    ],
     'precursor_report': [
         {
             'name': 'View Report',
@@ -1657,66 +1384,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_inform'
         }
     ],
-    'entrylist': [
-        {
-            'name': 'View Entry',
-            'category': 'Entry',
-            'permission': 'blog.view_entry'
-        },
-        {
-            'name': 'Delete Entry',
-            'category': 'Entry',
-            'permission': 'blog.delete_entry'
-        }
-    ],
-    'entrycreate': [
-        {
-            'name': 'Add Entry',
-            'category': 'Entry',
-            'permission': 'blog.add_entry'
-        },
-        {
-            'name': 'View Entry',
-            'category': 'Entry',
-            'permission': 'blog.view_entry'
-        }
-    ],
-    'entry_update': [
-        {
-            'name': 'Change Entry',
-            'category': 'Entry',
-            'permission': 'blog.change_entry'
-        },
-        {
-            'name': 'View Entry',
-            'category': 'Entry',
-            'permission': 'blog.view_entry'
-        }
-    ],
-    'entry_delete': [
-        {
-            'name': 'Delete Entry',
-            'category': 'Entry',
-            'permission': 'blog.delete_entry'
-        },
-        {
-            'name': 'View Entry',
-            'category': 'Entry',
-            'permission': 'blog.view_entry'
-        }
-    ],
-    'profile': [
-        {
-            'name': 'Change User',
-            'category': 'User',
-            'permission': 'auth.change_user'
-        },
-        {
-            'name': 'View User',
-            'category': 'User',
-            'permission': 'auth.view_user'
-        }
-    ],
     'password_change': [
         {
             'name': 'Change User',
@@ -1727,42 +1394,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View User',
             'category': 'User',
             'permission': 'auth.view_user'
-        }
-    ],
-    'update_organization': [
-        {
-            'name': 'Change Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.change_organizationstructure'
-        },
-        {
-            'name': 'View Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.view_organizationstructure'
-        }
-    ],
-    'create_organization': [
-        {
-            'name': 'Add Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.add_organizationstructure'
-        },
-        {
-            'name': 'View Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.view_organizationstructure'
-        }
-    ],
-    'delete_organization': [
-        {
-            'name': 'Delete Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.delete_organizationstructure'
-        },
-        {
-            'name': 'View Organization Structure',
-            'category': 'Organization Structure',
-            'permission': 'laboratory.view_organizationstructure'
         }
     ],
     'furniture_management': [
@@ -1812,30 +1443,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_furniture'
         }
     ],
-    'furniture_list': [
-        {
-            'name': 'Add Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.add_furniture'
-        },
-        {
-            'name': 'Change Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.change_furniture'
-        },
-        {
-            'name': 'View Furniture',
-            'category': 'Furniture',
-            'permission': 'laboratory.view_furniture'
-        }
-    ],
-    'list_shelf': [
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        }
-    ],
     'list_shelfobject': [
         {
             'name': 'Add Shelf Object',
@@ -1851,37 +1458,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf Object',
             'category': 'Shelf Object',
             'permission': 'laboratory.view_shelfobject'
-        }
-    ],
-    'get_object_detail': [
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        }
-    ],
-    'delete_transfer': [
-        {
-            'name': 'Change Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.change_tranferobject'
-        },
-        {
-            'name': 'View Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.view_tranferobject'
-        }
-    ],
-    'get_shelfs': [
-        {
-            'name': 'View Transfer Object',
-            'category': 'Transfer Object',
-            'permission': 'laboratory.view_tranferobject'
-        },
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
         }
     ],
     'download_h_code_reports': [
@@ -1917,30 +1493,6 @@ URLNAME_PERMISSIONS = {
             'category': 'Object',
             'permission': 'laboratory.change_object'
         },
-        {
-            'name': 'Delete Object',
-            'category': 'Object',
-            'permission': 'laboratory.delete_object'
-        },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        }
-    ],
-    'sustance_add': [
-        {
-            'name': 'Add Object',
-            'category': 'Object',
-            'permission': 'laboratory.add_object'
-        },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        }
-    ],
-    'sustance_delete': [
         {
             'name': 'Delete Object',
             'category': 'Object',
@@ -1998,83 +1550,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_objectfeatures'
         }
     ],
-    'reports_objects': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        }
-    ],
-    'reports_shelf_objects': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        }
-    ],
-    'reports_limited_shelf_objects': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        }
-    ],
-    'reports_reactive_precursor_objects': [
-        {
-            'name': 'Do Report',
-            'category': 'Report',
-            'permission': 'laboratory.do_report'
-        },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        }
-    ],
-    'shelfobject_create': [
-        {
-            'name': 'Add Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'Add Shelf Object Status',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_catalog'
-        }
-    ],
-    'shelfobject_delete': [
-        {
-            'name': 'Delete Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.delete_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        }
-    ],
     'shelfobject_edit': [
         {
             'name': 'Change Shelf Object',
@@ -2102,18 +1577,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.add_catalog'
         },
     ],
-    'get_shelfobject_limit': [
-        {
-            'name': 'Change Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.change_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        }
-    ],
     'shelf_management': [
         {
             'name': 'Add Shelf',
@@ -2136,71 +1599,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.change_shelf'
         },
     ],
-    'shelf_create': [
-        {
-            'name': 'Add Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.add_shelf'
-        },
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        }
-    ],
-    'shelf_delete': [
-        {
-            'name': 'Delete Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.delete_shelf'
-        },
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        }
-    ],
-    'shelf_edit': [
-        {
-            'name': 'Change Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.change_shelf'
-        },
-        {
-            'name': 'View Shelf',
-            'category': 'Shelf',
-            'permission': 'laboratory.view_shelf'
-        }
-    ],
     'get_lab_id': [
         {
             'name': 'View Laboratory',
             'category': 'Laboratory',
             'permission': 'laboratory.view_laboratory'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        }
-    ],
-    'select_lab': [
-        {
-            'name': 'View Laboratory',
-            'category': 'Laboratory',
-            'permission': 'laboratory.view_laboratory'
-        }
-    ],
-    'search': [
-        {
-            'name': 'Add Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.add_shelfobject'
-        },
-        {
-            'name': 'Change Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.change_shelfobject'
         },
         {
             'name': 'View Shelf Object',
@@ -2684,38 +2087,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_recipientsize'
         }
     ],
-    'add_substance': [
-        {
-            'name': 'Add Object',
-            'category': 'Object',
-            'permission': 'laboratory.add_object'
-        },
-        {
-            'name': 'Change Object',
-            'category': 'Object',
-            'permission': 'laboratory.change_object'
-        },
-        {
-            'name': 'View Object',
-            'category': 'Object',
-            'permission': 'laboratory.view_object'
-        },
-        {
-            'name': 'Add Substance',
-            'category': 'Substance',
-            'permission': 'sga.add_substance'
-        },
-        {
-            'name': 'Change Substance',
-            'category': 'Substance',
-            'permission': 'sga.change_substance'
-        },
-        {
-            'name': 'View Substance',
-            'category': 'Substance',
-            'permission': 'sga.view_substance'
-        }
-    ],
     'delete_sgalabel': [
         {
             'name': 'Delete Label SGA',
@@ -2726,13 +2097,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Label SGA',
             'category': 'Label SGA',
             'permission': 'sga.view_displaylabel'
-        }
-    ],
-    'prudence': [
-        {
-            'name': 'View Prudence Advice',
-            'category': 'Prudence Advice',
-            'permission': 'sga.view_prudenceadvice'
         }
     ],
     'get_preview': [
@@ -2826,20 +2190,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.delete_protocol'
         },
     ],
-    'djgentelella': [
-        {
-            'name': 'View Permission',
-            'category': 'Djgentelella',
-            'permission': 'djgentelella.can_manage_permissions'
-        },
-        ],
-    'transfers': [
-        {
-            'name': 'Add Transfer',
-            'category': 'Transfer',
-            'permission': 'laboratory.add_tranferobject'
-        },
-    ],
     'manage_register_user_qrcode': [
         {
             'name': 'Add Register User QR Code',
@@ -2860,23 +2210,6 @@ URLNAME_PERMISSIONS = {
             'name': 'Delete Register User QR Code',
             'category': 'Register User QR Code',
             'permission': 'laboratory.delete_registeruserqr'
-        },
-    ],
-    'manage_disposal':[
-        {
-            'name': 'Manage Disposal',
-            'category': 'Shelf',
-            'permission': 'laboratory.can_manage_disposal'
-        },
-        {
-            'name': 'View Disposal',
-            'category': 'Shelf',
-            'permission': 'laboratory.can_view_disposal'
-        },
-        {
-            'name': 'Add Disposal',
-            'category': 'Shelf',
-            'permission': 'laboratory.can_add_disposal'
         },
     ],
     'view_disposal':[
