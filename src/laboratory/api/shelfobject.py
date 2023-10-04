@@ -80,7 +80,7 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         if not queryset and serializer_so.is_valid():
             queryset = self.get_queryset()
             queryset = queryset.filter(
-                pk=int(serializer_so.validated_data['search'].split('=')[1]))
+                pk=serializer_so.validated_data['search'].split('=')[1])
         return queryset
 
     def list(self, request, org_pk, lab_pk, **kwargs):
@@ -811,7 +811,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             return JsonResponse({'detail': _('The item was deleted successfully')}, status=status.HTTP_200_OK)
 
         return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        
+
 
     @action(detail=True, methods=['post'])
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
@@ -1034,7 +1034,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                    description=serializer.data['description'])
             return JsonResponse({'detail': _('The item was created successfully')},
                                 status=status.HTTP_200_OK)
-            
+
         return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -1059,7 +1059,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
             return JsonResponse({'detail': _('The item was updated successfully')},
                                     status=status.HTTP_200_OK)
-            
+
         return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
