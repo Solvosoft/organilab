@@ -35,13 +35,13 @@
 
 	        <div id="save_button1" class="col-md-1">
 	          <button class="btn btn-success" type="submit">
-	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span>{% trans 'Save' %}
+	            <span class="glyphicon glyphicon-save" aria-hidden="true"></span> {% trans 'Save' %}
 	          </button>
 	        </div>
             <div class="col-md-1">
                 {% if perms.laboratory.delete_furniture and object %}
                   <a href="{% url 'laboratory:furniture_delete' org_pk laboratory object.pk %}" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>{% trans 'Delete' %}
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {% trans 'Delete' %}
                   </a>
                 {% endif %}
               </div>
@@ -57,23 +57,23 @@
             <div class="btn-toolbar p-2" role="toolbar" aria-label="...">
               <div class="btn-group" role="group" aria-label="...">
                 <button id="btnAddRow" class="btn btn-success"  type="button" onclick="addRow()">
-                  <span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Row' %}
+                  <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Row' %}
                 </button>
                 <button class="btn btn-info me-2" type="button" onclick="addColumn()">
-                  <span class="fa fa-plus" aria-hidden="true"></span>{% trans 'Column' %}
+                  <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Column' %}
                 </button>
               </div>
               <div class="btn-group" role="group" aria-label="...">
                 <button class="btn btn-warning" type="button" onclick="deleteRows()">
-                  <span class="fa fa-minus" aria-hidden="true"></span>{% trans 'Row' %}
+                  <span class="fa fa-minus" aria-hidden="true"></span> {% trans 'Row' %}
                 </button>
                 <button class="btn btn-danger me-2" type="button" onclick="deleteColumns()">
-                  <span class="fa fa-minus" aria-hidden="true"></span>{% trans 'Column' %}
+                  <span class="fa fa-minus" aria-hidden="true"></span> {% trans 'Column' %}
                 </button>
               </div>
 
               <div id="save_button2" class="btn-group" role="group" aria-label="...">
-                <button class="btn btn-success" type="submit">{% trans 'Save' %}</button>
+                <button class="btn btn-success" type="submit"> {% trans 'Save' %}</button>
               </div>
             </div>
           </div>
