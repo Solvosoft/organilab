@@ -1853,23 +1853,6 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_shelfobject'
         }
     ],
-    'edit_object': [
-        {
-            'name': 'Change Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.change_shelfobject'
-        },
-        {
-            'name': 'View Shelf Object',
-            'category': 'Shelf Object',
-            'permission': 'laboratory.view_shelfobject'
-        },
-        {
-            'name': 'Manage Disposal',
-            'category': 'Shelf',
-            'permission': 'laboratory.can_manage_disposal'
-        }
-    ],
     'get_object_detail': [
         {
             'name': 'View Shelf Object',
@@ -2187,13 +2170,6 @@ URLNAME_PERMISSIONS = {
             'name': 'View Shelf',
             'category': 'Shelf',
             'permission': 'laboratory.view_shelf'
-        }
-    ],
-    'date_validator': [
-        {
-            'name': 'View ReservedProducts',
-            'category': 'ReservedProducts',
-            'permission': 'reservations_management.view_reservedproducts'
         }
     ],
     'get_lab_id': [
