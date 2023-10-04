@@ -30,7 +30,7 @@ class IncreaseShelfObjectForm(GTForm):
                                       widget=AutocompleteSelect("provider", attrs={
                                           'data-s2filter-laboratory': '#id_laboratory',
                                           'data-s2filter-organization': '#id_organization',
-                                      })
+                                   })
                                       )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
 
