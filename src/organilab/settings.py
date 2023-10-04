@@ -190,8 +190,7 @@ LOGIN_REDIRECT_URL = reverse_lazy('auth_and_perms:select_organization_by_user')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
 
 # Email development settings
-DEFAULT_FROM_EMAIL = os.getenv(
-    'DEFAULT_FROM_EMAIL', "site@organilab.org")
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', "sitio@organilab.org")
 #EMAIL_HOST = "localhost"
 #EMAIL_PORT = "1025"
 
@@ -203,6 +202,7 @@ EMAIL_PORT = os.getenv('EMAIL_PORT', '1025')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', None)  # a real email
 # the password of the real email
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', None)
+SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'sitio@organilab.org')
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Celery settings
