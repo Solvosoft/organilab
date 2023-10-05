@@ -16,9 +16,7 @@ class ReportDataTableSerializer(serializers.Serializer):
 class ValidateUserAccessLabRoomSerializer(ValidateUserAccessOrgLabSerializer):
     lab_room = serializers.PrimaryKeyRelatedField(many=True, queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE), allow_null=True, required=False)
     all_labs_org = serializers.BooleanField(default=False)
-    shelfobject = serializers.PrimaryKeyRelatedField(
-        queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), allow_null=True,
-        required=False)
+
 
 class ObjectChangeLogSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
