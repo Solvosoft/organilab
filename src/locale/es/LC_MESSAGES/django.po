@@ -4127,3 +4127,6 @@ msgstr "El estante no pertenece a este laboratorio."
 
 msgid "Shelf does not belong to this organization."
 msgstr "El estante no pertenece a esta organización."
+
+msgid "This field cannot be updated because the material is used as a container for at least one reactive."
+msgstr "Este campo no se puede actualizar porque el material se utiliza como contenedor para al menos un reactivo."
