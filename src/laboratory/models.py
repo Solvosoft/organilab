@@ -84,7 +84,7 @@ class Object(AbstractOrganizationRef):
     serie = models.CharField(_('Serie'), max_length=50, null=True, blank=True)
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
-
+    is_container = models.BooleanField(default=False, verbose_name=_("Is Container?"))
     @property
     def is_reactive(self):
         return self.type == self.REACTIVE
