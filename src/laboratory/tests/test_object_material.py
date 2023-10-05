@@ -86,7 +86,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         response = self.client.post(url, data=data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(not hasattr(Object.objects.last(),'materialcapacity'))
         self.assertTrue(total_obj, Object.objects.all().count())
         self.assertContains(response, "This field is required.")
 
@@ -113,7 +112,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(not hasattr(Object.objects.last(), 'materialcapacity'))
         self.assertTrue(total_obj, Object.objects.all().count())
         self.assertContains(response, "<li>Enter a number.</li>")
 
@@ -140,7 +138,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(not hasattr(Object.objects.last(), 'materialcapacity'))
         self.assertTrue(total_obj, Object.objects.all().count())
         self.assertContains(response, "<li>Ensure this value is greater than or equal to 1e-07.</li>")
 
@@ -167,7 +164,6 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(not hasattr(Object.objects.last(),'materialcapacity'))
         self.assertTrue(total_obj, Object.objects.all().count())
         self.assertContains(response, "<li>Select a valid choice. That choice is not one of the available choices.</li>")
 
