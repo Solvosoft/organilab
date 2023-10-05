@@ -577,8 +577,8 @@ class MaterialCapacityObjectForm(GTForm,forms.Form):
     object = forms.ModelChoiceField(queryset=Object.objects.all(), required=False,
                                     widget=genwidgets.HiddenInput)
 
+
 class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
-    required_css_class = ''
 
     def __init__(self, *args, **kwargs):
 
@@ -604,13 +604,93 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
                     )
                 data_type = self.type_id
         if data_type != Object.MATERIAL:
-            del self.fields['object']
-            del self.fields['capacity']
-            del self.fields['capacity_measurement_unit']
+            self.fields.pop('object')
+            self.fields.pop('capacity')
+            self.fields.pop('capacity_measurement_unit')
+            self.fields.pop('is_container')
         else:
-            self.fields['capacity'].required = True
             self.fields['object'].required = False
-            self.fields['capacity_measurement_unit'].required = True
+            self.fields['is_container'].initial = True
+
+        if data_type == Object.EQUIPMENT:
+            self.fields['model'].required = True
+
+        else:
+            self.fields['model'] = forms.CharField(
+                widget=forms.HiddenInput(), required=False
+            )
+            self.fields['serie'] = forms.CharField(
+                widget=forms.HiddenInput(), required=False
+            )
+            self.fields['plaque'] = forms.CharField(
+                widget=forms.HiddenInput(), required=False
+            )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_container = cleaned_data.get('is_container')
+        object_type = cleaned_data.get('type')
+        capacity = cleaned_data.get('capacity')
+        capacity_unit = cleaned_data.get('capacity_measurement_unit')
+
+        if object_type==Object.MATERIAL:
+            if is_container:
+                if capacity == None:
+                    self.add_error('capacity',_("This field is required."))
+                elif capacity<0:
+                    self.add_error('capacity',_("Ensure this value is greater than or equal to 1e-07."))
+                if capacity_unit == None:
+                    self.add_error('capacity_measurement_unit',_('This field is required.'))
+    class Meta:
+        model = Object
+        exclude = ['organization', 'created_by']
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym':  genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            'model': genwidgets.TextInput,
+            'serie': genwidgets.TextInput,
+            'plaque': genwidgets.TextInput,
+            "type": genwidgets.HiddenInput,
+            "is_container": genwidgets.YesNoInput
+        }
+
+
+class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+
+        self.request = None
+        if 'request' in kwargs:
+            self.request = kwargs.pop('request')
+        instance = None
+        if 'instance' in kwargs:
+            instance = kwargs.get('instance')
+        data_type = None
+        if 'data' in kwargs:
+            data_type = kwargs.get('data').get('type')
+
+        super(ObjectUpdateForm, self).__init__(*args, **kwargs)
+
+        if self.request:
+            if 'type_id' in self.request.GET:
+                self.type_id = self.request.GET.get('type_id', '')
+                if self.type_id:
+                    self.fields['type'] = forms.CharField(
+                        initial=self.type_id,
+                        widget=forms.HiddenInput()
+                    )
+                data_type = self.type_id
+        if data_type != Object.MATERIAL:
+            self.fields.pop('object')
+            self.fields.pop('capacity')
+            self.fields.pop('capacity_measurement_unit')
+            self.fields.pop('is_container')
+        else:
+            self.fields['object'].required = False
+
             if instance:
                 if hasattr(instance,'materialcapacity'):
                     self.fields['object'].initial = (instance.id)
@@ -632,6 +712,26 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
                 widget=forms.HiddenInput(), required=False
             )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        is_container = cleaned_data.get('is_container')
+        object_type = cleaned_data.get('type')
+        capacity = cleaned_data.get('capacity')
+        capacity_unit = cleaned_data.get('capacity_measurement_unit')
+        get_instance_is_container = self.instance.is_container
+        shelfobjects = ShelfObject.objects.filter(
+            container__object=self.instance)
+
+        if object_type==Object.MATERIAL:
+            if get_instance_is_container and is_container==False and shelfobjects:
+                self.add_error('is_container','This field cannot be updated because the material is used as a container for at least one reactive.')
+            if is_container:
+                if capacity == None:
+                    self.add_error('capacity',_("This field is required."))
+                elif capacity<0:
+                    self.add_error('capacity',_("Ensure this value is greater than or equal to 1e-07."))
+                if capacity_unit == None:
+                    self.add_error('capacity_measurement_unit',_('This field is required.'))
     class Meta:
         model = Object
         exclude = ['organization', 'created_by']
@@ -645,5 +745,6 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             'model': genwidgets.TextInput,
             'serie': genwidgets.TextInput,
             'plaque': genwidgets.TextInput,
-            "type": genwidgets.HiddenInput
+            "type": genwidgets.HiddenInput,
+            "is_container": genwidgets.YesNoInput
         }
