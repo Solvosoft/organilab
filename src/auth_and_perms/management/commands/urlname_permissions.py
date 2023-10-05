@@ -1384,6 +1384,18 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_inform'
         }
     ],
+    'profile': [
+        {
+            'name': 'Change User',
+            'category': 'User',
+            'permission': 'auth.change_user'
+        },
+        {
+            'name': 'View User',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        }
+    ],
     'password_change': [
         {
             'name': 'Change User',
@@ -2097,6 +2109,13 @@ URLNAME_PERMISSIONS = {
             'name': 'View Label SGA',
             'category': 'Label SGA',
             'permission': 'sga.view_displaylabel'
+        }
+    ],
+    'prudence': [
+        {
+            'name': 'View Prudence Advice',
+            'category': 'Prudence Advice',
+            'permission': 'sga.view_prudenceadvice'
         }
     ],
     'get_preview': [
