@@ -25,6 +25,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
+            "is_container": True,
             "capacity":200,
             "capacity_measurement_unit": 64,
         }
@@ -53,10 +54,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
+            "is_container":True,
             "capacity_measurement_unit": 64,
         }
         response = self.client.post(url, data=data)
-
         self.assertEqual(response.status_code, 200)
         self.assertTrue(not hasattr(Object.objects.last(),'materialcapacity'))
         self.assertTrue(total_obj, Object.objects.all().count())
@@ -79,6 +80,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
+            "is_container":True,
             "capacity": 200
         }
         response = self.client.post(url, data=data)
@@ -252,3 +254,31 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         success_url = reverse("laboratory:objectview_list", kwargs={"org_pk": self.org.pk,
                                                                 "lab_pk": self.lab.pk}) + "?type_id=0"
         self.assertRedirects(response, success_url)
+
+
+    def test_update_material(self):
+        """
+        Test for object view when update an  object that is material type, but update
+        the field is_container to False and the object a shelfobject used as a container
+        """
+        object = Object.objects.get(pk=4)
+        self.assertFalse(hasattr(object,'materialcapacity'))
+        url = reverse("laboratory:objectview_update", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": object.pk})+"?type_id=1"
+        data = {
+            "name": "RA Paquete 100 gr",
+            "features": [1],
+            "code": "RA43",
+            "synonym": "RA",
+            "is_public": True,
+            "model": "RA2022",
+            "serie": "Reactive 008",
+            "plaque": "RA4300",
+            "type": "1",
+            "is_container": False
+        }
+        response = self.client.post(url, data=data)
+        new_object= Object.objects.get(pk=4)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(hasattr(object, 'materialcapacity'))
+        self.assertFalse(hasattr(new_object, 'materialcapacity'))
+        self.assertContains(response, "<li>This field cannot be updated because the material is used as a container for at least one reactive.</li>")
