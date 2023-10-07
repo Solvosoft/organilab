@@ -1,13 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy as _
 from django_otp.forms import OTPTokenForm
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
 
-from auth_and_perms.models import Rol
+from auth_and_perms.models import Rol, Profile
 from laboratory.models import Laboratory, OrganizationStructure
 
 
@@ -163,3 +163,15 @@ class OrganizationActions(GTForm):
 class ContentypeForm(GTForm, forms.Form):
     organization = forms.IntegerField()
     contentyperelobj = forms.ModelMultipleChoiceField(queryset=Laboratory.objects.all())
+
+
+class ProfileGroupForm(GTForm):
+    profile = forms.ModelChoiceField(queryset=User.objects.all(),
+                                     widget=AutocompleteSelect('laborguserbase', attrs={
+                                         'data-s2filter-organization': '.nodeorg:checked',
+                                         'data-s2filter-laboratory': '#id_laboratories',
+                                         'data-s2filter-typeofcontenttype': '#id_typeofcontenttype',
+                                     })
+                                     )
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
+                                            widget=genwidgets.SelectMultiple)

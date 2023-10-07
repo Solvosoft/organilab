@@ -240,18 +240,18 @@ $(".userbtnadd").on('click', function(e){
 document.profileroleselects={}
 
 
-function add_selected_elements_to_select2(rols, data){
-    return ()=>{
-        for(let x=0; x<data.length; x++){
-         if ($(rols).find("option[value='" + data[x].id + "']").length) {
-            $(rols).val(data[x].id).trigger('change');
+function add_selected_elements_to_select2(rols){
+
+    return (data) => {
+        for(let x=0; x<data['results'].length; x++){
+         if ($(rols).find("option[value='" + data['results'][x].id + "']").length){
+            $(rols).val(data['results'][x].id).trigger('change');
          }else{
-            var newOption = new Option(data[x].text, data[x].id, true, true);
+            var newOption = new Option(data[x].text, data['results'][x].id, true, true);
             $(rols).append(newOption).trigger('change');
          }
         }
-    };
-
+    }
 }
 
 function add_data_to_select(rols){
@@ -523,4 +523,74 @@ $(".orgactions").on('click', function(event){
         $("#actionsmodal #id_name").closest('.form-group').hide();
     }
     $("#actionsmodal").modal('show');
+});
+
+function add_groups_by_profile(select_group){
+    return (data)=>{
+
+        for(let x=0; x<data.results.length; x++){
+            $(select_group).val(data["id"]);
+        }
+    }
+
+}
+
+$("#id_pg-profile").on('change', function(event){
+
+    var selectgroup = $("#id_pg-groups")[0];
+
+    $.ajax({
+      type: "GET",
+      url: groups_by_profile,
+      data: {'profile': $(this).val()},
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: add_selected_elements_to_select2(selectgroup),
+      dataType: 'json'
+    });
+
+});
+
+function convertFormToJSON(form, prefix="") {
+  const re = new RegExp("^"+prefix);
+  return form
+    .serializeArray()
+    .reduce(function (json, { name, value }) {
+        if(json.hasOwnProperty(name.replace(re, ""))){
+
+        if(!Array.isArray(json[name.replace(re, "")])){
+            json[name.replace(re, "")] = [json[name.replace(re, "")]];
+        }
+        json[name.replace(re, "")].push(value);
+
+        }else{
+      json[name.replace(re, "")] = value;
+      }
+      return json;
+    }, {});
+}
+
+function convertToStringJson(form, prefix="", extras={}){
+    var formjson =convertFormToJSON(form, prefix=prefix);
+    formjson=Object.assign({}, formjson, extras)
+    return JSON.stringify(formjson);
+}
+
+$("#savegroupsbyprofile").on("click", function(){
+    var url = $(this).data('url');
+    var form = $("#groups_by_profile_form");
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: convertToStringJson(form, prefix="pg-"),
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      success: function( data ) {
+
+      },
+      error: function( jqXHR, textStatus, errorThrown ){
+      },
+      dataType: 'json'
+    });
+
 });

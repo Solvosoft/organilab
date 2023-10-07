@@ -1,14 +1,16 @@
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.http import Http404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
+from auth_and_perms.api.serializers import ValidateProfileSerializer
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_by_user
@@ -310,3 +312,32 @@ class OrgbyUserOrgS2(BaseSelect2View):
             if self.org.parent:
                 self.selected=[str(self.org.parent.pk)]
         return dev
+
+
+@register_lookups(prefix="groupsbyprofile", basename="groupsbyprofile")
+class GroupsByProfile(BaseSelect2View):
+    model = Group
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    profile = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.profile:
+            return self.profile.groups.all()
+        return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateProfileSerializer(data=request.GET)
+
+        if self.serializer.is_valid():
+            self.profile = self.serializer.validated_data.get('profile', None)
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
