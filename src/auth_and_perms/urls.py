@@ -1,7 +1,9 @@
 from django.urls import path, include, re_path
 
-from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission, OrganizationAPI, \
-    UserLaboratoryOrganization, UserInOrganization, DeleteUserFromContenttypeViewSet, ProfileToContenttypeObjectAPI
+from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePermission, \
+    OrganizationAPI, \
+    UserLaboratoryOrganization, UserInOrganization, DeleteUserFromContenttypeViewSet, \
+    ProfileToContenttypeObjectAPI, UpdateGroupsByProfile
 from auth_and_perms.views import organizationstructure as orgstruct
 
 from rest_framework.routers import SimpleRouter
@@ -39,5 +41,6 @@ urlpatterns = [
     path('organization/manage/rols/del/<int:org_pk>/<int:pk>', orgstruct.DeleteRolByOrganization.as_view(), name="del_rol_by_org"),
     path('organization/manage/rols/copy/<int:pk>/', orgstruct.copy_rols, name="copy_rols"),
     path('organization/manage/relorgcont/add/', orgstruct.add_contenttype_to_org, name="add_contenttype_to_org"),
-    path('digitalsignature/notify', SignDataRequestViewSet.as_view({'post': 'create'}))
+    path('digitalsignature/notify', SignDataRequestViewSet.as_view({'post': 'create'})),
+    path('update_groups_by_profile/', UpdateGroupsByProfile.as_view(), name="api_update_groups_by_profile")
 ]

@@ -4,17 +4,20 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
+from rest_framework.views import APIView
 
-from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
-    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, DeleteUserFromContenttypeSerializer, \
-    ProfileAssociateOrganizationSerializer
+from auth_and_perms.api.serializers import RolSerializer, \
+    ProfilePermissionRolOrganizationSerializer, \
+    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, \
+    DeleteUserFromContenttypeSerializer, \
+    ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
@@ -295,3 +298,19 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
 
     def list(self, request, *args, **kwargs):
         return self.delete(request, *args, **kwargs)
+
+
+class UpdateGroupsByProfile(APIView):
+    def post(self, request):
+        serializer = ValidateGroupsByProfileSerializer(data=request.data)
+
+        if serializer.is_valid():
+            profile = serializer.validated_data["profile"]
+            groups = serializer.validated_data.get("groups")
+            profile.groups.all().delete()
+
+            if groups:
+                profile.groups.add(*groups)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
