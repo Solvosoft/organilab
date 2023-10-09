@@ -240,15 +240,14 @@ $(".userbtnadd").on('click', function(e){
 document.profileroleselects={}
 
 
-function add_selected_elements_to_select2(rols){
+function add_selected_elements_to_select2(select){
 
     return (data) => {
         for(let x=0; x<data['results'].length; x++){
-         if ($(rols).find("option[value='" + data['results'][x].id + "']").length){
-            $(rols).val(data['results'][x].id).trigger('change');
-         }else{
-            var newOption = new Option(data[x].text, data['results'][x].id, true, true);
-            $(rols).append(newOption).trigger('change');
+         if ($(select).find("option[value='" + data['results'][x].id + "']").length){
+              $(select).find("option[value='" + data['results'][x].id + "']").remove();
+              var newOption = new Option(data['results'][x].text, data['results'][x].id, true, true);
+              $(select).append(newOption).trigger('change');
          }
         }
     }
@@ -536,44 +535,78 @@ function add_groups_by_profile(select_group){
 }
 
 $("#id_pg-profile").on('change', function(event){
+    if($(this).val()){
+        var selectgroup = $("#id_pg-groups")[0];
 
-    var selectgroup = $("#id_pg-groups")[0];
-
-    $.ajax({
-      type: "GET",
-      url: groups_by_profile,
-      data: {'profile': $(this).val()},
-      contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: add_selected_elements_to_select2(selectgroup),
-      dataType: 'json'
-    });
-
+        $.ajax({
+          type: "GET",
+          url: groups_by_profile,
+          data: {'profile': $(this).val()},
+          contentType: 'application/json',
+          headers: {'X-CSRFToken': getCookie('csrftoken')},
+          success: add_selected_elements_to_select2(selectgroup),
+          dataType: 'json'
+        });
+    }
 });
 
-function convertFormToJSON(form, prefix="") {
+function convertFormToJSON(form, prefix="", multiple_field=[]) {
   const re = new RegExp("^"+prefix);
   return form
     .serializeArray()
     .reduce(function (json, { name, value }) {
-        if(json.hasOwnProperty(name.replace(re, ""))){
-
-        if(!Array.isArray(json[name.replace(re, "")])){
-            json[name.replace(re, "")] = [json[name.replace(re, "")]];
-        }
-        json[name.replace(re, "")].push(value);
-
+        name = name.replace(re, "");
+        if(json.hasOwnProperty(name)){
+            if(!Array.isArray(json[name])){
+                json[name] = [json[name]];
+            }
+            json[name].push(value);
+        }else if(multiple_field.includes(name)){
+            json[name] = [value];
         }else{
-      json[name.replace(re, "")] = value;
-      }
+            json[name] = value;
+        }
       return json;
     }, {});
 }
 
-function convertToStringJson(form, prefix="", extras={}){
-    var formjson =convertFormToJSON(form, prefix=prefix);
+function convertToStringJson(form, multiple_field, prefix="", extras={}){
+    var formjson =convertFormToJSON(form, prefix=prefix, multiple_field=multiple_field);
     formjson=Object.assign({}, formjson, extras)
     return JSON.stringify(formjson);
+}
+
+function reset_form(form){
+    $(form).trigger('reset');
+    $(form).find("select option:selected").prop("selected", false);
+    $(form).find("select").val(null).trigger('change');
+    $(form).find("ul.form_errors").remove();
+}
+
+function load_errors(error_list, obj, display_on_top=false){
+    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center flex-wrap'>";
+    error_list.forEach((item)=>{
+        ul_obj += "<li>"+item+"</li>";
+    });
+    ul_obj += "</ul>"
+    var obj_to_prepend = display_on_top ? $(obj) : $(obj).parents(".form-group");
+    obj_to_prepend.prepend(ul_obj);
+    return ul_obj;
+}
+
+function form_field_errors(target_form, form_errors, prefix){
+    var item = "";
+    for (const [key, value] of Object.entries(form_errors)) {
+        item = " #id_" +prefix+key;
+        if(target_form.find(item).length > 0){
+            if(target_form.find(item).attr("type") == "hidden"){
+                // for hidden elements the errors are displayed at the top of the form
+                load_errors(form_errors[key], target_form, display_on_top=true);
+            }else{
+               load_errors(form_errors[key], item);
+            }
+        }
+    }
 }
 
 $("#savegroupsbyprofile").on("click", function(){
@@ -582,15 +615,44 @@ $("#savegroupsbyprofile").on("click", function(){
     $.ajax({
       type: "POST",
       url: url,
-      data: convertToStringJson(form, prefix="pg-"),
+      data: convertToStringJson(form, ['groups'], prefix="pg-"),
       contentType: 'application/json',
       headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: function( data ) {
-
+      dataType: 'json',
+      success: function(data) {
+        if(data.hasOwnProperty("detail")){
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: data.detail,
+                timer: 1500
+            });
+        }
       },
-      error: function( jqXHR, textStatus, errorThrown ){
-      },
-      dataType: 'json'
+      error: function(xhr, resp, text) {
+        var errors = xhr.responseJSON.errors;
+        if(errors){  // form errors
+            form.find('ul.form_errors').remove();
+            form_field_errors(form, errors, "pg-");
+        }else{
+            let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+            if(xhr.responseJSON.detail){
+                error_msg = xhr.responseJSON.detail;
+            }
+            Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: error_msg
+            });
+        }
+      }
     });
+    reset_form(form);
+});
 
+$('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+    reset_form("#groups_by_profile_form");
+    if(e.target.id == "navbyprofile"){
+         $("#id_typeofcontenttype").val('organization');
+    }
 });

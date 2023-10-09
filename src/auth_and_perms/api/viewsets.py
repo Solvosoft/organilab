@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, status
@@ -302,15 +302,22 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
 
 class UpdateGroupsByProfile(APIView):
     def post(self, request):
+        errors = {}
         serializer = ValidateGroupsByProfileSerializer(data=request.data)
 
         if serializer.is_valid():
             profile = serializer.validated_data["profile"]
             groups = serializer.validated_data.get("groups")
-            profile.groups.all().delete()
+            profile.groups.remove(*profile.groups.all())
 
             if groups:
                 profile.groups.add(*groups)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Profile was updated successfully.")},
+                            status=status.HTTP_200_OK)

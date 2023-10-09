@@ -179,9 +179,8 @@
 									<form method="post" id="groups_by_profile_form">
 										{% csrf_token %}
 										{{profile_group_form.as_horizontal}}
-										<button type="button" class="btn btn-primary" id="savegroupsbyprofile"
+										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
 																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile'  %}">{% trans 'Save changes' %}</button>
-
 										</form>
         </div>
 
