@@ -6,7 +6,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 /entorno
-docker/*
+docker/*.env
 assets/svgedit
 assets/svgcanvas
 
