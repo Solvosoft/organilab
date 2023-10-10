@@ -217,8 +217,10 @@ class ValidateProfileSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
 
 
+class ValidateOrganizationSerializer(serializers.Serializer):
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+
 class ValidateGroupsByProfileSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     groups = serializers.PrimaryKeyRelatedField(queryset=Group.objects.using(settings.READONLY_DATABASE), many=True, required=False)
-
-

@@ -167,11 +167,10 @@ class ContentypeForm(GTForm, forms.Form):
 
 class ProfileGroupForm(GTForm):
     profile = forms.ModelChoiceField(queryset=User.objects.all(),
-                                     widget=AutocompleteSelect('laborguserbase', attrs={
-                                         'data-s2filter-organization': '.nodeorg:checked',
-                                         'data-s2filter-laboratory': '#id_laboratories',
-                                         'data-s2filter-typeofcontenttype': '#id_typeofcontenttype',
+                                     widget=AutocompleteSelect('usersbyorg', attrs={
+                                         'data-s2filter-organization': '.nodeorg:checked'
                                      })
                                      )
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
                                             widget=genwidgets.SelectMultiple)
+    organization = forms.IntegerField(widget=genwidgets.HiddenInput)

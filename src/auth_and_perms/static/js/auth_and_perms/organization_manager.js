@@ -583,34 +583,9 @@ function reset_form(form){
     $(form).find("ul.form_errors").remove();
 }
 
-function load_errors(error_list, obj, display_on_top=false){
-    ul_obj = "<ul class='errorlist form_errors d-flex justify-content-center flex-wrap'>";
-    error_list.forEach((item)=>{
-        ul_obj += "<li>"+item+"</li>";
-    });
-    ul_obj += "</ul>"
-    var obj_to_prepend = display_on_top ? $(obj) : $(obj).parents(".form-group");
-    obj_to_prepend.prepend(ul_obj);
-    return ul_obj;
-}
-
-function form_field_errors(target_form, form_errors, prefix){
-    var item = "";
-    for (const [key, value] of Object.entries(form_errors)) {
-        item = " #id_" +prefix+key;
-        if(target_form.find(item).length > 0){
-            if(target_form.find(item).attr("type") == "hidden"){
-                // for hidden elements the errors are displayed at the top of the form
-                load_errors(form_errors[key], target_form, display_on_top=true);
-            }else{
-               load_errors(form_errors[key], item);
-            }
-        }
-    }
-}
-
 $("#savegroupsbyprofile").on("click", function(){
     var url = $(this).data('url');
+    $("#id_pg-organization").val($('.nodeorg:checked').val());
     var form = $("#groups_by_profile_form");
     $.ajax({
       type: "POST",
@@ -652,7 +627,4 @@ $("#savegroupsbyprofile").on("click", function(){
 
 $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
     reset_form("#groups_by_profile_form");
-    if(e.target.id == "navbyprofile"){
-         $("#id_typeofcontenttype").val('organization');
-    }
 });

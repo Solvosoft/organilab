@@ -303,6 +303,10 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
 class UpdateGroupsByProfile(APIView):
     def post(self, request):
         errors = {}
+
+        organization = get_object_or_404(OrganizationStructure,
+                                         pk=request.data.get('organization'))
+        user_is_allowed_on_organization(request.user, organization)
         serializer = ValidateGroupsByProfileSerializer(data=request.data)
 
         if serializer.is_valid():

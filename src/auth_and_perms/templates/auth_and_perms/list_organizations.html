@@ -176,11 +176,15 @@
             </div>
         </div>
 								<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
+									<div class="jumbotron">
+										<h6>Help Text</h6>
+										<p>{% trans 'This section will assign permissions groups to some profile who belongs to selected organization. If you do not find the user in profile selector, could you add it from By organization tab.' %}</p>
+									</div>
 									<form method="post" id="groups_by_profile_form">
 										{% csrf_token %}
 										{{profile_group_form.as_horizontal}}
 										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
-																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile'  %}">{% trans 'Save changes' %}</button>
+																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
 										</form>
         </div>
 

@@ -10,7 +10,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from auth_and_perms.api.serializers import ValidateProfileSerializer
+from auth_and_perms.api.serializers import ValidateProfileSerializer, \
+    ValidateOrganizationSerializer
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_by_user
@@ -341,3 +342,42 @@ class GroupsByProfile(BaseSelect2View):
                 'status': 'Bad request',
                 'errors': self.serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@register_lookups(prefix="usersbyorg", basename="usersbyorg")
+class UsersByOrganization(BaseSelect2View):
+    model = User
+    fields = ['first_name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer, organization = None, None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset = self.organization.users.all().using(settings.READONLY_DATABASE).distinct()
+        else:
+            queryset = queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET)
+
+        if self.serializer.is_valid():
+            self.organization = self.serializer.validated_data.get('organization')
+            user_is_allowed_on_organization(request.user, self.organization)
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+                'status': 'Bad request',
+                'errors': self.serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        name = obj.get_full_name()
+        if not name:
+            name = obj.username
+        return name
