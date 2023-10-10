@@ -124,7 +124,7 @@ class AvailableContainerLookup(BaseSelect2View):
 
     def get_text_display(self, obj):
         text_display = f"[" + _("Shelf") + f" {obj.shelf.name}] - {obj.object.code} {obj.object.name}"
-        if hasattr(obj.object, 'materialcapacity') and obj.object.is_container:
+        if hasattr(obj.object, 'materialcapacity'):
             text_display += f" - {obj.object.materialcapacity.capacity} {obj.object.materialcapacity.capacity_measurement_unit.description}"
         return text_display
 
@@ -161,7 +161,7 @@ class ContainersForCloningLookup(BaseSelect2View):
 
     def get_text_display(self, obj):
         text_display = f"{obj.code} {obj.name}"
-        if hasattr(obj, 'materialcapacity') and obj.is_container:
+        if hasattr(obj, 'materialcapacity'):
             text_display += f" - {obj.materialcapacity.capacity} {obj.materialcapacity.capacity_measurement_unit.description}"
         return text_display
 
