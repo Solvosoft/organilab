@@ -1,2 +1,6 @@
 04/02/2020
     - python manage.py create_profile
+
+
+11/10/2023
+    - python manage.py groups_by_views_without_org_lab
