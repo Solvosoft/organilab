@@ -14,24 +14,22 @@ def media_access(request, path):
     """
     user = request.user
 
+    response = HttpResponse()
 
-    if user.is_authenticated:
-        response = HttpResponse()
-
-        # Content-type will be detected by nginx
-        if path.startswith("report"):
+    if path.startswith("report"):
+        if user.is_authenticated:
             report = TaskReport.objects.filter(created_by=user, file_type__isnull=False,
-                                               file__isnull=False,
-                                               file__icontains=path).exclude(
-                file_type="html").first()
+                                                   file__isnull=False,file__icontains=path).exclude(file_type="html").first()
             if report:
                 del response['Content-Type']
                 response['X-Accel-Redirect'] = '/protected/' + path
                 return response
             else:
                 return HttpResponseForbidden('Not authorized to access this media.')
+
         else:
-            del response['Content-Type']
-            response['X-Accel-Redirect'] = '/protected/' + path
-            return response
-    return HttpResponseForbidden('Not authorized to access this media.')
+            return HttpResponseForbidden('Not authorized to access this media.')
+
+    del response['Content-Type']
+    response['X-Accel-Redirect'] = '/protected/' + path
+    return response
