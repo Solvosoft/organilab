@@ -1679,6 +1679,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Entry',
             'category': 'Entry',
             'permission': 'blog.view_entry'
+        },
+        {
+            'name': 'Add Blog Category',
+            'category': 'Blog Category',
+            'permission': 'blog.add_category'
         }
     ],
     'entry_update': [
@@ -1691,6 +1696,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Entry',
             'category': 'Entry',
             'permission': 'blog.view_entry'
+        },
+        {
+            'name': 'Add Blog Category',
+            'category': 'Blog Category',
+            'permission': 'blog.add_category'
         }
     ],
     'entry_delete': [
