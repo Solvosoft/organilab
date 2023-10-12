@@ -446,20 +446,25 @@ const labviewSearch={
 
             if($(radio_obj).length){
                 labviewSearch.show_deselected_previous_shelfs(shelf_list, key, value);
-                if(hide_related_shelf){
                     $(radio_obj).parents('.shelfrow').children().hide();
-                }else{
-                    $(radio_obj).removeClass('hideshelves');
-                }
+                    $(radio_obj).parents('.shelves_rows').children().hide();
+                    $(radio_obj).parents('.shelves_rows').parent().children().hide();
+
                 $(radio_obj).parents('.col').show();
                 $(radio_obj).iCheck('check');
                 $(radio_obj).change();
             }
         });
 
-        if(!hide_related_shelf){
-            $(".hideshelves").parents('.col').hide();
-        }
+        obj_list.forEach(function(value) {
+            var radio_obj = "#"+key+"_"+value;
+            if($(radio_obj).length){
+                $(radio_obj).parents('.shelves_rows').parent().show();
+                $(radio_obj).parents('.shelves_rows').show();
+                $(radio_obj).parent().parent().show();
+            }
+        });
+
     },
     select_labroom: function(labroom_list){
         labviewSearch.check_objs(labroom_list, "labroom");
@@ -491,6 +496,9 @@ const labviewSearch={
             table_filter_input.val('pk='+shelfobject_list['shelfobject'].slice(-1)[0]);
             table_filter_input.focus();
             table_filter_input.keyup();
+            var tagify_input = $(".tagify__input")[0];
+            $(tagify_input).focus();
+            $(tagify_input).keyup();
         }
     },
     select_object: function(object_list){
@@ -500,6 +508,9 @@ const labviewSearch={
             table_filter_input.val(object_list['object'][0]);
             table_filter_input.focus();
             table_filter_input.keyup();
+            var tagify_input = $(".tagify__input")[0];
+            $(tagify_input).focus();
+            $(tagify_input).keyup();
         }
 
         if(object_list.hasOwnProperty('shelf')){

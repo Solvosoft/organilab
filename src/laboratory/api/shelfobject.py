@@ -1141,6 +1141,7 @@ class SearchLabView(viewsets.GenericViewSet):
         return result
 
     def get_shelfobject(self, shelfobject):
+        shelfobj_base = shelfobject
         result = {}
         if shelfobject:
             shelfobject = self.get_pk_list(shelfobject)
@@ -1148,9 +1149,13 @@ class SearchLabView(viewsets.GenericViewSet):
                 settings.READONLY_DATABASE)
 
             if shelfobject_list:
+                shelf = []
+                for shelfobj in shelfobj_base:
+                    if shelfobject_list.filter(pk=shelfobj.pk).exists():
+                        shelf.append(shelfobj.shelf.pk)
                 result = {
                     'shelfobject': shelfobject,
-                    'shelf': list(shelfobject_list.values_list('shelf__pk', flat=True)),
+                    'shelf': shelf,
                     'furniture': list(
                         shelfobject_list.values_list('shelf__furniture__pk',
                                                      flat=True)),
@@ -1160,14 +1165,15 @@ class SearchLabView(viewsets.GenericViewSet):
                 }
         return result
 
-    def get_object_param(self, object_param):
+    def get_object_param(self, object_param, lab_pk):
         result = {}
         if object_param:
             object_param_name = [obj.name for obj in object_param]
             object_list = Object.objects.filter(name__in=object_param_name).using(
                 settings.READONLY_DATABASE)
-            shelf = Shelf.objects.filter(shelfobject__object__in=object_list).using(
-                settings.READONLY_DATABASE)
+            shelf = Shelf.objects.filter(shelfobject__object__in=object_list,
+                                         furniture__labroom__laboratory=lab_pk).using(
+                settings.READONLY_DATABASE).order_by('pk')
             shelf_pk_list = list(
                 shelf.values_list('pk', flat=True).using(settings.READONLY_DATABASE))
             shelf_pk_list.reverse()
@@ -1223,7 +1229,7 @@ class SearchLabView(viewsets.GenericViewSet):
                 'shelfobject': self.get_shelfobject(
                     serializer.validated_data.get('shelfobject', [])),
                 'object': self.get_object_param(
-                    serializer.validated_data.get('object', []))
+                    serializer.validated_data.get('object', []), lab_pk)
             }
         else:
             errors = serializer.errors
