@@ -125,8 +125,6 @@ document.urls = {
 }
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';
-document.api_modal = '{% url "laboratory:api_reservation_create"%}';
-document.date_validation_script_url = '{% url "laboratory:date_validator"%}';
 document.url_shelfobject = '{% url "laboratory:api-shelfobjecttable-list" org_pk laboratory %}';
 document.url_status = '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}';
 const view_search = false;
@@ -136,7 +134,6 @@ document.url_container_list = "{% url 'laboratory:shelf_containers' org_pk=org_p
 </script>
 
 <script src="{% static 'js/shelfobjectedit.js' %}?v={% get_organilab_version %}"></script>
-<script src="{% static 'js/reservationmodal.js' %}?v={% get_organilab_version %}"></script>
 <script type="text/javascript"
         src="{% static 'laboratory/js/shelfobject_utils.js'%}?v={% get_organilab_version %}"></script>
 <script type="text/javascript"
