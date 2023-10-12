@@ -62,7 +62,6 @@
         document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
         document.api_create_reservation = '{% url "laboratory:api_individual_reservation_create"%}';
         document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
-        document.api_get_product = '{% url "laboratory:api_reservation_detail" 0%}';
         document.lab_pk = {{laboratory}};
     </script>
     <script type="text/javascript" src="{% static 'js/my_reservations.js' %}?v={% get_organilab_version %}"></script>
