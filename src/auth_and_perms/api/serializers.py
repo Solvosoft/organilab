@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django_filters import FilterSet
 from rest_framework import serializers
@@ -212,3 +212,15 @@ class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
                     {'shelf': _("Shelf does not belong to this organization.")})
 
         return data
+
+class ValidateProfileSerializer(serializers.Serializer):
+    profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+
+class ValidateOrganizationSerializer(serializers.Serializer):
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+
+class ValidateGroupsByProfileSerializer(serializers.Serializer):
+    profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+    groups = serializers.PrimaryKeyRelatedField(queryset=Group.objects.using(settings.READONLY_DATABASE), many=True, required=False)
