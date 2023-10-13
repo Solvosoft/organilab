@@ -1,20 +1,23 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
+from rest_framework.views import APIView
 
-from auth_and_perms.api.serializers import RolSerializer, ProfilePermissionRolOrganizationSerializer, \
-    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, DeleteUserFromContenttypeSerializer, \
-    ProfileAssociateOrganizationSerializer
+from auth_and_perms.api.serializers import RolSerializer, \
+    ProfilePermissionRolOrganizationSerializer, \
+    OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, \
+    DeleteUserFromContenttypeSerializer, \
+    ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
@@ -295,3 +298,30 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
 
     def list(self, request, *args, **kwargs):
         return self.delete(request, *args, **kwargs)
+
+
+class UpdateGroupsByProfile(APIView):
+    def post(self, request):
+        errors = {}
+
+        organization = get_object_or_404(OrganizationStructure,
+                                         pk=request.data.get('organization'))
+        user_is_allowed_on_organization(request.user, organization)
+        serializer = ValidateGroupsByProfileSerializer(data=request.data)
+
+        if serializer.is_valid():
+            profile = serializer.validated_data["profile"]
+            groups = serializer.validated_data.get("groups")
+            profile.groups.remove(*profile.groups.all())
+
+            if groups:
+                profile.groups.add(*groups)
+
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Profile was updated successfully.")},
+                            status=status.HTTP_200_OK)
