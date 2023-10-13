@@ -240,18 +240,17 @@ $(".userbtnadd").on('click', function(e){
 document.profileroleselects={}
 
 
-function add_selected_elements_to_select2(rols, data){
-    return ()=>{
-        for(let x=0; x<data.length; x++){
-         if ($(rols).find("option[value='" + data[x].id + "']").length) {
-            $(rols).val(data[x].id).trigger('change');
-         }else{
-            var newOption = new Option(data[x].text, data[x].id, true, true);
-            $(rols).append(newOption).trigger('change');
+function add_selected_elements_to_select2(select){
+
+    return (data) => {
+        for(let x=0; x<data['results'].length; x++){
+         if ($(select).find("option[value='" + data['results'][x].id + "']").length){
+              $(select).find("option[value='" + data['results'][x].id + "']").remove();
+              var newOption = new Option(data['results'][x].text, data['results'][x].id, true, true);
+              $(select).append(newOption).trigger('change');
          }
         }
-    };
-
+    }
 }
 
 function add_data_to_select(rols){
@@ -523,4 +522,109 @@ $(".orgactions").on('click', function(event){
         $("#actionsmodal #id_name").closest('.form-group').hide();
     }
     $("#actionsmodal").modal('show');
+});
+
+function add_groups_by_profile(select_group){
+    return (data)=>{
+
+        for(let x=0; x<data.results.length; x++){
+            $(select_group).val(data["id"]);
+        }
+    }
+
+}
+
+$("#id_pg-profile").on('change', function(event){
+    if($(this).val()){
+        var selectgroup = $("#id_pg-groups")[0];
+
+        $.ajax({
+          type: "GET",
+          url: groups_by_profile,
+          data: {'profile': $(this).val()},
+          contentType: 'application/json',
+          headers: {'X-CSRFToken': getCookie('csrftoken')},
+          success: add_selected_elements_to_select2(selectgroup),
+          dataType: 'json'
+        });
+    }
+});
+
+function convertFormToJSON(form, prefix="", multiple_field=[]) {
+  const re = new RegExp("^"+prefix);
+  return form
+    .serializeArray()
+    .reduce(function (json, { name, value }) {
+        name = name.replace(re, "");
+        if(json.hasOwnProperty(name)){
+            if(!Array.isArray(json[name])){
+                json[name] = [json[name]];
+            }
+            json[name].push(value);
+        }else if(multiple_field.includes(name)){
+            json[name] = [value];
+        }else{
+            json[name] = value;
+        }
+      return json;
+    }, {});
+}
+
+function convertToStringJson(form, multiple_field, prefix="", extras={}){
+    var formjson =convertFormToJSON(form, prefix=prefix, multiple_field=multiple_field);
+    formjson=Object.assign({}, formjson, extras)
+    return JSON.stringify(formjson);
+}
+
+function reset_form(form){
+    $(form).trigger('reset');
+    $(form).find("select option:selected").prop("selected", false);
+    $(form).find("select").val(null).trigger('change');
+    $(form).find("ul.form_errors").remove();
+}
+
+$("#savegroupsbyprofile").on("click", function(){
+    var url = $(this).data('url');
+    $("#id_pg-organization").val($('.nodeorg:checked').val());
+    var form = $("#groups_by_profile_form");
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: convertToStringJson(form, ['groups'], prefix="pg-"),
+      contentType: 'application/json',
+      headers: {'X-CSRFToken': getCookie('csrftoken')},
+      dataType: 'json',
+      success: function(data) {
+        if(data.hasOwnProperty("detail")){
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: data.detail,
+                timer: 1500
+            });
+        }
+      },
+      error: function(xhr, resp, text) {
+        var errors = xhr.responseJSON.errors;
+        if(errors){  // form errors
+            form.find('ul.form_errors').remove();
+            form_field_errors(form, errors, "pg-");
+        }else{
+            let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+            if(xhr.responseJSON.detail){
+                error_msg = xhr.responseJSON.detail;
+            }
+            Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: error_msg
+            });
+        }
+      }
+    });
+    reset_form(form);
+});
+
+$('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+    reset_form("#groups_by_profile_form");
 });

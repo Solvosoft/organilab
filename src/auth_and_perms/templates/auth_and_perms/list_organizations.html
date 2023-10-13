@@ -11,17 +11,21 @@
 {% endblock %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'css/permission_table_style.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all">
+<link href="{% static 'css/permission_table_style.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all"
+						xmlns="http://www.w3.org/1999/html">
 {% endblock css %}
 
 {% block content %}
 <div class="row">
 <div class="col">
+
+{% if perms.laboratory.add_organizationstructure %}
 <div class="row">
     <div class="text-purple-400 text-center">
         <span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
     </div>
 </div>
+{% endif %}
 
 {% for node in nodes %}
 <div class="row">
@@ -140,7 +144,9 @@
   <li class="nav-item">
     <a class="nav-link" id="navbyorgs"  data-bs-toggle="tab" data-bs-target="#byorgs" type="button" role="tab" aria-controls="byorgs" aria-selected="true">{% trans 'By organization' %}</a>
   </li>
-
+		<li class="nav-item">
+    <a class="nav-link" id="navbyprofile"  data-bs-toggle="tab" data-bs-target="#byprofile" type="button" role="tab" aria-controls="byorgs" aria-selected="true">{% trans 'By profile' %}</a>
+  </li>
 </ul>
 
 
@@ -172,6 +178,20 @@
             <table   id="orpermelement" class="compact nowrap w-100"> </table>
             </div>
         </div>
+								<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
+									<div class="jumbotron">
+										<h6>Help Text</h6>
+										<p>{% trans 'This section will assign permissions groups to some profile who belongs to selected organization. If you do not find the user in profile selector, could you add it from By organization tab.' %}</p>
+									</div>
+									<form method="post" id="groups_by_profile_form">
+										{% csrf_token %}
+										{{profile_group_form.as_horizontal}}
+										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
+																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
+										</form>
+        </div>
+
+
 </div>
     </div>
 </div>
@@ -348,6 +368,7 @@ prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}";
 userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
 delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
 create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
+groups_by_profile = "{% url 'groupsbyprofile-list' %}"
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 {% endblock%}

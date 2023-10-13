@@ -15,7 +15,6 @@
 {% load i18n static %}
 {% block content %}
   {% if request.user.is_authenticated %}
-    {% include 'laboratory/search_widget.html' %}
 
     <div class="row">
       {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
