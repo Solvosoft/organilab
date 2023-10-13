@@ -593,9 +593,8 @@ class ShelfSerializer(serializers.ModelSerializer):
             measurement_unit_list = list(set(obj.get_objects().filter(containershelfobject=None) \
                 .values_list('measurement_unit', 'measurement_unit__description')))
 
-            print(measurement_unit_list)
             for unit in measurement_unit_list:
-                total_detail += "%d %s<br>" % (
+                total_detail += "%.2f %s<br>" % (
                     obj.get_total_refuse(include_containers=False,
                                          measurement_unit=unit[0]), unit[1]
                 )
