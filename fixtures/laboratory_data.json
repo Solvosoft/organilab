@@ -1593,6 +1593,7 @@
       "model": "",
       "serie": "",
       "plaque": "",
+      "is_container": true,
       "features": [
         1
       ]
@@ -2224,6 +2225,22 @@
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z",
       "container": null
+    }
+  },
+    {
+    "model": "laboratory.shelfobject",
+    "pk": 14,
+    "fields": {
+      "shelf": 1,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": 6
     }
   }
 ]
