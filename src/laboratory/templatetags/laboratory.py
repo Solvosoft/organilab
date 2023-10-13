@@ -9,7 +9,6 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from academic.models import ProcedureStep, ProcedureRequiredObject
-from laboratory.forms import ObjectSearchForm
 from django.shortcuts import get_object_or_404
 from laboratory.utils import check_lab_group_has_perm, filter_laboratorist_profile, \
     get_user_laboratories
@@ -17,19 +16,6 @@ from laboratory import models as laboratorymodels
 from presentation.utils import get_qr_by_instance, build_qr_instance
 
 register = template.Library()
-
-
-@register.simple_tag(takes_context=True)
-def get_search_form(context):
-    request = context['request']
-    org = context['request'].resolver_match.kwargs.get('org_pk', None)
-    user = context['request'].user
-    if 'q' in request.GET:
-        form = ObjectSearchForm(request.GET, org_pk=org, user=user)
-    else:
-        form = ObjectSearchForm(org_pk=org,user=user)
-    return form
-
 
 @register.simple_tag(takes_context=True)
 def has_perms(context, codename, lab_pk=None):

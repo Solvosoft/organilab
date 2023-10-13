@@ -34,3 +34,7 @@
     </div>
   {% endif %}
 {% endblock %}
+{% block javascript %}
+{{block.super}}
+<script src="{% static 'laboratory/js/object_creation.js'%}"></script>
+{% endblock %}

@@ -20,9 +20,8 @@ from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, Co
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
-from laboratory.search import SearchObject, SearchDisposalObject
+from laboratory.search import SearchDisposalObject
 from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
-from laboratory.validators import validate_duplicate_initial_date
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import inform_period
 from laboratory.views import labroom, shelfobject, laboratory, organizations
@@ -46,13 +45,10 @@ organization_urls_org_pk = [
 ]
 
 urlpatterns = [
-    path('rp/api/reservedProducts/<int:pk>/', ApiReservedProductsCRUD.as_view(), name='api_reservation_detail'),
-    path('rp/api/reservedProducts', ApiReservedProductsCRUD.as_view(), name='api_reservation_create'),
     path('rp/api/reservedProducts/<int:pk>/delete/', ApiReservedProductsCRUD.as_view(), name='api_reservation_delete'),
     path('rp/api/reservedProducts/<int:pk>/update/', ApiReservedProductsCRUD.as_view(), name='api_reservation_update'),
     path('r/api/reservation/', ApiReservationCRUD.as_view(), name='api_individual_reservation_create'),
     path('reserve_object/<int:modelpk>', ShelfObjectReservation.as_view(), name="object_reservation"),
-    path('validators', validate_duplicate_initial_date, name="date_validator"),
     path('returnLabId', return_laboratory_of_shelf_id, name="get_lab_id"),
 ]
 
@@ -232,7 +228,6 @@ urlpatterns += organization_urls + [
     path('inform_manager/<int:org_pk>/', include(informs_period_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/protocols/', include(lab_protocols_urls)),
     path('lab/<int:org_pk>/<int:pk>/delete/', LaboratoryDeleteView.as_view(), name="laboratory_delete"),
-    path('lab/<int:org_pk>/<int:lab_pk>/search/', SearchObject.as_view(), name="search"),
     path('lab/<int:org_pk>/search/disposal/', SearchDisposalObject.as_view(), name="disposal_substance"),
     path('lab/<int:org_pk>/<int:lab_pk>/rooms/', include(lab_rooms_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/furniture/', include(lab_furniture_urls)),

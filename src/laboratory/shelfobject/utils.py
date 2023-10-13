@@ -82,9 +82,9 @@ def clone_shelfobject_limits(shelfobject, user):
 def get_available_containers_for_selection(laboratory_id, shelf_id):
     # all containers that belong to a laboratory that are not in use.  If shelf is limited it only returns those allowed.
     shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE), pk=shelf_id)
-    
-    filters = { 'in_where_laboratory_id': laboratory_id, 'object__type': Object.MATERIAL,
-                'containershelfobject':None }
+
+    filters = {'in_where_laboratory_id': laboratory_id, 'object__type': Object.MATERIAL,
+                'containershelfobject': None, 'object__is_container': True}
     if shelf.limit_only_objects:
         filters['object__pk__in'] = shelf.available_objects_when_limit.values_list('pk')
 
@@ -95,11 +95,12 @@ def get_containers_for_cloning(organization_id, shelf_id):
      # any object of type material that belongs to the organization (and its ancestors) can be a container.  If shelf is limited it only returns those allowed.
     organizations = get_pk_org_ancestors(organization_id)
     shelf = get_object_or_404(Shelf.objects.using(settings.READONLY_DATABASE), pk=shelf_id)
-    
-    filters = { 'organization__in': organizations, 'type': Object.MATERIAL }
+
+    filters = {'organization__in': organizations, 'type': Object.MATERIAL,
+               'is_container': True}
     if shelf.limit_only_objects:
         filters['limit_objects'] = shelf
-        
+
     containers = Object.objects.filter(**filters)
     return containers
 
@@ -357,7 +358,7 @@ def group_object_errors_for_serializer(errors, save_to_key="shelf_object", keys_
             object_errors.append(error)
         else:  # any other error goes in its own key
             updated_errors[key] = error
-            
+
         if object_errors:
             updated_errors[save_to_key] = object_errors
     return updated_errors

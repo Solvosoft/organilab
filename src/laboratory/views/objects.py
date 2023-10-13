@@ -17,7 +17,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
-from laboratory.forms import ObjectForm
+from laboratory.forms import ObjectForm, ObjectUpdateForm
 from laboratory.models import Laboratory, BlockedListNotification, \
     OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
@@ -54,11 +54,13 @@ class ObjectView(object):
 
                 if object.type == Object.MATERIAL:
                     object.save()
-                    capacity_data = {'capacity':form.cleaned_data['capacity'],
-                                'capacity_measurement_unit': form.cleaned_data['capacity_measurement_unit'],
-                                'object':object}
+                    is_container = object.is_container
+                    if is_container:
+                        capacity_data = {'capacity':form.cleaned_data['capacity'],
+                                    'capacity_measurement_unit': form.cleaned_data['capacity_measurement_unit'],
+                                    'object':object}
 
-                    MaterialCapacity.objects.create(**capacity_data)
+                        MaterialCapacity.objects.create(**capacity_data)
 
 
 
@@ -91,18 +93,21 @@ class ObjectView(object):
 
                 capacity_form = None
                 if object.type==Object.MATERIAL:
-                    capacity_data = {'capacity': form.cleaned_data['capacity'],
-                                     'capacity_measurement_unit': form.cleaned_data[
-                                         'capacity_measurement_unit'],
-                                     'object': object}
-                    if hasattr(object,'materialcapacity'):
-                        material_capacity= object.materialcapacity
-                        material_capacity.capacity=capacity_data['capacity']
-                        material_capacity.capacity_measurement_unit = (
-                            form.cleaned_data)['capacity_measurement_unit']
-                        material_capacity.save()
-                    else:
-                        MaterialCapacity.objects.create(**capacity_data)
+                    is_container = object.is_container
+                    if is_container:
+
+                        capacity_data = {'capacity': form.cleaned_data['capacity'],
+                                         'capacity_measurement_unit': form.cleaned_data[
+                                             'capacity_measurement_unit'],
+                                         'object': object}
+                        if hasattr(object,'materialcapacity'):
+                            material_capacity= object.materialcapacity
+                            material_capacity.capacity=capacity_data['capacity']
+                            material_capacity.capacity_measurement_unit = (
+                                form.cleaned_data)['capacity_measurement_unit']
+                            material_capacity.save()
+                        else:
+                            MaterialCapacity.objects.create(**capacity_data)
 
                 organilab_logentry(self.request.user, object, CHANGE,  changed_data=changed_data, relobj=self.lab)
                 return super(ObjectUpdateView, self).form_valid(object)
@@ -117,7 +122,7 @@ class ObjectView(object):
         capacity = None
         self.edit = ObjectUpdateView.as_view(
             model=self.model,
-            form_class=ObjectForm,
+            form_class=ObjectUpdateForm,
             template_name=self.template_name_base + "_form.html"
         )
 
