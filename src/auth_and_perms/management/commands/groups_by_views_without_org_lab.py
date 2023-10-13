@@ -37,6 +37,13 @@ class Command(BaseCommand):
                 ]
             },
             {
+                "name": "Work Inside Organizations",
+                "permissions": [
+                    "laboratory.change_organizationstructure",
+                    "laboratory.view_organizationstructure"
+                ]
+            },
+            {
                 "name": "Blog",
                 "permissions": ["blog.view_entry", "blog.delete_entry",
                                 "blog.add_entry", "blog.change_entry",

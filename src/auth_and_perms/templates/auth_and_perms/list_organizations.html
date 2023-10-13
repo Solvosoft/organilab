@@ -18,11 +18,14 @@
 {% block content %}
 <div class="row">
 <div class="col">
+
+{% if perms.laboratory.add_organizationstructure %}
 <div class="row">
     <div class="text-purple-400 text-center">
         <span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
     </div>
 </div>
+{% endif %}
 
 {% for node in nodes %}
 <div class="row">
