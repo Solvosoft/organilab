@@ -80,9 +80,9 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
+            "is_container": True,
             "capacity":200,
             "capacity_measurement_unit":64,
-
         }
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 302)
