@@ -48,7 +48,8 @@ class CreateShelfobjectTest(TestCase):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
-            "organization": self.org
+            "organization": self.org,
+            "is_container": True
         }
         material = Object.objects.create(**material_data)
         material.features.add(ObjectFeatures.objects.get(pk=1))
@@ -114,7 +115,8 @@ class CreateShelfobjectTest(TestCase):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
-            "organization": self.org
+            "organization": self.org,
+            "is_container":True
         }
         material = Object.objects.create(**material_data)
         material.features.add(ObjectFeatures.objects.get(pk=1))
@@ -182,7 +184,8 @@ class CreateShelfobjectTest(TestCase):
             "serie": "Ácido 222",
             "plaque": "AC4300",
             "type": "1",
-            "organization": self.org
+            "organization": self.org,
+            "is_container": True,
         }
         material = Object.objects.create(**material_data)
         material.features.add(ObjectFeatures.objects.get(pk=1))

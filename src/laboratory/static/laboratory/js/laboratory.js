@@ -338,6 +338,7 @@ var inputElm = document.querySelector('input[name=tags-search]');
 
 
 const tagify = new Tagify(inputElm, {
+    delimiters : null,
     templates : {
         tag : function(tagData){
             try{
