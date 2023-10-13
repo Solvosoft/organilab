@@ -1,3 +1,4 @@
+import datetime
 import json
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -7,6 +8,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import Sum, Q, Max, Min
 from django.db.models.expressions import F
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
 from tree_queries.fields import TreeNodeForeignKey
@@ -16,6 +18,30 @@ from tree_queries.query import TreeQuerySet
 from presentation.models import AbstractOrganizationRef
 from . import catalog
 
+def upload_security_sheets(instance, filename):
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"security_sheets/{slugify(date)}/{slugify(fname)}.{extension}"
+
+def upload_substance_img_representation(instance, filename):
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"sustances/{slugify(date)}/{slugify(fname)}.{extension}"
+
+def upload_register_user_qr(instance, filename):
+    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"register_user_qr/{slugify(date)}/{slugify(fname)}.{extension}"
+
+def upload_protocol_file(instance, filename):
+    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"protocols/{slugify(date)}/{slugify(fname)}.{extension}"
+
+def upload_shelf_object_qr(instance, filename):
+    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"shelf_object_qr/{slugify(date)}/{slugify(fname)}.{extension}"
 
 class BaseCreationObj(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -131,7 +157,7 @@ class SustanceCharacteristics(models.Model):
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)
     security_sheet = models.FileField(
-        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+        _('Security sheet'), upload_to=upload_security_sheets, null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
     precursor_type = catalog.GTForeignKey(Catalog, related_name="gt_precursor",
                                           on_delete=models.SET_NULL,
@@ -153,7 +179,7 @@ class SustanceCharacteristics(models.Model):
                                               verbose_name=_('Storage class'))
     seveso_list = models.BooleanField(verbose_name=_('Is Seveso list III?'),
                                       default=False)
-    img_representation = models.ImageField(upload_to='sustances/',
+    img_representation = models.ImageField(upload_to=upload_substance_img_representation,
                                            verbose_name=_('Sustance representation'),
                                            null=True, blank=True)
 
@@ -216,7 +242,7 @@ class ShelfObject(models.Model):
 
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
     shelf_object_qr = models.FileField(null=True, verbose_name=_('Shelf Object QR'),
-                                       upload_to='shelf_object_qr/')
+                                       upload_to=upload_shelf_object_qr)
     container = models.ForeignKey('self', null=True, blank=True,
                                   on_delete=models.SET_NULL,
                                   verbose_name=_("Container"),
@@ -887,7 +913,7 @@ class LabOrgLogEntry(models.Model):
 
 class Protocol(BaseCreationObj):
     name = models.CharField(_("Name"), max_length=300)
-    file = models.FileField(upload_to="protocols", verbose_name=_("Protocol PDF File"),
+    file = models.FileField(upload_to=upload_protocol_file, verbose_name=_("Protocol PDF File"),
                             validators=[
                                 FileExtensionValidator(allowed_extensions=['pdf'])])
 
@@ -957,7 +983,7 @@ class RegisterUserQR(models.Model):
     activate_user = models.BooleanField(default=True, verbose_name=_('Activate user'))
     url = models.TextField(verbose_name=_("Url"))
     register_user_qr = models.FileField(_('Register user QR'),
-                                        upload_to='register_user_qr/')
+                                        upload_to=upload_register_user_qr)
     role = models.ForeignKey('auth_and_perms.Rol', on_delete=models.DO_NOTHING,
                              verbose_name=_('Role'))
 
