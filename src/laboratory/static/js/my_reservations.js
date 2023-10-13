@@ -4,11 +4,6 @@ var table
 var values
 
 //########################################FUNCTIONS USED BY OTHER FUNCTIONS
-/*Function necessary to filter an array and only have the distinct elements*/
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 /*Function to get all elements with an specific name*/
 function get_all_elements_with_name(name){
     list = [];
@@ -139,9 +134,6 @@ function make_reservation(){
 
     $.get(document.get_lab_id_script_url, input,
     function({ lab_ids }) {
-
-        //lab_to_make_reservation = lab_ids.filter(onlyUnique); //We only need the individual lab id's
-        //for (i=0; i < lab_to_make_reservation.length; i++){
             data = {
                 "user": user,
                 //"laboratory": lab_to_make_reservation[i],

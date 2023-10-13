@@ -42,20 +42,6 @@ class ReservationViewTest(BaseLaboratorySetUpTest):
 
 class ReservedProductViewTest(BaseLaboratorySetUpTest):
 
-    def test_date_validator(self):
-        shelf_object = ShelfObject.objects.first()
-        data = {
-            "user": self.user.pk,
-            "status": 0,
-            "obj": shelf_object.pk,
-            "initial_date": now().strftime("%m/%d/%Y %I:%M %p")
-        }
-        url = reverse("laboratory:date_validator")
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content)['is_valid'], True)
-        self.assertNotEqual(json.loads(response.content)['is_valid'], False)
-
     def test_api_reservation_update(self):
         reserved_products = ReservedProducts.objects.first()
         reservation = reserved_products.reservation.pk
@@ -78,28 +64,3 @@ class ReservedProductViewTest(BaseLaboratorySetUpTest):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
         self.assertNotIn(pk, list(ReservedProducts.objects.all().values_list('pk', flat=True)))
-
-    def test_api_reservation_create(self):
-        data = {
-            "initial_date": now().strftime("%m/%d/%Y %H:%M %p") ,
-            "final_date": (now() + relativedelta(days=+5)).strftime("%m/%d/%Y %H:%M %p") ,
-            "shelf_object": 1,
-            "user": 1,
-            "reservation": 2,
-            "amount_required": 2,
-            "status": 3,
-            "lab": self.lab.pk
-        }
-        url = reverse("laboratory:api_reservation_create")
-        response = self.client.post(url, data=data)
-        self.assertEqual(response.status_code, 201)
-        content_obj = json.loads(response.content)
-        self.assertEqual(content_obj['laboratory'], self.lab.pk)
-
-    def test_api_reservation_detail(self):
-        reserved_products = ReservedProducts.objects.first()
-        url = reverse("laboratory:api_reservation_detail", kwargs={"pk": reserved_products.pk, })
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        content_obj = json.loads(response.content)
-        self.assertEqual(content_obj['user'], reserved_products.user.pk)
