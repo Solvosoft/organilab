@@ -1,2 +1,5 @@
+13/10/2023
+    - python manage.py set_mediafiles_names
+
 04/02/2020
     - python manage.py create_profile
