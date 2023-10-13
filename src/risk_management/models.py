@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 from presentation.models import AbstractOrganizationRef
@@ -62,6 +65,11 @@ class RiskZone(AbstractOrganizationRef):
         verbose_name_plural = _('Risk zones')
         ordering = ('priority', 'pk')
 
+def upload_notification_copy(instance, filename):
+    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"notifications/{slugify(date)}/{slugify(fname)}.{extension}"
+
 class IncidentReport(AbstractOrganizationRef):
     creation_date = models.DateTimeField(auto_now_add=True)
     short_description = models.CharField(max_length=500, verbose_name=_("Descipción corta"),
@@ -97,7 +105,7 @@ class IncidentReport(AbstractOrganizationRef):
         help_text=_('''Recomendaciones que describan en detalle las medidas que se vayan a llevar a cabo para reducir el riesgo de que accidentes similares vuelvan a producirse.''')
     )
 
-    notification_copy = models.FileField(upload_to='notifications/',
+    notification_copy = models.FileField(upload_to=upload_notification_copy,
                 verbose_name=_('En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)'),
                 null=True, blank=True)
 

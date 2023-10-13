@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from tree_queries.models import TreeNode
 
@@ -309,6 +312,10 @@ class TemplateSGA(AbstractOrganizationRef):
         verbose_name = _('Template SGA')
         verbose_name_plural = _('Templates SGA')
 
+def upload_logo(instance, filename):
+    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    fname, dot, extension = filename.rpartition('.')
+    return f"sga/logo/{slugify(date)}/{slugify(fname)}.{extension}"
 
 class DisplayLabel(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
@@ -323,7 +330,7 @@ class DisplayLabel(AbstractOrganizationRef):
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.CASCADE)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True,
                                blank=True)
-    logo = models.FileField(_('Logo'), upload_to='sga/logo/', null=True, blank=True)
+    logo = models.FileField(_('Logo'), upload_to=upload_logo, null=True, blank=True)
 
     def __str__(self):
         recipient = RecipientSize.objects.get(pk=self.template.recipient_size.pk)
