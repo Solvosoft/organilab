@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 import json
 
-from risk_management.models import *
+from risk_management.models import IncidentReport
 
 
 class IncidentReportTest(TestCase):
@@ -50,6 +50,7 @@ class IncidentReportTest(TestCase):
 
     def test_update_incident(self):
         self.url_attr['pk']=IncidentReport.objects.last().pk
+
         data = {
             'short_description': 'Incendió',
             'causes': 'Alguien fumando',
