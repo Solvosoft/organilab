@@ -29,17 +29,17 @@ def upload_substance_img_representation(instance, filename):
     return f"sustances/{slugify(date)}/{slugify(fname)}.{extension}"
 
 def upload_register_user_qr(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     fname, dot, extension = filename.rpartition('.')
     return f"register_user_qr/{slugify(date)}/{slugify(fname)}.{extension}"
 
 def upload_protocol_file(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     fname, dot, extension = filename.rpartition('.')
     return f"protocols/{slugify(date)}/{slugify(fname)}.{extension}"
 
 def upload_shelf_object_qr(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     fname, dot, extension = filename.rpartition('.')
     return f"shelf_object_qr/{slugify(date)}/{slugify(fname)}.{extension}"
 

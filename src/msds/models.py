@@ -9,12 +9,12 @@ from tree_queries.models import TreeNode
 from presentation.models import AbstractOrganizationRef
 
 def upload_msds(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     fname, dot, extension = filename.rpartition('.')
     return f"msds/{slugify(date)}/{slugify(fname)}.{extension}"
 
 def upload_regulation_document(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
+    date = int(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     fname, dot, extension = filename.rpartition('.')
     return f"regulation/{slugify(date)}/{slugify(fname)}.{extension}"
 
