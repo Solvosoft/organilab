@@ -10,6 +10,7 @@ from msds.models import MSDSObject, RegulationDocument
 from report.models import TaskReport
 from risk_management.models import IncidentReport
 from sga.models import DisplayLabel
+from pathlib import Path
 
 
 class Command(BaseCommand):
@@ -20,10 +21,15 @@ class Command(BaseCommand):
         initial_path = media.path
         actual_name = media.name
         last_slash_index = 0
+        path = Path(media.name)
+        extension = path.suffix
+        name = slugify(path.stem)
+
         if actual_name.find("/")>-1:
             last_slash_index = actual_name.rindex('/')
-        fname, dot, extension = actual_name[last_slash_index::].rpartition('.')
-        new_name = actual_name[0:last_slash_index] + "/" + slugify(fname) + "." + extension
+
+        new_name = actual_name[0:last_slash_index] + "/" + slugify(name)+extension
+        print(new_name)
         new_path = settings.MEDIA_ROOT + new_name
 
         return [new_name,initial_path,new_path]
@@ -74,11 +80,11 @@ class Command(BaseCommand):
             if protocol.file:
 
                 name, initial_path, new_path = self.set_media_name(protocol.file)
-                protocols.file.name = name
+                protocol.file.name = name
 
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
-                    protocols.save()
+                    protocol.save()
 
     def set_register_user_qr(self):
         register_users = RegisterUserQR.objects.all()
