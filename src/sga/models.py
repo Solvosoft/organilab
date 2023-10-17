@@ -8,6 +8,7 @@ from tree_queries.models import TreeNode
 
 from laboratory import catalog
 from laboratory.models import Catalog
+from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
 
 
@@ -185,7 +186,7 @@ class SubstanceCharacteristics(models.Model):
     cas_id_number = models.CharField(
         _('Cas ID Number'), max_length=255, null=True, blank=True)
     security_sheet = models.FileField(
-        _('Security sheet'), upload_to='security_sheets/', null=True, blank=True)
+        _('Security sheet'), upload_to=upload_files, null=True, blank=True)
     is_precursor = models.BooleanField(_('Is precursor'), default=False)
     precursor_type = catalog.GTForeignKey("laboratory.Catalog",
                                           related_name="gt_precursor_sga",
@@ -312,10 +313,6 @@ class TemplateSGA(AbstractOrganizationRef):
         verbose_name = _('Template SGA')
         verbose_name_plural = _('Templates SGA')
 
-def upload_logo(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
-    fname, dot, extension = filename.rpartition('.')
-    return f"sga/logo/{slugify(date)}/{slugify(fname)}.{extension}"
 
 class DisplayLabel(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_("Name"))
@@ -330,7 +327,7 @@ class DisplayLabel(AbstractOrganizationRef):
     label = models.ForeignKey(Label, verbose_name=_("Label"), on_delete=models.CASCADE)
     barcode = models.CharField(max_length=150, verbose_name=_("Barcode"), null=True,
                                blank=True)
-    logo = models.FileField(_('Logo'), upload_to=upload_logo, null=True, blank=True)
+    logo = models.FileField(_('Logo'), upload_to=upload_files, null=True, blank=True)
 
     def __str__(self):
         recipient = RecipientSize.objects.get(pk=self.template.recipient_size.pk)

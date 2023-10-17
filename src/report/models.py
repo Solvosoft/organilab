@@ -6,6 +6,8 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
+from laboratory.models_utils import upload_files
+
 DELIVER = _('Delivered')
 WAIT = _('On hold')
 GENERATED = _('Generated')
@@ -14,10 +16,6 @@ STATUS_TEMPLATE=[(_('On hold'), WAIT),
                   (_('Generated'), GENERATED),
                  ]
 
-def upload_report(instance, filename):
-    date = int(datetime.now().strftime("%Y%m%d%H%M%S"))
-    fname, dot, extension = filename.rpartition('.')
-    return f"reports/{slugify(date)}/{slugify(fname)}.{extension}"
 
 class TaskReport(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,7 +24,7 @@ class TaskReport(models.Model):
     table_content = models.JSONField(null=True, blank=True)
     status = models.CharField(max_length=30, default=WAIT,choices=STATUS_TEMPLATE)
     file_type = models.CharField(max_length=30, blank=True, null=True)
-    file = models.FileField(upload_to=upload_report, blank=True, null=True)
+    file = models.FileField(upload_to=upload_files, blank=True, null=True)
     data = models.JSONField(null=True, blank=True)
     language = models.CharField(max_length=10, default=settings.LANGUAGE_CODE)
 
