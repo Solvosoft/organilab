@@ -30,10 +30,14 @@ class ChangeUser(UpdateView):
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
 
-        if not int(self.kwargs['pk']) == request.user.pk:
+        if str(self.kwargs['pk']) != str(request.user.pk):
             return HttpResponseNotFound('<h1>Page not found</h1>')
         else:
             return response
+    def get_initial(self):
+        dev = super().get_initial()
+        dev['language']=self.request.user.profile.language
+        return dev
 
     def get_success_url(self):
         return reverse_lazy('laboratory:profile', args=(self.kwargs['pk'],))
@@ -45,6 +49,9 @@ class ChangeUser(UpdateView):
 
     def form_valid(self, form):
         instance = form.save()
+        profile=instance.profile
+        profile.language=form.cleaned_data['language']
+        profile.save()
         return super(ChangeUser, self).form_valid(form)
 
 @login_required
