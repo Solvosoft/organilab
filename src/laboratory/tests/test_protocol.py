@@ -37,7 +37,7 @@ class ProtocolViewTest(BaseLaboratorySetUpTest):
         data = {
             "name": "Manejo de desechos",
             "short_description": "Manipulación de desechos ordinarios y reciclables y su destino.",
-            "file": self.chfile.upload_id
+            "file": json.dumps({'token': self.chfile.upload_id, 'name': 'protocol.pdf', 'display_text': 'protocol_test.pdf'})
         }
         url = reverse("laboratory:protocol_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data)
