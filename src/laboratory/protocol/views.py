@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.admin.models import ADDITION, DELETION, CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -7,13 +8,17 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from rest_framework.reverse import reverse_lazy
 
-from laboratory.models import Protocol, Laboratory, Object
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.models import Protocol, Laboratory, Object, OrganizationStructure
 from laboratory.protocol.forms import ProtocolForm
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView
 
 @permission_required('laboratory.view_protocol')
 def protocol_list(request, *args, **kwargs):
+    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),pk =kwargs['org_pk'])
+    user_is_allowed_on_organization(request.user, organization)
+
     context={
         'laboratory': kwargs['lab_pk'],
         'org_pk': kwargs['org_pk']
@@ -43,8 +48,10 @@ class ProtocolCreateView(CreateView):
         protocol.save()
         organilab_logentry(self.request.user, self.object, ADDITION, 'protocol', changed_data=form.changed_data, relobj=laboratory)
         return HttpResponseRedirect(self.get_success_url())
+    def form_invalid(self, form):
+        print(form.errors)
 
-
+@method_decorator(permission_required('laboratory.change_protocol'), name='dispatch')
 class ProtocolUpdateView(UpdateView):
     model = Protocol
     success_url = '/'
@@ -59,8 +66,10 @@ class ProtocolUpdateView(UpdateView):
         organilab_logentry(self.request.user, self.object, CHANGE, 'protocol', changed_data=form.changed_data, relobj=self.object.laboratory)
         return super(ProtocolUpdateView, self).form_valid(form)
 
+    def form_invalid(self, form):
+        print(form.errors)
 
-
+@method_decorator(permission_required('laboratory.delete_protocol'), name='dispatch')
 class ProtocolDeleteView(DeleteView):
     model = Protocol
     template_name = 'laboratory/protocol/delete.html'
