@@ -22,7 +22,7 @@
 
 {% url "laboratory:api-shelfobject-manage-shelfobject-container" lab_pk=laboratory org_pk=org_pk as manage_container_url %}
 {% trans 'Manage reactive container' as manage_container_tittle %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=manage_container_form id="managecontainermodal" title=manage_container_tittle form_id="movesoform" url=manage_container_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=manage_container_form id="managecontainermodal" title=manage_container_tittle form_id="manageconteinerform" url=manage_container_url %}
 
 
 <div aria-hidden="true" id="transfer-list-modal" class="modal fade" aria-labelledby="transfer-listmodal-title" role="dialog" tabindex="-1">
