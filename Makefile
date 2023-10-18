@@ -54,8 +54,9 @@ build_docker: clean trans
 release: clean trans builddocker
 
 dist:
-	echo $(setup_version)
-
+	#echo $(setup_version)
+	git tag -a "v$(setup_version)" -m "Bump version $(setup_version)"
+	git push origin "refs/tags/v$(setup_version)"
 
 start:
 	cd src && python manage.py migrate && python manage.py createcachetable
