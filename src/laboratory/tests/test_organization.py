@@ -83,7 +83,8 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "username": "admin",
             "last_name": "Organilab",
             "first_name": "Admin",
-            "email": "orgadmin@gmail.com"
+            "email": "orgadmin@gmail.com",
+            "language": "en"
         }
         response_post = self.client.post(url, data=data)
         self.assertRedirects(response_post, url)
