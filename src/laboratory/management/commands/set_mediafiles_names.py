@@ -29,7 +29,6 @@ class Command(BaseCommand):
             last_slash_index = actual_name.rindex('/')
 
         new_name = actual_name[0:last_slash_index] + "/" + slugify(name)+extension
-        print(new_name)
         new_path = settings.MEDIA_ROOT + new_name
 
         return [new_name,initial_path,new_path]
@@ -59,6 +58,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     substance.save()
+                    print(substance.security_sheet.url)
     def set_shelf_object_qr(self):
         shelfobjects = ShelfObject.objects.all()
 
@@ -71,6 +71,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     shelfobject.save()
+                    print(shelfobject.shelf_object_qr.url)
 
     def set_protocol_file(self):
         protocols = Protocol.objects.all()
@@ -85,6 +86,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     protocol.save()
+                    print(protocol.file.url)
 
     def set_register_user_qr(self):
         register_users = RegisterUserQR.objects.all()
@@ -98,6 +100,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     register_user.save()
+                    print(register_user.register_user_qr)
 
     def set_msds_file(self):
         msdsobjects = MSDSObject.objects.all()
@@ -110,6 +113,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     msds.save()
+                    print(msds.file)
 
     def set_regulation_document_file(self):
         regulation_docs = RegulationDocument.objects.all()
@@ -122,6 +126,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     regulation_doc.save()
+                    print(regulation_doc.file.url)
 
     def set_task_report_file(self):
         taskreports = TaskReport.objects.all()
@@ -134,6 +139,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     taskreport.save()
+                    print(taskreport.file.url)
 
     def set_incident_report_file(self):
         incident_reports = IncidentReport.objects.all()
@@ -146,6 +152,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     incident_report.save()
+                    print(incident_report.notification_copy.url)
 
     def set_display_label_logo(self):
         display_labels = DisplayLabel.objects.all()
@@ -158,6 +165,7 @@ class Command(BaseCommand):
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     display_label.save()
+                    print(display_label.logo.url)
 
     def handle(self, *args, **options):
 
