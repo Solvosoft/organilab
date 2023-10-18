@@ -7,7 +7,10 @@ from laboratory.tests.utils import BaseLaboratorySetUpTest
 import json
 
 class ProtocolViewTest(BaseLaboratorySetUpTest):
-
+    def get_permissions_by_contenttype(self, permname):
+        appname, codename =permname.split('.')
+        return Permission.objects.get(content_type__app_label=appname,
+                                      codename=codename)
     def setUp(self):
         super().setUp()
 
@@ -16,10 +19,11 @@ class ProtocolViewTest(BaseLaboratorySetUpTest):
         self.permissions.rol.clear()
         self.rol = Rol.objects.create(name="Protocol user")
         self.permissions.rol.add(self.rol)
-        self.add_permission = Permission.objects.get(pk=167)
-        self.update_permission = Permission.objects.get(pk=168)
-        self.delete_permission = Permission.objects.get(pk=169)
-        self.view_permission = Permission.objects.get(pk=170)
+
+        self.add_permission = self.get_permissions_by_contenttype('laboratory.add_protocol')
+        self.update_permission =  self.get_permissions_by_contenttype('laboratory.change_protocol')
+        self.delete_permission = self.get_permissions_by_contenttype('laboratory.delete_protocol')
+        self.view_permission = self.get_permissions_by_contenttype('laboratory.view_protocol')
 
     def test_protocol_list(self):
         self.rol.permissions.add(self.view_permission)
