@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -24,6 +25,7 @@ class CreateUserForm(forms.ModelForm, GTForm):
 
 
 class EditUserForm(forms.ModelForm, GTForm):
+    language = forms.ChoiceField(choices=settings.LANGUAGES, widget=djgenwidgets.Select)
 
     class Meta:
         model = User

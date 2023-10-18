@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-06 15:17-0600\n"
+"POT-Creation-Date: 2023-10-18 09:56-0600\n"
 "PO-Revision-Date: 2023-07-08 09:46-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -195,6 +195,16 @@ msgstr "Si, elimimarlo"
 msgid "Also disable user login on platform"
 msgstr "También deshabilitar el usuario para autenticarse en la plataforma"
 
+msgid "Success"
+msgstr "Éxito"
+
+msgid ""
+"There was a problem performing your request. Please try again later or "
+"contact the administrator."
+msgstr ""
+"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
+"contacte al administrador."
+
 msgid "Select an option from the available APIs in Organilab"
 msgstr "Seleccione una API de las disponibles en Organilab"
 
@@ -219,18 +229,6 @@ msgstr "Objetos"
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
 
-msgid "Add"
-msgstr "Agregar"
-
-msgid "Transfer"
-msgstr "Transferir"
-
-msgid "Reservation"
-msgstr "Reservación"
-
-msgid "Substract"
-msgstr "Sustraer"
-
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
@@ -239,16 +237,6 @@ msgstr "Le gustaría eliminar el contenedor"
 
 msgid "as well?"
 msgstr "también?"
-
-msgid "Success"
-msgstr "Éxito"
-
-msgid ""
-"There was a problem performing your request. Please try again later or "
-"contact the administrator."
-msgstr ""
-"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
-"contacte al administrador."
 
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
@@ -460,6 +448,9 @@ msgstr "¿Desea eliminar esta indicación de peligro?"
 
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
+
+msgid "Add"
+msgstr "Agregar"
 
 msgid "Comercial Name"
 msgstr "Nombre comercial"

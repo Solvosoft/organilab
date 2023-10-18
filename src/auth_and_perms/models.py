@@ -16,6 +16,8 @@ class Profile(models.Model):
     id_card = models.CharField(_('ID Card'), max_length=100)
     laboratories = models.ManyToManyField('laboratory.Laboratory', verbose_name=_("Laboratories"), blank=True)
     job_position = models.CharField(_('Job Position'), max_length=100)
+    language = models.CharField(max_length=4, default=settings.LANGUAGE_CODE,
+                                choices=settings.LANGUAGES, verbose_name=_("Language"))
 
     def __str__(self):
         name = self.user.get_full_name()
