@@ -75,7 +75,7 @@ function add_creation_help_func(div, objecttype){
     if(div.find('div.shelfinfocontainer').length){
         var creation_help_list = get_creation_help();
         var title = "<label>"+gettext("General Information")+"</label>";
-        var creation_help = "<div class='container px-3 pt-3 creation_help'>"+title+"<div class='card card-body'>";
+        var creation_help = "<div class='container px-3 pt-3 creation_help'>"+title+"<div class='card'><div class='card-body'>";
         var creation_length = creation_help_list.length - 1;
 
         $.each(creation_help_list, function(value) {
@@ -100,7 +100,7 @@ function add_creation_help_func(div, objecttype){
 
         }
 
-         creation_help += "</div></div>";
+         creation_help += "</div></div></div>";
         $(div).append(creation_help);
     }else{
         setTimeout(function(){

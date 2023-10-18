@@ -219,3 +219,12 @@ img {
  border: 1px solid #efeded;
  padding-top: 5px;
 }
+
+.shelfinfobody {
+    overflow: auto;
+    max-height: 12em;
+}
+
+.info_shelf p, strong {
+    font-size: 0.8em;
+}
