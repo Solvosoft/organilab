@@ -137,6 +137,7 @@ function send_create_profile_on_conttentype(data){
 $("#relateusertoorg").on('click', function(){
     $("#id_typeofcontenttype").val('organization');
      $("#id_profile").val(null).change();
+     $("#relprofilelabmodalLabel").html(gettext('Relate user to organization'));
      $("#relprofilelabmodal").modal('show');
 })
 $("#relateusertolab").on('click', function(){
@@ -145,6 +146,7 @@ $("#relateusertolab").on('click', function(){
 
     if (laboratory != undefined){
         $("#id_profile").val(null).change();
+        $("#relprofilelabmodalLabel").html(gettext('Relate user to laboratory'));
         $("#relprofilelabmodal").modal('show');
     }else{
     Swal.fire({
@@ -627,4 +629,11 @@ $("#savegroupsbyprofile").on("click", function(){
 
 $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
     reset_form("#groups_by_profile_form");
+    if(!$('.nodeorg:checked').val()){
+        Swal.fire({
+            icon: 'info',
+            title: gettext('No organization selected'),
+            text: gettext('You need to select a organization before using this tab.'),
+        });
+    }
 });
