@@ -629,6 +629,7 @@ class OrganizationStructure(TreeNode):
 
     @property
     def laboratories(self):
+        # TODO: Delete this
         labs = ""
         for lab in Laboratory.objects.filter(organization=self):
             if labs:
