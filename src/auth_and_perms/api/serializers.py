@@ -205,10 +205,10 @@ class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     {'shelf': _("Shelf does not belong to this laboratory.")})
 
-            if not organization.organizationstructurerelations_set.filter(
+            if (not organization.organizationstructurerelations_set.filter(
                 content_type__model='laboratory',
                 object_id=shelf.furniture.labroom.laboratory.pk
-            ).exists():
+            ).exists()) and shelf.furniture.labroom.laboratory.organization != organization:
                 logger.debug(
                     f'ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory.organization != organization')
                 raise serializers.ValidationError(
