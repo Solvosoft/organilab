@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+from django.urls import reverse
 from django_filters import FilterSet
 from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
@@ -7,7 +8,8 @@ from rest_framework.reverse import reverse_lazy
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
 from auth_and_perms.organization_utils import organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_in_html
-from laboratory.models import OrganizationStructure, Laboratory, Shelf,ShelfObject
+from laboratory.models import OrganizationStructure, Laboratory, Shelf, ShelfObject, \
+    Object
 from django.utils.translation import gettext_lazy as _
 import logging
 
@@ -227,3 +229,46 @@ class ValidateOrganizationSerializer(serializers.Serializer):
 class ValidateGroupsByProfileSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     groups = serializers.PrimaryKeyRelatedField(queryset=Group.objects.using(settings.READONLY_DATABASE), many=True, required=False)
+
+
+class ShelfObjectSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    shelf_name = serializers.SerializerMethodField()
+    laboratory_name = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        url = reverse('laboratory:rooms_list',
+                      kwargs={'lab_pk': obj.in_where_laboratory.pk,
+                              'org_pk': obj.in_where_laboratory.organization.pk}) +\
+              "?shelfobject=%d" % (obj.pk)
+        name = "<a target='_blank' href=%s>%s</a>" % (url, str(obj.object))
+        return name
+
+    def get_shelf_name(self, obj):
+        url = reverse('laboratory:rooms_list',
+                      kwargs={'lab_pk': obj.in_where_laboratory.pk,
+                              'org_pk': obj.in_where_laboratory.organization.pk}) + \
+              "?shelf=%d" % (obj.shelf.pk)
+        name = "<a target='_blank' href=%s>%s</a>" % (url, obj.shelf.name)
+        return name
+
+    def get_laboratory_name(self, obj):
+        url = reverse('laboratory:labindex',
+                      kwargs={'lab_pk': obj.in_where_laboratory.pk,
+                              'org_pk': obj.in_where_laboratory.organization.pk})
+        name = "<a target='_blank' href=%s>%s</a>" % (url, obj.in_where_laboratory.name)
+        return name
+
+    class Meta:
+        model = ShelfObject
+        fields = ['name', 'shelf_name', 'laboratory_name', 'quantity']
+
+
+class ShelfObjectDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class ValidateSearchShelfObjectSerializer(ValidateOrganizationSerializer):
+    object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE))

@@ -1,0 +1,49 @@
+{% load user_rol_tags %}
+{% load i18n %}
+{% has_perm_in_org organization.pk 'laboratory.view_laboratory' as can_laboratory%}
+{% has_perm_in_org organization.pk 'laboratory.do_report' as can_report %}
+{% has_perm_in_org organization.pk 'risk_management.view_riskzone' as can_riskzone %}
+{% has_perm_in_org organization.pk 'derb.view_customform' as can_inform %}
+{% has_perm_in_org organization.pk 'msds.view_msdsobject' as can_msds %}
+{% has_perm_in_org organization.pk 'sga.view_substance' as can_sustance %}
+
+{% organization_any_permission_required organization.pk 'laboratory.can_manage_disposal' 'laboratory.can_view_disposal' as disposal_perms %}
+
+	<div class="row">
+		<div class="">
+			<div class="">
+				<h4 class="w-100">{{organization.pk}} -- {{organization}}</h4>
+				{% if can_laboratory %}
+				<a class="btn btn-success btn-sm" title="{% trans 'My laboratories' %}"
+							href="{% url 'laboratory:mylabs'  organization.pk  %}"><i class="fa fa-flask"></i> {% trans 'My laboratories' %}</a>
+				{% endif %}
+				{% if can_report %}
+				<a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reports' %}"
+							href="{% url 'laboratory:reports' organization.pk %}"><i class="fa fa-medkit"></i> {% trans 'Reports' %}</a>
+				{% endif %}
+				{% if can_riskzone %}
+				<a class="btn btn-secondary btn-sm" href="{% url 'riskmanagement:riskzone_list' organization.pk %}"><i
+					class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+					{% trans 'Risk Zones' %}</a>
+				{% endif %}
+				{% if can_inform %}
+				<a class="btn btn-info btn-sm" href="{% url 'laboratory:inform_index' organization.pk %}">
+					<i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'Informs' %}</a>
+				{% endif %}
+				{% if can_msds %}
+				<a class="btn btn-danger btn-sm" href="{% url 'msds:index_msds' organization.pk %}"><i class="fa fa-file-text-o"
+																																																																																					aria-hidden="true"></i>
+					{% trans 'MSDS' %}</a>
+				{% endif %}
+				{% if can_sustance %}
+				<a class="btn btn-secondary btn-sm" href="{% url 'sga:add_personal' organization.pk  %}">
+					<i class="fa fa-tags" aria-hidden="true"></i> {% trans 'SGA' %}</a>
+				{% endif %}
+				{% if disposal_perms %}
+				<a class="btn btn-dark btn-sm" href="{% url 'laboratory:disposal_substance' organization.pk %}"><i class="fa fa-tags"
+																																																																																																	aria-hidden="true"></i>
+					{% trans 'Disposal' %}</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
