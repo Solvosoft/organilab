@@ -13,10 +13,13 @@ from rest_framework.response import Response
 from auth_and_perms.api.serializers import ValidateProfileSerializer, \
     ValidateOrganizationSerializer
 from auth_and_perms.models import Rol, ProfilePermission
+from auth_and_perms.node_tree import get_tree_organization_pks_by_user, \
+    get_org_parents_info
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_by_user
 from laboratory.forms import RelOrganizationPKIntForm
-from laboratory.models import Laboratory, OrganizationStructure, OrganizationStructureRelations
+from laboratory.models import Laboratory, OrganizationStructure, \
+    OrganizationStructureRelations, Object
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
 
 
@@ -381,3 +384,68 @@ class UsersByOrganization(BaseSelect2View):
         if not name:
             name = obj.username
         return name
+
+
+@register_lookups(prefix="orgtree", basename="orgtree")
+class OrgTree(BaseSelect2View):
+    model = OrganizationStructure
+    fields = ["name"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    user = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        parents, parents_pks = get_org_parents_info(self.user)
+        pks = []
+        for node in parents:
+            if node.pk not in pks:
+                get_tree_organization_pks_by_user(node, self.user, pks,
+                                      parents=parents_pks, extras={'active': True})
+
+        queryset = queryset.filter(pk__in=pks)
+        queryset = list(map(lambda id: queryset.get(pk=id), pks))
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.user = request.user
+        return super().list(request, *args, **kwargs)
+
+    def get_text_display(self, obj):
+        name = "%d | %s" % (obj.pk, obj.name)
+
+        if obj.parent:
+            name = "%s %d | %s" % ("--" * obj.level, obj.pk, obj.name)
+        return name
+
+
+@register_lookups(prefix="objbyorg", basename="objbyorg")
+class ObjectByOrganization(BaseSelect2View):
+    model = Object
+    fields = ["code", "name"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    user = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(organization=self.organization)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET)
+
+        if self.serializer.is_valid():
+            self.organization = self.serializer.validated_data.get('organization')
+            user_is_allowed_on_organization(request.user, self.organization)
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        return str(obj)
