@@ -48,9 +48,12 @@
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='top' form=transfer_out_object_form id="transfer_out_obj_id_modal" title=transfer_out_title form_id="transfer_out_form" url=transfer_out_url %}
 
 {% url 'laboratory:api-shelfobject-create-shelfobject' lab_pk=laboratory org_pk=org_pk  as create_shelfobject_url %}
+
+{% url 'laboratory:api-shelfobject-transfer-out-shelfobjects' lab_pk=laboratory org_pk=org_pk  as transfer_out_shelfobjects_url %}
 {% trans "Create Reactive" as reactive_title %}
 {% trans "Create Equipment" as equipment_title %}
 {% trans "Create Material" as material_title %}
+{% trans "Transfer all Shelfobjects" as transfer_shelfobjects_title %}
 
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_modal' form_id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_refuse_modal' form_id='reactive_refuse_form' title=reactive_title form=reactive_refuse_form url=create_shelfobject_url %}
@@ -58,6 +61,7 @@
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_refuse_modal' form_id='equipment_refuse_form' title=equipment_title  form=equipment_refuse_form url=create_shelfobject_url %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_modal' form_id='material_form' title=material_title form=material_form url=create_shelfobject_url %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_refuse_modal' form_id='material_refuse_form' title=material_title form=material_refuse_form url=create_shelfobject_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='top' id='transfer_shelfobjects_form' form_id='transfer_shelfobjects_form' title=transfer_shelfobjects_title form=transfer_shelfobjects_form url=transfer_out_shelfobjects_url %}
 
 {% url "laboratory:api-shelfobject-transfer-in-approve" lab_pk=laboratory org_pk=org_pk as transfer_in_approve_url %}
 {% trans "Approve Transfer In - Container" as transfer_in_approve_with_container_title %}

@@ -6,7 +6,8 @@ from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
-from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
+    ValidateTransferShelfobjectSerializer
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
@@ -1128,3 +1129,6 @@ class ValidateShelfInformationPositionSerializer(ValidateShelfSerializer):
 
     position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
+
+class TransferOutShelfobjectsSerializer(ValidateTransferShelfobjectSerializer):
+    marked_as_discard = serializers.BooleanField(default=False, required=False)

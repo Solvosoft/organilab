@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django_filters import FilterSet
 from rest_framework import serializers
 from rest_framework.reverse import reverse_lazy
@@ -227,3 +228,61 @@ class ValidateOrganizationSerializer(serializers.Serializer):
 class ValidateGroupsByProfileSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     groups = serializers.PrimaryKeyRelatedField(queryset=Group.objects.using(settings.READONLY_DATABASE), many=True, required=False)
+
+class ValidateTransferShelfobjectSerializer(serializers.Serializer):
+    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE),
+                                               allow_null=True, required=True)
+
+    def validate(self, data):
+        laboratory = data['laboratory']
+        lab_send = get_object_or_404(Laboratory,pk=self.context.get('source_laboratory_id'))
+        organization = data['organization']
+        user = self.context.get('user')
+        shelf_object = data.get("shelfobject")
+        shelf = data.get("shelf")
+
+        has_permission = organization_can_change_laboratory(lab_send, organization)
+        check_user_access = check_user_access_kwargs_org_lab(organization.pk, lab_send.pk, user)
+
+        if not has_permission:
+            logger.debug(
+                f'ValidateUserAccessOrgLabSerializer --> organization_can_change_laboratory is ({has_permission})')
+            raise serializers.ValidationError({'organization': _("Organization can't change this laboratory")})
+
+        if not check_user_access:
+            logger.debug(
+                f'ValidateUserAccessOrgLabSerializer --> check_user_access_kwargs_org_lab is ({check_user_access})')
+            raise serializers.ValidationError({'user': _("User doesn't have permissions")})
+
+        if shelf_object:
+            if shelf_object.in_where_laboratory != lab_send:
+                logger.debug(
+                    f'ValidateUserAccessOrgLabSerializer --> shelfobject.in_where_laboratory!=laboratory')
+                raise serializers.ValidationError(
+                    {'shelfobject': _("Shelfobject does not belong to this laboratory.")})
+
+            if shelf_object.in_where_laboratory.organization != organization:
+                logger.debug(
+                    f'ValidateUserAccessOrgLabSerializer --> shelfobject.in_where_laboratory.organization!= organization')
+                raise serializers.ValidationError(
+                    {'shelfobject': _("Shelfobject does not belong to this organization.")})
+
+        if shelf:
+            if shelf.furniture.labroom.laboratory != lab_send:
+                    logger.debug(
+                        f'ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory != laboratory')
+                    raise serializers.ValidationError(
+                        {'shelf': _("Shelf does not belong to this laboratory.")})
+
+            if (not organization.organizationstructurerelations_set.filter(
+                    content_type__model='laboratory',
+                    object_id=shelf.furniture.labroom.laboratory.pk
+                ).exists()) and shelf.furniture.labroom.laboratory.organization != organization:
+                logger.debug(f'ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory.organization != organization')
+                raise serializers.ValidationError(
+                        {'shelf': _("Shelf does not belong to this organization.")})
+
+
+        return data
