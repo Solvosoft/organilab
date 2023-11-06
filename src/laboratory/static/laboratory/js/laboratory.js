@@ -694,3 +694,9 @@ function updateContainerOfShelfObject(instance, event){
     $('input[name="mc-shelf"]').val($('#id_shelf').val());
 }
 
+function show_move_shelfobjects_modal(instance, event){
+    var modalid= $(instance).data('modalid');
+    var shelf_id= $(instance).data('shelf');
+    show_me_modal(instance, event);
+    $('input[name="move_shelf-shelf"]').val(shelf_id);
+}

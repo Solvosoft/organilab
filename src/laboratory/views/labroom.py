@@ -29,7 +29,7 @@ from ..shelfobject.forms import TransferOutShelfObjectForm, \
     ShelfObjectRefuseEquipmentForm, ShelfObjectEquipmentForm, \
     DecreaseShelfObjectForm, IncreaseShelfObjectForm, \
     TransferInShelfObjectApproveWithContainerForm, ContainerManagementForm, \
-    MoveShelfobjectWithContainerForm
+    MoveShelfobjectWithContainerForm, TransferShelfObjectsForm
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
@@ -179,6 +179,10 @@ class LaboratoryRoomsList(ListView):
         context['suggestions_tag'] = self.get_suggestions_tag()
         context['colors_tooltip'] = render_to_string('laboratory/shelfobject/colors_tooltip.html',
                                                       request=self.request)
+        context['transfer_shelfobjects_form'] = TransferShelfObjectsForm(users=self.request.user,
+                                                                         org=self.org,
+                                                                         prefix="move_shelf")
+
         return context
 
 

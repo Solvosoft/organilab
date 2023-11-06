@@ -501,3 +501,18 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
 class ContainerManagementForm(ContainerForm):
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.CharField(widget=genwidgets.HiddenInput)
+
+
+class TransferShelfObjectsForm(GTForm):
+    shelf = forms.IntegerField(widget=genwidgets.HiddenInput)
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.none(),
+                                        label=_("Laboratory"), required=True)
+    organization = forms.IntegerField(widget=genwidgets.HiddenInput)
+    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("Mark as discard"))
+
+    def __init__(self, *args, **kwargs):
+        users = kwargs.pop('users')
+        org = kwargs.pop('org')
+        super(TransferShelfObjectsForm, self).__init__(*args, **kwargs)
+        self.fields['organization'].initial = org
+        self.fields['laboratory'].queryset = users.profile.laboratories.filter(organization__pk=org)
