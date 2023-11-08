@@ -1,5 +1,5 @@
-API
-=====
+Inform API
+************
 
 There are 5 APIs implemented for data consulting for the following data models:
  - Objects (objectView)
@@ -15,7 +15,8 @@ There are 5 APIs implemented for data consulting for the following data models:
 The data itself can be accessed using the ``http://host/derb/organization_id/api/modelViewToConsult``.
 
 Form.io Configuration for Basic Select Component
-=================================================
+===================================================
+
 If the API is used in a select from ``Form.io``, follow these steps:
  - Access the ``Data tab``.
  - Change the ``Data Source Type`` to ``URL``.
@@ -33,7 +34,8 @@ If the API is used in a select from ``Form.io``, follow these steps:
  - Save the component.
 
 Form.io Configuration for Custom Select Component
-==================================================
+=======================================================
+
 The ``Custom Select`` loads the configured APIs and automatically configures the select component, to load its data.
 
 The APIs configured at this time are:
@@ -55,7 +57,8 @@ Component settings:
  - Save the component.
 
 New API for Custom Select Component
-====================================
+=====================================
+
 .. warning::
     It is recommended to create this API in ``derb`` application.
 
@@ -75,10 +78,9 @@ To create a new API follow these steps:
 
 
 Documentation from every view class
-====================================
+=====================================
+
 .. automodule:: derb.api.views
     :members:
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :no-undoc-members:
+    :noindex:

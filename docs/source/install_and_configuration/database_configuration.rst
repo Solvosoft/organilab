@@ -1,10 +1,10 @@
 Database configuration
-######################
+****************************
 
 In order to configure the database connection of the Django project, you must create the database resource and a user with permissions granted to manage such resource.
 
 Dependencies
-============
+==============
 
 * Install PostgreSQL: With a ``sudo`` session (or with any superuser privileges session) you must install the required packages to run the PostgreSQL DBMS.
 
@@ -27,7 +27,7 @@ Change it for this:
     local   all             all                                     peer
 
 Create the database
-===================
+=======================
 
 To create the database you must log in to the user postgres, elevating privileges with ``sudo``:
 
@@ -42,7 +42,7 @@ Create the database using the command ``createdb`` :
     $ createdb organilab --encoding=utf8
 
 Create the user
-===============
+=======================
 
 To create the database user, using the ``postgres`` session, execute the next command:
 
@@ -63,7 +63,7 @@ Also you must set a password for the user. To do so, run the next commands:
     Ingrésela nuevamente: <SECURE_PASSWORD>
 
 Grant privileges to the user
-============================
+==============================================
 
 To grant privileges to the user on the ``organilab`` database, run the next commands:
 
@@ -76,7 +76,7 @@ To grant privileges to the user on the ``organilab`` database, run the next comm
     postgres=# GRANT ALL PRIVILEGES ON DATABASE organilab TO organilab_user;
 
 Create the database structure
-#############################
+==============================================
 
 To create the schemas and the structure of the database, go to the ``organilab`` project root directory and run the next command:
 
@@ -87,7 +87,7 @@ To create the schemas and the structure of the database, go to the ``organilab``
 Now the database structure is defined, the only step left is to populate it.
 
 Populate the database
-#####################
+=======================
 
 To populate the ``organilab`` database, go to the ``organilab`` project root directory and run the next command:
 

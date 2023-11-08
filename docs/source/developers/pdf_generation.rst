@@ -1,10 +1,10 @@
 PDF Generation with Weasyprint
-##############################
+***********************************
 
 Follow this steps for generation PDF files with weasyprint.
 
 Dependencies
-============
+===============
 
 * Update the file: ``requirements.txt``.
 
@@ -38,11 +38,11 @@ Dependencies
 * Finally, you going to install Weasyprint.
 
 .. code-block:: bash
-	
+
 	pip install WeasyPrint
 
 Code
-====
+=========
 
 * You need to define a HTML view ("example_pdf.html"). In this HTML view, you can define the top, the body and the bottom of the PDF file.
 
@@ -94,7 +94,7 @@ Code
                    'datetime': timezone.now(),
                    'request': request
                    }
-    
+
         html = template.render(Context(context)).encode("UTF-8")
 
         page = HTML(string=html, encoding='utf-8').write_pdf()

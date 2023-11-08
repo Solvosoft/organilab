@@ -9,15 +9,14 @@ Welcome to Organilab's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
+   :caption: Contents:
 
-   installation
-   database_configuration
-   internationalization
-   pdf_generation
-   api_inform
-   my_procedure
-   search_lab_view
+   install_and_configuration/index
+   general_usage/index
+   administrative_usage/index
+   developers/index
+
 
 
 Indices and tables

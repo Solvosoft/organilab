@@ -1,12 +1,11 @@
-====
-API
-====
+Administrative Procedures API
+*******************************
 
 ProcedureAPI is a generic view that filter the information about procedure templates
 
-============================================
+
 ProcedureAPI functionality
-============================================
+===============================
 
 This Model ViewSet filters the procedures template for the organization and validate if the user relate to the
 organization is allow the table show all the procedures templates.

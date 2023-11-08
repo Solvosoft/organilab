@@ -1,5 +1,5 @@
 Internationalization
-####################
+***********************
 
 The goal of internationalization and localization is to allow a single Web application to offer its content in languages and formats tailored to the audience.
 
@@ -13,7 +13,7 @@ Essentially, Django does two things:
 To specify which parts (specially string and unicode instances) must be translated to the local language where the web app is being deployed, Django offers the functions located in ``django.utils.translation``.
 
 Standard translation
-====================
+=======================
 
 To specify an standard translation, use the ``ugettext_lazy`` function:
 
@@ -57,9 +57,9 @@ You need to put ``{% load i18n %}`` in the begining of the template, always afte
 
 .. code-block:: bash
 
-	{% load i18n %} 
+	{% load i18n %}
 	<html>
-		<head> 
+		<head>
 			<title> {% trans "This is the title." %} </title>
 		</head>
 		<body>
@@ -69,7 +69,7 @@ You need to put ``{% load i18n %}`` in the begining of the template, always afte
 
 * In a template with CSS:
 
-.. code-block:: bash
+.. code-block:: html
 
 	<html>
 		<head>
@@ -101,7 +101,7 @@ You need to put ``{% load i18n %}`` in the begining of the template, always afte
 			<h1> {% trans "Hello World!!" %} </h1>
 		</body>
 	</html>
-	
+
 Then, create a folder with the name of ``locale`` in your project (laboratory/locale), and execute the next command:
 
 .. code-block:: bash
@@ -110,4 +110,4 @@ Then, create a folder with the name of ``locale`` in your project (laboratory/lo
 
 -l es : indicates the translation lenguage.
 
-Edit the .po file. 
+Edit the .po file.
