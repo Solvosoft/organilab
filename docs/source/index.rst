@@ -6,16 +6,20 @@
 Welcome to Organilab's documentation!
 =====================================
 
+Welcome to organilab.
+
 Contents:
 
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
 
+   login
    install_and_configuration/index
    general_usage/index
    administrative_usage/index
    developers/index
+   usage_cases/index
 
 
 
