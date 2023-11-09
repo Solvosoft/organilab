@@ -397,16 +397,18 @@ class OrgTree(BaseSelect2View):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        parents, parents_pks = get_org_parents_info(self.user)
-        pks = []
-        for node in parents:
-            if node.pk not in pks:
-                get_tree_organization_pks_by_user(node, self.user, pks,
-                                      parents=parents_pks, extras={'active': True})
+        if self.user:
+            parents, parents_pks = get_org_parents_info(self.user)
+            pks = []
+            for node in parents:
+                if node.pk not in pks:
+                    get_tree_organization_pks_by_user(node, self.user, pks,
+                                          parents=parents_pks, extras={'active': True})
 
-        queryset = queryset.filter(pk__in=pks)
-        queryset = list(map(lambda id: queryset.get(pk=id), pks))
-        return queryset
+            queryset = queryset.filter(pk__in=pks)
+            queryset = list(map(lambda id: queryset.get(pk=id), pks))
+            return queryset
+        return queryset.none()
 
     def list(self, request, *args, **kwargs):
         self.user = request.user
@@ -427,11 +429,14 @@ class ObjectByOrganization(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    user = None
+    user, organization = None, None
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(organization=self.organization)
+        if self.organization:
+            queryset = queryset.filter(organization=self.organization)
+        else:
+            queryset = queryset.none()
         return queryset
 
     def list(self, request, *args, **kwargs):
