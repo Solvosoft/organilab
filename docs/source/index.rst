@@ -6,7 +6,9 @@
 Welcome to Organilab's documentation!
 =====================================
 
-Welcome to organilab.
+.. video:: ./_static/video/PresentacionOrganilab.mp4
+   :height: 400
+   :width: 600
 
 Contents:
 
