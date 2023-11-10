@@ -1,0 +1,147 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "user1pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user1",
+      "first_name": "User",
+      "last_name": "1",
+      "email": "user1@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "user2pass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "user2",
+      "first_name": "User",
+      "last_name": "2",
+      "email": "user2@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Organization 1",
+      "position": 0,
+      "level": 0,
+      "rol": [
+      ],
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization 2",
+      "position": 0,
+      "level": 0,
+      "rol": [
+      ],
+      "users": [2]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [
+      ]
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "TA1000",
+      "name": "Tanque 1000 mL",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "TA1000",
+      "name": "Tanque 1000 mL",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "B1000",
+      "name": "Botella 1000 mL",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  }
+]
