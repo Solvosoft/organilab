@@ -73,4 +73,4 @@ class ShelfObjectsByObjectViewTest7(WithoutObject):
     """
 
     def test_get_shelfobjects_by_objects_and_org_case1(self):
-        self.check_tests()
+        self.check_tests(user_in_org=True)
