@@ -355,6 +355,7 @@ class SearchShelfObjectOrganization(mixins.ListModelMixin,
         if validate_serializer.is_valid():
             self.object = validate_serializer.validated_data.get('object')
             self.organization = validate_serializer.validated_data.get('organization')
+            user_is_allowed_on_organization(request.user, self.organization)
             queryset = self.get_queryset()
             total = queryset.count()
             queryset = self.filter_queryset(queryset)
