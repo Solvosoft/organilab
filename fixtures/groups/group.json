@@ -168,5 +168,40 @@
       ],
       "users": [3, 2]
     }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": [
+      ]
+    }
+  },
+
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone_number": "7777-7777",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "laboratories": []
+    }
   }
 ]
