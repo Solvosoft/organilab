@@ -131,3 +131,32 @@ class TestUserProfile(TestCaseBase):
         msg = json.loads(response.content)['detail']
         self.assertTrue(user.groups.count()==0)
         self.assertTrue(msg == "Profile was updated successfully.")
+
+    def test_update_profile_group_str(self):
+        data = {"profile": 1,
+                "groups": ["sfa",4],
+                "organization":1}
+        groups = Group.objects.filter(pk__in=[1,4])
+        self.user1.groups.add(*groups)
+        response = self.client.post(self.url,data=data, content_type='application/json')
+
+        self.assertTrue(response.status_code==400)
+        user = get_user_model().objects.filter(username="user1").first()
+        self.assertFalse(user.groups.count()==0)
+        msg = json.loads(response.content)['errors']['groups'][0]
+        self.assertTrue(msg == 'Incorrect type. Expected pk value, received str.')
+
+
+    def test_update_profile_str(self):
+        data = {"profile": "fasga",
+                "groups": ["sfa",4],
+                "organization":1}
+        groups = Group.objects.filter(pk__in=[1,4])
+        self.user1.groups.add(*groups)
+        response = self.client.post(self.url,data=data, content_type='application/json')
+
+        self.assertTrue(response.status_code==400)
+        user = get_user_model().objects.filter(username="user1").first()
+        self.assertFalse(user.groups.count()==0)
+        msg = json.loads(response.content)['errors']['profile'][0]
+        self.assertTrue(msg == 'Incorrect type. Expected pk value, received str.')
