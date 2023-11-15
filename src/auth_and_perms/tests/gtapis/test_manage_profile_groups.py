@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.urls import reverse
 
 from auth_and_perms.tests.base_manage_profile_groups import TestCaseBase
@@ -43,7 +43,17 @@ class TestUserProfile(TestCaseBase):
         self.assertTrue(response.status_code==200)
         self.assertTrue(self.user3.groups.count()==0)
 
+    def test_get_profile_group_str_profile(self):
+        response = self.client.get(f'{self.url}?profile=sss')
+        self.assertTrue(response.status_code==400)
+        msg = json.loads(response.content)['errors']['profile'][0]
+        self.assertTrue(msg == "Incorrect type. Expected pk value, received str.")
 
+    def test_get_profile_group_unknwon_profile(self):
+        response = self.client.get(f'{self.url}?profile=40000')
+        self.assertTrue(response.status_code==400)
+        msg = json.loads(response.content)['errors']['profile'][0]
+        self.assertTrue(msg == f'Invalid pk "40000" - object does not exist.')
 class TestProfileSelect(TestCaseBase):
 
     def setUp(self):
@@ -71,3 +81,15 @@ class TestProfileSelect(TestCaseBase):
         self.assertTrue(response.status_code==403)
         msg = json.loads(response.content)['detail']
         self.assertTrue(msg == "Authentication credentials were not provided.")
+
+    def test_get_profile_group_str_org(self):
+        response = self.client.get(f'{self.url}?organization=sss')
+        self.assertTrue(response.status_code==400)
+        msg = json.loads(response.content)['errors']['organization'][0]
+        self.assertTrue(msg == "Incorrect type. Expected pk value, received str.")
+
+    def test_get_profile_group_unknwon_orge(self):
+        response = self.client.get(f'{self.url}?organization=66641')
+        self.assertTrue(response.status_code==400)
+        msg = json.loads(response.content)['errors']['organization'][0]
+        self.assertTrue(msg == f'Invalid pk "66641" - object does not exist.')
