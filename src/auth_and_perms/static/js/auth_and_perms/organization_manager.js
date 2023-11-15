@@ -245,6 +245,7 @@ document.profileroleselects={}
 function add_selected_elements_to_select2(select){
 
     return (data) => {
+        $(select).val(null).trigger('change');
         for(let x=0; x<data['results'].length; x++){
          if ($(select).find("option[value='" + data['results'][x].id + "']").length){
               $(select).find("option[value='" + data['results'][x].id + "']").remove();
