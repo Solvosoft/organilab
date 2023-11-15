@@ -19,16 +19,24 @@ class TestCaseBase(TestCase):
 
         self.user1 = get_user_model().objects.filter(username="user1").first()
         self.user2 = get_user_model().objects.filter(username="user2").first()
+        self.user3 = get_user_model().objects.filter(username="user3").first()
+        self.user4 = get_user_model().objects.filter(username="user4").first()
 
         # PROFILE
         self.profile1 = self.user1.profile
         self.profile2 = self.user2.profile
+        self.profile3 = self.user3.profile
+        self.profile4 = self.user4.profile
 
         self.client1 = Client()
         self.client2 = Client()
+        self.client3 = Client()
+        self.client4 = Client()
 
         self.client1.force_login(self.user1)
         self.client2.force_login(self.user2)
+        self.client3.force_login(self.user3)
+        self.client4.force_login(self.user4)
 
         # DEFAULT DATA
         self.org = self.org1
@@ -113,6 +121,28 @@ class OrganizationsByUserViewTest(TestCaseBase):
         self.url = reverse("orgtree-list")
         self.org = None
 
+    def check_level(self, org):
+       self.assertEqual(org.parent.level, org.level + 1)
+
+    def check_position(self, org):
+        self.assertTrue(org.parent.position < org.position)
+
+    def check_org_detail(self, org_pk_tree):
+        for i, org_pk in enumerate(org_pk_tree):
+            org = OrganizationStructure.objects.get(pk=org_pk)
+
+            if org.parent:
+                self.assertTrue(org.parent.pk in org_pk_tree)
+                self.assertTrue(i > org_pk_tree.index(org.parent.pk))
+
+            if org.level:
+                self.check_level(org)
+
+                if org.position:
+                    self.check_position(org)
+            else:
+                self.assertTrue(org.parent is None)
+
     def get_organizations_id_by_user(self):
         parents, parents_pks = get_org_parents_info(self.user)
         pks = []
@@ -126,6 +156,8 @@ class OrganizationsByUserViewTest(TestCaseBase):
 
     def check_organizations_result(self, response, status_code):
         organization_id_list = self.get_organizations_id_by_user()
+        org_exclude_list = OrganizationStructure.objects.exclude(
+            pk__in=organization_id_list)
         content = json.loads(response.content)
 
         if status_code == 200:
@@ -134,6 +166,11 @@ class OrganizationsByUserViewTest(TestCaseBase):
                 self.assertTrue(content["results"])
                 self.assertEqual(len(organization_id_list), content["total_count"])
                 self.assertEqual(organization_id_list, organization_response_list)
+
+                for org in org_exclude_list:
+                    self.assertTrue(org.pk not in organization_response_list)
+
+                self.check_org_detail(organization_id_list)
             else:
                 self.assertFalse(content["results"])
                 self.assertEqual(content["total_count"], 0)
@@ -192,3 +229,26 @@ class WithoutObject(ShelfObjectsByObjectViewTest):
         super().setUp()
         self.object = None
         del self.data["object"]
+
+
+class OrganizationButtonsByUserViewTest(TestCaseBase):
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("auth_and_perms:api_organization_buttons")
+
+    def check_organization_buttons_result(self, response, status_code, can_view_actions_buttons):
+        content = json.loads(response.content)
+
+        if status_code == 200:
+            self.assertTrue(self.org.name in content["result"])
+            self.assertEqual("btn-success" in content["result"], can_view_actions_buttons)
+            self.assertEqual("btn-primary" in content["result"], can_view_actions_buttons)
+            self.assertEqual("btn-secondary" in content["result"], can_view_actions_buttons)
+            self.assertEqual("btn-dark" in content["result"], can_view_actions_buttons)
+            self.assertEqual("btn-danger" in content["result"], can_view_actions_buttons)
+
+    def check_tests(self, user=None, client=None, user_in_org=False, status_code=400, can_view_actions_buttons=False):
+        response = self.check_user_in_organization(user, client, user_in_org)
+        self.check_status_code(response, status_code)
+        self.check_organization_buttons_result(response, status_code, can_view_actions_buttons)
