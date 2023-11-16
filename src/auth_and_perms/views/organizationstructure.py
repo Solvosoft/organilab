@@ -15,7 +15,7 @@ from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm, \
 from auth_and_perms.forms import LaboratoryOfOrganizationForm, \
     ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
-from auth_and_perms.node_tree import get_organization_tree
+from auth_and_perms.node_tree import get_organization_tree, get_org_parents_info
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from auth_and_perms.utils import send_email
 from authentication.forms import CreateUserForm
@@ -30,9 +30,7 @@ from django.conf import settings
 @login_required
 @permission_required("laboratory.change_organizationstructure")
 def organization_manage_view(request):
-    query_list = OrganizationStructure.os_manager.filter_organization_by_user(request.user).distinct()
-    parents=list(query_list.order_by('level'))
-    parents_pks=set(query_list.values_list('pk', flat=True))
+    parents, parents_pks = get_org_parents_info(request.user)
     nodes = []
     pks=[]
     for node in parents:
