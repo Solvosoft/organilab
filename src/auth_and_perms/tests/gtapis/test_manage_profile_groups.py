@@ -93,3 +93,9 @@ class TestProfileSelect(TestCaseBase):
         self.assertTrue(response.status_code==400)
         msg = json.loads(response.content)['errors']['organization'][0]
         self.assertTrue(msg == f'Invalid pk "66641" - object does not exist.')
+
+    def test_get_profile_other_org(self):
+        response = self.client.get(f'{self.url}?organization=2')
+        self.assertTrue(response.status_code==403)
+        msg = json.loads(response.content)['detail']
+        self.assertTrue(msg == "You do not have permission to perform this action.")

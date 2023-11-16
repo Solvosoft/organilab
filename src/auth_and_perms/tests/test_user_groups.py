@@ -54,15 +54,6 @@ class TestUserProfile(TestCaseBase):
         self.assertTrue(msg == "Not found.")
         self.assertTrue(user.groups.count()==0)
 
-    def test_update_profile_no_org(self):
-        data = {"profile": 1,
-                "groups":[1,2,3]}
-        response = self.client.post(self.url,data=data, content_type='application/json')
-        self.assertTrue(response.status_code==404)
-        user = get_user_model().objects.filter(username="user1").first()
-        msg = json.loads(response.content)['detail']
-        self.assertTrue(msg == "Not found.")
-        self.assertTrue(user.groups.count()==0)
 
     def test_update_profile_no_login(self):
         self.client.logout()
@@ -160,3 +151,45 @@ class TestUserProfile(TestCaseBase):
         self.assertFalse(user.groups.count()==0)
         msg = json.loads(response.content)['errors']['profile'][0]
         self.assertTrue(msg == 'Incorrect type. Expected pk value, received str.')
+
+    def test_update_profile_unknwon_profile(self):
+        data = {"profile": 1848464863,
+                "groups": [4],
+                "organization":1}
+        groups = Group.objects.filter(pk__in=[1,4])
+        self.user1.groups.add(*groups)
+        response = self.client.post(self.url,data=data, content_type='application/json')
+
+        self.assertTrue(response.status_code==400)
+        user = get_user_model().objects.filter(username="user1").first()
+        self.assertFalse(user.groups.count()==0)
+        msg = json.loads(response.content)['errors']['profile'][0]
+        self.assertTrue(msg == f'Invalid pk "1848464863" - object does not exist.')
+
+    def test_update_profile_unknwon_group(self):
+        data = {"profile": 1,
+                "groups": [5994686],
+                "organization":1}
+        groups = Group.objects.filter(pk__in=[1,4])
+        self.user1.groups.add(*groups)
+        response = self.client.post(self.url,data=data, content_type='application/json')
+
+        self.assertTrue(response.status_code==400)
+        user = get_user_model().objects.filter(username="user1").first()
+        self.assertFalse(user.groups.count()==0)
+        msg = json.loads(response.content)['errors']['groups'][0]
+        self.assertTrue(msg == f'Invalid pk "5994686" - object does not exist.')
+
+    def test_update_profile_unknwon_org(self):
+        data = {"profile": 1,
+                "groups": [4],
+                "organization":3138346384}
+        groups = Group.objects.filter(pk__in=[1,4])
+        self.user1.groups.add(*groups)
+        response = self.client.post(self.url,data=data, content_type='application/json')
+
+        self.assertTrue(response.status_code==404)
+        user = get_user_model().objects.filter(username="user1").first()
+        self.assertFalse(user.groups.count()==0)
+        msg = json.loads(response.content)['detail']
+        self.assertTrue(msg == 'Not found.')
