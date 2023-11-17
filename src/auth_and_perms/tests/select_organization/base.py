@@ -21,22 +21,26 @@ class TestCaseBase(TestCase):
         self.user2 = get_user_model().objects.filter(username="user2").first()
         self.user3 = get_user_model().objects.filter(username="user3").first()
         self.user4 = get_user_model().objects.filter(username="user4").first()
+        self.user5 = get_user_model().objects.filter(username="user5").first()
 
         # PROFILE
         self.profile1 = self.user1.profile
         self.profile2 = self.user2.profile
         self.profile3 = self.user3.profile
         self.profile4 = self.user4.profile
+        self.profile5 = self.user5.profile
 
         self.client1 = Client()
         self.client2 = Client()
         self.client3 = Client()
         self.client4 = Client()
+        self.client5 = Client()
 
         self.client1.force_login(self.user1)
         self.client2.force_login(self.user2)
         self.client3.force_login(self.user3)
         self.client4.force_login(self.user4)
+        self.client5.force_login(self.user5)
 
         # DEFAULT DATA
         self.org = self.org1
@@ -122,7 +126,7 @@ class OrganizationsByUserViewTest(TestCaseBase):
         self.org = None
 
     def check_level(self, org):
-       self.assertEqual(org.parent.level, org.level + 1)
+       self.assertEqual(org.parent.level + 1, org.level)
 
     def check_position(self, org):
         self.assertTrue(org.parent.position < org.position)
@@ -132,8 +136,12 @@ class OrganizationsByUserViewTest(TestCaseBase):
             org = OrganizationStructure.objects.get(pk=org_pk)
 
             if org.parent:
-                self.assertTrue(org.parent.pk in org_pk_tree)
-                self.assertTrue(i > org_pk_tree.index(org.parent.pk))
+                if org.parent.pk in org_pk_tree:
+                    self.assertTrue(i > org_pk_tree.index(org.parent.pk))
+
+                # check not related parent to user if not in org tree result
+                if i == 0 and self.user == self.user5:
+                    self.assertTrue(org.parent.pk not in org_pk_tree)
 
             if org.level:
                 self.check_level(org)
@@ -142,6 +150,7 @@ class OrganizationsByUserViewTest(TestCaseBase):
                     self.check_position(org)
             else:
                 self.assertTrue(org.parent is None)
+
 
     def get_organizations_id_by_user(self):
         parents, parents_pks = get_org_parents_info(self.user)
