@@ -434,7 +434,7 @@ class ObjectByOrganization(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.organization:
-            queryset = queryset.filter(organization=self.organization)
+            queryset = queryset.filter(organization=self.organization).order_by("name")
         else:
             queryset = queryset.none()
         return queryset

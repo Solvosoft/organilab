@@ -261,7 +261,7 @@ class ShelfObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = ['name', 'shelf_name', 'laboratory_name', 'quantity']
+        fields = ['id', 'name', 'shelf_name', 'laboratory_name', 'quantity']
 
 
 class ShelfObjectDataTableSerializer(serializers.Serializer):
