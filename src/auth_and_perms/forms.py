@@ -8,7 +8,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
 
 from auth_and_perms.models import Rol, Profile
-from laboratory.models import Laboratory, OrganizationStructure
+from laboratory.models import Laboratory, OrganizationStructure, Object
 
 
 class AddUserForm(GTForm, forms.Form):
@@ -174,3 +174,19 @@ class ProfileGroupForm(GTForm):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
                                             widget=genwidgets.SelectMultiple)
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
+
+
+class OrgTreeForm(GTForm):
+    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all(),
+                                          widget=AutocompleteSelect('orgtree')
+                                          )
+class SearchObjByOrgForm(GTForm):
+    object = forms.ModelChoiceField(queryset=Object.objects.all(),
+                                    widget=AutocompleteSelect('objbyorg', attrs={
+                                        'data-s2filter-organization': '#id_organization'
+                                    }), label=_("Search by object")
+                                    )
+
+class SearchShelfObjectViewsetForm(forms.Form):
+    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
+    object = forms.ModelChoiceField(queryset=Object.objects.all())

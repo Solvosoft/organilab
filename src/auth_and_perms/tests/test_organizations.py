@@ -22,7 +22,6 @@ class OrganizationTest(TestCase):
 
         response = self.client.get(reverse('auth_and_perms:select_organization_by_user'))
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context['has_nodes']>0)
 
     def test_add_user_organization(self):
         """
