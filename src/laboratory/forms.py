@@ -281,9 +281,8 @@ class CommentForm(forms.ModelForm, GTForm):
 class AddOrganizationForm(GTForm, forms.ModelForm):
     class Meta:
         model = OrganizationStructure
-        fields = ['name', 'parent']
+        fields = ['parent']
         widgets={
-            'name': genwidgets.TextInput,
             'parent': genwidgets.HiddenInput
         }
 
