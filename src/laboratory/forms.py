@@ -281,8 +281,9 @@ class CommentForm(forms.ModelForm, GTForm):
 class AddOrganizationForm(GTForm, forms.ModelForm):
     class Meta:
         model = OrganizationStructure
-        fields = ['parent']
+        fields = ['name', 'parent']
         widgets={
+            'name': genwidgets.TextInput,
             'parent': genwidgets.HiddenInput
         }
 
@@ -725,4 +726,13 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
             'plaque': genwidgets.TextInput,
             "type": genwidgets.HiddenInput,
             "is_container": genwidgets.YesNoInput
+        }
+
+
+class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = OrganizationStructure
+        fields = ['parent']
+        widgets={
+            'parent': genwidgets.HiddenInput
         }
