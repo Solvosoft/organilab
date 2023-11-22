@@ -1,49 +1,51 @@
 Descripción general del manejo de organización
 **************************************************
 
-/perms/organization/manage/
+Permisos requeridos:
+
+* *view_organizationstructure*: Permite visualizar el item **"Administración de Organizaciones"** en el menú de la barra lateral.
+* *change_organizationstructure*: Autoriza el ingreso a la vista de **"Administración de Organizaciones"**.
+* *add_organizationstructure*: Muestra los botones **"Agregar Organización"** y **"+"** que permiten realizar la acción del agregado de organizaciones base y organizaciones hijas.
+* *delete_organizationstructure*: Muestra el botón de eliminar organización **"-"** y por consiguiente permite realizar la acción del eliminado de organizaciones.
+
 
 Crear nueva organización base
 ================================
 
-/organization/create
+Cuando se menciona una organización base, se hace referencia a la organización raíz (sin antecesor) y que por
+consiguiente tendrá a futuro organizaciones descendientes (organizaciones hijas) o en casos menos comunes solo será la
+organización (organización única sin antecesor, ni sucesores).
 
-Cuando se menciona una organizacion base, se hace referencia a la organización raíz (sin antecesor) y que por
-consiguiente tendrá futuro organizaciones descendientes (organizaciones hijas) o en casos menos comunes no solo será la
-organización (organizaciones únicas sin antecesor, ni sucesores).
-
-Permisos requeridos:
-
-* **"view_organizationstructure"**: para visualizar el menú de gestión organizaciones.
-* **"change_organizationstructure"**: para ingresar a la vista de gestión de organizaciones.
-* **"add_organizationstructure"**: para apreciar el botón relacionado al agregado de una organization base y por consiguiente realizar la acción.
-
-
-.. video:: ../_static/manage_organization/organization/video/crear_organizacion_base.mp4
+.. video:: ../_static/manage_organization/organization/video/create_base_organization.mp4
    :height: 400
    :width: 600
+
+
+
+La organización base es la más conveniente a la hora de agregar laboratorios dado que se pueden relacionar estos con sus organizaciones hijas.
+
+
 
 
 Crear nueva organización hija
 ==================================
 
-/organization/create
+Las organizaciones hijas pueden tener organizaciones descendientes y siempre tendrán una organización base antecesora.
 
-Las organizaciones hijas pueden tener organizaciones descendientes y siempre tendrán una organización base antecesora,
-sin embargo esto puede cambiar si existe la necesidad de convertir una organización hija a una organización base se
-puede realizar.
-
-
-Permisos requeridos:
-
-* **"view_organizationstructure"**: para visualizar el menú de gestión organizaciones.
-* **"change_organizationstructure"**: para ingresar a la vista de gestión de organizaciones.
-* **"add_organizationstructure"**: para apreciar el botón relacionado al agregado de una organization base y por consiguiente realizar la acción.
-
-
-.. video:: ../_static/manage_organization/organization/video/crear_organizaciones_descendientes.mp4
+.. video:: ../_static/manage_organization/organization/video/create_descendants_organizations.mp4
    :height: 400
    :width: 600
+
+
+
+Cambiar padre de una organización
+=============================================
+
+.. video:: ../_static/manage_organization/organization/video/change_organization_parent.mp4
+   :height: 400
+   :width: 600
+
+
 
 Eliminar una organización
 ============================
