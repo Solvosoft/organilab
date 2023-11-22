@@ -727,3 +727,12 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
             "type": genwidgets.HiddenInput,
             "is_container": genwidgets.YesNoInput
         }
+
+
+class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = OrganizationStructure
+        fields = ['parent']
+        widgets={
+            'parent': genwidgets.HiddenInput
+        }
