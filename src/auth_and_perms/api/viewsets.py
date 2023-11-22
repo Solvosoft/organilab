@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
@@ -17,11 +19,15 @@ from auth_and_perms.api.serializers import RolSerializer, \
     ProfilePermissionRolOrganizationSerializer, \
     OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, \
     DeleteUserFromContenttypeSerializer, \
-    ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer
-from auth_and_perms.forms import LaboratoryAndOrganizationForm, OrganizationForViewsetForm
+    ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer, \
+    ShelfObjectSerializer, ValidateSearchShelfObjectSerializer, \
+    ShelfObjectDataTableSerializer, ValidateOrganizationSerializer
+from auth_and_perms.forms import LaboratoryAndOrganizationForm, \
+    OrganizationForViewsetForm, SearchShelfObjectViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
-from laboratory.models import OrganizationStructure, Laboratory, UserOrganization
+from laboratory.models import OrganizationStructure, Laboratory, UserOrganization, \
+    ShelfObject
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user
 
 
@@ -325,3 +331,55 @@ class UpdateGroupsByProfile(APIView):
 
         return JsonResponse({"detail": _("Profile was updated successfully.")},
                             status=status.HTTP_200_OK)
+
+
+class SearchShelfObjectOrganization(mixins.ListModelMixin,
+                         viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ShelfObjectDataTableSerializer
+    queryset = ShelfObject.objects.using(settings.READONLY_DATABASE)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    ordering_fields = ['id', ]
+    ordering = ('-id',)  # default order
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(in_where_laboratory__organization=self.organization,
+                                   object=self.object).distinct()
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        validate_serializer = ValidateSearchShelfObjectSerializer(data=request.GET)
+        if validate_serializer.is_valid():
+            self.object = validate_serializer.validated_data.get('object')
+            self.organization = validate_serializer.validated_data.get('organization')
+            user_is_allowed_on_organization(request.user, self.organization)
+            queryset = self.get_queryset()
+            total = queryset.count()
+            queryset = self.filter_queryset(queryset)
+            data = self.paginate_queryset(queryset)
+            response = {'data': data, 'recordsTotal': total,
+                        'recordsFiltered': queryset.count(),
+                        'draw': self.request.GET.get('draw', 1)}
+            return Response(self.get_serializer(response).data)
+        else:
+            return JsonResponse({"errors": validate_serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrganizationButtons(APIView):
+    def get(self, request):
+        serializer = ValidateOrganizationSerializer(data=request.GET)
+
+        if serializer.is_valid():
+            organization = serializer.validated_data.get('organization')
+            user_is_allowed_on_organization(request.user, organization)
+            return JsonResponse({"result": render_to_string(
+            'auth_and_perms/organization_buttons.html',
+            context={"request": request, "organization": organization}
+            )}, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
