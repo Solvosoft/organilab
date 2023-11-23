@@ -50,14 +50,37 @@ Cambiar padre de una organización
 Eliminar una organización
 ============================
 
-/organization/<int:org>/delete
+Al eliminar una organización es necesario tener en cuenta si ésta tiene o no organizaciones hijas
+(organizaciones descendientes) debido a que también las organizaciones hijas serán eliminadas.
+
+.. video:: ../_static/manage_organization/organization/video/delete_organization.mp4
+   :height: 400
+   :width: 600
 
 
-Actualizar una organización
+Acciones de una organización
 =======================================
 
-Permite cambiar el nombre y la organización padre
-/organization/42/update
+Las acciones de una organización son las siguientes:
+
+* Desactivar organización
+* Clonar organización
+* Cambiar nombre de la organización
+
+
+Desactivar una organización
+=======================================
+
+Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las siguientes características:
+
+* No se les puede agregar organizaciones hijas.
+* Se pueden visualizar las bitácoras.
+* No se puede cambiar su padre.
+* No se pueden gestionar las acciones (desactivar organización, cambiar de nombre de la organización)
+* Si se puede clonar la organización.
+* No se puede activar nuevamente la organización.
+
+
 
 Administración de usuarios
 ******************************
