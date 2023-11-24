@@ -4,7 +4,9 @@ Laboratory administration
 Crear un laboratorio en una organización
 ===========================================
 
-Explicar en la vista de administración de organizaciones como crear un laboratorio
+.. video:: ../_static/manage_organization/organization/video/create_laboratory_in_organization.mp4
+   :height: 400
+   :width: 600
 
 Relacionar un laboratorio a una organización
 =================================================

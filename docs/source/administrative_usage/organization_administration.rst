@@ -8,13 +8,44 @@ Permisos requeridos:
 * *add_organizationstructure*: Muestra los botones **"Agregar Organización"** y **"+"** que permiten realizar la acción del agregado de organizaciones base y organizaciones hijas.
 * *delete_organizationstructure*: Muestra el botón de eliminar organización **"-"** y por consiguiente permite realizar la acción del eliminado de organizaciones.
 
-
+================================
 Crear nueva organización base
 ================================
 
 Cuando se menciona una organización base, se hace referencia a la organización raíz (sin antecesor) y que por
 consiguiente tendrá a futuro organizaciones descendientes (organizaciones hijas) o en casos menos comunes solo será la
 organización (organización única sin antecesor, ni sucesores).
+
+* Paso 1
+
+.. image:: ../_static/manage_organization/organization/image/create_organization_step1.png
+   :height: 400
+   :width: 700
+
+* Paso 2
+
+.. image:: ../_static/manage_organization/organization/image/create_organization_step2.png
+   :height: 400
+   :width: 700
+
+* Paso 3
+
+.. image:: ../_static/manage_organization/organization/image/create_organization_step3.png
+   :height: 400
+   :width: 700
+
+* Paso 4
+
+.. image:: ../_static/manage_organization/organization/image/create_organization_step4.png
+   :height: 400
+   :width: 700
+
+* Paso 5
+
+.. image:: ../_static/manage_organization/organization/image/create_organization_step5.png
+   :height: 400
+   :width: 700
+
 
 .. video:: ../_static/manage_organization/organization/video/create_base_organization.mp4
    :height: 400
@@ -26,7 +57,7 @@ La organización base es la más conveniente a la hora de agregar laboratorios d
 
 
 
-
+==================================
 Crear nueva organización hija
 ==================================
 
@@ -37,7 +68,7 @@ Las organizaciones hijas pueden tener organizaciones descendientes y siempre ten
    :width: 600
 
 
-
+=============================================
 Cambiar padre de una organización
 =============================================
 
@@ -45,8 +76,7 @@ Cambiar padre de una organización
    :height: 400
    :width: 600
 
-
-
+============================
 Eliminar una organización
 ============================
 
@@ -57,7 +87,7 @@ Al eliminar una organización es necesario tener en cuenta si ésta tiene o no o
    :height: 400
    :width: 600
 
-
+=======================================
 Acciones de una organización
 =======================================
 
@@ -67,7 +97,7 @@ Las acciones de una organización son las siguientes:
 * Clonar organización
 * Cambiar nombre de la organización
 
-
+=======================================
 Desactivar una organización
 =======================================
 
