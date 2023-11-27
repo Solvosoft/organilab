@@ -1,6 +1,8 @@
-Administrar plantillas de procedimientos
+Administrar procedimientos
 ==========================================
 
+Administrar plantillas de procedimientos
+-------------------------------------------
 /academic/<int:org>/procedure/procedure_list/
 
 * *view_procedure*: Permite visualizar el item  y listado de **"Plantillas de procedimientos"**.
@@ -10,9 +12,8 @@ Administrar plantillas de procedimientos
 * *view_procedurestep*: Permite visualizar el listado pasos necesarios para la elaboración del procedimiento.
 * *add_procedurestep*: Autoriza el ingreso a la vista de **"Creación de pasos del procedimiento"**.
 
-
 Crear plantilla de procedimientos
------------------------------------
+**********************************
 
 academic/<int:org>/procedure/procedure_create/
 
@@ -35,7 +36,7 @@ Permisos requeridos:
 
 
 Actualizar plantilla de procedimientos
----------------------------------------
+****************************************
 
 academic/<int:org>/procedure/procedure_update/<int:pk>/
 
@@ -59,7 +60,8 @@ Permisos requeridos:
 
 
 Visualizar plantilla de procedimientos
----------------------------------------
+****************************************
+
 
 academic/<int:org>/procedure/procedure_detail/<int:pk>/
 
@@ -74,7 +76,7 @@ Permisos requeridos:
 
 
 Agregar pasos
----------------
+**************
 
 academic/<int:org>/procedure/add_steps_wrapper/<int:pk>/
 
@@ -103,7 +105,7 @@ Permisos Requeridos:
 
 
 Actualizar pasos
------------------
+*****************
 
 academic/<int:org>/procedure/step/<int:pk>/update/
 
@@ -113,7 +115,7 @@ campos.
 Datos requeridos:
 
 *   *Título*: Este campo registrara el título de la plantilla, si no se ingresa ningún palabra este título se mostrará, en la visualización de plantillas de procedimientos como **"Desconocido"**.
-*   **Descripcion**: Este campo registrara la descripción del procedimiento, además se puede manipular el texto
+*   **Descripción**: Este campo registrara la descripción del procedimiento, además se puede manipular el texto
     ya que el viene integrado con un editor de texto, permitiendo ingresar tipografías, alineación de texto, tablas,
     imágenes entre otras mas funcionalidades que trae consigo un editor de texto.
 
@@ -130,7 +132,7 @@ Permisos Requeridos:
 
 
 Agregar objectos en los pasos
-------------------------------
+*******************************
 
 academic/<int:org>/procedure/save_object/<int:pk/
 
@@ -165,7 +167,7 @@ Permisos requeridos:
 
 
 Descartar objecto
-------------------
+*******************
 
 academic/<int:org>/procedure/remove_object/<int:pk/
 
@@ -186,7 +188,7 @@ Permisos requeridos:
 
 
 Agregar observación
---------------------
+*********************
 
 academic/<int:org>/procedure/add_observation/<int:pk>/
 
@@ -209,7 +211,7 @@ Permisos requeridos:
 
 
 Eliminar observación
----------------------
+***********************
 
 academic/<int:org>/procedure/remove_observation/<int:pk>/
 
@@ -224,7 +226,7 @@ Permisos Requeridos:
 *   *delete_procedureobservations*: Autoriza el agregar observaciones en los pasos.
 
 Eliminar paso
---------------
+***************
 
 academic/<int:org>/procedure/step/delete/
 
@@ -248,7 +250,7 @@ Permisos Requeridos:
     de procedimientos que usa esta plantilla de referencia.
 
 Eliminar plantilla de procedimientos
--------------------------------------
+***************************************
 
 academic/<int:org>/procedure/delete_procedure/
 
@@ -268,3 +270,7 @@ Permisos Requeridos:
 
 * *delete_procedure*: Autoriza eliminar una plantilla de procedimiento.
 * *view_procedure*: Permite visualizar las lista de plantillas de procedimientos de la organización.
+
+
+Administrar mis procedimientos
+---------------------------------
