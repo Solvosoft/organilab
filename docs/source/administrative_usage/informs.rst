@@ -1,5 +1,5 @@
 Plantillas para informes
-********************************
+============================
 
 Explicar la lógica de las plantillas de informes
 
@@ -9,6 +9,6 @@ derb/<int:org>/FormList/
 
 
 Programar informes
-============================
+----------------------------------
 
 /inform_manager/<int:org>/add/
