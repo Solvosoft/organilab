@@ -155,10 +155,39 @@ class OrganizationActions(GTForm):
     name = forms.CharField(widget=genwidgets.TextInput, required=False, label=_("Name"))
 
     def clean(self):
-        if self.cleaned_data['actions'] == 3 and (
-            'name' not in self.cleaned_data or not self.cleaned_data['name']):
-            self.add_error('name', 'Name not fount')
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        actions = cleaned_data.get('actions')
+        organization = cleaned_data.get('action_organization')
 
+        if not organization.active:
+
+            if actions in [1, 3]:
+
+                if actions == 3 and not name:
+                    self.add_error('name', 'Name not found')
+
+                self.add_error("action_organization", _("Organization cannot be inactive"))
+
+
+class OrganizationActionsWithoutInactive(OrganizationActions):
+    ACTIONS = (
+        (2, _('Clone organization')),
+        (3, _('Change organization name')),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['actions'].choices = self.ACTIONS
+
+class OrganizationActionsClone(GTForm):
+    ACTIONS = (
+        (2, _('Clone organization')),
+    )
+    actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS, label=_("Actions"))
+    action_organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.all(),
+        widget=genwidgets.HiddenInput)
 
 class ContentypeForm(GTForm, forms.Form):
     organization = forms.IntegerField()

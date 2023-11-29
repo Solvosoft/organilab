@@ -287,6 +287,13 @@ class AddOrganizationForm(GTForm, forms.ModelForm):
             'parent': genwidgets.HiddenInput
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        parent = cleaned_data.get('parent')
+
+        if not parent.active:
+            raise ValidationError(_("Organization parent cannot be inactive"))
+
 class RelOrganizationForm(GTForm):
     contentyperelobj = forms.ModelMultipleChoiceField(
         queryset=Laboratory.objects.all(),
@@ -736,3 +743,7 @@ class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
         widgets={
             'parent': genwidgets.HiddenInput
         }
+
+    def clean(self):
+        if not self.instance.active:
+            raise ValidationError(_("Organization cannot be inactive"))
