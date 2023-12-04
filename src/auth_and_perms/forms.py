@@ -160,7 +160,7 @@ class OrganizationActions(GTForm):
         actions = cleaned_data.get('actions')
         organization = cleaned_data.get('action_organization')
 
-        if not organization.active:
+        if organization and not organization.active:
 
             if actions in [1, 3]:
 

@@ -291,7 +291,7 @@ class AddOrganizationForm(GTForm, forms.ModelForm):
         cleaned_data = super().clean()
         parent = cleaned_data.get('parent')
 
-        if not parent.active:
+        if parent and not parent.active:
             raise ValidationError(_("Organization parent cannot be inactive"))
 
 class RelOrganizationForm(GTForm):
