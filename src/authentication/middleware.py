@@ -1,3 +1,5 @@
+from builtins import getattr
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.db.models import Q
@@ -25,6 +27,8 @@ class ProfileMiddleware:
         user = request.user
         lab_pk=None
         org_pk=None
+        can_use_inactive_organization = False
+
         if not user.is_authenticated or not user.is_active:
             return
         if user.is_superuser:
@@ -36,6 +40,9 @@ class ProfileMiddleware:
         profile = user.profile
         if 'org_pk' in view_kwargs and view_kwargs['org_pk']:
             org_pk = view_kwargs['org_pk']
+        elif 'org_pk' in request.GET and request.GET['org_pk']:
+            org_pk = request.GET['org_pk']
+
         if 'lab_pk' in view_kwargs and view_kwargs['lab_pk']:
             lab_pk = view_kwargs['lab_pk']
 
@@ -47,6 +54,9 @@ class ProfileMiddleware:
                 view_kwargs[view_func.lab_pk_field] is not None:
             lab_pk = view_kwargs[view_func.lab_pk_field]
 
+        if hasattr(view_func, 'can_use_inactive_organization'):
+            can_use_inactive_organization = view_func.can_use_inactive_organization
+
         queryQ=Q(profile=profile, object_id=profile.pk,
                  content_type__app_label=profile._meta.app_label,
                  content_type__model=profile._meta.model_name)
@@ -55,7 +65,7 @@ class ProfileMiddleware:
             queryQ |= Q(profile=user.profile,object_id=lab_pk,
                         content_type__app_label='laboratory',  content_type__model="laboratory")
         elif org_pk:
-            if OrganizationStructure.objects.filter(pk=org_pk, active=False).exists():
+            if OrganizationStructure.objects.filter(pk=org_pk, active=False).exists() and not can_use_inactive_organization:
                 raise Http404("Organization is inactive")
             # for my_labs selection and other steps without laboratory defined
             laboratories = get_laboratories_by_user_profile(request.user, org_pk)
