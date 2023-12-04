@@ -42,8 +42,10 @@
                     >{{node.0}}</h6>
                     </div>
                     <div class="col-1">
-                        <input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
-                    </div>
+																								{%if node.0.active %}
+                        		<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
+                    				{%endif%}
+																				</div>
                 </div>
                 <div id="collapse{{node.0.pk}}" class="collapse">
                     <div class="row">
