@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.forms import ModelForm
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
@@ -307,6 +308,17 @@ class RelOrganizationPKIntForm(GTForm):
     organization = forms.IntegerField(required=True)
     laboratory = forms.IntegerField(required=False)
     typeofcontenttype = forms.CharField(required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        org_pk = cleaned_data.get('organization')
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk)
+
+        if not organization.active:
+            self.add_error("organization", _("Organization cannot be inactive"))
+
 
 class CatalogForm(GTForm, forms.ModelForm):
     class Meta:

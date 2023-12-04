@@ -122,13 +122,18 @@ class LaboratoryOfOrganizationForm(GTForm):
 
 
 # no visible
-class LaboratoryAndOrganizationForm(forms.Form):
-    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
-    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
-
-
 class OrganizationForViewsetForm(forms.Form):
     organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
+
+    def clean(self):
+        cleaned_data = super().clean()
+        organization = cleaned_data.get('organization')
+
+        if organization and not organization.active:
+            self.add_error("organization", _("Organization cannot be inactive"))
+
+class LaboratoryAndOrganizationForm(OrganizationForViewsetForm):
+    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
 
 
 class ProfileListForm(GTForm):
