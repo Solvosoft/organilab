@@ -54,6 +54,10 @@ class ProfileMiddleware:
                 view_kwargs[view_func.lab_pk_field] is not None:
             lab_pk = view_kwargs[view_func.lab_pk_field]
 
+        if hasattr(view_func, 'cls') and hasattr(view_func.cls,
+                                                 'can_use_inactive_organization'):
+            can_use_inactive_organization = view_func.cls.can_use_inactive_organization
+
         if hasattr(view_func, 'can_use_inactive_organization'):
             can_use_inactive_organization = view_func.can_use_inactive_organization
 
