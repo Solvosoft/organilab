@@ -157,22 +157,18 @@ class OrganizationActions(GTForm):
     action_organization = forms.ModelChoiceField(
         queryset=OrganizationStructure.objects.all(),
         widget=genwidgets.HiddenInput)
-    name = forms.CharField(widget=genwidgets.TextInput, required=False, label=_("Name"))
+    name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
 
     def clean(self):
         cleaned_data = super().clean()
-        name = cleaned_data.get('name')
         actions = cleaned_data.get('actions')
         organization = cleaned_data.get('action_organization')
 
         if organization and not organization.active:
 
             if actions in [1, 3]:
-
-                if actions == 3 and not name:
-                    self.add_error('name', 'Name not found')
-
-                self.add_error("action_organization", _("Organization cannot be inactive"))
+                self.add_error("action_organization",
+                               _("Organization cannot be inactive"))
 
 
 class OrganizationActionsWithoutInactive(OrganizationActions):
@@ -208,6 +204,15 @@ class ProfileGroupForm(GTForm):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
                                             widget=genwidgets.SelectMultiple)
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        organization = cleaned_data.get('organization')
+
+        if not organization.active:
+            self.add_error("organization",
+                           _("Organization cannot be inactive"))
 
 
 class OrgTreeForm(GTForm):
