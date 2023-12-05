@@ -5,6 +5,36 @@ Administrar plantillas de procedimientos
 -------------------------------------------
 /academic/<int:org>/procedure/procedure_list/
 
+Para acceder a este modulo se requieren varios paso que se va a mostrar en las siguientes imagenes:
+
+.. image:: ../_static/procedure/images/first_step_to_view_procedure_template.jpg
+    :width: 700
+    :height: 400
+
+Explicacion de pasos:
+
+*  *Paso 1*: Es dar click en la opción organizaciones de la barra lateral izquierda,  porque es necesario haber accesado en una organización.
+*  *Paso 2*: En este paso se muestra un selector con un listado de organizaciones que el usuario esta vinculado es necesario que seleccione una.
+*  *Paso 3*: Al seleccionar una organizacion es necesario dar click en uno de los siguientes botones que dan acceso a diversos modulos.
+
+Luego de cumplir con los pasos anteriores en la barra del costado izquierdo se habilitaran mas opciones, por consiguiente se debera dar click a las siguientes opciones:
+**Reportes informes y Procedimientos**.
+
+.. image:: ../_static/procedure/images/steps_to_view_procedure_templates.png
+    :width: 700
+    :height: 400
+
+Explicacion de pasos:
+
+*  *Paso 1*: Es dar click en la opción *Reportes informes y Procedimientos* de la barra lateral izquierda, esto para habilitar los modulos de informes.
+*  *Paso 2*: En este paso se da click en la opción *Plantillas de Procedimientos*, para acceder al modulo de plantillas de procedimiento.
+
+    .. note::
+        El usuario debe tener el permiso *view_procedure* para que esta opción sea visible en la barra lateral.
+
+
+Permisos requeridos:
+
 * *view_procedure*: Permite visualizar el item  y listado de **"Plantillas de procedimientos"**.
 * *add_procedure*: Autoriza el ingreso a la vista de **"Creación de plantillas de procedimientos"**.
 * *change_procedure*: Autoriza el ingreso a la vista de **"Actualización de plantillas de procedimientos"**.
@@ -58,10 +88,8 @@ Permisos requeridos:
 * *change_procedure*: Autoriza el ingreso a la vista de **"Actualización de plantillas de procedimientos"**.
 
 
-
 Visualizar plantilla de procedimientos
 ****************************************
-
 
 academic/<int:org>/procedure/procedure_detail/<int:pk>/
 
@@ -130,7 +158,6 @@ Permisos Requeridos:
   :height: 400
 
 
-
 Agregar objectos en los pasos
 *******************************
 
@@ -150,7 +177,6 @@ Datos requeridos:
     .. warning::
         **Asegúrese de que este valor es mayor o igual a 1e-07**.
 
-
 *   *Unidad de medida*: Este campo hace referencia a la unidad de medida del objecto seleccionado, a su vez es
     obligatoria la selección de una opción.
 
@@ -163,7 +189,6 @@ Permisos requeridos:
 .. video:: ../_static/procedure/video/add_step_object.mp4
   :width: 600
   :height: 400
-
 
 
 Descartar objecto
@@ -184,7 +209,6 @@ Permisos requeridos:
 .. video:: ../_static/procedure/video/remove_step_object.mp4
   :width: 600
   :height: 400
-
 
 
 Agregar observación
@@ -209,7 +233,6 @@ Permisos requeridos:
   :height: 400
 
 
-
 Eliminar observación
 ***********************
 
@@ -217,9 +240,12 @@ academic/<int:org>/procedure/remove_observation/<int:pk>/
 
 Al dar click en icono eliminar de la observación seleccionada se mostrará la siguiente ventana.
 
-.. image:: ../_static/procedure/observations/images/remove_template_procedure_observation.png
-  :width: 400
-  :align: center
+.. image:: ../_static/procedure/observations/images/remove_template_procedure_observation.jpg
+  :width: 700
+  :height: 400
+
+.. note::
+    Si se presiona la opción **Si**, se elimina la observación, pero si presiona la opción **No**, no se elimina la observación.
 
 Permisos Requeridos:
 
@@ -274,3 +300,41 @@ Permisos Requeridos:
 
 Administrar mis procedimientos
 ---------------------------------
+
+academic/<int:org>/myprocedure/<int:lab_pk>/get_list/
+
+
+Crear procedimiento
+********************
+
+add_procedures/<str:content_type>/<str:model>/
+
+Actualizar procedimientos
+***************************************
+
+academic/<int:org>/myprocedure/<int:lab_pk>/complete_procedure/<int:pk>/
+
+Visualizar comentarios de procedimiento
+****************************************
+
+spc/api/<int:org>/<int:lab_pk>/api_procedure_comments
+
+Agregar comentario en procedimiento
+***************************************
+
+/spc/api/<int:org>/<int:lab_pk>/api_my_procedure/add_comment/
+
+Actualizar comentario de procedimiento
+***************************************
+
+/spc/api/<int:org>/<int:lab_pk>/api_my_procedure/<int:pk>/update_comment/
+
+Eliminar comentario de procedimiento.
+**************************************
+/spc/api/<int:org>/<int:lab_pk>/api_my_procedure/<int:pk>/delete_comment/
+
+Generar Reservas
+*******************
+
+Eliminar procedimiento
+**************************
