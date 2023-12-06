@@ -4173,3 +4173,6 @@ msgstr "Eliminar organización"
 
 msgid "This action will delete its descendants organizations too."
 msgstr "Esta acción también eliminará sus organizaciones descendientes."
+
+msgid "Quantity cannot be greater than maximum limit."
+msgstr "La cantidad no puede mayor que el límite maximo."

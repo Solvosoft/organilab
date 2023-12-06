@@ -265,12 +265,29 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate(self, data):
-        if data["minimum_limit"] > data["maximum_limit"]:
-            logger.debug(
-                f'ShelfObjectLimitsSerializer --> data["minimum_limit"] ({data["minimum_limit"]}) > '
-                f'data["maximum_limit"] ({data["maximum_limit"]})')
-            raise serializers.ValidationError({"minimum_limit": _(
-                "Minimum limit cannot be greater than maximum limit.")})
+        quantity= self.context.get('quantity',0)
+        type_id = self.context.get('type_id','0')
+        without_limit = self.context.get('without_limit',False)
+        errors = {}
+
+        if type_id==Object.REACTIVE and not without_limit:
+            if data["minimum_limit"] > data["maximum_limit"]:
+                logger.debug(
+                    f'ShelfObjectLimitsSerializer --> data["minimum_limit"] ({data["minimum_limit"]}) > '
+                    f'data["maximum_limit"] ({data["maximum_limit"]})')
+                errors.update({"minimum_limit":
+                                   _("Minimum limit cannot be greater than maximum limit.")})
+
+            if float(quantity) > data["maximum_limit"]:
+                logger.debug(
+                    f'ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) > '
+                    f'({data["maximum_limit"]})')
+                errors.update({"quantity": _(
+                    "Quantity cannot be greater than maximum limit.")})
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
         return data
 
 
