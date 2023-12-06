@@ -468,10 +468,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class['serializer'](data=request.data,
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
-        limit_serializer = ShelfObjectLimitsSerializer(data=request.data)
+        limit_serializer = ShelfObjectLimitsSerializer(data=request.data,
+                                                       context={'type':request.data.get('objecttype',-1),
+                                                                'quantity': request.data.get('quantity',0),
+                                                                'without_limit':request.data.get('without_limit',False)})
         errors = {}
         if serializer.is_valid():
-            if limit_serializer.is_valid(raise_exception=True):
+            if limit_serializer.is_valid():
                 shelfobject = self.serializer_class['method'](serializer,
                                                               limit_serializer)
                 create_shelfobject_observation(shelfobject, shelfobject.course_name,
