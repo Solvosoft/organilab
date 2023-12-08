@@ -26,7 +26,7 @@ from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.models import Laboratory, OrganizationStructure, \
     OrganizationStructureRelations, UserOrganization
 from .djgeneric import ListView
-from ..forms import AddOrganizationForm
+from ..forms import AddOrganizationForm, ChangeOrganizationParentForm
 from ..utils import organilab_logentry
 
 
@@ -236,7 +236,7 @@ class OrganizationActionsFormview(FormView):
 class OrganizationUpdateView(UpdateView):
     model = OrganizationStructure
     success_url = reverse_lazy('auth_and_perms:organizationManager')
-    form_class = AddOrganizationForm
+    form_class = ChangeOrganizationParentForm
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
