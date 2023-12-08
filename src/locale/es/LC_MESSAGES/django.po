@@ -521,7 +521,7 @@ msgid "Relate Organization with Permission objects"
 msgstr "Relaciona Organizaciones con objetos de permisos"
 
 msgid "Change parent of organization"
-msgstr "Cambia padre en de la organización"
+msgstr "Cambia padre de la organización"
 
 msgid "Name:"
 msgstr "Nombre:"
@@ -4167,3 +4167,9 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Delete organization"
+msgstr "Eliminar organización"
+
+msgid "This action will delete its descendants organizations too."
+msgstr "Esta acción también eliminará sus organizaciones descendientes."

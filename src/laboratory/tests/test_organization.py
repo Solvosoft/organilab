@@ -11,14 +11,12 @@ class OrganizationViewTest(BaseLaboratorySetUpTest):
         url = reverse("laboratory:update_organization", kwargs={"pk": 3, })
 
         data = {
-            "name": "Org BM",
             "parent": 1,
         }
         response = self.client.post(url, data=data)
         success_url = reverse("auth_and_perms:organizationManager")
         self.assertRedirects(response, success_url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn("Org BM", list(OrganizationStructure.objects.values_list("name", flat=True)))
 
     def test_create_organization(self):
         data = {
