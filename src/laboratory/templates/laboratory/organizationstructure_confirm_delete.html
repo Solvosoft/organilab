@@ -6,6 +6,7 @@
 
 <form action="" method="post">{% csrf_token %}
 <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+	<p>{% trans 'This action will delete its descendants organizations too.' %}</p>
 <input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
 </form>
 <br> <br>

@@ -148,11 +148,11 @@ class OrganizationActions(GTForm):
         (2, _('Clone organization')),
         (3, _('Change organization name')),
     )
-    actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS)
+    actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS, label=_("Actions"))
     action_organization = forms.ModelChoiceField(
         queryset=OrganizationStructure.objects.all(),
         widget=genwidgets.HiddenInput)
-    name = forms.CharField(widget=genwidgets.TextInput, required=False)
+    name = forms.CharField(widget=genwidgets.TextInput, required=False, label=_("Name"))
 
     def clean(self):
         if self.cleaned_data['actions'] == 3 and (

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User, Group
-from django.db.models import Q
+from django.db.models import Q, Case, When
 from django.http import Http404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
@@ -405,8 +405,8 @@ class OrgTree(BaseSelect2View):
                     get_tree_organization_pks_by_user(node, self.user, pks,
                                           parents=parents_pks, extras={'active': True})
 
-            queryset = queryset.filter(pk__in=pks)
-            queryset = list(map(lambda id: queryset.get(pk=id), pks))
+            tree_order = Case(*[When(pk=pk, then=i) for i, pk in enumerate(pks)])
+            queryset = queryset.filter(pk__in=pks).order_by(tree_order)
             return queryset
         return queryset.none()
 
