@@ -2257,6 +2257,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.add_protocol'
         },
         {
+            'name': 'View a Protocol',
+            'category': 'Protocol',
+            'permission': 'laboratory.view_protocol'
+        },
+        {
             'name': 'Update a Protocol',
             'category': 'Protocol',
             'permission': 'laboratory.change_protocol'
