@@ -99,7 +99,7 @@
                     </li>
                     {% endif %}
                     {% if perms.auth_and_perms.change_rol %}
-                    <li class="list-group-item">
+                    <li class="list-group-item" title="{% trans 'Change parent of organization' %}">
                         <a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"  title="{% trans 'Rol List' %}">
                             <i class="fa fa-list-alt"></i></a>
                     </li>
@@ -108,20 +108,21 @@
 
                     {% if perms.laboratory.change_organizationstructure %}
                     <li class="list-group-item">
-                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}" data-org="{{node.0.pk}}" data-display="{{node.0.node}}">
+                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}"
+																														data-org="{{node.0.pk}}" data-display="{{node.0.node}}" title="{% trans 'Change parent of organization' %}">
                             <i class="fa fa-sort-amount-desc text-secondary"></i></span>
                     </li>
                     {% endif %}
                     {% if perms.laboratory.add_organizationstructure %}
                     <li class="list-group-item">
                         <span class="addOrgStructure" data-parent="{{node.0.pk}}"><i
-                                class="fa fa-plus  text-secondary"></i></span>
+                                class="fa fa-plus  text-secondary" title="{% trans 'Add organization' %}"></i></span>
                     </li>
                     {% endif %}
                     {% if perms.laboratory.delete_organizationstructure %}
                     <li class="list-group-item">
                         <a href="{% url 'laboratory:delete_organization' node.0.pk %}"><i
-                                class="fa fa-minus text-danger"></i></a>
+                                class="fa fa-minus text-danger" title="{% trans 'Delete organization' %}"></i></a>
                     </li>
                     {% endif %}
                 </ul>
@@ -296,11 +297,6 @@
             </div>
             <form action="" method="post">
             <div class="modal-body">
-
-                <div class="mb-3">
-                <label for="id_name" class="form-label">{% trans 'Name:' %}</label>
-                <input class="form-control"  id="id_name" type="text" name="name" value="" />
-                </div>
 
                 <div class="mb-3">
                 <label for="id_parent" class="form-label">{% trans 'Organization parent:' %}</label>
