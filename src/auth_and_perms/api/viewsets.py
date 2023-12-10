@@ -28,7 +28,8 @@ from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import OrganizationStructure, Laboratory, UserOrganization, \
     ShelfObject
-from laboratory.utils import get_profile_by_organization, get_organizations_by_user
+from laboratory.utils import get_profile_by_organization, get_organizations_by_user, \
+    get_laboratories_from_organization
 
 
 class RolAPI(mixins.ListModelMixin,
@@ -94,6 +95,18 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                                                     model=contenttypeobj._meta.model_name).first(),
             object_id=contenttypeobj.pk
         )
+
+        if serializer.data['typeofcontenttype'] == 'laboratory':
+            ## add user to organization if not exist but without perms
+            instance, created = ProfilePermission.objects.get_or_create(
+                profile=user.profile,
+                content_type=ContentType.objects.filter(
+                    app_label=organization._meta.app_label,
+                    model=organization._meta.model_name).first(),
+                object_id=organization.pk
+            )
+            return created
+
 
 
 class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.GenericViewSet):
@@ -278,21 +291,31 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def delete_profile_from_organization(self, user, organization):
+
+        labs=get_laboratories_from_organization(organization.pk)
+        pps=ProfilePermission.objects.filter(
+            profile=user.profile,
+            content_type__app_label='laboratory',
+            content_type__model='laboratory',
+            object_id__in=labs.values_list('pk', flat=True)
+        )
+        pps.delete()
+        organization.users.remove(user)  # only remove relation
+
     def delete(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid(raise_exception=True):
             org = OrganizationStructure.objects.using(settings.READONLY_DATABASE).filter(
                 pk=serializer.data['organization']).first()
             user_is_allowed_on_organization(request.user, org)
-            profile = org.users.filter(profile=serializer.data['profile']).first()
-            if profile:
-                org.users.remove(profile)  # only remove relation
-
-            if serializer.data['disable_user']:
-                user = User.objects.filter(profile=serializer.data['profile']).first()
-                if user:
+            user = org.users.filter(profile=serializer.data['profile']).first()
+            if user and serializer.data['model'] == 'organizationstructure':
+                self.delete_profile_from_organization(user, org)
+            if user and  serializer.data['disable_user']:
                     user.is_active = False
                     user.save()
+
             ProfilePermission.objects.filter(
                 profile_id=serializer.data['profile'],
                 content_type__app_label=serializer.data['app_label'],
