@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.urls import reverse
@@ -120,15 +122,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_action(self, obj):
         contenttypeobj = self.context['view'].contenttypeobj
+        action_uuid=str(uuid.uuid4())
         org = self.context['view'].organization
-        datatext = """ id="ndel_%s" data-org="%s" data-profile="%s" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
-            obj.pk, str(contenttypeobj), str(obj), contenttypeobj._meta.app_label, contenttypeobj._meta.model_name,
+        datatext = """ id="ndel_%s" data-org="%s" data-profileid="%s" data-profile="%s" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
+            action_uuid, str(contenttypeobj),  obj.pk,  str(obj), contenttypeobj._meta.app_label, contenttypeobj._meta.model_name,
             contenttypeobj.pk
         )
 
         return """
-        <i %s class="fa fa-trash mr-2" onclick="deleteuserlab(%s, %s)" aria-hidden="true"></i>
-        """ % (datatext, obj.pk, org.pk)
+        <i %s class="fa fa-trash mr-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true"></i>
+        """ % (datatext, action_uuid, org.pk)
 
     class Meta:
         model = Profile

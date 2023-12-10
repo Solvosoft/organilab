@@ -191,7 +191,7 @@ function deleteuserlab(elementid, contentTypeobj){
           $.ajax({
               type: "DELETE",
               url: delete_rol_profile_url,
-              data: {'profile': elementid,
+              data: {'profile': element.dataset.profileid,
                       'app_label': element.dataset.appname,
                       'model': element.dataset.model,
                       'object_id': element.dataset.objectid,
