@@ -39,7 +39,11 @@ class ProfileAssociateOrganizationSerializer(serializers.Serializer):
     laboratory = serializers.PrimaryKeyRelatedField(many=False,
                                                     queryset=Laboratory.objects.all(),
                                                     required=False)
-
+    addlaboratories = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE).all(),
+        required=False
+    )
 
 class AuthenticateDataRequestSerializer(serializers.ModelSerializer):
     class Meta:

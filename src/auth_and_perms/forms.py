@@ -140,6 +140,16 @@ class ProfileListForm(GTForm):
                                          'data-dropdownparent': '#relprofilelabmodal'
                                      })
                                      )
+    addlaboratories = forms.ModelMultipleChoiceField(
+        queryset=Laboratory.objects.all(),
+        widget=AutocompleteSelectMultiple('laborgbase', attrs={
+            'data-s2filter-organization': '.nodeorg:checked',
+            'data-s2filter-laboratory': '#id_laboratories',
+            'data-s2filter-typeofcontenttype': '#id_typeofcontenttype',
+            'data-dropdownparent': '#relprofilelabmodal'
+        }),
+        label=_("Laboratories")
+    )
 
 
 class OrganizationActions(GTForm):
