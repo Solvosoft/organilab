@@ -105,8 +105,16 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                     model=organization._meta.model_name).first(),
                 object_id=organization.pk
             )
-            return created
-
+        if  ('addlaboratories' in serializer.validated_data  and
+            serializer.validated_data['addlaboratories'] is not None):
+            for lab in serializer.validated_data['addlaboratories']:
+                instance, created = ProfilePermission.objects.get_or_create(
+                    profile=user.profile,
+                    content_type=ContentType.objects.filter(
+                        app_label=lab._meta.app_label,
+                        model=lab._meta.model_name).first(),
+                    object_id=lab.pk
+                )
 
 
 class UpdateRolOrganizationProfilePermission(mixins.UpdateModelMixin, viewsets.GenericViewSet):

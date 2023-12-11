@@ -122,21 +122,34 @@ function reload_datatables(){
 }
 
 function send_create_profile_on_conttentype(data){
-    $.ajax({
-      type: "POST",
-      url: create_profile_ctt_url,
-      data: data,
-      //contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: reload_datatables,
-      dataType: 'json'
-    });
-
+    fetch(create_profile_ctt_url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+        'Content-Type': "application/json",
+        'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify(data),
+    }).then(response => {
+                        if(response.ok){
+                            reload_datatables();
+                              Swal.fire({
+                                text: gettext('User registered successfully'),
+                                icon: 'success',
+                                timer: 1500,
+                              });
+                              return response.json();
+                        }
+                        return Promise.reject(response);  // then it will go to the catch if it is an error code
+                    }).catch(response => {
+                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                    });
 }
 
 $("#relateusertoorg").on('click', function(){
     $("#id_typeofcontenttype").val('organization');
      $("#id_profile").val(null).change();
+     $("#id_addlaboratories").val(null).trigger('change');
+     $("#id_addlaboratories").parent().parent().show();
      $("#relprofilelabmodalLabel").html(gettext('Relate user to organization'));
      $("#relprofilelabmodal").modal('show');
 })
@@ -146,6 +159,9 @@ $("#relateusertolab").on('click', function(){
 
     if (laboratory != undefined){
         $("#id_profile").val(null).change();
+        $("#id_addlaboratories").val(null).trigger('change');
+        $("#id_addlaboratories").append(new Option(gettext('Current laboratory'), $("#id_laboratories").val(), true, true)).trigger('change');
+        $("#id_addlaboratories").parent().parent().hide();
         $("#relprofilelabmodalLabel").html(gettext('Relate user to laboratory'));
         $("#relprofilelabmodal").modal('show');
     }else{
@@ -158,12 +174,17 @@ $("#relateusertolab").on('click', function(){
 
 });
 $("#relprofilewithlaboratorybtn").on('click', function(){
+    var addlabs=Array.from($("#id_addlaboratories").find("option:selected").map(function(){ return parseInt(this.value)}));
+
     data = {
       'typeofcontenttype': $("#id_typeofcontenttype").val(),
       'user': $("#id_profile").val(),
       'organization': $(".nodeorg:checked").val()
     }
 
+    if(addlabs.length>0){
+       data[ 'addlaboratories'] = addlabs;
+    }
     if (data['typeofcontenttype'] == "laboratory"){
         data[ 'laboratory'] = $("#id_laboratories").val();
     }
