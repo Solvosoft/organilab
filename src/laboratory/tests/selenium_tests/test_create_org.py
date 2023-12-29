@@ -6,7 +6,7 @@ from organilab_test.tests.base import SeleniumBase
 from django.utils.translation import gettext_lazy as _
 
 
-class ProcedureScreenshotSeleniumTest(SeleniumBase):
+class OrganizationSeleniumTest(SeleniumBase):
     fixtures = ["selenium/organization_manage.json"]
 
     def setUp(self):
