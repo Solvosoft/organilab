@@ -67,9 +67,6 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def create_gifs(self, file_url, folder):
         images = []
-        import time
-        # get the current time to use in the filename
-        timestr = time.strftime("%Y%m%d-%H%M%S")
 
         # get all the images in the 'images for gif' folder
         for filename in sorted(glob.glob(
