@@ -30,9 +30,10 @@ lint:
 	pycodestyle --max-line-length=88 src
 
 test:
-	cd src && python manage.py test  --no-input
+	cd src && python manage.py test  --no-input --exclude-tag=selenium
 
 docs:
+	cd src && python manage.py test  --no-input --tag=selenium && cd ..
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	pip install 'sphinx<7' sphinx-rtd-theme==1.2.2
