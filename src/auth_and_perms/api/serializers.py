@@ -225,8 +225,16 @@ class ValidateProfileSerializer(serializers.Serializer):
 class ValidateOrganizationSerializer(serializers.Serializer):
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
 
+    def validate_organization(self, value):
+        organization = super().validate(value)
+        if not organization.active:
+            logger.debug(
+                f'ValidateOrganizationSerializer --> not organization.active = False')
+            raise serializers.ValidationError(
+                _("Organization cannot be inactive"))
+        return organization
 
-class ValidateGroupsByProfileSerializer(serializers.Serializer):
+class ValidateGroupsByProfileSerializer(ValidateOrganizationSerializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     groups = serializers.PrimaryKeyRelatedField(queryset=Group.objects.using(settings.READONLY_DATABASE), many=True, required=False)
 
