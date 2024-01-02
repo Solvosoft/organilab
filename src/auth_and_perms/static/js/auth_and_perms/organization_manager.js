@@ -145,6 +145,123 @@ function send_create_profile_on_conttentype(data){
                     });
 }
 
+
+function create_externaluser_funct(data, url){
+    fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+        'Content-Type': "application/json",
+        'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify(data),
+    }).then(response => { return response.json(); }).then(data => {
+        if("success" in data){
+            success=data['success'];
+            if(success){
+                    let success_msg = gettext('Usuario agregado con éxito, ahora puede buscarlo en el tab contiguo para agregarlo en la organización.');  // any other error
+                    Swal.fire({
+                        icon: 'success',
+                        title: gettext('Success'),
+                        text: success_msg,
+                        timer: 1500
+                    });
+                $("#id_email").val("");
+
+            }else{
+                    let error_msg = gettext('No se ha logrado agregar el usuario, intentelo nuevamente');  // any other error
+                    Swal.fire({
+                            icon: 'error',
+                            title: gettext('Error'),
+                            text: error_msg
+                    });
+            }
+        }
+    }).catch(response => {
+        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+        Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: error_msg
+        });
+    });
+
+}
+
+function create_externaluser(data, url, user){
+
+    Swal.fire({
+      title: gettext("Are you sure?"),
+      text: user.display_text+" "+gettext("will be part of your organization!"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: gettext("Yes, add it!")
+    }).then((result) => {
+      if (result.isConfirmed) {
+         create_externaluser_funct(data, url)
+      }
+    });
+
+
+}
+
+function send_add_user_by_email(data, url){
+
+    fetch(url, {
+        method: "PUT",
+        credentials: "same-origin",
+        headers: {
+        'Content-Type': "application/json",
+        'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify(data),
+    }).then(response => { return response.json(); }).then(data => {
+                    if("errors" in data){
+                        if ('email' in data['errors']){
+                            error_msg=data['errors']['email'];
+                        } else if ('detail' in data['errors']){
+                            error_msg=data['errors']['detail'];
+                        }else{
+                            error_msg=JSON.stringify(data['errors']);
+                        }
+                        Swal.fire({
+                                icon: 'error',
+                                title: gettext('Error'),
+                                text: error_msg
+                        });
+
+                    }
+                    if("pk" in data){
+                        let instance={
+                            'pk': data['pk'],
+                            'email': $("#id_email").val(),
+                            'organization': $(".nodeorg:checked").val()
+
+                        }
+                        let url = external_user_url.replace('/0', "");
+                        create_externaluser(instance, url, data);
+                    }
+    }).catch(response => {
+        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+        Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: error_msg
+        });
+    });
+}
+
+$("#relemailbtn").on('click', function(){
+   var form= $("#externaluserform");
+    data={
+     'organization': $(".nodeorg:checked").val(),
+     'email': $("#id_email").val()
+    }
+
+    let url = external_user_url.replace('/0', "/"+data['organization']);
+    send_add_user_by_email(data, url);
+});
+
 $("#relateusertoorg").on('click', function(){
     $("#id_typeofcontenttype").val('organization');
      $("#id_profile").val(null).change();
@@ -153,6 +270,7 @@ $("#relateusertoorg").on('click', function(){
      $("#relprofilelabmodalLabel").html(gettext('Relate user to organization'));
      $("#relprofilelabmodal").modal('show');
 })
+
 $("#relateusertolab").on('click', function(){
     let laboratory=$('.nodeorg:checked').val();
     $("#id_typeofcontenttype").val('laboratory');

@@ -15,13 +15,15 @@ from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
 from rest_framework.views import APIView
 
+from api.utils import AllPermissionOrganization
 from auth_and_perms.api.serializers import RolSerializer, \
     ProfilePermissionRolOrganizationSerializer, \
     OrganizationSerializer, ProfileFilterSet, ProfileRolDataTableSerializer, \
     DeleteUserFromContenttypeSerializer, \
     ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer, \
     ShelfObjectSerializer, ValidateSearchShelfObjectSerializer, \
-    ShelfObjectDataTableSerializer, ValidateOrganizationSerializer
+    ShelfObjectDataTableSerializer, ValidateOrganizationSerializer, \
+    ExternalUserSerializer, AddExternalUserSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, \
     OrganizationForViewsetForm, SearchShelfObjectViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
@@ -292,7 +294,49 @@ class UserInOrganization(mixins.ListModelMixin,
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
+class ExternalUserToOrganizationViewSet(mixins.UpdateModelMixin,
+                                        mixins.CreateModelMixin,
+                                        viewsets.GenericViewSet):
 
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated, AllPermissionOrganization(
+        ['auth_and_perms.can_add_external_user_in_org'],
+        lookup_keyword='organization')]
+    serializer_class = ExternalUserSerializer
+    create_serializer_class = AddExternalUserSerializer
+    queryset = User.objects.using(settings.READONLY_DATABASE)
+    lookup_url_kwarg = 'org_pk'
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.create_serializer_class(data=request.data)
+        response = {"success": False}
+        if serializer.is_valid(raise_exception=False):
+            organization = serializer.validated_data['organization']
+            user = serializer.validated_data['email']
+            user_is_allowed_on_organization(request.user, organization)
+            organization.users.add(user)
+            response={"success": True}
+        headers = self.get_success_headers(serializer.data)
+        return Response(response, status=status.HTTP_201_CREATED, headers=headers)
+
+
+    def update(self, request, *args, **kwargs):
+        errors={}
+        serializer=self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['email']
+
+            response={
+                'pk': user.pk,
+                'display_text': str(user.profile)
+            }
+            return JsonResponse(response)
+        else:
+            errors=serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors},
+                                status=status.HTTP_400_BAD_REQUEST)
 class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     http_method_names = ['delete']
     serializer_class = DeleteUserFromContenttypeSerializer
