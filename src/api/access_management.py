@@ -100,6 +100,7 @@ def get_all_organizations(queryset):
     return list_organization
 
 
+# TODO: Remove this
 class OrganizationStructureView(APIView):
     permission_classes = [IsAuthenticated]
 

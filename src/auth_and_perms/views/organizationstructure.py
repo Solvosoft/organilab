@@ -11,7 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
 from django.views.generic import CreateView
 from auth_and_perms.forms import AddUserForm, AddProfileRolForm, AddRolForm, \
-    ContentypeForm, OrganizationActions, ProfileGroupForm, IncludeEmailExternalUserForm
+    ContentypeForm, OrganizationActions, ProfileGroupForm, IncludeEmailExternalUserForm, \
+    OrganizationActionsClone, OrganizationActionsWithoutInactive
 from auth_and_perms.forms import LaboratoryOfOrganizationForm, \
     ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile
@@ -46,6 +47,8 @@ def organization_manage_view(request):
              'profileform': ProfileListForm(),
              'externaluserform': IncludeEmailExternalUserForm(),
              'actionform': OrganizationActions(),
+             'actionwiform': OrganizationActionsWithoutInactive(prefix="wi"),
+             'actioncloneform': OrganizationActionsClone(prefix="clone"),
              'profile_group_form': ProfileGroupForm(prefix="pg")
              }
     return render(request, 'auth_and_perms/list_organizations.html', context)

@@ -642,28 +642,39 @@ $("input[name='relate_rols']").on('change', function(event){
     $("#orgbyusermodal").modal('show');
 });
 
+function showhide_action_field(field_id, value){
+    if(value === "3"){
+       $(field_id).closest('.form-group').show();
+    }else{
+       $(field_id).closest('.form-group').hide();
+    }
+}
+
 $(document).ready(function(){
+    showhide_action_field("#actionsmodal #id_name", $("#id_actions").val());
+    showhide_action_field("#actionwimodal #id_wi-name", $("#id_wi-actions").val());
+
     $("#id_actions").on('select2:select', function(e){
-        var data = e.params.data;
-        if(data.id==="3"){
-           $("#actionsmodal #id_name").closest('.form-group').show();
-        }else{
-           $("#actionsmodal #id_name").closest('.form-group').hide();
-        }
+        showhide_action_field("#actionsmodal #id_name", e.params.data.id);
+    });
+    $("#id_wi-actions").on('select2:select', function(e){
+        showhide_action_field("#actionwimodal #id_wi-name", e.params.data.id);
     });
 });
 
 $(".orgactions").on('click', function(event){
-    var org=event.currentTarget.dataset.org;
-    var name=$(event.currentTarget).closest('.row').find('h6').text();
-    $('#id_action_organization').val(org);
-    $("#actionsmodal #id_name").val(name);
-    if($("#id_actions").val() === "3"){
-        $("#actionsmodal #id_name").closest('.form-group').show();
-    }else{
-        $("#actionsmodal #id_name").closest('.form-group').hide();
+    var dataset=event.currentTarget.dataset;
+    var org = dataset.org;
+    var modal = dataset.modal;
+    var prefix = dataset.prefix;
+
+    if(prefix != "clone"){
+        var name=$(event.currentTarget).closest('.row').find('h6').text();
+        $(modal+" #id_"+prefix+"name").val(name);
     }
-    $("#actionsmodal").modal('show');
+
+    $('#id_'+prefix+'action_organization').val(org);
+    $(modal).modal('show');
 });
 
 function add_groups_by_profile(select_group){

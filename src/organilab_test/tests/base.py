@@ -9,6 +9,11 @@ from Screenshot import Screenshot
 from django.conf import settings
 from time import sleep
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import wait
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class SeleniumBase(StaticLiveServerTestCase):
@@ -34,6 +39,28 @@ class SeleniumBase(StaticLiveServerTestCase):
         if not cls.tmp.exists():
             cls.tmp.mkdir()
 
+        cls.cursor_script = '''
+                var cursor = document.createElement('div');
+                cursor.style.position = 'absolute';
+                cursor.style.zIndex = '9999';
+                cursor.style.width = '10px';
+                cursor.style.height = '10px';
+                cursor.style.borderRadius = '50%';
+                cursor.style.backgroundColor = 'red';
+                cursor.classList.add("cursor_pointer");
+                document.body.appendChild(cursor);
+                '''
+
+    def move_cursor(self, x, y):
+        # Move the div that simulate a cursor
+        return '''
+        var cursor = document.querySelector('.cursor_pointer');
+                cursor.style.left= '{}px';
+                cursor.style.top= '{}px';
+                '''.format(x, y)
+
+    def hover_effect(self, element, action):
+        action.move_to_element(element).perform()
 
     def create_directory_path(self, time_out=10, url=None, folder_name=""):
         # Folder name is an specific name by action, for example 'create_org', 'view_org_users', etc
@@ -53,17 +80,16 @@ class SeleniumBase(StaticLiveServerTestCase):
             if not self.dir.exists():
                 self.dir.mkdir()
 
-
-
-    def screenShots(self, name, time_out, save_screenshot=False):
-        x_Full_Page = '%s.png' % name
+    def screenShots(self, order, time_out=3, name="", save_screenshot=False):
+        extension_name = '%s.png' % name
+        order_name = '%r.png' % order
         sleep(time_out)
         self.selenium.save_screenshot(
-                str(Path(self.dir / x_Full_Page).absolute().resolve()))
+                str(Path(self.dir / order_name).absolute().resolve()))
 
         if save_screenshot:
             self.selenium.save_screenshot(
-                str(Path(self.static_save_path / x_Full_Page).absolute().resolve()))
+                str(Path(self.static_save_path / extension_name).absolute().resolve()))
 
     def create_gifs(self, file_url, folder):
         images = []
@@ -89,6 +115,45 @@ class SeleniumBase(StaticLiveServerTestCase):
         images[0].save(str(self.save_path_gif) + gif_name,
                        save_all=True, append_images=images[1:], optimize=False,
                        duration=1500, loop=0)
+
+    def create_gif_process(self, path_list, folder_name, cursor=True, hover=True):
+        action = ActionChains(self.selenium)
+
+        i = 1
+        self.screenShots(order=i)
+
+        for obj in path_list:
+            element = self.selenium.find_element(By.XPATH, obj['path'])
+
+            self.selenium.execute_script(self.cursor_script)
+
+            xy_position = self.move_cursor(
+                element.location['x'] + element.size['width'] / 2,
+                element.location['y'] + element.size['width'] / 2)
+
+            if cursor:
+                self.selenium.execute_script(xy_position)
+
+            if hover:
+                self.hover_effect(element, action)
+
+            if ('extra_action' in obj and obj[
+                'extra_action'] == 'setvalue' and 'value' in obj and obj['value']):
+                element.send_keys(obj['value'])
+            else:
+                action.move_to_element(element).perform()
+                element.click()
+
+            if 'screenshot_name' in obj and obj['screenshot_name']:
+                self.screenShots(order=i, name=obj['screenshot_name'], save_screenshot=True)
+            else:
+                self.screenShots(order=i)
+
+            i += 1
+
+        self.create_gifs(self.dir, folder_name)
+
+
 
     def force_login(self, user, driver, base_url):
         from django.conf import settings

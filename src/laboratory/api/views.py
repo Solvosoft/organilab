@@ -190,10 +190,11 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     filterset_class =LogEntryFilterSet
     ordering_fields = ['pk']
     ordering = ('pk', )
+    can_use_inactive_organization = True
 
     def get_queryset(self):
         filters = {}
-        org = self.request.GET.get('org', None)
+        org = self.request.GET.get('org_pk', None)
         qr_obj = self.request.GET.get('qr_obj', None)
         queryset = self.queryset.none()
 
