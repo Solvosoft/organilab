@@ -82,7 +82,7 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def screenShots(self, order, time_out=3, name="", save_screenshot=False):
         extension_name = '%s.png' % name
-        order_name = '%d.png' % order
+        order_name = '%r.png' % order
         sleep(time_out)
         self.selenium.save_screenshot(
                 str(Path(self.dir / order_name).absolute().resolve()))
