@@ -39,15 +39,16 @@ def get_descendants_by_org(pks, node, extras, user, parents):
     return descendants
 
 
-def get_organization_tree(node, structure, user, pks, level=0, parents=[], append_info=True, extras={}):
-    structure += [(getNodeInformation(node) if append_info else node,  getLevelClass(level))]
+def get_organization_tree(node, structure, user, pks, level=0, parents=[], append_info=True, extras={}, has_children=False):
     descendants = get_descendants_by_org(pks, node, extras, user, parents)
+    structure += [(getNodeInformation(node) if append_info else node,  getLevelClass(level), True if descendants else has_children)]
+
 
     if descendants:
         for child in descendants:
             if child.pk not in pks:
                 get_organization_tree(child, structure, user, pks, level=level + 1, parents=parents,
-                                      append_info=append_info, extras=extras)
+                                      append_info=append_info, extras=extras, has_children=False)
 
 def get_tree_organization_pks_by_user(node, user, pks, parents=[], extras={}):
     descendants = get_descendants_by_org(pks, node, extras, user, parents)

@@ -19,8 +19,10 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from tree_queries.forms import TreeNodeChoiceField
 
-from auth_and_perms.forms import OrganizationActions
+from auth_and_perms.forms import OrganizationActions, OrganizationActionsClone, \
+    OrganizationActionsWithoutInactive
 from auth_and_perms.models import Profile
+from auth_and_perms.node_tree import get_descendants_by_org
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.models import Laboratory, OrganizationStructure, \
@@ -169,6 +171,21 @@ class OrganizationCreateView(CreateView):
 class OrganizationActionsFormview(FormView):
     form_class = OrganizationActions
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        if self.request.method == "POST":
+            prefix = self.request.POST.get("prefix")
+            kwargs["prefix"] = prefix
+
+            if prefix == "clone":
+                self.form_class = OrganizationActionsClone
+
+            if prefix == "wi":
+                self.form_class = OrganizationActionsWithoutInactive
+
+        return kwargs
+
     def inactive_organization(self, form):
         self.org.active = False
         if self.org.parent:
@@ -221,6 +238,7 @@ class OrganizationActionsFormview(FormView):
     def form_valid(self, form):
         self.org = form.cleaned_data['action_organization']
         user_is_allowed_on_organization(self.request.user, self.org)
+
         if form.cleaned_data['actions'] == '1':
             self.inactive_organization(form)
         elif form.cleaned_data['actions'] == '2':

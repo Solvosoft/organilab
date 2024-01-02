@@ -4,8 +4,9 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from organilab_test.tests.base import SeleniumBase
 from django.utils.translation import gettext_lazy as _
+from django.test import tag
 
-
+@tag('selenium')
 class OrganizationSeleniumTest(SeleniumBase):
     fixtures = ["selenium/organization_manage.json"]
 
