@@ -1,19 +1,17 @@
+import glob
 import shutil
 from importlib import import_module
-from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY
-from PIL import Image
-import glob
-from selenium import webdriver
 from pathlib import Path
+from time import sleep
+
+from PIL import Image
 from Screenshot import Screenshot
 from django.conf import settings
-from time import sleep
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import wait
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class SeleniumBase(StaticLiveServerTestCase):
@@ -40,16 +38,12 @@ class SeleniumBase(StaticLiveServerTestCase):
             cls.tmp.mkdir()
 
         cls.cursor_script = '''
-                var cursor = document.createElement('div');
-                cursor.style.position = 'absolute';
-                cursor.style.zIndex = '9999';
-                cursor.style.width = '10px';
-                cursor.style.height = '10px';
-                cursor.style.borderRadius = '50%';
-                cursor.style.backgroundColor = 'red';
-                cursor.classList.add("cursor_pointer");
-                document.body.appendChild(cursor);
-                '''
+            var cursor = document.createElement('i');
+            cursor.style.position = 'absolute';
+            cursor.style.zIndex = '9999';
+            cursor.classList.add("fa", "fa-mouse-pointer", "text-danger", "fa-1x" ,"cursor_pointer");
+            document.body.appendChild(cursor);
+        '''
 
     def move_cursor(self, x, y):
         # Move the div that simulate a cursor
@@ -128,8 +122,8 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.selenium.execute_script(self.cursor_script)
 
             xy_position = self.move_cursor(
-                element.location['x'] + element.size['width'] / 2,
-                element.location['y'] + element.size['width'] / 2)
+                element.location['x'] + element.size['width'] / 4,
+                element.location['y'] + element.size['height'] / 4)
 
             if cursor:
                 self.selenium.execute_script(xy_position)
@@ -152,8 +146,6 @@ class SeleniumBase(StaticLiveServerTestCase):
             i += 1
 
         self.create_gifs(self.dir, folder_name)
-
-
 
     def force_login(self, user, driver, base_url):
         from django.conf import settings
