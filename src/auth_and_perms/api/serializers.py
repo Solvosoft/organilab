@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django_filters import FilterSet
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
 
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
@@ -141,6 +142,53 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['user', 'rols', 'action', 'email']
 
+
+class ExternalUserSerializer(serializers.ModelSerializer):
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all())
+
+    def validate_email(self, value):
+        queryset=User.objects.filter(Q(email=value)|Q(username=value))
+        instance = queryset.first()
+        if instance is None:
+            raise  ValidationError(detail=_("User not found, Sorry try to use add user button on organization list"))
+        return instance
+
+    def validate(self, attrs):
+        user= attrs['email']
+        organization=attrs['organization']
+        if organization.users.all().filter(pk=user.pk).exists():
+            raise serializers.ValidationError({'email': _("User exist on organization")})
+        return attrs
+
+    class Meta:
+        model = User
+        fields = ['email', 'organization']
+
+class AddExternalUserSerializer(serializers.ModelSerializer):
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.all(), required=True)
+    pk = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
+    def validate_email(self, value):
+        queryset=User.objects.filter(Q(email=value)|Q(username=value))
+        instance = queryset.first()
+        if instance is None:
+            raise  ValidationError(detail=_("User not found, Sorry try to use add user button on organization list"))
+        return instance
+
+    def validate(self, attrs):
+        user= attrs['email']
+        organization=attrs['organization']
+        if organization.users.all().filter(pk=user.pk).exists():
+            raise ValidationError(detail=_(
+                "User exist on organinzation"))
+        if attrs['pk'] != user:
+            raise ValidationError(detail=_(
+                "User not match with email"))
+        return attrs
+    class Meta:
+        model = User
+        fields = ['email', 'pk', 'organization']
 
 class ProfileRolDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ProfileSerializer(), required=True)

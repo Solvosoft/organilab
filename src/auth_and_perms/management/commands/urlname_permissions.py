@@ -1062,6 +1062,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'auth.view_user'
         },
         {
+            'name': 'Add External User in Organization',
+            'category': 'User',
+            'permission': 'auth_and_perms.can_add_external_user_in_org'
+        },
+        {
             'name': 'Add Organization Structure',
             'category': 'Organization Structure',
             'permission': 'laboratory.add_organizationstructure'

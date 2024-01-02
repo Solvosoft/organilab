@@ -151,6 +151,9 @@ class ProfileListForm(GTForm):
         label=_("Laboratories")
     )
 
+class IncludeEmailExternalUserForm(GTForm):
+    email = forms.EmailField(widget=genwidgets.EmailInput)
+
 
 class OrganizationActions(GTForm):
     ACTIONS = (
