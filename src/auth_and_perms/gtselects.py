@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User, Group
-from django.db.models import Q
+from django.db.models import Q, Case, When
 from django.http import Http404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
@@ -21,7 +21,7 @@ from laboratory.forms import RelOrganizationPKIntForm
 from laboratory.models import Laboratory, OrganizationStructure, \
     OrganizationStructureRelations, Object
 from laboratory.utils import get_profile_by_organization, get_users_from_organization, get_rols_from_organization
-
+from django.utils.translation import gettext_lazy as _
 
 def str2bool(v):
     v = v or ''
@@ -79,22 +79,30 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
     model = User
     fields = ['username']
-    organization = None
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
-    organization=None
-    contenttypeobj=None
+    organization = None
+    contenttypeobj = None
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+
+        if not self.organization.active:
+            return Response({
+                'status': 'Bad request',
+                'errors': {"organization": [_("Organization cannot be inactive")]},
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
+
             if form.is_valid():
                 self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['organization'])
+
                 if form.cleaned_data['typeofcontenttype'] == 'laboratory':
                     if form.cleaned_data['laboratory']:
                         self.contenttypeobj = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['laboratory'])
@@ -102,9 +110,16 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 elif form.cleaned_data['typeofcontenttype'] == 'organization':
                     self.contenttypeobj = self.organization
                     user_is_allowed_on_organization(self.request.user, self.contenttypeobj)
-        if self.organization:
-            user_is_allowed_on_organization(self.request.user, self.organization)
-        return super().list(request, *args, **kwargs)
+            else:
+                return Response({
+                    'status': 'Bad request',
+                    'errors': form.errors,
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            if self.organization:
+                user_is_allowed_on_organization(self.request.user, self.organization)
+            return super().list(request, *args, **kwargs)
+
 
     def get_queryset(self):
         if self.organization:
@@ -256,6 +271,13 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
+
+        if not self.organization.active:
+            return Response({
+                'status': 'Bad request',
+                'errors': {"organization": [_("Organization cannot be inactive")]},
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         return self.list(request, pk, **kwargs)
 
     def list(self, request, *args, **kwargs):
@@ -263,11 +285,15 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
             form = RelOrganizationPKIntForm(self.request.GET)
             if form.is_valid():
                 self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=form.cleaned_data['organization'])
+            else:
+                return Response({
+                    'status': 'Bad request',
+                    'errors': form.errors,
+                }, status=status.HTTP_400_BAD_REQUEST)
 
         if self.organization is None:
-            raise Http404("Organization not found")
+            raise Http404(_("Organization not found"))
         return super().list(request, *args, **kwargs)
-
 
 
 @register_lookups(prefix="roluserorgbase", basename="roluserorgbase")
@@ -405,8 +431,8 @@ class OrgTree(BaseSelect2View):
                     get_tree_organization_pks_by_user(node, self.user, pks,
                                           parents=parents_pks, extras={'active': True})
 
-            queryset = queryset.filter(pk__in=pks)
-            queryset = list(map(lambda id: queryset.get(pk=id), pks))
+            tree_order = Case(*[When(pk=pk, then=i) for i, pk in enumerate(pks)])
+            queryset = queryset.filter(pk__in=pks).order_by(tree_order)
             return queryset
         return queryset.none()
 

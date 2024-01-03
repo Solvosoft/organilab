@@ -122,13 +122,18 @@ class LaboratoryOfOrganizationForm(GTForm):
 
 
 # no visible
-class LaboratoryAndOrganizationForm(forms.Form):
-    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
-    organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
-
-
 class OrganizationForViewsetForm(forms.Form):
     organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
+
+    def clean(self):
+        cleaned_data = super().clean()
+        organization = cleaned_data.get('organization')
+
+        if organization and not organization.active:
+            self.add_error("organization", _("Organization cannot be inactive"))
+
+class LaboratoryAndOrganizationForm(OrganizationForViewsetForm):
+    laboratory = forms.ModelChoiceField(queryset=Laboratory.objects.all())
 
 
 class ProfileListForm(GTForm):
@@ -152,13 +157,38 @@ class OrganizationActions(GTForm):
     action_organization = forms.ModelChoiceField(
         queryset=OrganizationStructure.objects.all(),
         widget=genwidgets.HiddenInput)
-    name = forms.CharField(widget=genwidgets.TextInput, required=False, label=_("Name"))
+    name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
 
     def clean(self):
-        if self.cleaned_data['actions'] == 3 and (
-            'name' not in self.cleaned_data or not self.cleaned_data['name']):
-            self.add_error('name', 'Name not fount')
+        cleaned_data = super().clean()
+        actions = cleaned_data.get('actions')
+        organization = cleaned_data.get('action_organization')
 
+        if organization and not organization.active:
+
+            if actions in [1, 3]:
+                self.add_error("action_organization",
+                               _("Organization cannot be inactive"))
+
+
+class OrganizationActionsWithoutInactive(OrganizationActions):
+    ACTIONS = (
+        (2, _('Clone organization')),
+        (3, _('Change organization name')),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['actions'].choices = self.ACTIONS
+
+class OrganizationActionsClone(GTForm):
+    ACTIONS = (
+        (2, _('Clone organization')),
+    )
+    actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS, label=_("Actions"))
+    action_organization = forms.ModelChoiceField(
+        queryset=OrganizationStructure.objects.all(),
+        widget=genwidgets.HiddenInput)
 
 class ContentypeForm(GTForm, forms.Form):
     organization = forms.IntegerField()
@@ -174,6 +204,15 @@ class ProfileGroupForm(GTForm):
     groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
                                             widget=genwidgets.SelectMultiple)
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
+
+
+    def clean(self):
+        cleaned_data = super().clean()
+        organization = cleaned_data.get('organization')
+
+        if not organization.active:
+            self.add_error("organization",
+                           _("Organization cannot be inactive"))
 
 
 class OrgTreeForm(GTForm):

@@ -1,0 +1,33 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "adminpass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "Organilab",
+      "last_name": "Admin",
+      "email": "orgadmin@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "language": "es",
+      "laboratories": [
+      ]
+    }
+  }
+]

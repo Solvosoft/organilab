@@ -6,18 +6,23 @@
 Welcome to Organilab's documentation!
 =====================================
 
+.. video:: ./_static/video/PresentacionOrganilab.mp4
+   :height: 400
+   :width: 600
+
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
+   :caption: Contents:
 
-   installation
-   database_configuration
-   internationalization
-   pdf_generation
-   api_inform
-   my_procedure
-   search_lab_view
+   login
+   install_and_configuration/index
+   general_usage/index
+   administrative_usage/index
+   developers/index
+   usage_cases/index
+
 
 
 Indices and tables
