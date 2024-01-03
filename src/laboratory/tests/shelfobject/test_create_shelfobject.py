@@ -53,13 +53,14 @@ class CreateShelfobjectTest(TestCase):
                 "course_name": "A reactive product",
                 "marked_as_discard": False,
                 "minimum_limit": 0,
-                "maximum_limit": 0,
+                "maximum_limit": 24,
             }
         precount = ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",
                       kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
+
         self.assertEqual(response.status_code,201)
         self.assertTrue(json.loads(response.content)['detail'], _("The creation was performed successfully."))
         self.assertTrue(poscount>precount)
@@ -117,7 +118,7 @@ class CreateShelfobjectTest(TestCase):
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
-                "maximum_limit": 0,
+                "maximum_limit": 30,
                 "container_select_option": "clone",
                 "container_for_cloning":self.material.object.id,
                 "available_container":""
@@ -248,6 +249,7 @@ class CreateShelfobjectTest(TestCase):
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
                 "marked_as_discard": False,
+                "without_limit":True,
                 "minimum_limit": 39,
                 "maximum_limit": 5,
                 "container_select_option": "clone",
@@ -259,8 +261,9 @@ class CreateShelfobjectTest(TestCase):
                           kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
         response = self.client.post(url, data=data, content_type='application/json')
         poscount = ShelfObject.objects.filter(shelf=13).count()
-        self.assertEqual(response.status_code, 400)
-        self.assertTrue(json.loads(response.content)['minimum_limit'], _("Minimum limit cannot be greater than maximum limit."))
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(json.loads(response.content)['errors']['minimum_limit'][0], _("Minimum limit cannot be greater than maximum limit."))
+        self.assertTrue(json.loads(response.content)['errors']['quantity'][0], _("Quantity cannot be greater than maximum limit."))
         self.assertTrue(poscount == precount)
 
     def test_create_shelfobject_other_lab(self):
@@ -345,6 +348,7 @@ class CreateShelfobjectTest(TestCase):
                 "in_where_laboratory": self.lab.pk,
                 "measurement_unit": 59,
                 "marked_as_discard": False,
+                "without_limit":True,
                 "minimum_limit": 0,
                 "maximum_limit": 5,
                 "container": self.material.pk
@@ -420,6 +424,7 @@ class CreateShelfobjectTest(TestCase):
                 "measurement_unit": 60,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
+                "without_limit":True,
                 "maximum_limit": 5,
                 "container": self.material.pk
         }
@@ -452,7 +457,7 @@ class CreateShelfobjectTest(TestCase):
                 "course_name": "A reactive product",
                 "marked_as_discard": True,
                 "minimum_limit": 0,
-                "maximum_limit": 0,
+                "maximum_limit": 40,
             }
         precount = ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",
@@ -632,7 +637,7 @@ class CreateShelfobjectTest(TestCase):
                 "course_name": "A reactive product",
                 "marked_as_discard": False,
                 "minimum_limit": 0,
-                "maximum_limit": 0,
+                "maximum_limit": 24,
             }
         precount = ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",
