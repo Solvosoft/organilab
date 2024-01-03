@@ -42,8 +42,10 @@
                     >{{node.0}}</h6>
                     </div>
                     <div class="col-1">
-                        <input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
-                    </div>
+																								{%if node.0.active %}
+                        		<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
+                    				{%endif%}
+																				</div>
                 </div>
                 <div id="collapse{{node.0.pk}}" class="collapse">
                     <div class="row">
@@ -89,9 +91,16 @@
                     </div>
                     {% if perms.laboratory.change_organizationstructure %}
 																				<li class="list-group-item">
-																					<a class="orgactions" href="#{{node.0.pk}}"  data-org="{{node.0.pk}}" title="{% trans 'Actions' %}">
-																									<i class="fa fa-wrench"></i>
-																					</a>
+																					{% if not node.0.active %}
+																						<a class="orgactions" data-modal="#actionclonemodal" data-prefix="clone-" data-org="{{node.0.pk}}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
+																						</a>
+																					{% elif node.2  %}
+																							<a class="orgactions" data-modal="#actionwimodal" data-prefix="wi-" data-org="{{node.0.pk}}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
+																						</a>
+																					{% else %}
+																					<a class="orgactions" data-modal="#actionsmodal" data-prefix="" href="#{{node.0.pk}}" data-org="{{node.0.pk}}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
+																						</a>
+																					{% endif %}
 																				</li>
                     <li class="list-group-item">
                         <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.pk %}"  title="{% trans 'Log List' %}">
@@ -106,14 +115,14 @@
                     {% endif %}
 
 
-                    {% if perms.laboratory.change_organizationstructure %}
+                    {% if perms.laboratory.change_organizationstructure and node.0.active %}
                     <li class="list-group-item">
                         <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}"
 																														data-org="{{node.0.pk}}" data-display="{{node.0.node}}" title="{% trans 'Change parent of organization' %}">
                             <i class="fa fa-sort-amount-desc text-secondary"></i></span>
                     </li>
                     {% endif %}
-                    {% if perms.laboratory.add_organizationstructure %}
+                    {% if perms.laboratory.add_organizationstructure and node.0.active %}
                     <li class="list-group-item">
                         <span class="addOrgStructure" data-parent="{{node.0.pk}}"><i
                                 class="fa fa-plus  text-secondary" title="{% trans 'Add organization' %}"></i></span>
@@ -354,6 +363,12 @@
         </div>
     </div>
 </div>
+
+{% url 'laboratory:organization_actions' as action_clone_url %}
+{% trans 'Actions for Organization' as action_clone_org %}
+{% include 'modal_template_submit_form.html' with form=actionwiform id="actionwimodal" title=action_clone_org form_id="actionwiform" url=action_clone_url %}
+{% include 'modal_template_submit_form.html' with form=actioncloneform id="actionclonemodal" title=action_clone_org form_id="actioncloneform" url=action_clone_url %}
+
 
 {% endblock %}
 

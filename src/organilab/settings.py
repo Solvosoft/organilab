@@ -190,6 +190,8 @@ TINYMCE_UPLOAD_PATH=Path(MEDIA_ROOT) / 'editorupload/'
 
 FIXTURE_DIRS = os.getenv('FIXTURE_DIRS',  str(BASE_DIR.parent/ 'fixtures/') ).split(',')
 
+DOCS_SOURCE_DIR = os.getenv('DOCS_STATIC_DIR',  str(BASE_DIR.parent / 'docs/source/'))
+
 # Authentication settings
 LOGIN_REDIRECT_URL = reverse_lazy('auth_and_perms:select_organization_by_user')
 LOGOUT_REDIRECT_URL = reverse_lazy('index')
