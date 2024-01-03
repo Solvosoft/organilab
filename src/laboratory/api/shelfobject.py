@@ -479,7 +479,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
         limit_serializer = ShelfObjectLimitsSerializer(data=request.data,
-                                                       context={'type':request.data.get('objecttype',-1),
+                                                       context={'type_id':request.data.get('objecttype',-1),
                                                                 'quantity': request.data.get('quantity',0),
                                                                 'without_limit':request.data.get('without_limit',False)})
         errors = {}

@@ -266,7 +266,7 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         quantity= self.context.get('quantity',0)
-        type_id = self.context.get('type_id','0')
+        type_id = self.context.get('type_id','-1')
         without_limit = self.context.get('without_limit',False)
         errors = {}
 
