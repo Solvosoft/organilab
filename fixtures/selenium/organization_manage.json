@@ -29,5 +29,17 @@
       "laboratories": [
       ]
     }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Organization Test",
+      "position": 0,
+      "level": 0,
+      "rol": [],
+      "users": [1]
+    }
   }
 ]
