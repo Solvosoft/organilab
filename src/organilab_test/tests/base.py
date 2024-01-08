@@ -182,7 +182,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         Value can be quotation marks this is equal to clear an input.
         """
         if "value" in obj:
+            element.clear()
             element.send_keys(obj['value'])
+
 
     def extra_action(self, obj, element):
         """
@@ -190,6 +192,25 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         if obj["extra_action"] == "setvalue":
             self.set_value_action(obj, element)
+        if obj["extra_action"] == 'submit':
+            self.do_submit_action(obj,element)
+
+        if obj["extra_action"]=='script':
+            self.selenium.execute_script(obj['value'])
+
+        if obj["extra_action"] == 'sweetalert_comfirm':
+            self.do_sweetaler_comfirm_action(obj, element)
+
+    def do_sweetaler_comfirm_action(self, obj, element):
+        """
+        This in an action responsable to press yes/no buttons of sweetalert.
+        """
+        self.action.move_to_element(element).perform()
+        element.click()
+        sleep(1)
+        self.selenium.execute_script(obj['comfirm'])
+        sleep(1)
+        self.selenium.execute_script(obj['ok'])
 
     def do_action(self, obj, element):
         """
