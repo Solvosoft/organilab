@@ -573,7 +573,7 @@ msgid ""
 "them."
 msgstr ""
 "En este tab, usted puede agregar usuarios existentes en Organilab que no "
-"está asociados a su organización, usted debe conocer el correo electrónico "
+"están asociados a su organización, usted debe conocer el correo electrónico "
 "con el que el usuario se registró en la plataforma."
 
 msgid ""
