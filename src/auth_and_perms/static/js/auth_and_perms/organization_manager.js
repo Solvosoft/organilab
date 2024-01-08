@@ -158,7 +158,7 @@ function create_externaluser_funct(data, url){
         if("success" in data){
             success=data['success'];
             if(success){
-                    let success_msg = gettext('Usuario agregado con éxito, ahora puede buscarlo en el tab contiguo para agregarlo en la organización.');  // any other error
+                    let success_msg = gettext('User successfully added, now you can search for it in the adjacent tab to add it in the organization.');  // any other error
                     Swal.fire({
                         icon: 'success',
                         title: gettext('Success'),
@@ -168,7 +168,7 @@ function create_externaluser_funct(data, url){
                 $("#id_email").val("");
 
             }else{
-                    let error_msg = gettext('No se ha logrado agregar el usuario, intentelo nuevamente');  // any other error
+                    let error_msg = gettext('Failed to add user. Please try again');  // any other error
                     Swal.fire({
                             icon: 'error',
                             title: gettext('Error'),
