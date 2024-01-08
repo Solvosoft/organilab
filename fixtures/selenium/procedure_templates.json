@@ -26273,7 +26273,7 @@
       "first_name": "Gustavo",
       "last_name": "Mora Blanco",
       "email": "gmorablanco@hotmail.org",
-      "is_staff": false,
+      "is_staff": true,
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
