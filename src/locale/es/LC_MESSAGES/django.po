@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 09:27-0600\n"
+"POT-Creation-Date: 2024-01-08 12:44-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1330,6 +1330,9 @@ msgstr ""
 msgid "Minimum limit cannot be greater than maximum limit."
 msgstr "Límite mínimo no puede ser mayor al límite máximo."
 
+msgid "Quantity cannot be greater than maximum limit."
+msgstr "La cantidad no puede mayor que el límite maximo."
+
 msgid "Infinity"
 msgstr "Infinito"
 
@@ -2289,9 +2292,6 @@ msgstr "Códigos NFPA"
 
 msgid "UE Codes"
 msgstr "Códigos UE"
-
-msgid "Organization Name"
-msgstr "Nombre de la organización"
 
 #, python-format
 msgid "Quantity cannot be greater than the shelf's quantity limit: %(limit)s."
