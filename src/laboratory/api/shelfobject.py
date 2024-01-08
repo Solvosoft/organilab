@@ -50,6 +50,9 @@ from laboratory.utils import save_object_by_action
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """
+    This API allows laboratory room table view.
+    """
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.ShelfObjectTableSerializer
@@ -113,6 +116,7 @@ class ShelfObjectCreateMethods:
         """
         Create reactive type Shelfobject.
         The container is moved to the right shelf (created one with quantity 1 and decrease quantity on the original -or delete it if quantity is 0 after-).
+
         :param serializer:  ShelfObjectSerializer to create reactive type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: reactive type shelfobject was created
@@ -159,6 +163,7 @@ class ShelfObjectCreateMethods:
         """
         Create refuse reactive type Shelfobject.
         The container is moved to the right shelf (created one with quantity 1 and decrease quantity on the original -or delete it if quantity is 0 after-).
+
         :param serializer:  ShelfObjectSerializer to create reactive type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: Refuse reactive type shelfobject was created
@@ -204,6 +209,7 @@ class ShelfObjectCreateMethods:
     def create_material(self, serializer, limits_serializer):
         """
         Create material type Shelfobject .
+
         :param serializer:  ShelfObjectSerializer to create material type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: material type shelfobject was created
@@ -240,6 +246,7 @@ class ShelfObjectCreateMethods:
     def create_refuse_material(self, serializer, limits_serializer):
         """
         Create refuse material type Shelfobject .
+
         :param serializer:  ShelfObjectSerializer to create refuse material type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: refuse material type shelfobject was created
@@ -276,6 +283,7 @@ class ShelfObjectCreateMethods:
     def create_equipment(self, serializer, limits_serializer):
         """
         Create equipment type Shelfobject .
+
         :param serializer:  ShelfObjectSerializer to create equipment type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: equipment type shelfobject was created
@@ -312,6 +320,7 @@ class ShelfObjectCreateMethods:
     def create_refuse_equipment(self, serializer, limits_serializer):
         """
         Create refuse equipment type Shelfobject .
+
         :param serializer:  ShelfObjectSerializer to create refuse equipment type shelfobject
         :param limits_serializer: Serializer with the data to create ShelfObjectLimits
         :return: refuse equipment type shelfobject was created
@@ -455,6 +464,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         quantity,the only moment permit a shelfobject quantity greater than shelf quantity is when the shelf is quantity
         unlimited, also the serializer validates shelfobject measurement unit need to be similar than shelf measurement
         unit, the only form to add a shelfobjects with different unit is when the shelf don't have measurement unit
+
         :param request: http request
         :param org_pk: organization related user permissions
         :param lab_pk: laboratory related to shelfobject and user permissions
@@ -468,10 +478,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class['serializer'](data=request.data,
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
-        limit_serializer = ShelfObjectLimitsSerializer(data=request.data)
+        limit_serializer = ShelfObjectLimitsSerializer(data=request.data,
+                                                       context={'type_id':request.data.get('objecttype',-1),
+                                                                'quantity': request.data.get('quantity',0),
+                                                                'without_limit':request.data.get('without_limit',False)})
         errors = {}
         if serializer.is_valid():
-            if limit_serializer.is_valid(raise_exception=True):
+            if limit_serializer.is_valid():
                 shelfobject = self.serializer_class['method'](serializer,
                                                               limit_serializer)
                 create_shelfobject_observation(shelfobject, shelfobject.course_name,
@@ -496,6 +509,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         required quantity and optional provider and bill validate through serializer,
         also user needs to have required access permission
         to do this action related to this specific organization and laboratory.
+
         :param request: http request
         :param org_pk: organization related user permissions
         :param lab_pk: laboratory related to shelf object and user permissions
@@ -530,6 +544,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         required quantity and optional description validate through serializer,
         also user needs to have required access permission
         to do this action related to this specific organization and laboratory.
+
         :param request: http request
         :param org_pk: organization related user permissions
         :param lab_pk: laboratory related to shelf object and user permissions
@@ -561,6 +576,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         required quantity, initial and final date validate through serializer,
         also user needs to have required access permission
         to do this action related to this specific organization and laboratory.
+
         :param request: http request
         :param org_pk: organization related to reserved product and user permissions
         :param lab_pk: laboratory related to reserved product and user permissions
@@ -600,6 +616,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def details(self, request, org_pk, lab_pk, pk, **kwargs):
         """
         Returns all the data from the specified Shelf Object including the Relations Fields
+
         :param request: http request
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
@@ -623,7 +640,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'])
     def tag(self, request, org_pk, lab_pk, **kwargs):
         """
-        Devuelve la etiqueta en formato svg
+        Return a tag on SVG format
+        .. note:: Not available right now
+
         :param request:
         :param args:
         :param kwargs:
@@ -635,6 +654,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_out(self, request, org_pk, lab_pk, **kwargs):
         """
         Creates the request to transfer a shelf object into a different laboratory
+
         :param request: http request
         :param org_pk: pk of the organization being updated
         :param lab_pk: pk of the laboratory from which the object will be transfer from
@@ -682,6 +702,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_available_list(self, request, org_pk, lab_pk, **kwargs):
         """
         Returns the transfers that have the provided laboratory saved as laboratory_received, this for the ones that have not been approved yet.
+
         :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
@@ -714,6 +735,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_in_deny(self, request, org_pk, lab_pk, **kwargs):
         """
         Denies a transfer in, which means it will be deleted from database and the change added to the log
+
         :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
@@ -737,6 +759,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def transfer_in_approve(self, request, org_pk, lab_pk, **kwargs):
         """
         Approves a transfer in, which means it will be moved/added to the new laboratory and decrement/move it from the source laboratory
+
         :param request: http request
         :param org_pk: pk of the organization being queried
         :param lab_pk: pk of the laboratory that can receive the transfer in
@@ -786,6 +809,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def delete(self, request, org_pk, lab_pk, **kwargs):
         """
         Deletes a specific shelf object from a shelf
+
         :param request: http request
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
@@ -817,6 +841,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def create_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
         Creates a new observation for a specific shelf object
+
         :param request: http request
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
@@ -846,6 +871,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def list_comments(self, request, org_pk, lab_pk, pk, **kwargs):
         """
         Returns all the observations related to a specific shelf object
+
         :param request: http request
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
@@ -875,6 +901,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         This action allows the change of shelfobject status, also user needs to have required access permission to do this action to change the state.
         Changes the status for a specific shelf object
+
         :param org_pk: pk of the organization
         :param lab_pk: pk of the laboratory from which the shelf object is located
         :param kwargs: other extra params
@@ -923,6 +950,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         This action allows the shelf object movements to others shelves inside a same laboratory,
         also user needs to have required access permission to do this action and visualize only shelves
         related to this specific organization and laboratory.
+
         :param request: http request
         :param org_pk: organization related to shelf object and user permissions
         :param lab_pk: laboratory related to shelf object and user permissions
@@ -987,13 +1015,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         to visualize shelf information related to this specific organization and laboratory.
         Moreover, it should be stressed that 'shelf info' field return a render_to_string template
         with all necessary shelf information by structured html code.
+
         :param request: http request
         :param org_pk: organization related to shelf object and user permissions
         :param lab_pk: laboratory related to shelf object and user permissions
         :param kwargs: extra params
         :return: JsonResponse with shelf availability information which contains following fields:
-        name, type, quantity, discard, measurement_unit, quantity_storage_status,
-        percentage_storage_status and shelf_info.
+            name, type, quantity, discard, measurement_unit, quantity_storage_status,
+            percentage_storage_status and shelf_info.
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk,
                                              "shelf_availability_information")
@@ -1018,6 +1047,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     def create_status(self, request, org_pk, lab_pk, **kwargs):
         """
         Creates new status for shelfobjects
+
         :param request: http request
         :param org_pk: organization related to reserved product and user permissions
         :param lab_pk: laboratory related to reserved product and user permissions
@@ -1065,23 +1095,23 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
 class SearchLabView(viewsets.GenericViewSet):
     """
-    This generic view set allows to find a specific element like a laboratory room,
-     furniture, shelf, shelf object or object by filters tags, those are compounds by
-     unique pk, value(join between pk and name), objtype and color.
+This generic view set allows to find a specific element like a laboratory room,
+furniture, shelf, shelf object or object by filters tags, those are compounds by
+unique pk, value(join between pk and name), objtype and color.
+User access will be checking on view permissions, laboratory and organization.
 
-     User access will be checking on view permissions, laboratory and organization.
+Priority search level:
 
-     Priority search level:
-     1 - Object
-     2 - Shelf Object
-     3 - Shelf
-     4 - Furniture
-     5 - Laboratory Room
+1. Object
+2. Shelf Object
+3. Shelf
+4. Furniture
+5. Laboratory Room
 
-     Priority search level represents a value object on laboratory search elements.
-     An example is multiple search tags like a laboratory room tag and an object tag,
-     the second tag will modify laboratory room result as a first tag.
-    """
+Priority search level represents a value object on laboratory search elements.
+An example is multiple search tags like a laboratory room tag and an object tag,
+the second tag will modify laboratory room result as a first tag.
+"""
 
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -1200,13 +1230,15 @@ class SearchLabView(viewsets.GenericViewSet):
         """
         Return an object with following structure
 
-        search_list = {
-            'labroom': [pk laboratory rooms],
-            'furniture': {'furniture': [], 'labroom': []},
-            'shelf': {'shelf': [], 'furniture': [], 'labroom': []},
-            'shelfobject': {'shelfobject': [], 'shelf': [], 'furniture': [], 'labroom': []},
-            'object': {'object': [], 'shelf': {'shelf': [], 'furniture': [], 'labroom': []}}
-        }
+        .. code-block:: python
+
+            search_list = {
+                'labroom': [pk laboratory rooms],
+                'furniture': {'furniture': [], 'labroom': []},
+                'shelf': {'shelf': [], 'furniture': [], 'labroom': []},
+                'shelfobject': {'shelfobject': [], 'shelf': [], 'furniture': [], 'labroom': []},
+                'object': {'object': [], 'shelf': {'shelf': [], 'furniture': [], 'labroom': []}}
+            }
 
         :param request: http request
         :param org_pk: organization related user permissions

@@ -122,30 +122,164 @@ function reload_datatables(){
 }
 
 function send_create_profile_on_conttentype(data){
-    $.ajax({
-      type: "POST",
-      url: create_profile_ctt_url,
-      data: data,
-      //contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      success: reload_datatables,
-      dataType: 'json'
+    fetch(create_profile_ctt_url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+        'Content-Type': "application/json",
+        'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify(data),
+    }).then(response => {
+                        if(response.ok){
+                            reload_datatables();
+                              Swal.fire({
+                                text: gettext('User registered successfully'),
+                                icon: 'success',
+                                timer: 1500,
+                              });
+                              return response.json();
+                        }
+                        return Promise.reject(response);  // then it will go to the catch if it is an error code
+                    }).catch(response => {
+                        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+                    });
+}
+
+
+function create_externaluser_funct(data, url){
+    fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+        'Content-Type': "application/json",
+        'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify(data),
+    }).then(response => { return response.json(); }).then(data => {
+        if("success" in data){
+            success=data['success'];
+            if(success){
+                    let success_msg = gettext('User successfully added, now you can search for it in the adjacent tab to add it in the organization.');  // any other error
+                    Swal.fire({
+                        icon: 'success',
+                        title: gettext('Success'),
+                        text: success_msg,
+                        timer: 1500
+                    });
+                $("#id_email").val("");
+
+            }else{
+                    let error_msg = gettext('Failed to add user. Please try again');  // any other error
+                    Swal.fire({
+                            icon: 'error',
+                            title: gettext('Error'),
+                            text: error_msg
+                    });
+            }
+        }
+    }).catch(response => {
+        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+        Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: error_msg
+        });
     });
 
 }
 
+function create_externaluser(data, url, user){
+
+    Swal.fire({
+      title: gettext("Are you sure?"),
+      text: user.display_text+" "+gettext("will be part of your organization!"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: gettext("Yes, add it!")
+    }).then((result) => {
+      if (result.isConfirmed) {
+         create_externaluser_funct(data, url)
+      }
+    });
+
+
+}
+
+function send_add_user_by_email(data, url){
+
+    fetch(url, {
+        method: "PUT",
+        credentials: "same-origin",
+        headers: {
+        'Content-Type': "application/json",
+        'X-CSRFToken': getCookie('csrftoken')},
+        body: JSON.stringify(data),
+    }).then(response => { return response.json(); }).then(data => {
+                    if("errors" in data){
+                        if ('email' in data['errors']){
+                            error_msg=data['errors']['email'];
+                        } else if ('detail' in data['errors']){
+                            error_msg=data['errors']['detail'];
+                        }else{
+                            error_msg=JSON.stringify(data['errors']);
+                        }
+                        Swal.fire({
+                                icon: 'error',
+                                title: gettext('Error'),
+                                text: error_msg
+                        });
+
+                    }
+                    if("pk" in data){
+                        let instance={
+                            'pk': data['pk'],
+                            'email': $("#id_email").val(),
+                            'organization': $(".nodeorg:checked").val()
+
+                        }
+                        let url = external_user_url.replace('/0', "");
+                        create_externaluser(instance, url, data);
+                    }
+    }).catch(response => {
+        let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
+        Swal.fire({
+                icon: 'error',
+                title: gettext('Error'),
+                text: error_msg
+        });
+    });
+}
+
+$("#relemailbtn").on('click', function(){
+   var form= $("#externaluserform");
+    data={
+     'organization': $(".nodeorg:checked").val(),
+     'email': $("#id_email").val()
+    }
+
+    let url = external_user_url.replace('/0', "/"+data['organization']);
+    send_add_user_by_email(data, url);
+});
+
 $("#relateusertoorg").on('click', function(){
     $("#id_typeofcontenttype").val('organization');
      $("#id_profile").val(null).change();
+     $("#id_addlaboratories").val(null).trigger('change');
+     $("#id_addlaboratories").parent().parent().show();
      $("#relprofilelabmodalLabel").html(gettext('Relate user to organization'));
      $("#relprofilelabmodal").modal('show');
 })
+
 $("#relateusertolab").on('click', function(){
     let laboratory=$('.nodeorg:checked').val();
     $("#id_typeofcontenttype").val('laboratory');
 
     if (laboratory != undefined){
         $("#id_profile").val(null).change();
+        $("#id_addlaboratories").val(null).trigger('change');
+        $("#id_addlaboratories").append(new Option(gettext('Current laboratory'), $("#id_laboratories").val(), true, true)).trigger('change');
+        $("#id_addlaboratories").parent().parent().hide();
         $("#relprofilelabmodalLabel").html(gettext('Relate user to laboratory'));
         $("#relprofilelabmodal").modal('show');
     }else{
@@ -158,12 +292,17 @@ $("#relateusertolab").on('click', function(){
 
 });
 $("#relprofilewithlaboratorybtn").on('click', function(){
+    var addlabs=Array.from($("#id_addlaboratories").find("option:selected").map(function(){ return parseInt(this.value)}));
+
     data = {
       'typeofcontenttype': $("#id_typeofcontenttype").val(),
       'user': $("#id_profile").val(),
       'organization': $(".nodeorg:checked").val()
     }
 
+    if(addlabs.length>0){
+       data[ 'addlaboratories'] = addlabs;
+    }
     if (data['typeofcontenttype'] == "laboratory"){
         data[ 'laboratory'] = $("#id_laboratories").val();
     }
@@ -191,7 +330,7 @@ function deleteuserlab(elementid, contentTypeobj){
           $.ajax({
               type: "DELETE",
               url: delete_rol_profile_url,
-              data: {'profile': elementid,
+              data: {'profile': element.dataset.profileid,
                       'app_label': element.dataset.appname,
                       'model': element.dataset.model,
                       'object_id': element.dataset.objectid,
@@ -503,28 +642,39 @@ $("input[name='relate_rols']").on('change', function(event){
     $("#orgbyusermodal").modal('show');
 });
 
+function showhide_action_field(field_id, value){
+    if(value === "3"){
+       $(field_id).closest('.form-group').show();
+    }else{
+       $(field_id).closest('.form-group').hide();
+    }
+}
+
 $(document).ready(function(){
+    showhide_action_field("#actionsmodal #id_name", $("#id_actions").val());
+    showhide_action_field("#actionwimodal #id_wi-name", $("#id_wi-actions").val());
+
     $("#id_actions").on('select2:select', function(e){
-        var data = e.params.data;
-        if(data.id==="3"){
-           $("#actionsmodal #id_name").closest('.form-group').show();
-        }else{
-           $("#actionsmodal #id_name").closest('.form-group').hide();
-        }
+        showhide_action_field("#actionsmodal #id_name", e.params.data.id);
+    });
+    $("#id_wi-actions").on('select2:select', function(e){
+        showhide_action_field("#actionwimodal #id_wi-name", e.params.data.id);
     });
 });
 
 $(".orgactions").on('click', function(event){
-    var org=event.currentTarget.dataset.org;
-    var name=$(event.currentTarget).closest('.row').find('h6').text();
-    $('#id_action_organization').val(org);
-    $("#actionsmodal #id_name").val(name);
-    if($("#id_actions").val() === "3"){
-        $("#actionsmodal #id_name").closest('.form-group').show();
-    }else{
-        $("#actionsmodal #id_name").closest('.form-group').hide();
+    var dataset=event.currentTarget.dataset;
+    var org = dataset.org;
+    var modal = dataset.modal;
+    var prefix = dataset.prefix;
+
+    if(prefix != "clone"){
+        var name=$(event.currentTarget).closest('.row').find('h6').text();
+        $(modal+" #id_"+prefix+"name").val(name);
     }
-    $("#actionsmodal").modal('show');
+
+    $('#id_'+prefix+'action_organization').val(org);
+    $(modal).modal('show');
 });
 
 function add_groups_by_profile(select_group){
