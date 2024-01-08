@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 
 from laboratory.models import OrganizationStructure
 from organilab_test.tests.base import SeleniumBase
@@ -21,6 +20,13 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//ul[@class='nav side-menu']/li[2]/a"},
             {"path": ".//ul[@class='nav side-menu']/li[2]/ul/li/a"}
         ]
+        self.org_actions = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[1]"},
+            {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/span/span/span"}
+        ]
+
+    def get_submit_button_path(self, id_modal):
+        return ".//div[@id='%s']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@type='submit']" % id_modal
 
     def test_create_organization(self):
         path_list = self.path_base + [
@@ -28,10 +34,9 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/input[@id='id_name']"},
             {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/input[@id='id_name']",
              "extra_action": "setvalue", "value": "Sede Central"},
-            {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@type='submit']"},
+            {"path": self.get_submit_button_path("addOrganizationmodal")}
         ]
         self.create_gif_process(path_list, "create_org")
-
 
     def test_delete_organization(self):
         path_list = self.path_base + [
@@ -41,9 +46,7 @@ class OrganizationSeleniumTest(SeleniumBase):
         self.create_gif_process(path_list, "delete_org")
 
     def test_change_organization_name(self):
-        path_list = self.path_base + [
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[1]"},
-            {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/span/span/span"},
+        path_list = self.org_actions + [
             {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span[2]/ul/li[3]"},
             {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/input"},
             {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/input",
@@ -51,6 +54,30 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/input"},
             {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/input",
              "extra_action": "setvalue", "value": "Organización Principal"},
-            {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@type='submit']"}
+            {"path": self.get_submit_button_path("actionsmodal")}
         ]
         self.create_gif_process(path_list, "change_org_name")
+
+    def test_deactivate_organization(self):
+        path_list = self.org_actions + [
+            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span[2]/ul/li[1]"},
+            {"path": self.get_submit_button_path("actionsmodal")}
+        ]
+        self.create_gif_process(path_list, "deactivate_org")
+
+    def test_clone_organization(self):
+        path_list = self.org_actions + [
+            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span[2]/ul/li[2]"},
+            {"path": self.get_submit_button_path("actionsmodal")}
+        ]
+        self.create_gif_process(path_list, "clone_org")
+
+    def test_add_organization_descendant(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[5]/span"},
+            {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/input"},
+            {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/input",
+                "extra_action": "setvalue", "value": "Organización Hija"},
+            {"path": self.get_submit_button_path("addOrganizationmodal")}
+        ]
+        self.create_gif_process(path_list, "add_org_descendant")
