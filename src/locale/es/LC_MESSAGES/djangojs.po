@@ -190,7 +190,7 @@ msgid " from "
 msgstr " desde "
 
 msgid "Yes, delete it"
-msgstr "Si, elimimarlo"
+msgstr "Si, eliminarlo"
 
 msgid "Also disable user login on platform"
 msgstr "También deshabilitar el usuario para autenticarse en la plataforma"
