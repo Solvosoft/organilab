@@ -181,7 +181,7 @@ class AddExternalUserSerializer(serializers.ModelSerializer):
         organization=attrs['organization']
         if organization.users.all().filter(pk=user.pk).exists():
             raise ValidationError(detail=_(
-                "User exist on organinzation"))
+                "User exist on organization"))
         if attrs['pk'] != user:
             raise ValidationError(detail=_(
                 "User not match with email"))
