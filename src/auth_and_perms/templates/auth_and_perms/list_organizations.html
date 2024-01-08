@@ -329,16 +329,65 @@
                 <h4 class="modal-title" id="relprofilelabmodalLabel">{% trans 'Relate user to laboratory' %}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="relprofilelabform" action="" method="post">
-            <div class="modal-body">
+									<div class="modal-body">
+										<ul class="nav nav-tabs">
+  <li class="nav-item" role="presentation">
+			    <button class="nav-link active" id="profiorg-tab" data-bs-toggle="tab" data-bs-target="#profiorgtabbody" type="button" role="tab" aria-controls="profiorg" aria-selected="true">
+								{% trans "From my organization" %}
+							</button>
+  </li>
+											{% if perms.auth_and_perms.can_add_external_user_in_org %}
+  <li class="nav-item" role="presentation">
+						    <button class="nav-link" id="profiorgextuser-tab" data-bs-toggle="tab" data-bs-target="#profiorgextuser" type="button" role="tab" aria-controls="profiorgextuser" aria-selected="true">
+								{% trans "External user" %}
+							</button>
+  </li>
+											{% endif %}
+
+
+</ul>
+
+
+
+	<div class="tab-content">
+  <div class="tab-pane active" id="profiorgtabbody" role="tabpanel" aria-labelledby="profiorg-tab">
+   <form id="relprofilelabform" action="" method="post">
+            <div class="profiletoorganization panel-body m-3">
                 {{ profileform.as_horizontal }}
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
                 <button id="relprofilewithlaboratorybtn" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button>
             </div>
-                {% csrf_token %}
-            </form>
+			                {% csrf_token %}
+			</form>
+</div>
+		{% if perms.auth_and_perms.can_add_external_user_in_org %}
+  		<div class="tab-pane" id="profiorgextuser" role="tabpanel" aria-labelledby="profile-tab">
+			<div class="profixorgextuserbody m-3">
+
+				<div class="bs-callout bs-callout-warning" id="callout-navs-anchor-disabled">
+    <h4>{% trans "Important" %}</h4>
+    <p>{% trans "In this tab, you add the existing users in Organilab who are not associated with the organization, so you need to know the user's email address to add them." %}</p>
+					<p>{% trans "Once added, you can search for the profile in the organization tab to relate user to organization" %}</p>
+				</div>
+				<form id="externaluserform" class="form">
+<div id="externaluserformcontainer" class="m-3">
+				{{ externaluserform.as_horizontal }}
+</div>
+					  {% csrf_token %}
+					</form>
+			</div>
+			            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                <button id="relemailbtn" type="button" class="btn btn-primary">{% trans 'Find user' %}</button>
+            </div>
+		</div>
+		{% endif %}
+	</div>
+
+								</div>
         </div>
     </div>
 </div>
@@ -379,6 +428,7 @@ prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}";
 userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
 delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
 create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
+external_user_url = "{% url 'auth_and_perms:api-extuserinorg-detail' 0 %}";
 groups_by_profile = "{% url 'groupsbyprofile-list' %}"
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
