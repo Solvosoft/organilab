@@ -34,7 +34,7 @@ services:
     - 8025:8025
 
   organilab:
-    image: organilab:1.4.1
+    image: organilab:1.4.2
     container_name: "organilab"
     networks:
       - apps

@@ -90,7 +90,7 @@ class CreateShelfobjectTest(TestCase):
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
-                "maximum_limit": 0,
+                "maximum_limit": 40,
                 "container_select_option": "clone",
                 "container_for_cloning":material.id,
                 "available_container":""
