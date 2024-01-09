@@ -81,3 +81,26 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": self.get_submit_button_path("addOrganizationmodal")}
         ]
         self.create_gif_process(path_list, "add_org_descendant")
+
+    def test_view_org_logs(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[2]/a"}
+        ]
+        self.create_gif_process(path_list, "view_org_logs")
+
+    def test_view_org_roles(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[3]/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[1]/div/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/a"}
+        ]
+        self.create_gif_process(path_list, "view_org_roles")
+
+    def test_change_org_parent(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[4]/span"},
+            {"path": ".//div[@id='orgbyusermodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/span/span/span"},
+            {"path": ".//div[@id='orgbyusermodal']/span/span/span[2]/ul/li"},
+            {"path": self.get_submit_button_path("orgbyusermodal")}
+        ]
+        self.create_gif_process(path_list, "change_org_parent")

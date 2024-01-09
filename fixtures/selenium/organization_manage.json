@@ -31,6 +31,66 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Gestión Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+      "name": "Gestión Informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "change_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "delete_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "view_inform",
+          "laboratory",
+          "inform"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -38,8 +98,42 @@
       "name": "Organización de Prueba",
       "position": 0,
       "level": 0,
+      "rol": [1, 2],
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Estudiantes",
+      "position": 0,
+      "level": 0,
       "rol": [],
       "users": [1]
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2024-01-06T22:49:30.603Z",
+      "user": 1,
+      "content_type": 30,
+      "object_id": 1,
+      "object_repr": "Organization has been added",
+      "action_flag": 1,
+      "change_message": "[{'added': {'fields': ['organization', 'users']}}]"
+    }
+  },
+  {
+    "model": "laboratory.laborglogentry",
+    "pk": 1,
+    "fields": {
+      "log_entry": 1,
+      "content_type": 30,
+      "object_id": 1
     }
   }
 ]
