@@ -17,7 +17,7 @@ Simple laboratory organizer with multiples features:
 
 # Documentation
 
-Documentation will be available in [read the docs](http://organilab.readthedocs.io/en/latest/)
+Documentation will be available in [read the docs](http://organilab.readthedocs.io/)
 
 # Installation 
 

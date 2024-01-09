@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -29,12 +31,13 @@ def get_roles_in_html(user, lab, org):
     roles = []
     if profile:
         for rol in profile.rol.filter(organizationstructure=org):
+            rol_uuid=str(uuid.uuid4())
             datatext = """data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """ % (
                 org.pk, user, lab._meta.app_label, lab._meta.model_name, lab.pk
             )
             roles.append(
-                """<span class="applyasrole" onclick="applyasrole(%s, %s)" id="rol_%d" style="color: %s;" title="%s" %s>%s</span>""" % (
-                    rol.pk, user, rol.pk,
+                """<span class="applyasrole" onclick="applyasrole('%s', %s)" id="rol_%s" style="color: %s;" title="%s" %s>%s</span>""" % (
+                    rol_uuid, user, rol_uuid,
                     rol.color.replace('[', '').replace(']', '').replace("'", '').strip(),
                     get_rol_name(rol),
                     datatext,
