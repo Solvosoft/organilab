@@ -72,7 +72,8 @@ def set_rol_administrator_on_org(profile, organization, type_in_organization=Use
 def create_user_organization(user, organization, data, user_type=UserOrganization.LABORATORY_USER):
     profile = Profile.objects.create(user=user, phone_number=data['phone_number'],
                                      id_card=data['id_card'],
-                                     job_position=data['job_position'])
+                                     job_position=data['job_position'],
+                                     language=data['language'])
     if isinstance(organization, str):
         org = OrganizationStructure.objects.create(name=organization)
     else:
@@ -80,7 +81,7 @@ def create_user_organization(user, organization, data, user_type=UserOrganizatio
     set_rol_administrator_on_org(profile, org, type_in_organization=user_type)
     user.active = True
     user.save()
-#    //UserOrganization.objects.create(user=user, organization=org, status=True, type_in_organization=user_type)
+#    UserOrganization.objects.create(user=user, organization=org, status=True, type_in_organization=user_type)
 
 @transaction.atomic
 def create_profile_otp(request, pk):
@@ -88,7 +89,8 @@ def create_profile_otp(request, pk):
     device = TOTPDevice.objects.get(user__pk=pk)
     form = partial(AddProfileForm, user)
     if request.method == 'POST':
-        form = form(data=request.POST, initial={'otp_device': 'otp_totp.totpdevice/%d'%device.pk})
+        form = form(data=request.POST, initial={
+            'otp_device': 'otp_totp.totpdevice/%d'%device.pk})
         if form.is_valid():
             reguser = RegistrationUser.objects.filter(
                 user=user,
@@ -103,7 +105,8 @@ def create_profile_otp(request, pk):
                 messages.error(request, _("You have no creation process, maybe it was expired, please try to register again"))
                 return redirect(reverse('auth_and_perms:register_user_to_platform'))
     else:
-        form = form(initial={'otp_device': 'otp_totp.totpdevice/%d'%device.pk, 'email': user.email})
+        form = form(initial={'otp_device': 'otp_totp.totpdevice/%d'%device.pk,
+                             'email': user.username})
     context={
         'form': form,
         'user': user.pk
