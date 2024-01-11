@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-18 09:56-0600\n"
+"POT-Creation-Date: 2024-01-08 12:44-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -250,6 +250,17 @@ msgstr ""
 "El laboratorio no tiene suficiente de este objeto para ser capaz de "
 "reservarlo.<br>%(list)s"
 
+msgid "User not found, Sorry try to use add user button on organization list"
+msgstr ""
+"Usuario no existe, Lo lamentamos, intente agregar el usuario en el botón en "
+"la lista de organizaciones"
+
+msgid "User exist on organization"
+msgstr "Usuario existe en la organización"
+
+msgid "User not match with email"
+msgstr "Ningún usuario con ese correo está registrado"
+
 msgid "Organization can't change this laboratory"
 msgstr "La organización no puede editar este laboratorio"
 
@@ -270,6 +281,9 @@ msgstr "El estante no pertenece a este laboratorio."
 
 msgid "Shelf does not belong to this organization."
 msgstr "El estante no pertenece a esta organización."
+
+msgid "Organization cannot be inactive"
+msgstr "Organización no puede ser inactivada"
 
 msgid "Laboratory modification not authorized"
 msgstr "Modificación en el laboratorio no autorizada"
@@ -319,6 +333,9 @@ msgstr "Puesto de Trabajo"
 msgid "It will used to login when you want to login with digital signature"
 msgstr "Este campo será usado cuando se autentique con firma digital"
 
+msgid "Laboratories"
+msgstr "Laboratorios"
+
 msgid "Inactive organization"
 msgstr "Desactivar Organización"
 
@@ -328,14 +345,20 @@ msgstr "Clonar Organización"
 msgid "Change organization name"
 msgstr "Cambiar nombre de la organización"
 
+msgid "Search by object"
+msgstr "Buscar por objeto"
+
+msgid "Organization not found"
+msgstr "Organización no existe"
+
 msgid "ID Card"
 msgstr "Tarjeta de identificación"
 
-msgid "Laboratories"
-msgstr "Laboratorios"
-
 msgid "Language"
 msgstr "Idioma"
+
+msgid "Can add external user to organization"
+msgstr "Puede agregar usuarios externos a la organización"
 
 msgid "permissions"
 msgstr "permisos"
@@ -460,8 +483,14 @@ msgstr "Relacionar Laboratorio"
 msgid "Log List"
 msgstr "Bitácoras"
 
+msgid "Change parent of organization"
+msgstr "Cambia padre de la organización"
+
 msgid "Rol List"
 msgstr "Lista de roles"
+
+msgid "Delete organization"
+msgstr "Eliminar organización"
 
 msgid "By laboratory"
 msgstr "Por laboratorio"
@@ -520,12 +549,6 @@ msgstr "Crear Organización"
 msgid "Relate Organization with Permission objects"
 msgstr "Relaciona Organizaciones con objetos de permisos"
 
-msgid "Change parent of organization"
-msgstr "Cambia padre de la organización"
-
-msgid "Name:"
-msgstr "Nombre:"
-
 msgid "Organization parent:"
 msgstr "Organización padre:"
 
@@ -535,8 +558,57 @@ msgstr "Seleccione una organización padre"
 msgid "Relate user to laboratory"
 msgstr "Relacionar usuario con laboratorio"
 
+msgid "From my organization"
+msgstr "Desde mi organización"
+
+msgid "External user"
+msgstr "Usuario externo"
+
+msgid "Important"
+msgstr "Importante"
+
+msgid ""
+"In this tab, you add the existing users in Organilab who are not associated "
+"with the organization, so you need to know the user's email address to add "
+"them."
+msgstr ""
+"En este tab, usted puede agregar usuarios existentes en Organilab que no "
+"están asociados a su organización, usted debe conocer el correo electrónico "
+"con el que el usuario se registró en la plataforma."
+
+msgid ""
+"Once added, you can search for the profile in the organization tab to relate "
+"user to organization"
+msgstr ""
+"Una vez agregado, puede buscar el perfil en el tab de la organización y "
+"relacionarlo con su organización"
+
+msgid "Find user"
+msgstr "Buscar usuario"
+
 msgid "Actions for Organization"
 msgstr "Acciones de la organización"
+
+msgid "My laboratories"
+msgstr "Mis Laboratorios"
+
+msgid "Reports"
+msgstr "Reportes"
+
+msgid "Risk Zones"
+msgstr "Zonas de riesgo"
+
+msgid "Informs"
+msgstr "Informes"
+
+msgid "MSDS"
+msgstr "MSDS"
+
+msgid "SGA"
+msgstr "SGA"
+
+msgid "Disposal"
+msgstr "Desecho"
 
 msgid "Manage Rol"
 msgstr "Administrar perfil"
@@ -570,27 +642,6 @@ msgstr "Confirmar"
 
 msgid "Roles registered on this organization"
 msgstr "Roles registrados en esta organización"
-
-msgid "My laboratories"
-msgstr "Mis Laboratorios"
-
-msgid "Reports"
-msgstr "Reportes"
-
-msgid "Risk Zones"
-msgstr "Zonas de riesgo"
-
-msgid "Informs"
-msgstr "Informes"
-
-msgid "MSDS"
-msgstr "MSDS"
-
-msgid "SGA"
-msgstr "SGA"
-
-msgid "Disposal"
-msgstr "Desecho"
 
 msgid "Organization doesn't exists"
 msgstr "Organización no existe"
@@ -853,6 +904,9 @@ msgstr "Seleccionar Mueble"
 
 msgid "Invalid format in shelf dataconfig "
 msgstr "Formato inválido en la configuración de datos del estante "
+
+msgid "Organization parent cannot be inactive"
+msgstr "Padre de la organización no puede ser inactivado"
 
 msgid "Laboratories to be related to this organization"
 msgstr "Laboratorios a relacionar con esta organización"
@@ -1275,6 +1329,9 @@ msgstr ""
 
 msgid "Minimum limit cannot be greater than maximum limit."
 msgstr "Límite mínimo no puede ser mayor al límite máximo."
+
+msgid "Quantity cannot be greater than maximum limit."
+msgstr "La cantidad no puede mayor que el límite maximo."
 
 msgid "Infinity"
 msgstr "Infinito"
@@ -1870,6 +1927,9 @@ msgstr "Administración de objetos"
 msgid "Reactive management"
 msgstr "Administración de Reactivos"
 
+msgid "This action will delete its descendants organizations too."
+msgstr "Esta acción también eliminará sus organizaciones descendientes."
+
 msgid "Organization Structure Management"
 msgstr "Administración de la estructura de la organización"
 
@@ -2158,6 +2218,9 @@ msgstr "Tipo:"
 
 msgid "Object Code:"
 msgstr "Código de objeto:"
+
+msgid "Name:"
+msgstr "Nombre:"
 
 msgid "Quantity:"
 msgstr "Cantidad:"
@@ -4032,9 +4095,6 @@ msgstr "Pictogramas"
 msgid "Other dangers"
 msgstr "Otros Peligros"
 
-msgid "Important"
-msgstr "Importante"
-
 msgid "Changing de code field create new instance"
 msgstr "Cambiando el campo de código genera una nueva instancia"
 
@@ -4167,9 +4227,3 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
-
-msgid "Delete organization"
-msgstr "Eliminar organización"
-
-msgid "This action will delete its descendants organizations too."
-msgstr "Esta acción también eliminará sus organizaciones descendientes."

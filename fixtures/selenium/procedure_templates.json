@@ -26541,7 +26541,7 @@
     "fields": {
       "title": "Decantación",
       "description": "<p>La decantaci&oacute;n es una t&eacute;cnica que permite separar un s&oacute;lido mezclado heterog&eacute;neamente con un l&iacute;quido en el que es insoluble o bien dos l&iacute;quidos inmiscibles (que no se pueden mezclar homog&eacute;neamente) con densidades diferente.</p>",
-      "content_type": 30,
+      "content_type": null,
       "object_id": 1
     }
   },

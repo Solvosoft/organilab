@@ -25,6 +25,10 @@ class Profile(models.Model):
             return name
         return '%s' % (self.user,)
 
+    class Meta:
+        permissions = (
+            ('can_add_external_user_in_org', _('Can add external user to organization')),
+        )
 
 def get_random_color():
     hexadecimal = "#" + ''.join([random.choice('ABCDEF0123456789') for i in range(6)])

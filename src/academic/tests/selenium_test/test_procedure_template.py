@@ -10,10 +10,10 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
     def setUp(self):
         super().setUp()
         self.user = User.objects.get(pk=1)
+        self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
+        self.selenium.get(self.live_server_url+str(reverse("academic:procedure_list", kwargs={"org_pk":1})))
 
-    def create_procedure(self):
-        self.create_directory_path(folder_name="create_procedure_template")
-
+    def test_procedure_crud(self):
         path_list = [
 
             {"path": ".//button[@class='btn btn-secondary btn-sm btn-success']"},
@@ -24,10 +24,11 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "create_procedure_template")
+        self.update_procedure()
+        self.detail_procedure()
+        self.crud_step()
 
     def update_procedure(self):
-        self.create_directory_path(folder_name="update_procedure_template")
-
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[3]"},
@@ -40,31 +41,24 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         self.create_gif_process(path_list, "update_procedure_template")
 
     def detail_procedure(self):
-        self.create_directory_path(folder_name="detail_procedure_template")
-
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
+            {"path": ".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
+
         ]
         self.create_gif_process(path_list, "detail_procedure_template")
 
 
     def delete_procedure(self):
-        self.create_directory_path(folder_name="delete_procedure_template")
-
         path_list = [
 
-            {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[4]", "extra_action":'sweetalert_comfirm',
-             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
-             "ok":"""document.querySelector('.swal2-confirm').click();"""},
-
+            {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[4]","extra_action":'sweetalert_comfirm',
+             "comfirm":"""document.querySelector('.swal2-confirm').click();"""},
         ]
         self.create_gif_process(path_list, "delete_procedure_template")
 
-
-    def add_step(self):
-        self.create_directory_path(folder_name="add_step")
-
+    def crud_step(self):
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[2]"},
@@ -77,37 +71,44 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
 
         ]
         self.create_gif_process(path_list, "add_step")
+        self.object_step()
+        self.observation()
+        self.update_step()
+        self.delete_step()
+        self.delete_procedure()
+
 
     def update_step(self):
-        self.create_directory_path(folder_name="update_step")
-
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
+            {"path": ".//input[@name='title']", "extra_action": "clearinput"},
             {"path": ".//input[@name='title']", "extra_action": "setvalue",
              "value": "Paso 1"},
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
+            {"path":".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
 
         ]
         self.create_gif_process(path_list, "update_step")
 
 
     def delete_step(self):
-        self.create_directory_path(folder_name="delete_step")
-
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
-            {"path": ".//a[@title='Eliminar']"},
+
+            {"path": ".//div[1]/div/div[3]/div/div/div[3]/div[2]/a[1]","extra_action":'sweetalert_comfirm',
+             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
+             "ok":"""document.querySelector('.swal2-confirm').click();"""},
+            {"path": ".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
+
         ]
         self.create_gif_process(path_list, "delete_step")
 
 
-    def add_object(self):
-        self.create_directory_path(folder_name="add_object")
-
+    def object_step(self):
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
@@ -123,60 +124,14 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
              "extra_action": {"select": ""}},
             {"path": ".//li[text()='Metros']"},
             {"path": ".//div[@class='modal-footer']/button[@class='btn btn-success']"},
-            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
+            {"path": ".//div[1]/div/div[3]/div/div/div[1]/div[1]/div/form/div[3]/button"},
 
         ]
-        self.create_gif_process(path_list, "add_object")
-
-    def add_observacion(self):
-        self.create_directory_path(folder_name="add_observation")
-
-        path_list = [
-            {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
-            {"path": ".//a[@title='Editar']"},
-            {"path": ".//span[@title='Crear Observación']"},
-            {"path": ".//form/textarea[@id='id_procedure_description']","extra_action":"setvalue",
-             "value":"Tener cuidado con los envases de materiales biologícos"},
-            {"path": ".//form[@class='observation_modal']/div[@class='card']/div[@class='modal-footer'](button[@class='btn btn-success']"},
-            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
-        ]
-        self.create_gif_process(path_list, "add_observation")
-
-
-    def test_list_procedure(self):
-        self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
-        self.create_directory_path(folder_name="list_procedure_template")
-
-        path_list = [
-
-            {"path": ".//span[@class='select2-selection select2-selection--single']"},
-            {"path": ".//ul[@class='select2-results__options']","extra_action":{"select":""}},
-            {"path": ".//li[text()='1 | Organización de Estudiantes']"},
-            {"path": "//a[text() =' Mis Laboratorios']"},
-            {"path": ".//a//i[@class='fa fa-calendar-check-o']"},
-            {"path": ".//a//i[@class='fa fa-list-alt']"}
-        ]
-        self.create_gif_process(path_list, "list_procedure_template")
-        self.create_procedure()
-        self.add_step()
-        self.edit_step()
-        self.add_object()
-        self.detail_procedure()
-
-    def remove_observation(self):
-        self.create_directory_path(folder_name="remove_observation")
-
-        path_list = [
-            {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
-            {"path": ".//a[@title='Editar']"},
-            {"path": ".//tbody[@id='observation_list']/tr[1]/td[2]", "extra_action":'sweetalert_comfirm',
-             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
-             "ok":"""document.querySelector('.swal2-confirm').click();"""},
-        ]
-        self.create_gif_process(path_list, "remove_observation")
+        self.create_gif_process(path_list, "add_step_object")
+        self.remove_object()
 
     def remove_object(self):
-        self.create_directory_path(folder_name="remove_object")
+        self.create_directory_path(folder_name="remove_step_object")
 
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
@@ -184,22 +139,39 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//tbody[@id='object_list']/tr[1]/td[3]", "extra_action":'sweetalert_comfirm',
              "comfirm":"""document.querySelector('.swal2-confirm').click();""",
              "ok":"""document.querySelector('.swal2-confirm').click();"""},
-        ]
-        self.create_gif_process(path_list, "remove_object")
+            {
+                "path": ".//div[1]/div/div[3]/div/div/div[1]/div[1]/div/form/div[3]/button"},
 
-    def test_observation(self):
-        self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
-        self.selenium.get(self.live_server_url+str(reverse("academic:procedure_list", kwargs={"org_pk":1})))
-        self.create_directory_path(folder_name="add_observation")
-        self.delete_step()
+        ]
+        self.create_gif_process(path_list, "remove_step_object")
+
+    def observation(self):
+        self.create_directory_path(folder_name="add_step_observation")
+
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
             {"path": ".//span[@title='Crear Observación']"},
             {"path": ".//form/textarea[@id='id_procedure_description']","extra_action":"setvalue",
              "value":"Tener cuidado con los envases de materiales biologícos"},
-            {"path": ".//div[@class='modal-footer']/button[@class='btn btn-success open_modal']"},
-            {"path": ".//form/div[@class='text-center']/button[@type='submit']", "scroll":"script", "script_value":"window.scrollTo(0, document.body.scrollHeight)"},
+            {"path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[3]/button[2]","scroll":"script", "script_value":"window.scrollTo(0, document.body.scrollHeight)"},
+            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
         ]
-        #self.create_gif_process(path_list, "add_observation")
-        #self.remove_observation()
+        self.create_gif_process(path_list, "add_step_observation")
+        self.remove_observation()
+
+    def remove_observation(self):
+        self.create_directory_path(folder_name="remove_step_observation")
+
+        path_list = [
+            {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
+            {"path": ".//a[@title='Editar']"},
+            {"path": ".//tbody[@id='observation_list']/tr[1]/td[2]", "extra_action":'sweetalert_comfirm',
+             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
+             "ok":"""document.querySelector('.swal2-confirm').click();""",
+             "scroll": "script",
+             "script_value": "window.scrollTo(0, document.body.scrollHeight)"},
+            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
+
+        ]
+        self.create_gif_process(path_list, "remove_step_observation")

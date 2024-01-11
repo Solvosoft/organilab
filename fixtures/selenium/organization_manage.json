@@ -8,7 +8,7 @@
       "is_superuser": true,
       "username": "admin",
       "first_name": "Organilab",
-      "last_name": "Admin",
+      "last_name": "Administrador",
       "email": "orgadmin@gmail.com",
       "is_staff": false,
       "is_active": true,
@@ -35,7 +35,7 @@
     "pk": 1,
     "fields": {
       "parent": null,
-      "name": "Organization Test",
+      "name": "Organización de Prueba",
       "position": 0,
       "level": 0,
       "rol": [],
