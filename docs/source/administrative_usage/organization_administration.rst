@@ -16,38 +16,7 @@ Cuando se menciona una organización base, se hace referencia a la organización
 consiguiente tendrá a futuro organizaciones descendientes (organizaciones hijas) o en casos menos comunes solo será la
 organización (organización única sin antecesor, ni sucesores).
 
-* Paso 1
-
-.. image:: ../_static/manage_organization/organization/image/create_organization_step1.png
-   :height: 400
-   :width: 700
-
-* Paso 2
-
-.. image:: ../_static/manage_organization/organization/image/create_organization_step2.png
-   :height: 400
-   :width: 700
-
-* Paso 3
-
-.. image:: ../_static/manage_organization/organization/image/create_organization_step3.png
-   :height: 400
-   :width: 700
-
-* Paso 4
-
-.. image:: ../_static/manage_organization/organization/image/create_organization_step4.png
-   :height: 400
-   :width: 700
-
-* Paso 5
-
-.. image:: ../_static/manage_organization/organization/image/create_organization_step5.png
-   :height: 400
-   :width: 700
-
-
-.. video:: ../_static/manage_organization/organization/video/create_base_organization.mp4
+.. image:: ../_static/gif/create_org.gif
    :height: 400
    :width: 600
 
@@ -62,7 +31,7 @@ Crear nueva organización hija
 
 Las organizaciones hijas pueden tener organizaciones descendientes y siempre tendrán una organización base antecesora.
 
-.. video:: ../_static/manage_organization/organization/video/create_descendants_organizations.mp4
+.. image:: ../_static/gif/add_org_descendant.gif
    :height: 400
    :width: 600
 
@@ -81,7 +50,7 @@ Eliminar una organización
 Al eliminar una organización es necesario tener en cuenta si ésta tiene o no organizaciones hijas
 (organizaciones descendientes) debido a que también las organizaciones hijas serán eliminadas.
 
-.. video:: ../_static/manage_organization/organization/video/delete_organization.mp4
+.. image:: ../_static/gif/delete_org.gif
    :height: 400
    :width: 600
 
@@ -104,10 +73,30 @@ Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las s
 * No se les puede agregar organizaciones hijas.
 * Se pueden visualizar las bitácoras.
 * No se puede cambiar su padre.
-* No se pueden gestionar las acciones (desactivar organización, cambiar de nombre de la organización)
+* No se pueden gestionar las acciones (desactivar organización, cambiar el nombre de la organización)
 * Si se puede clonar la organización.
 * No se puede activar nuevamente la organización.
 
+
+.. image:: ../_static/gif/deactivate_org.gif
+   :height: 400
+   :width: 600
+
+
+Clonar una organización
+*******************************
+
+.. image:: ../_static/gif/clone_org.gif
+   :height: 400
+   :width: 600
+
+
+Cambiar nombre de una organización
+***************************************
+
+.. image:: ../_static/gif/clone_org.gif
+   :height: 400
+   :width: 600
 
 
 Administración de usuarios
