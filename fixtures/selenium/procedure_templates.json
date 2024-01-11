@@ -26536,10 +26536,20 @@
     }
   },
   {
+    "model": "academic.procedure",
+    "pk": 99,
+    "fields": {
+      "title": "Decantación",
+      "description": "<p>La decantaci&oacute;n es una t&eacute;cnica que permite separar un s&oacute;lido mezclado heterog&eacute;neamente con un l&iacute;quido en el que es insoluble o bien dos l&iacute;quidos inmiscibles (que no se pueden mezclar homog&eacute;neamente) con densidades diferente.</p>",
+      "content_type": 30,
+      "object_id": 1
+    }
+  },
+  {
     "model": "academic.procedurestep",
     "pk": 17,
     "fields": {
-      "procedure": 10,
+      "procedure": 99,
       "title": "01.\tDecantación un Liquido",
       "description": "<p>Para separar l&iacute;quidos que no son solubles, como por ejemplo&nbsp;agua&nbsp;y&nbsp;aceite, es necesario introducir la&nbsp;mezcla&nbsp;en un recipiente llamado embudo de decantaci&oacute;n&nbsp;y dejar que repose hasta que los l&iacute;quidos se separan en dos capas.&nbsp;Despu&eacute;s, se abre la llave y se deja salir el l&iacute;quido de la capa inferior poco a poco, y cerramos la llave cuando falte poco para que salga el otro l&iacute;quido.&nbsp;Para no contaminar los componentes de la mezcla al separarlos, no es conveniente aprovechar ni el final del primer l&iacute;quido ni el comienzo del segundo. Finalmente, hay que coger otro recipiente y recoger el segundo l&iacute;quido.</p>"
     }
@@ -26579,22 +26589,6 @@
       "object": 75,
       "quantity": 1.0,
       "measurement_unit": 64
-    }
-  },
-  {
-    "model": "academic.procedureobservations",
-    "pk": 1,
-    "fields": {
-      "step": 17,
-      "description": "Cleaning"
-    }
-  },
-  {
-    "model": "academic.procedureobservations",
-    "pk": 2,
-    "fields": {
-      "step": 17,
-      "description": "Eating"
     }
   }
 ]
