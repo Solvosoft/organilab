@@ -182,7 +182,6 @@ class SeleniumBase(StaticLiveServerTestCase):
         Value can be quotation marks this is equal to clear an input.
         """
         if "value" in obj:
-            element.clear()
             element.send_keys(obj['value'])
 
 
@@ -192,15 +191,14 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         if obj["extra_action"] == "setvalue":
             self.set_value_action(obj, element)
-        if obj["extra_action"] == 'submit':
+        elif obj["extra_action"] == 'submit':
             self.do_submit_action(obj,element)
-
-        if obj["extra_action"]=='script':
+        elif obj["extra_action"]=='script':
             self.selenium.execute_script(obj['value'])
-
-        if obj["extra_action"] == 'sweetalert_comfirm':
+        elif obj["extra_action"] == 'sweetalert_comfirm':
             self.do_sweetaler_comfirm_action(obj, element)
-
+        elif obj["extra_action"] == "clearinput":
+            element.clear()
     def do_sweetaler_comfirm_action(self, obj, element):
         """
         This in an action responsable to press yes/no buttons of sweetalert.
@@ -212,6 +210,8 @@ class SeleniumBase(StaticLiveServerTestCase):
         sleep(1)
         self.selenium.execute_script(obj['comfirm'])
 
+
+
     def do_action(self, obj, element):
         """
         This function applies the respective action by obj path.
@@ -221,6 +221,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         else:
             self.action.move_to_element(element).perform()
             element.click()
+
     def do_scroll(self,obj):
         if 'scroll' in obj:
             self.selenium.execute_script(obj['script_value'])
@@ -240,7 +241,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         self.create_directory_path(folder_name=folder_name)
         self.create_screenshot(order=order)
-
+        print(folder_name)
         for obj in path_list:
             self.do_scroll(obj)
             element = self.selenium.find_element(By.XPATH, obj['path'])

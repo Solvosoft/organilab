@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-18 09:56-0600\n"
-"PO-Revision-Date: 2023-07-08 09:46-0600\n"
+"POT-Creation-Date: 2024-01-08 09:31-0600\n"
+"PO-Revision-Date: 2024-01-08 09:32-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.2.2\n"
 
 msgid "Do you want to send the report for review?"
 msgstr "¿Desea enviar el reporte a revisión?"
@@ -175,6 +175,47 @@ msgid "Now you can set this rol in laboratory user table"
 msgstr ""
 "Ahora se puede establecer este rol en la tabla de usuarios del laboratorio"
 
+msgid "User registered successfully"
+msgstr "Usuario guardado satisfactoriamente"
+
+msgid ""
+"There was a problem performing your request. Please try again later or "
+"contact the administrator."
+msgstr ""
+"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
+"contacte al administrador."
+
+msgid ""
+"User successfully added, now you can search for it in the adjacent tab to "
+"add it in the organization."
+msgstr ""
+"Usuario agregado con éxito, ahora puedes buscarlo en el tab contiguo para "
+"agregarlo en la organización."
+
+msgid "Success"
+msgstr "Éxito"
+
+msgid "Failed to add user. Please try again"
+msgstr "Falló al agregar organización, por favor trate más tarde"
+
+msgid "Are you sure?"
+msgstr "¿Está seguro?"
+
+msgid "will be part of your organization!"
+msgstr "será parte de su organización!"
+
+msgid "Yes, add it!"
+msgstr "Si, agréguelo!"
+
+msgid "Relate user to organization"
+msgstr "Relacionar usuario a la organización"
+
+msgid "Current laboratory"
+msgstr "Laboratorio actual"
+
+msgid "Relate user to laboratory"
+msgstr "Relacionar usuario a laboratorio"
+
 msgid "Laboratory needs to be selected"
 msgstr "Un laboratorio necesita ser seleccionado"
 
@@ -190,20 +231,28 @@ msgid " from "
 msgstr " desde "
 
 msgid "Yes, delete it"
-msgstr "Si, elimimarlo"
+msgstr "Si, eliminarlo"
 
 msgid "Also disable user login on platform"
 msgstr "También deshabilitar el usuario para autenticarse en la plataforma"
 
-msgid "Success"
-msgstr "Éxito"
+msgid "No organization selected"
+msgstr "Sin organización seleccionada"
 
-msgid ""
-"There was a problem performing your request. Please try again later or "
-"contact the administrator."
-msgstr ""
-"Hubo un problema realizando su solicitud. Por favor intente más tarde o "
-"contacte al administrador."
+msgid "You need to select a organization before using this tab."
+msgstr "Necesita seleccionar una organización para realizar esta acción."
+
+msgid "Shelf Object"
+msgstr "Objeto en estante"
+
+msgid "Shelf"
+msgstr "Estante"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Laboratory"
+msgstr "Laboratorio"
 
 msgid "Select an option from the available APIs in Organilab"
 msgstr "Seleccione una API de las disponibles en Organilab"
@@ -254,9 +303,6 @@ msgstr "Unidad de Medida"
 
 msgid "It is filtered by the shelf's measurement unit."
 msgstr "Es filtrada por la unidad de medida del estante."
-
-msgid "Quantity"
-msgstr "Cantidad"
 
 msgid ""
 "There is no limit if the shelf has infinite quantity setup, in any other "
@@ -358,9 +404,6 @@ msgstr "Necesita seleccionar un estante antes de realizar esta acción."
 
 msgid "Are you sure you want to deny the transfer of"
 msgstr "¿Está seguro/a de que desea denegar la transferencia de"
-
-msgid "Are you sure?"
-msgstr "¿Está seguro?"
 
 msgid "Confirm"
 msgstr "Confirmar"
