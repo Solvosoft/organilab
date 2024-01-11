@@ -64,6 +64,10 @@ Permisos requeridos:
 * *add_procedure*: Autoriza el ingreso a la vista de **"Creación de plantillas de procedimientos"**.
 * *change_procedure*: Autoriza el ingreso a la vista de **"Actualización de plantillas de procedimientos"**.
 
+Ejemplo de creación de plantilla de procedimiento:
+
+.. image:: ../_static/gif/create_procedure_template.gif
+
 
 Actualizar plantilla de procedimientos
 ****************************************
@@ -86,6 +90,11 @@ Permisos requeridos:
 * *view_procedure*: Permite visualizar el item  y listado de **"Plantillas de procedimientos"**.
 * *add_procedure*: Autoriza el ingreso a la vista de **"Creación de plantillas de procedimientos"**.
 * *change_procedure*: Autoriza el ingreso a la vista de **"Actualización de plantillas de procedimientos"**.
+
+
+Ejemplo de actualizacion de plantilla de procedimiento:
+
+.. image:: ../_static/gif/update_procedure_template.gif
 
 
 Visualizar plantilla de procedimientos
@@ -126,9 +135,7 @@ Permisos Requeridos:
 
 **Ejemplo de agregar un paso de una plantilla de procedimiento**:
 
-.. video:: ../_static/procedure/video/add_procedure_step.mp4
-  :width: 600
-  :height: 400
+.. image:: ../_static/gif/add_step.gif
 
 
 
@@ -153,9 +160,7 @@ Permisos Requeridos:
 
 **Ejemplo de actualizar un paso de una plantilla de procedimiento**:
 
-.. video:: ../_static/procedure/video/update_procedure_step.mp4
-  :width: 600
-  :height: 400
+.. image:: ../_static/gif/update_step.gif
 
 
 Agregar objectos en los pasos
@@ -186,9 +191,7 @@ Permisos requeridos:
 
 **Ejemplo de agregar de objecto**:
 
-.. video:: ../_static/procedure/video/add_step_object.mp4
-  :width: 600
-  :height: 400
+.. image:: ../_static/gif/add_step_object.gif
 
 
 Descartar objecto
@@ -206,9 +209,8 @@ Permisos requeridos:
 
 **Ejemplo de descarte de objecto**:
 
-.. video:: ../_static/procedure/video/remove_step_object.mp4
-  :width: 600
-  :height: 400
+.. image:: ../_static/gif/remove_step_object.gif
+
 
 
 Agregar observación
@@ -228,9 +230,8 @@ Permisos requeridos:
 
 **Ejemplo de creación de observación**:
 
-.. video:: ../_static/procedure/video/add_step_observation.mp4
-  :width: 600
-  :height: 400
+.. image:: ../_static/gif/add_observation.gif
+
 
 
 Eliminar observación
@@ -250,6 +251,12 @@ Al dar click en icono eliminar de la observación seleccionada se mostrará la s
 Permisos Requeridos:
 
 *   *delete_procedureobservations*: Autoriza el agregar observaciones en los pasos.
+
+
+Ejemplo de eliminación de observación:
+
+.. image:: ../_static/gif/remove_observation.gif
+
 
 Eliminar paso
 ***************
@@ -275,6 +282,7 @@ Permisos Requeridos:
     que anteriormente han utilizado la plantilla, esto provocando cambios en la generación de reservas de materiales,
     de procedimientos que usa esta plantilla de referencia.
 
+
 Eliminar plantilla de procedimientos
 ***************************************
 
@@ -288,9 +296,8 @@ Para eliminar una plantilla plantilla de procedimientos se debe tener en cuenta 
 
 **Ejemplo de eliminación de plantilla**:
 
-.. video:: ../_static/procedure/video/delete_procedure_template.mp4
-  :width: 600
-  :height: 400
+.. image:: ../_static/gif/delete_procedure_template.gif
+
 
 Permisos Requeridos:
 
