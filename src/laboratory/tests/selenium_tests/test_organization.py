@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.test import tag
 from django.urls import reverse
 
@@ -105,8 +106,18 @@ class OrganizationSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "change_org_parent")
 
+    def test_add_role_to_org_without_copy_permissions_from_others_roles(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input",
+             "extra_action": "setvalue", "value": "Gestión de objetos"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"}
+        ]
+        self.create_gif_process(path_list, "add_role_to_org_without_copy_permissions_from_others_roles")
 
-    def test_add_role_to_org(self):
+    def test_add_role_to_org_copy_permissions_from_others_roles(self):
         path_list = self.path_base + [
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"},
@@ -118,8 +129,18 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@id='addrolmodal']/span/span/span/ul/li"},
             {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"}
         ]
-        self.create_gif_process(path_list, "add_role_to_org")
+        self.create_gif_process(path_list, "add_role_to_org_copy_permissions_from_others_roles")
 
+    def test_copy_role_to_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[1]/div/button[2]"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div[2]/div/div[2]/span/span/span"},
+            {"path": ".//div[@id='addrolmodal']/span/span/span/ul/li[2]"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"}
+        ]
+        self.create_gif_process(path_list,"copy_role_to_org")
 
     def test_change_profile_permission_group_by_org(self):
         path_list = self.path_base + [
@@ -132,3 +153,22 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/button[@id='savegroupsbyprofile']"},
         ]
         self.create_gif_process(path_list, "change_profile_permission_group_by_org")
+
+    def test_add_laboratory_to_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[4]/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[1]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[1]/div/input",
+             "extra_action": "setvalue", "value": "Laboratorio Estudiantil"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[2]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[2]/div/input",
+             "extra_action": "setvalue", "value": "(506)2222-2222"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input",
+             "extra_action": "setvalue", "value": "San Pedro, San José"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[4]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/button[@type='submit']"},
+
+        ]
+        self.create_gif_process(path_list, "add_laboratory_to_org")
