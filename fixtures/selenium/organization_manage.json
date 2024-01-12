@@ -18,6 +18,24 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pdfy632dskc",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "rick",
+      "first_name": "Ricardo",
+      "last_name": "Mendoza",
+      "email": "ricardom@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
@@ -25,6 +43,19 @@
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
+      "language": "es",
+      "laboratories": [
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Estudiante",
       "language": "es",
       "laboratories": [
       ]
@@ -111,7 +142,7 @@
       "position": 0,
       "level": 0,
       "rol": [],
-      "users": [1]
+      "users": [1, 2]
     }
   },
   {
