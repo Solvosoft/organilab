@@ -1,0 +1,1976 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "adminpass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "admin",
+      "first_name": "Organilab",
+      "last_name": "Admin",
+      "email": "orgadmin@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "renatapass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "renatafg",
+      "first_name": "Renata",
+      "last_name": "Figueroa",
+      "email": "renatafg@protonmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "testuserwithoutperms",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "tuwp",
+      "first_name": "Test",
+      "last_name": "User",
+      "email": "testuserwithoutperms@protonmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Gestión de Reporte de Incidentes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_incidentreport",
+          "risk_management",
+          "incidentreport"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+      "name": "Gestión de Informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "change_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "delete_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "view_inform",
+          "laboratory",
+          "inform"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+      "name": "Gestión de Estantes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "change_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "delete_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "view_shelf",
+          "laboratory",
+          "shelf"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 4,
+    "fields": {
+      "name": "Gestión de Desechos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "can_manage_disposal",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "can_view_disposal",
+          "laboratory",
+          "shelf"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 5,
+    "fields": {
+      "name": "Gestión de Muebles",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "change_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "delete_furniture",
+          "laboratory",
+          "furniture"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 6,
+    "fields": {
+      "name": "Gestión de Proveedores",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_provider",
+          "laboratory",
+          "provider"
+        ],
+        [
+          "change_provider",
+          "laboratory",
+          "provider"
+        ],
+        [
+          "view_provider",
+          "laboratory",
+          "provider"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 7,
+    "fields": {
+      "name": "Gestión de Usuarios",
+      "color": "#337193",
+      "permissions": [
+        [
+          "change_user",
+          "auth",
+          "user"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 8,
+    "fields": {
+      "name": "Gestión de Objetos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 9,
+    "fields": {
+      "name": "Gestión de Reportes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "do_report",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_report",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 10,
+    "fields": {
+      "name": "Gestión de Protocolos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_protocol",
+          "laboratory",
+          "protocol"
+        ],
+        [
+          "view_protocol",
+          "laboratory",
+          "protocol"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 11,
+    "fields": {
+      "name": "Gestión de Perfiles",
+      "color": "#337193",
+      "permissions": [
+        [
+          "change_profile",
+          "auth_and_perms",
+          "profile"
+        ],
+        [
+          "view_profile",
+          "auth_and_perms",
+          "profile"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 12,
+    "fields": {
+      "name": "Gestión de Características de Objetos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_objectfeatures",
+          "laboratory",
+          "objectfeatures"
+        ],
+        [
+          "change_objectfeatures",
+          "laboratory",
+          "objectfeatures"
+        ],
+        [
+          "delete_objectfeatures",
+          "laboratory",
+          "objectfeatures"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 13,
+    "fields": {
+      "name": "Gestión de Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 14,
+    "fields": {
+      "name": "Gestión de Sala de Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "change_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "delete_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "view_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 15,
+    "fields": {
+      "name": "Gestión de la Estructura de la Organización",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_organizationstructure",
+          "laboratory",
+          "organizationstructure"
+        ],
+        [
+          "delete_organizationstructure",
+          "laboratory",
+          "organizationstructure"
+        ],
+        [
+          "change_organizationstructure",
+          "laboratory",
+          "organizationstructure"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 16,
+    "fields": {
+      "name": "Gestión de Objeto en el Estante",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "change_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "delete_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 17,
+    "fields": {
+      "name": "Gestión de Transferencia de Objeto",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ],
+        [
+          "change_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ],
+        [
+          "delete_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ],
+        [
+          "view_tranferobject",
+          "laboratory",
+          "tranferobject"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 18,
+    "fields": {
+      "name": "Gestión de Reserva de Productos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 19,
+    "fields": {
+      "name": "Gestión de Observaciones del Objeto en el Estante",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_shelfobjectobservation",
+          "laboratory",
+          "shelfobjectobservation"
+        ],
+        [
+          "view_shelfobjectobservation",
+          "laboratory",
+          "shelfobjectobservation"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 20,
+    "fields": {
+      "name": "Gestión de Catalogos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_catalog",
+          "laboratory",
+          "catalog"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 21,
+    "fields": {
+      "name": "Gestión de Agendador de Informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_informscheduler",
+          "laboratory",
+          "informscheduler"
+        ],
+        [
+          "change_informscheduler",
+          "laboratory",
+          "informscheduler"
+        ],
+        [
+          "view_informscheduler",
+          "laboratory",
+          "informscheduler"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 22,
+    "fields": {
+      "name": "Gestión de Reservaciones",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_reservations",
+          "reservations_management",
+          "reservations"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Investigadores SA",
+      "position": 1,
+      "level": 1,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "users": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Organization Testing",
+      "position": 3,
+      "level": 3,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "users": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": null,
+      "name": "Org MK",
+      "position": 3,
+      "level": 3,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "users": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": null,
+      "name": "Chec Org",
+      "position": 4,
+      "level": 4,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "users": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Vick Lab",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Lab Ultra",
+      "phone_number": "22305678",
+      "location": "Upala",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 3,
+    "fields": {
+      "name": "DS Cosme",
+      "phone_number": "22305678",
+      "location": "Upala",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 2
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 3,
+    "fields": {
+      "organization": 3,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 4,
+    "fields": {
+      "organization": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de inventario",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de muestras",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 3,
+    "fields": {
+      "name": "Sala de equipos de protección individual",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 2
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "language": "es",
+      "laboratories": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "7777-7777",
+      "id_card": "1-1111-1111",
+      "job_position": "Profesional Technician",
+      "language": "es",
+      "laboratories": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "9999-9999",
+      "id_card": "1-1111-1111",
+      "job_position": "No perms",
+      "language": "es",
+      "laboratories": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "name": "Karine Products",
+      "phone_number": "(506)2209-8765",
+      "email": "karineproductos@cr.com",
+      "legal_identity": "3-8764-8354",
+      "laboratory": 1,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "name": "LP Company",
+      "phone_number": "(506)2209-8765",
+      "email": "lpcompany@cr.com",
+      "legal_identity": "3-463-3423432",
+      "laboratory": 1,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 3,
+    "fields": {
+      "name": "Alcoma SA",
+      "phone_number": "(506)2209-8765",
+      "email": "alcomasa@cr.com",
+      "legal_identity": "3-435-24432214",
+      "laboratory": 2,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 4,
+    "fields": {
+      "name": "Benka SA",
+      "phone_number": "(605)2222-2222",
+      "email": "benka@gmail.com",
+      "legal_identity": "3-34534-453532",
+      "laboratory": 1,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 5,
+    "fields": {
+      "name": "Jako company",
+      "phone_number": "(609)4534-3432",
+      "email": "jakocm@hotmail.com",
+      "legal_identity": "5-843849-4395348",
+      "laboratory": 2,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 1,
+    "fields": {
+      "name": "Lavado de manos",
+      "file": "protocols/test.pdf",
+      "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 2,
+    "fields": {
+      "name": "Control de plagas",
+      "file": "protocols/test.pdf",
+      "short_description": "Saneamiento y fumigación del área de trabajo y exteriores",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 3,
+    "fields": {
+      "name": "Manipulación de instrumentos de laboratorio",
+      "file": "protocols/test.pdf",
+      "short_description": "Esterilización y uso de instrumentos de laboratorio.",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "derb.customform",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:31:49.385Z",
+      "last_update": "2023-01-12T21:31:49.385Z",
+      "created_by": null,
+      "name": "Gestión de laboratorio",
+      "status": "admin",
+      "schema": {
+        "name": "Gestión de laboratorio",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "derb.customform",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:31:49.385Z",
+      "last_update": "2023-01-12T21:31:49.385Z",
+      "created_by": null,
+      "name": "Recolección de muestras",
+      "status": "admin",
+      "schema": {
+        "name": "Recolección de muestras",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.inform",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Gestión de laboratorio",
+      "custom_form": 1,
+      "content_type": 1,
+      "object_id": 1,
+      "status": "In Review",
+      "schema": {
+        "name": "Gestión de laboratorio",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.inform",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Recolección de muestras",
+      "custom_form": 2,
+      "content_type": 1,
+      "object_id": 2,
+      "status": "In Review",
+      "schema": {
+        "name": "Recolección de muestras",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.inform",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-12T21:32:20.813Z",
+      "last_update": "2023-01-12T21:32:50.220Z",
+      "created_by": null,
+      "name": "Reactivos mensuales despachados",
+      "custom_form": 2,
+      "content_type": 1,
+      "object_id": 1,
+      "status": "In Review",
+      "schema": {
+        "name": "Reactivos mensuales despachados",
+        "status": "admin",
+        "components": []
+      }
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Describir porque sucedieron los hechos.",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 2,
+    "fields": {
+      "created_by": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 3,
+    "fields": {
+      "created_by": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "",
+      "inform": 1
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 4,
+    "fields": {
+      "created_by": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Fecha y hora no concuerdan con el horario laboral.",
+      "inform": 3
+    }
+  },
+  {
+    "model": "laboratory.commentinform",
+    "pk": 5,
+    "fields": {
+      "created_by": 1,
+      "create_at": "2023-01-12T21:32:20.813Z",
+      "comment": "Encargado es requerido",
+      "inform": 3
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 1",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[],[2],[3],[]],[[1],[],[4],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "Primer Estante",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 63
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 2,
+    "fields": {
+      "furniture": 1,
+      "name": "Segundo Estante",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 3,
+    "fields": {
+      "furniture": 1,
+      "name": "Tercer Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 1,
+      "name": "Cuarto Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 2",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[6],[]],[[],[],[5],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 5,
+    "fields": {
+      "furniture": 2,
+      "name": "Quinto Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 6,
+    "fields": {
+      "furniture": 2,
+      "name": "Sexto Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 3,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 3",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[],[7]],[[8],[9],[],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 7,
+    "fields": {
+      "furniture": 3,
+      "name": "Séptimo Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 8,
+    "fields": {
+      "furniture": 3,
+      "name": "Octavo Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 9,
+    "fields": {
+      "furniture": 3,
+      "name": "Noveno Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 4,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 4",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[10],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 5,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 5",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[],[11]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 6,
+    "fields": {
+      "labroom": 2,
+      "name": "Mueble 6",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[12],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 7,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 7",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[15],[]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 10,
+    "fields": {
+      "furniture": 4,
+      "name": "Décimo Estante",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 11,
+    "fields": {
+      "furniture": 5,
+      "name": "Estante 11",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 12,
+    "fields": {
+      "furniture": 6,
+      "name": "Estante 12",
+      "container_shelf": null,
+      "type": 74,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": true
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 13,
+    "fields": {
+      "furniture": 2,
+      "name": "Estante 12",
+      "container_shelf": null,
+      "type": 74,
+      "infinity_quantity": false,
+      "quantity": 40,
+      "limit_only_objects": false,
+      "measurement_unit": 59,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "status": 0,
+      "comments": null,
+      "is_massive": false
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "status": 0,
+      "comments": null,
+      "is_massive": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "TA1000",
+      "name": "Tanque 1000 mL",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  },
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Reactivo",
+      "description": "Es un reactivo en la industria química."
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "CA777",
+      "name": "Cal 100 gr",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 1,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "in_where_laboratory": 1,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "in_where_laboratory": 1,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 1,
+      "quantity": 23.0,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "creation_date": "2023-05-10T22:48:14.125Z",
+      "last_update": "2023-05-12T22:48:14.166Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 5,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "RA24",
+      "name": "RA 100 gr",
+      "synonym": null,
+      "type": "0",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 4,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "CA777",
+      "name": "Cal 100 gr",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "is_container": true,
+      "features": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 6,
+    "fields": {
+      "shelf": 1,
+      "object": 4,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 63,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:16.765Z",
+      "last_update": "2023-01-10T22:48:16.817Z",
+      "created_by": 1,
+      "shelf_object": 1,
+      "user": 1,
+      "reservation": 1,
+      "is_returnable": false,
+      "amount_required": 445.0,
+      "amount_returned": 0.0,
+      "initial_date": "2020-12-19T04:59:00Z",
+      "final_date": "2021-01-09T04:59:00Z",
+      "status": 0,
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "creation_date": "2023-01-10T22:48:16.765Z",
+      "last_update": "2023-01-10T22:48:16.817Z",
+      "created_by": 1,
+      "shelf_object": 1,
+      "user": 1,
+      "reservation": 1,
+      "is_returnable": false,
+      "amount_required": 445.0,
+      "amount_returned": 0.0,
+      "initial_date": "2020-12-19T04:59:00Z",
+      "final_date": "2021-01-09T04:59:00Z",
+      "status": 0,
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 1,
+    "fields": {
+      "object": 1,
+      "laboratory_send": 1,
+      "laboratory_received": 2,
+      "quantity": 2.0,
+      "update_time": "2023-02-09T22:58:28.862Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 2,
+    "fields": {
+      "object": 2,
+      "laboratory_send": 2,
+      "laboratory_received": 1,
+      "quantity": 2.0,
+      "update_time": "2023-02-09T22:58:28.862Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2018-07-09T19:52:44.623Z",
+      "user": 1,
+      "content_type": 1,
+      "object_id": "1",
+      "object_repr": "Investigadores SA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2018-07-09T19:52:44.623Z",
+      "user": 1,
+      "content_type": 1,
+      "object_id": "1",
+      "object_repr": "Investigadores SA",
+      "action_flag": 2,
+      "change_message": "[{\"changed\": {\"fields\": [\"name\"]}}]"
+    }
+  },
+  {
+    "model": "laboratory.informscheduler",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-02-09T23:35:53.666Z",
+      "last_update": "2023-02-09T23:35:53.666Z",
+      "created_by": 1,
+      "name": "Gestión de reactivos",
+      "start_application_date": "2023-02-09",
+      "close_application_date": "2023-02-09",
+      "period_on_days": 365,
+      "inform_template": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.informscheduler",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-02-09T23:35:53.666Z",
+      "last_update": "2023-02-09T23:35:53.666Z",
+      "created_by": 1,
+      "name": "Gestión de equipo",
+      "start_application_date": "2023-02-09",
+      "close_application_date": "2023-02-09",
+      "period_on_days": 365,
+      "inform_template": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Cal",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "description": null,
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Sulfuro de calcio",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "description": null,
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 3,
+    "fields": {
+      "organization": 2,
+      "creation_date": "2023-01-10T22:48:25.641Z",
+      "last_update": "2023-01-10T22:48:25.879Z",
+      "created_by": 1,
+      "comercial_name": "Dicloro",
+      "uipa_name": "",
+      "brand": "",
+      "synonymous": "",
+      "agrochemical": false,
+      "description": null,
+      "components_sga": [],
+      "danger_indications": [
+        "H202"
+      ]
+    }
+  },
+  {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "iarc": null,
+      "imdg": null,
+      "bioaccumulable": false,
+      "molecular_formula": "NaClO",
+      "cas_id_number": "7681-52-9",
+      "security_sheet": "security_sheets/Hipoclorito_de_sodio_MSDS.pdf",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "img_representation": "",
+      "white_organ": [],
+      "h_code": [
+        "H314",
+        "H400"
+      ],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 2,
+    "fields": {
+      "obj": 2,
+      "iarc": null,
+      "imdg": null,
+      "bioaccumulable": false,
+      "molecular_formula": "CHO",
+      "cas_id_number": "7681-52-9",
+      "security_sheet": "security_sheets/test_characteristics.pdf",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "img_representation": "",
+      "white_organ": [],
+      "h_code": [
+        "H314",
+        "H400"
+      ],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 1,
+    "fields": {
+      "substance": 1,
+      "note": null,
+      "is_approved": true,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 2,
+    "fields": {
+      "substance": 2,
+      "note": null,
+      "is_approved": false,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "sga.reviewsubstance",
+    "pk": 3,
+    "fields": {
+      "substance": 3,
+      "note": null,
+      "is_approved": true,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "auth_and_perms",
+        "profile"
+      ],
+      "object_id": 1,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        10,
+        11,
+        12,
+        13,
+        20,
+        14,
+        15
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+      "profile": 2,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        10,
+        11,
+        12,
+        13,
+        20,
+        14,
+        15
+      ]
+    }
+  }
+
+]

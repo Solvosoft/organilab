@@ -241,7 +241,6 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         self.create_directory_path(folder_name=folder_name)
         self.create_screenshot(order=order)
-        print(folder_name)
         for obj in path_list:
             self.do_scroll(obj)
             element = self.selenium.find_element(By.XPATH, obj['path'])
