@@ -18,6 +18,24 @@
     }
   },
   {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pdfy632dskc",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": false,
+      "username": "rick",
+      "first_name": "Ricardo",
+      "last_name": "Mendoza",
+      "email": "ricardom@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
     "model": "auth_and_perms.profile",
     "pk": 1,
     "fields": {
@@ -31,6 +49,79 @@
     }
   },
   {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Estudiante",
+      "language": "es",
+      "laboratories": [
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Gestión Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+      "name": "Gestión Informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "change_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "delete_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "view_inform",
+          "laboratory",
+          "inform"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -38,8 +129,48 @@
       "name": "Organización de Prueba",
       "position": 0,
       "level": 0,
-      "rol": [],
+      "rol": [1, 2],
       "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": null,
+      "name": "Estudiantes",
+      "position": 0,
+      "level": 0,
+      "rol": [],
+      "users": [1, 2]
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2024-01-06T22:49:30.603Z",
+      "user": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+    ],
+      "object_id": 1,
+      "object_repr": "Organization has been added",
+      "action_flag": 1,
+      "change_message": "[{'added': {'fields': ['organization', 'users']}}]"
+    }
+  },
+  {
+    "model": "laboratory.laborglogentry",
+    "pk": 1,
+    "fields": {
+      "log_entry": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+    ],
+      "object_id": 1
     }
   }
 ]
