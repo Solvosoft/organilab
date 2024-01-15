@@ -1,13 +1,12 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
-from django.db.models import Q
+from django.contrib.auth import logout as auth_logout
 from django.http import Http404
-
-from auth_and_perms.models import ProfilePermission
-from laboratory.models import OrganizationStructure
-from laboratory.utils import get_laboratories_by_user_profile
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import translation
+
+from auth_and_perms.models import RegistrationUser
+
 
 class ProfileLanguageMiddleware:
     def __init__(self, get_response):
@@ -22,6 +21,13 @@ class ProfileLanguageMiddleware:
         if not user.is_authenticated or not user.is_active:
             return
         if not hasattr(user, 'profile'):
+            reguser = RegistrationUser.objects.filter(user=user).first()
+            if reguser:
+                auth_logout(request)
+                if reguser.registration_method == 1:
+                    return redirect(reverse('auth_and_perms:user_org_creation_totp', args=[user.pk]))
+                if reguser.registration_method == 2:
+                    return redirect(reverse('auth_and_perms:create_profile_by_digital_signature', args=[user.pk]))
             raise Http404("User has not profile")
 
         profile = user.profile
