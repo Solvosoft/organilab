@@ -13,11 +13,16 @@ class CreateUserForm(forms.ModelForm, GTForm):
     id_card = forms.CharField(label=_('ID Card'), max_length=100, widget=djgenwidgets.TextInput)
     job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=djgenwidgets.TextInput)
 
+    def clean_email(self):
+        value = self.cleaned_data['email']
+        if User.objects.using(settings.READONLY_DATABASE).filter(username=value):
+            raise ValidationError(_("User email exist, please try to add user on organization modal"))
+        return value
+
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email']
         widgets = {
-            'username': djgenwidgets.TextInput,
             'first_name': djgenwidgets.TextInput,
             'last_name': djgenwidgets.TextInput,
             'email': djgenwidgets.EmailMaskInput

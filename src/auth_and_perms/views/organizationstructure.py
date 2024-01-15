@@ -3,7 +3,7 @@ from django.contrib.admin.models import ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden, Http404
+from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -235,12 +235,10 @@ class AddUser(CreateView):
         return reverse('auth_and_perms:organizationManager')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        response =  HttpResponseRedirect(self.get_success_url())
         password = User.objects.make_random_password()
-        form.save()
-        user = User.objects.filter(
-            username=form.cleaned_data['username']
-        ).first()
+        user = form.save(commit=True)
+        user.username=form.cleaned_data['email']
         user.password = password
         user.save()
         #self.organization.users.add(user)
