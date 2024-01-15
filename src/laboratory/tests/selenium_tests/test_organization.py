@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.test import tag
 from django.urls import reverse
 
@@ -25,8 +26,8 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/span/span/span"}
         ]
 
-    def get_submit_button_path(self, id_modal):
-        return ".//div[@id='%s']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@type='submit']" % id_modal
+    def get_submit_button_path(self, id_modal, button_type="submit"):
+        return ".//div[@id='%s']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@type='%s']" % (id_modal, button_type)
 
     def test_create_organization(self):
         path_list = self.path_base + [
@@ -81,3 +82,93 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": self.get_submit_button_path("addOrganizationmodal")}
         ]
         self.create_gif_process(path_list, "add_org_descendant")
+
+    def test_view_org_logs(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[2]/a"}
+        ]
+        self.create_gif_process(path_list, "view_org_logs")
+
+    def test_view_org_roles(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[3]/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[1]/div/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/a"}
+        ]
+        self.create_gif_process(path_list, "view_org_roles")
+
+    def test_change_org_parent(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[4]/span"},
+            {"path": ".//div[@id='orgbyusermodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/span/span/span"},
+            {"path": ".//div[@id='orgbyusermodal']/span/span/span[2]/ul/li"},
+            {"path": self.get_submit_button_path("orgbyusermodal")}
+        ]
+        self.create_gif_process(path_list, "change_org_parent")
+
+    def test_add_role_to_org_without_copy_permissions_from_others_roles(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input",
+             "extra_action": "setvalue", "value": "Gestión de objetos"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"}
+        ]
+        self.create_gif_process(path_list, "add_role_to_org_without_copy_permissions_from_others_roles")
+
+    def test_add_role_to_org_copy_permissions_from_others_roles(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input",
+             "extra_action": "setvalue", "value": "Administrar Laboratorio"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div[2]/div[1]/span"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div[2]/div[2]/span/span/span"},
+            {"path": ".//div[@id='addrolmodal']/span/span/span/ul/li"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"}
+        ]
+        self.create_gif_process(path_list, "add_role_to_org_copy_permissions_from_others_roles")
+
+    def test_copy_role_to_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[1]/div/button[2]"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div[2]/div/div[2]/span/span/span"},
+            {"path": ".//div[@id='addrolmodal']/span/span/span/ul/li[2]"},
+            {"path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"}
+        ]
+        self.create_gif_process(path_list,"copy_role_to_org")
+
+    def test_change_profile_permission_group_by_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/ins"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/ul/li[3]/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/div/div/span/span/span"},
+            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span[2]/ul/li[2]"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/div[2]/div/span/span/span"},
+            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[3]"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/button[@id='savegroupsbyprofile']"},
+        ]
+        self.create_gif_process(path_list, "change_profile_permission_group_by_org")
+
+    def test_add_laboratory_to_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[4]/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[1]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[1]/div/input",
+             "extra_action": "setvalue", "value": "Laboratorio Estudiantil"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[2]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[2]/div/input",
+             "extra_action": "setvalue", "value": "(506)2222-2222"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input",
+             "extra_action": "setvalue", "value": "San Pedro, San José"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[4]/div/input"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/button[@type='submit']"},
+
+        ]
+        self.create_gif_process(path_list, "add_laboratory_to_org")
