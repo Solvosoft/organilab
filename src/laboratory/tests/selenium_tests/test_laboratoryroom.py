@@ -29,10 +29,9 @@ class OrganizationSeleniumTest(SeleniumBase):
 
     def view_laboratory_rooms_navbar(self):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
-        script =""" let a = document.querySelector("#management_id").parentElement.children[1].children[2].children[0];
-        $( "a" ).off( "mouseenter mouseleave" );"""
         path_list = [
-            {"path": ".//*[@id='management_id']", "extra_action":"script","value":script},
+            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
+            {"path":".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[5]/a"}
         ]
         self.create_gif_process(path_list, "view_room_navbar")
 
@@ -54,6 +53,7 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//*[@id='id_name']", "extra_action":"clearinput"},
             {"path": ".//*[@id='id_name']", "extra_action":"setvalue", "value":"Cuarto Actualizado"},
             {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/form/div[2]/div/button"},
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/form/div[2]/div/button"},
         ]
         self.create_gif_process(self.path_base, "update_room")
 
@@ -67,9 +67,26 @@ class OrganizationSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(self.path_base, "delete_room")
 
+    def create_furniture(self):
+        self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
+        path_list = [
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path":".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[2]"},
+            {"path":".//*[@id='furnitureModal']/div/div/form/div[2]/div[1]/div/input", "extra_action": "clearinput"},
+            {"path":".//*[@id='furnitureModal']/div/div/form/div[2]/div[1]/div/input", "extra_action": "setvalue","value":"Ramancheka"},
+            {"path":".//*[@id='furnitureModal']/div/div/form/div[2]/div[1]/div/input", "extra_action": "setvalue","value":"Ramancheka"},
+            {"path":".//div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/form/div[2]/div[2]/div/span"},
+            {"path": ".//span/span/span[2]/ul/li[1]"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/form/div[3]/button[2]"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[2]/button"},
+
+        ]
+        self.create_gif_process(path_list,"add_furniture")
+
     def test_laboratory_room_crud(self):
-        self.view_laboratory_rooms()
-        self.add_laboratory_rooms()
-        self.update_laboratory_rooms()
-        self.delete_laboratory_rooms()
-        #self.view_laboratory_rooms_navbar()
+        # self.view_laboratory_rooms()
+        # self.add_laboratory_rooms()
+        # self.update_laboratory_rooms()
+        # self.delete_laboratory_rooms()
+        # self.view_laboratory_rooms_navbar()
+        self.create_furniture()

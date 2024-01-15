@@ -5,7 +5,7 @@
     "fields": {
       "password": "adminpass",
       "last_login": "2023-01-10T22:49:30.603Z",
-      "is_superuser": false,
+      "is_superuser": true,
       "username": "admin",
       "first_name": "Organilab",
       "last_name": "Admin",
