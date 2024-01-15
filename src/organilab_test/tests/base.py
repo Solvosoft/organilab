@@ -26,7 +26,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.options = webdriver.FirefoxOptions()
 
         cls.selenium = webdriver.Chrome()
-        cls.selenium.maximize_window()
+        cls.selenium.set_window_size(1280, 720)
 
         cls.tmp = Path(settings.BASE_DIR) / 'tmp'
         cls.folder = '%s/%dx%d' % (cls.tmp, 120, 200)
@@ -135,9 +135,7 @@ class SeleniumBase(StaticLiveServerTestCase):
 
         for filename in sorted_images_list:  # loop through all png files in the folder
             im = Image.open(filename)  # open the image
-            im_small = im.resize((1440, 700),
-                                 resample=0)  # resize them to make them a bit smaller
-            gif_images.append(im_small)  # add the image to the list
+            gif_images.append(im)  # add the image to the list
 
         return gif_images
 
