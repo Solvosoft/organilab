@@ -35,7 +35,8 @@ el cual desplega unas nuevas opciones de acceso donde se debe seleccionar **Admi
 al modúlo de cuartos de laboratorio.
 
 Ejemplo de segundo forma:
-xxxx
+
+.. image:: ../_static/gif/view_room_navbar.gif
 
 **Permisos Requeridos:**
 
