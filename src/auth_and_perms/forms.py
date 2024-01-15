@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 from django.utils.translation import gettext_lazy as _
@@ -78,10 +79,15 @@ class AddProfileForm(OTPTokenForm, GTForm):
     job_position = forms.CharField(label=_('Job Position'), max_length=100,
                                    widget=genwidgets.TextInput)
 
+    language = forms.ChoiceField(choices=settings.LANGUAGES,
+                                 widget=genwidgets.Select,
+                                 initial=settings.LANGUAGE_CODE,
+                                 label=_("Language") )
+
     field_order = [
         'first_name', 'last_name', 'email', 'phone_number', 'id_card', 'job_position',
         'otp_device',
-        'otp_challenge', 'otp_token'
+        'otp_challenge', 'otp_token', 'language'
     ]
 
     def __init__(self, *args, **kwargs):
