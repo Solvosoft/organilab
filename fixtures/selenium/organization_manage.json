@@ -151,7 +151,10 @@
     "fields": {
       "action_time": "2024-01-06T22:49:30.603Z",
       "user": 1,
-      "content_type": 30,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+    ],
       "object_id": 1,
       "object_repr": "Organization has been added",
       "action_flag": 1,
@@ -163,7 +166,10 @@
     "pk": 1,
     "fields": {
       "log_entry": 1,
-      "content_type": 30,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+    ],
       "object_id": 1
     }
   }
