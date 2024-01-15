@@ -197,6 +197,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.do_sweetaler_comfirm_action(obj, element)
         elif obj["extra_action"] == "clearinput":
             element.clear()
+
     def do_sweetaler_comfirm_action(self, obj, element):
         """
         This in an action responsable to press yes/no buttons of sweetalert.
@@ -222,7 +223,7 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def do_scroll(self,obj):
         if 'scroll' in obj:
-            self.selenium.execute_script(obj['script_value'])
+            self.selenium.execute_script(obj['scroll'])
 
     def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
         """
@@ -239,7 +240,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         self.create_directory_path(folder_name=folder_name)
         self.create_screenshot(order=order)
-        print(folder_name)
+
         for obj in path_list:
             self.do_scroll(obj)
             element = self.selenium.find_element(By.XPATH, obj['path'])

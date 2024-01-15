@@ -17,10 +17,10 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
 
             {"path": ".//button[@class='btn btn-secondary btn-sm btn-success']"},
-            {"path": ".//input[@name='title']","extra_action":"setvalue","value":"Se limpiaran laboratorios"},
+            {"path": ".//input[@name='title']", "extra_action": "setvalue", "value": "Se limpiaran laboratorios"},
             {"path": ".//form[1]",
-             "extra_action":'script',
-             'value':'tinymce.get("id_description").setContent("<p><strong>Se limpiaran los muebles, frascos entre otras herramientas</strong></p>");'},
+             "extra_action": 'script',
+             'value': 'tinymce.get("id_description").setContent("<p><strong>Se limpiaran los muebles, frascos entre otras herramientas</strong></p>");'},
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "create_procedure_template")
@@ -34,8 +34,8 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[3]"},
             {"path": ".//input[@name='title']","extra_action":"setvalue","value":"Se limpiaran laboratorios"},
             {"path": ".//form[1]",
-             "extra_action":'script',
-             'value':'tinymce.get("id_description").setContent("<p><strong>Se limpiaran los muebles, frascos entre otras herramientas</strong></p>");'},
+             "extra_action": 'script',
+             'value': 'tinymce.get("id_description").setContent("<p><strong>Se limpiaran los muebles, frascos entre otras herramientas</strong></p>");'},
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "update_procedure_template")
@@ -54,7 +54,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[4]","extra_action":'sweetalert_comfirm',
-             "comfirm":"""document.querySelector('.swal2-confirm').click();"""},
+             "comfirm": """document.querySelector('.swal2-confirm').click();"""},
         ]
         self.create_gif_process(path_list, "delete_procedure_template")
 
@@ -88,7 +88,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
              "value": "Paso 1"},
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
-            {"path":".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
+            {"path": ".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
 
         ]
         self.create_gif_process(path_list, "update_step")
@@ -100,8 +100,8 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
 
             {"path": ".//div[1]/div/div[3]/div/div/div[3]/div[2]/a[1]","extra_action":'sweetalert_comfirm',
-             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
-             "ok":"""document.querySelector('.swal2-confirm').click();"""},
+             "comfirm": """document.querySelector('.swal2-confirm').click();""",
+             "ok": """document.querySelector('.swal2-confirm').click();"""},
             {"path": ".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
 
         ]
@@ -137,8 +137,8 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
             {"path": ".//tbody[@id='object_list']/tr[1]/td[3]", "extra_action":'sweetalert_comfirm',
-             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
-             "ok":"""document.querySelector('.swal2-confirm').click();"""},
+             "comfirm": """document.querySelector('.swal2-confirm').click();""",
+             "ok": """document.querySelector('.swal2-confirm').click();"""},
             {
                 "path": ".//div[1]/div/div[3]/div/div/div[1]/div[1]/div/form/div[3]/button"},
 
@@ -152,9 +152,10 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
             {"path": ".//span[@title='Crear Observación']"},
-            {"path": ".//form/textarea[@id='id_procedure_description']","extra_action":"setvalue",
+            {"path": ".//form/textarea[@id='id_procedure_description']","extra_action": "setvalue",
              "value":"Tener cuidado con los envases de materiales biologícos"},
-            {"path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[3]/button[2]","scroll":"script", "script_value":"window.scrollTo(0, document.body.scrollHeight)"},
+            {"path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[3]/button[2]",
+             "scroll": "window.scrollTo(0, document.body.scrollHeight)"},
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "add_step_observation")
@@ -167,10 +168,9 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
             {"path": ".//tbody[@id='observation_list']/tr[1]/td[2]", "extra_action":'sweetalert_comfirm',
-             "comfirm":"""document.querySelector('.swal2-confirm').click();""",
-             "ok":"""document.querySelector('.swal2-confirm').click();""",
-             "scroll": "script",
-             "script_value": "window.scrollTo(0, document.body.scrollHeight)"},
+             "comfirm": """document.querySelector('.swal2-confirm').click();""",
+             "ok": """document.querySelector('.swal2-confirm').click();""",
+             "scroll": "window.scrollTo(0, document.body.scrollHeight)"},
             {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
 
         ]

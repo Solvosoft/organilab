@@ -167,8 +167,8 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input"},
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input",
              "extra_action": "setvalue", "value": "San Pedro, San José"},
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[4]/div/input"},
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/button[@type='submit']"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/button[@type='submit']",
+             "scroll": "window.scrollTo(0, 300)"},
 
         ]
         self.create_gif_process(path_list, "add_laboratory_to_org")
