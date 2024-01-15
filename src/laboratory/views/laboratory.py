@@ -125,13 +125,25 @@ class CreateLaboratoryFormView(FormView):
                                  relobj=self.object)
 
         user = self.request.user
-        admins = User.objects.filter(is_superuser=True)
+        contenttypeobj=self.object
+        ppp =   user.profile.profilepermission_set.first()
+
+        rol = ppp.rol.first() if ppp else None
+        pp, created =ProfilePermission.objects.get_or_create(
+            profile=user.profile,
+            content_type=ContentType.objects.filter(app_label=contenttypeobj._meta.app_label,
+                                                    model=contenttypeobj._meta.model_name).first(),
+            object_id=contenttypeobj.pk
+        )
+        if created and rol:
+            pp.rol.add(rol)
+#        admins = User.objects.filter(is_superuser=True)
         # TODO: This is necesary ?  all user has to be profile
         user.profile.laboratories.add(self.object)
-        for admin in admins:
-            if not hasattr(admin, 'profile'):
-                admin.profile = Profile.objects.create(user=admin)
-            admin.profile.laboratories.add(self.object)
+#        for admin in admins:
+#            if not hasattr(admin, 'profile'):
+#                admin.profile = Profile.objects.create(user=admin)
+#            admin.profile.laboratories.add(self.object)
         response = super(CreateLaboratoryFormView, self).form_valid(form)
 
         return response

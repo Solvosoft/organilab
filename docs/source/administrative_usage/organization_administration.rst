@@ -17,8 +17,8 @@ consiguiente tendrá a futuro organizaciones descendientes (organizaciones hijas
 organización (organización única sin antecesor, ni sucesores).
 
 .. image:: ../_static/gif/create_org.gif
-   :height: 400
-   :width: 600
+   :height: 380
+   :width: 720
 
 
 
@@ -32,8 +32,8 @@ Crear nueva organización hija
 Las organizaciones hijas pueden tener organizaciones descendientes y siempre tendrán una organización base antecesora.
 
 .. image:: ../_static/gif/add_org_descendant.gif
-   :height: 400
-   :width: 600
+   :height: 380
+   :width: 720
 
 
 Cambiar padre de una organización
@@ -51,8 +51,8 @@ Al eliminar una organización es necesario tener en cuenta si ésta tiene o no o
 (organizaciones descendientes) debido a que también las organizaciones hijas serán eliminadas.
 
 .. image:: ../_static/gif/delete_org.gif
-   :height: 400
-   :width: 600
+   :height: 380
+   :width: 720
 
 
 Acciones de una organización
@@ -79,24 +79,24 @@ Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las s
 
 
 .. image:: ../_static/gif/deactivate_org.gif
-   :height: 400
-   :width: 600
+   :height: 380
+   :width: 720
 
 
 Clonar una organización
 *******************************
 
 .. image:: ../_static/gif/clone_org.gif
-   :height: 400
-   :width: 600
+   :height: 380
+   :width: 720
 
 
 Cambiar nombre de una organización
 ***************************************
 
-.. image:: ../_static/gif/clone_org.gif
-   :height: 400
-   :width: 600
+.. image:: ../_static/gif/change_org_name.gif
+   :height: 380
+   :width: 720
 
 
 Administración de usuarios
