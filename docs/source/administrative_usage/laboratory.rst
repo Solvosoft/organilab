@@ -21,12 +21,14 @@ Laboratory view
 Administración de cuartos de laboratorio
 -------------------------------------------
 /lab/<int:org>/<int:lab_pk>/create/
+
 Este modulo se utiliza para el manejo de cuartos de laboratorios del laboratorio que se este utilizando en el momento,
 para accede ha este modulo existen 2 formas en ambas se requiere el ingreso a un laboratorio, que se mostraran en las siguientes imagenes:
 
 En el primer caso al ingresar al modulo de laboratorio, se debe dar click en la opcion **Laboratorio**
 
-Ejemplo de la primeraa forma:
+Ejemplo de la primera forma:
+
 .. image:: ../_static/gif/view_room.gif
 
 En el segundo caso se puede utilizar en diferentes modulos internos del laboratorio a diferencia del anterior,
@@ -49,51 +51,54 @@ Ejemplo de segundo forma:
 *   change_furniture: Permite ingresar al modula de edicion de mueble del cuarto y actualizarlos.
 
 
-Crear cuarto de laboratorio
+Crear sala de laboratorio
 **********************************
 /lab/<int:org>/<int:lab_pk>/create/
 
-Este modulo crearan cuartos de labororios del laboratorio que se esta utilizando, en estos cuartos normalmente se le asocian
+Este modulo creara salas de labororios del laboratorio que se esta utilizando, en estos cuartos normalmente se le asocian
 muebles, estantes, objectos entre otras mas temas.
 
 Datos Requeridos:
 
-*   **Nombre:** Este campo registra el nombre del cuarto del laboratorio.
+*   **Nombre:** Este campo registra el nombre del sala.
 
 Permisos requeridos:
 
-*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
-*   add_laboratoryroom: Permite la creacion de uno nuevo cuarto de laboratorio.
+*   view_laboratoryroom: Permite visualizar las salas que el laboratorio posee.
+*   add_laboratoryroom: Permite la creacion de una nueva sala de laboratorio.
 
-Ejemplo de creacion de cuarto de laboratorio:
+Ejemplo de creacion de sala de laboratorio:
 
 .. image:: ../_static/gif/add_room.gif
+   :height: 380
+   :width: 720
 
-
-Actualizar cuartos de laboratorios
+Actualizar salas de laboratorios
 ***********************************
 /lab/<int:org>/<int:lab_pk>/rooms/<int:pk>/edit
 
-Este modulo actualizara el nombre de los cuartos de laboratorio.
+Este modulo actualizara el nombre de las salas de laboratorio.
 
 Datos Requeridos:
 
-*   **Nombre:** Este campo registra el nombre del cuarto del laboratorio.
+*   **Nombre:** Este campo registra el nombre de la sala del laboratorio.
 
 Permisos requeridos:
 
-*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
-*   change_laboratoryroom: Permite la creacion de uno nuevo cuarto de laboratorio.
+*   view_laboratoryroom: Permite visualizar las salas que el laboratorio posee.
+*   change_laboratoryroom: Permite la creacion de una nueva sala de laboratorio.
 
-Ejemplo de actualización de cuarto de laboratorio:
+Ejemplo de actualización de sala de laboratorio:
+
 .. image:: ../_static/gif/update_room.gif
+   :height: 380
+   :width: 720
 
-
-Eliminar cuarto de laboratorio
+Eliminar sala de laboratorio
 **********************************
 /lab/<int:org>/<int:lab_pk>/rooms/<int:pk>/delete
 
-En este punto se permitira eliminar cuartos de laboratorio.
+En este punto se permitira eliminar salas de laboratorio.
     .. note::
         Al momento de eliminar un cuarto de laboratorio, a su vez eliminara todos los muebles y estantes vinculados a esté.
 
@@ -110,9 +115,10 @@ Permisos requeridos:
 Ejemplo de eliminacion de cuartos de laboratorios:
 
 .. image:: ../_static/gif/delete_room.gif
+   :height: 380
+   :width: 720
 
-
-Visualizar cuarto de laboratorio
+Visualizar salas de laboratorio
 **********************************
 /lab/<int:org>/<int:lab_pk>/create/
 
@@ -126,28 +132,69 @@ Permisos requeridos:
 
 *   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
 
-Ejemplo de visualizar de cuartos de laboratorio:
+Ejemplo de visualizar de salas de laboratorio:
 
 .. image:: ../_static/gif/view_room.gif
-
-
-
-
-Creación de sala de laboratorio
-**********************************
-
-/lab/<int:org>/<int:lab>/rooms/create
-
-Creación de mueble
-**********************************
-
-/lab/<int:org>/<int:lab>/furniture/create/<int:room>/
+   :height: 380
+   :width: 720
 
 
 Administración de muebles
 **********************************
 
-/lab/<int:org>/<int:lab>/furniture/edit/<int:room>/
+
+Creación de mueble
+********************
+
+/lab/<int:org>/<int:lab>/furniture/create/<int:room>/
+
+Ejemplo de creación de muebles:
+
+.. image:: ../_static/gif/add_furniture.gif
+   :height: 380
+   :width: 720
+
+Actualización de mueble
+************************
+
+/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
+
+Ejemplo de actualización de muebles:
+
+.. image:: ../_static/gif/update_furniture.gif
+   :height: 380
+   :width: 720
+
+Mover mueble de cuarto de laboratorio
+**************************************
+
+/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
+
+Ejemplo de mover muebles a otra sala:
+
+.. image:: ../_static/gif/move_furniture.gif
+   :height: 380
+   :width: 720
+
+Crear tipo de mueble
+**********************************
+
+Ejemplo de creación de tipos de mueble:
+
+.. image:: ../_static/gif/add_furniture_type.gif
+   :height: 380
+   :width: 720
+
+Eliminación de mueble
+**********************************
+
+/lab/<int:org>/<int:lab>/furniture/delete/<int:pk>/
+
+Ejemplo de eliminación de muebles:
+
+.. image:: ../_static/gif/delete_furniture.gif
+   :height: 380
+   :width: 720
 
 Reconstrucción de QR
 **********************************
