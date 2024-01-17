@@ -39,7 +39,7 @@ Las organizaciones hijas pueden tener organizaciones descendientes y siempre ten
 Cambiar padre de una organización
 ---------------------------------------
 
-.. video:: ../_static/gif/change_org_parent.gif
+.. image:: ../_static/gif/change_org_parent.gif
    :height: 380
    :width: 720
 
@@ -56,7 +56,7 @@ Al eliminar una organización es necesario tener en cuenta si ésta tiene o no o
 
 
 Acciones de gestión de una organización
-----------------------------------
+----------------------------------------------
 
 Las acciones de una organización son las siguientes:
 
