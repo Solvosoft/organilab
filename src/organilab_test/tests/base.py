@@ -221,9 +221,16 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.action.move_to_element(element).perform()
             element.click()
 
-    def do_scroll(self,obj):
+    def apply_utils(self,obj):
+
         if 'scroll' in obj:
             self.selenium.execute_script(obj['scroll'])
+
+        elif 'sleep' in obj:
+            if isinstance(obj['sleep'], int):
+                sleep(obj["sleep"])
+            else:
+                sleep(15)
 
     def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
         """
@@ -241,7 +248,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.create_directory_path(folder_name=folder_name)
         self.create_screenshot(order=order)
         for obj in path_list:
-            self.do_scroll(obj)
+            self.apply_utils(obj)
             element = self.selenium.find_element(By.XPATH, obj['path'])
             order = self.create_screenshot(order=order)
             x, y = self.get_x_y_element(element)

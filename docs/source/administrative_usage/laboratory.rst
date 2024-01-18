@@ -141,12 +141,34 @@ Ejemplo de visualizar de salas de laboratorio:
 
 Administración de muebles
 **********************************
+Cuando hablamos de muebles se trata de los que son utilizados en las salas de laboratorios, para el almacenamiento de materiales y equipos
+dentro de estantes, por lo tanto estos se encuentran asociado a las salas.
 
+Permisos Requeridos:
 
-Creación de mueble
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   add_laboratoryroom: Permite la creacion de uno nuevo cuarto de laboratorio
+*   add_furniture: Permite crear un mueble en el cuarto de laboratorio y que se visualize el botón de creación.
+*   view_furniture: Permite visualizar los muesble del cuarto de laboratorio.
+*   change_furniture: Permite ingresar al modulo de edición de muebles del cuarto y actualizarlos.
+*   delete_furniture: Permite eliminar muebles del cuarto.
+
+Creación de muebles
 ********************
-
 /lab/<int:org>/<int:lab>/furniture/create/<int:room>/
+
+La creación de muebles requiere de 3 los cuales son:
+
+*   **nombre**: Este campo es obligatorio.
+*   **tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
+    asimismo este es un campo obligatorio.
+
+Permisos requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   add_laboratoryroom: Permite la creacion de uno nuevo cuarto de laboratorio
+*   add_furniture: Permite crear un mueble en el cuarto de laboratorio y que se visualize el botón de creación.
+*   view_furniture: Permite visualizar los muesble del cuarto de laboratorio.
 
 Ejemplo de creación de muebles:
 
@@ -159,25 +181,31 @@ Actualización de mueble
 
 /lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
 
+La edición de muebles requiere de 4 los cuales son:
+
+*   **Nombre**: Este campo es obligatorio.
+*   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
+*   **Color**: Este campo se utiliza para dar colorear el mueble en la vista de laboratorio, este campo no es obligatorio,
+*   **Sala de Laboratorio**: Este campo define la sala de laboratorio que el mueble estara registrado,
+    este listado de salas se mostrara según a las registradas al laboratorio, por consiguiente es un campo obligatorio.
+
+Permisos requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   change_furniture: Permite editar la informacion referente al mueble.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+
 Ejemplo de actualización de muebles:
 
 .. image:: ../_static/gif/update_furniture.gif
    :height: 380
    :width: 720
 
-Mover mueble de cuarto de laboratorio
-**************************************
-
-/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
-
-Ejemplo de mover muebles a otra sala:
-
-.. image:: ../_static/gif/move_furniture.gif
-   :height: 380
-   :width: 720
-
 Crear tipo de mueble
 **********************************
+catalogs/furniture/furniture_type
+
+Los muebles pueden ser de distintas formas por ejemplo estante, cajon, recipiente entre otros.
 
 Ejemplo de creación de tipos de mueble:
 
@@ -190,9 +218,189 @@ Eliminación de mueble
 
 /lab/<int:org>/<int:lab>/furniture/delete/<int:pk>/
 
+Para la eliminación de muebles hay que tener en cuenta diversos puntos:
+
+*   Al eliminar un mueble su estantes tambien terminan siendo borrados del sistema.
+*   También se eliminarán los objectos, materiales, equipos vinculados a los estantes del mueble.
+
+Por lo tanto a la hora de eliminar un mueble se debe tener en cuenta los puntos anteriores.
+
+Permisos Requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+*   delete_furniture: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
+
 Ejemplo de eliminación de muebles:
 
 .. image:: ../_static/gif/delete_furniture.gif
+   :height: 380
+   :width: 720
+
+
+Administración de estantes
+**********************************
+/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
+
+.. image:: ../_static/view_shelves.png
+   :height: 380
+   :width: 720
+
+Los estantes vienen siendo los lugares donde se van almacenar los materiales, equipos y reactivos del laboratorio, a su vez
+estos se encuentran asociados a un mueble.
+
+Permisos Requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+*   change_furniture: Permite ingresar al mueble donde se desea crear los estantes.
+*   add_shelf: Permite crear estantes.
+*   change_shelf: Permite que aparezca el boton de actualizar estante y editar la información de este.
+*   view_shelf: Permite visualizar los estantes.
+*   delete_furniture: Permite visualizar el botón de eliminar estante y a su vez eliminarlo.
+
+Como acceder a la vista:
+
+.. image:: ../_static/gif/view_shelves.gif
+   :height: 380
+   :width: 720
+
+
+Crear estante
+**************
+/lab/<int:org>/<int:lab>/shelf/create/<int:pk>/
+
+La creación de estantes requiere de varias datos los cuales se explicaran:
+
+*   **Nombre**: Este campo indica el nombre del estante, a su vez este campo es obligatorio.
+*   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
+    a su vez este campo es obligatorio.
+*   **Color**: Este campo se utiliza para dar colorear el mueble en la vista de laboratorio, este campo no es obligatorio,
+*   **Desecho**: La función de este campo es la marca como un estado que solo recibira materiales en estado de desecho.
+*   **Cantidad infinita**: Este campo se utiliza para indicar que el estante va recibir una cantidad infinita del material, sino se desea que sea
+    **ilimitado**, se debe quitar el check del campo.
+*   **Cantidad**: Este campo se utiliza para indicar la cantidad limite que el estante va a contener, ademas este campo tiene varias caracteristicas.
+
+    *   La cantidad no puede ser menor o igual a **0**.
+    *   Este campo solo aparece si se quita el check en el campo **Cantidad infinita**.
+    *   Se vuelve campo obligatorio a la hora de quitar el check en el campo **Cantidad infinita**.
+
+*   **Unidad de medida**: Este campo desplegara un listado de unidades de medida, las cuales se debe seleccionar una, en el caso que se seleccione
+    la opción **-----** significa que el estante recibira materiales de cualquier tipo de unidad de medida.
+*   **Limita los objetos a agregar**: Este campo su función es la habilitar el campo **Objectos habilitados cuando es limitado**.
+*   **Objectos habilitados cuando es limitado**: Este campo contiene un listado de objectos que limitaran los materiales que se puedan registrar en el estante,
+    además permite el ingreso de más de un objecto.
+
+Permisos Requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+*   change_furniture: Permite ingresar al mueble que contiene los estantes.
+*   view_shelf: Permite visualizar los estante.
+*   add_shelf: Permite crear estantes.
+
+Ejemplo de eliminación de muebles:
+
+.. image:: ../_static/gif/add_shelf.gif
+   :height: 380
+   :width: 720
+
+
+Actualizar estante
+********************
+/lab/<int:org>/<int:lab>/shelf/edit/<int:pk>/<int:row>/<int:col>/
+
+La edicion de estantes permitira modificar los valores mencionados en el punto de **Crear estante**, pero a diferencia
+de la ultima funcionalidad mencionada es que limita modificacion de diversos datos los cuales son:
+
+*   **Cantidad**: Este campo tiene diversas validaciones las cuales son:
+
+    *   Nueva cantidad no puede ser inferior a la que ha sido utilizada en el caso que existan materiales dentro del estante.
+    *   La cantidad no puede ser menor o igual **0**.
+    *   Se vuelve campo obligatorio a la hora de quitar el check en el campo **Cantidad infinita**.
+
+*   **Unidad de medida**: La unidad de medida no puede ser cambiada si hay materiales ingresados, solo se permite cambiar
+    a la opción **-------**.
+*   **Objectos habilitados cuando es limitado**: No permitira agregar nuevos materiales ni eliminar si existen estos dentro del estante.
+
+Permisos Requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+*   change_furniture: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
+*   view_shelf: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
+*   add_shelf: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
+
+Ejemplo de actualizacion de estantes:
+
+.. image:: ../_static/gif/update_shelf.gif
+   :height: 380
+   :width: 720
+
+Eliminar estante
+*****************
+
+/lab/<int:org>/<int:lab>/shelf/delete/<int:pk>/<int:row>/<int:col>/
+
+Para la eliminacion de muebles hay que tener en cuenta diversos puntos:
+
+*   Al eliminar un mueble su estantes tambien terminan siendo borrados del sistema.
+*   También se eliminarán los objectos, materiales, equipos vinculados a los estantes del mueble.
+
+Por lo tanto a la hora de eliminar un mueble se debe tener en cuenta los puntos anteriores.
+
+Permisos Requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+*   change_furniture: Permite ingresar al mueble.
+*   view_shelf: Permite visualizar los estantes.
+*   delete_shelf: Permite visualizar el boton de eliminar en los estantes y eliminarlos.
+
+Ejemplo de eliminación de estantes:
+
+.. image:: ../_static/gif/delete_shelf.gif
+   :height: 380
+   :width: 720
+
+.. warning::
+    A la hora de eliminar un estante hay que tener en cuenta que se también los materiales vinculados a este estanto,
+    por consiguiente los registros de estos materiales tambien se eliminarán.
+
+
+Manejo de filas y columnas de estantes
+****************************************
+/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
+
+Unas de las funcionalidades que trae consigo el manejo de estantes son las filas y columnas que se utilizan para,
+simular el sitio que se ubican los estantes en los muebles, por lo tanto esta funcion permite la creación y eliminación
+de filas y columnas luego de efectuar las acciones deseadas ,se debe dar click en el botón de Guardar si no los cambios
+no se mostrarán.
+
+Otro detalle es que a la hora de eliminar una fila con estantes mostrará un listado de estos y los materiales que posee,
+en una ventana emergente como se muestra en la siguiente imagen.
+
+.. image:: ../_static/remove_shelf_row.png
+   :height: 380
+   :width: 720
+
+Permisos Requeridos:
+
+*   view_laboratoryroom: Permite visualizar los cuartos que el laboratorio posee.
+*   view_furniture: Permite visualizar los mueble del cuarto de laboratorio.
+*   change_furniture: Permite ingresar al mueble.
+*   view_shelf: Permite visualizar los estantes.
+*   delete_shelf: Permite eliminar los estantes.
+
+Ejemplo de manejo filas y columnas:
+
+.. image:: ../_static/gif/manage_rows_cols.gif
+   :height: 380
+   :width: 720
+
+Ejemplo de eliminacion de filas y columnas con estantes:
+
+.. image:: ../_static/gif/manage_rows_cols_shelf.gif
    :height: 380
    :width: 720
 
