@@ -161,8 +161,8 @@ Creación de muebles
 
 La creación de muebles requiere de 3 los cuales son:
 
-*   **nombre**: Este campo es obligatorio.
-*   **tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
+*   **Nombre**: Este campo es obligatorio.
+*   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
     asimismo este es un campo obligatorio.
 
 Permisos requeridos:
@@ -188,8 +188,6 @@ La edición de muebles requiere de 4 los cuales son:
 *   **Nombre**: Este campo es obligatorio.
 *   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
 *   **Color**: Este campo se utiliza para dar colorear el mueble en la vista de laboratorio, este campo no es obligatorio,
-*   **Sala de Laboratorio**: Este campo define la sala de laboratorio que el mueble estara registrado,
-    este listado de salas se mostrara según a las registradas al laboratorio, por consiguiente es un campo obligatorio.
 
 Permisos requeridos:
 
@@ -333,7 +331,7 @@ Permisos Requeridos:
 *   view_shelf: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
 *   add_shelf: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
 
-Ejemplo de actualizacion de estantes:
+Ejemplo de actualización de estantes:
 
 .. image:: ../_static/gif/update_shelf.gif
    :height: 380
