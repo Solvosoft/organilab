@@ -897,6 +897,34 @@
     }
   },
   {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble 2",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[1]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+    {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "Estante 1",
+      "container_shelf": null,
+      "type": 75,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 63
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
