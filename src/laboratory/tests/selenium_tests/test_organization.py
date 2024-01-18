@@ -172,3 +172,63 @@ class OrganizationSeleniumTest(SeleniumBase):
 
         ]
         self.create_gif_process(path_list, "add_laboratory_to_org")
+
+    def test_relate_laboratory_to_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[5]/a"},
+            {"path": ".//div[@id='relOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/p/span/span/span"},
+            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[1]"},
+            {"path": self.get_submit_button_path("relOrganizationmodal")}
+        ]
+        self.create_gif_process(path_list,"relate_laboratory_to_org")
+
+    def test_add_user_to_org_from_button_box(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[2]/a"},
+            {"path": ".//form/div[1]/div/input"},
+            {"path": ".//form/div[1]/div/input", "extra_action": "setvalue", "value": "Andrea"},
+            {"path": ".//form/div[2]/div/input"},
+            {"path": ".//form/div[2]/div/input", "extra_action": "setvalue", "value": "Rojas Barrantes"},
+            {"path": ".//form/div[3]/div/input"},
+            {"path": ".//form/div[3]/div/input", "extra_action": "setvalue", "value": "andrearb@gmail.com"},
+            {"path": ".//form/div[4]/div/input"},
+            {"path": ".//form/div[4]/div/input", "extra_action": "setvalue", "value": "50688888888"},
+            {"path": ".//form/div[5]/div/input"},
+            {"path": ".//form/div[5]/div/input", "extra_action": "setvalue", "value": "707770777"},
+            {"path": ".//form/div[6]/div/input"},
+            {"path": ".//form/div[6]/div/input", "extra_action": "setvalue", "value": "Estudiante"},
+            {"path": ".//form/div[7]/input"}
+        ]
+        self.create_gif_process(path_list, "add_user_to_org_from_button_box")
+
+    def test_relate_user_to_org_from_button_box(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[3]/a"},
+            {"path": "//*[@id='modaluser1']/div/form/div/div[@class='modal-body']/span/span/span"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/ul/div/div[2]/span/span/span/ul/li[2]"},
+            {"path": "//*[@id='modaluser1']/div/form/div/div[@class='modal-footer']/button[@type='submit']"}
+        ]
+        self.create_gif_process(path_list, "relate_user_to_org_from_button_box")
+
+    def test_relate_user_to_org_from_tab_org(self):
+        path_list = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[1]/div[1]/div[2]/div/ins"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/ul/li[2]/a"},
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byorgs']/div/button"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/ul/li[2]/button"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div[2]/div[1]/form/div/div/div/input"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div[2]/div[1]/form/div/div/div/input",
+             "extra_action": "setvalue", "value": "ricardom@gmail.com"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div[2]/div[2]/button[@id='relemailbtn']"},
+            {"path": "/html/body/div[4]/div/div[3]/button[1]"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/ul/li[1]/button"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div/form/div/div[1]/div/span/span/span[1]"},
+            {"path": ".//div[@id='relprofilelabmodal']/span/span/span[2]/ul/li"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div/form/div/div[2]/div/span/span/span[1]"},
+            {"path": ".//div[@id='relprofilelabmodal']/span/span/span/ul/li"},
+            {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div/form/div[2]/button[@id='relprofilewithlaboratorybtn']"},
+        ]
+        self.create_gif_process(path_list, "relate_user_to_org_from_tab_org")

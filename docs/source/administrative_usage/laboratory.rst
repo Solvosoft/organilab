@@ -4,14 +4,16 @@ Laboratory administration
 Crear un laboratorio en una organización
 ----------------------------------------------
 
-.. video:: ../_static/manage_organization/organization/video/create_laboratory_in_organization.mp4
-   :height: 400
-   :width: 600
+.. image:: ../_static/gif/add_laboratory_to_org.gif
+   :height: 380
+   :width: 720
 
 Relacionar un laboratorio a una organización
 ----------------------------------------------
 
-Explicar que es relacionar un laboratorio a una organización
+.. image:: ../_static/gif/relate_laboratory_to_org.gif
+   :height: 380
+   :width: 720
 
 
 Laboratory view

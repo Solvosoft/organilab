@@ -172,5 +172,34 @@
     ],
       "object_id": 1
     }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "I Período",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+    ],
+      "object_id": 1,
+      "rol": []
+    }
   }
 ]
