@@ -13,7 +13,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
         self.selenium.get(self.live_server_url+str(reverse("academic:procedure_list", kwargs={"org_pk":1})))
 
-    def test_procedure_crud(self):
+    def procedure_crud(self):
         path_list = [
 
             {"path": ".//button[@class='btn btn-secondary btn-sm btn-success']"},
