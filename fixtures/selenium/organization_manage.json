@@ -137,12 +137,36 @@
     "model": "laboratory.organizationstructure",
     "pk": 2,
     "fields": {
-      "parent": null,
+      "parent": 1,
       "name": "Estudiantes",
       "position": 0,
       "level": 0,
       "rol": [],
       "users": [1, 2]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": null,
+      "name": "Profesores",
+      "position": 0,
+      "level": 0,
+      "rol": [],
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": 3,
+      "name": "I Ciclo",
+      "position": 1,
+      "level": 1,
+      "rol": [],
+      "users": [1]
     }
   },
   {
@@ -190,6 +214,22 @@
     }
   },
   {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Laboratorio 1",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 3,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
@@ -200,6 +240,117 @@
     ],
       "object_id": 1,
       "rol": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+      "laboratory",
+      "laboratory"
+    ],
+      "object_id": 1,
+      "rol": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+      "laboratory",
+      "laboratory"
+    ],
+      "object_id": 1,
+      "rol": []
+    }
+  },
+  {
+    "model":  "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+      "laboratory",
+      "laboratory"
+      ],
+      "object_id": 1
+    }
+
+  },
+  {
+    "model":  "laboratory.organizationstructurerelations",
+    "pk": 2,
+    "fields": {
+      "organization": 3,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 2
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 3,
+    "fields": {
+      "organization": 2,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 3
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 4,
+    "fields": {
+      "organization": 3,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 5,
+    "fields": {
+      "organization": 4,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
     }
   }
 ]

@@ -2,16 +2,28 @@ Laboratory administration
 ===============================
 
 Crear un laboratorio en una organización
-----------------------------------------------
+---------------------------------------------------
 
 .. image:: ../_static/gif/add_laboratory_to_org.gif
    :height: 380
    :width: 720
 
-Relacionar un laboratorio a una organización
-----------------------------------------------
+Relacionar un laboratorio externo a una organización base
+---------------------------------------------------------------
 
-.. image:: ../_static/gif/relate_laboratory_to_org.gif
+Los laboratorios generados en la organización base podrán ser relacionados en las organizaciones hijas.
+
+.. image:: ../_static/gif/relate_external_laboratory_to_org.gif
+   :height: 380
+   :width: 720
+
+
+Relacionar un laboratorio de la organización base a una organización hija
+-----------------------------------------------------------------------------------
+
+Los laboratorios generados en la organización base podrán ser relacionados en las organizaciones hijas.
+
+.. image:: ../_static/gif/relate_org_base_laboratory_to_org_child.gif
    :height: 380
    :width: 720
 

@@ -27,28 +27,37 @@ Copiar rol a una organización
 
 
 Listar roles de una organización
----------------------------------------
+--------------------------------------------
 
 .. image:: ../_static/gif/view_org_roles.gif
    :height: 380
    :width: 720
 
 Eliminar un rol de una organización
----------------------------------------
+--------------------------------------------
+
+.. image:: ../_static/gif/delete_org_role.gif
+   :height: 380
+   :width: 720
 
 Consideraciones de eliminar un rol.
 
-Administrar roles por laboratorio
----------------------------------------
+Administrar roles a un usuario por laboratorio
+-------------------------------------------------
 
-Acá mostrar como gestionar los roles en el tab "Por laboratorio"
+.. image:: ../_static/gif/manage_user_rol_from_tab_lab.gif
+   :height: 380
+   :width: 720
 
 Administrar roles por organización
----------------------------------------
+--------------------------------------------
 
 Acá mostrar como gestionar roles por "Organización"
 
-Administrar roles por perfil
------------------------------------
 
-Describir el porqué de este tab y que tipos de permisos se otorgan a los usuarios
+Administrar grupos de permisos por perfil
+-----------------------------------------------
+
+.. image:: ../_static/gif/change_profile_permission_group_by_org.gif
+   :height: 380
+   :width: 720
