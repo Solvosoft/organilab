@@ -159,7 +159,7 @@ Creación de muebles
 ********************
 /lab/<int:org>/<int:lab>/furniture/create/<int:room>/
 
-La creación de muebles requiere de 3 los cuales son:
+La creación de muebles requiere de 2 los cuales son:
 
 *   **Nombre**: Este campo es obligatorio.
 *   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,

@@ -13,7 +13,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
         self.selenium.get(self.live_server_url+str(reverse("academic:procedure_list", kwargs={"org_pk":1})))
 
-    def procedure_crud(self):
+    def test_procedure_crud(self):
         path_list = [
 
             {"path": ".//button[@class='btn btn-secondary btn-sm btn-success']"},
@@ -67,7 +67,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//form[1]",
              "extra_action": 'script',
              'value': 'tinymce.get("id_description").setContent("<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>");'},
-            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
+            {"path": ".//form/div[@class='text-center']/button[@type='submit']","scroll": "window.scrollTo(0, 300)"},
 
         ]
         self.create_gif_process(path_list, "add_step")
@@ -86,7 +86,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
             {"path": ".//input[@name='title']", "extra_action": "clearinput"},
             {"path": ".//input[@name='title']", "extra_action": "setvalue",
              "value": "Paso 1"},
-            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
+            {"path": ".//form/div[@class='text-center']/button[@type='submit']","scroll": "window.scrollTo(0, 100)"},
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//div[1]/div/div[3]/div/div/div[1]/a[1]"}
 
@@ -112,11 +112,10 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
-            {"path": ".//span[@title='Crear Objecto']"},
+            {"path": ".//span[@title='Crear Objecto']", "scroll": "window.scrollTo(0, 300)"},
             {"path": ".//span[@class='select2-selection select2-selection--single']"},
-            {"path": ".//ul[@class='select2-results__options']",
-             "extra_action": {"select": ""}},
-            {"path": ".//li[text()='BAL847 Balón Fondo Plano no esmerilado 125 mL']"},
+            {"path": ".//ul[@class='select2-results__options']"},
+            {"path": ".//input[@id='id_quantity']", "extra_action": "clearInput"},
             {"path": ".//input[@id='id_quantity']", "extra_action": "setvalue",
              "value": 10},
             {"path": ".//span[@aria-controls='select2-id_unit-container']"},
@@ -136,7 +135,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
-            {"path": ".//tbody[@id='object_list']/tr[1]/td[3]", "extra_action":'sweetalert_comfirm',
+            {"path": ".//tbody[@id='object_list']/tr[1]/td[3]",  "scroll": "window.scrollTo(0, 400)","extra_action":'sweetalert_comfirm',
              "comfirm": """document.querySelector('.swal2-confirm').click();""",
              "ok": """document.querySelector('.swal2-confirm').click();"""},
             {
@@ -151,7 +150,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
-            {"path": ".//span[@title='Crear Observación']"},
+            {"path": ".//span[@title='Crear Observación']", "scroll": "window.scrollTo(0, 350)"},
             {"path": ".//form/textarea[@id='id_procedure_description']","extra_action": "setvalue",
              "value":"Tener cuidado con los envases de materiales biologícos"},
             {"path": ".//div[1]/div/div[3]/div/div/div[3]/div/div/div[3]/button[2]",
@@ -167,11 +166,11 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
             {"path": ".//a[@title='Editar']"},
-            {"path": ".//tbody[@id='observation_list']/tr[1]/td[2]", "extra_action":'sweetalert_comfirm',
+            {"path": ".//tbody[@id='observation_list']/tr[1]/td[2]", "scroll": "window.scrollTo(0, 600)", "extra_action":'sweetalert_comfirm',
              "comfirm": """document.querySelector('.swal2-confirm').click();""",
              "ok": """document.querySelector('.swal2-confirm').click();""",
              "scroll": "window.scrollTo(0, document.body.scrollHeight)"},
-            {"path": ".//form/div[@class='text-center']/button[@type='submit']"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[1]/div/form/div[3]/button", "scroll": "window.scrollTo(0, 100)"},
 
         ]
         self.create_gif_process(path_list, "remove_step_observation")
