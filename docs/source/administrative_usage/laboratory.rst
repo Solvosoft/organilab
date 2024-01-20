@@ -311,7 +311,7 @@ Permisos Requeridos:
 *   view_shelf: Permite visualizar los estante.
 *   add_shelf: Permite crear estantes.
 
-Ejemplo de eliminación de muebles:
+Ejemplo de creación de muebles:
 
 .. image:: ../_static/gif/add_shelf.gif
    :height: 380
