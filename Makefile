@@ -33,7 +33,6 @@ test:
 	cd src && python manage.py test  --no-input --exclude-tag=selenium
 
 docs:
-	cd src && python manage.py test  --no-input --tag=selenium && cd ..
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	pip install 'sphinx<7' sphinx-rtd-theme==1.2.2
@@ -65,3 +64,12 @@ start:
 	python manage.py loadgroup
 	python manage.py load_sga
 	python manage.py loaddata sga_components.json
+
+
+docs_full:
+	cd src && python manage.py test  --no-input --tag=selenium && cd ..
+	$(MAKE) -C docs clean
+	$(MAKE) -C docs html
+	pip install 'sphinx<7' sphinx-rtd-theme==1.2.2
+	sphinx-build -b linkcheck ./docs/source ./docs/build/
+	sphinx-build -b html ./docs/source ./docs/build/

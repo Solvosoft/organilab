@@ -86,6 +86,17 @@ Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las s
 Clonar una organización
 *******************************
 
+Al clonar una organización se copian las siguientes características:
+
+
+* Nombre con el sufijo *clone*.
+* Posición y nivel dentro del árbol de organizaciones.
+* Relación con su organización padre (En caso de existir).
+* Relaciones con laboratorios u organizaciones.
+* Roles.
+* Relaciones con usuarios.
+
+
 .. image:: ../_static/gif/clone_org.gif
    :height: 380
    :width: 720
@@ -102,16 +113,44 @@ Cambiar nombre de una organización
 Administración de usuarios
 ----------------------------------
 
-Linkear a la sección de crear un usuario en una organización.
+Agregar usuario a una organización desde la botonera de acciones
+***********************************************************************
 
-Relacionar un usuario a una organización
----------------------------------------------
+.. image:: ../_static/gif/add_user_to_org_from_button_box.gif
+   :height: 380
+   :width: 720
 
-Indicar cómo se relaciona un usuario a una organización
+
+Relacionar un usuario a una organización desde la botonera de acciones
+----------------------------------------------------------------------------
+
+.. image:: ../_static/gif/relate_user_to_org_from_button_box.gif
+   :height: 380
+   :width: 720
+
+Relacionar un usuario externo a una organización y laboratorios desde la pestaña 'Por Organización'
+-------------------------------------------------------------------------------------------------------------
+
+.. image:: ../_static/gif/relate_user_to_org_and_lab_from_tab_org.gif
+   :height: 380
+   :width: 720
+
+Relacionar un usuario externo a una organización y laboratorio desde la pestaña 'Por laboratorio'
+-------------------------------------------------------------------------------------------------------------
+
+.. image:: ../_static/gif/relate_user_to_org_and_lab_from_tab_lab.gif
+   :height: 380
+   :width: 720
+
 
 
 Ver bitácoras de acciones en la organización
 --------------------------------------------------
+
+Las acciones de una organizacion son registros acerca de adiciones, modificaciones y remociones
+relacionadas a todos los elementos(laboratorios, salas de laboratorio, estantes, objetos, etc) que
+contempla dicha organización.
+
 
 .. image:: ../_static/gif/view_org_logs.gif
    :height: 380
