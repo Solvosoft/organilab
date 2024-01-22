@@ -3,35 +3,46 @@ from django.db.models import Q
 
 from auth_and_perms.models import ProfilePermission, Rol
 from laboratory.models import OrganizationStructureRelations, Laboratory
+from laboratory.utils import get_laboratories_by_user_profile
 
 register = template.Library()
 
 
 @register.simple_tag(takes_context=True)
 def has_perm_in_org(context, org_pk, permission):
-    if context['request'].user.is_superuser:
+    user = context['request'].user
+
+    if user.is_superuser:
         return True
     app_label, codename = permission.split(".")
-    profile_in = ProfilePermission.objects.filter(profile=context['request'].user.profile,
-                                                  content_type__app_label='laboratory',
-                                                  content_type__model="organizationstructure",
-                                                  object_id=org_pk)
-    if not profile_in.exists():
-        labs = set(Laboratory.objects.filter(
-            Q(organization=org_pk) | Q(pk__in=
-                                       OrganizationStructureRelations.objects.filter(
-                                           organization=org_pk,
-                                           content_type__app_label='laboratory',
-                                           content_type__model="laboratory",
-                                       ).values_list('object_id', flat=True)
-                                       )
-        ).values_list('pk', flat=True))
-        profile_in = ProfilePermission.objects.filter(profile=context['request'].user.profile,
-                                                      content_type__app_label='laboratory',
-                                                      content_type__model="laboratory",
-                                                      object_id__in=labs)
 
-    rols = profile_in.values_list('rol', flat=True)
+    labs = get_laboratories_by_user_profile(user, org_pk)
+
+
+    profile_in = ProfilePermission.objects.filter(
+        profile=context['request'].user.profile
+       ).filter(Q(content_type__app_label='laboratory',
+      content_type__model="organizationstructure",
+      object_id=org_pk)|Q(content_type__app_label='laboratory',
+      content_type__model="laboratory",
+      object_id__in=labs
+    ))
+    # if not profile_in.exists():
+    #     labs = set(Laboratory.objects.filter(
+    #         Q(organization=org_pk) | Q(pk__in=
+    #                                    OrganizationStructureRelations.objects.filter(
+    #                                        organization=org_pk,
+    #                                        content_type__app_label='laboratory',
+    #                                        content_type__model="laboratory",
+    #                                    ).values_list('object_id', flat=True)
+    #                                    )
+    #     ).values_list('pk', flat=True))
+    #     profile_in = ProfilePermission.objects.filter(profile=context['request'].user.profile,
+    #                                                   content_type__app_label='laboratory',
+    #                                                   content_type__model="laboratory",
+    #                                                   object_id__in=labs)
+
+    rols = profile_in.filter(rol__isnull=False).values_list('rol', flat=True)
     rolsquery = Rol.objects.filter(
         pk__in=rols,
         permissions__content_type__app_label=app_label,

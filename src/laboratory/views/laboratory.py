@@ -26,7 +26,8 @@ from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, \
     UserOrganization
-from laboratory.utils import organilab_logentry, get_laboratories_by_user_profile
+from laboratory.utils import organilab_logentry, get_laboratories_by_user_profile, \
+    register_laboratory_contenttype
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -101,11 +102,6 @@ class CreateLaboratoryFormView(FormView):
     form_class = LaboratoryCreate
     success_url = ''
 
-    #   def dispatch(self, request, *args, **kwargs):
-    #       if not self.request.user.has_perm('laboratory.add_laboratory'):
-    #           return render(request, 'laboratory/laboratory_notperm.html')
-    #       return super(CreateLaboratoryFormView, self).dispatch(request, *args, **kwargs)
-
     def get_form_kwargs(self):
         kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
         kwargs['initial'] = {'organization': self.kwargs['org_pk']}
@@ -137,6 +133,8 @@ class CreateLaboratoryFormView(FormView):
         )
         if created and rol:
             pp.rol.add(rol)
+
+        register_laboratory_contenttype(self.object.organization, self.object)
 #        admins = User.objects.filter(is_superuser=True)
         # TODO: This is necesary ?  all user has to be profile
         user.profile.laboratories.add(self.object)

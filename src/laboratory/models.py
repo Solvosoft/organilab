@@ -586,12 +586,13 @@ class OrganizationStructureManager(models.Manager):
 
         return OrganizationStructure.objects.none()
 
-    def filter_labs_by_user(self, user, org_pk=None):
+    def filter_labs_by_user(self, user, org_pk=None, descendants=True,
+                            include_self=True, ancestors=False):
         contenttype = ContentType.objects.filter(app_label='laboratory',
                                                  model='laboratory').first()
 
-        orgs = self.filter_user(user, descendants=True, include_self=True,
-                                ancestors=False, org_pk=org_pk)
+        orgs = self.filter_user(user, descendants=descendants, include_self=include_self,
+                                ancestors=ancestors, org_pk=org_pk)
         labs_related = set(OrganizationStructureRelations.objects.filter(
             organization__in=orgs,
             content_type=contenttype,
