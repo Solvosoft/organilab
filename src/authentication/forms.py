@@ -7,12 +7,19 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as djgenwidgets
 from django.core.exceptions import ValidationError
 
+from auth_and_perms.models import Profile
+from laboratory.models import Laboratory, UserOrganization
+
 
 class CreateUserForm(forms.ModelForm, GTForm):
     phone_number = forms.CharField(max_length=25, label=_('Phone'), widget=djgenwidgets.PhoneNumberMaskInput)
     id_card = forms.CharField(label=_('ID Card'), max_length=100, widget=djgenwidgets.TextInput)
     job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=djgenwidgets.TextInput)
-
+    user_type = forms.ChoiceField(widget=djgenwidgets.Select,
+        choices=UserOrganization.TYPE_IN_ORG,
+        initial=UserOrganization.LABORATORY_USER,
+                                 label=_("Profile in organization")
+    )
     def clean_email(self):
         value = self.cleaned_data['email']
         if User.objects.using(settings.READONLY_DATABASE).filter(username=value):
@@ -26,6 +33,7 @@ class CreateUserForm(forms.ModelForm, GTForm):
             'first_name': djgenwidgets.TextInput,
             'last_name': djgenwidgets.TextInput,
             'email': djgenwidgets.EmailMaskInput
+
         }
 
 
