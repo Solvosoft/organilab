@@ -242,7 +242,8 @@ class AddUser(CreateView):
         user.password = password
         user.save()
         #self.organization.users.add(user)
-        UserOrganization.objects.create(organization=self.organization, user=user)
+        UserOrganization.objects.create(organization=self.organization, user=user,
+                                        type_in_organization=form.cleaned_data['user_type'])
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
