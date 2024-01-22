@@ -27,20 +27,6 @@ def has_perm_in_org(context, org_pk, permission):
       content_type__model="laboratory",
       object_id__in=labs
     ))
-    # if not profile_in.exists():
-    #     labs = set(Laboratory.objects.filter(
-    #         Q(organization=org_pk) | Q(pk__in=
-    #                                    OrganizationStructureRelations.objects.filter(
-    #                                        organization=org_pk,
-    #                                        content_type__app_label='laboratory',
-    #                                        content_type__model="laboratory",
-    #                                    ).values_list('object_id', flat=True)
-    #                                    )
-    #     ).values_list('pk', flat=True))
-    #     profile_in = ProfilePermission.objects.filter(profile=context['request'].user.profile,
-    #                                                   content_type__app_label='laboratory',
-    #                                                   content_type__model="laboratory",
-    #                                                   object_id__in=labs)
 
     rols = profile_in.filter(rol__isnull=False).values_list('rol', flat=True)
     rolsquery = Rol.objects.filter(
