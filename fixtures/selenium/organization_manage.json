@@ -122,6 +122,36 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+      "name": "Administración de Objetos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -129,7 +159,7 @@
       "name": "Organización de Prueba",
       "position": 0,
       "level": 0,
-      "rol": [1, 2],
+      "rol": [1, 2, 3],
       "users": [1]
     }
   },
@@ -239,7 +269,7 @@
       "organizationstructure"
     ],
       "object_id": 1,
-      "rol": []
+      "rol": [3]
     }
   },
   {
@@ -252,20 +282,7 @@
       "laboratory"
     ],
       "object_id": 1,
-      "rol": []
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 2,
-    "fields": {
-      "profile": 1,
-      "content_type": [
-      "laboratory",
-      "laboratory"
-    ],
-      "object_id": 1,
-      "rol": []
+      "rol": [3]
     }
   },
   {

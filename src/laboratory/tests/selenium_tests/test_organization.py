@@ -34,10 +34,38 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[3]/a"}
         ]
 
-        self.tab_lab = self.path_base + [
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[1]/div[1]/div[2]/div/ins"},
+        self.select_organization = self.path_base + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[1]/div[1]/div[2]/div/ins"}
+        ]
+
+        self.tab_lab = self.select_organization + [
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/ul/li[1]/a"}
         ]
+
+        self.tab_org = self.select_organization + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/ul/li[2]/a"}
+        ]
+
+        self.select_laboratory_tab_lab = self.tab_lab + [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='bylabs']/div/div/div/span/span/span"},
+            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[1]"},
+            {"path": ".//span[contains(@class,'applyasrole')]"}
+        ]
+
+        self.button_save_permission_rol = [{"path": "//*[@id='modal1']/div/form/div/div[3]/button[2]"}]
+
+        self.add_permission_rol = [
+            {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/span/span/span"},
+            {"path": ".//div[@id='modal1']/span/span/span/ul/li"}
+        ] + self.button_save_permission_rol
+
+        self.remove_and_save_permission_rol = [
+            {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/div/input[2]"}
+        ] + self.button_save_permission_rol
+
+        self.use_and_save_permission_rol = [
+            {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/div/input[3]"}
+        ] + self.button_save_permission_rol
 
     def get_submit_button_path(self, id_modal, button_type="submit"):
         return ".//div[@id='%s']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@type='%s']" % (id_modal, button_type)
@@ -206,7 +234,6 @@ class OrganizationSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list,"relate_org_base_laboratory_to_org_child")
 
-
     def test_add_user_to_org_from_button_box(self):
         path_list = self.path_base + [
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"},
@@ -238,9 +265,7 @@ class OrganizationSeleniumTest(SeleniumBase):
         self.create_gif_process(path_list, "relate_user_to_org_from_button_box")
 
     def test_relate_user_to_org_and_lab_from_tab_org(self):
-        path_list = self.path_base + [
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[1]/div[1]/div[2]/div/ins"},
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/ul/li[2]/a"},
+        path_list = self.tab_org + [
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byorgs']/div/button"},
             {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/ul/li[2]/button"},
             {"path": ".//div[@id='relprofilelabmodal']/div/div/div[@class='modal-body']/div/div[2]/div[1]/form/div/div/div/input"},
@@ -275,14 +300,38 @@ class OrganizationSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "relate_user_to_org_and_lab_from_tab_lab")
 
+    def test_add_permission_rol_to_user_from_tab_lab(self):
+        path_list = self.select_laboratory_tab_lab + self.add_permission_rol
+        self.create_gif_process(path_list, "add_permission_rol_to_user_from_tab_lab")
 
-    def test_manage_user_rol_from_tab_lab(self):
-        path_list = self.tab_lab + [
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='bylabs']/div/div/div/span/span/span"},
-            {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[1]"},
-            {"path": "//*[@id='profile_1']"},
-            {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/span/span/span"},
-            {"path": ".//div[@id='modal1']/span/span/span/ul/li"},
-            {"path": "//*[@id='modal1']/div/form/div/div[3]/button[2]"}
-        ]
-        self.create_gif_process(path_list, "manage_user_rol_from_tab_lab")
+    def test_remove_permission_rol_to_user_from_tab_lab(self):
+        path_list = self.select_laboratory_tab_lab + self.remove_and_save_permission_rol
+        self.create_gif_process(path_list, "remove_permission_rol_to_user_from_tab_lab")
+
+    def test_use_selected_permission_rol_to_user_from_tab_lab(self):
+        path_list = self.select_laboratory_tab_lab + [
+            {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/span/span/span/ul/li/button"},
+            {"path": ".//div[@id='modal1']/span/span/span/ul/li[2]"}
+        ] + self.use_and_save_permission_rol
+        self.create_gif_process(path_list, "use_selected_permission_rol_to_user_from_tab_lab")
+
+    def test_add_permission_rol_to_user_from_tab_org(self):
+        path_list = self.tab_org + [
+            {"path": ".//span[contains(@class,'applyasrole')]"},
+        ] + self.add_permission_rol
+        self.create_gif_process(path_list, "add_permission_rol_to_user_from_tab_org")
+
+    def test_remove_permission_rol_to_user_from_tab_org(self):
+        path_list = self.tab_org + [
+            {"path": ".//span[contains(@class,'applyasrole')]"}
+        ] + self.remove_and_save_permission_rol
+        self.create_gif_process(path_list, "remove_permission_rol_to_user_from_tab_org")
+
+
+    def test_use_selected_permission_rol_to_user_from_tab_org(self):
+        path_list = self.tab_org + [
+            {"path": ".//span[contains(@class,'applyasrole')]"},
+            {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/span/span/span/ul/li/button"},
+            {"path": ".//div[@id='modal1']/span/span/span/ul/li[2]"}
+        ] + self.use_and_save_permission_rol
+        self.create_gif_process(path_list, "use_selected_permission_rol_to_user_from_tab_org")
