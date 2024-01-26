@@ -228,7 +228,9 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     organization = None
 
     def get_queryset(self):
-        labs = OrganizationStructure.os_manager.filter_labs_by_user(self.request.user, org_pk=self.organization.pk)
+        labs = OrganizationStructure.os_manager.filter_labs_by_user(self.request.user,
+                                                                    ancestors=True,
+                                                                    org_pk=self.organization.pk)
         # it's required than exclude labs that are part of the organization to prevent repeat labs
         exclude_labs = OrganizationStructureRelations.objects.filter(
             organization=self.organization.pk,

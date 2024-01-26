@@ -176,12 +176,34 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def set_value_action(self, obj, element):
         """
-        This in an action responsible to set value in an element.
+        This is an action responsible to set value in an element.
         Value can be quotation marks this is equal to clear an input.
         """
         if "value" in obj:
             element.send_keys(obj['value'])
 
+    def move_cursor_end(self, obj):
+        """
+        It moves cursor to the end input value length.
+        reduce_length variable is for special cases like email mask input where it is
+        necessary reduce input value length.
+        """
+        reduce_length = 0
+
+        if "reduce_length" in obj and obj["reduce_length"]:
+            reduce_length = obj["reduce_length"]
+
+        move_cursor_end = """
+            function getElementByXpath(path) {
+              return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            }
+            var input = getElementByXpath("%s");
+            const end = input.value.length - %d;
+
+            input.setSelectionRange(end, end);
+            input.focus();
+        """ % (obj["path"], reduce_length)
+        self.selenium.execute_script(move_cursor_end)
 
     def extra_action(self, obj, element):
         """
@@ -189,18 +211,20 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         if obj["extra_action"] == "setvalue":
             self.set_value_action(obj, element)
-        elif obj["extra_action"] == 'submit':
+        elif obj["extra_action"] == "submit":
             self.do_submit_action(obj,element)
-        elif obj["extra_action"]=='script':
+        elif obj["extra_action"] == "script":
             self.selenium.execute_script(obj['value'])
-        elif obj["extra_action"] == 'sweetalert_comfirm':
+        elif obj["extra_action"] == "sweetalert_comfirm":
             self.do_sweetaler_comfirm_action(obj, element)
         elif obj["extra_action"] == "clearinput":
             element.clear()
+        elif obj["extra_action"] == "move_cursor_end":
+            self.move_cursor_end(obj)
 
     def do_sweetaler_comfirm_action(self, obj, element):
         """
-        This in an action responsable to press yes/no buttons of sweetalert.
+        This is an action responsible to press yes/no buttons of sweetalert.
         """
         self.action.move_to_element(element).perform()
         element.click()
@@ -226,7 +250,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         if 'scroll' in obj:
             self.selenium.execute_script(obj['scroll'])
 
-        elif 'sleep' in obj:
+        if 'sleep' in obj:
             if isinstance(obj['sleep'], int):
                 sleep(obj["sleep"])
             else:

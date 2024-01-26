@@ -23,7 +23,7 @@ from authentication.forms import CreateUserForm
 from laboratory.forms import AddOrganizationForm, RelOrganizationForm
 from laboratory.models import OrganizationStructure, Laboratory, \
     OrganizationStructureRelations, UserOrganization
-from laboratory.utils import organilab_logentry
+from laboratory.utils import organilab_logentry, register_laboratory_contenttype
 from laboratory.views.djgeneric import ListView, DeleteView
 from django.conf import settings
 
@@ -242,7 +242,8 @@ class AddUser(CreateView):
         user.password = password
         user.save()
         #self.organization.users.add(user)
-        UserOrganization.objects.create(organization=self.organization, user=user)
+        UserOrganization.objects.create(organization=self.organization, user=user,
+                                        type_in_organization=form.cleaned_data['user_type'])
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'])
@@ -266,14 +267,7 @@ def add_contenttype_to_org(request):
         user_is_allowed_on_organization(request.user, organization)
         contentyperelobj = form.cleaned_data['contentyperelobj'].values_list('pk',flat=True)
         for obj in contentyperelobj:
-            OrganizationStructureRelations.objects.get_or_create(
-                organization=organization,
-                content_type=ContentType.objects.filter(
-                    app_label='laboratory',
-                    model='laboratory'
-                ).first(),
-                object_id=obj
-            )
+            register_laboratory_contenttype(organization, obj)
     else:
         raise Http404(_("Form data is wrong, you need to pass a valid laboratory as contenttype"))
     return redirect('auth_and_perms:organizationManager')

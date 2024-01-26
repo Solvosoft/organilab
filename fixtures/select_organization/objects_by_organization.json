@@ -369,7 +369,10 @@
     "pk": 1,
     "fields": {
       "profile": 1,
-      "content_type": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+      ],
       "object_id": 1,
       "rol": [
         1,
@@ -399,7 +402,10 @@
     "pk": 2,
     "fields": {
       "profile": 2,
-      "content_type": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+      ],
       "object_id": 1,
       "rol": [
         1,
@@ -428,7 +434,10 @@
     "pk": 3,
     "fields": {
       "profile": 3,
-      "content_type": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+      ],
       "object_id": 1,
       "rol": []
     }
@@ -449,7 +458,10 @@
     "pk": 4,
     "fields": {
       "profile": 4,
-      "content_type": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+      ],
       "object_id": 2,
       "rol": [
       ]
@@ -471,7 +483,10 @@
     "pk": 5,
     "fields": {
       "profile": 5,
-      "content_type": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+      ],
       "object_id": 4,
       "rol": [
         1,
