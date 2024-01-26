@@ -538,6 +538,16 @@ class OrganizationStructureManager(models.Manager):
             return OrganizationStructure.objects.filter(pk__in=pks)
         return OrganizationStructure.objects.none()
 
+
+    def get_user_organizations(self, user, org_pk):
+        """
+        Returns all organizations that user has access also the current organization
+        will be excluded.
+        """
+        qparams = Q(pk__in=user.userorganization_set.values_list('organization', flat=True)) | Q(users=user)
+        organizations = OrganizationStructure.objects.filter(qparams).exclude(pk=org_pk).distinct()
+        return organizations
+
     def get_children(self, org_id):
         return OrganizationStructure.objects.filter(pk=org_id).descendants(
             include_self=True)
@@ -587,12 +597,17 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.none()
 
     def filter_labs_by_user(self, user, org_pk=None, descendants=True,
-                            include_self=True, ancestors=False):
+                            include_self=True, ancestors=False, relate_labs_org_parent=False):
         contenttype = ContentType.objects.filter(app_label='laboratory',
                                                  model='laboratory').first()
 
-        orgs = self.filter_user(user, descendants=descendants, include_self=include_self,
-                                ancestors=ancestors, org_pk=org_pk)
+        if relate_labs_org_parent:
+            orgs = self.get_user_organizations(user, org_pk)
+        else:
+            orgs = self.filter_user(user, descendants=descendants,
+                                    include_self=include_self,
+                                    ancestors=ancestors, org_pk=org_pk)
+
         labs_related = set(OrganizationStructureRelations.objects.filter(
             organization__in=orgs,
             content_type=contenttype,
