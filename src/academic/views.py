@@ -53,10 +53,7 @@ def get_my_procedures(request, org_pk, lab_pk):
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization)
-    content = ContentType.objects.get(app_label="laboratory", model="laboratory")
-    my_procedures = MyProcedure.objects.filter(object_id=laboratory.pk,
-                                               content_type=content).order_by('-pk')
-    context = {'my_procedures': my_procedures, 'form': MyProcedureForm(org_pk=org_pk),
+    context = {'form': MyProcedureForm(),
         'laboratory': laboratory.pk, 'org_pk': org_pk,
         'reservation_form': ReservationForm}
     return render(request, 'academic/procedure.html', context=context)

@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.core.validators import RegexValidator
+from djgentelella.widgets.selects import AutocompleteSelect
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 from .models import ProcedureStep, Procedure, MyProcedure, CommentProcedureStep
@@ -11,20 +12,15 @@ from django.utils.translation import gettext_lazy as _
 
 
 class MyProcedureForm(forms.ModelForm, GTForm):
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop('org_pk', None)
-        super(MyProcedureForm, self).__init__(*args, **kwargs)
-
-        if org_pk:
-            self.fields['custom_procedure'].queryset = Procedure.objects.filter()
-        else:
-            self.fields['custom_procedure'].queryset = Procedure.objects.none()
 
     class Meta:
         model = MyProcedure
         fields = ['name', 'custom_procedure']
         widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
-                   'custom_procedure': genwidgets.Select(attrs={'required':True}),
+                   'custom_procedure': AutocompleteSelect(url='custom_procedure_template', attrs={
+            'data-s2filter-organization': '#organization',
+            'data-dropdownparent': '#add_my_procedures','required': True
+        })
                    }
 
 
