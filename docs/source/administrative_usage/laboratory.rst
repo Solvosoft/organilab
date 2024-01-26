@@ -34,8 +34,6 @@ Laboratory view
 
 Administración de cuartos de laboratorio
 -------------------------------------------
-/lab/<int:org>/<int:lab_pk>/create/
-
 Este modulo se utiliza para el manejo de cuartos de laboratorios del laboratorio que se este utilizando en el momento,
 para accede ha este modulo existen 2 formas en ambas se requiere el ingreso a un laboratorio, que se mostraran en las siguientes imagenes:
 
@@ -67,8 +65,6 @@ Ejemplo de segundo forma:
 
 Crear sala de laboratorio
 **********************************
-/lab/<int:org>/<int:lab_pk>/create/
-
 Este modulo creara salas de labororios del laboratorio que se esta utilizando, en estos cuartos normalmente se le asocian
 muebles, estantes, objectos entre otras mas temas.
 
@@ -89,8 +85,6 @@ Ejemplo de creacion de sala de laboratorio:
 
 Actualizar salas de laboratorios
 ***********************************
-/lab/<int:org>/<int:lab_pk>/rooms/<int:pk>/edit
-
 Este modulo actualizara el nombre de las salas de laboratorio.
 
 Datos Requeridos:
@@ -110,8 +104,6 @@ Ejemplo de actualización de sala de laboratorio:
 
 Eliminar sala de laboratorio
 **********************************
-/lab/<int:org>/<int:lab_pk>/rooms/<int:pk>/delete
-
 En este punto se permitira eliminar salas de laboratorio.
 
     .. note::
@@ -135,8 +127,6 @@ Ejemplo de eliminacion de cuartos de laboratorios:
 
 Visualizar salas de laboratorio
 **********************************
-/lab/<int:org>/<int:lab_pk>/create/
-
 Este modulo permitira visualizar el listado de cuartos de laboratorio del laboratorio que este actualimente utilizando.
 
 Datos Requeridos:
@@ -170,8 +160,6 @@ Permisos Requeridos:
 
 Creación de muebles
 ********************
-/lab/<int:org>/<int:lab>/furniture/create/<int:room>/
-
 La creación de muebles requiere de 2 los cuales son:
 
 *   **Nombre**: Este campo es obligatorio.
@@ -193,9 +181,6 @@ Ejemplo de creación de muebles:
 
 Actualización de mueble
 ************************
-
-/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
-
 La edición de muebles requiere de 4 los cuales son:
 
 *   **Nombre**: Este campo es obligatorio.
@@ -216,8 +201,6 @@ Ejemplo de actualización de muebles:
 
 Crear tipo de mueble
 **********************************
-catalogs/furniture/furniture_type
-
 Los muebles pueden ser de distintas formas por ejemplo estante, cajon, recipiente entre otros.
 
 Ejemplo de creación de tipos de mueble:
@@ -228,9 +211,6 @@ Ejemplo de creación de tipos de mueble:
 
 Eliminación de mueble
 **********************************
-
-/lab/<int:org>/<int:lab>/furniture/delete/<int:pk>/
-
 Para la eliminación de muebles hay que tener en cuenta diversos puntos:
 
 *   Al eliminar un mueble su estantes tambien terminan siendo borrados del sistema.
@@ -253,8 +233,6 @@ Ejemplo de eliminación de muebles:
 
 Administración de estantes
 **********************************
-/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
-
 .. image:: ../_static/view_shelves.png
    :height: 380
    :width: 720
@@ -281,8 +259,6 @@ Como acceder a la vista:
 
 Crear estante
 **************
-/lab/<int:org>/<int:lab>/shelf/create/<int:pk>/
-
 La creación de estantes requiere de varias datos los cuales se explicaran:
 
 *   **Nombre**: Este campo indica el nombre del estante, a su vez este campo es obligatorio.
@@ -323,8 +299,6 @@ Ejemplo de creación de muebles:
 
 Actualizar estante
 ********************
-/lab/<int:org>/<int:lab>/shelf/edit/<int:pk>/<int:row>/<int:col>/
-
 La edición de estantes permitira modificar los valores mencionados en el punto de **Crear estante**, pero a diferencia
 de la ultima funcionalidad mencionada es que limita modificación de diversos datos los cuales son:
 
@@ -354,9 +328,6 @@ Ejemplo de actualización de estantes:
 
 Eliminar estante
 *****************
-
-/lab/<int:org>/<int:lab>/shelf/delete/<int:pk>/<int:row>/<int:col>/
-
 Para la eliminación de muebles hay que tener en cuenta diversos puntos:
 
 *   Al eliminar un mueble su estantes tambien terminan siendo borrados del sistema.
@@ -385,8 +356,6 @@ Ejemplo de eliminación de estantes:
 
 Manejo de filas y columnas de estantes
 ****************************************
-/lab/<int:org>/<int:lab>/furniture/edit/<int:pk>/
-
 Unas de las funcionalidades que trae consigo el manejo de estantes son las filas y columnas que se utilizan para,
 simular el sitio que se ubican los estantes en los muebles, por lo tanto esta funcion permite la creación y eliminación
 de filas y columnas luego de efectuar las acciones deseadas ,se debe dar click en el botón de Guardar si no los cambios
@@ -421,10 +390,6 @@ Ejemplo de eliminación de filas y columnas con estantes:
 
 Reconstrucción de QR
 **********************************
-
-/lab/<int:org>/<int:lab>/rooms/rebuild_laboratory_qr
-
-
 .. image:: ../_static/update_qr.png
    :height: 380
    :width: 720
@@ -533,12 +498,45 @@ Buscar Equipos
 Eliminar Equipos
 **********************************
 
+.. image:: ../_static/gif/delete_equipment_object.gif
+   :height: 380
+   :width: 720
+
 Administración de características de objetos
 -----------------------------------------------
+.. image:: ../_static/object_features_view.png
+   :height: 380
+   :width: 720
 
-Explicar para que sirve esta sección
 
-/lab/<int:org>/<int:lab>/features/create/
+.. image:: ../_static/gif/view_object_features.gif
+   :height: 380
+   :width: 720
+
+
+.. image:: ../_static/gif/view_object_features_dropdown.gif
+   :height: 380
+   :width: 720
+
+Crear características de objectos
+**********************************
+
+.. image:: ../_static/gif/view_object_features.gif
+   :height: 380
+   :width: 720
+
+Actualizar características de objectos
+***************************************
+.. image:: ../_static/gif/view_object_features.gif
+   :height: 380
+   :width: 720
+
+Eliminar características de objectos
+*************************************
+
+.. image:: ../_static/gif/view_object_features.gif
+   :height: 380
+   :width: 720
 
 Administración de proveedores
 -------------------------------------------
