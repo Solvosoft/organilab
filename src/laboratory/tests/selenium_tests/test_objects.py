@@ -6,16 +6,20 @@ from laboratory.models import OrganizationStructure, Object
 from organilab_test.tests.base import SeleniumBase
 
 
-@tag('selenium')
-class ObjectSeleniumTest(SeleniumBase):
+class ObjectSeleniumBase(SeleniumBase):
     fixtures = ["selenium/laboratory_selenium.json"]
-
     def setUp(self):
         super().setUp()
         self.user = User.objects.get(pk=1)
-        self.org = OrganizationStructure.objects.get(pk=1)
-        self.select_org_url = self.live_server_url + str(reverse('auth_and_perms:select_organization_by_user'))
         self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
+        self.path_base = [
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div/div/span/span[1]/span"},
+            {"path": "/html/body/span/span/span/ul/li[1]"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div/div[2]/div/div/div/a[1]"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[1]/a"},
+        ]
+@tag('selenium')
+class ObjectSeleniumTest(ObjectSeleniumBase):
 
     def test_view_material_dropdown(self):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
@@ -29,7 +33,7 @@ class ObjectSeleniumTest(SeleniumBase):
         path_list = [
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/a"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form","screenshot_name":"form_material_object"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form"},
             {"path": "//*[@id='id_code']","extra_action":"clearIvput"},
             {"path": "//*[@id='id_code']","extra_action":"setvalue", "value":"CE-456"},
             {"path": "//*[@id='id_name']","extra_action":"clearInput"},
@@ -185,7 +189,7 @@ class ObjectSeleniumTest(SeleniumBase):
             {"path": "/html/body/div[1]/div/div[3]/div/div/form/input[2]"},
 
             ]
-        self.create_gif_process(path_list, "delete_equiment_object")
+        self.create_gif_process(path_list, "delete_equipment_object")
 
     def test_search_equiment(self):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
@@ -319,4 +323,67 @@ class ObjectSeleniumTest(SeleniumBase):
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div[2]/div/label/input", "extra_action": "setvalue", "value":"Alcohol"},
             ]
         self.create_gif_process(path_list, "search_reactive_object")
+
+
+class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
+
+    def test_view_object_features(self):
+        path_list = self.path_base+[
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/form", "screenshot_name":"object_features_view"},
+            ]
+        self.create_gif_process(path_list, "view_object_features")
+
+    def test_view_object_features_dropdown(self):
+        path_list = self.path_base+[
+            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[5]"},
+            {"path":".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[5]/ul/li[9]/a"}
+            ]
+        self.create_gif_process(path_list, "view_object_features_dropdown")
+
+    def test_add_object_features(self):
+        self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
+        path_list = [
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
+            {"path": ".//*[@id='id_name']", "extra_action":"clearinput"},
+            {"path": ".//*[@id='id_name']", "extra_action":"setvalue",
+             "value": "Química Orgánica"},
+            {"path": ".//*[@id='id_description']", "extra_action":"clearinput"},
+            {"path": ".//*[@id='id_description']", "extra_action":"setvalue",
+             "value": "Objetos exclusivos o representativos de la disciplina de quimica orgánica, ejemplo : equipo especial para síntesis."},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/form/div[3]/div/button"},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[3]",
+             "scroll": "window.scrollTo(0, 350)"},
+
+        ]
+        self.create_gif_process(path_list, "view_object_features")
+
+    def test_edit_object_features(self):
+        self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
+        path_list = [
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[1]/div[3]/div/a[1]"},
+            {"path": ".//*[@id='id_name']", "extra_action":"clearinput"},
+            {"path": ".//*[@id='id_name']", "extra_action":"setvalue",
+             "value": "Química Orgánica"},
+            {"path": ".//*[@id='id_description']", "extra_action":"clearinput"},
+            {"path": ".//*[@id='id_description']", "extra_action":"setvalue",
+             "value": "Objetos exclusivos o representativos de la disciplina de quimica orgánica, ejemplo : equipo especial para síntesis."},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/form/div[3]/div/button"},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[1]/div[1]"},
+
+        ]
+        self.create_gif_process(path_list, "view_object_features")
+
+    def test_delete_object_features(self):
+        self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
+        path_list = [
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
+            {"path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[1]/div[3]/div/a[2]"},
+            {"path": ".//div[1]/div/div[3]/div/div/form/input[2]"},
+        ]
+        self.create_gif_process(path_list, "view_object_features")
+
+
+
 
