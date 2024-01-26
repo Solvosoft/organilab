@@ -21,8 +21,8 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//ul[@class='nav side-menu']/li[2]/ul/li/a"}
         ]
         self.org_actions = self.path_base + [
-            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div[2]/ul/li[1]"},
-            {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/span/span/span"}
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[5]/div/div/div[2]/ul/li[1]"},
+            {"path": ".//div[@id='actionsmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/span/span/span"},
         ]
 
         self.role_button_box = self.path_base + [
@@ -49,7 +49,6 @@ class OrganizationSeleniumTest(SeleniumBase):
         self.select_laboratory_tab_lab = self.tab_lab + [
             {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='bylabs']/div/div/div/span/span/span"},
             {"path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[1]"},
-            {"path": ".//span[contains(@class,'applyasrole')]"}
         ]
 
         self.button_save_permission_rol = [{"path": "//*[@id='modal1']/div/form/div/div[3]/button[2]"}]
@@ -243,14 +242,16 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//form/div[2]/div/input"},
             {"path": ".//form/div[2]/div/input", "extra_action": "setvalue", "value": "Rojas Barrantes"},
             {"path": ".//form/div[3]/div/input"},
-            {"path": ".//form/div[3]/div/input", "extra_action": "setvalue", "value": "andrearb@gmail.com"},
+            {"path": ".//form/div[3]/div/input", "extra_action": "setvalue", "value": "andrearb@"},
+            {"path": ".//form/div[3]/div/input", "extra_action": "move_cursor_end", "reduce_length": 3},
+            {"path": ".//form/div[3]/div/input", "extra_action": "setvalue", "value": "gmail.com"},
             {"path": ".//form/div[4]/div/input"},
             {"path": ".//form/div[4]/div/input", "extra_action": "setvalue", "value": "50688888888"},
             {"path": ".//form/div[5]/div/input"},
             {"path": ".//form/div[5]/div/input", "extra_action": "setvalue", "value": "707770777"},
             {"path": ".//form/div[6]/div/input"},
             {"path": ".//form/div[6]/div/input", "extra_action": "setvalue", "value": "Estudiante"},
-            {"path": ".//form/div[7]/input"}
+            {"path": ".//form/div[8]/input"}
         ]
         self.create_gif_process(path_list, "add_user_to_org_from_button_box")
 
@@ -301,19 +302,41 @@ class OrganizationSeleniumTest(SeleniumBase):
         self.create_gif_process(path_list, "relate_user_to_org_and_lab_from_tab_lab")
 
     def test_add_permission_rol_to_user_from_tab_lab(self):
-        path_list = self.select_laboratory_tab_lab + self.add_permission_rol
+        path_list = self.select_laboratory_tab_lab + [
+            {"path": ".//span[contains(@class,'applyasrole')]"}
+        ] + self.add_permission_rol
         self.create_gif_process(path_list, "add_permission_rol_to_user_from_tab_lab")
 
     def test_remove_permission_rol_to_user_from_tab_lab(self):
-        path_list = self.select_laboratory_tab_lab + self.remove_and_save_permission_rol
+        path_list = self.select_laboratory_tab_lab + [
+            {"path": ".//span[contains(@class,'applyasrole')]"}
+        ] + self.remove_and_save_permission_rol
         self.create_gif_process(path_list, "remove_permission_rol_to_user_from_tab_lab")
 
     def test_use_selected_permission_rol_to_user_from_tab_lab(self):
         path_list = self.select_laboratory_tab_lab + [
+            {"path": ".//span[contains(@class,'applyasrole')]"},
             {"path": ".//div[@id='modal1']/div/form/div/div[@class='modal-body']/span/span/span/ul/li/button"},
             {"path": ".//div[@id='modal1']/span/span/span/ul/li[2]"}
         ] + self.use_and_save_permission_rol
         self.create_gif_process(path_list, "use_selected_permission_rol_to_user_from_tab_lab")
+
+    def test_delete_relation_user_lab_from_tab_lab(self):
+        path_list = self.select_laboratory_tab_lab + [
+            {"path": ".//table/tbody/tr[2]/td[1]", "scroll": "window.scrollTo(0, 250)"},
+            {"path": ".//table/tbody/tr[3]/td/ul/li/span[2]/i"},
+            {"path": "/html/body/div[3]/div/div[3]/button[1]"}
+        ]
+        self.create_gif_process(path_list,"delete_relation_user_lab_from_tab_lab")
+
+    def test_delete_relation_user_lab_and_deactivate_user_from_tab_lab(self):
+        path_list = self.select_laboratory_tab_lab + [
+            {"path": ".//table/tbody/tr[2]/td[1]", "scroll": "window.scrollTo(0, 250)"},
+            {"path": ".//table/tbody/tr[3]/td/ul/li/span[2]/i"},
+            {"path": "//*[@id='swal2-checkbox']"},
+            {"path": "/html/body/div[3]/div/div[3]/button[1]"}
+        ]
+        self.create_gif_process(path_list,"delete_relation_user_lab_and_deactivate_user_from_tab_lab")
 
     def test_add_permission_rol_to_user_from_tab_org(self):
         path_list = self.tab_org + [
@@ -327,7 +350,6 @@ class OrganizationSeleniumTest(SeleniumBase):
         ] + self.remove_and_save_permission_rol
         self.create_gif_process(path_list, "remove_permission_rol_to_user_from_tab_org")
 
-
     def test_use_selected_permission_rol_to_user_from_tab_org(self):
         path_list = self.tab_org + [
             {"path": ".//span[contains(@class,'applyasrole')]"},
@@ -335,3 +357,18 @@ class OrganizationSeleniumTest(SeleniumBase):
             {"path": ".//div[@id='modal1']/span/span/span/ul/li[2]"}
         ] + self.use_and_save_permission_rol
         self.create_gif_process(path_list, "use_selected_permission_rol_to_user_from_tab_org")
+
+    def test_delete_relation_user_org_from_tab_org(self):
+        path_list = self.tab_org + [
+            {"path": ".//table/tbody/tr[2]/td[4]/i", "scroll": "window.scrollTo(0, 250)"},
+            {"path": "/html/body/div[3]/div/div[3]/button[1]"}
+        ]
+        self.create_gif_process(path_list,"delete_relation_user_org_from_tab_org")
+
+    def test_delete_relation_user_org_and_deactivate_user_from_tab_org(self):
+        path_list = self.tab_org + [
+            {"path": ".//table/tbody/tr[2]/td[4]/i", "scroll": "window.scrollTo(0, 250)"},
+            {"path": "//*[@id='swal2-checkbox']"},
+            {"path": "/html/body/div[3]/div/div[3]/button[1]"}
+        ]
+        self.create_gif_process(path_list,"delete_relation_user_org_and_deactivate_user_from_tab_org")
