@@ -61,7 +61,7 @@ def get_my_procedures(request, org_pk, lab_pk):
 
 @permission_required('academic.add_myprocedure')
 def create_my_procedures(request, org_pk, lab_pk, content_type, model):
-    form = MyProcedureForm(request.POST, org_pk=org_pk)
+    form = MyProcedureForm(request.POST)
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
