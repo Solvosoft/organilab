@@ -395,3 +395,14 @@ def save_object_by_action(user, obj, relobj, changed_data, action_flag, object_r
     obj.save()
     organilab_logentry(user, obj, action_flag, object_repr, changed_data=changed_data,
                        relobj=relobj)
+
+def register_laboratory_contenttype(organization, laboratory):
+    lab_id = laboratory if isinstance(laboratory, (int,)) else laboratory.pk
+    OrganizationStructureRelations.objects.get_or_create(
+        organization=organization,
+        content_type=ContentType.objects.filter(
+            app_label='laboratory',
+            model='laboratory'
+        ).first(),
+        object_id=lab_id
+    )
