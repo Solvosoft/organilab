@@ -325,6 +325,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.create_gif_process(path_list, "search_reactive_object")
 
 
+@tag('selenium')
 class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
 
     def test_view_object_features(self):
