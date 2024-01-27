@@ -80,13 +80,13 @@ class OrganizationTest(TestCase):
 
     def test_adduser_organization(self):
         data = {
-            'username':'Lola',
             'first_name':'Vaca',
             'last_name':'Lola',
             'email':'lola@vaca.ac.cr',
             'phone_number':'6666-66-66',
             'id_card': '1331113',
-            'job_position': 'Lechera'
+            'job_position': 'Lechera',
+            'user_type': UserOrganization.LABORATORY_USER
         }
         pre_org = UserOrganization.objects.filter(organization__pk=1).count()
         response = self.client.post(reverse('auth_and_perms:add_user', kwargs={'pk':1}),data=data)

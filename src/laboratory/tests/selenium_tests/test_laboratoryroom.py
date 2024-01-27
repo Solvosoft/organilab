@@ -73,3 +73,11 @@ class LabRoomSeleniumTest(SeleniumBase):
         self.update_laboratory_rooms()
         self.delete_laboratory_rooms()
         self.view_laboratory_rooms_navbar()
+
+    def test_update_qr(self):
+        self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
+        self.path_base = [
+            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {"path": "./html/body/div[1]/div/div[3]/div/div/div[2]/a", "screenshot_name":"update_qr"},
+        ]
+        self.create_gif_process(self.path_base, "update_qr")
