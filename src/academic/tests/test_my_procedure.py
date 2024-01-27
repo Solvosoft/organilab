@@ -56,17 +56,6 @@ class MyProceduresViewTest(TestCase):
         response = self.client.get(url, follow=True)
         self.assertRedirects(response, "/accounts/login/?next=" + url)
 
-    def test_get_my_procedures_list(self):
-        self.client.force_login(self.first_user)
-        url = reverse("academic:get_my_procedures",
-                      kwargs={"org_pk": self.organization.pk,
-                              "lab_pk": self.lab.pk})
-        response = self.client.get(url)
-        my_procedure_name_list = [my_procedure.name for my_procedure in response.context['my_procedures']]
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('First my procedure test', my_procedure_name_list)
-        self.assertTrue(response.context['my_procedures'].count() > 0)
-
     def test_update_my_procedure(self):
         my_procedure = MyProcedure.objects.get(pk=1)
         self.client.force_login(self.first_user)

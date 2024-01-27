@@ -1001,6 +1001,211 @@
         15
       ]
     }
+  },
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+        "name": "Uso general",
+        "description": "Objeto que se puede utilizar en diferentes disciplinas de la ciencias, con aplicaciones diversas, Ejemplo: tubo de en ensayo"
+    }
+},
+{
+    "model": "laboratory.objectfeatures",
+    "pk": 2,
+    "fields": {
+        "name": "Otros",
+        "description": "Objeto que no se encuentra en ninguna de las categorías anteriores"
+    }
+},
+{
+    "model": "laboratory.objectfeatures",
+    "pk": 3,
+    "fields": {
+        "name": "Equipo de seguridad",
+        "description": "Objeto que tiene la función de proteger la salud del laboratorista, ejemplo extintor"
+    }
+},
+
+    {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "BAL991",
+        "name": "balones aforados 25 mL (tapa amarilla)",
+        "synonym": null,
+        "type": "1",
+        "is_public": true,
+        "description": "El matraz aforado es parte del llamado material de vidrio de laboratorio y consiste en un tipo de matraz que se usa como material volumétrico. Se emplea para medir un volumen exacto de líquido con base a la capacidad del propio matraz, que aparece indicada. Tiene un cuello alto y estrecho para aumentar la exactitud, pues un cambio pequeño en el volumen se puede traducir en otro considerable en la altura del líquido en el cuello del matraz. Se denomina aforado por disponer de una marca de graduación o aforo en torno al cuello para facilitar determinar con precisión cuando el líquido alcanza el volumen indicado.",
+        "model": "",
+        "serie": "",
+        "plaque": "",
+        "features": [
+            1
+        ]
+    }
+},
+     {
+    "model": "laboratory.object",
+    "pk": 5,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "BAL991",
+        "name": "Balones",
+        "synonym": null,
+        "type": "1",
+        "is_public": true,
+        "description": "El matraz aforado es parte del llamado material de vidrio de laboratorio y consiste en un tipo de matraz que se usa como material volumétrico. Se emplea para medir un volumen exacto de líquido con base a la capacidad del propio matraz, que aparece indicada. Tiene un cuello alto y estrecho para aumentar la exactitud, pues un cambio pequeño en el volumen se puede traducir en otro considerable en la altura del líquido en el cuello del matraz. Se denomina aforado por disponer de una marca de graduación o aforo en torno al cuello para facilitar determinar con precisión cuando el líquido alcanza el volumen indicado.",
+        "model": "",
+        "serie": "",
+        "plaque": "",
+        "features": [
+            1
+        ]
+    }
+},
+  {
+    "model": "laboratory.object",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-26T15:44:11.394Z",
+      "last_update": "2023-01-26T15:44:11.433Z",
+      "created_by": null,
+      "code": "BAL713",
+      "name": "Balanza Analítica",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "La balanza analítica LX 220A tiene un diseño compacto desarrollado con los más altos estándares de calidad. Precisa se caracteriza por el desarrollo de instrumentos de pesaje con innovación tecnológica permitiendo así un manejo más amigable para el usuario con sus 5 teclas de acceso directo.",
+      "model": "LX 220A",
+      "serie": "864BALA482",
+      "plaque": "AJQ382",
+      "features": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 4,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "ASAE575",
+        "name": "Balanza Metalica",
+        "synonym": null,
+        "type": "2",
+        "is_public": true,
+        "description": "La balanza analítica LX 220A tiene un diseño compacto desarrollado con los más altos estándares de calidad. Precisa se caracteriza por el desarrollo de instrumentos de pesaje con innovación tecnológica permitiendo así un manejo más amigable para el usuario con sus 5 teclas de acceso directo.",
+        "model": "LX 220A",
+        "serie": "864BALA482",
+        "plaque": "AJQ382",
+        "features": [
+            2
+        ]
+    }
+},
+  {
+    "model": "laboratory.object",
+    "pk": 3,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "Alc-11",
+        "name": "1-Propanol",
+        "synonym": "Alcohol propílico",
+        "type": "0",
+        "is_public": true,
+        "description": "Clase: 3\r\n\r\nN-propanol appears as a clear colorless liquid with a sharp musty odor like rubbing alcohol. Flash point 53-77°F. Autoignites at 700°F. Vapors are heavier than air and mildly irritate the eyes, nose, and throat. Density approximately 6.5 lb / gal. Used in making cosmetics, skin and hair preparations, pharmaceuticals, perfumes, lacquer formulations, dye solutions, antifreezes, rubbing alcohols, soaps, window cleaners, acetone and other chemicals and products.",
+        "model": null,
+        "serie": null,
+        "plaque": null,
+        "features": [
+            3,
+            2
+        ]
+    }
+},
+    {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 17,
+    "fields": {
+      "obj": 3,
+      "iarc": null,
+      "imdg": 78,
+      "bioaccumulable": false,
+      "molecular_formula": null,
+      "cas_id_number": "67-64-1",
+      "security_sheet": "",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "white_organ": [],
+      "img_representation": "",
+      "h_code": [],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 6,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "Alc-11",
+        "name": "Alcohol",
+        "synonym": "Alcohol propílico",
+        "type": "0",
+        "is_public": true,
+        "description": "Clase: 3\r\n\r\nN-propanol appears as a clear colorless liquid with a sharp musty odor like rubbing alcohol. Flash point 53-77°F. Autoignites at 700°F. Vapors are heavier than air and mildly irritate the eyes, nose, and throat. Density approximately 6.5 lb / gal. Used in making cosmetics, skin and hair preparations, pharmaceuticals, perfumes, lacquer formulations, dye solutions, antifreezes, rubbing alcohols, soaps, window cleaners, acetone and other chemicals and products.",
+        "model": null,
+        "serie": null,
+        "plaque": null,
+        "features": [
+            3,
+            2
+        ]
+    }
+},
+    {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 17,
+    "fields": {
+      "obj": 6,
+      "iarc": null,
+      "imdg": 78,
+      "bioaccumulable": false,
+      "molecular_formula": null,
+      "cas_id_number": "67-64-1",
+      "security_sheet": "",
+      "is_precursor": true,
+      "precursor_type": null,
+      "valid_molecular_formula": false,
+      "seveso_list": false,
+      "white_organ": [],
+      "img_representation": "",
+      "h_code": [],
+      "ue_code": [],
+      "nfpa": [],
+      "storage_class": []
+    }
   }
 
 ]
