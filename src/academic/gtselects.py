@@ -8,6 +8,7 @@ from djgentelella.groute import register_lookups
 
 from academic.api.serializers import ValidateUserAccessOrgSerializer
 from academic.models import Procedure
+from api.utils import AllPermissionOrganization
 from laboratory.utils import get_pk_org_ancestors
 
 
@@ -18,7 +19,10 @@ class ProcedureGModelLookup(BaseSelect2View):
     org_pk = None
     serializer = None
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AllPermissionOrganization(
+        perms=['academic.view_procedure'],
+        as_param_method='GET',
+        lookup_keyword='organization')]
 
     def get_queryset(self):
 

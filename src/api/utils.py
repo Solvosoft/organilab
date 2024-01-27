@@ -9,8 +9,10 @@ from laboratory.models import OrganizationStructure
 logger = logging.getLogger('organilab')
 
 class AllPermissionOrganization(AllPermission):
-    def __init__(self, perms, lookup_keyword='org_pk'):
+    def __init__(self, perms, lookup_keyword='org_pk', as_param_method=None):
         self.lookup_keyword=lookup_keyword
+        self.as_param_method=as_param_method
+
         super().__init__(perms)
     def has_permission(self, request, view):
         organization=None
@@ -20,6 +22,10 @@ class AllPermissionOrganization(AllPermission):
             organization = request.headers.get(self.lookup_keyword)
         if self.lookup_keyword in view.kwargs:
             organization=view.kwargs.get(self.lookup_keyword)
+        if self.as_param_method is not None:
+            organization = getattr(request, self.as_param_method.upper()
+                                   ).get(self.lookup_keyword)
+
         if organization is not None:
             try:
                 organization=get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=organization)
