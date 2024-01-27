@@ -10,6 +10,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from api.utils import AllPermissionOrganization
 from auth_and_perms.api.serializers import ValidateProfileSerializer, \
     ValidateOrganizationSerializer
 from auth_and_perms.models import Rol, ProfilePermission
@@ -222,7 +223,11 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     model = Laboratory
     fields = ['name']
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AllPermissionOrganization(
+        perms=['laboratory.view_laboratory'],
+        lookup_keyword='organization',
+        as_param_method='GET'
+    )]
     pagination_class = GPaginatorMoreElements
     order_by = ['name']
     organization = None
@@ -267,7 +272,11 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     model = Laboratory
     fields = ['name']
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AllPermissionOrganization(
+        perms=['laboratory.view_laboratory'],
+        lookup_keyword='organization',
+        as_param_method='GET'
+    ) ]
     pagination_class = GPaginatorMoreElements
     order_by = ['name']
     organization = None
@@ -278,7 +287,7 @@ class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
             content_type__app_label='laboratory', content_type__model='laboratory'
         ).values_list('object_id', flat=True))
         labs += list(self.organization.laboratory_set.using(settings.READONLY_DATABASE).all().values_list('pk', flat=True))
-        return Laboratory.objects.using(settings.READONLY_DATABASE).filter(pk__in=labs)
+        return Laboratory.objects.using(settings.READONLY_DATABASE).filter(pk__in=labs).order_by('pk')
 
     def retrieve(self, request, pk, **kwargs):
         self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk)
