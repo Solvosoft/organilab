@@ -257,7 +257,7 @@ class UserInOrganization(mixins.ListModelMixin,
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ProfileRolDataTableSerializer
-    queryset = Profile.objects.using(settings.READONLY_DATABASE)
+    queryset = Profile.objects.using(settings.READONLY_DATABASE).order_by('pk')
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['user__first_name', 'user__last_name']  # for the global search
@@ -272,7 +272,7 @@ class UserInOrganization(mixins.ListModelMixin,
 
         ).values_list('pk', flat=True)
 
-        return self.queryset.filter(user__in=users).distinct()
+        return self.queryset.filter(user__in=users).distinct().order_by('pk')
 
     def list(self, request, *args, **kwargs):
         form = OrganizationForViewsetForm(request.GET)
