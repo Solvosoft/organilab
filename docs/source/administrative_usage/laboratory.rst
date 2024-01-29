@@ -541,7 +541,27 @@ Eliminar características de objectos
 Administración de proveedores
 -------------------------------------------
 
-/lab/<int:org>/<int:lab>/provider/list/
+.. image:: ../_static/view_provider.png
+   :height: 380
+   :width: 720
+
+.. image:: ../_static/gif/view_providers.gif
+   :height: 380
+   :width: 720
+
+Crear Proveedor
+*****************
+.. image:: ../_static/gif/add_provider.gif
+   :height: 380
+   :width: 720
+
+
+Actualizar Proveedor
+***********************
+.. image:: ../_static/gif/update_provider.gif
+   :height: 380
+   :width: 720
+
 
 Administración de protocolos
 -------------------------------------------

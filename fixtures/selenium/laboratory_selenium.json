@@ -1206,6 +1206,33 @@
       "nfpa": [],
       "storage_class": []
     }
+  },
+    {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "name": "Karine Products",
+      "phone_number": "(506)2209-8765",
+      "email": "karineproductos@cr.com",
+      "legal_identity": "3-8764-8354",
+      "laboratory": 1,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "name": "LP Company",
+      "phone_number": "(506)2209-8765",
+      "email": "lpcompany@cr.com",
+      "legal_identity": "3-463-3423432",
+      "laboratory": 1,
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
   }
-
 ]
