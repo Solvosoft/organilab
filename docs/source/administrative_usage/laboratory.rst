@@ -350,7 +350,7 @@ Ejemplo de eliminación de estantes:
    :width: 720
 
 .. warning::
-    A la hora de eliminar un estante hay que tener en cuenta que se también los materiales vinculados a este estanto,
+    A la hora de eliminar un estante hay que tener en cuenta que también los materiales vinculados a este estanto,
     por consiguiente los registros de estos materiales tambien se eliminarán.
 
 
@@ -411,34 +411,134 @@ Ejemplo de activacion de accion:
 
 Administración de objetos
 -------------------------------------------
+Unos de los modúlos mas importantes es el de objectos que permitira la creación, edición y eliminación de estos, los cuales
+se dividen en tres tipos:
 
+*   **Reactivos**.
+*   **Materiales**.
+*   **Equipos**
+
+También los objectos creados solo se podran utilizar en los laboratorios vicunlados a las organizaciones padres e hijas, por lo
+tanto, se debe tener encuenta a la hora de eliminar o actualiza algún objecto afecta de forma general a todas las organizaciones,
+que se encuentra vinculadas.
+
+Por otro lado, los objectos también se requiere en el modulo de objectos de estantería que utiliza como base los objectos, a su
+en la generación de reservas se dan uso, por lo tanto tener extremo cuidado en la manipulación de estos
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos, materiales y equipos,
+    ademas la creación de objectos.
+*   *change_object*: Permite visualizar el botón de **editar** en los objectos reactivos, materiales y equipos,
+    ademas su actualización.
+*   *delete_object*: Permite visualizar el boton de **eliminar** en los objectos reactivos, materiales y equipos,
+    ademas su eliminación.
+
+    .. note::
+        Existen 2 formas para ingresar a los modulos de objectos reactivos, materiales y equipos los cuales se van a
+        explicar en los siguientes puntos.
 
 Administración de Reactivos
-**********************************
+*****************************
+Los objectos de tipos reactivos vienen siendo quimicos como hidroxido, sulfuro entre otros, existen dos formas para
+ingresar a este modulo.
+
+La primera forma:
+
 .. image:: ../_static/gif/view_reactives.gif
    :height: 380
    :width: 720
 
+La segunda forma:
+
+.. image:: ../_static/gif/view_reactive_dropdown.gif
+   :height: 380
+   :width: 720
+
+
+.. note::
+    La tabla donde se listan los reactivos se puede ver en la primera columna una simbología:
+
+    * **Forma de casita**: Significa el reactivo es publico y que cualquier usuario de la organización puede utilizarlo.
+    * **Forma de X amarilla**: Significa que el reactivo no es precursor.
+    * **Forma de check verde**: Significa que el reactivo es precursor.
+    * **Forma de envase**: Significa que el reactivo es bioacumulable.
+
 Crear Reactivos
-**********************************
+*****************
+En la creación de reactivos se requerira el ingreso de varios datos los cuales son:
+
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos, materiales y equipos,
+    ademas la creación de objectos.
+
+Ejemplo de creación de reactivo:
+
 .. image:: ../_static/gif/add_reactive_object.gif
    :height: 380
    :width: 720
 
 Editar Reactivos
-**********************************
+*******************
+En la edición de reactivos se podrá modificar cualquier dato del objecto solo hay que tener en cuenta que este, cambio
+influye en los estantes que posean este objecto.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos.
+*   *change_object*: Permite visualizar el botón de **editar** en los objectos reactivos, materiales y equipos,
+    ademas su actualización.
+
+
+Ejemplo de edición de reactivo:
+
 .. image:: ../_static/gif/update_reactive_object.gif
    :height: 380
    :width: 720
 
 Buscar Reactivos
-**********************************
+*******************
+Esta funcionalidad permite la busquedad de reactivos por medio del codigo o nombre de reactivo, ademas no es requerido,
+ingresar toda la descripción ya que por cada letra que se ingresa se filtraran los reactivos que coincidan con el dato
+ingresado.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos.
+*   *view_object*: Permite visualizar los reactivos.
+
+Ejemplo de busqueda de reactivos:
+
 .. image:: ../_static/gif/search_reactive_object.gif
    :height: 380
    :width: 720
 
 Eliminar Reactivos
-**********************************
+*******************
+
+.. warning::
+    A la hora de eliminar un object hay que tener en cuenta que también los lugares donde se utilizan este, se borrara
+    su registros.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de reactivos.
+*   *add_object*: Permite visualizar los botonos para el ingreso al modulo de reactivos.
+*   *delete_object*: Permite visualizar el botón de **eliminar** en los reactivos.
+
+Ejemplo de eliminación de reactivo:
+
 .. image:: ../_static/gif/delete_reactive_object.gif
    :height: 380
    :width: 720
@@ -446,8 +546,18 @@ Eliminar Reactivos
 Administración de Materiales
 **********************************
 
+.. image:: ../_static/gif/view_materials.gif
+   :height: 380
+   :width: 720
+
+.. image:: ../_static/gif/view_material_dropdown.gif
+   :height: 380
+   :width: 720
+
+
 Crear Materiales
 **********************************
+
 .. image:: ../_static/gif/add_material_object.gif
    :height: 380
    :width: 720
@@ -458,24 +568,35 @@ Crear Materiales
 
 Editar Materiales
 **********************************
+
 .. image:: ../_static/gif/update_material_object.gif
    :height: 380
    :width: 720
 
 Buscar Materiales
 **********************************
+
 .. image:: ../_static/gif/search_material_object.gif
    :height: 380
    :width: 720
 
 Eliminar Materiales
 **********************************
+
 .. image:: ../_static/gif/delete_material_object.gif
    :height: 380
    :width: 720
 
 Administración de Equipos
 **********************************
+
+.. image:: ../_static/gif/view_equipments.gif
+   :height: 380
+   :width: 720
+
+.. image:: ../_static/gif/view_equipment_dropdown.gif
+   :height: 380
+   :width: 720
 
 Crear Equipos
 **********************************
