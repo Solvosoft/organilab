@@ -18,6 +18,42 @@ class ObjectSeleniumBase(SeleniumBase):
             {"path": "/html/body/div[1]/div/div[3]/div/div/div/div[2]/div/div/div/a[1]"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[1]/a"},
         ]
+
+@tag('selenium')
+class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
+    def test_view_material_dropdown(self):
+
+        path_list = self.path_base+[
+            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[3]/a",
+                "active_hidden_elements": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"}
+        ]
+        self.create_gif_process(path_list, "view_material_dropdown")
+
+    def test_view_equipment_dropdown(self):
+
+        path_list = self.path_base+[
+            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[5]/a",
+                "active_hidden_elements": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"}
+        ]
+
+        self.create_gif_process(path_list, "view_equipment_dropdown")
+
+
+    def test_view_reactive_dropdown(self):
+
+        path_list = self.path_base+[
+            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
+            {"path":"/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[1]/a",
+             "active_hidden_elements":"/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6.]/ul/li[7]/a"}
+            ]
+
+        self.create_gif_process(path_list, "view_reactive_dropdown")
+
 @tag('selenium')
 class ObjectSeleniumTest(ObjectSeleniumBase):
 
@@ -127,18 +163,6 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             ]
         self.create_gif_process(path_list, "search_material_object")
 
-    def test_view_material_dropdown(self):
-        self.selenium.get(url=self.live_server_url + str(
-            reverse('laboratory:labindex', kwargs={"org_pk": 1, "lab_pk": 1})))
-
-        path_list = [
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[6]/a",
-                "active_hidden_elements": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"}
-        ]
-        self.create_gif_process(path_list, "view_equipment_dropdown")
-
     def test_view_equipment(self):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
         path_list = [
@@ -216,18 +240,6 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
 
             ]
         self.create_gif_process(path_list, "search_equipment_object")
-
-    def test_view_equipment_dropdown(self):
-        self.selenium.get(url=self.live_server_url + str(
-            reverse('laboratory:labindex', kwargs={"org_pk": 1, "lab_pk": 1})))
-
-        path_list = [
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[5]/a",
-                "active_hidden_elements": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"}
-        ]
-        self.create_gif_process(path_list, "view_equipment_dropdown")
 
     def test_view_reactive(self):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
@@ -348,16 +360,6 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             ]
         self.create_gif_process(path_list, "search_reactive_object")
 
-    def test_view_reactive_dropdown(self):
-        self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
-
-        path_list = [
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
-            {"path":"/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[1]/a",
-             "active_hidden_elements":"/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"}
-            ]
-        self.create_gif_process(path_list, "view_reactive_dropdown")
 
 @tag('selenium')
 class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
