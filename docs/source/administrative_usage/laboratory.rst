@@ -11,7 +11,7 @@ Crear un laboratorio en una organización
 Relacionar un laboratorio externo a una organización base
 ---------------------------------------------------------------
 
-Los laboratorios generados en la organización base podrán ser relacionados en las organizaciones hijas.
+Se listarán todos los laboratorios de otras organizaciones en las cuales el usuario en sesión tenga acceso.
 
 .. image:: ../_static/gif/relate_external_laboratory_to_org.gif
    :height: 380
@@ -21,7 +21,7 @@ Los laboratorios generados en la organización base podrán ser relacionados en 
 Relacionar un laboratorio de la organización base a una organización hija
 -----------------------------------------------------------------------------------
 
-Los laboratorios generados en la organización base podrán ser relacionados en las organizaciones hijas.
+Los laboratorios creados en la organización base podrán ser relacionados en las organizaciones hijas.
 
 .. image:: ../_static/gif/relate_org_base_laboratory_to_org_child.gif
    :height: 380
