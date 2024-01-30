@@ -395,7 +395,7 @@ Reconstrucción de QR
    :width: 720
 
 El sistema posee una funcion para la generación de imagenes QR. esto se utilizaran para facilitar la busquedas de salas, muebles y estantes del
-laboratorio. Sobre la reconstruccion de QR se busca actualizar los las imagenes para los siguientes casos:
+laboratorio. Sobre la reconstrucción de QR se busca actualizar los las imagenes para los siguientes casos:
 
 *   Cuando se traslada el laboratorio a otra organización.
 *   Cambio del dominio donde se hospede la aplicación.
@@ -470,7 +470,6 @@ Crear Reactivos
 *****************
 En la creación de reactivos se requerira el ingreso de varios datos los cuales son:
 
-
 Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
@@ -494,8 +493,7 @@ Permisos requeridos:
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
 *   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos.
-*   *change_object*: Permite visualizar el botón de **editar** en los objectos reactivos, materiales y equipos,
-    ademas su actualización.
+*   *change_object*: Permite visualizar el botón de **editar** en los objectos reactivos, ademas su actualización.
 
 
 Ejemplo de edición de reactivo:
@@ -557,31 +555,100 @@ Administración de Materiales
 
 Crear Materiales
 **********************************
+En la creación de materiales existen dos tipos los cuales son de normal uso y los contenedores que son utilizados para el
+almacenamiento de reactivos o sustancias, asismismo se requerira el ingreso de varios datos los cuales son:
+
+*   **Codigo**: Este campo se utiliza para ingresar el codigo de barra o identificación del material,
+    este campo es obligatorio ingresar.
+*   **Nombre**: Este campo es obligatorio de ingresar.
+*   **Sinónimo**: Este campo se utiliza para el ingreso de alias o sinonimos del material, este campo no es
+    obligatorio de ingresar.
+*   **Compartir con otros**: Este campo se utiliza para indicar si el material puede ser manipulado por otros si se marca
+    como **No**, este no va se visualizado por otro usuarios.
+*   **Descripcion**: Este campo se utiliza para dar una descripción basica del material, esta información no es obligatoria de ingresar.
+*   **Caracteristicas de objecto**: Este campo indica las caracteristicas del objecto las cuales se pueden seleccionar varias,
+    , ademas este campo es obligatoria seleccionar una y sino existe ninguna visitar el modúlo de **Caracteristicas de objectos**,
+    para la creación de estas.
+*   **Es un contenedor**: Este campo se utiliza para indicar si el material es un contenedor de sustancias, si se selecciona,
+    como **Si**, habilita los campos **Capacidad** y **Unidad de medida de capacidad** y si es **No** las oculta.
+*   **Capacidad**: Este campo se utiliza para indicar la capacidad que el contenedor va poder almacenar de sustancias, este
+    campo muestra y se vuelve obligatorio, solo si se marca como contenedor el material
+*   **Unidad de medida de capacidad**: Este campo se utiliza para indicar la unidad de medida de los reactivos o sustancias,
+    que podre contener el material, de igual forma que el campo **Capacidad**, este se encuentra condicionado al campo
+    **Es un contenedor**.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos, materiales y equipos,
+    ademas la creación de objectos.
+
+Ejemplo de creación de materiales:
 
 .. image:: ../_static/gif/add_material_object.gif
    :height: 380
    :width: 720
 
+Ejemplo de creación de materiales de tipo contenedor:
 .. image:: ../_static/gif/add_material_container_object.gif
    :height: 380
    :width: 720
 
 Editar Materiales
 **********************************
+En la edición de materiales se podrá modificar cualquier dato del objecto solo hay que tener en cuenta que este, cambio
+influye en los estantes que posean este objecto.
+Eso si hay que tener un especial cuidado con los siguientes campos a la hora de actualizar:
+*   **Es un contenedor**: Si el material es un contenedor y desea que ya no sea, no se permitira modificar este campo,
+    si ya se ha utilizado como contenedor de varios reactivos la unica forma es eliminando estos en el modúlo de estantería
+    de objectos.
+*   **Capacidad**: Si se vuelve contenedor el material la capacidad no puede ser menor que 0 nulo.
+*   **Unidad de medida de capacidad**: Si se vuelve contenedor el material, se requiere la selección de un unidad de medida.
+Permisos requeridos:
 
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de administrativo de objectos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos.
+*   *change_object*: Permite visualizar el botón de **editar** en los objectos materiales, ademas su actualización.
+
+Ejemplo de actualización de materiales:
 .. image:: ../_static/gif/update_material_object.gif
    :height: 380
    :width: 720
 
 Buscar Materiales
-**********************************
+*******************
+Esta funcionalidad permite la busquedad de materialess por medio del codigo o nombre del material, ademas no es requerido,
+ingresar toda la descripción ya que por cada letra que se ingresa se filtraran los materiales que coincidan con el dato
+ingresado.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *add_object*: Permite el ingreso al modulo de materiales.
+*   *view_object*: Permite visualizar los materiales.
+
+Ejemplo de busquedad de materiales:
 
 .. image:: ../_static/gif/search_material_object.gif
    :height: 380
    :width: 720
 
 Eliminar Materiales
-**********************************
+*********************
+.. warning::
+    A la hora de eliminar un objecto hay que tener en cuenta que también los lugares donde se utilizan este, se borrara
+    su registros.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de materiales.
+*   *add_object*: Permite el ingreso al modúlo de materiales.
+*   *delete_object*: Permite visualizar el botón de **eliminar** en los materiales.
+
+Ejemplo de eliminación de materiales:
 
 .. image:: ../_static/gif/delete_material_object.gif
    :height: 380
@@ -589,35 +656,97 @@ Eliminar Materiales
 
 Administración de Equipos
 **********************************
+Este modulo permitira el manejo de los equipos de la organización como pueden ser balanzas, medidores, cajas entre otros,
+ actualmente para el acceso a este modúlo existen 2 formas de ingresar las cuales se mostraran en las siguientes imagenes:
 
+La primera forma:
 .. image:: ../_static/gif/view_equipments.gif
    :height: 380
    :width: 720
 
+La segunda forma:
 .. image:: ../_static/gif/view_equipment_dropdown.gif
    :height: 380
    :width: 720
 
 Crear Equipos
-**********************************
+***************
+En la creación de equipos se requerira el ingreso de varios datos los cuales son:
+
+*   **Codigo**: Este campo se utiliza para ingresar el codigo de barra o identificación del equipo,
+    este campo es obligatorio ingresar.
+*   **Nombre**: Este campo es obligatorio de ingresar.
+*   **Sinónimo**: Este campo se utiliza para el ingreso de alias o sinonimos del equipo, este campo no es
+    obligatorio de ingresar.
+*   **Compartir con otros**: Este campo se utiliza para indicar si el equipo puede ser manipulado por otros si se marca
+    como **No**, este no va se visualizado por otro usuarios.
+*   **Descripcion**: Este campo se utiliza para dar una descripción basica del equipo, esta información no es obligatoria de ingresar.
+*   **Caracteristicas de objecto**: Este campo indica las caracteristicas del objecto las cuales se pueden seleccionar varias,
+    , ademas este campo es obligatoria seleccionar una y sino existe ninguna visitar el modúlo de **Caracteristicas de objectos**,
+    para la creación de estas.
+*   **Modelo**: Este campo registrara el modelo del equipo, este campo es obligatorio ingresar información.
+*   **Serie**: Este campo no es obligatorio de ingresar información.
+*   **Placa**: Este campo no es obligatorio de ingresar información
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *add_object*: Permite el ingreso al modulo de equipos, además la creación de objectos.
+*   *view_object*: Permite visualizar los equipos.
+
+Ejemplo de creación de equipos:
+
 .. image:: ../_static/gif/add_equipment_object.gif
    :height: 380
    :width: 720
 
 Editar Equipos
-**********************************
+****************
+En la edición de equipos se podrá modificar cualquier dato del objecto solo hay que tener en cuenta que este, cambio
+influye en los estantes que posean este objecto.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los equipos.
+*   *add_object*: Permite el ingreso al modulo de equipos.
+*   *change_object*: Permite visualizar el botón de **editar** en los objectos equipos, ademas su actualización.
+
+Ejemplo de actualización de equipos:
 .. image:: ../_static/gif/update_equipment_object.gif
    :height: 380
    :width: 720
 
 Buscar Equipos
-**********************************
+*****************
+Esta funcionalidad permite la busquedad de equipos por medio del codigo o nombre de reactivo, ademas no es requerido,
+ingresar toda la descripción ya que por cada letra que se ingresa se filtraran los equipos que coincidan con el dato
+ingresado.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los equipos.
+*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de equipos.
+
+Ejemplo de busqueda de equipos:
+
 .. image:: ../_static/gif/search_object_equipment.gif
    :height: 380
    :width: 720
 
 Eliminar Equipos
 **********************************
+.. warning::
+    A la hora de eliminar un objecto hay que tener en cuenta que también los lugares donde se utilizan este, se borrara
+    su registros.
+
+Permisos requeridos:
+
+*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_object*: Permite visualizar los objectos en el modulo de equipos.
+*   *add_object*: Permite visualizar los botonos para el ingreso al modulo de equipos.
+*   *delete_object*: Permite visualizar el botón de **eliminar** en los equipos.
 
 .. image:: ../_static/gif/delete_equipment_object.gif
    :height: 380
