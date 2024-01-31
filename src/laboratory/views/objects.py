@@ -21,7 +21,8 @@ from laboratory.forms import ObjectForm, ObjectUpdateForm
 from laboratory.models import Laboratory, BlockedListNotification, \
     OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
-from laboratory.utils import organilab_logentry, get_pk_org_ancestors
+from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
+    get_pk_org_ancestors_decendants
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
 
 
@@ -160,9 +161,9 @@ class ObjectView(object):
         class ObjectListView(ListView):
 
             def get_queryset(self):
-                query = ListView.get_queryset(self).filter(
-                    organization__in=get_pk_org_ancestors(self.org), is_public=True
-                )
+                filters = (Q(organization__in=get_pk_org_ancestors_decendants(self.request.user,self.org), is_public=True)
+                           | Q(organization__pk=self.org, is_public=False))
+                query = ListView.get_queryset(self).filter(filters).distinct()
 
                 if 'type_id' in self.request.GET:
                     self.type_id = self.request.GET.get('type_id', '')
