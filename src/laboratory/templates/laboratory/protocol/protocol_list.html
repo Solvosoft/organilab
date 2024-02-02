@@ -34,6 +34,7 @@ function get_columns_protocol(){
 }
 
 $(document).ready(function() {
+
    document.protocolTable=createDataTable("#protocolTable", "{% url 'laboratory:api-protocol-list' %}"+"?org_pk={{ org_pk }}",{
           'columns': get_columns_protocol(),
           ajax: {
