@@ -143,9 +143,9 @@ def clone_shelfobject_to(shelfobject, destination_organization_id, destination_l
     organilab_logentry(request.user, shelfobject, ADDITION,
                        changed_data=['shelf', 'object', 'batch', 'status', 'quantity', 'limit_quantity', 'limits',
                                      'measurement_unit', 'in_where_laboratory', 'marked_as_discard', 'laboratory_name',
-                                     'course_name', 'created_by', 'shelf_object_url', 'shelf_object_qr'],
+                                     'description', 'created_by', 'shelf_object_url', 'shelf_object_qr'],
                        relobj=destination_laboratory_id)
-    create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, destination_laboratory_id)
+    create_shelfobject_observation(shelfobject, shelfobject.description, _("Created Object"), request.user, destination_laboratory_id)
 
     return shelfobject
 
@@ -178,7 +178,7 @@ def create_new_shelfobject_from_object_in(object, destination_organization_id, d
                        changed_data=['shelf', 'object', 'quantity', 'measurement_unit', 'in_where_laboratory',
                                      'created_by', 'shelf_object_url', 'shelf_object_qr'],
                        relobj=destination_laboratory_id)
-    create_shelfobject_observation(shelfobject, shelfobject.course_name, _("Created Object"), request.user, destination_laboratory_id)
+    create_shelfobject_observation(shelfobject, shelfobject.description, _("Created Object"), request.user, destination_laboratory_id)
 
     return shelfobject
 
@@ -198,7 +198,7 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
     organilab_logentry(request.user, shelfobject, CHANGE,
                        changed_data=['shelf', 'in_where_laboratory', 'created_by', 'shelf_object_qr', 'shelf_object_url'],
                        relobj=destination_laboratory_id)
-    create_shelfobject_observation(shelfobject, shelfobject.course_name, _(observation_text), request.user, destination_laboratory_id)
+    create_shelfobject_observation(shelfobject, shelfobject.description, _(observation_text), request.user, destination_laboratory_id)
 
     return shelfobject
 
