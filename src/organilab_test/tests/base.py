@@ -72,6 +72,15 @@ class SeleniumBase(StaticLiveServerTestCase):
                 cursor.style.top= '{}px';
                 '''.format(x, y)
 
+
+    def get_element_js_by_xpath(self, path):
+        return """
+            function getElementByXpath(path) {
+              return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            }
+            var element = getElementByXpath("%s");
+            """ % path
+
     def move_cursor(self, x, y):
         xy_position = self.move_cursor_script(x, y)
         self.selenium.execute_script(xy_position)
@@ -193,17 +202,22 @@ class SeleniumBase(StaticLiveServerTestCase):
         if "reduce_length" in obj and obj["reduce_length"]:
             reduce_length = obj["reduce_length"]
 
-        move_cursor_end = """
-            function getElementByXpath(path) {
-              return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-            }
-            var input = getElementByXpath("%s");
-            const end = input.value.length - %d;
-
-            input.setSelectionRange(end, end);
-            input.focus();
-        """ % (obj["path"], reduce_length)
+        move_cursor_end = self.get_element_js_by_xpath(obj["path"])+"""
+            const end = element.value.length - %d;
+            element.setSelectionRange(end, end);
+            element.focus();
+        """ % (reduce_length)
         self.selenium.execute_script(move_cursor_end)
+
+    def active_hidden_elements(self, obj):
+        """
+        Display hidden elements, for example in dropdowns or elements that are hidden.
+        """
+        move_cursor =self.get_element_js_by_xpath(obj["active_hidden_elements"])+"""
+            element.click();
+        """
+
+        self.selenium.execute_script(move_cursor)
 
     def extra_action(self, obj, element):
         """
@@ -255,6 +269,8 @@ class SeleniumBase(StaticLiveServerTestCase):
                 sleep(obj["sleep"])
             else:
                 sleep(15)
+        if "active_hidden_elements" in obj:
+            self.active_hidden_elements(obj)
 
     def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
         """
