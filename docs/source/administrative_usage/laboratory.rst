@@ -476,7 +476,7 @@ En la creación de reactivos se requerirá el ingreso de varios datos, los cuale
     como **No**, este no será visualizado por otros usuarios.
 *   **Descripción**: Este campo se utiliza para dar una descripción básica del equipo, esta información no es obligatoria de ingresar.
 *   **Características de objeto**: Este campo indica las características del objeto, las cuales se pueden seleccionar varias,
-   , además, este campo es obligatoria seleccionar una y si no existe ninguna visitar el módulo de **Características de objetos**,
+    además, este campo es obligatoria seleccionar una y si no existe ninguna visitar el módulo de **Características de objetos**,
     para la creación de estas.
 *   **Modelo**: Este campo registrará el modelo del equipo, este campo es obligatorio ingresar información.
 *   **Serie**: Este campo no es obligatorio de ingresar información.
@@ -501,8 +501,8 @@ En la creación de reactivos se requerirá el ingreso de varios datos, los cuale
     norma **SGA**, se pueden seleccionar varias opciones, a su no es obligatorio seleccionar alguna opción.
 *   **Códigos NFPA**: Este campo se utiliza para agregar códigos basados en las normas **NFPA**, no es obligatorio
     seleccionar alguna opción.
-*   **Clases de almacenamientos**: Este campo se utiliza para indicar los tipos de almacenamientos para el reactivo
-  , no es obligatorio seleccionar alguna opción.
+*   **Clases de almacenamientos**: Este campo se utiliza para indicar los tipos de almacenamientos para el reactivo,
+    no es obligatorio seleccionar alguna opción.
 *   **Seveso**: Este campo indica si el reactivo es un *Seveso en la lista lll*.
 *   **Representación de la sustancia**: Este campo se utiliza para el agregar una imagen que represente al reactivo,
     en cualquier formato, no es obligatorio ingresar alguna imagen.
@@ -961,5 +961,203 @@ Ejemplo de edición de proveedores:
 
 Administración de protocolos
 -------------------------------------------
+Este módulo se encagara de manejar los protocolos internos de la organización por parte de la administración
 
-/lab/<int:org>/<int:lab>/protocols/create
+.. image:: ../_static/protocols_index.png
+   :alt: Módulo de Protocolos
+   :height: 380
+   :width: 720
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresa al módulo de protocolos.
+*  *add_protocol*: Permite visualizar el botón de crear y a su vez los genera
+*  *change_protocol*: Permite la modificación de protocolos.
+*  *delete_protocol*: Permite la eliminación de protocolos.
+
+.. image:: ../_static/gif/view_protocols.gif
+   :height: 380
+   :width: 720
+
+
+Crear Protocolo
+******************
+En la creación de protocolos se requerirán 3 datos, los cuales son:
+
+*   **Nombre**: Esta campo se ingresará el nombre del protocolo.
+*   **Descripción corta**: Este campo se ingresará una descripción sobre el protocolo, tiene como un límite de 300 letras.
+*   **Archivo del protocolo**: Este campo se utilizará para agregar documentos solo en formato **PDF**.
+
+.. note::
+    Para la creación de protocolos, los 3 datos anteriores es obligatorio ingresarlos para crear el protocolo.
+
+Permisos requeridos:
+*   *view_laboratory*: Permite el ingreso al laboratorio.
+*   *view_protocol*: Permite ingresar al módulo de protocolos.
+*   *add_protocol*: Permite visualizar el botón de crea protocolo y a su vez crearlos.
+
+.. image:: ../_static/gif/add_protocol.gif
+   :height: 380
+   :width: 720
+
+Actualizar protocolo
+***********************
+En la edición de protocolos se permitirá modificar cualquiera de los campos que se mencionan en el **Crear Protocolo**.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresar al módulo de protocolos.
+*   *add_protocol*: Permite modificar los protocolos.
+
+Ejemplo de edición de protocolo:
+
+.. image:: ../_static/gif/update_protocol.gif
+   :height: 380
+   :width: 720
+
+Descargar protocolos
+***********************
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresar al módulo de protocolos.
+
+Ejemplo de edición de protocolo:
+
+.. image:: ../_static/gif/download_protocol.gif
+   :height: 380
+   :width: 720
+
+Eliminar protocolo
+***********************
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresar al módulo de protocolos.
+*  *delete_protocol*: Permite modificar los protocolos.
+
+Ejemplo de eliminación de protocolo:
+
+.. image:: ../_static/gif/delete_protocol.gif
+   :height: 380
+   :width: 720
+
+Registro de usuarios por QR
+----------------------------
+Este módulo se encarga de la generación de códigos QR para el registro de usuarios al laboratorio y a su vez a
+la organización mediante el escaneo de la imagen.
+
+.. image:: ../_static/registter_user_QR.png
+   :alt: Módulo de Registro de usuarios por QR
+   :height: 380
+   :width: 720
+
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permitira el ingreso al laboratorio.
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, ademaá de visualizar la lista de QR.
+*  *add_registeruserq*: Permite visualizar el botón de crear y a su vez los genera.
+*  *change_registeruserq*: Permite la modificacion de registros.
+*  *delete_registeruserq*: Permite la eliminacion de registros.
+
+Ejemplo de ingresar al módulo:
+
+.. image:: ../_static/gif/view_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+Crear QR de registro de usuarios
+**********************************
+En creación de los QR se requieren varios datos lo cuales son:
+
+*   **Activar usuario**: Este campo se utiliza para indicar cuando un usuario se registra, este pueda tener acceso
+    inmediato si la opción seleccionada es **Sí**, pero si es **No**, la administración se encargará de la activación
+    del usuario.
+*   **Rol**: Este campo listará los roles registrados en la organización, por lo tanto, a la hora de registrar él
+    usuario vendrán con el rol elegido.
+*   **Organización**: Este campo listará las organizaciones vinculadas a la organización excluyendo solo las que poseen
+    un código QR.
+*   **Código**: Este campo indica el código de acceso, el cual como máximo aceptara 4 dígitos y este debe ser único, no
+    puede ser repetido.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permitira el ingreso al laboratorio.
+*  *view_registeruserqr*: Permitira ingresa al módulo de registro de usuarios por QR.
+*  *add_registeruserq*: Permitira la creación de registros.
+
+Ejemplo de creación de QR:
+
+.. image:: ../_static/gif/create_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+
+Actualizar QR de registro de usuarios
+***************************************
+En la edición de los archivos QR no se permitira la modificacion del codigo de este pero si los demás campos.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, ademas de visualizar la lista de QR.
+*  *change_registeruserq*: Permite la modificacion de registros.
+
+
+Ejemplo de edición de QR:
+
+.. image:: ../_static/gif/update_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+
+Bitácora de registro de usuarios por QR
+******************************************
+Sobre la bitácora de registro de usuario listara los usuarios que se registraron al sistema mediante el uso del QR, viene
+siendo similar a un historial.
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
+
+Ejemplo de ingresar a bitacoras del QR:
+
+.. image:: ../_static/gif/logentry_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+Descargar QR para registro de usuarios
+******************************************
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
+
+Ejemplo de como descargar el archivo QR:
+
+.. image:: ../_static/gif/download_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+Eliminar QR de registro de usuarios
+***************************************
+.. warning::
+    Al eliminar un archivo QR del sistema ya este no puede ser utilizado en los lugares que se esté utilizando,
+    por consiguiente sería preferible notificar a lo usuarios que va que inutilizado el QR.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
+*  *delete_registeruserq*: Permite la eliminación de registros.
+
+Ejemplo de eliminación de QR:
+
+.. image:: ../_static/gif/delete_register_user_QR.gif
+   :height: 380
+   :width: 720
+

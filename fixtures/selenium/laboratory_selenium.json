@@ -1234,5 +1234,49 @@
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
+  },
+  {
+  "model": "laboratory.registeruserqr",
+  "pk": 1,
+  "fields": {
+    "creation_date": "2023-03-05T20:15:15.804Z",
+    "last_update": "2023-10-25T01:16:39.172Z",
+    "created_by": 1,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/1/1/login/3/",
+    "register_user_qr": "register_user_qr/qrcode_nk3vzud.svg",
+    "role": 1,
+    "content_type": ["laboratory","laboratory"],
+    "object_id": 1,
+    "organization_creator": 1,
+    "organization_register": 2,
+    "code": "bdc0"
+  }
+},
+    {
+    "model": "laboratory.protocol",
+    "pk": 1,
+    "fields": {
+      "name": "Lavado de manos",
+      "file": "protocols/test.pdf",
+      "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 2,
+    "fields": {
+      "name": "Control de plagas",
+      "file": "protocols/test.pdf",
+      "short_description": "Saneamiento y fumigación del área de trabajo y exteriores",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
   }
 ]

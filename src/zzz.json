@@ -1,0 +1,362 @@
+[
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 3,
+  "fields": {
+    "creation_date": "2023-03-05T20:15:15.804Z",
+    "last_update": "2023-10-25T01:16:39.172Z",
+    "created_by": 65,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/76/65/login/3/",
+    "register_user_qr": "register_user_qr/qrcode_nk3vzud.svg",
+    "role": 22,
+    "content_type": 1,
+    "object_id": 65,
+    "organization_creator": 76,
+    "organization_register": 76,
+    "code": "bdc0"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 4,
+  "fields": {
+    "creation_date": "2023-03-06T15:03:03.956Z",
+    "last_update": "2023-10-25T01:16:39.174Z",
+    "created_by": 65,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/76/55/login/4/",
+    "register_user_qr": "register_user_qr/qrcode_s86zwth.svg",
+    "role": 24,
+    "content_type": 1,
+    "object_id": 55,
+    "organization_creator": 76,
+    "organization_register": 76,
+    "code": "4b66"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 5,
+  "fields": {
+    "creation_date": "2023-03-06T15:06:59.657Z",
+    "last_update": "2023-10-25T01:16:39.175Z",
+    "created_by": 65,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/76/66/login/5/",
+    "register_user_qr": "register_user_qr/qrcode_2yxlwnm.svg",
+    "role": 24,
+    "content_type": 1,
+    "object_id": 66,
+    "organization_creator": 76,
+    "organization_register": 76,
+    "code": "983c"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 7,
+  "fields": {
+    "creation_date": "2023-03-11T16:41:24.396Z",
+    "last_update": "2023-10-25T01:16:39.176Z",
+    "created_by": 65,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/76/69/login/7/",
+    "register_user_qr": "register_user_qr/qrcode_ohja09d.svg",
+    "role": 26,
+    "content_type": 1,
+    "object_id": 69,
+    "organization_creator": 76,
+    "organization_register": 76,
+    "code": "5a1a"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 10,
+  "fields": {
+    "creation_date": "2023-03-28T14:08:31.049Z",
+    "last_update": "2023-10-25T01:16:39.177Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/42/69/login/10/",
+    "register_user_qr": "register_user_qr/qrcode_nlkqwh0.svg",
+    "role": 27,
+    "content_type": 1,
+    "object_id": 69,
+    "organization_creator": 76,
+    "organization_register": 42,
+    "code": "6cff"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 11,
+  "fields": {
+    "creation_date": "2023-05-10T15:20:29.578Z",
+    "last_update": "2023-10-25T01:16:39.179Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/42/56/login/11/",
+    "register_user_qr": "register_user_qr/qrcode_uz37gmf.svg",
+    "role": 1,
+    "content_type": 1,
+    "object_id": 56,
+    "organization_creator": 42,
+    "organization_register": 42,
+    "code": "d411"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 12,
+  "fields": {
+    "creation_date": "2023-08-08T13:48:36.685Z",
+    "last_update": "2023-10-25T01:16:39.196Z",
+    "created_by": 65,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/103/65/login/12/",
+    "register_user_qr": "register_user_qr/qrcode_zaih2ky.svg",
+    "role": 63,
+    "content_type": 1,
+    "object_id": 65,
+    "organization_creator": 103,
+    "organization_register": 103,
+    "code": "cb53"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 13,
+  "fields": {
+    "creation_date": "2023-08-08T13:50:43.681Z",
+    "last_update": "2023-10-25T01:16:39.194Z",
+    "created_by": 65,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/103/66/login/13/",
+    "register_user_qr": "register_user_qr/qrcode_6mwgavb.svg",
+    "role": 63,
+    "content_type": 1,
+    "object_id": 66,
+    "organization_creator": 103,
+    "organization_register": 103,
+    "code": "c40a"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 14,
+  "fields": {
+    "creation_date": "2023-08-09T00:39:15.370Z",
+    "last_update": "2023-10-25T01:16:39.180Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/45/57/login/14/",
+    "register_user_qr": "register_user_qr/qrcode_ai8difx.svg",
+    "role": 47,
+    "content_type": 1,
+    "object_id": 57,
+    "organization_creator": 45,
+    "organization_register": 45,
+    "code": "05ec"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 15,
+  "fields": {
+    "creation_date": "2023-08-09T01:03:15.133Z",
+    "last_update": "2023-10-25T01:16:39.182Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/42/65/login/15/",
+    "register_user_qr": "register_user_qr/qrcode_d7qehob.svg",
+    "role": 1,
+    "content_type": 1,
+    "object_id": 65,
+    "organization_creator": 42,
+    "organization_register": 42,
+    "code": "40c2"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 16,
+  "fields": {
+    "creation_date": "2023-08-12T19:36:20.229Z",
+    "last_update": "2023-10-25T01:16:39.183Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/107/86/login/16/",
+    "register_user_qr": "register_user_qr/qrcode_ftp6t9r.svg",
+    "role": 52,
+    "content_type": 1,
+    "object_id": 86,
+    "organization_creator": 107,
+    "organization_register": 107,
+    "code": "95ef"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 17,
+  "fields": {
+    "creation_date": "2023-08-19T15:12:20.228Z",
+    "last_update": "2023-10-25T01:16:39.185Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/100/88/login/17/",
+    "register_user_qr": "register_user_qr/qrcode_ev91dj8.svg",
+    "role": 57,
+    "content_type": 1,
+    "object_id": 88,
+    "organization_creator": 100,
+    "organization_register": 100,
+    "code": "390c"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 18,
+  "fields": {
+    "creation_date": "2023-08-19T15:28:05.799Z",
+    "last_update": "2023-10-25T01:16:39.186Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/100/89/login/18/",
+    "register_user_qr": "register_user_qr/qrcode_trg0cfs.svg",
+    "role": 57,
+    "content_type": 1,
+    "object_id": 89,
+    "organization_creator": 100,
+    "organization_register": 100,
+    "code": "0e21"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 19,
+  "fields": {
+    "creation_date": "2023-08-19T15:33:35.801Z",
+    "last_update": "2023-10-25T01:16:39.188Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/100/90/login/19/",
+    "register_user_qr": "register_user_qr/qrcode_i5bc3md.svg",
+    "role": 57,
+    "content_type": 1,
+    "object_id": 90,
+    "organization_creator": 100,
+    "organization_register": 100,
+    "code": "98ab"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 20,
+  "fields": {
+    "creation_date": "2023-08-19T15:38:14.009Z",
+    "last_update": "2023-10-25T01:16:39.189Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/100/91/login/20/",
+    "register_user_qr": "register_user_qr/qrcode_dlkmbxv.svg",
+    "role": 57,
+    "content_type": 1,
+    "object_id": 91,
+    "organization_creator": 100,
+    "organization_register": 100,
+    "code": "9dfc"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 21,
+  "fields": {
+    "creation_date": "2023-08-19T15:43:25.598Z",
+    "last_update": "2023-10-25T01:16:39.191Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/100/92/login/21/",
+    "register_user_qr": "register_user_qr/qrcode_28ldbkm.svg",
+    "role": 57,
+    "content_type": 1,
+    "object_id": 92,
+    "organization_creator": 100,
+    "organization_register": 100,
+    "code": "587f"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 22,
+  "fields": {
+    "creation_date": "2023-08-19T15:47:12.209Z",
+    "last_update": "2023-10-25T01:16:39.192Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/100/93/login/22/",
+    "register_user_qr": "register_user_qr/qrcode_2aqbn5n.svg",
+    "role": 57,
+    "content_type": 1,
+    "object_id": 93,
+    "organization_creator": 100,
+    "organization_register": 100,
+    "code": "6384"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 23,
+  "fields": {
+    "creation_date": "2023-08-24T20:25:38.841Z",
+    "last_update": "2023-10-25T01:16:39.193Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/42/73/login/23/",
+    "register_user_qr": "register_user_qr/qrcode_bhvqsa4.svg",
+    "role": 7,
+    "content_type": 1,
+    "object_id": 73,
+    "organization_creator": 42,
+    "organization_register": 42,
+    "code": "068a"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 25,
+  "fields": {
+    "creation_date": "2023-09-05T17:50:44.079Z",
+    "last_update": "2023-10-25T01:16:39.197Z",
+    "created_by": 19,
+    "activate_user": true,
+    "url": "https://organilab.org/register_user_qr/42/66/login/25/",
+    "register_user_qr": "register_user_qr/qrcode_xsuadlu.svg",
+    "role": 63,
+    "content_type": 1,
+    "object_id": 66,
+    "organization_creator": 103,
+    "organization_register": 42,
+    "code": "a7c9"
+  }
+},
+{
+  "model": "laboratory.registeruserqr",
+  "pk": 26,
+  "fields": {
+    "creation_date": "2024-01-29T15:42:02.663Z",
+    "last_update": "2024-01-29T15:42:02.689Z",
+    "created_by": 540,
+    "activate_user": true,
+    "url": "http://127.0.0.1:8000/register_user_qr/132/134/login/26/",
+    "register_user_qr": "registeruserqr/20240129094202/qrcode.svg",
+    "role": 90,
+    "content_type": 1,
+    "object_id": 134,
+    "organization_creator": 132,
+    "organization_register": 132,
+    "code": "ac49"
+  }
+}
+]
