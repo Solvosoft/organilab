@@ -151,7 +151,7 @@ class ShelfObjectCreateMethods:
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'limit_quantity',
-                                               'course_name',
+                                               'description',
                                                'marked_as_discard', 'batch',
                                                'container', 'created_by',
                                                'in_where_laboratory', 'limits'],
@@ -199,7 +199,7 @@ class ShelfObjectCreateMethods:
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'marked_as_discard',
-                                               'course_name', 'batch', 'container',
+                                               'description', 'batch', 'container',
                                                'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory_id)
@@ -236,7 +236,7 @@ class ShelfObjectCreateMethods:
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
-                                               'marked_as_discard', 'course_name',
+                                               'marked_as_discard', 'description',
                                                'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory_id)
@@ -273,7 +273,7 @@ class ShelfObjectCreateMethods:
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
-                                               'marked_as_discard', 'course_name',
+                                               'marked_as_discard', 'description',
                                                'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory_id)
@@ -310,7 +310,7 @@ class ShelfObjectCreateMethods:
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
-                                               'marked_as_discard', 'course_name',
+                                               'marked_as_discard', 'description',
                                                'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory_id)
@@ -347,7 +347,7 @@ class ShelfObjectCreateMethods:
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
-                                               'marked_as_discard', 'course_name',
+                                               'marked_as_discard', 'description',
                                                'created_by', 'in_where_laboratory',
                                                'limits'],
                                  relobj=laboratory_id)
@@ -487,7 +487,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             if limit_serializer.is_valid():
                 shelfobject = self.serializer_class['method'](serializer,
                                                               limit_serializer)
-                create_shelfobject_observation(shelfobject, shelfobject.course_name,
+                create_shelfobject_observation(shelfobject, shelfobject.description,
                                                 _("Created Object"), request.user,
                                                    lab_pk)
                 return Response(
