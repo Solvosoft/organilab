@@ -39,7 +39,7 @@ class LaboratoryViewSeleniumTest(SeleniumBase):
         self.create_shelfobject_reative_end = [
             {"path": "//*[@id='reactive_form']/span/span/span[2]/ul/li"},
             {"path": "//*[@id='reactive_form']/div[8]/div/textarea",
-             "scroll": "window.scrollTo(0, 400)"},
+             "scroll": "$('#reactive_modal').scrollTop(400);"},
             {"path": "//*[@id='reactive_form']/div[8]/div/textarea",
              "extra_action": "setvalue", "value": "El cloroformo es un líquido incoloro"
              " de olor dulce y agradable. Se utiliza como disolvente y en la elaboración"
