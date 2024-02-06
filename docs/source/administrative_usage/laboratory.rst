@@ -1161,3 +1161,156 @@ Ejemplo de eliminación de QR:
    :height: 380
    :width: 720
 
+
+Mis procedimientos
+----------------------------
+Este modúlo se encargará de generar procedimientos quimicos dentro de la organización que a su vez permitirán generar
+reservaciones de objetos vinculados a la plantilla de procedimiento asociada.
+
+.. image:: ../_static/view_my_procedure.png
+   :alt: Modulo Mis Procedimientos
+   :height: 380
+   :width: 720
+
+Permisos requeridos para manipular el modulo de forma general:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *add_myprocedure*: Permite la creación de procedimientos.
+*  *change_myprocedure*: Permite modificar el estado de los procedimientos.
+*  *delete_myprocedure*: Permite eliminar procedimientos.
+*  *add_commentprocedurestep*: Permite agregar observaciones de los procedimientos.
+*  *view_commentprocedurestep*: Permite visualizar los comentarios de los procedimientos.
+*  *change_commentprocedurestep*: Permite modificar las observaciones de los procedimientos.
+*  *delete_commentprocedurestep*: Permite eliminar las observaciones de los procedimientos.
+*  *view_procedurestep*: Permite visualizar los pasos de la plantilla de procedimientos en los procedimientos.
+
+
+Ejemplo de ingreso a modulo de mis procedimientos
+
+.. image:: ../_static/gif/view_my_procedure.gif
+   :height: 380
+   :width: 720
+
+
+Crear procedimiento
+************************
+
+En la creación de procedimientos se requieren 2 datos en especifico:
+
+*   *Nombre*: Es un campo obligatorio de insercción.
+*   *Plantilla*: Esta plantilla esta vinculadas a las plantillas de procedimientos dentro de las organizaciones hijas y
+    padres, es obligatorio la selección de una.
+
+.. note::
+        Por defecto el procedimiento se crea en estado Borrador, los procedimientos pueden estar en 3 estados que son:
+        *   **Borrador**.
+        *   **Revisión**.
+        *   **Finalizado**.
+
+Ejemplo de creacion de procedimiento
+
+
+.. image:: ../_static/gif/add_my_procedure.gif
+   :height: 380
+   :width: 720
+
+Editar estado de procedimiento
+***************************************
+
+En la edición de estados de procedimiento se puede pasar de Borrador a Revision, mientras que de Revisión a Finalizado como
+se muestran en los siguientes ejemplos:
+
+*   Borrador a Revision:
+
+    .. image:: ../_static/gif/review_my_procedure.gif
+       :height: 380
+       :width: 720
+
+*   Revision a Finalizado:
+
+    .. image:: ../_static/gif/finalize_my_procedure.gif
+       :height: 380
+       :width: 720
+
+Permisos Requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite modificar el estado de los procedimientos.
+
+
+Eliminar procedimientos
+***************************************
+
+.. image:: ../_static/gif/delete_myprocedure.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *delete_myprocedure*: Permite eliminar el estado de los procedimientos.
+
+Agregar observación en procedimiento
+***************************************
+
+A los procedimientos se les puede ingresar comentarios o observaciones sobre las recetas de la siguiente forma:
+
+.. image:: ../_static/gif/add_my_procedure_observation.gif
+    :height: 380
+    :width: 720
+
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite ingresar al procedimiento.
+*  *add_commentprocedurestep*: Permite agregar observaciones de los procedimientos.
+
+Editar observación en procedimiento
+***************************************
+En la edicion de observaciones solo lo podra hacer el usuario que la creó:
+
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite ingresar al procedimiento.
+*  *change_commentprocedurestep*: Permite editar observaciones de los procedimientos.
+
+.. image:: ../_static/gif/update_my_procedure_observation.gif
+    :height: 380
+    :width: 720
+
+
+Eliminar observación en procedimiento
+***************************************
+En la eliminación de observaciones de igual forma que en la edición solo el usuario que la créo podra eliminarla:
+
+.. image:: ../_static/gif/delete_my_procedure_observation.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite ingresar al procedimiento.
+*  *delete_commentprocedurestep*: Permite eliminar observaciones de los procedimientos.
+
+Generar reservación de procedimiento
+***************************************
+Los procedimientos también permite generar reservaciones donde los materiales que se reservan son los objectos, de los
+pasos de la plantilla de procedimientos, ademas hay que tener en cuenta que si en las estanterías de objectos no existe
+un material o la cantidad de este es insuficiente a lo solicitado no se podra dar paso la reservación.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *add_reservedproducts*: Permite generar reservación.
+*  *add_reservation*: Permite generar visualizar las reservaciones.
