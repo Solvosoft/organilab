@@ -264,6 +264,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         if 'scroll' in obj:
             self.selenium.execute_script(obj['scroll'])
 
+        if 'modalscroll' in obj:
+            self.selenium.execute_script(obj['scroll'])
+
         if 'sleep' in obj:
             if isinstance(obj['sleep'], int):
                 sleep(obj["sleep"])
