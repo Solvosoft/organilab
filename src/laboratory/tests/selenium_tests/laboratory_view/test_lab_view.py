@@ -65,7 +65,7 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
             {"path": "//*[@id='equipment_form']/div[3]/div/input",
              "extra_action": "setvalue", "value": "2"},
             {"path": "//*[@id='equipment_form']/div[5]/div/textarea",
-             "scroll": "window.scrollTo(0, 200)"},
+             "scroll": "$('#equipment_modal').scrollTop(300);"},
             {"path": "//*[@id='equipment_form']/div[5]/div/textarea",
              "extra_action": "setvalue", "value": "Instrumento para calcular la masa de un objeto."},
             {"path": self.get_save_button_modal("equipment_modal")}
