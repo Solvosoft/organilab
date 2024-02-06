@@ -302,7 +302,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
                                                               settings.READONLY_DATABASE),
                                                           required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
-    course_name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
 
 
@@ -310,7 +310,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
         model = ShelfObject
         fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit',
                   "container_for_cloning", "container_select_option",
-                  "available_container", 'limit_quantity', "course_name",
+                  "available_container", 'limit_quantity', "description",
                   'marked_as_discard', 'batch']
 
     def validate(self, data):
@@ -339,13 +339,13 @@ class ReactiveRefuseShelfObjectSerializer(ContainerSerializer, serializers.Model
                                                               settings.READONLY_DATABASE),
                                                           required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
-    course_name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity","container_for_cloning","container_select_option",
-                  "available_container","measurement_unit", "marked_as_discard", "course_name", 'batch']
+                  "available_container","measurement_unit", "marked_as_discard", "description", 'batch']
 
     def validate(self, data):
         data = super().validate(data)
@@ -372,13 +372,13 @@ class MaterialShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSe
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
-    course_name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity",
                   "marked_as_discard",
-                  "course_name"]
+                  "description"]
 
     def validate(self, data):
         data = super().validate(data)
@@ -403,13 +403,13 @@ class MaterialRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.M
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
-    course_name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity",
                   "marked_as_discard",
-                  "course_name"]
+                  "description"]
 
     def validate(self, data):
         data = super().validate(data)
@@ -434,13 +434,13 @@ class EquipmentShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelS
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
-    course_name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity",
                   "marked_as_discard",
-                  "course_name"]
+                  "description"]
 
     def validate(self, data):
         data = super().validate(data)
@@ -465,13 +465,13 @@ class EquipmentRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.
     quantity = serializers.FloatField(required=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
-    course_name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity",
                   "marked_as_discard",
-                  "course_name"]
+                  "description"]
 
     def validate(self, data):
         data = super().validate(data)

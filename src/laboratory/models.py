@@ -211,9 +211,9 @@ class ShelfObject(models.Model):
     # FIXME: this field needs to be deleted
     laboratory_name = models.CharField(null=True, blank=True,
                                        verbose_name=_('Laboratory name'), max_length=30)
-    # FIXME: change this field to be called description
-    course_name = models.CharField(null=True, blank=True, verbose_name=_('Description'),
-                                   max_length=30)
+
+    description = models.CharField(null=True, blank=True, verbose_name=_('Description'),
+                                   max_length=256)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_update = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, null=True, blank=True, verbose_name=_('Creator'),
