@@ -25,9 +25,9 @@ from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, \
     OrganizationUserManagementForm, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, \
-    UserOrganization
+    UserOrganization, OrganizationStructureRelations
 from laboratory.utils import organilab_logentry, get_laboratories_by_user_profile, \
-    register_laboratory_contenttype
+    register_laboratory_contenttype, delete_profile_roles_related_to_laboratory
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 
@@ -223,8 +223,33 @@ class LaboratoryDeleteView(DeleteView):
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.object)
-        self.object.delete()
+
+        if self.org == self.object.organization.pk:
+            utils.organilab_logentry(self.request.user, self.object, DELETION,
+                                     relobj=self.organization)
+            self.object.delete()
+
+        else:
+            #All profilepermissions related to this laboratory
+            profilepermissions_list = ProfilePermission.objects.filter(content_type__app_label=self.object._meta.app_label,
+                                                       content_type__model=self.object._meta.model_name,
+                                                       object_id=self.object.pk)
+
+            if profilepermissions_list:
+                delete_profile_roles_related_to_laboratory(profilepermissions_list, self.organization)
+
+            #Delete relation between lab and org and register log about this action
+            org_relation = OrganizationStructureRelations.objects.filter(
+                organization=self.organization,
+                content_type=ContentType.objects.filter(
+                    app_label=self.object._meta.app_label,
+                    model=self.object._meta.model_name
+                ).first(),
+                object_id=self.object.pk
+            ).first()
+            utils.organilab_logentry(self.request.user, org_relation, DELETION,
+                                     'organization structure relations', relobj=self.organization)
+            org_relation.delete()
         return HttpResponseRedirect(success_url)
 
 
