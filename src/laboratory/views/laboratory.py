@@ -205,7 +205,20 @@ class LaboratoryDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['laboratory'] = self.object.pk
+        msg_delete_relationship = "%s %s %s, %s" % (self.object.name,
+                                                    _("maintains a relationship with"),
+                                                    self.organization.name,
+                                                    _("are you sure you want to delete this relationship?"))
+
+        msg_delete = "%s %s %s, %s" % (self.object.name,
+                                       _("was created for"),
+                                       self.organization.name,
+                                       _("are you sure you want to delete this laboratory?"))
+
+        if self.org != self.object.organization.pk:
+            msg_delete = msg_delete_relationship
+
+        context['msg_delete'] = msg_delete
         return context
 
     def form_valid(self, form):
