@@ -406,3 +406,29 @@ def register_laboratory_contenttype(organization, laboratory):
         ).first(),
         object_id=lab_id
     )
+
+def delete_profile_roles_related_to_laboratory(profilepermissions_list, organization):
+    # Filter organization roles
+    for profile in profilepermissions_list:
+        roles = profile.rol.filter(organizationstructure=organization)
+        roles_pks = list(roles.values_list("pk", flat=True))
+
+        # Organization with same roles(possible with cloned organizations)
+        orgs_with_same_roles = OrganizationStructure.objects.filter(
+            rol__in=roles_pks).exclude(
+            pk=organization.pk)
+
+        if orgs_with_same_roles.exists():
+
+            # Removes only profile roles related to this laboratory, but if some role
+            # is used in other organization with the same laboratory will be an exception
+            for org in orgs_with_same_roles:
+
+                roles_org = set(list(org.rol.values_list("pk", flat=True)))
+
+                profilep_pks_set = set(list(
+                    profile.rol.all().values_list("pk", flat=True)))
+                difference_set = roles_org.difference(profilep_pks_set)
+
+                if difference_set:
+                    profile.rol.remove(*list(difference_set))
