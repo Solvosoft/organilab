@@ -201,7 +201,7 @@ class LaboratoryDeleteView(DeleteView):
     lab_pk_field = 'pk'
 
     def get_success_url(self):
-        return "/"
+        return reverse("laboratory:mylabs", kwargs={"org_pk": self.org})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
