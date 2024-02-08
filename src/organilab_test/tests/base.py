@@ -9,9 +9,11 @@ from Screenshot import Screenshot
 from django.conf import settings
 from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.utils.timezone import now
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from dateutil.relativedelta import relativedelta
 
 
 class SeleniumBase(StaticLiveServerTestCase):
@@ -61,6 +63,12 @@ class SeleniumBase(StaticLiveServerTestCase):
             '''
 
         cls.action = ActionChains(cls.selenium)
+
+    def get_format_increase_decrease_date(self, date, days, increase=True, format="%m/%d/%Y"):
+        new_date = date + relativedelta(days=days)
+        if not increase:
+            new_date = date - relativedelta(days=days)
+        return new_date, new_date.strftime(format)
 
     def move_cursor_script(self, x, y):
         """
