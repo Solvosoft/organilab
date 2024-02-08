@@ -395,10 +395,10 @@
       "created_by": 1,
       "code": "Cr3452",
       "name": "Acetona",
-      "synonym": null,
+      "synonym": "Propanona",
       "type": "0",
       "is_public": true,
-      "description": "",
+      "description": "Es un líquido incoloro con un distintivo olor y sabor. Se evapora fácilmente en el aire, es inflamable y se disuelve en el agua.",
       "model": "RT3534",
       "serie": "YH3984R",
       "plaque": "DSFRS32",
@@ -426,6 +426,22 @@
     "pk": 2,
     "fields": {
       "shelf": 2,
+      "object": 3,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=2"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 2,
       "object": 4,
       "quantity": 5,
       "limit_quantity": 1,
@@ -434,7 +450,22 @@
       "last_update": "2023-01-31T19:33:49.035Z",
       "in_where_laboratory": 1,
       "laboratory_name": "I Período",
-      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=2"
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=3",
+      "container": 2
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "name": "Distribuidor de químicos",
+      "phone_number": "22222222",
+      "email": "distqui@gmail.com",
+      "legal_identity": "3-516516565",
+      "laboratory": 1
     }
   }
 ]

@@ -41,9 +41,6 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
              "extra_action": "setvalue", "value": "3092"}
         ]
 
-    def get_save_button_modal(self, id_modal):
-        return "//*[@id='%s']/div/div/div[3]/button[2]" % id_modal
-
     def create_reactive(self, row_ins_position, select_container_position,
                         container_type, ins_position=""):
         path_list = self.create_shelfobject_reative_start + [
