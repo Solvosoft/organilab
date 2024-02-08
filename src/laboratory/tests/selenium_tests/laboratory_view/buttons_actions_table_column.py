@@ -1,5 +1,6 @@
 from django.test import tag
-
+from django.utils.timezone import now
+from dateutil.relativedelta import relativedelta
 from laboratory.tests.selenium_tests.laboratory_view.base import LaboratoryViewSeleniumTest
 
 
@@ -18,22 +19,33 @@ class ButtonsActionsTableColumn(LaboratoryViewSeleniumTest):
     def test_view_shelfobject_detail(self):
         path_list = self.buttons_actions_path + [
             {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a"},
-            {"path": "//*[@id='detail_modal_container']/div/div/div[2]/div[2]/div/a"},
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a",
-             "extra_action": "script", "value": "$('#detail_modal_container').scrollTop(200);"},
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a",
+            {"path": "//*[@id='shelfobject_detail_modal_body']",
              "extra_action": "script",
-             "value": "$('#detail_modal_container').scrollTop(400);"},
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a",
+             "value": "$('#shelfobject_detail_modal_body').scrollTop(150);"},
+            {"path": "//*[@id='shelfobject_detail_modal_body']",
              "extra_action": "script",
-             "value": "$('#detail_modal_container').scrollTop(600);"},
+             "value": "$('#shelfobject_detail_modal_body').scrollTop(300);"},
+            {"path": "//*[@id='shelfobject_detail_modal_body']",
+             "extra_action": "script",
+             "value": "$('#shelfobject_detail_modal_body').scrollTop(450);"},
             {"path": "//*[@id='detail_modal_container']/div/div/div[3]/button"}
         ]
         self.create_gif_process(path_list, "view_shelfobject_detail")
 
     def test_reserve_shelfobject(self):
+        initial_date, initial_date_strftime = self.get_format_increase_decrease_date(now(), 1)
+        final_date, final_date_strftime = self.get_format_increase_decrease_date(initial_date, 5)
+
         path_list = self.buttons_actions_path + [
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[2]"}
+            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[2]"},
+            {"path": "//*[@id='reservesoform']/div/div/input"},
+            {"path": "//*[@id='reservesoform']/div/div/input",
+             "extra_action": "setvalue", "value": "2"},
+            {"path": "//*[@id='reservesoform']/div[2]/div/div/input"},
+            {"path": "//*[@data-day='%s']" % initial_date_strftime},
+            {"path": "//*[@id='reservesoform']/div[3]/div/div/input"},
+            {"path": "//*[@data-day='%s']" % final_date_strftime},
+            {"path": "//*[@id='reservesomodal']/div/div/div[3]/button[2]"}
         ]
         self.create_gif_process(path_list, "reserve_shelfobject")
 
