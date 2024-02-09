@@ -64,6 +64,9 @@ class SeleniumBase(StaticLiveServerTestCase):
 
         cls.action = ActionChains(cls.selenium)
 
+    def change_focus_tab(self, window_name):
+        self.selenium.switch_to.window(window_name)
+
     def get_format_increase_decrease_date(self, date, days, increase=True, format="%m/%d/%Y"):
         new_date = date + relativedelta(days=days)
         if not increase:
@@ -127,7 +130,8 @@ class SeleniumBase(StaticLiveServerTestCase):
 
         if not path_with_folder_name.exists():
             path_with_folder_name.mkdir()
-            self.dir = path_with_folder_name
+
+        self.dir = path_with_folder_name
 
     def create_screenshot(self, order=1, time_out=3, name="", save_screenshot=False):
         extension_name = '%s.png' % name
@@ -278,7 +282,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         if "active_hidden_elements" in obj:
             self.active_hidden_elements(obj)
 
-    def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
+    def take_screenshot_list(self, path_list, folder_name, cursor=True, hover=True, order=1):
         """
         This function does following steps:
             1. First, it will take the initial screenshot before any movement or action.
@@ -304,6 +308,23 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.do_action(obj, element)
             self.hide_show_cursor(cursor, x=x, y=y)
             order = self.create_screenshot(order=order)
+        return order
+
+    def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
+        self.take_screenshot_list(path_list, folder_name, cursor, hover, order)
+        self.create_gif(self.dir, folder_name)
+
+    def create_gif_by_change_focus_tab(self, general_path_list, tab_name_list, folder_name):
+        order = 0
+        screenshot_order = 1
+
+        for path_list in general_path_list:
+            screenshot_order = self.take_screenshot_list(path_list, folder_name, order=screenshot_order)
+
+            if len(tab_name_list) > 0 and order + 1 <= len(tab_name_list):
+                self.change_focus_tab(tab_name_list[order])
+                order += 1
+
         self.create_gif(self.dir, folder_name)
 
     def force_login(self, user, driver, base_url):
