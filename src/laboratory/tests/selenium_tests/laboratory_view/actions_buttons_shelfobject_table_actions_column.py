@@ -4,10 +4,7 @@ from django.utils.timezone import now
 from laboratory.tests.selenium_tests.laboratory_view.base import \
     LaboratoryViewSeleniumTest
 
-
-@tag('selenium')
-class ButtonsActionsTableColumn(LaboratoryViewSeleniumTest):
-
+class ButtonsActionsTableColumnBase(LaboratoryViewSeleniumTest):
     def setUp(self):
         super().setUp()
 
@@ -16,6 +13,21 @@ class ButtonsActionsTableColumn(LaboratoryViewSeleniumTest):
             {"path": "//*[@id='furniture_3']"},
             {"path": "//*[@id='shelf_2']", "scroll": "window.scrollTo(0, 250)"}
         ]
+
+        self.path_shelfobject_info = ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div/div/div[2]/div/div"
+
+        self.scroll_shelfobject_info = [
+            {"path": self.path_shelfobject_info, "extra_action": "script",
+             "value": "window.scrollTo(0, 100)"},
+            {"path": self.path_shelfobject_info, "extra_action": "script",
+             "value": "window.scrollTo(0, 200)"},
+            {"path": self.path_shelfobject_info, "extra_action": "script",
+             "value": "window.scrollTo(0, 300)"}
+        ]
+
+
+@tag('selenium')
+class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
 
     def test_view_shelfobject_detail(self):
         path_list = self.buttons_actions_path + [
@@ -89,13 +101,7 @@ class ButtonsActionsTableColumn(LaboratoryViewSeleniumTest):
         path_list1 = self.buttons_actions_path + [
             {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[6]"}
         ]
-        path_shelfobject_info = ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div/div/div[2]/div/div"
-        path_list2 = [
-            {"path": path_shelfobject_info, "extra_action": "script", "value": "window.scrollTo(0, 100)"},
-            {"path": path_shelfobject_info, "extra_action": "script", "value": "window.scrollTo(0, 200)"},
-            {"path": path_shelfobject_info, "extra_action": "script", "value": "window.scrollTo(0, 300)"}
-        ]
-        general_path_list = [path_list1, path_list2]
+        general_path_list = [path_list1, self.scroll_shelfobject_info]
         self.create_gif_by_change_focus_tab(general_path_list, ["shelfobjectlog"],"view_shelfobject_logs")
 
     def test_manage_shelfobject_container(self):
