@@ -26,8 +26,7 @@
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
       "language": "es",
-      "laboratories": [
-      ]
+      "laboratories": [1, 2]
     }
   },
   {
@@ -163,6 +162,22 @@
       "last_update": "2023-01-25T20:46:09.591Z"
     }
   },
+    {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Prácticas estudiantiles",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
   {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
@@ -266,7 +281,7 @@
       "name": "Mueble de reactivos",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[[[2]]]",
+      "dataconfig": "[[[2],[4]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -314,6 +329,21 @@
       "last_update": "2023-01-31T19:33:49.035Z",
       "discard": false,
       "measurement_unit": 64
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 3,
+      "name": "Reactivos inflamables",
+      "container_shelf": null,
+      "type": 72,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 62
     }
   },
   {
