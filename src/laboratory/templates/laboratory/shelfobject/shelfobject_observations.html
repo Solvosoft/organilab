@@ -89,6 +89,9 @@ document.urls={
     change_status: '{% url "laboratory:api-shelfobject-create-status" org_pk=org_pk lab_pk=laboratory %}'
 
 };
+
+	window.name = "shelfobjectlog";
+
 </script>
 <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_utils.js' %}?v={% get_organilab_version %}"></script>
 <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_management.js' %}?v={% get_organilab_version %}"></script>
