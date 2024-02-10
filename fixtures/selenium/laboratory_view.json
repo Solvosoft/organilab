@@ -26,8 +26,7 @@
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
       "language": "es",
-      "laboratories": [
-      ]
+      "laboratories": [1, 2]
     }
   },
   {
@@ -121,6 +120,21 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 4,
+    "fields": {
+      "name": "Administración de objetos en el estante",
+      "color": "#337193",
+      "permissions": [
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -128,7 +142,7 @@
       "name": "Organización de Prueba",
       "position": 0,
       "level": 0,
-      "rol": [1, 2, 3],
+      "rol": [1, 2, 3, 4],
       "users": [1]
     }
   },
@@ -137,6 +151,22 @@
     "pk": 1,
     "fields": {
       "name": "I Período",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+    {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Prácticas estudiantiles",
       "phone_number": "85794954",
       "location": "San Antonio",
       "geolocation": "9.895804362670006,-84.1552734375",
@@ -158,7 +188,7 @@
       "organizationstructure"
     ],
       "object_id": 1,
-      "rol": [3]
+      "rol": [3, 4]
     }
   },
   {
@@ -171,7 +201,7 @@
       "laboratory"
     ],
       "object_id": 1,
-      "rol": [3]
+      "rol": [3, 4]
     }
   },
   {
@@ -243,7 +273,7 @@
       "last_update": "2023-01-31T19:33:49.035Z"
     }
   },
-   {
+  {
     "model": "laboratory.furniture",
     "pk": 3,
     "fields": {
@@ -251,7 +281,7 @@
       "name": "Mueble de reactivos",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[[[2]]]",
+      "dataconfig": "[[[2],[4]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -299,6 +329,21 @@
       "last_update": "2023-01-31T19:33:49.035Z",
       "discard": false,
       "measurement_unit": 64
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 3,
+      "name": "Reactivos inflamables",
+      "container_shelf": null,
+      "type": 72,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 62
     }
   },
   {
@@ -362,7 +407,36 @@
       "is_container": true
     }
   },
-    {
+  {
+    "model": "laboratory.objectfeatures",
+    "pk": 1,
+    "fields": {
+      "name": "Composición",
+      "description": "Compuesto Químico"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 4,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "Cr3452",
+      "name": "Acetona",
+      "synonym": "Propanona",
+      "type": "0",
+      "is_public": true,
+      "description": "Es un líquido incoloro con un distintivo olor y sabor. Se evapora fácilmente en el aire, es inflamable y se disuelve en el agua.",
+      "model": "RT3534",
+      "serie": "YH3984R",
+      "plaque": "DSFRS32",
+      "features": [1],
+      "is_container": false
+    }
+  },
+  {
     "model": "laboratory.shelfobject",
     "pk": 1,
     "fields": {
@@ -375,6 +449,67 @@
       "last_update": "2023-01-31T19:33:49.035Z",
       "in_where_laboratory": 1,
       "laboratory_name": "I Período"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 2,
+      "object": 3,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=2"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 2,
+      "object": 4,
+      "quantity": 5,
+      "limit_quantity": 1,
+      "measurement_unit": 62,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=3",
+      "container": 2,
+      "status": 158,
+      "description": "Acetona que será utilizada para las prácticas."
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "action_taken": "Objeto creado",
+      "description": "Acetona que será utilizada para las prácticas.",
+      "shelf_object": 3
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "name": "Distribuidor de químicos",
+      "phone_number": "22222222",
+      "email": "distqui@gmail.com",
+      "legal_identity": "3-516516565",
+      "laboratory": 1
     }
   }
 ]

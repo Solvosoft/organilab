@@ -10,7 +10,6 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
     def setUp(self):
         super().setUp()
         self.user = User.objects.get(pk=1)
-        self.select_org_url = self.live_server_url + str(reverse('auth_and_perms:select_organization_by_user'))
         self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
 
         self.path_base = [
