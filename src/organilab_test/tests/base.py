@@ -209,14 +209,19 @@ class SeleniumBase(StaticLiveServerTestCase):
         """ % (reduce_length)
         self.selenium.execute_script(move_cursor_end)
 
+    def set_css_element(self, target):
+        return """
+            $(".component-btn-group").first().css("display", "block");
+            """
+
     def active_hidden_elements(self, obj):
         """
         Display hidden elements, for example in dropdowns or elements that are hidden.
         """
         move_cursor =self.get_element_js_by_xpath(obj["active_hidden_elements"])+"""
-            element.click();
+        element.click();
         """
-
+        sleep(15)
         self.selenium.execute_script(move_cursor)
 
     def extra_action(self, obj, element):
@@ -235,6 +240,11 @@ class SeleniumBase(StaticLiveServerTestCase):
             element.clear()
         elif obj["extra_action"] == "move_cursor_end":
             self.move_cursor_end(obj)
+        elif obj["extra_action"] == "hover":
+            self.selenium.execute_script(self.set_css_element(".component-btn-group"))
+        elif obj['extra_action'] == "drag_and_drop":
+            self.action.drag_and_drop(self.selenium.find_element(By.XPATH,obj["x"]),
+                                      self.selenium.find_element(By.XPATH,obj["y"])).perform()
 
     def do_sweetaler_comfirm_action(self, obj, element):
         """
@@ -267,13 +277,17 @@ class SeleniumBase(StaticLiveServerTestCase):
         if 'modalscroll' in obj:
             self.selenium.execute_script(obj['scroll'])
 
+        if "active_hidden_elements" in obj:
+            self.active_hidden_elements(obj)
+
+        if "hover" in obj:
+            self.selenium.execute_script(self.set_css_element(".component-btn-group"))
+
         if 'sleep' in obj:
             if isinstance(obj['sleep'], int):
                 sleep(obj["sleep"])
             else:
                 sleep(15)
-        if "active_hidden_elements" in obj:
-            self.active_hidden_elements(obj)
 
     def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
         """
@@ -292,6 +306,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.create_screenshot(order=order)
         for obj in path_list:
             self.apply_utils(obj)
+            print(obj)
             element = self.selenium.find_element(By.XPATH, obj['path'])
             order = self.create_screenshot(order=order)
             x, y = self.get_x_y_element(element)
