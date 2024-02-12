@@ -9,7 +9,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
     organization_can_change_laboratory
 from . import serializers
-from ..models import ShelfObject, OrganizationStructure, Laboratory
+from ..models import ShelfObject, OrganizationStructure, Laboratory, Object
 from ..utils import check_user_access_kwargs_org_lab
 
 
@@ -35,7 +35,8 @@ class ContainerManagementViewset(AuthAllPermBaseObjectManagement):
 
     def get_queryset(self):
         queryset=super().get_queryset()
-        queryset=queryset.filter(shelf=self.shelf)
+        queryset=queryset.filter(shelf=self.shelf, object__type=Object.MATERIAL,
+                                 object__is_container=True)
         return queryset
 
     def list(self, request, *args, **kwargs):
