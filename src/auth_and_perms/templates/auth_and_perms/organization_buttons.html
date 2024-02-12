@@ -28,7 +28,7 @@
 				{% endif %}
 				{% if can_inform %}
 				<a class="btn btn-info btn-sm" href="{% url 'laboratory:inform_index' organization.pk %}">
-					<i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'Informs' %}</a>
+					<i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'AMD Informs' %}</a>
 				{% endif %}
 				{% if can_msds %}
 				<a class="btn btn-danger btn-sm" href="{% url 'msds:index_msds' organization.pk %}"><i class="fa fa-file-text-o"
