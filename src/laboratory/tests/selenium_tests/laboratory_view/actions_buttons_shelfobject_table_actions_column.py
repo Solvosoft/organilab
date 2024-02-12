@@ -136,12 +136,25 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
         general_path_list = [path_list1, self.scroll_shelfobject_info]
         self.create_gif_by_change_focus_tab(general_path_list, ["shelfobjectlog"],"view_shelfobject_logs")
 
-    def test_manage_shelfobject_container(self):
+    def test_manage_shelfobject_container_clone(self):
         path_list = self.buttons_actions_path + [
             {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[7]"},
+            {"path": "//*[@id='manageconteinerform']/div/div/div/div/ins"},
+            {"path": "//*[@id='manageconteinerform']/div[2]/div/span/span/span"},
+            {"path": "//*[@id='managecontainermodal']/span/span/span[2]/ul/li"},
             {"path": self.get_save_button_modal("managecontainermodal")}
         ]
-        self.create_gif_process(path_list, "manage_shelfobject_container")
+        self.create_gif_process(path_list, "manage_shelfobject_container_clone")
+
+    def test_manage_shelfobject_container_available(self):
+        path_list = self.buttons_actions_path + [
+            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[7]"},
+            {"path": "//*[@id='manageconteinerform']/div/div/div/div[2]/ins"},
+            {"path": "//*[@id='manageconteinerform']/div[3]/div/span/span/span"},
+            {"path": "//*[@id='managecontainermodal']/span/span/span[2]/ul/li[2]"},
+            {"path": self.get_save_button_modal("managecontainermodal")}
+        ]
+        self.create_gif_process(path_list, "manage_shelfobject_container_available")
 
     def test_move_shelfobject_with_clone_container(self):
         path_list = self.move_shelfobject_form_path + [

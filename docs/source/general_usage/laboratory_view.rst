@@ -92,6 +92,26 @@ Decrementar un objeto en el estante
    :width: 720
 
 
+Actualizar contenedor del objeto en el estante (Reactivo)
+-------------------------------------------------------------------------
+
+
+1. Opciones de contenedor --> Crear nuevo basado en el seleccionado
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/manage_shelfobject_container_clone.gif
+   :height: 380
+   :width: 720
+
+
+2. Opciones de contenedor --> Usar seleccionado
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/manage_shelfobject_container_available.gif
+   :height: 380
+   :width: 720
+
+
 Mover un objeto en el estante a otro estante (Dentro del mismo laboratorio)
 ---------------------------------------------------------------------------------------------
 
