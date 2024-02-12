@@ -437,6 +437,27 @@
     }
   },
   {
+    "model": "laboratory.object",
+    "pk": 5,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "GL0934",
+      "name": "Galón",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [],
+      "is_container": true
+    }
+  },
+  {
     "model": "laboratory.shelfobject",
     "pk": 1,
     "fields": {
@@ -484,6 +505,21 @@
       "container": 2,
       "status": 158,
       "description": "Acetona que será utilizada para las prácticas."
+    }
+  },
+    {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 5,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período"
     }
   },
   {
