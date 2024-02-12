@@ -1375,6 +1375,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View Inform',
             'category': 'Inform',
             'permission': 'laboratory.view_inform'
+        },
+        {
+            'name': 'Manage status Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.can_manage_inform_status'
         }
     ],
     'add_informs': [
