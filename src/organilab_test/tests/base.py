@@ -225,8 +225,6 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         if obj["extra_action"] == "setvalue":
             self.set_value_action(obj, element)
-        elif obj["extra_action"] == "submit":
-            self.do_submit_action(obj,element)
         elif obj["extra_action"] == "script":
             self.selenium.execute_script(obj['value'])
         elif obj["extra_action"] == "sweetalert_comfirm":
