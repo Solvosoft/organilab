@@ -164,7 +164,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
                                       }),
             label="Material")
 
-        self.fields['course_name'].label = _("Description")
+
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('shelfobject_status_search', attrs={
@@ -178,12 +178,12 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
-                  "course_name"]
+                  "description"]
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
             'limit_quantity': forms.HiddenInput,
-            'course_name': genwidgets.Textarea,
+            'description': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
@@ -203,7 +203,6 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
                 'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
             }),
             label="Material")
-        self.fields['course_name'].label = _("Description")
 
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
@@ -221,12 +220,12 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
-                  "course_name"]
+                  "description"]
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
             'limit_quantity': forms.HiddenInput,
-            'course_name': genwidgets.Textarea,
+            'description': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
         }
 
@@ -247,7 +246,7 @@ class ShelfObjectEquipmentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
                                           'data-s2filter-objecttype': f'#id_{self.prefix}-objecttype'
                                       }),
             label=_("Equipment"))
-        self.fields['course_name'].label = _("Description")
+
         self.fields['status'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('shelfobject_status_search', attrs={
@@ -260,12 +259,12 @@ class ShelfObjectEquipmentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard", "course_name"]
+        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard", "description"]
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
             'limit_quantity': forms.HiddenInput,
-            'course_name': genwidgets.Textarea,
+            'description': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
@@ -298,12 +297,12 @@ class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,GTForm, forms.ModelF
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
-                  "course_name"]
+                  "description"]
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
             'limit_quantity': forms.HiddenInput,
-            'course_name': genwidgets.Textarea,
+            'description': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
         }
 
@@ -399,8 +398,6 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
             help_text=_("Search by name, code or CAS number")
         )
 
-        self.fields['course_name'].label = _("Description")
-
         self.fields['measurement_unit'] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
             widget=AutocompleteSelect('catalogunit',
@@ -429,11 +426,11 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
         model = ShelfObject
         fields = ["object","shelf","status","quantity", "measurement_unit",
                   "container_select_option","container_for_cloning","available_container",
-                  "course_name","marked_as_discard","batch","objecttype"]
+                  "description","marked_as_discard","batch","objecttype"]
         exclude =['laboratory_name','created_by', 'limit_quantity',"container", 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
-            'course_name': genwidgets.Textarea,
+            'description': genwidgets.Textarea,
             'quantity': genwidgets.TextInput,
 
             'batch': genwidgets.TextInput,
@@ -478,7 +475,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),
         label=_("Status"))
-        self.fields['course_name'].label = _("Description")
+
         self.fields['marked_as_discard'].initial=True
 
 
@@ -486,13 +483,13 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
         model = ShelfObject
         fields = ["object","shelf","status","quantity", "measurement_unit",
                   "container_select_option","container_for_cloning","available_container",
-                  "course_name","marked_as_discard","batch","objecttype"]
+                  "description","marked_as_discard","batch","objecttype"]
         exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits',"container"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
             'quantity': genwidgets.TextInput,
-            'course_name': genwidgets.Textarea,
+            'description': genwidgets.Textarea,
             'marked_as_discard': genwidgets.HiddenInput,
             'batch': genwidgets.TextInput
 
