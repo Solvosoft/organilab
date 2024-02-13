@@ -116,7 +116,7 @@ class MyProcedureSerializer(serializers.ModelSerializer):
         action += """ <a title='%s' class="pe-2 open_modal" data-url="%s" onclick="get_procedure(this)"><i class="fa fa-book"></i></a>
         """ % (_("Reserved"), reverse('academic:get_procedure', kwargs={'org_pk':org_pk,'pk':obj.custom_procedure.pk}))
         action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger"
-        aria-hidden="true"></i></a>""" % (_("Delete"), obj.custom_procedure.pk)
+        aria-hidden="true"></i></a>""" % (_("Delete"), obj.pk)
 
         return action
 

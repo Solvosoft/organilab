@@ -136,7 +136,7 @@ class ShelfObjectForm(forms.ModelForm,GTForm):
     class Meta:
         model = ShelfObject
         fields = "__all__"
-        exclude =['laboratory_name','course_name','status','created_by', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
+        exclude =['laboratory_name','description','status','created_by', 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
@@ -190,14 +190,14 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","quantity","measurement_unit","course_name","marked_as_discard",'limit_quantity','limits']
+        fields = ["object","shelf","quantity","measurement_unit","description","marked_as_discard",'limit_quantity','limits']
         exclude = ['created_by',"laboratory_name", "status"]
         widgets = {
             'shelf': forms.HiddenInput,
             'limit_quantity': forms.HiddenInput,
             'quantity': core.TextInput,
             'measurement_unit': core.Select,
-            'course_name': core.TextInput,
+            'description': core.TextInput,
             'marked_as_discard': core.HiddenInput,
             'limits': core.SelectWithAdd(attrs={'add_url': reverse_lazy('laboratory:add_shelfobjectlimit')}),
 
@@ -225,14 +225,14 @@ class ShelfObjectRefuseFormUpdate(CustomForm, forms.ModelForm):
 
     class Meta:
         model = ShelfObject
-        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit','course_name']
+        fields = ['shelf', 'quantity', 'limit_quantity', 'measurement_unit','description']
         exclude = ['laboratory_name']
         widgets = {
             'shelf': forms.HiddenInput,
             'quantity': core.TextInput,
             'limit_quantity': core.TextInput,
             'measurement_unit': core.Select,
-            'course_name': core.TextInput
+            'description': core.TextInput
         }
 
 

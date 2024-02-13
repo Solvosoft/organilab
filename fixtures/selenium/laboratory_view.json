@@ -1,0 +1,281 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "adminpass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "Organilab",
+      "last_name": "Administrador",
+      "email": "orgadmin@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "8888-8888",
+      "id_card": "0-0000-0000",
+      "job_position": "Administrator",
+      "language": "es",
+      "laboratories": [
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Gestión Laboratorio",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+      "name": "Gestión Informes",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "change_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "delete_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "view_inform",
+          "laboratory",
+          "inform"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+      "name": "Administración de Objetos",
+      "color": "#337193",
+      "permissions": [
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Organización de Prueba",
+      "position": 0,
+      "level": 0,
+      "rol": [1, 2, 3],
+      "users": [1]
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "I Período",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+      "laboratory",
+      "organizationstructure"
+    ],
+      "object_id": 1,
+      "rol": [3]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+      "laboratory",
+      "laboratory"
+    ],
+      "object_id": 1,
+      "rol": [3]
+    }
+  },
+  {
+    "model":  "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+      "laboratory",
+      "laboratory"
+      ],
+      "object_id": 1
+    }
+
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de inventario",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de procedimientos",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble de equipos",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[1]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 1,
+      "name": "Mueble aéreo de materiales",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+   {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "Balanzas",
+      "container_shelf": null,
+      "type": 72,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 64
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "P0134",
+      "name": "Balanza de laboratorio",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": []
+    }
+  }
+]

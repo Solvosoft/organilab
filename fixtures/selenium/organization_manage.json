@@ -366,16 +366,6 @@
   },
   {
     "model": "laboratory.userorganization",
-    "pk": 1,
-    "fields": {
-      "organization": 1,
-      "user": 1,
-      "status": true,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "laboratory.userorganization",
     "pk": 2,
     "fields": {
       "organization": 2,

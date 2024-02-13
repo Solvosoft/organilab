@@ -50,7 +50,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 24,
@@ -65,7 +65,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertTrue(json.loads(response.content)['detail'], _("The creation was performed successfully."))
         self.assertTrue(poscount>precount)
         obs=ShelfObjectObservation.objects.last()
-        self.assertTrue(obs.description==data['course_name'])
+        self.assertTrue(obs.description==data['description'])
 
     def test_create_shelfobject_equipment(self):
         """
@@ -84,7 +84,7 @@ class CreateShelfobjectTest(TestCase):
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "maximum_limit": 0,
             }
         precount=ShelfObject.objects.filter(shelf=13).count()
@@ -95,7 +95,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertTrue(json.loads(response.content)['detail'], _("The creation was performed successfully."))
         self.assertTrue(poscount>precount)
         obs=ShelfObjectObservation.objects.last()
-        self.assertTrue(obs.description==data['course_name'])
+        self.assertTrue(obs.description==data['description'])
 
     def test_create_shelfobject_reactive(self):
         """
@@ -114,7 +114,7 @@ class CreateShelfobjectTest(TestCase):
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
@@ -132,7 +132,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertTrue(json.loads(response.content)['detail'], _("The creation was performed successfully."))
         self.assertTrue(poscount>precount)
         obs=ShelfObjectObservation.objects.last()
-        self.assertTrue(obs.description==data['course_name'])
+        self.assertTrue(obs.description==data['description'])
 
     def test_create_shelfobject_reactive_not_container(self):
         """
@@ -147,7 +147,7 @@ class CreateShelfobjectTest(TestCase):
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
@@ -215,7 +215,7 @@ class CreateShelfobjectTest(TestCase):
                 "in_where_laboratory": 1,
                 "measurement_unit": 60,
                 "marked_as_discard": False,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "minimum_limit": 0,
                 "maximum_limit": 0,
                 "container_select_option": "clone",
@@ -452,7 +452,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": True,
                 "minimum_limit": 0,
                 "maximum_limit": 40,
@@ -466,7 +466,7 @@ class CreateShelfobjectTest(TestCase):
         self.assertTrue(json.loads(response.content)['detail'], _("The creation was performed successfully."))
         self.assertTrue(poscount>precount)
         obs=ShelfObjectObservation.objects.last()
-        self.assertTrue(obs.description==data['course_name'])
+        self.assertTrue(obs.description==data['description'])
 
     def test_create_discard_shelfobject_units_error(self):
         """
@@ -485,7 +485,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": None,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": True,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
@@ -515,7 +515,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": True,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
@@ -540,7 +540,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "minimum_limit": 0,
                 "maximum_limit": 0,
             }
@@ -565,7 +565,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
@@ -599,7 +599,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 0,
@@ -632,7 +632,7 @@ class CreateShelfobjectTest(TestCase):
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "marked_as_discard": False,
                 "minimum_limit": 0,
                 "maximum_limit": 24,
@@ -660,7 +660,7 @@ class CreateShelfobjectTest(TestCase):
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
@@ -690,7 +690,7 @@ class CreateShelfobjectTest(TestCase):
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
@@ -720,7 +720,7 @@ class CreateShelfobjectTest(TestCase):
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
@@ -752,7 +752,7 @@ class CreateShelfobjectTest(TestCase):
                 "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
-                "course_name": "A reactive product",
+                "description": "A reactive product",
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
