@@ -228,7 +228,7 @@ class LaboratoryDeleteView(DeleteView):
 
             if org_relations.exists():
                 organizations_name = list(org_relations.values_list("organization__name", flat=True))
-                msg_delete += " %s %s." % (_("The relational organizations are: "), str(organizations_name)[1:-1])
+                msg_delete += " %s %s." % (_("The related organizations are: "), str(organizations_name)[1:-1])
 
             msg_delete += _(" Are you sure you want to delete this laboratory? This action is irreversible.")
 

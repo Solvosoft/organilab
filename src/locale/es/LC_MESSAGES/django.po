@@ -4277,8 +4277,14 @@ msgstr "¿está seguro de que quiere borrar esta relación?"
 msgid "was created for"
 msgstr "fue creado por"
 
-msgid "are you sure you want to delete this laboratory?"
-msgstr "¿está seguro de que quiere borrar este laboratorio?"
+msgid " Are you sure you want to delete this laboratory? This action is irreversible."
+msgstr " ¿Está seguro de que quiere borrar este laboratorio? Esta acción es irreversible."
 
 msgid "maintains a relationship with"
 msgstr "mantiene una relación con"
+
+msgid "The related organizations are: "
+msgstr "Las organizaciones relacionadas son: "
+
+msgid "this action will involve deleting all relations with others organizations."
+msgstr "esta acción implicará eliminar todas las relaciones con otras organizaciones."
