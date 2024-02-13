@@ -213,43 +213,62 @@ class LaboratoryDeleteView(DeleteView):
         msg_delete = "%s %s %s, %s" % (self.object.name,
                                        _("was created for"),
                                        self.organization.name,
-                                       _("are you sure you want to delete this laboratory?"))
+                                       _("this action will involve deleting all relations with others organizations."))
 
         if self.org != self.object.organization.pk:
             msg_delete = msg_delete_relationship
+        else:
+            org_relations = OrganizationStructureRelations.objects.filter(
+                content_type=ContentType.objects.filter(
+                        app_label=self.object._meta.app_label,
+                        model=self.object._meta.model_name
+                    ).first(),
+                    object_id=self.object.pk
+            ).exclude(organization=self.organization)
+
+            if org_relations.exists():
+                organizations_name = list(org_relations.values_list("organization__name", flat=True))
+                msg_delete += " %s %s." % (_("The relational organizations are: "), str(organizations_name)[1:-1])
+
+            msg_delete += _(" Are you sure you want to delete this laboratory? This action is irreversible.")
 
         context['msg_delete'] = msg_delete
         return context
 
     def form_valid(self, form):
         success_url = self.get_success_url()
+        relations_filters = {
+            "content_type": ContentType.objects.filter(
+                app_label=self.object._meta.app_label,
+                model=self.object._meta.model_name
+                ).first(),
+                "object_id": self.object.pk
+        }
 
         if self.org == self.object.organization.pk:
             utils.organilab_logentry(self.request.user, self.object, DELETION,
-                                     relobj=self.organization)
+                                     "laboratory", relobj=self.organization)
             self.object.delete()
 
         else:
             #All profilepermissions related to this laboratory
-            profilepermissions_list = ProfilePermission.objects.filter(content_type__app_label=self.object._meta.app_label,
-                                                       content_type__model=self.object._meta.model_name,
-                                                       object_id=self.object.pk)
+            profilepermissions_list = ProfilePermission.objects.filter(**relations_filters)
 
             if profilepermissions_list:
                 delete_profile_roles_related_to_laboratory(profilepermissions_list, self.organization)
 
-            #Delete relation between lab and org and register log about this action
-            org_relation = OrganizationStructureRelations.objects.filter(
-                organization=self.organization,
-                content_type=ContentType.objects.filter(
-                    app_label=self.object._meta.app_label,
-                    model=self.object._meta.model_name
-                ).first(),
-                object_id=self.object.pk
-            ).first()
-            utils.organilab_logentry(self.request.user, org_relation, DELETION,
-                                     'organization structure relations', relobj=self.organization)
-            org_relation.delete()
+            relations_filters.update({"organization": self.organization})
+
+        relations_list = OrganizationStructureRelations.objects.filter(**relations_filters)
+
+        for relation_obj in relations_list:
+            utils.organilab_logentry(self.request.user, relation_obj, DELETION,
+                                     'organization structure relations',
+                                     change_message="The relation between %s and %s was deleted." % (
+                                         str(self.laboratory), str(relation_obj.organization)),
+                                     relobj=relation_obj.organization)
+            relation_obj.delete()
+
         return HttpResponseRedirect(success_url)
 
 
