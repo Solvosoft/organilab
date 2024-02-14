@@ -19,17 +19,20 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
+from academic.models import MyProcedure
 from auth_and_perms.models import Profile, ProfilePermission
 from laboratory import utils
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, \
     OrganizationUserManagementForm, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, \
-    UserOrganization, OrganizationStructureRelations
+    UserOrganization, OrganizationStructureRelations, Inform, InformsPeriod
 from laboratory.utils import organilab_logentry, get_laboratories_by_user_profile, \
-    register_laboratory_contenttype, delete_profile_roles_related_to_laboratory
+    register_laboratory_contenttype, delete_profile_roles_related_to_laboratory, \
+    delete_relation_between_laboratory_with_other_models
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from presentation.models import FeedbackEntry
 
 
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
@@ -236,6 +239,7 @@ class LaboratoryDeleteView(DeleteView):
         return context
 
     def form_valid(self, form):
+        user = self.request.user
         success_url = self.get_success_url()
         relations_filters = {
             "content_type": ContentType.objects.filter(
@@ -246,28 +250,36 @@ class LaboratoryDeleteView(DeleteView):
         }
 
         if self.org == self.object.organization.pk:
-            utils.organilab_logentry(self.request.user, self.object, DELETION,
+            utils.organilab_logentry(user, self.object, DELETION,
                                      "laboratory", relobj=self.organization)
-            self.object.delete()
-
+            FeedbackEntry.objects.filter(laboratory_id=self.lab).delete()
         else:
-            #All profilepermissions related to this laboratory
-            profilepermissions_list = ProfilePermission.objects.filter(**relations_filters)
-
-            if profilepermissions_list:
-                delete_profile_roles_related_to_laboratory(profilepermissions_list, self.organization)
-
             relations_filters.update({"organization": self.organization})
 
-        relations_list = OrganizationStructureRelations.objects.filter(**relations_filters)
+        # All profilepermissions related to this laboratory
+        profilepermissions_list = ProfilePermission.objects.filter(**relations_filters)
 
-        for relation_obj in relations_list:
-            utils.organilab_logentry(self.request.user, relation_obj, DELETION,
-                                     'organization structure relations',
-                                     change_message="The relation between %s and %s was deleted." % (
-                                         str(self.laboratory), str(relation_obj.organization)),
-                                     relobj=relation_obj.organization)
-            relation_obj.delete()
+        if profilepermissions_list:
+            delete_profile_roles_related_to_laboratory(profilepermissions_list,
+                                                       self.organization, self.laboratory)
+
+        relations_list = OrganizationStructureRelations.objects.filter(**relations_filters)
+        myprocedure_list = MyProcedure.objects.filter(**relations_filters)
+        inform_list = Inform.objects.filter(**relations_filters)
+
+        general_relation_list = [
+            {"list": relations_list, "model_name": "organization structure relations",
+             "change_message": "The relation between %s and %s was deleted."},
+            {"list": myprocedure_list, "model_name": "my procedure",
+             "change_message": "My procedure %s in %s laboratory related to %s organization was deleted."},
+            {"list": inform_list, "model_name": "inform",
+             "change_message": "Inform %s in %s laboratory related to %s organization was deleted."}
+        ]
+
+        delete_relation_between_laboratory_with_other_models(general_relation_list, user, self.laboratory)
+
+        if self.org == self.object.organization.pk:
+            self.object.delete()
 
         return HttpResponseRedirect(success_url)
 
