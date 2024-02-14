@@ -71,7 +71,8 @@ class InformsSeleniumTest(SeleniumBase):
     def test_remove_element(self):
         path_list = self.path_base+[
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[2]/td[3]/a[2]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[1]","hover": ""},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[1]","hover": "",
+             "element":".component-btn-group"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[1]"},
             {"path": "//*[@id='save_btn']"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button", "scroll":"window.scrollTo(0, 600)"},

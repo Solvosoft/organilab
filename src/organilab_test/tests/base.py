@@ -291,7 +291,7 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.active_hidden_elements(obj)
 
         if "hover" in obj:
-            self.selenium.execute_script(self.set_css_element(".component-btn-group"))
+            self.selenium.execute_script(self.set_css_element(obj['element']))
 
         if 'sleep' in obj:
             if isinstance(obj['sleep'], int):
@@ -314,6 +314,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         self.create_directory_path(folder_name=folder_name)
         self.create_screenshot(order=order)
+        print(folder_name)
         for obj in path_list:
             self.apply_utils(obj)
             element = self.selenium.find_element(By.XPATH, obj['path'])
