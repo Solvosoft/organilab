@@ -205,7 +205,7 @@ class OrganizationActionsFormview(FormView):
         )
         newinstance.users.add(self.request.user)
         organilab_logentry(self.request.user, newinstance, ADDITION,
-                           'organization structure',
+                           'clone organization structure',
                            changed_data=['name', 'position', 'level', 'active', 'parent', 'users'])
 
         for orgrel in OrganizationStructureRelations.objects.filter(

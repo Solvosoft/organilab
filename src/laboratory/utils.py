@@ -3,7 +3,7 @@ import io
 import qrcode
 import qrcode.image.svg
 from django.conf import settings
-from django.contrib.admin.models import LogEntry
+from django.contrib.admin.models import LogEntry, DELETION
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
@@ -407,28 +407,35 @@ def register_laboratory_contenttype(organization, laboratory):
         object_id=lab_id
     )
 
-def delete_profile_roles_related_to_laboratory(profilepermissions_list, organization):
-    # Filter organization roles
-    for profile in profilepermissions_list:
-        roles = profile.rol.filter(organizationstructure=organization)
-        roles_pks = list(roles.values_list("pk", flat=True))
+def delete_profile_roles_related_to_laboratory(profilepermissions_list, organization, laboratory):
+    if laboratory.organization == organization:
+        profilepermissions_list.delete()
+    else:
+        # Filter organization roles
+        for profile in profilepermissions_list:
+            roles = profile.rol.filter(organizationstructure=organization)
+            profile.rol.remove(*roles)
+        profilepermissions_list.filter(rol__isnull=True).delete()
 
-        # Organization with same roles(possible with cloned organizations)
-        orgs_with_same_roles = OrganizationStructure.objects.filter(
-            rol__in=roles_pks).exclude(
-            pk=organization.pk)
 
-        if orgs_with_same_roles.exists():
+def get_change_message(relation_list, laboratory, relation_obj):
+    change_objects = (str(laboratory), str(relation_obj.organization))
 
-            # Removes only profile roles related to this laboratory, but if some role
-            # is used in other organization with the same laboratory will be an exception
-            for org in orgs_with_same_roles:
+    if hasattr(relation_obj, 'name'):
+        change_objects = (relation_obj.name,) + change_objects
 
-                roles_org = set(list(org.rol.values_list("pk", flat=True)))
+    change_message = relation_list["change_message"] % change_objects
+    return change_message
 
-                profilep_pks_set = set(list(
-                    profile.rol.all().values_list("pk", flat=True)))
-                difference_set = roles_org.difference(profilep_pks_set)
 
-                if difference_set:
-                    profile.rol.remove(*list(difference_set))
+def delete_relation_between_laboratory_with_other_models(general_relation_list, user,
+                                                         laboratory):
+    for relation_list in general_relation_list:
+        for relation_obj in relation_list["list"]:
+            organilab_logentry(user, relation_obj, DELETION,
+                               relation_list["model_name"],
+                               change_message=get_change_message(relation_list,
+                                                                 laboratory,
+                                                                 relation_obj),
+                               relobj=relation_obj.organization)
+        relation_list["list"].delete()
