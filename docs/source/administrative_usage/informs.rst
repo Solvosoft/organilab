@@ -231,6 +231,147 @@ Permisos Requeridos:
 
 *   view_customform*: Permite visualizar las plantillas.
 
+Administración de informes
+----------------------------------
+Este módulo se encagar del manejo de informes de los laboratorios que son alimentados por **Plantillas de informes** de
+la organización.
+
+.. image:: ../_static/view_informs.png
+    :height: 380
+    :width: 720
+
+..  warning::
+        Hay que tener en cuenta que si una **Plantilla de informe**, que se este utilizando en un informe es eliminada,
+        también los informes vinculados a este seran removidos del sistema.
+
+Ejemplo de ingreso a modulo de informes:
+
+.. image:: ../_static/gif/view_inform.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos dentro del módulo:
+
+*   *view_inform*: Permite visualizar los informes.
+*   *add_inform*: Permite crear informes.
+*   *change_inform*: Permite ingresar al informe.
+*   *can_manage_inform_status*: Permite modificar el estado de los informes.
+*   *delete_inform*: Permite eliminar informes.
+*   *view_observation*: Permite visualizar las observaciones del informe.
+*   *change_observation*: Permite editar la observación.
+*   *delete_observation*: Permite eliminar las observación.
+
+Crear informes
+***********************************
+
+En la creación de un informe este por defecto su estado se encontrará en *borrador*, asismismo se requerirá el ingreso
+de los siguientes datos:
+
+*   **Nombre**: Es un campo obligatorio.
+*   **Platilla de informe**: Este campo listará las platillas asociadas a la organización, es obligatorio la seleción de
+    de una opción.
+
+Ejemplo de creación de informe:
+
+.. image:: ../_static/gif/add_inform.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos:
+
+*   *view_inform*: Permite visualizar los informes.
+*   *add_inform*: Permite crear informes.
+
+
+Cambiar estado informes
+***********************************
+
+Los informes se manejan en 3 estados: **Borrador**, **En Revisión**, **Finalizado** y la persona que puede cambiar el
+estado del informe de Revisión a Finalizado o de Finalizado a Borrador, es la que posea el permiso *can_manage_inform_status*
+, por lo tanto la el cambio de estado se realiza de la siguientes formas:
+
+*   **Borrador a Revisión**:
+        .. image:: ../_static/gif/review_inform.gif
+            :height: 380
+            :width: 720
+
+*   **Revision a Finalizado**:
+        .. image:: ../_static/gif/finalize_inform.gif
+            :height: 380
+            :width: 720
+
+Permisos requeridos:
+
+*   *view_inform*: Permite visualizar los informes.
+*   *change_inform*: Permite ingresar al informe.
+*   *can_manage_inform_status*: Permite modificar el estado de los informes.
+
+Agregar Observación en informes
+***********************************
+La creación de observación la puede realizar, cualquier usuario vinculado al laboratorio puede ingresarla de la siguiente forma:
+
+.. image:: ../_static/gif/view_inform_template.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos
+*   *view_inform*: Permite visualizar los informes.
+*   *add_comment*: Permite crear informes.
+*   *change_inform*: Permite ingresar al informe.
+
+Editar Observación en informes
+***********************************
+La modificación de una observación solo se le permitirá al creador de esta de la siguiente forma:
+
+.. image:: ../_static/gif/edit_inform_observation.gif
+    :height: 380
+    :width: 720
+
+..  note::
+        La descripción de la obsevación no puede esta vacío es obligatoria el ingresa de de texto.
+
+Permisos requeridos:
+
+*   *view_inform*: Permite visualizar los informes.
+*   *change_inform*: Permite ingresar al informe.
+*   *view_comment*: Permite visualizar las observaciones del informe.
+*   *change_comment*: Permite editar la observación.
+
+
+Eliminar Observación en informes
+***********************************
+La eliminación de una observación solo se le permitirá al creador de esta de la siguiente forma:
+
+.. image:: ../_static/gif/remove_inform_observation.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos:
+
+*   *view_inform*: Permite visualizar los informes.
+*   *change_inform*: Permite ingresar al informe.
+*   *view_comment*: Permite visualizar las observaciones del informe.
+*   *remove_comment*: Permite eliminar las observación.
+
+Eliminar informes
+***********************************
+
+..  caution::
+        Hay que tener encuenta a la hora de eliminar un informe este también se elimina en el historial de los informes
+        programados.
+
+Ejemplo de eliminación de informes:
+
+.. image:: ../_static/gif/remove_inform.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos
+
+*   *view_inform*: Permite visualizar los informes.
+*   *delete_inform*: Permite eliminar informes.
+
+
 Programar informes
 ----------------------------------
 
