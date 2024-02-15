@@ -32,6 +32,7 @@ class ContainerFilter(FilterSet):
                    'object__name': ['icontains'],
                    'status__description': ['icontains'],
                    'measurement_unit__description': ['icontains'],
+                   'containershelfobject__object__name': ['icontains'],
                    }
 
 class ContainerListSerializer(serializers.ModelSerializer):
@@ -40,6 +41,7 @@ class ContainerListSerializer(serializers.ModelSerializer):
     status = CatalogDetailSerializer()
     measurement_unit = serializers.SerializerMethodField()
     created_by = serializers.SerializerMethodField()
+    containershelfobject = serializers.SerializerMethodField()
 
     def get_created_by(self, obj):
         name = None
@@ -52,10 +54,16 @@ class ContainerListSerializer(serializers.ModelSerializer):
     def get_measurement_unit(self, obj):
         return obj.get_measurement_unit_display()
 
+    def get_containershelfobject(self, obj):
+        name = ""
+        if obj.containershelfobject.first():
+            name = obj.containershelfobject.first().object.name
+        return name
+
     class Meta:
         model = ShelfObject
         fields = ['id', 'object', 'shelf', 'status', 'measurement_unit', 'created_by',
-                  'creation_date']
+                  'creation_date', 'containershelfobject']
 
 class ContainerDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ContainerListSerializer(), required=True)
