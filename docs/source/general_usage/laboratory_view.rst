@@ -40,6 +40,58 @@ De tipo equipo
 
 
 
+Ver los contenedores del estante
+======================================
+
+.. image:: ../_static/gif/view_containers_by_shelf.gif
+   :height: 380
+   :width: 720
+
+
+Transferencia de objetos de estante al laboratorio (Importación)
+================================================================
+
+
+Aprobación de la transferencia
+-----------------------------------------------
+
+
+Objeto en estante con contenedor nuevo basado en el seleccionado
+
+.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_clone_container.gif
+   :height: 380
+   :width: 720
+
+
+Objeto en estante con contenedor seleccionado
+
+.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_available_container.gif
+   :height: 380
+   :width: 720
+
+
+Objeto en estante con movimiento de contenedor desde el laboratorio fuente (Tranferencia de reactivo con su contenedor)
+
+.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_use_source_container.gif
+   :height: 380
+   :width: 720
+
+
+Objeto en estante con nuevo contenedor actual en el laboratorio fuente (Réplica del contenedor en el que estaba)
+
+.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_new_based_source_container.gif
+   :height: 380
+   :width: 720
+
+
+Rechazo de la transferencia
+-----------------------------------------------
+
+.. image:: ../_static/gif/deny_transfer_in_shelfobject.gif
+   :height: 380
+   :width: 720
+
+
 Acciones del objeto en el estante
 ======================================
 
@@ -68,7 +120,7 @@ Incrementar un objeto en el estante
    :width: 720
 
 
-Transferir un objeto en el estante a otro laboratorio
+Transferir un objeto en el estante a otro laboratorio (Exportación)
 ------------------------------------------------------------
 
 .. image:: ../_static/gif/transfer_out_shelfobject.gif
