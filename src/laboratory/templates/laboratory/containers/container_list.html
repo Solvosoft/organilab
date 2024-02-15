@@ -12,7 +12,7 @@
 
 {% block content %}
 <div class="row">
-	<table class="table table-striped w-100" id="container_table"></table>
+	<table class="table table-striped w-100 table-responsive" id="container_table"></table>
 </div>
 
 {% endblock %}
@@ -31,6 +31,7 @@ datatable_inits = {
 							{data: "shelf", name: "shelf__name", title: gettext("Shelf"), type: "readonly", visible: true, render: gt_print_list_object('name')},
 							{data: "status", name: "status__description", title: gettext("Status"), type: "string", visible: true, render: gt_print_list_object('description')},
 							{data: "measurement_unit", name: "measurement_unit__description", title: gettext("Measurement Unit"), type: "string", visible: true},
+							{data: "containershelfobject", name: "containershelfobject__object__name", title: gettext("Substance"), type: "string", visible: true},
 							{data: "created_by", name: "created_by", title: gettext("Created By"), type: "string", visible: true},
 							{data: "creation_date", name: "creation_date", title: gettext("Creation Date"), type: "date",  render: DataTable.render.datetime(), visible: true}
 		],
