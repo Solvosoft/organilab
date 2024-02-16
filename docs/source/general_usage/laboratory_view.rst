@@ -1,11 +1,29 @@
 Vista de laboratorio
 *****************************
 
-Crear objeto en el estante
-================================
+Árbol relacional de elementos en un laboratorio
+=======================================================
+
+El primer elemento en la lista serán las salas de laboratorio, el segundo elemento son sus muebles y el tercer
+elemento son sus estantes.
+
+Los íconos QR en cada uno de estos elementos contienen un enlace que redirecciona a la vista y posición en la cual este
+se ubica, el ícono de PDF en el mueble redirecciona a la vista del reporte de objetos por mueble.
+
+.. image:: ../_static/qr_laboratory_view_elements.png
+   :height: 380
+   :width: 720
+
+
+Creación de objeto en el estante
+=====================================
 
 De tipo reactivo
 ---------------------
+
+Los objetos de tipo reactivo son los únicos que el formulario solicitará un contenedor en su información, existen 2
+opciones de contenedor que se mostrarán en los siguientes gifs a continuación.
+
 
 1. Reactivo con contenedor clonado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -26,6 +44,10 @@ De tipo reactivo
 De tipo material
 ---------------------
 
+El material son todos los elementos que pueden contener sustancias, no es requisito indispensable que estos objetos
+sean contenedores definitivos pueden ser elementos que se utilicen para realizar pruebas como jeringas de un solo uso
+que son desechables, las cuales no representan a un elemento con mayor capacidad de almacenaje como lo es un galón.
+
 .. image:: ../_static/gif/create_shelfobject_material.gif
    :height: 380
    :width: 720
@@ -33,6 +55,9 @@ De tipo material
 
 De tipo equipo
 ---------------------
+
+Los equipos en laboratorio son todos los elementos que se utilizan para facilitar las prácticas y que son parte de un
+ambiente de laboratorio como lo son las balanzas, el microscopio y embudos.
 
 .. image:: ../_static/gif/create_shelfobject_equipment.gif
    :height: 380
@@ -43,41 +68,59 @@ De tipo equipo
 Ver los contenedores del estante
 ======================================
 
+La lista de contenedores por estante muestra todos los contenedores en uso y también los que se encuentran disponibles
+dentro de ese estante.
+
 .. image:: ../_static/gif/view_containers_by_shelf.gif
    :height: 380
    :width: 720
 
 
 Transferencia de objetos de estante al laboratorio (Importación)
-================================================================
+=======================================================================
+
+Las tranferencias son procesos que consisten en un laboratorio que envía un objeto en estante y otro que recibe, los
+objetos pueden ser de cualquier tipo como reactivos, materiales o equipos.
 
 
 Aprobación de la transferencia
 -----------------------------------------------
 
+Para las opciones 3 y 4 si el objeto es de tipo reactivo es necesario que el mismo tenga un contenedor, de lo
+contrario se indicará que el objeto no tiene contenedor relacionado y no se podrá realizar la transferencia.
 
-Objeto en estante con contenedor nuevo basado en el seleccionado
+Además también es requisito que el estante que recibirá el objeto tenga las características necesarias como capacidad
+de almacenaje ilimitado o disponible y también que la unidad de medida del objeto a recibir sea equivalente a la del
+estante o que el estante no tenga unidad de medida, lo que quiere decir que es un estante que almacena múltiples objetos
+de distintas unidades de medida.
+
+
+1. Objeto en estante con contenedor nuevo basado en el seleccionado
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_clone_container.gif
    :height: 380
    :width: 720
 
 
-Objeto en estante con contenedor seleccionado
+2. Objeto en estante con contenedor seleccionado
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_available_container.gif
    :height: 380
    :width: 720
 
 
-Objeto en estante con movimiento de contenedor desde el laboratorio fuente (Tranferencia de reactivo con su contenedor)
+3. Objeto en estante con movimiento de contenedor desde el laboratorio fuente (Tranferencia de reactivo con su contenedor)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_use_source_container.gif
    :height: 380
    :width: 720
 
 
-Objeto en estante con nuevo contenedor actual en el laboratorio fuente (Réplica del contenedor en el que estaba)
+4. Objeto en estante con nuevo contenedor actual en el laboratorio fuente (Réplica del contenedor en el que estaba)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_new_based_source_container.gif
    :height: 380
@@ -98,6 +141,9 @@ Acciones del objeto en el estante
 Ver detalle del objeto en el estante
 -----------------------------------------------
 
+En el detalle del objeto en el estante se puede visualizar la información general de este y descargar su QR con enlace
+a este mismo.
+
 .. image:: ../_static/gif/view_shelfobject_detail.gif
    :height: 380
    :width: 720
@@ -107,6 +153,9 @@ Ver detalle del objeto en el estante
 Reservar un objeto en el estante
 -----------------------------------------------
 
+Las reservas de un objeto en el estante permiten realizar la solicitud de uso de un elemento del laboratorio para uso de
+procedimientos estudiantiles u otros fines.
+
 .. image:: ../_static/gif/reserve_shelfobject.gif
    :height: 380
    :width: 720
@@ -115,13 +164,22 @@ Reservar un objeto en el estante
 Incrementar un objeto en el estante
 -----------------------------------------------
 
+Con el fin de incrementar el stock de un elemento en laboratorio cuando es requerido.
+
 .. image:: ../_static/gif/increase_shelfobject.gif
    :height: 380
    :width: 720
 
 
 Transferir un objeto en el estante a otro laboratorio (Exportación)
-------------------------------------------------------------
+--------------------------------------------------------------------------
+
+La transferencia de objetos a otro laboratorio implica un laboratorio que envía (Labaoratorio actual) y otro que recibe,
+se pueden tranferir cualquier tipo de objeto y de ser necesario este puede marcarse como desecho.
+
+
+Transferir un objeto en el estante a otro laboratorio
+--------------------------------------------------------------------------
 
 .. image:: ../_static/gif/transfer_out_shelfobject.gif
    :height: 380
@@ -139,6 +197,8 @@ Transferir un objeto en el estante como desecho a otro laboratorio
 Decrementar un objeto en el estante
 ------------------------------------------
 
+Sustracción de un objeto en el estante debido a acondicionamiento de la sala de laboratorio, solicitudes, reservas, etc.
+
 .. image:: ../_static/gif/decrease_shelfobject.gif
    :height: 380
    :width: 720
@@ -146,6 +206,9 @@ Decrementar un objeto en el estante
 
 Actualizar contenedor del objeto en el estante (Reactivo)
 -------------------------------------------------------------------------
+
+El contenedor del objeto en el estante puede ser actualizado en caso de ser necesario, un ejemplo de esto es cuando la
+cantidad de un reactivo supera la capacidad de almacenaje de su contenedor actual y necesita ser trasladado a otro.
 
 
 1. Opciones de contenedor --> Crear nuevo basado en el seleccionado
@@ -166,6 +229,14 @@ Actualizar contenedor del objeto en el estante (Reactivo)
 
 Mover un objeto en el estante a otro estante (Dentro del mismo laboratorio)
 ---------------------------------------------------------------------------------------------
+
+Existen 4 opciones de contenedor a la hora de mover un objeto en el estante, a continuación se ilustran las siguientes:
+
+Nota: Para las opciones 3 y 4 si el objeto es de tipo reactivo es necesario que el mismo tenga un contenedor, de lo
+contrario se indicará que el objeto no tiene contenedor relacionado y no se podrá realizar el movimiento. Si te interesa
+como asignar un contenedor puedes elegir la opción 1 ó 2 ó sino lee la sección *Actualizar contenedor del objeto en el estante (Reactivo)*
+para administrar el contenedor de los objetos en estante.
+
 
 1. Opciones de contenedor --> Crear nuevo basado en el seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -202,6 +273,9 @@ Mover un objeto en el estante a otro estante (Dentro del mismo laboratorio)
 Ver la bitácora de un objeto en el estante
 --------------------------------------------------------
 
+La bitácora es una pieza fundamental porque contiene las observaciones sobre los distintos cambios que pudo haber
+sufrido este a lo largo de su existencia dentro del laboratorio, como cambios de estado, incrementos, decrementos, etc.
+
 .. image:: ../_static/gif/view_shelfobject_logs.gif
    :height: 380
    :width: 720
@@ -209,6 +283,9 @@ Ver la bitácora de un objeto en el estante
 
 Descargar PDF de la información de un objeto en el estante
 ---------------------------------------------------------------------
+
+El PDF del objeto en el estante permite apreciar toda la información relevante a este, como lo es modelo, placa, serie,
+tipo, características, ubicación dentro del estante y mucho más.
 
 .. image:: ../_static/gif/download_shelfobject_info.gif
    :height: 380
@@ -218,13 +295,19 @@ Descargar PDF de la información de un objeto en el estante
 Eliminar un objeto en el estante
 ---------------------------------------------------------------------
 
+El siguiente gif muestra como se realiza la eliminación de un reactivo, aplica el mismo proceso para materiales y equipos.
+
+
+1. Eliminar reactivo
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. image:: ../_static/gif/delete_shelfobject.gif
    :height: 380
    :width: 720
 
 
-Eliminar un objeto en el estante y su contenedor
----------------------------------------------------------------------
+2. Eliminar reactivo y su contenedor (Solo los objetos de tipo reactivo tienen contenedor)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/delete_shelfobject_and_its_container.gif
    :height: 380
@@ -250,7 +333,7 @@ Permisos de usuario
     .. image:: ../_static/user_without_permissions.png
 
 
-Partes del campo de búsqueda
+Secciones del campo de búsqueda
 --------------------------------------
 
     .. image:: ../_static/search_input.png
@@ -263,7 +346,7 @@ Partes del campo de búsqueda
     .. image:: ../_static/search.png
 
 Botones de acción
------------------
+----------------------
 
     Estos botones están incluidos dentro de la funcionalidad de búsqueda.
 
@@ -288,7 +371,7 @@ Tipo de búsqueda por elemento
 ------------------------------------
 
 Buscar por sala de laboratorio
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     Permite encontrar y seleccionar la sala respectiva dentro del laboratorio.
 

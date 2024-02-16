@@ -53,6 +53,22 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
             {"path": "//*[@id='transfer-list-modal']/div/div/div[2]/div/div[2]/div/table//tbody/tr/td[6]/a"}
         ]
 
+    def test_go_to_objects_by_furniture_report(self):
+
+        path_list1 = self.path_base + [
+            {"path": "//*[@id='labroom_2']"},
+            {"path": "//*[@id='collapselabroom']/ul/li[2]/ul/li/a[2]"}
+        ]
+
+        path_list2 = [
+            {"path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div/div/div[2]/div",
+            "scroll": "window.scrollTo(0, 70)"}
+        ]
+
+        general_path_list = [path_list1, path_list2]
+        self.create_gif_by_change_focus_tab(general_path_list, ["reportbase"],
+                                            "go_to_objects_by_furniture_report")
+
     def create_reactive(self, row_ins_position, select_container_position,
                         container_type, ins_position=""):
         path_list = self.create_shelfobject_reative_start + [

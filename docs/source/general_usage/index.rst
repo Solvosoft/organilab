@@ -1,5 +1,5 @@
 =====================
-Usage
+Uso
 =====================
 
 Aquí vamos a describir el uso de Organilab en modo general

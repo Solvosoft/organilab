@@ -97,6 +97,9 @@
 		report_status: "{% url 'report:report_status' org_pk=org_pk lab_pk=laboratory %}"
 
 	}
+
+	window.name = "reportbase";
+
 </script>
 <script src="{% static 'laboratory/js/reports.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
