@@ -9,10 +9,13 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
     def setUp(self):
         super().setUp()
 
-        self.create_shelfobject_reative_start = self.path_base + [
+        self.select_lab_elements = self.path_base + [
             {"path": "//*[@id='labroom_2']"},
             {"path": "//*[@id='furniture_3']"},
             {"path": "//*[@id='shelf_2']"},
+        ]
+
+        self.create_shelfobject_reative_start = self.select_lab_elements + [
             {"path": "//*[@id='shelfobjecttable_wrapper']/div/div[2]/div/button[3]",
              "scroll": "window.scrollTo(0, 250)"},
             {"path": "//*[@id='reactive_form']/div/div/span/span/span"},
@@ -39,6 +42,15 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
              "extra_action": "clearinput"},
             {"path": "//*[@id='reactive_form']/div[10]/div/input",
              "extra_action": "setvalue", "value": "3092"}
+        ]
+
+        self.view_transfer_list = self.select_lab_elements + [
+            {"path": "//*[@id='shelfobjecttable_wrapper']/div/div[2]/div/button[5]",
+             "scroll": "window.scrollTo(0, 250)"}
+        ]
+
+        self.approve_transfer_in = self.view_transfer_list + [
+            {"path": "//*[@id='transfer-list-modal']/div/div/div[2]/div/div[2]/div/table//tbody/tr/td[6]/a"}
         ]
 
     def create_reactive(self, row_ins_position, select_container_position,
@@ -103,3 +115,59 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
             {"path": self.get_save_button_modal("equipment_modal")}
         ]
         self.create_gif_process(path_list, "create_shelfobject_equipment")
+
+    def test_view_containers_by_shelf(self):
+
+        path_list = self.select_lab_elements + [
+            {"path": "//*[@id='shelfobjecttable_wrapper']/div/div[2]/div/button[4]",
+             "scroll": "window.scrollTo(0, 250)"},
+            {"path": "//*[@id='container_table']", "extra_action": "script",
+             "value": "window.scrollTo(0, 50)"},
+            {"path": "//*[@id='container_table']", "extra_action": "script",
+             "value": "window.scrollTo(0, 100)"}
+        ]
+        self.create_gif_process(path_list, "view_containers_by_shelf")
+
+    def test_approve_transfer_in_shelfobject_with_clone_container(self):
+
+        path_list = self.approve_transfer_in + [
+            {"path": "//*[@id='transfer_in_approve_with_container_form']/div/div/div/div/ins"},
+            {"path": "//*[@id='transfer_in_approve_with_container_form']/div[2]/div/span/span/span"},
+            {"path": "//*[@id='transfer_in_approve_with_container_id_modal']/span/span/span[2]/ul/li"},
+            {"path": "//*[@id='transfer_in_approve_with_container_id_modal']/div/div/div[3]/button[2]"}
+        ]
+        self.create_gif_process(path_list, "approve_transfer_in_shelfobject_with_clone_container")
+
+    def test_approve_transfer_in_shelfobject_with_available_container(self):
+
+        path_list = self.approve_transfer_in + [
+            {"path": "//*[@id='transfer_in_approve_with_container_form']/div/div/div/div[2]/ins"},
+            {"path": "//*[@id='transfer_in_approve_with_container_form']/div[3]/div/span/span/span"},
+            {"path": "//*[@id='transfer_in_approve_with_container_id_modal']/span/span/span[2]/ul/li"},
+            {"path": "//*[@id='transfer_in_approve_with_container_id_modal']/div/div/div[3]/button[2]"}
+        ]
+        self.create_gif_process(path_list, "approve_transfer_in_shelfobject_with_available_container")
+
+    def test_approve_transfer_in_shelfobject_with_use_source_container(self):
+
+        path_list = self.approve_transfer_in + [
+            {"path": "//*[@id='transfer_in_approve_with_container_form']/div/div/div/div[3]/ins"},
+            {"path": "//*[@id='transfer_in_approve_with_container_id_modal']/div/div/div[3]/button[2]"}
+        ]
+        self.create_gif_process(path_list, "approve_transfer_in_shelfobject_with_use_source_container")
+
+    def test_approve_transfer_in_shelfobject_with_new_based_source_container(self):
+
+        path_list = self.approve_transfer_in + [
+            {"path": "//*[@id='transfer_in_approve_with_container_form']/div/div/div/div[4]/ins"},
+            {"path": "//*[@id='transfer_in_approve_with_container_id_modal']/div/div/div[3]/button[2]"}
+        ]
+        self.create_gif_process(path_list, "approve_transfer_in_shelfobject_with_new_based_source_container")
+
+    def test_deny_transfer_in_shelfobject(self):
+
+        path_list = self.view_transfer_list + [
+            {"path": "//*[@id='transfer-list-modal']/div/div/div[2]/div/div[2]/div/table//tbody/tr/td[6]/a[2]"},
+            {"path": "/html/body/div[4]/div/div[3]/button[1]"},
+        ]
+        self.create_gif_process(path_list, "deny_transfer_in_shelfobject")

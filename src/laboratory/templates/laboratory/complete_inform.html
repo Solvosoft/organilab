@@ -22,13 +22,15 @@
                 {% if inform.status == 'Eraser' %}
                     <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
-                {% if inform.status == 'In Review' %}
-                    <button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
-                    <button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
-                {% endif %}
-                {% if inform.status == 'Finalized' %}
-                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
-                {% endif %}
+																{% if  perms.laboratory.can_manage_inform_status  %}
+																		{% if inform.status == 'In Review' %}
+																						<button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
+																						<button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
+																		{% endif %}
+																		{% if inform.status == 'Finalized' %}
+																						<button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
+																		{% endif %}
+															{% endif %}
             </form>
         </div>
         <div id="right-col" class="d-none" style="margin-top:-15px;">
