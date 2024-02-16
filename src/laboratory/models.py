@@ -882,6 +882,7 @@ class Inform(AbstractOrganizationRef):
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
+        permissions = [("can_manage_inform_status", "Can manage inform status")]
 
 
 class CommentInform(models.Model):

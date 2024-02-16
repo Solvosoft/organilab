@@ -4270,3 +4270,6 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Admin Informs"
+msgstr "Admin Informes"
