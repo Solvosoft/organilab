@@ -1,21 +1,19 @@
 import logging
 
 from django.conf import settings
-from djgentelella.permission_management import AllPermission
+from djgentelella.permission_management import AllPermission, AllPermissionByAction
 from rest_framework.generics import get_object_or_404
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 logger = logging.getLogger('organilab')
 
-class AllPermissionOrganization(AllPermission):
-    def __init__(self, perms, lookup_keyword='org_pk', as_param_method=None):
-        self.lookup_keyword=lookup_keyword
-        self.as_param_method=as_param_method
 
-        super().__init__(perms)
+class PermissionBase():
     def has_permission(self, request, view):
         organization=None
+        perm = view.perms[view.action]
+
         if request.data and self.lookup_keyword in request.data:
             organization = request.data.get(self.lookup_keyword)
         if self.lookup_keyword in request.headers:
@@ -37,5 +35,21 @@ class AllPermissionOrganization(AllPermission):
             return False
         return super().has_permission(request, view)
 
+class AllPermissionOrganization(AllPermission, PermissionBase):
+    def __init__(self, perms, lookup_keyword='org_pk', as_param_method=None):
+        self.lookup_keyword=lookup_keyword
+        self.as_param_method=as_param_method
+
+        super().__init__(perms)
+
+    def __call__(self, *args, **kwargs):
+        return self
+
+
+class AllPermissionOrganizationByAction(AllPermissionByAction, PermissionBase):
+    def __init__(self,lookup_keyword='org_pk', as_param_method=None):
+        self.lookup_keyword=lookup_keyword
+        self.as_param_method=as_param_method
+        super().__init__()
     def __call__(self, *args, **kwargs):
         return self
