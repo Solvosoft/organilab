@@ -564,6 +564,36 @@
     }
   },
   {
+    "model": "auth_and_perms.rol",
+    "pk": 24,
+    "fields": {
+      "name": "Gestión de Comentarios de informes",
+      "color": "#337193",
+      "permissions": [
+          [
+          "view_commentinform",
+          "laboratory",
+          "commentinform"
+        ],
+        [
+          "add_commentinform",
+          "laboratory",
+          "commentinform"
+        ],
+        [
+          "change_commentinform",
+          "laboratory",
+          "commentinform"
+        ],
+        [
+          "delete_commentinform",
+          "laboratory",
+          "commentinform"
+        ]
+      ]
+    }
+  },
+  {
     "model": "laboratory.organizationstructure",
     "pk": 1,
     "fields": {
@@ -1923,7 +1953,8 @@
         19,
         20,
         21,
-        22
+        22,
+        24
       ]
     }
   },

@@ -248,7 +248,7 @@ urlpatterns += organization_urls + [
     path('org/api/shels/list',  ShelfList.as_view(), name='get_shelfs_list'),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
-    path('inform/api/', include(router.urls)),
+    path('inform/api/<int:org_pk>', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
     path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
     path('sga_components/api/<int:org_pk>/', include(sgacomponentsrouter.urls)),

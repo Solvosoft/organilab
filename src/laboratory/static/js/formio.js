@@ -95,6 +95,14 @@ function save_comment(){
                     )
                     document.querySelector('#listado').innerHTML=success.data;
             },
+             error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON;
+               Swal.fire(
+                    'Error',
+                    errors.detail,
+                    "error"
+                    )
+               }
         });
     }
     })
@@ -126,7 +134,15 @@ function edit_comment(pk){
                     update_comment(result.value)
                 }
             })
-        }
+        },
+         error: function(xhr, resp, text) {
+                var errors = xhr.responseJSON;
+                Swal.fire(
+                    'Error',
+                    errors.detail,
+                    "error"
+                    )
+               }
     });
 }
 function update_comment(comment){
@@ -149,6 +165,14 @@ function update_comment(comment){
                     )
                  document.querySelector('#listado').innerHTML=success.data;
             },
+               error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON;
+               Swal.fire(
+                    'Error',
+                    errors.detail,
+                    "error"
+                    )
+               }
         });
 }
 function delete_comment(comment){
@@ -177,6 +201,14 @@ function delete_comment(comment){
                    remove_translation['successfull'],
                     )
             },
+              error: function(xhr, resp, text) {
+               var errors = xhr.responseJSON;
+               Swal.fire(
+                    'Error',
+                    errors.detail,
+                    "error"
+                    )
+               }
         });
     }
     });
