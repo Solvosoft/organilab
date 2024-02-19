@@ -56,7 +56,7 @@ class InformViewTest(BaseLaboratorySetUpTest):
 
         period = InformsPeriod.objects.first()
         inform_list = period.informs.all()
-        url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk, "org_pk":self.org.pk })
+        url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk})
         data = {
             'period': period.pk
         }
