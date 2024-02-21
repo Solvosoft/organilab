@@ -4,11 +4,10 @@ Vista de laboratorio
 Árbol relacional de elementos en un laboratorio
 =======================================================
 
-El primer elemento en la lista serán las salas de laboratorio, el segundo elemento son sus muebles y el tercer
-elemento son sus estantes.
+El primer elemento en la lista serán las salas de laboratorio, el segundo son sus muebles y el tercero son sus estantes.
 
 Los íconos QR en cada uno de estos elementos contienen un enlace que redirecciona a la vista y posición en la cual este
-se ubica, el ícono de PDF en el mueble redirecciona a la vista del reporte de objetos por mueble.
+se ubica, en cuanto al ícono de PDF en el mueble, este redirecciona a la vista del reporte de objetos por mueble.
 
 .. image:: ../_static/qr_laboratory_view_elements.png
    :height: 380
@@ -45,8 +44,9 @@ De tipo material
 ---------------------
 
 El material son todos los elementos que pueden contener sustancias, no es requisito indispensable que estos objetos
-sean contenedores definitivos pueden ser elementos que se utilicen para realizar pruebas como jeringas de un solo uso
-que son desechables, las cuales no representan a un elemento con mayor capacidad de almacenaje como lo es un galón.
+sean contenedores definitivos pueden ser elementos que se utilicen para realizar pruebas como son las jeringas de un
+solo uso que son desechables o las buretas que también son recipientes (Utilizados de manera breve) y que no equivalen
+a un elemento de mayor capacidad de almacenaje por mayor tiempo como lo es un galón.
 
 .. image:: ../_static/gif/create_shelfobject_material.gif
    :height: 380
