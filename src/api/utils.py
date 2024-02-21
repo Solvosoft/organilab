@@ -9,10 +9,10 @@ from laboratory.models import OrganizationStructure
 logger = logging.getLogger('organilab')
 
 
-class PermissionBase():
+class PermissionBase:
     def has_permission(self, request, view):
         organization=None
-        perm = view.perms[view.action]
+        print(self.as_param_method)
 
         if request.data and self.lookup_keyword in request.data:
             organization = request.data.get(self.lookup_keyword)
@@ -47,9 +47,9 @@ class AllPermissionOrganization(AllPermission, PermissionBase):
 
 
 class AllPermissionOrganizationByAction(AllPermissionByAction, PermissionBase):
-    def __init__(self,lookup_keyword='org_pk', as_param_method=None):
+
+    def __init__(self,lookup_keyword='org_pk'):
         self.lookup_keyword=lookup_keyword
-        self.as_param_method=as_param_method
         super().__init__()
     def __call__(self, *args, **kwargs):
         return self
