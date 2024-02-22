@@ -4285,3 +4285,6 @@ msgstr "Eliminar sustancia"
 
 msgid "Edit substance"
 msgstr "Editar sustancia"
+
+msgid "Unknown unit"
+msgstr "Unidad desconocida"
