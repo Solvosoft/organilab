@@ -19,6 +19,9 @@ class LaboratoryViewSeleniumTest(SeleniumBase):
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[1]/div[2]/ul/li[1]/a"}
         ]
 
+    def get_save_button_modal(self, id_modal):
+        return "//*[@id='%s']/div/div/div[3]/button[2]" % id_modal
+
 @tag('selenium')
 class LabViewTest(SeleniumBase):
     fixtures = ["selenium/laboratory_view.json"]
