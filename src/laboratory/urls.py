@@ -196,8 +196,9 @@ user_register_qr = [
 
 """APIS"""
 router = DefaultRouter()
+comment_router = DefaultRouter()
 
-router.register('api_inform', CommentAPI, basename='api-inform')
+comment_router.register('api_inform', CommentAPI, basename='api-inform')
 router.register('api_protocol', ProtocolViewSet, basename='api-protocol')
 router.register('api_logentry', LogEntryViewSet, basename='api-logentry')
 router.register('api_informs', InformViewSet, basename='api-informs')
@@ -249,6 +250,7 @@ urlpatterns += organization_urls + [
     path('org/api/shels/list',  ShelfList.as_view(), name='get_shelfs_list'),
     path('<int:org_pk>/', include(reports_all_lab)),
     path('catalogs/', include(catalogs_urls)),
+    path('inform/api/<int:org_pk>', include(comment_router.urls)),
     path('inform/api/', include(router.urls)),
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
     path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),

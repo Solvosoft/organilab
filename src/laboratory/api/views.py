@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
+from api.utils import AllPermissionOrganization, AllPermissionOrganizationByAction
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.api import serializers
 from laboratory.api.forms import CommentInformForm, ShelfObjectLabviewForm
@@ -80,9 +81,15 @@ class ApiReservationCRUD(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CommentAPI(viewsets.ModelViewSet):
-
-    authentication_classes =[SessionAuthentication,BaseAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+             "create": ["laboratory.add_commentinform"],
+             "list": ['laboratory.view_commentinform'],
+             "retrieve": ['laboratory.view_commentinform'],
+             "update": ['laboratory.change_commentinform'],
+             "destroy": ['laboratory.delete_commentinform'],
+             }
+    authentication_classes = [SessionAuthentication, BaseAuthentication]
+    permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
     queryset= CommentInform.objects.all()
     serializer_class = CommentsSerializer
 
@@ -92,7 +99,7 @@ class CommentAPI(viewsets.ModelViewSet):
         except CommentInform.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         serializer = CommentsSerializer(data=request.data)
         if serializer.is_valid():
             inform=Inform.objects.filter(pk=request.data['inform']).first()
@@ -120,15 +127,16 @@ class CommentAPI(viewsets.ModelViewSet):
         template = render_to_string('laboratory/comment.html', {'comments': comments, 'user':request.user}, request)
         return Response({'data':template})
 
-    def update(self, request, pk=None):
+    def update(self, request, pk=None, *args, **kwargs):
         comment=None
+        serializer= None
         if pk:
             serializer = CommentsSerializer(data=request.data)
             if serializer.is_valid():
                 comment = CommentInform.objects.filter(pk=pk).first()
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            if comment:
+            if comment.created_by == self.request.user:
                 comment.comment=request.data['comment']
                 comment.save()
                 template = render_to_string('laboratory/comment.html',
@@ -136,16 +144,22 @@ class CommentAPI(viewsets.ModelViewSet):
                                              'user': request.user},request)
 
                 return Response({'data':template}, status=status.HTTP_200_OK)
+            else:
+                return  Response({"error":"Only the user that create this observation can update"}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk=None):
+
+    def destroy(self, request, pk=None, *args, **kwargs):
         if pk:
             comment = self.get_comment(pk)
             inform=comment.inform
-            comment.delete()
-            template= render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user},request)
+            if comment.created_by == self.request.user:
+                comment.delete()
+                template= render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user},request)
 
-            return Response({'data':template},status=status.HTTP_200_OK)
+                return Response({'data':template},status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -56,7 +56,7 @@ class InformViewTest(BaseLaboratorySetUpTest):
 
         period = InformsPeriod.objects.first()
         inform_list = period.informs.all()
-        url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk, })
+        url = reverse("laboratory:api-informs-detail", kwargs={"pk": self.org.pk})
         data = {
             'period': period.pk
         }
@@ -73,7 +73,7 @@ class CommentInformViewTest(BaseLaboratorySetUpTest):
         data = {
             "inform": inform.pk,
         }
-        url = reverse("laboratory:api-inform-list")
+        url = reverse("laboratory:api-inform-list", kwargs={"org_pk":self.org.pk})
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Describir porque sucedieron los hechos.", json.loads(response.content)['data'])
@@ -84,14 +84,14 @@ class CommentInformViewTest(BaseLaboratorySetUpTest):
             "inform": inform.pk,
             "comment": "Revisar fecha de ingreso y salida del informe #"+ str(inform.pk)
         }
-        url = reverse("laboratory:api-inform-list")
+        url = reverse("laboratory:api-inform-list", kwargs={"org_pk":self.org.pk})
         response = self.client.post(url, data=data)
         self.assertEqual(response.status_code, 201)
         self.assertIn(data['comment'], json.loads(response.content)['data'])
 
     def test_get_comment(self):
         comment = CommentInform.objects.first()
-        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk, })
+        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk,"org_pk":self.org.pk })
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         content_obj = json.loads(response.content)
@@ -101,7 +101,7 @@ class CommentInformViewTest(BaseLaboratorySetUpTest):
         inform = Inform.objects.first()
         comment = CommentInform.objects.filter(inform=inform).last()
         data = {"comment": "Llenar todos los campos del informe."}
-        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk, })
+        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk, "org_pk":self.org.pk })
         response = self.client.put(url, data=json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
         #Refresh variable commment
@@ -113,7 +113,7 @@ class CommentInformViewTest(BaseLaboratorySetUpTest):
         comment_list = CommentInform.objects.filter(inform=inform)
         total_comment = comment_list.count()
         comment = comment_list.last()
-        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk, })
+        url = reverse("laboratory:api-inform-detail", kwargs={"pk": comment.pk, "org_pk": self.org.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 200)
         #Refresh variable commment_list
