@@ -47,9 +47,9 @@
 const urls ={
     edit:"{% url 'laboratory:complete_inform' org_pk=org_pk lab_pk=laboratory pk=inform.pk %}",
     list: "{% url 'laboratory:get_informs' org_pk=org_pk lab_pk=laboratory %}",
-    add_comment:"{% url 'laboratory:api-inform-list' %}",
-    get_comment:"{% url 'laboratory:api-inform-list' %}",
-    delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",
+    add_comment:"{% url 'laboratory:api-inform-list' org_pk=org_pk %}",
+    get_comment:"{% url 'laboratory:api-inform-list' org_pk=org_pk  %}",
+    delete_update_comment :"{% url 'laboratory:api-inform-detail' org_pk=org_pk pk=0 %}",
 };
 const inform="{{inform.pk}}"
 

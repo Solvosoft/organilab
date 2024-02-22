@@ -26,8 +26,7 @@
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
       "language": "es",
-      "laboratories": [
-      ]
+      "laboratories": [1, 2]
     }
   },
   {
@@ -164,6 +163,22 @@
     }
   },
   {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Prácticas estudiantiles",
+      "phone_number": "85794954",
+      "location": "San Antonio",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "",
+      "coordinator": "",
+      "unit": "",
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
@@ -200,7 +215,18 @@
       ],
       "object_id": 1
     }
-
+  },
+  {
+    "model":  "laboratory.organizationstructurerelations",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+      "laboratory",
+      "laboratory"
+      ],
+      "object_id": 2
+    }
   },
   {
     "model": "laboratory.userorganization",
@@ -230,6 +256,16 @@
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z",
       "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 3,
+    "fields": {
+      "name": "Bodega",
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "laboratory": 2
     }
   },
   {
@@ -266,7 +302,20 @@
       "name": "Mueble de reactivos",
       "type": 75,
       "color": "#73879C",
-      "dataconfig": "[[[2]]]",
+      "dataconfig": "[[[2],[4]]]",
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+    {
+    "model": "laboratory.furniture",
+    "pk": 4,
+    "fields": {
+      "labroom": 3,
+      "name": "Mueble esquinero negro",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[[5]]]",
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z"
     }
@@ -317,13 +366,42 @@
     }
   },
   {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 3,
+      "name": "Reactivos inflamables",
+      "container_shelf": null,
+      "type": 72,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 62
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 5,
+    "fields": {
+      "furniture": 4,
+      "name": "Reactivos inflamables",
+      "container_shelf": null,
+      "type": 72,
+      "color": "#73879C",
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "discard": false,
+      "measurement_unit": 62
+    }
+  },
+  {
     "model": "laboratory.object",
     "pk": 1,
     "fields": {
       "organization": 1,
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
-      "created_by": 1,
       "code": "P0134",
       "name": "Balanza de laboratorio",
       "synonym": null,
@@ -343,7 +421,6 @@
       "organization": 1,
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
-      "created_by": 1,
       "code": "CL5672",
       "name": "Cloroformo",
       "synonym": null,
@@ -363,7 +440,6 @@
       "organization": 1,
       "creation_date": "2023-01-10T22:48:14.125Z",
       "last_update": "2023-01-10T22:48:14.166Z",
-      "created_by": 1,
       "code": "Bt9932",
       "name": "Botella",
       "synonym": null,
@@ -395,15 +471,35 @@
       "created_by": 1,
       "code": "Cr3452",
       "name": "Acetona",
-      "synonym": null,
+      "synonym": "Propanona",
       "type": "0",
       "is_public": true,
-      "description": "",
+      "description": "Es un líquido incoloro con un distintivo olor y sabor. Se evapora fácilmente en el aire, es inflamable y se disuelve en el agua.",
       "model": "RT3534",
       "serie": "YH3984R",
       "plaque": "DSFRS32",
       "features": [1],
       "is_container": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 5,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "code": "GL0934",
+      "name": "Galón",
+      "synonym": null,
+      "type": "1",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [],
+      "is_container": true
     }
   },
   {
@@ -417,8 +513,12 @@
       "measurement_unit": 64,
       "creation_date": "2023-01-31T19:33:49.008Z",
       "last_update": "2023-01-31T19:33:49.035Z",
+      "created_by": 1,
       "in_where_laboratory": 1,
-      "laboratory_name": "I Período"
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=1&shelfobject=1",
+      "container": null,
+      "status": 158
     }
   },
   {
@@ -426,15 +526,142 @@
     "pk": 2,
     "fields": {
       "shelf": 2,
+      "object": 3,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "created_by": 1,
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=1&furniture=1&shelf=2&shelfobject=2",
+      "container": null,
+      "status": 158,
+      "description": "Recipiente para almacenar líquidos"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 2,
       "object": 4,
       "quantity": 5,
       "limit_quantity": 1,
       "measurement_unit": 62,
       "creation_date": "2023-01-31T19:33:49.008Z",
+      "created_by": 1,
       "last_update": "2023-01-31T19:33:49.035Z",
       "in_where_laboratory": 1,
       "laboratory_name": "I Período",
-      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=2"
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=2&furniture=3&shelf=2&shelfobject=3",
+      "container": 2,
+      "status": 158,
+      "description": "Acetona que será utilizada para las prácticas."
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 5,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "created_by": 1,
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=1&furniture=1&shelf=1&shelfobject=4",
+      "container": null,
+      "status": 158,
+      "description": "Recipiente para reactivos de 5 litros."
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 5,
+    "fields": {
+      "shelf": 5,
+      "object": 3,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "created_by": 1,
+      "in_where_laboratory": 1,
+      "laboratory_name": "I Período",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=1&furniture=1&shelf=2&shelfobject=2",
+      "container": null,
+      "status": 158,
+      "description": "Recipiente para almacenar líquidos"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 6,
+    "fields": {
+      "shelf": 5,
+      "object": 4,
+      "quantity": 1,
+      "limit_quantity": 1,
+      "measurement_unit": 62,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "created_by": 1,
+      "in_where_laboratory": 2,
+      "laboratory_name": "Bodega",
+      "shelf_object_url": "http://127.0.0.1:8000/lab/1/2/rooms/?labroom=3&furniture=4&shelf=5&shelfobject=6",
+      "container": 5,
+      "status": 158,
+      "description": "Acetona para uso de prácticas estudiantiles"
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectobservation",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z",
+      "action_taken": "Objeto creado",
+      "description": "Acetona que será utilizada para las prácticas.",
+      "shelf_object": 3
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "name": "Distribuidor de químicos",
+      "phone_number": "22222222",
+      "email": "distqui@gmail.com",
+      "legal_identity": "3-516516565",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.tranferobject",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "object": 6,
+      "laboratory_send": 2,
+      "laboratory_received": 1,
+      "quantity": 1,
+      "update_time": "2023-01-25T20:46:09.591Z",
+      "state": true,
+      "status": 0,
+      "mark_as_discard": false
     }
   }
 ]
