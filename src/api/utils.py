@@ -12,8 +12,7 @@ logger = logging.getLogger('organilab')
 class PermissionBase:
     def has_permission(self, request, view):
         organization=None
-        print(self.as_param_method)
-
+        
         if request.data and self.lookup_keyword in request.data:
             organization = request.data.get(self.lookup_keyword)
         if self.lookup_keyword in request.headers:
