@@ -4273,3 +4273,9 @@ msgstr "Actualizar indicacion de peligro"
 
 msgid "Admin Informs"
 msgstr "Admin Informes"
+
+msgid "Waste objects by shelf report"
+msgstr "Informe de objetos desechados por estante"
+
+msgid "Waste Report"
+msgstr "Reporte de desechos"
