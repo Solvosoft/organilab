@@ -4273,3 +4273,9 @@ msgstr "Actualizar indicacion de peligro"
 
 msgid "Admin Informs"
 msgstr "Admin Informes"
+
+msgid "Delete substance"
+msgstr "Eliminar sustancia"
+
+msgid "Edit substance"
+msgstr "Editar sustancia"
