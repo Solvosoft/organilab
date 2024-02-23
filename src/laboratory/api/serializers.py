@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
+from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -382,8 +383,21 @@ class EquipmentFilter(FilterSet):
                    }
 
 
+class ObjectFeaturesField(serializers.ModelSerializer, GTS2SerializerBase):
+    display_fields = 'display'
+
+    display_name = serializers.SerializerMethodField()
+
+    def get_display_name(self, obj):
+        return obj.name
+
+    class Meta:
+        model = ObjectFeatures
+        fields = ['id', 'display_name']
+
 class EquipmentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
+    features = ObjectFeaturesField(many=True)
 
     def get_actions(self, obj):
         return {
@@ -395,7 +409,8 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Object
-        fields = ['id', 'name', 'code', 'actions']
+        fields = ['id', 'name', 'code', 'synonym', 'description', 'type', 'is_public',
+                  'features', 'created_by', 'organization', 'actions']
 
 
 class EquipmentDataTableSerializer(serializers.Serializer):
