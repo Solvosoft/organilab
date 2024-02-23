@@ -592,7 +592,7 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
 
         super(ObjectForm, self).__init__(*args, **kwargs)
 
-        if self.request:
+        if self.request and not self.initial['type']:
             if 'type_id' in self.request.GET:
                 self.type_id = self.request.GET.get('type_id', '')
                 if self.type_id:

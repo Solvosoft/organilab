@@ -1,37 +1,37 @@
-import requests
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Q
-from django.db.models import Value, DateField
-from django.middleware.csrf import get_token
+from django.db.models import Value, DateField, Q
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
-from api.utils import AllPermissionOrganization, AllPermissionOrganizationByAction
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from api.utils import AllPermissionOrganizationByAction
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
+    organization_can_change_laboratory
 from laboratory.api import serializers
-from laboratory.api.forms import CommentInformForm, ShelfObjectLabviewForm
-from laboratory.api.serializers import ReservedProductsSerializer, ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, LogEntryFilterSet, ShelfObjectSerialize, \
-    LogEntryUserDataTableSerializer, ShelfLabViewSerializer
+from laboratory.api.forms import CommentInformForm
+from laboratory.api.serializers import ReservedProductsSerializer, \
+    ReservationSerializer, \
+    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, \
+    LogEntryFilterSet, ShelfObjectSerialize, \
+    LogEntryUserDataTableSerializer
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
-    Laboratory, InformsPeriod, ShelfObject, Shelf, ShelfObjectObservation
+    Laboratory, InformsPeriod, ShelfObject, Shelf, Object
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
-from laboratory.utils import get_logentries_org_management
-from laboratory.views.djgeneric import ListView
+from laboratory.utils import get_logentries_org_management, \
+    get_pk_org_ancestors_decendants
 from reservations_management.models import ReservedProducts
 
 
@@ -333,3 +333,90 @@ def ShelfObjectObservationView(request, org_pk, lab_pk, pk):
                                       'status_form': status_form,
                                       'qr': qr,
                                       'pk': pk})
+
+
+class PermissionByLaboratoryInOrganization(BasePermission):
+
+    def has_permission(self, request, view):
+        org_pk=view.kwargs.get('org_pk')
+        lab_pk=view.kwargs.get('lab_pk')
+        dev = True
+        if org_pk is None or lab_pk is None:
+            return False
+        view.organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk)
+        view.laboratory = get_object_or_404(
+            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+        try:
+            user_is_allowed_on_organization(view.request.user, view.organization)
+            organization_can_change_laboratory(view.laboratory, view.organization,
+                                               raise_exec=True)
+        except Exception as e:
+            dev=False
+        return dev
+
+    def has_object_permission(self, request, view, obj):
+        """
+        Return `True` if permission is granted, `False` otherwise.
+        """
+        return self.has_permission(request, view)
+
+
+class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        'list': serializers.EquipmentDataTableSerializer,
+        'destroy': serializers.EquipmentSerializer,
+        'create': serializers.ValidateEquipmentSerializer
+    }
+    perms = {
+        'list': ["laboratory.view_object"],
+        'create': ["laboratory.add_object"],
+        'update': ["laboratory.change_object"],
+        'retrieve': [],
+        'destroy': ["laboratory.delete_object"],
+        'get_values_for_update': []
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+
+    queryset = Object.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['object__name', ]  # for the global search
+    filterset_class = serializers.EquipmentFilter
+    ordering_fields = ['creation_date', 'created_by', 'status']
+    ordering = ('-creation_date',)  # default order
+    operation_type = ''
+    org_pk, lab_pk = None, None
+
+    def create(self, request, *args, **kwargs):
+        data = {'organization': kwargs["org_pk"], 'created_by': request.user.pk}
+        data.update(request.data)
+
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED,
+                        headers=headers)
+
+    def destroy(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().destroy(request, args, kwargs)
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        filters = (Q(organization__in=get_pk_org_ancestors_decendants(self.request.user,
+                                                                      self.org_pk),
+                     is_public=True)
+                   | Q(organization__pk=self.org_pk, is_public=False))
+
+        queryset = queryset.filter(filters).distinct()
+        return queryset.filter(type=Object.EQUIPMENT)
+
+    def list(self, request, *args, **kwargs):
+        self.org_pk = kwargs['org_pk']
+        self.lab_pk = kwargs['lab_pk']
+        return super().list(request, *args, **kwargs)

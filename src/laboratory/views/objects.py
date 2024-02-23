@@ -17,14 +17,13 @@ from django.shortcuts import render, get_object_or_404
 from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+
 from laboratory.forms import ObjectForm, ObjectUpdateForm
 from laboratory.models import Laboratory, BlockedListNotification, \
     OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
-from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
-    get_pk_org_ancestors_decendants
+from laboratory.utils import organilab_logentry, get_pk_org_ancestors_decendants
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
-
 
 
 class ObjectView(object):
@@ -226,4 +225,13 @@ def block_notifications(request, lab_pk, obj_pk):
         laboratory=laboratory, object=object, user=request.user)
     messages.success(request, "You won't be recieving notifications of this object anymore.")
     return render(request, 'laboratory/block_object_notification.html')
+
+
+def view_equipment_list(request, org_pk, lab_pk):
+    context = {
+        "org_pk": org_pk,
+        "lab_pk": lab_pk,
+        "create_form": ObjectForm(initial={"type": Object.EQUIPMENT})
+    }
+    return render(request, "laboratory/equipment/list.html", context=context)
 

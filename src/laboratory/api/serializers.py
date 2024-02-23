@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
 from rest_framework import serializers
@@ -10,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, \
     Shelf, Laboratory, \
-    ShelfObjectObservation, Object
+    ShelfObjectObservation, Object, ObjectFeatures
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -19,7 +20,9 @@ from django.utils.translation import gettext_lazy as _
 from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters, BooleanFilter, CharFilter
 from djgentelella.fields.drfdatetime import DateRangeTextWidget, DateTimeRangeTextWidget
 from django_filters import FilterSet
+import logging
 
+logger = logging.getLogger('organilab')
 
 class ReservedProductsSerializer(serializers.ModelSerializer):
     initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
@@ -351,3 +354,52 @@ class CreateObservationShelfObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObjectObservation
         fields = ['action_taken', 'description']
+
+
+class ValidateEquipmentSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    code = serializers.CharField(max_length=255)
+    synonym = serializers.CharField(max_length=255, allow_null=True, allow_blank=True, required=False)
+    description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    type = serializers.CharField(max_length=2)
+    is_public = serializers.BooleanField(required=False)
+    features = serializers.PrimaryKeyRelatedField(many=True, queryset=ObjectFeatures.objects.using(settings.READONLY_DATABASE))
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+    class Meta:
+        model = Object
+        fields = ['name', 'code', 'synonym', 'description', 'type', 'is_public',
+                  'features', 'created_by', 'organization']
+
+
+class EquipmentFilter(FilterSet):
+    class Meta:
+        model = Object
+        fields = {'id': ['exact'],
+                   'name': ['icontains'],
+                   'code': ['icontains']
+                   }
+
+
+class EquipmentSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        return {
+            'create': True,
+            'detail': True,
+            'update': True,
+            'destroy': True
+        }
+
+    class Meta:
+        model = Object
+        fields = ['id', 'name', 'code', 'actions']
+
+
+class EquipmentDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=EquipmentSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
