@@ -64,6 +64,11 @@ class ObjectFeatures(models.Model):
         return self.name
 
 
+class EquipmentType(models.Model):
+    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    description = models.CharField(max_length=255, verbose_name=_("Description"))
+
+
 class Object(AbstractOrganizationRef):
     REACTIVE = '0'
     MATERIAL = '1'
@@ -90,6 +95,8 @@ class Object(AbstractOrganizationRef):
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
     is_container = models.BooleanField(default=False, verbose_name=_("Is Container?"))
+
+
     @property
     def is_reactive(self):
         return self.type == self.REACTIVE
@@ -117,7 +124,6 @@ class Object(AbstractOrganizationRef):
     def save(self, *args, **kwargs):
         self.full_clean()
         return super(Object, self).save(*args, **kwargs)
-
 
 class SustanceCharacteristics(models.Model):
     obj = models.OneToOneField(Object, on_delete=models.CASCADE)
@@ -177,6 +183,31 @@ class ShelfObjectLimits(models.Model):
     expiration_date = models.DateField(null=True, blank=True,
                                        verbose_name=_('Expiration date'))
 
+class EquipmentCharacteristics(AbstractOrganizationRef):
+    object = models.OneToOneField(Object, on_delete=models.CASCADE)
+    use_manual = models.FileField(upload_to=upload_files, null=True, blank=True,
+                                  verbose_name=_("Use manual"))
+    calibration_required = models.BooleanField(default=False, verbose_name=_(
+        "Is calibration required?"))
+    operation_voltage = models.CharField(max_length=40, null=True, blank=True,
+                                         verbose_name=_("Operation voltage"))
+    operation_amperage = models.CharField(max_length=40, null=True, blank=True,
+                                          verbose_name=_("Operation amperage"))
+    providers = models.ManyToManyField("laboratory.Provider", verbose_name=_("Providers"))
+    use_specials_conditions = models.TextField(null=True, blank=True, verbose_name=_(
+        "Use specials conditions"))
+    generate_pathological_waste = models.BooleanField(default=False, verbose_name=_(
+        "Generate pathological waste?"))
+    clean_period_according_to_provider = models.IntegerField(null=True, blank=True,
+                                                             verbose_name=_(
+                                                                 "Clean period according to provider"))
+    instrumental_family = catalog.GTForeignKey(Catalog, null=True, blank=True,
+                                               key_name="key",
+                                               key_value="instrumental_family",
+                                               on_delete=models.SET_NULL,
+                                               verbose_name=_("Instrumental family"))
+    equipment_type = models.ForeignKey(EquipmentType, null=True, blank=True, on_delete=models.CASCADE,
+                                       verbose_name=_("Equipment type"))
 
 class ShelfObject(models.Model):
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"),
@@ -252,6 +283,61 @@ class ShelfObject(models.Model):
         return '%s %s %s %s' % (
             self.object.code, self.object.name, self.quantity,
             str(self.measurement_unit))
+
+class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
+    shelfobject = models.OneToOneField(ShelfObject, on_delete=models.CASCADE)
+    provider = models.ForeignKey("laboratory.Provider", null=True, blank=True, on_delete=models.SET_NULL,
+                                 verbose_name=_("Provider"))
+    authorized_roles_to_use_equipment = models.ManyToManyField('auth_and_perms.Rol',
+                                                               verbose_name=_("Authorized roles to use equipment"))
+    equipment_price = models.FloatField(null=True, blank=True, verbose_name=_("Equipment price"))
+    purchase_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Purchase equipment date"))
+    delivery_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Delivery equipment date"))
+    have_guarantee = models.BooleanField(default=False, verbose_name=_("Have guarantee?"))
+    contract_of_maintenance = models.FileField(upload_to=upload_files, verbose_name=_("Contract of maintenance"))
+    notes = models.TextField(null=True, blank=True, verbose_name=_("Note"))
+    available_to_use = models.BooleanField(default=False, verbose_name=_("Available to use?"))
+    first_date_use = models.DateField(null=True,blank=True, verbose_name=_("First date use"))
+
+
+class ShelfObjectMaintenance(AbstractOrganizationRef):
+    shelfobject = models.ForeignKey(ShelfObject, blank=False, null=False, on_delete=models.CASCADE)
+    maintenance_date = models.DateField(null=False,blank=False, verbose_name=_("Maintenance date"))
+    provider_of_maintenance = models.ForeignKey("laboratory.Provider", null=True,blank=True,
+                                                on_delete=models.SET_NULL,
+                                                verbose_name=_("Provider of Maintenance"))
+    validator = models.ForeignKey("auth_and_perms.Profile", on_delete=models.SET_NULL, null=True,blank=False, verbose_name=_("Validator"))
+    maintenance_observation = models.DateField(null=True,blank=True, verbose_name=_("Observation"))
+
+
+class ShelfObjectLog(AbstractOrganizationRef):
+    shelfobject = models.ForeignKey(ShelfObject, null=False, blank=False,on_delete=models.CASCADE)
+    description = models.TextField(null=False, blank=False, verbose_name=_("Description"))
+
+class ShelfObjectCalibrate(AbstractOrganizationRef):
+    shelfobject = models.ForeignKey(ShelfObject, null=False, on_delete=models.CASCADE)
+    observation = models.TextField(null=True, blank=True, verbose_name=_("Observation"))
+    calibrate_name = models.CharField(max_length=40,null=False, blank=True, verbose_name=_("Name of Calibrator"))
+    validator = models.ForeignKey("auth_and_perms.Profile", on_delete=models.SET_NULL, null=True,  verbose_name=_("Validator"))
+    calibration_date = models.DateField(null=False, blank=False, verbose_name=_("Calibration date"))
+
+class ShelfObjectTraining(AbstractOrganizationRef):
+    shelfobject = models.ForeignKey(ShelfObject, null=False, on_delete=models.CASCADE)
+    training_initial_date = models.DateField(null=False, blank=False, verbose_name=_("Initial date"))
+    training_final_date = models.DateField(null=False, blank=False, verbose_name=_("Final date"))
+    number_of_hours = models.IntegerField(null=False, blank=False, verbose_name=_("Number of hours"))
+    intern_people_receive_training = models.ManyToManyField("auth_and_perms.Profile",
+                                                            verbose_name=_("Intern people receive training"))
+    external_people_receive_training = models.TextField(blank=True, null=True,
+                                                        verbose_name=_("External people receive training"))
+    observation = models.TextField(blank=True, null=True, verbose_name=_("Observation"))
+
+class ShelfObjectGuarantee(AbstractOrganizationRef):
+    shelfobject = models.ForeignKey(ShelfObject, null=False, on_delete=models.CASCADE)
+    guarantee_initial_date = models.DateField(null=False, blank=False, verbose_name=_("Initial date"))
+    guarantee_final_date = models.DateField(null=False, blank=False, verbose_name=_("Final date"))
+    contract = models.FileField(null=True, blank=True, upload_to=upload_files, verbose_name=_("Contract"))
+
 
 
 class BaseUnitValues(models.Model):
