@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load timejs %}
+{% load urlname_tags %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_urlname_action 'laboratory_view_principal' %}
+{% endblock %}
+
+{% block title %}{% trans 'Equipment list' %}{% endblock %}
+
+{% block content %}
+<div class="row">
+	<table class="table table-striped w-100 table-responsive" id="equipment_table"></table>
+</div>
+
+
+{% url "laboratory:api-equipment-list" org_pk lab_pk as create_obj_url %}
+{% trans 'Create Equipment' as create_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=create_obj_url %}
+
+
+
+{% trans 'Delete Equipment' as delete_obj_tittle %}
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" title=delete_obj_tittle form_id="delete_obj_form" url=delete_obj_url %}
+
+{% endblock %}
+
+
+{% block js %}
+{{block.super}}
+<script>
+var object_urls = {
+	list_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
+	create_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
+	destroy_url: "{% url 'laboratory:api-equipment-detail' org_pk lab_pk 0 %}"
+<!--	detail_url: "{% url 'laboratory:objectview_update' org_pk lab_pk 0 %}",-->
+<!--	update_url: "{% url 'laboratory:objectview_update' org_pk lab_pk 0 %}"-->
+}
+datatable_inits = {
+			columns: [
+							{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+							{data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
+							{data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+							{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
+		],
+		addfilter: true
+}
+var equipment_modalids = {
+	'create': "#create_obj_modal",
+	'destroy': "#delete_obj_modal"
+}
+
+var equipment_actions = {
+	 table_actions: [],  //table_actions
+	 object_actions: [],
+		title: gettext('Actions'),
+		className:  "no-export-col"
+}
+let objconfig={
+	urls: object_urls,
+	datatable_element: "#equipment_table",
+	modal_ids: equipment_modalids,
+	actions: equipment_actions,
+	datatable_inits: datatable_inits,
+	add_filter: true,
+	delete_display: data => data['name']
+}
+
+
+let ocrud=ObjectCRUD("equipmentcrudobj", objconfig)
+ocrud.init();
+
+
+</script>
+{% endblock %}
