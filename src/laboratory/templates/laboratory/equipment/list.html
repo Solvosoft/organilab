@@ -16,11 +16,13 @@
 </div>
 
 
-{% url "laboratory:api-equipment-list" org_pk lab_pk as create_obj_url %}
+{% url "laboratory:api-equipment-list" org_pk lab_pk as list_obj_url %}
 {% trans 'Create Equipment' as create_obj_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=create_obj_url %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url %}
 
-
+{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 as detail_obj_url %}
+{% trans 'Update Equipment' as update_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url %}
 
 {% trans 'Delete Equipment' as delete_obj_tittle %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" title=delete_obj_tittle form_id="delete_obj_form" url=delete_obj_url %}
@@ -34,9 +36,8 @@
 var object_urls = {
 	list_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
 	create_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
-	destroy_url: "{% url 'laboratory:api-equipment-detail' org_pk lab_pk 0 %}"
-<!--	detail_url: "{% url 'laboratory:objectview_update' org_pk lab_pk 0 %}",-->
-<!--	update_url: "{% url 'laboratory:objectview_update' org_pk lab_pk 0 %}"-->
+	destroy_url: "{% url 'laboratory:api-equipment-detail' org_pk lab_pk 0 %}",
+	update_url: "{% url 'laboratory:api-equipment-detail' org_pk lab_pk 0 %}"
 }
 datatable_inits = {
 			columns: [
@@ -49,7 +50,8 @@ datatable_inits = {
 }
 var equipment_modalids = {
 	'create': "#create_obj_modal",
-	'destroy': "#delete_obj_modal"
+	'destroy': "#delete_obj_modal",
+	'update': "#update_obj_modal"
 }
 
 var equipment_actions = {

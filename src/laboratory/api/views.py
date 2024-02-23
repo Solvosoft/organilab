@@ -367,7 +367,8 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
         'list': serializers.EquipmentDataTableSerializer,
         'destroy': serializers.EquipmentSerializer,
-        'create': serializers.ValidateEquipmentSerializer
+        'create': serializers.ValidateEquipmentSerializer,
+        'update': serializers.ValidateEquipmentSerializer
     }
     perms = {
         'list': ["laboratory.view_object"],
