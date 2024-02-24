@@ -1375,6 +1375,31 @@ URLNAME_PERMISSIONS = {
             'name': 'View Inform',
             'category': 'Inform',
             'permission': 'laboratory.view_inform'
+        },
+        {
+            'name': 'View Inform Observation',
+            'category': 'Inform Observation',
+            'permission': 'laboratory.view_commentinform'
+        },
+        {
+            'name': 'Add Inform Observation',
+            'category': 'Inform Observation',
+            'permission': 'laboratory.add_commentinform'
+        },
+        {
+            'name': 'Change Inform Observation',
+            'category': 'Inform Observation',
+            'permission': 'laboratory.change_commentinform'
+        },
+        {
+            'name': 'Delete Inform Observation',
+            'category': 'Inform Observation',
+            'permission': 'laboratory.delete_commentinform'
+        },
+        {
+            'name': 'Manage status Inform',
+            'category': 'Inform',
+            'permission': 'laboratory.can_manage_inform_status'
         }
     ],
     'add_informs': [

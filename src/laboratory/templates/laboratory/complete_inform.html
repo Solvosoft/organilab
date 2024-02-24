@@ -22,13 +22,15 @@
                 {% if inform.status == 'Eraser' %}
                     <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
                 {% endif %}
-                {% if inform.status == 'In Review' %}
-                    <button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
-                    <button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
-                {% endif %}
-                {% if inform.status == 'Finalized' %}
-                    <button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
-                {% endif %}
+																{% if  perms.laboratory.can_manage_inform_status  %}
+																		{% if inform.status == 'In Review' %}
+																						<button type="button"  class="btn btn-success" onclick="saveForm('Finalized')"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Finalize' %}</button>
+																						<button type="button"  class="btn btn-danger" onclick="saveForm('Eraser')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send to draft' %}</button>
+																		{% endif %}
+																		{% if inform.status == 'Finalized' %}
+																						<button type="button"  class="btn btn-success" onclick="saveForm('In Review')"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Send for review' %}</button>
+																		{% endif %}
+															{% endif %}
             </form>
         </div>
         <div id="right-col" class="d-none" style="margin-top:-15px;">
@@ -45,9 +47,9 @@
 const urls ={
     edit:"{% url 'laboratory:complete_inform' org_pk=org_pk lab_pk=laboratory pk=inform.pk %}",
     list: "{% url 'laboratory:get_informs' org_pk=org_pk lab_pk=laboratory %}",
-    add_comment:"{% url 'laboratory:api-inform-list' %}",
-    get_comment:"{% url 'laboratory:api-inform-list' %}",
-    delete_update_comment :"{% url 'laboratory:api-inform-detail' 0 %}",
+    add_comment:"{% url 'laboratory:api-inform-list' org_pk=org_pk %}",
+    get_comment:"{% url 'laboratory:api-inform-list' org_pk=org_pk  %}",
+    delete_update_comment :"{% url 'laboratory:api-inform-detail' org_pk=org_pk pk=0 %}",
 };
 const inform="{{inform.pk}}"
 

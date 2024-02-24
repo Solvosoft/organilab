@@ -476,7 +476,7 @@ En la creación de reactivos se requerirá el ingreso de varios datos, los cuale
     como **No**, este no será visualizado por otros usuarios.
 *   **Descripción**: Este campo se utiliza para dar una descripción básica del equipo, esta información no es obligatoria de ingresar.
 *   **Características de objeto**: Este campo indica las características del objeto, las cuales se pueden seleccionar varias,
-   , además, este campo es obligatoria seleccionar una y si no existe ninguna visitar el módulo de **Características de objetos**,
+    además, este campo es obligatoria seleccionar una y si no existe ninguna visitar el módulo de **Características de objetos**,
     para la creación de estas.
 *   **Modelo**: Este campo registrará el modelo del equipo, este campo es obligatorio ingresar información.
 *   **Serie**: Este campo no es obligatorio de ingresar información.
@@ -501,8 +501,8 @@ En la creación de reactivos se requerirá el ingreso de varios datos, los cuale
     norma **SGA**, se pueden seleccionar varias opciones, a su no es obligatorio seleccionar alguna opción.
 *   **Códigos NFPA**: Este campo se utiliza para agregar códigos basados en las normas **NFPA**, no es obligatorio
     seleccionar alguna opción.
-*   **Clases de almacenamientos**: Este campo se utiliza para indicar los tipos de almacenamientos para el reactivo
-  , no es obligatorio seleccionar alguna opción.
+*   **Clases de almacenamientos**: Este campo se utiliza para indicar los tipos de almacenamientos para el reactivo,
+    no es obligatorio seleccionar alguna opción.
 *   **Seveso**: Este campo indica si el reactivo es un *Seveso en la lista lll*.
 *   **Representación de la sustancia**: Este campo se utiliza para el agregar una imagen que represente al reactivo,
     en cualquier formato, no es obligatorio ingresar alguna imagen.
@@ -961,5 +961,356 @@ Ejemplo de edición de proveedores:
 
 Administración de protocolos
 -------------------------------------------
+Este módulo se encagara de manejar los protocolos internos de la organización por parte de la administración
 
-/lab/<int:org>/<int:lab>/protocols/create
+.. image:: ../_static/protocols_index.png
+   :alt: Módulo de Protocolos
+   :height: 380
+   :width: 720
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresa al módulo de protocolos.
+*  *add_protocol*: Permite visualizar el botón de crear y a su vez los genera
+*  *change_protocol*: Permite la modificación de protocolos.
+*  *delete_protocol*: Permite la eliminación de protocolos.
+
+.. image:: ../_static/gif/view_protocols.gif
+   :height: 380
+   :width: 720
+
+
+Crear Protocolo
+******************
+En la creación de protocolos se requerirán 3 datos, los cuales son:
+
+*   **Nombre**: Esta campo se ingresará el nombre del protocolo.
+*   **Descripción corta**: Este campo se ingresará una descripción sobre el protocolo, tiene como un límite de 300 letras.
+*   **Archivo del protocolo**: Este campo se utilizará para agregar documentos solo en formato **PDF**.
+
+.. note::
+    Para la creación de protocolos, los 3 datos anteriores es obligatorio ingresarlos para crear el protocolo.
+
+Permisos requeridos:
+*   *view_laboratory*: Permite el ingreso al laboratorio.
+*   *view_protocol*: Permite ingresar al módulo de protocolos.
+*   *add_protocol*: Permite visualizar el botón de crea protocolo y a su vez crearlos.
+
+.. image:: ../_static/gif/add_protocol.gif
+   :height: 380
+   :width: 720
+
+Actualizar protocolo
+***********************
+En la edición de protocolos se permitirá modificar cualquiera de los campos que se mencionan en el **Crear Protocolo**.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresar al módulo de protocolos.
+*   *add_protocol*: Permite modificar los protocolos.
+
+Ejemplo de edición de protocolo:
+
+.. image:: ../_static/gif/update_protocol.gif
+   :height: 380
+   :width: 720
+
+Descargar protocolos
+***********************
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresar al módulo de protocolos.
+
+Ejemplo de edición de protocolo:
+
+.. image:: ../_static/gif/download_protocol.gif
+   :height: 380
+   :width: 720
+
+Eliminar protocolo
+***********************
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_protocol*: Permite ingresar al módulo de protocolos.
+*  *delete_protocol*: Permite modificar los protocolos.
+
+Ejemplo de eliminación de protocolo:
+
+.. image:: ../_static/gif/delete_protocol.gif
+   :height: 380
+   :width: 720
+
+Registro de usuarios por QR
+----------------------------
+Este módulo se encarga de la generación de códigos QR para el registro de usuarios al laboratorio y a su vez a
+la organización mediante el escaneo de la imagen.
+
+.. image:: ../_static/registter_user_QR.png
+   :alt: Módulo de Registro de usuarios por QR
+   :height: 380
+   :width: 720
+
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permitira el ingreso al laboratorio.
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, ademaá de visualizar la lista de QR.
+*  *add_registeruserq*: Permite visualizar el botón de crear y a su vez los genera.
+*  *change_registeruserq*: Permite la modificacion de registros.
+*  *delete_registeruserq*: Permite la eliminacion de registros.
+
+Ejemplo de ingresar al módulo:
+
+.. image:: ../_static/gif/view_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+Crear QR de registro de usuarios
+**********************************
+En creación de los QR se requieren varios datos lo cuales son:
+
+*   **Activar usuario**: Este campo se utiliza para indicar cuando un usuario se registra, este pueda tener acceso
+    inmediato si la opción seleccionada es **Sí**, pero si es **No**, la administración se encargará de la activación
+    del usuario.
+*   **Rol**: Este campo listará los roles registrados en la organización, por lo tanto, a la hora de registrar él
+    usuario vendrán con el rol elegido.
+*   **Organización**: Este campo listará las organizaciones vinculadas a la organización excluyendo solo las que poseen
+    un código QR.
+*   **Código**: Este campo indica el código de acceso, el cual como máximo aceptara 4 dígitos y este debe ser único, no
+    puede ser repetido.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permitira el ingreso al laboratorio.
+*  *view_registeruserqr*: Permitira ingresa al módulo de registro de usuarios por QR.
+*  *add_registeruserq*: Permitira la creación de registros.
+
+Ejemplo de creación de QR:
+
+.. image:: ../_static/gif/create_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+
+Actualizar QR de registro de usuarios
+***************************************
+En la edición de los archivos QR no se permitira la modificacion del codigo de este pero si los demás campos.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, ademas de visualizar la lista de QR.
+*  *change_registeruserq*: Permite la modificacion de registros.
+
+
+Ejemplo de edición de QR:
+
+.. image:: ../_static/gif/update_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+
+Bitácora de registro de usuarios por QR
+******************************************
+Sobre la bitácora de registro de usuario listara los usuarios que se registraron al sistema mediante el uso del QR, viene
+siendo similar a un historial.
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
+
+Ejemplo de ingresar a bitacoras del QR:
+
+.. image:: ../_static/gif/logentry_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+Descargar QR para registro de usuarios
+******************************************
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
+
+Ejemplo de como descargar el archivo QR:
+
+.. image:: ../_static/gif/download_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+Eliminar QR de registro de usuarios
+***************************************
+.. warning::
+    Al eliminar un archivo QR del sistema ya este no puede ser utilizado en los lugares que se esté utilizando,
+    por consiguiente sería preferible notificar a lo usuarios que va que inutilizado el QR.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio
+*  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
+*  *delete_registeruserq*: Permite la eliminación de registros.
+
+Ejemplo de eliminación de QR:
+
+.. image:: ../_static/gif/delete_register_user_QR.gif
+   :height: 380
+   :width: 720
+
+
+Mis procedimientos
+----------------------------
+Este modúlo se encargará de generar procedimientos quimicos dentro de la organización que a su vez permitirán generar
+reservaciones de objetos vinculados a la plantilla de procedimiento asociada.
+
+.. image:: ../_static/view_my_procedure.png
+   :alt: Modulo Mis Procedimientos
+   :height: 380
+   :width: 720
+
+Permisos requeridos para manipular el modulo de forma general:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *add_myprocedure*: Permite la creación de procedimientos.
+*  *change_myprocedure*: Permite modificar el estado de los procedimientos.
+*  *delete_myprocedure*: Permite eliminar procedimientos.
+*  *add_commentprocedurestep*: Permite agregar observaciones de los procedimientos.
+*  *view_commentprocedurestep*: Permite visualizar los comentarios de los procedimientos.
+*  *change_commentprocedurestep*: Permite modificar las observaciones de los procedimientos.
+*  *delete_commentprocedurestep*: Permite eliminar las observaciones de los procedimientos.
+*  *view_procedurestep*: Permite visualizar los pasos de la plantilla de procedimientos en los procedimientos.
+
+
+Ejemplo de ingreso a modulo de mis procedimientos
+
+.. image:: ../_static/gif/view_my_procedure.gif
+   :height: 380
+   :width: 720
+
+
+Crear procedimiento
+************************
+
+En la creación de procedimientos se requieren 2 datos en especifico:
+
+*   *Nombre*: Es un campo obligatorio de insercción.
+*   *Plantilla*: Esta plantilla esta vinculadas a las plantillas de procedimientos dentro de las organizaciones hijas y
+    padres, es obligatorio la selección de una.
+
+.. note::
+        Por defecto el procedimiento se crea en estado Borrador, los procedimientos pueden estar en 3 estados que son:
+        *   **Borrador**.
+        *   **Revisión**.
+        *   **Finalizado**.
+
+Ejemplo de creacion de procedimiento
+
+
+.. image:: ../_static/gif/add_my_procedure.gif
+   :height: 380
+   :width: 720
+
+Editar estado de procedimiento
+***************************************
+
+En la edición de estados de procedimiento se puede pasar de Borrador a Revision, mientras que de Revisión a Finalizado como
+se muestran en los siguientes ejemplos:
+
+*   Borrador a Revision:
+
+    .. image:: ../_static/gif/review_my_procedure.gif
+       :height: 380
+       :width: 720
+
+*   Revision a Finalizado:
+
+    .. image:: ../_static/gif/finalize_my_procedure.gif
+       :height: 380
+       :width: 720
+
+Permisos Requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite modificar el estado de los procedimientos.
+
+
+Eliminar procedimientos
+***************************************
+
+.. image:: ../_static/gif/delete_myprocedure.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *delete_myprocedure*: Permite eliminar el estado de los procedimientos.
+
+Agregar observación en procedimiento
+***************************************
+
+A los procedimientos se les puede ingresar comentarios o observaciones sobre las recetas de la siguiente forma:
+
+.. image:: ../_static/gif/add_my_procedure_observation.gif
+    :height: 380
+    :width: 720
+
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite ingresar al procedimiento.
+*  *add_commentprocedurestep*: Permite agregar observaciones de los procedimientos.
+
+Editar observación en procedimiento
+***************************************
+En la edicion de observaciones solo lo podra hacer el usuario que la creó:
+
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite ingresar al procedimiento.
+*  *change_commentprocedurestep*: Permite editar observaciones de los procedimientos.
+
+.. image:: ../_static/gif/update_my_procedure_observation.gif
+    :height: 380
+    :width: 720
+
+
+Eliminar observación en procedimiento
+***************************************
+En la eliminación de observaciones de igual forma que en la edición solo el usuario que la créo podra eliminarla:
+
+.. image:: ../_static/gif/delete_my_procedure_observation.gif
+    :height: 380
+    :width: 720
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *change_myprocedure*: Permite ingresar al procedimiento.
+*  *delete_commentprocedurestep*: Permite eliminar observaciones de los procedimientos.
+
+Generar reservación de procedimiento
+***************************************
+Los procedimientos también permite generar reservaciones donde los materiales que se reservan son los objectos, de los
+pasos de la plantilla de procedimientos, ademas hay que tener en cuenta que si en las estanterías de objectos no existe
+un material o la cantidad de este es insuficiente a lo solicitado no se podra dar paso la reservación.
+
+Permisos requeridos:
+
+*  *view_laboratory*: Permite el ingreso al laboratorio.
+*  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
+*  *add_reservedproducts*: Permite generar reservación.
+*  *add_reservation*: Permite generar visualizar las reservaciones.
