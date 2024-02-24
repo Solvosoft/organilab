@@ -4270,7 +4270,7 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
-
+ 
 msgid "are you sure you want to delete this relationship?"
 msgstr "¿está seguro de que quiere borrar esta relación?"
 
@@ -4288,3 +4288,18 @@ msgstr "Las organizaciones relacionadas son: "
 
 msgid "this action will involve deleting all relations with others organizations."
 msgstr "esta acción implicará eliminar todas las relaciones con otras organizaciones."
+
+msgid "Admin Informs"
+msgstr "Admin Informes"
+
+msgid "Waste objects by shelf report"
+msgstr "Informe de objetos desechados por estante"
+
+msgid "Waste Report"
+msgstr "Reporte de desechos"
+
+msgid "Delete substance"
+msgstr "Eliminar sustancia"
+
+msgid "Edit substance"
+msgstr "Editar sustancia"

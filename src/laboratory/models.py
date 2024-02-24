@@ -238,7 +238,7 @@ class ShelfObject(models.Model):
         return self.quantity < self.limit_quantity
 
     def get_measurement_unit_display(self):
-        return str(self.measurement_unit)
+        return str(self.measurement_unit) if self.measurement_unit else _("Unknown")
 
     class Meta:
         verbose_name = _('Shelf object')
@@ -367,7 +367,7 @@ class Shelf(BaseCreationObj):
         return result
 
     def get_measurement_unit_display(self):
-        return str(self.measurement_unit) if self.measurement_unit else ""
+        return str(self.measurement_unit) if self.measurement_unit else _("Unknown")
 
     def __str__(self):
         return '%s %s %s' % (self.furniture, str(self.type), self.name)
@@ -882,6 +882,7 @@ class Inform(AbstractOrganizationRef):
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
+        permissions = [("can_manage_inform_status", "Can manage inform status")]
 
 
 class CommentInform(models.Model):

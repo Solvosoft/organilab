@@ -17,7 +17,7 @@
       <div class="card">
         <div class="card-header">
           <h2 class="float-start">{% trans 'Templates of inform' %}</h2>
-           <a class="btn btn-success float-end create_btn"  data-bs-toggle="modal"
+           <a class="btn btn-outline-success float-end create_btn"  data-bs-toggle="modal"
             data-bs-target="#add_inform" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>  <ul class="nav navbar-right panel_toolbox"></ul>
           <div class="clearfix"></div>
         </div>
@@ -27,6 +27,7 @@
             <tr>
               <th>{% trans 'Name' %}</th>
               <th>{% trans 'Template' %}</th>
+              <th>{% trans 'Created by' %}</th>
               <th>{% trans 'State' %}</th>
               <th>{% trans 'Actions' %}</th>
             </tr>
@@ -36,9 +37,10 @@
               <tr>
                 <td>{{inform.name}}</td>
                 <td>{{inform.custom_form.name}}</td>
+                <td>{{inform.created_by}}</td>
                 <td>{% trans inform.status %}</td>
-                <td><a class="btn btn-success" href="{% url 'laboratory:complete_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
-                <a class="btn btn-danger" href="{% url 'laboratory:remove_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                <td><a class="btn btn-outline-success" href="{% url 'laboratory:complete_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                <a class="btn btn-outline-danger" href="{% url 'laboratory:remove_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
               </tr>
             {% endfor %}
 

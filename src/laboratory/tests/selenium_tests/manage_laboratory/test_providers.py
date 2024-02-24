@@ -1,8 +1,5 @@
 from django.contrib.auth.models import User
 from django.test import tag
-from django.urls import reverse
-
-from laboratory.models import Provider
 from organilab_test.tests.base import SeleniumBase
 
 @tag('selenium')

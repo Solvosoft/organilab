@@ -63,4 +63,14 @@ REPORT_FORMS ={
         'ods': 'report.views.objects.report_organization_reactive_list_doc'
 
     },
+    'report_waste_objects': {
+        'task':'report.tasks.task_report',
+        'form': 'report.forms.DiscardShelfForm',
+        'html': 'report.views.discard_objects.report_discard_object_html',
+        'pdf': 'report.views.base.base_pdf',
+        'xls': 'report.views.discard_objects.report_discard_object_doc',
+        'xlsx': 'report.views.discard_objects.report_discard_object_doc',
+        'ods': 'report.views.discard_objects.report_discard_object_doc'
+
+    },
 }

@@ -1234,5 +1234,947 @@
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z"
     }
+  },
+  {
+  "model": "laboratory.registeruserqr",
+  "pk": 1,
+  "fields": {
+    "creation_date": "2023-03-05T20:15:15.804Z",
+    "last_update": "2023-10-25T01:16:39.172Z",
+    "created_by": 1,
+    "activate_user": true,
+    "url": "https://www.organilab.org/register_user_qr/1/1/login/3/",
+    "register_user_qr": "register_user_qr/qrcode_nk3vzud.svg",
+    "role": 1,
+    "content_type": ["laboratory","laboratory"],
+    "object_id": 1,
+    "organization_creator": 1,
+    "organization_register": 2,
+    "code": "bdc0"
   }
+},
+    {
+    "model": "laboratory.protocol",
+    "pk": 1,
+    "fields": {
+      "name": "Lavado de manos",
+      "file": "protocols/test.pdf",
+      "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.protocol",
+    "pk": 2,
+    "fields": {
+      "name": "Control de plagas",
+      "file": "protocols/test.pdf",
+      "short_description": "Saneamiento y fumigación del área de trabajo y exteriores",
+      "laboratory": 1,
+      "upload_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 13,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "BAL998",
+        "name": "Balón Fondo Plano 500 mL",
+        "synonym": null,
+        "type": "1",
+        "is_public": true,
+        "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+        "model": "",
+        "serie": "",
+        "plaque": "",
+        "features": [
+
+        ]
+    }
+},
+{
+    "model": "laboratory.object",
+    "pk": 17,
+    "fields": {
+        "organization": 1,
+        "creation_date": "2023-01-26T15:44:11.394Z",
+        "last_update": "2023-01-26T15:44:11.433Z",
+        "created_by": null,
+        "code": "BAL847",
+        "name": "Balón Fondo Plano no esmerilado 125 mL",
+        "synonym": null,
+        "type": "1",
+        "is_public": true,
+        "description": "Un balón de destilación o matraz destilada o matraz florentino es parte del llamado material de vidrio. Es un frasco de cuello largo y cuerpo esférico. Está diseñado para el calentamiento uniforme de distintas sustancias, se produce con distintas partes de vidrio para diferentes usos. Está hecho generalmente de vidrio o plástico especial.\r\n\r\nLa mayor ventaja del balón, por encima de otros materiales de vidrio es que su base redondeada permite agitar o remover fácilmente su contenido sin poder derramar ninguna sustancia fuera de su envase por precaución. Sin embargo, esta misma característica también lo hace más susceptible a voltearse y derramarse.\r\n\r\nA veces llevan un tubo de desprendimiento lateral, adosado al cuello del matraz, esto permite la salida de los vapores durante una destilación con dirección al condensador.",
+        "model": "",
+        "serie": "",
+        "plaque": "",
+        "features": [
+
+        ]
+    }
+},
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 1,
+      "object": 13,
+      "quantity": 900,
+      "limit_quantity": 1,
+      "measurement_unit": 64,
+      "creation_date": "2023-04-08T19:33:49.008Z",
+      "last_update": "2023-04-30T19:33:49.035Z",
+      "in_where_laboratory": 1
+    }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 10,
+    "fields": {
+      "title": "Decantación 2",
+      "description": "<p>La decantaci&oacute;n es una t&eacute;cnica que permite separar un s&oacute;lido mezclado heterog&eacute;neamente con un l&iacute;quido en el que es insoluble o bien dos l&iacute;quidos inmiscibles (que no se pueden mezclar homog&eacute;neamente) con densidades diferente.</p>",
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "academic.procedure",
+    "pk": 99,
+    "fields": {
+      "title": "Decantación 1",
+      "description": "<p>La decantaci&oacute;n es una t&eacute;cnica que permite separar un s&oacute;lido mezclado heterog&eacute;neamente con un l&iacute;quido en el que es insoluble o bien dos l&iacute;quidos inmiscibles (que no se pueden mezclar homog&eacute;neamente) con densidades diferente.</p>",
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+       ],
+       "object_id": 1
+
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 17,
+    "fields": {
+      "procedure": 10,
+      "title": "01.\tDecantación un Liquido",
+      "description": "<p>Para separar l&iacute;quidos que no son solubles, como por ejemplo&nbsp;agua&nbsp;y&nbsp;aceite, es necesario introducir la&nbsp;mezcla&nbsp;en un recipiente llamado embudo de decantaci&oacute;n&nbsp;y dejar que repose hasta que los l&iacute;quidos se separan en dos capas.&nbsp;Despu&eacute;s, se abre la llave y se deja salir el l&iacute;quido de la capa inferior poco a poco, y cerramos la llave cuando falte poco para que salga el otro l&iacute;quido.&nbsp;Para no contaminar los componentes de la mezcla al separarlos, no es conveniente aprovechar ni el final del primer l&iacute;quido ni el comienzo del segundo. Finalmente, hay que coger otro recipiente y recoger el segundo l&iacute;quido.</p>"
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 20,
+    "fields": {
+      "procedure": 10,
+      "title": "02.\t¿Cómo se usa el Embudo de Decantación?",
+      "description": "<ul>\r\n\t<li>Se vierte la mezcla en el embudo de decantaci&oacute;n, asegur&aacute;ndonos antes de que la llave de la parte inferior est&aacute; cerrada (en posici&oacute;n horizontal), para que la mezcla no salga mientras la vertemos.</li>\r\n\t<li>Se deja reposar hasta que ambos l&iacute;quidos se separan bien.</li>\r\n\t<li>Se coloca un vaso de precipitados debajo del embudo y se abre la llave. Empezar&aacute; a salir el l&iacute;quido m&aacute;s denso (es decir, el que est&aacute; en la parte inferior de la mezcla).</li>\r\n\t<li>Cerramos la llave en cuanto haya pasado todo este primer l&iacute;quido.</li>\r\n\t<li>El l&iacute;quido menos denso seguir&aacute; en el embudo. Para recuperarlo, conviene sacarlo por la parte superior de este; as&iacute; evitaremos contaminarlo con los restos de la otra sustancia que hayan podido quedar en la llave.</li>\r\n</ul>"
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 24,
+    "fields": {
+      "procedure": 10,
+      "title": "03.\tDecantación un Solido",
+      "description": "<p>Si el s&oacute;lido es bastante denso y grueso, tal vez se depositar&aacute; en el fondo del recipiente.&nbsp;As&iacute; pues, inclinado el recipiente, se puede separar el l&iacute;quido o sobrenadante, derram&aacute;ndose en otro recipiente sin que se caiga el s&oacute;lido o sedimento.</p>"
+    }
+  },
+  {
+    "model": "academic.procedurestep",
+    "pk": 25,
+    "fields": {
+      "procedure": 10,
+      "title": null,
+      "description": null
+    }
+  },
+  {
+    "model": "academic.procedurerequiredobject",
+    "pk": 12,
+    "fields": {
+      "step": 17,
+      "object": 13,
+      "quantity": 1.0,
+      "measurement_unit": 64
+    }
+  },
+    {
+    "model": "academic.myprocedure",
+    "pk": 1,
+    "fields": {
+      "name": "First my procedure test",
+      "custom_procedure": 10,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "status": "Eraser",
+      "creation_date": "2023-05-10T20:46:09.591Z",
+      "last_update": "2023-05-26T20:46:09.591Z",
+      "organization": 1
+    }
+  },
+  {
+    "model": "academic.commentprocedurestep",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "created_by_at": "2023-05-15T14:39:50.061659-06:00",
+      "comment": "First test comment",
+      "procedure_step": 17,
+      "my_procedure": 1
+    }
+  },
+  {
+    "model": "academic.commentprocedurestep",
+    "pk": 2,
+    "fields": {
+      "created_by": 1,
+      "created_by_at": "2023-05-20T14:39:50.061659-06:00",
+      "comment": "Second test comment",
+      "procedure_step": 24,
+      "my_procedure": 1
+    }
+  },
+  {
+    "model": "academic.commentprocedurestep",
+    "pk": 3,
+    "fields": {
+      "created_by": 2,
+      "created_by_at": "2023-05-22T13:39:50.061659-06:00",
+      "comment": "Standard comment",
+      "procedure_step": 17,
+      "my_procedure": 1
+    }
+  },
+  {
+    "model": "academic.commentprocedurestep",
+    "pk": 4,
+    "fields": {
+      "created_by": 2,
+      "created_by_at": "2023-05-22T14:39:50.061659-06:00",
+      "comment": "Comment of Second User",
+      "procedure_step": 24,
+      "my_procedure": 1
+    }
+  },
+{
+  "model": "derb.customform",
+  "pk": 1,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2023-12-06T22:27:54.306Z",
+    "last_update": "2023-12-06T22:34:14.352Z",
+    "created_by": null,
+    "name": "Primer Formulario",
+    "status": "admin",
+    "schema": {
+      "name": "Primer Formulario",
+      "status": "admin",
+      "components": []
+    }
+  }
+},
+  {
+  "model": "derb.customform",
+  "pk": 5,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2023-10-23T20:36:23.413Z",
+    "last_update": "2023-10-23T20:40:49.730Z",
+    "created_by": null,
+    "name": "Reporte de accidentes",
+    "status": "admin",
+    "schema": {
+      "name": "Reporte de accidentes",
+      "status": "admin",
+      "components": [
+        {
+          "id": "evpga5",
+          "key": "ingreseElNombreYCedulaProfesionalResponsable",
+          "case": "",
+          "mask": false,
+          "tags": [],
+          "type": "textfield",
+          "input": true,
+          "label": "Ingrese el nombre y cedula profesional responsable",
+          "logic": [],
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "",
+          "displayMask": "",
+          "inputFormat": "plain",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        },
+        {
+          "id": "efbgtni",
+          "key": "ingreseElNombreDelLaboratorio",
+          "case": "",
+          "mask": false,
+          "tags": [],
+          "type": "textfield",
+          "input": true,
+          "label": "Ingrese el nombre del laboratorio",
+          "logic": [],
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "Escriba el mayuscula el nombre del laboratorio",
+          "displayMask": "",
+          "inputFormat": "plain",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        },
+        {
+          "id": "edrma6",
+          "key": "describaElIncidente",
+          "case": "",
+          "mask": false,
+          "rows": 3,
+          "tags": [],
+          "type": "textarea",
+          "input": true,
+          "label": "Describa el incidente",
+          "logic": [],
+          "addons": [],
+          "editor": "",
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "wysiwyg": false,
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "maxWords": "",
+            "minWords": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fixedSize": true,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "autoExpand": false,
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "",
+          "displayMask": "",
+          "inputFormat": "html",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        }
+      ]
+    }
+  }
+},
+  {
+  "model": "derb.customform",
+  "pk": 7,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2023-10-23T20:36:23.413Z",
+    "last_update": "2023-10-23T20:40:49.730Z",
+    "created_by": null,
+    "name": "Reporte de ejemplo",
+    "status": "admin",
+    "schema": {
+      "name": "Reporte de ejemplo",
+      "status": "admin",
+      "components": [
+
+        {
+          "id": "efbgtni",
+          "key": "ingreseElNombreDelLaboratorio",
+          "case": "",
+          "mask": false,
+          "tags": [],
+          "type": "textfield",
+          "input": true,
+          "label": "Ingrese el nombre del laboratorio",
+          "logic": [],
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "Escriba el mayuscula el nombre del laboratorio",
+          "displayMask": "",
+          "inputFormat": "plain",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        },
+        {
+          "id": "edrma6",
+          "key": "describaElIncidente",
+          "case": "",
+          "mask": false,
+          "rows": 3,
+          "tags": [],
+          "type": "textarea",
+          "input": true,
+          "label": "Describa el incidente",
+          "logic": [],
+          "addons": [],
+          "editor": "",
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "wysiwyg": false,
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "maxWords": "",
+            "minWords": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fixedSize": true,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "autoExpand": false,
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "",
+          "displayMask": "",
+          "inputFormat": "html",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        }
+      ]
+    }
+  }
+},
+  {
+  "model": "laboratory.inform",
+  "pk": 15,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-02-06T18:05:23.388Z",
+    "last_update": "2024-02-06T18:05:23.388Z",
+    "created_by": 1,
+    "name": "ejemplo",
+    "custom_form": 7,
+    "content_type": ["laboratory","laboratory"],
+    "object_id": 1,
+    "status": "Eraser",
+    "schema": {
+      "name": "Reporte de ejemplo",
+      "status": "admin",
+      "components": [
+
+        {
+          "id": "efbgtni",
+          "key": "ingreseElNombreDelLaboratorio",
+          "case": "",
+          "mask": false,
+          "tags": [],
+          "type": "textfield",
+          "input": true,
+          "label": "Ingrese el nombre del laboratorio",
+          "logic": [],
+          "addons": [],
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "Escriba el mayuscula el nombre del laboratorio",
+          "displayMask": "",
+          "inputFormat": "plain",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        },
+        {
+          "id": "edrma6",
+          "key": "describaElIncidente",
+          "case": "",
+          "mask": false,
+          "rows": 3,
+          "tags": [],
+          "type": "textarea",
+          "input": true,
+          "label": "Describa el incidente",
+          "logic": [],
+          "addons": [],
+          "editor": "",
+          "errors": "",
+          "hidden": false,
+          "prefix": "",
+          "suffix": "",
+          "unique": false,
+          "widget": {
+            "type": "input"
+          },
+          "dbIndex": false,
+          "overlay": {
+            "top": "",
+            "left": "",
+            "page": "",
+            "style": "",
+            "width": "",
+            "height": ""
+          },
+          "tooltip": "",
+          "wysiwyg": false,
+          "disabled": false,
+          "multiple": false,
+          "redrawOn": "",
+          "tabindex": "",
+          "validate": {
+            "json": "",
+            "custom": "",
+            "unique": false,
+            "pattern": "",
+            "maxWords": "",
+            "minWords": "",
+            "multiple": false,
+            "required": false,
+            "maxLength": "",
+            "minLength": "",
+            "customMessage": "",
+            "customPrivate": false,
+            "strictDateValidation": false
+          },
+          "autofocus": false,
+          "encrypted": false,
+          "fixedSize": true,
+          "hideLabel": false,
+          "inputMask": "",
+          "inputType": "text",
+          "modalEdit": false,
+          "protected": false,
+          "refreshOn": "",
+          "tableView": true,
+          "attributes": {},
+          "autoExpand": false,
+          "errorLabel": "",
+          "persistent": true,
+          "properties": {},
+          "spellcheck": true,
+          "validateOn": "change",
+          "clearOnHide": true,
+          "conditional": {
+            "eq": "",
+            "json": "",
+            "show": null,
+            "when": null
+          },
+          "customClass": "",
+          "description": "",
+          "displayMask": "",
+          "inputFormat": "html",
+          "placeholder": "",
+          "autocomplete": "",
+          "defaultValue": "",
+          "dataGridLabel": false,
+          "labelPosition": "top",
+          "showCharCount": false,
+          "showWordCount": false,
+          "calculateValue": "",
+          "calculateServer": false,
+          "customConditional": "",
+          "allowMultipleMasks": false,
+          "customDefaultValue": "",
+          "allowCalculateOverride": false,
+          "truncateMultipleSpaces": false
+        }
+      ]
+    }
+  }
+}
 ]
