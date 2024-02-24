@@ -419,7 +419,7 @@ def delete_profile_roles_related_to_laboratory(profilepermissions_list, organiza
 
 
 def get_change_message(relation_list, laboratory, relation_obj):
-    change_objects = (str(laboratory), str(relation_obj.organization))
+    change_objects = (str(laboratory), str(relation_obj.organization) if hasattr(relation_obj, 'organization') else "No organization")
 
     if hasattr(relation_obj, 'name'):
         change_objects = (relation_obj.name,) + change_objects
@@ -437,5 +437,5 @@ def delete_relation_between_laboratory_with_other_models(general_relation_list, 
                                change_message=get_change_message(relation_list,
                                                                  laboratory,
                                                                  relation_obj),
-                               relobj=relation_obj.organization)
+                               relobj=relation_obj.organization if hasattr(relation_obj, 'organization') else laboratory)
         relation_list["list"].delete()
