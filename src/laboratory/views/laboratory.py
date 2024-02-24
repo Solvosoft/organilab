@@ -8,6 +8,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import get_template
@@ -241,31 +242,65 @@ class LaboratoryDeleteView(DeleteView):
     def form_valid(self, form):
         user = self.request.user
         success_url = self.get_success_url()
-        relations_filters = {
-            "content_type": ContentType.objects.filter(
+        general_relation_list=[]
+        exclude_fields = ['LabOrgLogEntry', 'LogEntry', 'Permission', 'ProfilePermission']
+        cc=ContentType.objects.filter(
                 app_label=self.object._meta.app_label,
                 model=self.object._meta.model_name
-                ).first(),
-                "object_id": self.object.pk
+                ).first()
+        relations_filters = {
+            "content_type": cc,
+            "object_id": self.object.pk
         }
-
+        orgrel_filters = {}
+        orgrel_filters.update(relations_filters)
         if self.org == self.object.organization.pk:
             utils.organilab_logentry(user, self.object, DELETION,
                                      "laboratory", relobj=self.organization)
-            FeedbackEntry.objects.filter(laboratory_id=self.lab).delete()
+            FeedbackEntry.objects.filter(laboratory_id=self.object.pk).delete()
+            for ro in cc._meta.related_objects:
+                if ro.related_model.__name__ not in exclude_fields:
+                    query=ro.related_model.objects.filter(content_type=cc,
+                                                          object_id=self.object.pk)
+                    if query.exists():
+                        general_relation_list.append(
+                        {"list": query,
+                         "model_name":  ro.related_model.__name__,
+                         "change_message": "The relation in contenttype between %s and %s was deleted."},
+                        )
+                    #delete_relation_between_laboratory_with_other_models(
+                    #    general_relation_list, user, self.object)
         else:
-            relations_filters.update({"organization": self.organization})
+            relations_filters.update({"rol__organizationstructure": self.organization})
+            orgrel_filters['organization']=self.organization
+            for ro in cc._meta.related_objects:
+                if ro.related_model.__name__ not in exclude_fields:
+                    try:
+                        ro.related_model._meta.get_field("organization")
+                        query=ro.related_model.objects.filter(**orgrel_filters)
+                        if query.exists():
+                            general_relation_list.append(
+                            {"list": query,
+                             "model_name": ro.related_model.__name__,
+                             "change_message": "The relation in contenttype between %s and %s was deleted."},
+                            )
+                    except FieldDoesNotExist as e:
+                        pass
+
+                    #delete_relation_between_laboratory_with_other_models(
+                    #    general_relation_list, user, self.object)
 
         # All profilepermissions related to this laboratory
         profilepermissions_list = ProfilePermission.objects.filter(**relations_filters)
 
         if profilepermissions_list:
             delete_profile_roles_related_to_laboratory(profilepermissions_list,
-                                                       self.organization, self.laboratory)
+                                                       self.organization, self.object)
 
-        relations_list = OrganizationStructureRelations.objects.filter(**relations_filters)
-        myprocedure_list = MyProcedure.objects.filter(**relations_filters)
-        inform_list = Inform.objects.filter(**relations_filters)
+        """
+        relations_list = OrganizationStructureRelations.objects.filter(**orgrel_filters)
+        myprocedure_list = MyProcedure.objects.filter(**orgrel_filters)
+        inform_list = Inform.objects.filter(**orgrel_filters)
 
         general_relation_list = [
             {"list": relations_list, "model_name": "organization structure relations",
@@ -275,8 +310,8 @@ class LaboratoryDeleteView(DeleteView):
             {"list": inform_list, "model_name": "inform",
              "change_message": "Inform %s in %s laboratory related to %s organization was deleted."}
         ]
-
-        delete_relation_between_laboratory_with_other_models(general_relation_list, user, self.laboratory)
+        """
+        delete_relation_between_laboratory_with_other_models(general_relation_list, user, self.object)
 
         if self.org == self.object.organization.pk:
             self.object.delete()
