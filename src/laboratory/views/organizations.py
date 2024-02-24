@@ -171,19 +171,20 @@ class OrganizationCreateView(CreateView):
 class OrganizationActionsFormview(FormView):
     form_class = OrganizationActions
 
+    def get_form(self):
+        if self.request.method == "POST":
+            prefix = self.request.POST.get("prefix")
+            if prefix == "clone":
+                self.form_class = OrganizationActionsClone
+            if prefix == "wi":
+                self.form_class = OrganizationActionsWithoutInactive
+        return super().get_form(form_class=self.form_class)
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-
         if self.request.method == "POST":
             prefix = self.request.POST.get("prefix")
             kwargs["prefix"] = prefix
-
-            if prefix == "clone":
-                self.form_class = OrganizationActionsClone
-
-            if prefix == "wi":
-                self.form_class = OrganizationActionsWithoutInactive
-
         return kwargs
 
     def inactive_organization(self, form):
@@ -193,6 +194,15 @@ class OrganizationActionsFormview(FormView):
         self.org.save()
         organilab_logentry(self.request.user, self.org, CHANGE,
                            'inactive organization',
+                           changed_data=['organization'])
+
+    def active_organization(self, form):
+        self.org.active = True
+        if self.org.parent:
+            self.org.position = self.org.parent.last_child_position + 1
+        self.org.save()
+        organilab_logentry(self.request.user, self.org, CHANGE,
+                           'active organization',
                            changed_data=['organization'])
 
     def clone_organization(self, form):
@@ -266,9 +276,13 @@ class OrganizationActionsFormview(FormView):
             self.clone_organization(form)
         elif form.cleaned_data['actions'] == '3':
             self.change_name_organization(form)
-
+        elif form.cleaned_data['actions'] == '4':
+            self.active_organization(form)
         return redirect(reverse_lazy('auth_and_perms:organizationManager'))
 
+    def form_invalid(self, form):
+
+        return redirect(reverse_lazy('auth_and_perms:organizationManager'))
 
 @method_decorator(permission_required('laboratory.change_organizationstructure'),
                   name='dispatch')
