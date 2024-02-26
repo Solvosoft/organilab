@@ -38,7 +38,7 @@
                                         <a data-shelf="{{shelf.pk}}" data-shelfname="{% trans 'Shelf' %} {{shelf.name}}"class="btn btn-danger shelf_graphic" data-bs-toggle="modal" data-bs-target="#modal_graphic">
                                             <i class="fa fa-line-chart text-white" aria-hidden="true"></i>
                                         </a>
-                                        <a title="{% trans 'Substance' %}" data-shelfname="{% trans 'Shelf' %}: {{shelf.name}}" data-shelf="{{shelf.pk}}" data-quantity="{{shelf.quantity}}" data-unit="{{shelf.measurement_unit}}" class="btn btn-success shelf_button" data-bs-toggle="modal" data-bs-target="#modal_substance">
+                                        <a title="{% trans 'Substance' %}" data-shelfname="{% trans 'Shelf' %}: {{shelf.name}}" data-shelf="{{shelf.pk}}" data-quantity="{{shelf.quantity}}" data-unit="{{shelf.get_measurement_unit_display}}" class="btn btn-success shelf_button" data-bs-toggle="modal" data-bs-target="#modal_substance">
                                             <i class="fa fa-flask" aria-hidden="true"></i>
                                         </a>
                                 </div>

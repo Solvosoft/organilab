@@ -21,7 +21,7 @@ from tree_queries.forms import TreeNodeChoiceField
 
 from auth_and_perms.forms import OrganizationActions, OrganizationActionsClone, \
     OrganizationActionsWithoutInactive
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, Rol
 from auth_and_perms.node_tree import get_descendants_by_org
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
@@ -171,19 +171,20 @@ class OrganizationCreateView(CreateView):
 class OrganizationActionsFormview(FormView):
     form_class = OrganizationActions
 
+    def get_form(self):
+        if self.request.method == "POST":
+            prefix = self.request.POST.get("prefix")
+            if prefix == "clone":
+                self.form_class = OrganizationActionsClone
+            if prefix == "wi":
+                self.form_class = OrganizationActionsWithoutInactive
+        return super().get_form(form_class=self.form_class)
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-
         if self.request.method == "POST":
             prefix = self.request.POST.get("prefix")
             kwargs["prefix"] = prefix
-
-            if prefix == "clone":
-                self.form_class = OrganizationActionsClone
-
-            if prefix == "wi":
-                self.form_class = OrganizationActionsWithoutInactive
-
         return kwargs
 
     def inactive_organization(self, form):
@@ -195,6 +196,15 @@ class OrganizationActionsFormview(FormView):
                            'inactive organization',
                            changed_data=['organization'])
 
+    def active_organization(self, form):
+        self.org.active = True
+        if self.org.parent:
+            self.org.position = self.org.parent.last_child_position + 1
+        self.org.save()
+        organilab_logentry(self.request.user, self.org, CHANGE,
+                           'active organization',
+                           changed_data=['organization'])
+
     def clone_organization(self, form):
         newinstance = OrganizationStructure.objects.create(
             name=self.org.name + "-clone",
@@ -204,29 +214,50 @@ class OrganizationActionsFormview(FormView):
             parent=self.org.parent
         )
         newinstance.users.add(self.request.user)
+        organilab_logentry(self.request.user, newinstance, ADDITION,
+                           'clone organization structure',
+                           changed_data=['name', 'position', 'level', 'active', 'parent', 'users'])
+
         for orgrel in OrganizationStructureRelations.objects.filter(
             organization=self.org):
-            OrganizationStructureRelations.objects.create(
+            org_relation = OrganizationStructureRelations.objects.create(
                 organization=newinstance,
                 content_type=orgrel.content_type,
                 object_id=orgrel.object_id
             )
-        for rol in self.org.rol.all():
-            newinstance.rol.add(rol)
+            organilab_logentry(self.request.user, org_relation, ADDITION,
+                               'organization structure relations',
+                               changed_data=['organization', 'content_type', 'object_id'],
+                               relobj=newinstance)
+
+        for role in self.org.rol.all():
+            new_role = Rol.objects.create(
+                name=role.name,
+                color=role.color
+            )
+            new_role.permissions.add(*role.permissions.all())
+            newinstance.rol.add(new_role)
+            organilab_logentry(self.request.user, new_role, ADDITION, 'rol',
+                               changed_data=['name', 'color', 'permissions'],
+                               relobj=newinstance)
 
         for user in UserOrganization.objects.filter(organization=self.org,
                                                     type_in_organization__in=[
                                                         UserOrganization.ADMINISTRATOR,
                                                         UserOrganization.LABORATORY_MANAGER]):
-            UserOrganization.objects.create(
+            user_org = UserOrganization.objects.create(
                 organization=newinstance,
                 type_in_organization=user.type_in_organization,
                 user=user.user,
                 status=user.status)
+
+            organilab_logentry(self.request.user, user_org, ADDITION,
+                               'user organization',
+                               changed_data=['organization', 'type_in_organization',
+                                             'user', 'status'],
+                               relobj=newinstance)
+
             newinstance.users.add(user.user)
-        organilab_logentry(self.request.user, newinstance, ADDITION,
-                           'clone organization',
-                           changed_data=['organization'])
 
     def change_name_organization(self, form):
         self.org.name = form.cleaned_data['name']
@@ -245,9 +276,13 @@ class OrganizationActionsFormview(FormView):
             self.clone_organization(form)
         elif form.cleaned_data['actions'] == '3':
             self.change_name_organization(form)
-
+        elif form.cleaned_data['actions'] == '4':
+            self.active_organization(form)
         return redirect(reverse_lazy('auth_and_perms:organizationManager'))
 
+    def form_invalid(self, form):
+
+        return redirect(reverse_lazy('auth_and_perms:organizationManager'))
 
 @method_decorator(permission_required('laboratory.change_organizationstructure'),
                   name='dispatch')
