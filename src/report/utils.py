@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
@@ -180,3 +180,16 @@ def get_pdf_log_change_table_content(report):
         pdf_table+="</tbody></table><br><br>"
 
     return pdf_table
+
+def format_datetime(value, position):
+    day_result = None
+    try:
+        day_result = datetime.strptime(value, '%d/%m/%Y')
+        if position=="initial":
+            day_result = day_result + timedelta(hours=0, minutes=0)
+        else:
+             day_result = day_result + timedelta(hours=23, minutes=59)
+    except ValueError as e:
+        pass
+
+    return day_result

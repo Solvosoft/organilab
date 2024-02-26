@@ -243,3 +243,24 @@ class TasksForm(GTForm):
         if not report.exists():
             self.add_error('taskreport', _("Task report doesn't exists"))
         return taskreport
+
+
+class DiscardShelfForm(ReportBase):
+    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all())
+    all_labs_organization = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
+        widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
+    period = forms.CharField(widget=genwidgets.DateRangeInput, required=False,label=_('Period'))
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(DiscardShelfForm, self).__init__(*args, **kwargs)
+
+
+        if org_pk:
+            self.fields['laboratory'].queryset = Laboratory.objects.filter(organization=org_pk)
+
+    def clean_laboratory(self):
+        lab = self.cleaned_data.get('laboratory')
+        if lab:
+            return lab.id
+        return lab
