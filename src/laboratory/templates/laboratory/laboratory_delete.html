@@ -8,11 +8,11 @@
 {% block content %}
 	{% if perms.laboratory.delete_laboratory %}
 		<form action="" method="post">{% csrf_token %}
-			<p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+			<p>{{msg_delete}}</p>
 			<input class="btn btn-danger" type="submit" value="{% trans 'Confirm' %}" />
 		</form>
 		<br> <br>
-	{% else %} 
-       	{% include 'laboratory/action_denied.html' %} 
+	{% else %}
+       	{% include 'laboratory/action_denied.html' %}
   	{% endif %}
 {% endblock%}

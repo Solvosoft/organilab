@@ -19,7 +19,7 @@
                 </a>
             {% endif %}
             {% if perms.laboratory.delete_laboratory %}
-                    <a class="btn-outline-danger btn-sm btdel"  href="{% url 'laboratory:laboratory_delete' lab.pk org_pk %}"
+                    <a class="btn-outline-danger btn-sm btdel"  href="{% url 'laboratory:laboratory_delete' org_pk lab.pk %}"
                        title="{% trans 'Delete laboratory'%}">
                     <span class="fa fa-remove" aria-hidden="true"></span></a>
              {% endif %}
