@@ -18,7 +18,7 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.forms import ObjectForm, ObjectUpdateForm
+from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm
 from laboratory.models import Laboratory, BlockedListNotification, \
     OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
@@ -231,7 +231,9 @@ def view_equipment_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
-        "create_form": ObjectForm(initial={"type": Object.EQUIPMENT})
+        "create_form": EquipmentForm(initial={"type": Object.EQUIPMENT, "organization": org_pk,
+                                           "created_by": request.user.pk}, prefix="create"),
+        "update_form": EquipmentForm(prefix="update")
     }
     return render(request, "laboratory/equipment/list.html", context=context)
 

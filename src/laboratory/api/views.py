@@ -374,9 +374,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         'list': ["laboratory.view_object"],
         'create': ["laboratory.add_object"],
         'update': ["laboratory.change_object"],
-        'retrieve': [],
-        'destroy': ["laboratory.delete_object"],
-        'get_values_for_update': []
+        'destroy': ["laboratory.delete_object"]
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
@@ -384,28 +382,12 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     queryset = Object.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['object__name', ]  # for the global search
+    search_fields = ['code', 'name']  # for the global search
     filterset_class = serializers.EquipmentFilter
-    ordering_fields = ['creation_date', 'created_by', 'status']
-    ordering = ('-creation_date',)  # default order
+    ordering_fields = ['code']
+    ordering = ('code',)  # default order
     operation_type = ''
     org_pk, lab_pk = None, None
-
-    def create(self, request, *args, **kwargs):
-        data = {'organization': kwargs["org_pk"], 'created_by': request.user.pk}
-        data.update(request.data)
-
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED,
-                        headers=headers)
-
-    def destroy(self, request, *args, **kwargs):
-        self.org_pk = kwargs["org_pk"]
-        self.lab_pk = kwargs["lab_pk"]
-        return super().destroy(request, args, kwargs)
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -416,6 +398,16 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
 
         queryset = queryset.filter(filters).distinct()
         return queryset.filter(type=Object.EQUIPMENT)
+
+    def destroy(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().destroy(request, args, kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().update(request, args, kwargs)
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']

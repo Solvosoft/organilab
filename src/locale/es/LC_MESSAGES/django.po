@@ -4270,7 +4270,7 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
- 
+
 msgid "are you sure you want to delete this relationship?"
 msgstr "¿está seguro de que quiere borrar esta relación?"
 
@@ -4303,3 +4303,15 @@ msgstr "Eliminar sustancia"
 
 msgid "Edit substance"
 msgstr "Editar sustancia"
+
+msgid "Equipment List"
+msgstr "Listado de Equipos"
+
+msgid "Create equipment"
+msgstr "Crear equipo"
+
+msgid "Update equipment"
+msgstr "Editar equipo"
+
+msgid "Delete equipment"
+msgstr "Eliminar equipo"
