@@ -367,11 +367,15 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
     features = serializers.PrimaryKeyRelatedField(many=True, queryset=ObjectFeatures.objects.using(settings.READONLY_DATABASE))
     created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    model = serializers.CharField(max_length=50)
+    serie = serializers.CharField(max_length=50)
+    plaque = serializers.CharField(max_length=50, required=True)
+
 
     class Meta:
         model = Object
-        fields = ['name', 'code', 'synonym', 'description', 'type', 'is_public',
-                  'features', 'created_by', 'organization']
+        fields = ['id', 'name', 'code', 'synonym', 'description', 'type', 'is_public',
+                  'features', 'created_by', 'organization', 'model', 'serie', 'plaque']
 
 
 class EquipmentFilter(FilterSet):
@@ -383,21 +387,13 @@ class EquipmentFilter(FilterSet):
                    }
 
 
-class ObjectFeaturesField(serializers.ModelSerializer, GTS2SerializerBase):
-    display_fields = 'display'
+class ObjDisplayNameSerializer(GTS2SerializerBase):
+    display_fields = 'name'
 
-    display_name = serializers.SerializerMethodField()
-
-    def get_display_name(self, obj):
-        return obj.name
-
-    class Meta:
-        model = ObjectFeatures
-        fields = ['id', 'display_name']
 
 class EquipmentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-    features = ObjectFeaturesField(many=True)
+    features = ObjDisplayNameSerializer(many=True)
 
     def get_actions(self, obj):
         return {
@@ -410,7 +406,8 @@ class EquipmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Object
         fields = ['id', 'name', 'code', 'synonym', 'description', 'type', 'is_public',
-                  'features', 'created_by', 'organization', 'actions']
+                  'features', 'created_by', 'organization', 'model', 'serie', 'plaque',
+                  'actions']
 
 
 class EquipmentDataTableSerializer(serializers.Serializer):

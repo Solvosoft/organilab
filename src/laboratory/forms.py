@@ -592,7 +592,7 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
 
         super(ObjectForm, self).__init__(*args, **kwargs)
 
-        if self.request and not self.initial['type']:
+        if self.request:
             if 'type_id' in self.request.GET:
                 self.type_id = self.request.GET.get('type_id', '')
                 if self.type_id:
@@ -641,7 +641,7 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
                     self.add_error('capacity_measurement_unit',_('This field is required.'))
     class Meta:
         model = Object
-        exclude = ['organization', 'created_by']
+        exclude = ["organization", "created_by"]
         widgets = {
             'features': genwidgets.SelectMultiple(),
             'code': genwidgets.TextInput,
@@ -654,6 +654,31 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             'plaque': genwidgets.TextInput,
             "type": genwidgets.HiddenInput,
             "is_container": genwidgets.YesNoInput
+        }
+
+class EquipmentForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(EquipmentForm, self).__init__(*args, **kwargs)
+        self.fields["model"].required = True
+
+    class Meta:
+        model = Object
+        fields = ['code', 'name', 'synonym', 'description', 'type', 'is_public',
+                  'features', 'created_by', 'organization', 'model', 'serie', 'plaque']
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym':  genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput
         }
 
 
