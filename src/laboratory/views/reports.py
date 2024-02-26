@@ -27,14 +27,16 @@ from weasyprint import HTML
 
 from auth_and_perms.models import Profile
 from laboratory.forms import H_CodeForm
-from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, ShelfObject, CLInventory, \
-    OrganizationStructure, PrecursorReport
+from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, \
+    ShelfObject, CLInventory, \
+    OrganizationStructure, PrecursorReport, Shelf
 from laboratory.models import ObjectLogChange
 from laboratory.utils import get_cas, get_imdg, get_molecular_formula, get_pk_org_ancestors
 from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
-from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, OrganizationReactiveForm, \
-    ValidateObjectTypeForm
+from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, \
+    OrganizationReactiveForm, \
+    ValidateObjectTypeForm, DiscardShelfForm
 from sga.forms import SearchDangerIndicationForm
 
 @permission_required('laboratory.do_report')
@@ -414,3 +416,30 @@ def report_index(request, org_pk):
         'org_pk': org_pk
     }
     return render(request, 'laboratory/reports/report_index.html', context=context)
+
+@method_decorator(permission_required('laboratory.do_report'), name='dispatch')
+class DiscardShelfReportView(ListView):
+    model = Shelf
+    template_name = "report/base_report_form_view.html"
+
+    def get_queryset(self):
+        return Shelf.objects.filter(furniture__labroom__laboratory=self.lab)
+
+    def get_context_data(self, **kwargs):
+        context = super(DiscardShelfReportView, self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        title = _('Waste objects by shelf report')
+        initial_data = {
+            'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
+            'title': title,
+            'organization': self.org,
+            'report_name': 'report_waste_objects',
+            'laboratory': lab_obj,
+            'all_labs_org': False
+        }
+
+        context.update({
+            'title_view': title,
+            'form': DiscardShelfForm(initial=initial_data, org_pk=self.org)
+        })
+        return context

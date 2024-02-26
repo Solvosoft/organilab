@@ -39,8 +39,8 @@ def update_qr_instance(url, object, organization):
     file.seek(0)
     img_svg = file.getvalue()
     b64_image=base64.b64encode(img_svg).decode()
-    return QRModel.objects.filter(**cc_filters).update(qr_url=url, b64_image=b64_image, qr_image=img_svg.decode())
-
+    QRModel.objects.filter(**cc_filters).update(qr_url=url, b64_image=b64_image, qr_image=img_svg.decode())
+    return QRModel.objects.filter(**cc_filters).last()
 
 def get_qr_by_instance(object, organization):
     ct=ContentType.objects.get_for_model(object)

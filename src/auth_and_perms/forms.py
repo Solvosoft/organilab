@@ -171,6 +171,7 @@ class OrganizationActions(GTForm):
         (1, _('Inactive organization')),
         (2, _('Clone organization')),
         (3, _('Change organization name')),
+        (4, _('Active organization')),
     )
     actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS, label=_("Actions"))
     action_organization = forms.ModelChoiceField(
@@ -203,6 +204,7 @@ class OrganizationActionsWithoutInactive(OrganizationActions):
 class OrganizationActionsClone(GTForm):
     ACTIONS = (
         (2, _('Clone organization')),
+        (4, _('Active organization')),
     )
     actions = forms.ChoiceField(widget=genwidgets.Select, choices=ACTIONS, label=_("Actions"))
     action_organization = forms.ModelChoiceField(
