@@ -31,7 +31,7 @@ from laboratory.models import CommentInform, Inform, Protocol, OrganizationStruc
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
 from laboratory.utils import get_logentries_org_management, \
-    get_pk_org_ancestors_decendants
+    get_pk_org_ancestors_decendants, PermissionByLaboratoryInOrganization
 from reservations_management.models import ReservedProducts
 
 
@@ -335,34 +335,6 @@ def ShelfObjectObservationView(request, org_pk, lab_pk, pk):
                                       'pk': pk})
 
 
-class PermissionByLaboratoryInOrganization(BasePermission):
-
-    def has_permission(self, request, view):
-        org_pk=view.kwargs.get('org_pk')
-        lab_pk=view.kwargs.get('lab_pk')
-        dev = True
-        if org_pk is None or lab_pk is None:
-            return False
-        view.organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk)
-        view.laboratory = get_object_or_404(
-            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
-        try:
-            user_is_allowed_on_organization(view.request.user, view.organization)
-            organization_can_change_laboratory(view.laboratory, view.organization,
-                                               raise_exec=True)
-        except Exception as e:
-            dev=False
-        return dev
-
-    def has_object_permission(self, request, view, obj):
-        """
-        Return `True` if permission is granted, `False` otherwise.
-        """
-        return self.has_permission(request, view)
-
-
 class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
         'list': serializers.EquipmentDataTableSerializer,
@@ -372,14 +344,14 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     }
     perms = {
         'list': ["laboratory.view_object"],
-        'create': ["laboratory.add_object"],
-        'update': ["laboratory.change_object"],
-        'destroy': ["laboratory.delete_object"]
+        'create': ["laboratory.add_object", "laboratory.view_object"],
+        'update': ["laboratory.change_object", "laboratory.view_object"],
+        'destroy': ["laboratory.delete_object", "laboratory.view_object"]
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
 
-    queryset = Object.objects.all()
+    queryset = Object.objects.filter(type=Object.EQUIPMENT)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['code', 'name']  # for the global search
@@ -396,18 +368,17 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
                      is_public=True)
                    | Q(organization__pk=self.org_pk, is_public=False))
 
-        queryset = queryset.filter(filters).distinct()
-        return queryset.filter(type=Object.EQUIPMENT)
+        return queryset.filter(filters).distinct()
 
     def destroy(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().destroy(request, args, kwargs)
+        return super().destroy(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().update(request, args, kwargs)
+        return super().update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']
