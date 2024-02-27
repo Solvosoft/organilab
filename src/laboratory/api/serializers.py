@@ -5,14 +5,17 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
+from djgentelella.permission_management import all_permission
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import BasePermission
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, \
     Shelf, Laboratory, \
     ShelfObjectObservation, Object, ObjectFeatures
+from laboratory.utils import get_actions_by_perms
 from reservations_management.models import ReservedProducts, Reservations
 from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
 from laboratory.models import Protocol
@@ -367,9 +370,9 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
     features = serializers.PrimaryKeyRelatedField(many=True, queryset=ObjectFeatures.objects.using(settings.READONLY_DATABASE))
     created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
-    model = serializers.CharField(max_length=50)
+    model = serializers.CharField(max_length=50, required=True)
     serie = serializers.CharField(max_length=50)
-    plaque = serializers.CharField(max_length=50, required=True)
+    plaque = serializers.CharField(max_length=50)
 
 
     class Meta:
@@ -396,12 +399,14 @@ class EquipmentSerializer(serializers.ModelSerializer):
     features = ObjDisplayNameSerializer(many=True)
 
     def get_actions(self, obj):
-        return {
-            'create': True,
-            'detail': True,
-            'update': True,
-            'destroy': True
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_object", "laboratory.view_object"],
+            "update": ["laboratory.change_object", "laboratory.view_object"],
+            "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+            "detail": ["laboratory.view_object"]
         }
+        return get_actions_by_perms(user, action_list)
 
     class Meta:
         model = Object
