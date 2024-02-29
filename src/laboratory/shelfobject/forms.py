@@ -3,9 +3,10 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelect
+from djgentelella.widgets.files import FileChunkedUpload
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, Rol
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture
 from reservations_management.models import ReservedProducts
@@ -229,7 +230,23 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields,GTForm, forms.ModelFo
             'marked_as_discard': forms.HiddenInput
         }
 
-class ShelfObjectEquipmentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
+
+class EquipmentCharacteristicForm(forms.Form):
+    provider = forms.ModelChoiceField(queryset=Provider.objects.all(),widget=genwidgets.Select, label=_("Provider"))
+    authorized_roles_to_use_equipment = forms.ModelMultipleChoiceField(queryset=Rol.objects.none(),
+                                                                       widget=genwidgets.SelectMultiple,
+                                                                       label=_("Authorized roles to use equipment"))
+    equipment_price = forms.FloatField(initial=0.0, label=_("Price"), widget=genwidgets.TextInput,
+                                       help_text=_('Use dot like 0.344 on decimal'))
+    purchase_equipment_date = forms.DateField(widget=genwidgets.DateInput,label=_("Purchase Date"))
+    delivery_equipment_date = forms.DateField(widget=genwidgets.DateInput,label=_("Delivery Date"))
+    have_guarantee = forms.BooleanField(initial=False, widget=genwidgets.YesNoInput, label=_("Has guarantee?"))
+    contract_of_maintenance = forms.FileField(widget=FileChunkedUpload, label=_("Contract of maintenance"))
+    available_to_use = forms.BooleanField(initial=False, widget=genwidgets.YesNoInput, label=_("Is available to use?"))
+    first_date_use = forms.DateField(widget=genwidgets.DateInput,  label=_("First date use"))
+    notes = forms.CharField(widget=genwidgets.Textarea, label=_("Note"))
+
+class ShelfObjectEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteristicForm,forms.ModelForm,GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -256,19 +273,35 @@ class ShelfObjectEquipmentForm(ShelfObjectExtraFields,forms.ModelForm,GTForm):
             }),
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['limit_quantity'].initial=0
+        self.fields['provider'] = forms.ModelChoiceField(
+            queryset=Provider.objects.all(),
+            label= _("Provider"),
+            widget=AutocompleteSelect('object_providers', attrs={
+                'data-dropdownparent': "#equipment_form",
+                'data-s2filter-object': '#id_ef-object',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
+            }))
+        self.fields['authorized_roles_to_use_equipment'] = forms.ModelChoiceField(
+            queryset=Rol.objects.all(),
+            label= _("Authorized roles to use equipment"),
+            widget=AutocompleteSelectMultiple('organization_rols', attrs={
+                'data-dropdownparent': "#equipment_form",
+                'data-s2filter-organization': '#id_organization'
+            }))
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard", "description"]
+        fields = ["object", "shelf", "status", "limit_quantity", "marked_as_discard", "description"]
+        exclude =['quantity']
         widgets = {
             'shelf': forms.HiddenInput,
-            'quantity': genwidgets.TextInput,
             'limit_quantity': forms.HiddenInput,
             'description': genwidgets.Textarea,
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
-class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,GTForm, forms.ModelForm):
+class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteristicForm, GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 
@@ -293,18 +326,36 @@ class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,GTForm, forms.ModelF
             help_text='<a class="add_status float-end fw-bold">%s</a>'%(_("New status")),label=_("Status"))
         self.fields['marked_as_discard'].initial=True
         self.fields['limit_quantity'].initial=0
+        self.fields['provider'] = forms.ModelChoiceField(
+            queryset=Provider.objects.all(),
+            label= _("Provider"),
+            widget=AutocompleteSelect('object_providers', attrs={
+                'data-dropdownparent': "#equipment_form",
+                'data-s2filter-object': '#id_ef-object',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
+            }))
+        self.fields['authorized_roles_to_use_equipment'] = forms.ModelChoiceField(
+            queryset=Rol.objects.all(),
+            label= _("Authorized roles to use equipment"),
+            widget=AutocompleteSelectMultiple('organization_rols', attrs={
+                'data-dropdownparent': "#equipment_form",
+                'data-s2filter-organization': '#id_organization'
+            }))
+
 
     class Meta:
         model = ShelfObject
-        fields = ["object", "shelf", "status", "quantity", "limit_quantity", "marked_as_discard",
+        fields = ["object", "shelf", "status", "limit_quantity", "marked_as_discard",
                   "description"]
+        exclude = ["quantity"]
         widgets = {
             'shelf': forms.HiddenInput,
-            'quantity': genwidgets.TextInput,
-            'limit_quantity': forms.HiddenInput,
+             'limit_quantity': forms.HiddenInput,
             'description': genwidgets.Textarea,
             'marked_as_discard': forms.HiddenInput
         }
+
 
 class ValidateShelfUnitForm(GTForm):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)

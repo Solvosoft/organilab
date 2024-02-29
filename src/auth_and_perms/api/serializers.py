@@ -335,3 +335,11 @@ class ShelfObjectDataTableSerializer(serializers.Serializer):
 
 class ValidateSearchShelfObjectSerializer(ValidateOrganizationSerializer):
     object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE))
+
+class ValidateLabOrgObjectSerializer(serializers.Serializer):
+    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE),
+                                                allow_null=False,allow_empty=False)
+
+
