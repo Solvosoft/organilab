@@ -85,6 +85,7 @@ class CreateShelfobjectTest(TestCase):
                 "minimum_limit": 0,
                 "description": "A equipment product",
                 "maximum_limit": 0,
+                "quantity": 1,
                 "provider":"",
                 "authorized_roles_to_use_equipment":[],
                 "equipment_price":200,
