@@ -435,7 +435,7 @@ class EquipmentShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelS
                                                 queryset=Catalog.objects.using(
                                                     settings.READONLY_DATABASE),
                                                 required=True)
-    quantity = serializers.FloatField(required=False, default=1)
+    quantity = serializers.FloatField(required=False, default=1, allow_null=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
@@ -466,7 +466,7 @@ class EquipmentRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.
                                                 queryset=Catalog.objects.using(
                                                     settings.READONLY_DATABASE),
                                                 required=True)
-    quantity = serializers.FloatField(required=True)
+    quantity = serializers.FloatField(required=False, default=1, allow_null=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
