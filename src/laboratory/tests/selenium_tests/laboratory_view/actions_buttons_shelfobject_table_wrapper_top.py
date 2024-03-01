@@ -121,15 +121,15 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
             {"path": "//*[@id='equipment_form']/span/span/span[2]/ul/li"},
             {"path": "//*[@id='select2-id_ef-status-container']"},
             {"path": "//*[@id='equipment_form']/span/span/span[2]/ul/li"},
-            {"path": "//*[@id='equipment_form']/div[3]/div/input"},
-            {"path": "//*[@id='equipment_form']/div[3]/div/input",
-             "extra_action": "setvalue", "value": "2"},
-            {"path": "//*[@id='equipment_form']/div[5]/div/textarea",
-             "scroll": "$('#equipment_modal').scrollTop(300);"},
-            {"path": "//*[@id='equipment_form']/div[5]/div/textarea",
+            {"path": "//*[@id='equipment_form']/div[4]/div/textarea",
              "extra_action": "setvalue", "value": "Instrumento para calcular la masa de un objeto."},
+            {"path": "//*[@id='equipment_form']//div[7]/div/input","extra_action":"clearInput"},
+            {"path": "//*[@id='equipment_form']//div[7]/div/input",
+             "extra_action": "setvalue", "value": "2000"},
+            {"path": "//*[@id='equipment_form']//div[7]/div/input","scroll": "$('#equipment_modal').scrollTop(600)"},
             {"path": self.get_save_button_modal("equipment_modal")}
         ]
+        #"scroll": "$('#equipment_modal').scrollTop(300);
         self.create_gif_process(path_list, "create_shelfobject_equipment")
 
     def test_view_containers_by_shelf(self):

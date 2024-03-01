@@ -78,14 +78,23 @@ class CreateShelfobjectTest(TestCase):
                 "object": 2,
                 "objecttype": 1,
                 "status": 1,
-                "quantity": 23.0,
                 "limit_quantity": 7.0,
                 "in_where_laboratory": 1,
                 "measurement_unit": 59,
                 "marked_as_discard": False,
                 "minimum_limit": 0,
-                "description": "A reactive product",
+                "description": "A equipment product",
                 "maximum_limit": 0,
+                "provider":"",
+                "authorized_roles_to_use_equipment":[],
+                "equipment_price":200,
+                "purchase_equipment_date":"",
+                "delivery_equipment_date":"",
+                "have_guarantee": True,
+                "contract_of_maintenance":"",
+                "available_to_use": False,
+                "first_date_use":"",
+                "notes": "New Equipment"
             }
         precount=ShelfObject.objects.filter(shelf=13).count()
         url = reverse("laboratory:api-shelfobject-create-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk})
