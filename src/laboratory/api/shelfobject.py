@@ -40,12 +40,14 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     TransferOutShelfObjectSerializer, TransferObjectDataTableSerializer, \
     TransferInShelfObjectApproveWithContainerSerializer, ShelfObjectPk, \
     SearchShelfObjectSerializerMany, MoveShelfObjectWithContainerSerializer, \
-    ManageContainerSerializer, ValidateShelfInformationPositionSerializer
+    ManageContainerSerializer, ValidateShelfInformationPositionSerializer, \
+    EquimentShelfobjectCharacteristicSerializer
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
     save_shelfobject_limits_from_serializer, \
     create_shelfobject_observation, get_or_create_container_based_on_selected_option, \
-    move_shelfobject_to, create_new_shelfobject_from_object_in, clone_shelfobject_to
+    move_shelfobject_to, create_new_shelfobject_from_object_in, clone_shelfobject_to, \
+    save_shelfobject_characteristics, delete_shelfobjects
 from laboratory.utils import save_object_by_action
 
 
@@ -157,9 +159,9 @@ class ShelfObjectCreateMethods:
                                                'in_where_laboratory', 'limits'],
                                  relobj=laboratory_id)
 
-        return shelfobject
+        return {}, shelfobject
 
-    def create_refuse_reactive(self, serializer, limits_serializer):
+    def create_refuse_reactive(self, serializer, limits_serializer, equiment_serializer=None):
         """
         Create refuse reactive type Shelfobject.
         The container is moved to the right shelf (created one with quantity 1 and decrease quantity on the original -or delete it if quantity is 0 after-).
@@ -204,7 +206,7 @@ class ShelfObjectCreateMethods:
                                                'limits'],
                                  relobj=laboratory_id)
 
-        return shelfobject
+        return {}, shelfobject
 
     def create_material(self, serializer, limits_serializer):
         """
@@ -241,7 +243,7 @@ class ShelfObjectCreateMethods:
                                                'limits'],
                                  relobj=laboratory_id)
 
-        return shelfobject
+        return {}, shelfobject
 
     def create_refuse_material(self, serializer, limits_serializer):
         """
@@ -278,9 +280,9 @@ class ShelfObjectCreateMethods:
                                                'limits'],
                                  relobj=laboratory_id)
 
-        return shelfobject
+        return {}, shelfobject
 
-    def create_equipment(self, serializer, limits_serializer):
+    def create_equipment(self, serializer, limits_serializer,equipment_serializer = None):
         """
         Create equipment type Shelfobject .
 
@@ -293,13 +295,25 @@ class ShelfObjectCreateMethods:
         organization_id = self.context['organization_id']
         limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
-
+        data = self.context["request"].data
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
             measurement_unit=measurement_unit
         )
+
+
+        data.update({"shelfobject": shelfobject.pk, "organization": organization_id,
+                     "created_by": created_by.pk})
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data)
+
+        if equipment_serializer.is_valid():
+            save_shelfobject_characteristics(equipment_serializer, created_by)
+        else:
+            delete_shelfobjects(shelfobject, created_by, laboratory_id)
+            return equipment_serializer.errors, None
+
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
@@ -315,9 +329,9 @@ class ShelfObjectCreateMethods:
                                                'limits'],
                                  relobj=laboratory_id)
 
-        return shelfobject
+        return {}, shelfobject
 
-    def create_refuse_equipment(self, serializer, limits_serializer):
+    def create_refuse_equipment(self, serializer, limits_serializer, equipment_serializer = None):
         """
         Create refuse equipment type Shelfobject .
 
@@ -337,6 +351,16 @@ class ShelfObjectCreateMethods:
             limits=limits,
             measurement_unit=measurement_unit
         )
+        data = self.context["request"].data
+        data.update({"shelfobject": shelfobject.pk, "organization": organization_id,
+                     "created_by": created_by.pk})
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data)
+        if equipment_serializer.is_valid():
+            save_shelfobject_characteristics(equipment_serializer, created_by)
+        else:
+            delete_shelfobjects(shelfobject, created_by, laboratory_id)
+            return equipment_serializer.errors, None
+
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
@@ -352,7 +376,7 @@ class ShelfObjectCreateMethods:
                                                'limits'],
                                  relobj=laboratory_id)
 
-        return shelfobject
+        return {}, shelfobject
 
 
 class ShelfObjectViewSet(viewsets.GenericViewSet):
@@ -471,6 +495,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         :param kwargs: extra params
         :return: increase shelf object quantity, return success o error message
         """
+        object_type = request.data.get('objecttype',-1)
         self._check_permission_on_laboratory(request, org_pk, lab_pk,
                                              "create_shelfobject")
         self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk,
@@ -479,20 +504,23 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
         limit_serializer = ShelfObjectLimitsSerializer(data=request.data,
-                                                       context={'type_id':request.data.get('objecttype',-1),
+                                                       context={'type_id': object_type,
                                                                 'quantity': request.data.get('quantity',0),
                                                                 'without_limit':request.data.get('without_limit',False)})
+
         errors = {}
+
         if serializer.is_valid():
             if limit_serializer.is_valid():
-                shelfobject = self.serializer_class['method'](serializer,
-                                                              limit_serializer)
-                create_shelfobject_observation(shelfobject, shelfobject.description,
-                                                _("Created Object"), request.user,
-                                                   lab_pk)
-                return Response(
-                        {"detail": _("The creation was performed successfully.")},
-                        status=status.HTTP_201_CREATED)
+                error,shelfobject = self.serializer_class['method'](serializer,
+                                                                  limit_serializer)
+                if shelfobject:
+                    create_shelfobject_observation(shelfobject, shelfobject.description,
+                                                        _("Created Object"), request.user,
+                                                           lab_pk)
+                    return Response({"detail": _("The creation was performed successfully.")},status=status.HTTP_201_CREATED)
+                else:
+                    errors.update(error)
             else:
                 errors.update(limit_serializer.errors)
         else:
