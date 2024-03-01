@@ -362,3 +362,19 @@ def group_object_errors_for_serializer(errors, save_to_key="shelf_object", keys_
         if object_errors:
             updated_errors[save_to_key] = object_errors
     return updated_errors
+
+
+def save_shelfobject_characteristics(characteristic, user):
+    obj = characteristic.save()
+    changed_data= ['authorized_roles_to_use_equipment', 'equipment_price',
+                       'purchase_equipment_date', 'delivery_equipment_date',
+                       'have_guarantee', 'contract_of_maintenance', 'available_to_use',
+                       'first_date_use', 'notes', 'provider'
+                       ]
+    organilab_logentry(user, obj, ADDITION, changed_data=changed_data)
+
+def delete_shelfobjects(shelfobject, user, laboratory):
+    organilab_logentry(user, shelfobject.limits, DELETION, relobj=laboratory)
+    shelfobject.limits.delete()
+    organilab_logentry(user, shelfobject, DELETION, relobj=laboratory)
+    shelfobject.delete()
