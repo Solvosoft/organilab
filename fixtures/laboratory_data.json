@@ -2273,5 +2273,47 @@
       "last_update": "2023-01-31T19:33:49.272Z",
       "container": 6
     }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 8,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "BZ",
+      "name": "Balanza",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1],
+      "is_container": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 9,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "MCP",
+      "name": "Microscopio",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1],
+      "is_container": false
+    }
   }
 ]
