@@ -30,6 +30,8 @@
 {% block js %}
 {{block.super}}
 <script>
+window.name = "equipmentlistview";
+
 var object_urls = {
 	list_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
 	create_url: "{{list_obj_url}}",

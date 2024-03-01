@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.test import Client
 
-from laboratory.models import ObjectFeatures, Object, Catalog
+from laboratory.models import ObjectFeatures, Object
 from laboratory.tests.utils import BaseLaboratorySetUpTest
+
 
 class ObjectViewTest(BaseLaboratorySetUpTest):
 
@@ -165,3 +168,61 @@ class ObjectFeaturesViewTest(BaseLaboratorySetUpTest):
         success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
+
+
+class EquipmentViewTest(BaseLaboratorySetUpTest):
+
+    def setUp(self):
+        super().setUp()
+        kwargs = {"org_pk": self.org.pk, "lab_pk": self.lab.pk}
+        kwargs_update = kwargs
+        kwargs_destroy = kwargs
+
+        self.url_equipment_view = reverse("laboratory:equipment_list", kwargs=kwargs)
+        self.url_equipment_list = reverse("laboratory:api-equipment-list", kwargs=kwargs)
+
+        kwargs_update.update({"pk": 8})
+        kwargs_destroy.update({"pk": 9})
+
+        self.url_equipment_update = reverse("laboratory:api-equipment-detail", kwargs=kwargs_update)
+        self.url_equipment_destroy = reverse("laboratory:api-equipment-detail", kwargs=kwargs_destroy)
+
+        self.user_without_perms = get_user_model().objects.filter(username="tuwp").first()
+        self.client2 = Client()
+        self.client2.force_login(self.user_without_perms)
+
+    def test_access_to_equipment_view1(self):
+        response = self.client.get(self.url_equipment_view)
+        self.assertEqual(response.status_code, 200)
+
+    def test_access_to_equipment_view2(self):
+        response = self.client2.get(self.url_equipment_view)
+        self.assertEqual(response.status_code, 302)
+
+    def test_view_equipment_list(self):
+        response = self.client.get(self.url_equipment_list)
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_equipment_list2(self):
+        response = self.client2.get(self.url_equipment_list)
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_equipment(self):
+        response = self.client.get(self.url_equipment_list)
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_equipment2(self):
+        response = self.client2.get(self.url_equipment_list)
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_equipment(self):
+        response = self.client.get(self.url_equipment_update)
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_equipment(self):
+        response = self.client.get(self.url_equipment_destroy)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_equipment2(self):
+        response = self.client2.get(self.url_equipment_destroy)
+        self.assertEqual(response.status_code, 403)

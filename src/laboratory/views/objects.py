@@ -226,7 +226,7 @@ def block_notifications(request, lab_pk, obj_pk):
     messages.success(request, "You won't be recieving notifications of this object anymore.")
     return render(request, 'laboratory/block_object_notification.html')
 
-
+@permission_required('laboratory.view_object')
 def view_equipment_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
