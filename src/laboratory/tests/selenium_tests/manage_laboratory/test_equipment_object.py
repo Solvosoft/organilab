@@ -68,7 +68,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
             {"path": "//*[@id='create_obj_form']/div[7]/div/input", "extra_action": "setvalue", "value": "CA-546"},
             {"path": "//*[@id='create_obj_form']/div[8]/div/input", "scroll": "$('#create_obj_modal').scrollTop(650);"},
             {"path": "//*[@id='create_obj_form']/div[8]/div/input", "extra_action": "setvalue", "value": "B54897"},
-            {"path": "//*[@id='create_obj_form']/div[9]/div/input", "extra_action": "clearInput"},
+            {"path": "//*[@id='create_obj_form']/div[9]/div/input"},
             {"path": "//*[@id='create_obj_form']/div[9]/div/input", "extra_action": "setvalue", "value": "5634646465"},
             {"path": "//*[@id='create_obj_modal']/div/div/div[3]/button[2]"},
         ]
@@ -82,29 +82,13 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
 
         path_list = [
             {"path": "//*[@id='equipment_table']/tbody/tr[1]/td[3]/div/i"},
-            {"path": "//*[@id='update_obj_form']/div/div/input"},
-            {"path": "//*[@id='update_obj_form']/div/div/input", "extra_action": "clearinput"},
-            {"path": "//*[@id='update_obj_form']/div/div/input",
-             "extra_action": "setvalue", "value": "CE-456"},
-            {"path": "//*[@id='update_obj_form']/div[2]/div/input"},
-            {"path": "//*[@id='update_obj_form']/div[2]/div/input",
-             "extra_action": "clearinput"},
-            {"path": "//*[@id='update_obj_form']/div[2]/div/input",
-             "extra_action": "setvalue", "value": "BEA143 Beakers 50 mL"},
-            {"path": "//*[@id='update_obj_form']/div[7]/div/input"},
-            {"path": "//*[@id='update_obj_form']/div[7]/div/input", "extra_action": "clearinput"},
-            {"path": "//*[@id='update_obj_form']/div[7]/div/input", "extra_action": "setvalue", "value": "CA-546"},
-            {"path": "//*[@id='update_obj_form']/div[8]/div/input"},
-            {"path": "//*[@id='update_obj_form']/div[8]/div/input",
-             "extra_action": "clearinput"},
-            {"path": "//*[@id='update_obj_form']/div[8]/div/input",
-             "extra_action": "setvalue", "value": "B54897"},
-            {"path": "//*[@id='update_obj_form']/div[9]/div/input"},
-            {"path": "//*[@id='update_obj_form']/div[9]/div/input",
-             "extra_action": "clearinput"},
-            {"path": "//*[@id='update_obj_form']/div[9]/div/input",
-             "extra_action": "setvalue", "value": "5634646465"},
-            {"path": "//*[@id='update_obj_modal']/div/div/div[3]/button[2]"}
+            {"path": "//*[@id='update_obj_form']/div[3]/div/input",
+             "extra_action": "setvalue", "value": "Báscula,Romana"},
+            {"path": "//*[@id='update_obj_form']/div[4]/div/textarea", "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[4]/div/textarea",
+             "extra_action": "setvalue", "value":
+                 "Instrumento científico diseñado para medir la fuerza de la gravedad sobre un objeto."},
+            {"path": "//*[@id='update_obj_modal']/div/div/div[3]/button[2]", "scroll": "$('#update_obj_modal').scrollTop(350);"}
         ]
 
         general_path_list = [self.equipment_path, path_list]

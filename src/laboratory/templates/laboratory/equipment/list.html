@@ -34,9 +34,9 @@ window.name = "equipmentlistview";
 
 var object_urls = {
 	list_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
-	create_url: "{{list_obj_url}}",
-	destroy_url: "{{detail_obj_url}}",
-	update_url: "{{detail_obj_url}}"
+	create_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
+	destroy_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}",
+	update_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}"
 }
 
 table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
