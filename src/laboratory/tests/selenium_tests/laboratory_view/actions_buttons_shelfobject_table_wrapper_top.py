@@ -1,4 +1,5 @@
 from django.test import tag
+from django.utils.timezone import now
 
 from laboratory.tests.selenium_tests.laboratory_view.base import LaboratoryViewSeleniumTest
 
@@ -111,6 +112,9 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
         self.create_gif_process(path_list, "create_shelfobject_material")
 
     def test_create_shelfobject_equipment(self):
+        initial_date, initial_date_strftime = self.get_format_increase_decrease_date(now(), 1)
+        final_date, final_date_strftime = self.get_format_increase_decrease_date(initial_date, 5)
+
         path_list = self.path_base + [
             {"path": "//*[@id='labroom_1']"},
             {"path": "//*[@id='furniture_1']"},
@@ -123,10 +127,17 @@ class CreateShelfObject(LaboratoryViewSeleniumTest):
             {"path": "//*[@id='equipment_form']/span/span/span[2]/ul/li"},
             {"path": "//*[@id='equipment_form']/div[4]/div/textarea",
              "extra_action": "setvalue", "value": "Instrumento para calcular la masa de un objeto."},
-            {"path": "//*[@id='equipment_form']//div[7]/div/input","extra_action":"clearInput"},
-            {"path": "//*[@id='equipment_form']//div[7]/div/input",
-             "extra_action": "setvalue", "value": "2000"},
-            {"path": "//*[@id='equipment_form']//div[7]/div/input","scroll": "$('#equipment_modal').scrollTop(600)"},
+            {"path": "//*[@id='equipment_form']/div[7]/div/input","extra_action":"clearinput"},
+            {"path": "//*[@id='equipment_form']/div[7]/div/input", "extra_action": "setvalue", "value": "2000"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[11]/div/div/div[2]/div/div[2]/form/div[8]/div/div/input","scroll": "$('#equipment_modal').scrollTop(300)"},
+            {"path": "//*[@data-day='%s']" % initial_date_strftime},
+            {"path": "//html/body/div[1]/div/div[3]/div/div/div[11]/div/div/div[2]/div/div[2]/form/div[9]/div/div/input"},
+            {"path": "//*[@data-day='%s']" % final_date_strftime},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[11]/div/div/div[2]/div/div[2]/form/div[10]/div/span","scroll": "$('#equipment_modal').scrollTop(600)"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[11]/div/div/div[2]/div/div[2]/form/div[12]/div/span"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[11]/div/div/div[2]/div/div[2]/form/div[14]/div/textarea",
+             "extra_action":"setvalue", "value":"Es un equipo nuevo"},
+
             {"path": self.get_save_button_modal("equipment_modal")}
         ]
         #"scroll": "$('#equipment_modal').scrollTop(300);
