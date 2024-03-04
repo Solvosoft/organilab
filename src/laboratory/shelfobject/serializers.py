@@ -294,6 +294,15 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 
         return data
 
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+
+        object_type = self.context.get('type_id','-1')
+        if object_type == Object.EQUIPMENT:
+            fields['minimum_limit'].required = False
+            fields['maximum_limit'].required = False
+        return fields
+
 
 class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False,
@@ -553,6 +562,8 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
     object_features = serializers.SerializerMethodField(required=False, allow_null=True)
     substance_characteristics = serializers.SerializerMethodField(required=False,
                                                                   allow_null=True)
+    equipment_characteristics = serializers.SerializerMethodField(required=False,
+                                                                  allow_null=True)
 
     class Meta:
         model = ShelfObject
@@ -575,7 +586,12 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
         object_d = model_to_dict(obj.object)
         del object_d['features']
         return object_d
-
+    def get_equipment_characteristics(self, obj):
+        if hasattr(obj, 'shelfobjectequipmentcharacteristics'):
+            charac = ShelfObjectEquipmentCharacteristics.objects.get(shelfobject=obj)
+            characteristics = EquipmentShelfObjectCharacteristicsDetailSerializer(
+                charac, context={"request":self.context.get("request")})
+            return characteristics.data
 
 class ShelfSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
@@ -1194,3 +1210,39 @@ class EquimentShelfobjectCharacteristicSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObjectEquipmentCharacteristics
         fields = "__all__"
+
+
+class RolDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = ['name']
+
+class EquipmentShelfObjectCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    provider = serializers.SerializerMethodField()
+    authorized_roles_to_use_equipment = RolDetailSerializer(many=True)
+    contract_of_maintenance = serializers.SerializerMethodField()
+    have_guarantee = serializers.SerializerMethodField()
+    available_to_use = serializers.SerializerMethodField()
+
+    def get_provider(self, obj):
+        if obj.provider:
+            return obj.provider.name
+        return _("Unknown")
+    def get_have_guarantee(self, obj):
+        if obj.have_guarantee:
+            return _("Yes")
+        return _("No")
+    def get_available_to_use(self, obj):
+        if obj.available_to_use:
+            return _("Yes")
+        return _("No")
+
+    def get_contract_of_maintenance(self, obj):
+        request = self.context.get('request')
+        schema = request.scheme + "://"
+        domain = schema + request.get_host()
+        if obj.contract_of_maintenance:
+            return domain+obj.contract_of_maintenance.url
+    class Meta:
+        model = ShelfObjectEquipmentCharacteristics
+        fields = '__all__'
