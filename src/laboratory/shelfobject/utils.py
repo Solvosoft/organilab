@@ -374,7 +374,5 @@ def save_shelfobject_characteristics(characteristic, user):
     organilab_logentry(user, obj, ADDITION, changed_data=changed_data)
 
 def delete_shelfobjects(shelfobject, user, laboratory):
-    organilab_logentry(user, shelfobject.limits, DELETION, relobj=laboratory)
-    shelfobject.limits.delete()
     organilab_logentry(user, shelfobject, DELETION, relobj=laboratory)
     shelfobject.delete()
