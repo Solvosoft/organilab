@@ -330,8 +330,8 @@ class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteris
             queryset=Provider.objects.all(),
             label= _("Provider"),
             widget=AutocompleteSelect('object_providers', attrs={
-                'data-dropdownparent': "#equipment_form",
-                'data-s2filter-object': '#id_ef-object',
+                'data-dropdownparent': "#equipment_refuse_form",
+                'data-s2filter-object': '#id_erf-object',
                 'data-s2filter-laboratory': '#id_laboratory',
                 'data-s2filter-organization': '#id_organization'
             }))
@@ -339,7 +339,7 @@ class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteris
             queryset=Rol.objects.all(),
             label= _("Authorized roles to use equipment"),
             widget=AutocompleteSelectMultiple('organization_rols', attrs={
-                'data-dropdownparent': "#equipment_form",
+                'data-dropdownparent': "#equipment_refuse_form",
                 'data-s2filter-organization': '#id_organization'
             }))
 
