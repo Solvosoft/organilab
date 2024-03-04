@@ -246,7 +246,8 @@ class EquipmentCharacteristicForm(forms.Form):
     first_date_use = forms.DateField(widget=genwidgets.DateInput,  label=_("First date use"))
     notes = forms.CharField(widget=genwidgets.Textarea, label=_("Note"))
 
-class ShelfObjectEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteristicForm,forms.ModelForm,GTForm):
+class ShelfObjectEquipmentForm(EquipmentCharacteristicForm,forms.ModelForm,GTForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
@@ -301,7 +302,9 @@ class ShelfObjectEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteristicFor
             'marked_as_discard': genwidgets.CheckboxInput
         }
 
-class ShelfObjectRefuseEquipmentForm(ShelfObjectExtraFields,EquipmentCharacteristicForm, GTForm, forms.ModelForm):
+class ShelfObjectRefuseEquipmentForm(EquipmentCharacteristicForm, GTForm, forms.ModelForm):
+    objecttype = forms.IntegerField(widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True)
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
 

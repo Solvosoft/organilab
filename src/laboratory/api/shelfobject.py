@@ -293,13 +293,11 @@ class ShelfObjectCreateMethods:
         created_by = self.context['request'].user
         laboratory_id = self.context['laboratory_id']
         organization_id = self.context['organization_id']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
         data = self.context["request"].data
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
-            limits=limits,
             measurement_unit=measurement_unit
         )
 
@@ -325,8 +323,7 @@ class ShelfObjectCreateMethods:
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
                                                'marked_as_discard', 'description',
-                                               'created_by', 'in_where_laboratory',
-                                               'limits'],
+                                               'created_by', 'in_where_laboratory'],
                                  relobj=laboratory_id)
 
         return {}, shelfobject
@@ -342,13 +339,11 @@ class ShelfObjectCreateMethods:
         created_by = self.context['request'].user
         laboratory_id = self.context['laboratory_id']
         organization_id = self.context['organization_id']
-        limits = save_shelfobject_limits_from_serializer(limits_serializer, created_by)
         measurement_unit = get_object_or_404(Catalog, key="units", description="Unidades")
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
-            limits=limits,
             measurement_unit=measurement_unit
         )
         data = self.context["request"].data
@@ -372,8 +367,7 @@ class ShelfObjectCreateMethods:
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
                                                'marked_as_discard', 'description',
-                                               'created_by', 'in_where_laboratory',
-                                               'limits'],
+                                               'created_by', 'in_where_laboratory'],
                                  relobj=laboratory_id)
 
         return {}, shelfobject
@@ -503,10 +497,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class['serializer'](data=request.data,
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
-        limit_serializer = ShelfObjectLimitsSerializer(data=request.data,
-                                                       context={'type_id': object_type,
+        limit_serializer = ShelfObjectLimitsSerializer(data=request.data, context={'type_id': object_type,
                                                                 'quantity': request.data.get('quantity',0),
-                                                                'without_limit':request.data.get('without_limit',False)})
+                                                                'without_limit':request.data.get('without_limit',False),
+                                                                'object_type':object_type})
 
         errors = {}
 
@@ -654,7 +648,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         """
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "detail")
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
-        serializer = ShelfObjectDetailSerializer(shelfobject)
+        serializer = ShelfObjectDetailSerializer(shelfobject, context={"request":request})
         qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
         context = {'object': serializer.data}
         if qr:
