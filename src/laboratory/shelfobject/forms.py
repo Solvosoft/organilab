@@ -7,7 +7,8 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from laboratory import utils
-from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, LaboratoryRoom, Furniture
+from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
+    LaboratoryRoom, Furniture, ShelfObjectMaintenance
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
@@ -498,3 +499,22 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
 class ContainerManagementForm(ContainerForm):
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.CharField(widget=genwidgets.HiddenInput)
+
+
+class EquipmentMaintenanceForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org = kwargs.pop('org_pk')
+        super(EquipmentMaintenanceForm, self).__init__(*args, **kwargs)
+        self.fields["provider_of_maintenance"].queryset = Provider.objects.filter(laboratory__organization__pk=org)
+
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = ['maintenance_date', 'provider_of_maintenance', 'maintenance_observation']
+
+        widgets = {
+            'maintenance_date': genwidgets.DateInput,
+            'provider_of_maintenance': genwidgets.Select,
+            'maintenance_observation': genwidgets.Textarea
+        }
+

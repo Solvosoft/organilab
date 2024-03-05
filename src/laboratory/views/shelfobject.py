@@ -17,7 +17,7 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpResponseNotFound
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
@@ -578,3 +578,11 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
         return HttpResponseNotFound()
     response['Content-Disposition'] = 'attachment; filename="shelfobject_%s.svg"' % (shelfobject.pk)
     return response
+
+@permission_required('laboratory.view_shelfobject')
+def view_equipment_shelfobject_detail(request, org_pk, lab_pk):
+    context = {
+        "org_pk": org_pk,
+        "lab_pk": lab_pk,
+    }
+    return render(request, "laboratory/shelfobject/equiment_detail.html", context=context)
