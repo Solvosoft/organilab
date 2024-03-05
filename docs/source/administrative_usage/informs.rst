@@ -10,7 +10,7 @@ de informes  de la organización.
 Este módulo usa como base la funcionalidad de arrastre de elementos para la generación de formularios,
 que esta potenciada por la librería **Formio.js**.
 
-Ademas para tener acceso se debe ingresar previamente en el modulo **Mis Laboratorios**, para que aparezca la opción
+Además para tener acceso se debe ingresar previamente en el modulo **Mis Laboratorios**, para que aparezca la opción
 **Reportes informes y Procedimientos** donde se muestra la opción **Plantilla de informes**.
 
 Ejemplo de ingreso al modulo de plantillas de informes:
@@ -49,7 +49,7 @@ Permisos Requeridos:
 Renombrar nombre de plantilla de informes
 --------------------------------------------
 
-Es posible renombrar el titulo de la plantillas de informes de la siguiente forma:
+Es posible renombrar el título de las plantillas de informes de la siguiente forma:
 
 .. image:: ../_static/gif/update_name_inform_template.gif
    :height: 380
@@ -63,7 +63,7 @@ Eliminar plantilla de informes
 ---------------------------------
 
 El eliminar una plantilla de informe es posible, solo que se debe tener en cuenta que al momento de remover esta los
-informes que se encuentren utilizándola como base también serán eliminadas del sistema.
+informes que se encuentren vinculados también serán eliminados del sistema.
 
 Ejemplo de eliminación de plantillas de informes:
 

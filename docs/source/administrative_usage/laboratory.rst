@@ -149,13 +149,13 @@ Administración de muebles
 ==============================
 
 Cuando hablamos de muebles se trata de los que son utilizados en las salas de laboratorios, para el almacenamiento de materiales y equipos
-dentro de estantes, por lo tanto estos se encuentran asociado a las salas.
+dentro de estantes, por lo tanto, estos se encuentran asociado a las salas.
 
 Permisos Requeridos:
 
 *   *view_laboratoryroom*: Permite visualizar los cuartos que el laboratorio posee.
 *   *add_laboratoryroom*: Permite la creación de uno nuevo cuarto de laboratorio
-*   *add_furniture*: Permite crear un mueble en el cuarto de laboratorio y que se visualize el botón de creación.
+*   *add_furniture*: Permite crear un mueble en el cuarto de laboratorio y que se visualice el botón de creación.
 *   *view_furniture*: Permite visualizar los muebles del cuarto de laboratorio.
 *   *change_furniture*: Permite ingresar al módulo de edición de muebles del cuarto y actualizarlos.
 *   *delete_furniture*: Permite eliminar muebles del cuarto.
@@ -182,20 +182,20 @@ Ejemplo de creación de muebles:
    :height: 380
    :width: 720
 
-Actualización de muebles
+Editar muebles
 --------------------------
 
 La edición de muebles requiere de 4 los cuales son:
 
 *   **Nombre**: Este campo es obligatorio.
-*   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajon, recipiente, mueble aereo entre otros,
+*   **Tipo**: Este campo define el tipo de mueble que es por ejemplo cajón, recipiente, mueble aéreo entre otros,
 *   **Color**: Este campo se utiliza para dar colorear el mueble en la vista de laboratorio, este campo no es obligatorio,
 
 Permisos requeridos:
 
 *   *view_laboratoryroom*: Permite visualizar los cuartos que el laboratorio posee.
 *   *change_furniture*: Permite editar la información referente al mueble.
-*   *view_furniture*: Permite visualizar los mueble del cuarto de laboratorio.
+*   *view_furniture*: Permite visualizar los muebles del cuarto de laboratorio.
 
 Ejemplo de actualización de muebles:
 
@@ -206,7 +206,7 @@ Ejemplo de actualización de muebles:
 Crear tipo de mueble
 ------------------------
 
-Los muebles pueden ser de distintas formas por ejemplo estante, cajon, recipiente entre otros.
+Los muebles pueden ser de distintas formas por ejemplo estante, cajón, recipiente entre otros.
 
 Ejemplo de creación de tipos de mueble:
 
@@ -214,23 +214,23 @@ Ejemplo de creación de tipos de mueble:
    :height: 380
    :width: 720
 
-Eliminación de mueble
+Eliminar de mueble
 ------------------------
 
-Para la eliminación de muebles hay que tener en cuenta diversos puntos:
+Para eliminar muebles hay que tener en cuenta diversos puntos:
 
 *   Al eliminar un mueble, sus estantes también terminan siendo borrados del sistema.
 *   También se eliminarán los objetos, materiales, equipos vinculados a los estantes del mueble.
 
-Por lo tanto a la hora de eliminar un mueble se debe tener en cuenta los puntos anteriores.
+Por lo tanto, a la hora de eliminar un mueble se debe tener en cuenta los puntos anteriores.
 
 Permisos Requeridos:
 
 *   *view_laboratoryroom*: Permite visualizar los cuartos que el laboratorio posee.
 *   *view_furniture*: Permite visualizar los mueble del cuarto de laboratorio.
-*   *delete_furniture*: Permite visualizar el boton de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
+*   *delete_furniture*: Permite visualizar el botón de eliminar mueble en la vista de salas de laboratorio y a su vez eliminarlo.
 
-Ejemplo de eliminación de muebles:
+Ejemplo de eliminar muebles:
 
 .. image:: ../_static/gif/delete_furniture.gif
    :height: 380
@@ -253,7 +253,7 @@ Permisos Requeridos:
 *   *view_furniture*: Permite visualizar los mueble del cuarto de laboratorio.
 *   *change_furniture*: Permite ingresar al mueble donde se desea crear los estantes.
 *   *add_shelf*: Permite crear estantes.
-*   *change_shelf*: Permite que aparezca el boton de actualizar estante y editar la información de este.
+*   *change_shelf*: Permite que aparezca el botón de actualizar estante y editar la información de este.
 *   *view_shelf*: Permite visualizar los estantes.
 *   *delete_furniture*: Permite visualizar el botón de eliminar estante y a su vez eliminarlo.
 
@@ -325,9 +325,9 @@ Permisos Requeridos:
 
 *   *view_laboratoryroom*: Permite visualizar los cuartos que el laboratorio posee.
 *   *view_furniture*: Permite visualizar los mueble del cuarto de laboratorio.
-*   *change_furniture*: Permite visualizar el boton de **Editar** mueble en la vista de salas de laboratorio y a su vez modificarlo.
+*   *change_furniture*: Permite visualizar el botón de **Editar** mueble en la vista de salas de laboratorio y a su vez modificarlo.
 *   *view_shelf*: Permite visualizar los estantes.
-*   *add_shelf*: Permite visualizar el boton de crear estante y a su vez crearlo.
+*   *add_shelf*: Permite visualizar el botón de crear estante y a su vez crearlo.
 
 Ejemplo de actualización de estantes:
 
@@ -409,9 +409,8 @@ El sistema posee una función para la generación de imágenes QR. esto se utili
 laboratorio. Sobre la reconstrucción de QR se busca actualizar los las imágenes para los siguientes casos:
 
 *   Cuando se traslada el laboratorio a otra organización.
-*   Cambio del dominio donde se hospede la aplicación.
 
-Ejemplo de activación de accion:
+Ejemplo de activación de acción:
 
 .. image:: ../_static/gif/update_qr.gif
    :height: 380
@@ -421,12 +420,12 @@ Ejemplo de activación de accion:
 Administración de objetos
 ===============================
 
-Unos de los módulos más importantes es el de objetos que permitirá la creación, edición y eliminación de estos, los cuales
+Uno de los módulos más importantes es el de objetos que permitirá la creación, edición y eliminación de estos, los cuales
 se dividen en tres tipos:
 
-*   **Reactivos**.
-*   **Materiales**.
-*   **Equipos**
+*   **Reactivos.**
+*   **Materiales.**
+*   **Equipos.**
 
 También los objetos creados solo se podrán utilizar en los laboratorios vinculados a las organizaciones padres e hijas, por lo
 tanto, se debe tener en cuenta a la hora de eliminar o actualiza algún objeto, afecta de forma general a todas las organizaciones,
@@ -526,7 +525,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los reactivos.
-*   *add_object*: Permite visualizar los botonos para el ingreso a los módulo de reactivos, además la creación de objetos.
+*   *add_object*: Permite visualizar los botones para el ingreso a los módulo de reactivos, además la creación de objetos.
 
 Ejemplo de creación de reactivo:
 
@@ -544,7 +543,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los reactivos.
-*   *add_object*: Permite visualizar los botonos para el ingreso al módulo de reactivos.
+*   *add_object*: Permite visualizar los botones para el ingreso al módulo de reactivos.
 *   *change_object*: Permite visualizar el botón de **editar** en los objetos reactivos, además su actualización.
 
 
@@ -565,7 +564,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los reactivos.
-*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos.
+*   *add_object*: Permite visualizar los botones para el ingreso a los modulos de reactivos.
 *   *view_object*: Permite visualizar los reactivos.
 
 Ejemplo de busqueda de reactivos:
@@ -585,7 +584,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los objetos en el modulo de reactivos.
-*   *add_object*: Permite visualizar los botonos para el ingreso al modulo de reactivos.
+*   *add_object*: Permite visualizar los botones para el ingreso al modulo de reactivos.
 *   *delete_object*: Permite visualizar el botón de **eliminar** en los reactivos.
 
 Ejemplo de eliminación de reactivo:
@@ -635,7 +634,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los objetos en el módulo de administrativo de objetos.
-*   *add_object*: Permite visualizar los botonos para el ingreso a los módulos de reactivos, materiales y equipos,
+*   *add_object*: Permite visualizar los botones para el ingreso a los módulos de reactivos, materiales y equipos,
     además la creación de objetos.
 
 Ejemplo de creación de materiales:
@@ -667,7 +666,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los objetos en el módulo de administrativo de objetos.
-*   *add_object*: Permite visualizar los botonos para el ingreso a los modulos de reactivos.
+*   *add_object*: Permite visualizar los botones para el ingreso a los modulos de reactivos.
 *   *change_object*: Permite visualizar el botón de **editar** en los objetos materiales, además su actualización.
 
 Ejemplo de actualización de materiales:
@@ -699,7 +698,7 @@ Eliminar Materiales
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. warning::
-   A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borraran
+    A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borraran
     sus registros.
 
 Permisos requeridos:
@@ -719,7 +718,7 @@ Administración de Equipos
 -------------------------------
 
 Este módulo permitirá el manejo de los equipos de la organización como pueden ser balanzas, medidores, cajas, entre otros,
- actualmente, para el acceso a este módulo existen 2 formas de ingresar, las cuales se mostrarán en las siguientes imágenes:
+actualmente, para el acceso a este módulo existen 2 formas de ingresar, las cuales se mostrarán en las siguientes imágenes:
 
 La primera forma:
 
@@ -795,7 +794,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los equipos.
-*   *add_object*: Permite visualizar los botonos para el ingreso a los módulos de equipos.
+*   *add_object*: Permite visualizar los botones para el ingreso a los módulos de equipos.
 
 Ejemplo de búsqueda de equipos:
 
@@ -812,7 +811,7 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los objetos en el modulo de equipos.
-*   *add_object*: Permite visualizar los botonos para el ingreso al modulo de equipos.
+*   *add_object*: Permite visualizar los botones para el ingreso al modulo de equipos.
 *   *delete_object*: Permite visualizar el botón de **eliminar** en los equipos.
 
 .. image:: ../_static/gif/delete_equipment_object.gif
@@ -825,7 +824,7 @@ Administración de características de objetos
 Este módulo se encarga del manejo de las características de los objetos propios de los objetos dentro de la organización.
 
 .. image:: ../_static/object_features_view.png
-   :alt: Vista de características de objectos
+   :alt: Vista de características de objecos
    :height: 380
    :width: 720
 
@@ -847,12 +846,12 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_objectfeatures*: Permite visualizar los objetos en el modulo de administrativo de objetos.
-*   *add_objectfeatures*: Permite visualizar los boton para el ingreso al modulo de caracteristicas de objetos,
+*   *add_objectfeatures*: Permite visualizar los botón para el ingreso al modulo de caracteristicas de objetos,
     además la creación de estos.
 *   *view_objectfeatures*: Permite visualizar el listado de características de objetos.
-*   *change_objectfeatures*: Permite visualizar los boton de **Editar** de las  caracteristicas de objetos,
+*   *change_objectfeatures*: Permite visualizar los botón de **Editar** de las  caracteristicas de objetos,
     además de la edición de estos.
-*   *delete_objectfeatures*: Permite visualizar los boton de **Eliminar** de las caracteristicas de objetos,
+*   *delete_objectfeatures*: Permite visualizar los botón de **Eliminar** de las caracteristicas de objetos,
     además de la eliminación de estos.
 
 Crear características de objetos
@@ -866,11 +865,11 @@ En la creación de características se requerirán solo 2 datos que son obligato
 Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
-*   *view_objectfeatures*: Permite visualizar los objetos en el modulo de administrativo de objetos.
-*   *add_objectfeatures*: Permite visualizar los boton para el ingreso al modulo de caracteristicas de objetos,
-    además la creación de estos.
+*   *view_objectfeatures*: Permite visualizar los objetos en el módulo de administrativo de objetos.
+*   *add_objectfeatures*: Permite visualizar el botón para el ingreso al módulo de características de objetos,
+    además, la creación de estos.
 
-Ejemplo de creación de caracteristica de objeto:
+Ejemplo de creación de característica de objeto:
 
 .. image:: ../_static/gif/view_object_features.gif
    :height: 380
@@ -882,16 +881,16 @@ Actualizar características de objetos
 En la actualización de características se requerirán lo mismo campos que la creación y ninguno de estos puede ser nulo.
 
 .. note::
-    Hay que tener en mente a la hora de modificar el nombre de alguna característica esta se reflejara en los objetos
-    que la eeten utilizando.
+    Hay que tener en mente a la hora de modificar el nombre de alguna característica, esta se reflejara en los objetos
+    que este vinculada.
 
 Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_objectfeatures*: Permite visualizar los objetos en el modulo de administrativo de objetos.
-*   *add_objectfeatures*: Permite visualizar los botón para el ingreso al modulo de caracteristicas de objetos.
+*   *add_objectfeatures*: Permite visualizar los botón para el ingreso al modulo de características de objetos.
 *   *view_objectfeatures*: Permite visualizar el listado de características de objetos.
-*   *change_objectfeatures*: Permite visualizar los boton de **Editar** de las  caracteristicas de objetos, además de
+*   *change_objectfeatures*: Permite visualizar los botón de **Editar** de las  características de objetos, además de
     la edición de estos.
 
 Ejemplo de actualización de caracaterística de objeto:
@@ -904,18 +903,18 @@ Eliminar características de objetos
 -----------------------------------------
 
 .. caution::
-    Hay que tener en cuenta a la hora de eliminar una característica esta, también se borrara de los objetos relacionados con esta.
+    Hay que tener en cuenta a la hora de eliminar una característica, también se borrará de los objetos relacionados con ella.
 
 Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_objectfeatures*: Permite visualizar los objetos en el módulo de administrativo de objetos.
-*   *add_objectfeatures*: Permite visualizar los boton para el ingreso al modulo de caracteristicas de objetos.
+*   *add_objectfeatures*: Permite visualizar el botón para el ingreso al módulo de características de objetos.
 *   *view_objectfeatures*: Permite visualizar el listado de características de objetos.
-*   *delete_objectfeatures*: Permite visualizar los boton de **Eliminar** de las caracteristicas de objetos,
+*   *delete_objectfeatures*: Permite visualizar los botón de **Eliminar** de las características de objetos,
     además de la eliminación de estos.
 
-Ejemplo de elimnaación de caracaterística de objeto:
+Ejemplo de eliminación de caracaterística de objeto:
 
 .. image:: ../_static/gif/view_object_features.gif
    :height: 380
@@ -928,7 +927,6 @@ Este módulo se encargará de manejar los proveedores del laboratorio, no es a n
 que se esté utilizando en el momento.
 
 .. image:: ../_static/view_provider.png
-   :alt: Modúlo de proveedores
    :height: 380
    :width: 720
 
@@ -942,7 +940,7 @@ Permisos requeridos:
 .. note::
     Actualmente, solo se pueden crear y actualizar proveedores, todavía no permite la eliminación de estos
 
-Ejemplo de ingreso a modúlo de proveedores:
+Ejemplo de ingreso a módulo de proveedores:
 
 .. image:: ../_static/gif/view_providers.gif
    :height: 380
@@ -956,14 +954,14 @@ En la creación de proveedores se requieren 4 datos, los cuales son:
 
 *   **Nombre**: Este campo es obligatorio de ingresar.
 *   **Telefóno**: Este campo se utiliza para el registro de numeros telefonicos, actualmente se tiene que agregar 9 digitos,
-    por ejemplo, 506-8888-88-88 los primeros 3 digitos son el codigo de paiś, a su vez este dato no es obligatorio de ingresar.
+    por ejemplo, 506-8888-88-88 los primeros 3 digitos son el codigo de país, a su vez este dato no es obligatorio de ingresar.
 *   **Correo Electrónico**: Es un campo no obligatorio de ingresar
 *   **Cedúla Jurídica**: Este campo es obligatorio de ingresar.
 
 Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
-*   *add_provider*: Permite visualizar el botón para el ingreso al modulo de proveedores y creación de estos.
+*   *add_provider*: Permite visualizar el botón para el ingreso al módulo de proveedores y creación de estos.
 
 Ejemplo de creación de proveedor:
 
@@ -993,7 +991,7 @@ Ejemplo de edición de proveedores:
 Administración de protocolos
 =================================
 
-Este módulo se encagara de manejar los protocolos internos de la organización por parte de la administración
+Este módulo se encaga del manejo de los protocolos internos de la organización por parte de la administración
 
 .. image:: ../_static/protocols_index.png
    :alt: Módulo de Protocolos
@@ -1186,8 +1184,8 @@ Eliminar QR de registro de usuarios
 --------------------------------------
 
 .. warning::
-    Al eliminar un archivo QR del sistema ya este no puede ser utilizado en los lugares que se esté utilizando,
-    por consiguiente sería preferible notificar a lo usuarios que va que inutilizado el QR.
+    Al eliminar un archivo QR del sistema este ya no puede ser usado en los lugares que se esté utilizando,
+    por consiguiente sería preferible notificar a lo usuarios que el QR se encuentra inutilizado.
 
 Permisos requeridos:
 
@@ -1195,7 +1193,7 @@ Permisos requeridos:
 *  *view_registeruserqr*: Permite ingresa al módulo de registro de usuarios, además de visualizar la lista de QR.
 *  *delete_registeruserq*: Permite la eliminación de registros.
 
-Ejemplo de eliminación de QR:
+Ejemplo de eliminar QR:
 
 .. image:: ../_static/gif/delete_register_user_QR.gif
    :height: 380
@@ -1205,7 +1203,7 @@ Ejemplo de eliminación de QR:
 Mis procedimientos
 ======================
 
-Este modúlo se encargará de generar procedimientos quimicos dentro de la organización que a su vez permitirán generar
+Este módulo se encargará de generar procedimientos quimicos dentro de la organización que a su vez permitirán generar
 reservaciones de objetos vinculados a la plantilla de procedimiento asociada.
 
 .. image:: ../_static/view_my_procedure.png
@@ -1213,7 +1211,7 @@ reservaciones de objetos vinculados a la plantilla de procedimiento asociada.
    :height: 380
    :width: 720
 
-Permisos requeridos para manipular el modulo de forma general:
+Permisos requeridos para manipular el módulo de forma general:
 
 *  *view_laboratory*: Permite el ingreso al laboratorio.
 *  *view_myprocedure*: Permite ingresa al módulo de mis procedimientos y visualizar los procedimientos.
@@ -1237,9 +1235,9 @@ Ejemplo de ingreso a modulo de mis procedimientos
 Crear procedimiento
 -------------------------
 
-En la creación de procedimientos se requieren 2 datos en especifico:
+En la creación de procedimientos se requieren 2 datos en específico:
 
-*   *Nombre*: Es un campo obligatorio de insercción.
+*   *Nombre*: Es un campo obligatorio.
 *   *Plantilla*: Esta plantilla esta vinculadas a las plantillas de procedimientos dentro de las organizaciones hijas y
     padres, es obligatorio la selección de una.
 
@@ -1249,8 +1247,7 @@ En la creación de procedimientos se requieren 2 datos en especifico:
         *   **Revisión**.
         *   **Finalizado**.
 
-Ejemplo de creacion de procedimiento
-
+Ejemplo de creación de procedimiento:
 
 .. image:: ../_static/gif/add_my_procedure.gif
    :height: 380
@@ -1259,16 +1256,16 @@ Ejemplo de creacion de procedimiento
 Editar estado de procedimiento
 ------------------------------------
 
-En la edición de estados de procedimiento se puede pasar de Borrador a Revision, mientras que de Revisión a Finalizado como
+En la edición de estados de procedimiento se puede pasar de Borrador a Revisión, mientras que de Revisión a Finalizado como
 se muestran en los siguientes ejemplos:
 
-*   Borrador a Revision:
+*   Borrador a Revisión:
 
     .. image:: ../_static/gif/review_my_procedure.gif
        :height: 380
        :width: 720
 
-*   Revision a Finalizado:
+*   Revisión a Finalizado:
 
     .. image:: ../_static/gif/finalize_my_procedure.gif
        :height: 380
@@ -1314,7 +1311,7 @@ Permisos requeridos:
 Editar observación en procedimiento
 -----------------------------------------
 
-En la edicion de observaciones solo lo podra hacer el usuario que la creó:
+En la edición de observaciones solo lo podrá efectuar el usuario que la creó:
 
 
 Permisos requeridos:
@@ -1331,7 +1328,8 @@ Permisos requeridos:
 
 Eliminar observación en procedimiento
 -----------------------------------------
-En la eliminación de observaciones de igual forma que en la edición solo el usuario que la créo podra eliminarla:
+
+La eliminación de observaciones de igual forma que en la edición solo el usuario que la créo podra eliminarla:
 
 .. image:: ../_static/gif/delete_my_procedure_observation.gif
     :height: 380
@@ -1346,10 +1344,9 @@ Permisos requeridos:
 
 Generar reservación de procedimiento
 -----------------------------------------
-
-Los procedimientos también permite generar reservaciones donde los materiales que se reservan son los objectos, de los
-pasos de la plantilla de procedimientos, ademas hay que tener en cuenta que si en las estanterías de objectos no existe
-un material o la cantidad de este es insuficiente a lo solicitado no se podra dar paso la reservación.
+Los procedimientos también permiten generar reservaciones donde los materiales que se reservan son los objetos, de los
+pasos de la plantilla de procedimientos, además hay que tener en cuenta que si en las estanterías de objetos no existe
+un material o la cantidad de este es insuficiente a lo solicitado no se podrá dar paso la reservación.
 
 Permisos requeridos:
 
