@@ -1,9 +1,9 @@
 Administración de roles
-===========================
+****************************
 
 
 Agregar nuevo rol sin copia de permisos de otros roles
-----------------------------------------------------------------
+===========================================================
 
 Los roles pueden ser creados sin permisos y conforme se navegue en la plataforma se puede ir agregando permisos al
 mismo.
@@ -14,7 +14,7 @@ mismo.
 
 
 Agregar nuevo rol con copia de permisos de otros roles
-----------------------------------------------------------------
+==========================================================
 
 Este paso facilita a la hora de querer unificar permisos de otros roles en uno solo o simplemente mantener los permisos
 bajo un nombre diferente de rol.
@@ -25,7 +25,7 @@ bajo un nombre diferente de rol.
 
 
 Copiar rol a una organización
-----------------------------------------------------------------
+==================================
 
 Incluye el copiado de las siguientes características:
 
@@ -39,7 +39,7 @@ Incluye el copiado de las siguientes características:
 
 
 Listar roles de una organización
---------------------------------------------
+====================================
 
 Permite consultar que roles y permisos están asociados a una organización, así como la posibilidad de eliminarlos
 siempre y cuando se tenga los privilegios (permisos) necesarios de un administrador.
@@ -49,7 +49,7 @@ siempre y cuando se tenga los privilegios (permisos) necesarios de un administra
    :width: 720
 
 Eliminar un rol de una organización
---------------------------------------------
+========================================
 
 Al eliminar un rol se remueven todas sus relaciones con perfiles de permisos y organizaciones, por lo tanto es necesario
 estar seguro antes de hacerlo porque es un cambio definitivo.
@@ -60,10 +60,10 @@ estar seguro antes de hacerlo porque es un cambio definitivo.
 
 
 Administrar roles de permisos a un usuario por laboratorio desde la pestaña "Por laboratorio"
-----------------------------------------------------------------------------------------------------
+================================================================================================
 
 Agregar rol de permisos a un usuario
-*******************************************
+----------------------------------------
 
 Todos los roles de permisos seleccionados se asignarán a ese usuario en ese laboratorio.
 
@@ -72,7 +72,7 @@ Todos los roles de permisos seleccionados se asignarán a ese usuario en ese lab
    :width: 720
 
 Remover rol de permisos a un usuario
-*****************************************
+----------------------------------------
 
 Remoción de todos los roles de permisos seleccionados a ese usuario en ese laboratorio.
 
@@ -81,7 +81,7 @@ Remoción de todos los roles de permisos seleccionados a ese usuario en ese labo
    :width: 720
 
 Usar rol seleccionado de permisos y asignarlos a un usuario
-****************************************************************
+-----------------------------------------------------------------
 
 Este paso implica las siguientes acciones:
 
@@ -94,10 +94,10 @@ Este paso implica las siguientes acciones:
 
 
 Administrar roles por organización desde la pestaña "Por Organización"
-----------------------------------------------------------------------------------
+=========================================================================
 
 Agregar rol de permisos a un usuario
-*******************************************
+----------------------------------------
 
 Todos los roles de permisos seleccionados se asignarán a ese usuario en esa organización.
 
@@ -106,7 +106,7 @@ Todos los roles de permisos seleccionados se asignarán a ese usuario en esa org
    :width: 720
 
 Remove rol de permisos a un usuario
-****************************************
+--------------------------------------
 
 Remoción de todos los roles de permisos seleccionados a ese usuario en esa organización.
 
@@ -115,7 +115,7 @@ Remoción de todos los roles de permisos seleccionados a ese usuario en esa orga
    :width: 720
 
 Usar rol seleccionado de permisos y asignarlos a un usuario
-****************************************************************
+==================================================================
 
 Este paso implica las siguientes acciones:
 
@@ -128,20 +128,20 @@ Este paso implica las siguientes acciones:
 
 
 Eliminar relación entre usuario y laboratorio desde la pestaña "Por laboratorio"
-------------------------------------------------------------------------------------------
+====================================================================================
 
 Opción disponible para desvincular a un usuario de un laboratorio, así como también desactivarlo de la plataforma.
 
 
 Eliminar relación entre usuario y laboratorio
-***************************************************************************************
+--------------------------------------------------
 
 .. image:: ../_static/gif/delete_relation_user_lab_from_tab_lab.gif
    :height: 380
    :width: 720
 
 Eliminar relación entre usuario y laboratorio y desactivar usuario de la plataforma
-***************************************************************************************
+----------------------------------------------------------------------------------------
 
 .. image:: ../_static/gif/delete_relation_user_lab_and_deactivate_user_from_tab_lab.gif
    :height: 380
@@ -157,14 +157,14 @@ usuario sea parte.
 
 
 Eliminar relación entre usuario y organización
-***************************************************************************************
+==================================================
 
 .. image:: ../_static/gif/delete_relation_user_org_from_tab_org.gif
    :height: 380
    :width: 720
 
 Eliminar relación entre usuario y organización y desactivar usuario de la plataforma
-***************************************************************************************
+---------------------------------------------------------------------------------------
 
 .. image:: ../_static/gif/delete_relation_user_org_and_deactivate_user_from_tab_org.gif
    :height: 380
@@ -172,7 +172,7 @@ Eliminar relación entre usuario y organización y desactivar usuario de la plat
 
 
 Administrar grupos de permisos por perfil
------------------------------------------------
+==============================================
 
 Los grupos de permisos son grupos pre definidos y personalizados por el administrador que pueden llegar a ser asignados
 a los usuarios según se requiera.

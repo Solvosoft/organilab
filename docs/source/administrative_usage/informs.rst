@@ -1,8 +1,9 @@
 Plantillas para informes
-============================
+****************************
 
 Administración de platillas para informes
----------------------------------------------------
+===============================================
+
 Cuando hablamos de plantillas de informes se tratara de la creación de formularios que se utilizara para la generación
 de informes  de la organización.
 
@@ -29,7 +30,8 @@ Permisos Requeridos:
 
 
 Crear plantilla de informes
-*****************************
+-------------------------------
+
 La creación de plantillas de procedimientos requiere inicialmente el **nombre** de esta luego permitira ingresar a una
 vista para ingresar los campos requeridos para la generación de
 
@@ -45,7 +47,8 @@ Permisos Requeridos:
 *   view_customform*: Permite visualizar las plantillas.
 
 Renombrar nombre de plantilla de informes
-******************************************
+--------------------------------------------
+
 Es posible renombrar el titulo de la plantillas de informes de la siguiente forma:
 
 .. image:: ../_static/gif/update_name_inform_template.gif
@@ -57,7 +60,8 @@ Permisos requeridos:
 *   view_customform*: Permite visualizar las plantillas.
 
 Eliminar plantilla de informes
-********************************
+---------------------------------
+
 El eliminar una plantilla de informe es posible, solo que se debe tener en cuenta que al momento de remover esta los
 informes que se encuentren utilizándola como base también serán eliminadas del sistema.
 
@@ -73,7 +77,8 @@ Permisos Requeridos:
 *   view_customform*: Permite visualizar las plantillas.
 
 Manejo de componentes de plantillas de informes
-************************************************
+----------------------------------------------------
+
 El módulo de generación de plantillas posee una serie de campos que, mediante el arrastre de estos, pueden termina
 produciendo formularios similares que un Google Forms.
 
@@ -216,8 +221,9 @@ Permisos Requeridos:
 *   *change_customform*: Permite modificar la plantilla de informes.
 *   view_customform*: Permite visualizar las plantillas.
 
-Visualizar Plantillas de informes:
-***********************************
+Visualizar Plantillas de informes
+--------------------------------------
+
 Las plantillas de informes se pueden visualizar de la siguiente manera:
 
 .. image:: ../_static/gif/view_inform_template.gif
@@ -232,7 +238,8 @@ Permisos Requeridos:
 *   view_customform*: Permite visualizar las plantillas.
 
 Administración de informes
-----------------------------------
+==================================
+
 Este módulo se encagar del manejo de informes de los laboratorios que son alimentados por **Plantillas de informes** de
 la organización.
 
@@ -262,7 +269,7 @@ Permisos requeridos dentro del módulo:
 *   *delete_observation*: Permite eliminar las observación.
 
 Crear informes
-***********************************
+-------------------
 
 En la creación de un informe este por defecto su estado se encontrará en *borrador*, asismismo se requerirá el ingreso
 de los siguientes datos:
@@ -284,7 +291,7 @@ Permisos requeridos:
 
 
 Cambiar estado informes
-***********************************
+---------------------------
 
 Los informes se manejan en 3 estados: **Borrador**, **En Revisión**, **Finalizado** y la persona que puede cambiar el
 estado del informe de Revisión a Finalizado o de Finalizado a Borrador, es la que posea el permiso *can_manage_inform_status*
@@ -307,7 +314,8 @@ Permisos requeridos:
 *   *can_manage_inform_status*: Permite modificar el estado de los informes.
 
 Agregar Observación en informes
-***********************************
+-------------------------------------
+
 La creación de observación la puede realizar, cualquier usuario vinculado al laboratorio puede ingresarla de la siguiente forma:
 
 .. image:: ../_static/gif/view_inform_template.gif
@@ -320,7 +328,8 @@ Permisos requeridos
 *   *change_inform*: Permite ingresar al informe.
 
 Editar Observación en informes
-***********************************
+------------------------------------
+
 La modificación de una observación solo se le permitirá al creador de esta de la siguiente forma:
 
 .. image:: ../_static/gif/edit_inform_observation.gif
@@ -339,7 +348,8 @@ Permisos requeridos:
 
 
 Eliminar Observación en informes
-***********************************
+------------------------------------
+
 La eliminación de una observación solo se le permitirá al creador de esta de la siguiente forma:
 
 .. image:: ../_static/gif/remove_inform_observation.gif
@@ -354,7 +364,7 @@ Permisos requeridos:
 *   *remove_comment*: Permite eliminar las observación.
 
 Eliminar informes
-***********************************
+--------------------
 
 ..  caution::
         Hay que tener encuenta a la hora de eliminar un informe este también se elimina en el historial de los informes

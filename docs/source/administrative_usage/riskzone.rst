@@ -1,5 +1,6 @@
 Administración de zona de riesgo
-=====================================
+************************************
+
 Este modulo se encarga del manejo de zonas de riesgos de organización, que es una zona riesgo, esto puede ser un laborato
 rio, sitios o lugares dentro de la institución.
 
@@ -35,7 +36,7 @@ Permisos requeridos para manipular el modulo:
 *   **do_report**: Permite descargar los datos de los incidentes.
 
 Crear Zona de riesgo
-**********************
+========================
 
 Campos requeridos:
 
@@ -58,7 +59,8 @@ Ejemplo de creacion de zona de riesgo:
     :width: 720
 
 Editar Zona de riesgo
-************************
+========================
+
 En la edición de zonas de riesgos se permitirá modificar cualquier dato de los mencionados en el punto de **Crear zonas
 de riesgos**.
 
@@ -74,7 +76,8 @@ Ejemplo de edición de zona de riesgo:
     :width: 720
 
 Detalle de Zona de riesgo
-****************************
+===============================
+
 Para visualizar el detalle interno de una zona riesgo se puede realizar de la siguiente forma:
 
 .. image:: ../_static/gif/view_risk_detail.gif
@@ -90,7 +93,8 @@ Permisos requeridos:
 *   *view_riskzone*: Permite visualizar las zonas de riesgos e ingresar al detalle de estos.
 
 Agregar tipo de zona de riesgo
-***********************************
+======================================
+
 Los tipos de zona de riesgo sirve para categororizar la zona afectada del o los laboratorios asoscdos.
 
 Campo reqierodps:
@@ -112,7 +116,8 @@ Ejemplo de creación de tipos de zona de riesgos:
     :width: 720
 
 Eliminar Zona de riesgo
-*************************
+=============================
+
 Para eliminar una zona de riego se efectúa de la siguiente manera:
 
 .. image:: ../_static/gif/remove_risk.gif
@@ -128,7 +133,8 @@ Permisos requeridos:
 
 
 Ver incidentes
-**********************
+========================
+
 Como se ha mencionado anteriormente las zonas de riesgos poseen incidentes que son los sucesos o artercados que suceden
 dentro de los laboratorios de la organizacion que afectan la infraestructuro, materiales y personal de la organización,
 se puede aceeder a la vista de la siguiente forma:
@@ -143,7 +149,8 @@ Permisos requeridos:
 *   *view_incident*: Permite visualizar los incidentes dentro de los laboratorios de la organizacion.
 
 Crer incidente
-**********************
+========================
+
 Para la creacion de un incidente se requiere el ingreso de 9 campos que son obligatorios de ingresar.
 
 Campos requeridos:
@@ -178,7 +185,8 @@ Permisos requeridos:
 *   *add_incident*: Permite crear incidentes
 
 Editar incidente
-**********************
+========================
+
 En la edicion de incidente se pernmitira modificar todos los campos mencionadas en el punto **Crear Incidente** de la
 siguiente forma:
 
@@ -195,7 +203,8 @@ Permisos requeridos:
 
 
 Eliminar incidente
-**********************
+========================
+
 La eliminación de un incidente se puede realizar de la siguiente forma:
 
 .. image:: ../_static/gif/remove_incidents.gif
@@ -210,7 +219,7 @@ Permisos requeridos:
 
 
 Descarga de reporte de incidentes
-**********************************
+==========================================
 Los incidentes se puede descargar em diversos formate los cuales son:
 
 *   **Xlss**

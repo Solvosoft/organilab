@@ -1,15 +1,15 @@
-Laboratory administration
-===============================
+Administración de Laboratorio
+***********************************
 
 Crear un laboratorio en una organización
----------------------------------------------------
+=============================================
 
 .. image:: ../_static/gif/add_laboratory_to_org.gif
    :height: 380
    :width: 720
 
 Relacionar un laboratorio externo a una organización base
----------------------------------------------------------------
+==============================================================
 
 Se listarán todos los laboratorios de otras organizaciones en las cuales el usuario en sesión tenga acceso.
 
@@ -19,7 +19,7 @@ Se listarán todos los laboratorios de otras organizaciones en las cuales el usu
 
 
 Relacionar un laboratorio de la organización base a una organización hija
------------------------------------------------------------------------------------
+=============================================================================
 
 Los laboratorios creados en la organización base podrán ser relacionados en las organizaciones hijas.
 
@@ -28,12 +28,9 @@ Los laboratorios creados en la organización base podrán ser relacionados en la
    :width: 720
 
 
-Laboratory view
-**********************************
-
-
 Administración de cuartos de laboratorio
--------------------------------------------
+=============================================
+
 Este módulo se utiliza para el manejo de cuartos de laboratorios del laboratorio que se esté utilizando en el momento,
 para acceder a este módulo existen 2 formas, en ambas se requiere el ingreso a un laboratorio, que se mostrarán en las siguientes imágenes:
 
@@ -64,7 +61,8 @@ Ejemplo de segundo forma:
 
 
 Crear sala de laboratorio
-**********************************
+-----------------------------
+
 Este módulo creara salas de labororios del laboratorio que se esta utilizando, en estos cuartos normalmente se le asocian
 muebles, estantes, objetos, entre otras más.
 
@@ -84,7 +82,8 @@ Ejemplo de creación de sala de laboratorio:
    :width: 720
 
 Actualizar salas de laboratorios
-***********************************
+-----------------------------------
+
 Este módulo actualizará el nombre de las salas de laboratorio.
 
 Datos Requeridos:
@@ -103,7 +102,8 @@ Ejemplo de actualización de sala de laboratorio:
    :width: 720
 
 Eliminar sala de laboratorio
-**********************************
+--------------------------------
+
 En este punto se permitira eliminar salas de laboratorio.
 
     .. note::
@@ -126,7 +126,8 @@ Ejemplo de eliminación de cuartos de laboratorios:
    :width: 720
 
 Visualizar salas de laboratorio
-**********************************
+---------------------------------
+
 Este módulo permitira visualizar el listado de cuartos de laboratorio del laboratorio que este actualimente utilizando.
 
 Datos Requeridos:
@@ -145,7 +146,8 @@ Ejemplo de visualizar de salas de laboratorio:
 
 
 Administración de muebles
-**********************************
+==============================
+
 Cuando hablamos de muebles se trata de los que son utilizados en las salas de laboratorios, para el almacenamiento de materiales y equipos
 dentro de estantes, por lo tanto estos se encuentran asociado a las salas.
 
@@ -159,7 +161,8 @@ Permisos Requeridos:
 *   *delete_furniture*: Permite eliminar muebles del cuarto.
 
 Creación de muebles
-********************
+------------------------
+
 La creación de muebles requiere de 2 los cuales son:
 
 *   **Nombre**: Este campo es obligatorio.
@@ -180,7 +183,8 @@ Ejemplo de creación de muebles:
    :width: 720
 
 Actualización de muebles
-**************************
+--------------------------
+
 La edición de muebles requiere de 4 los cuales son:
 
 *   **Nombre**: Este campo es obligatorio.
@@ -200,7 +204,8 @@ Ejemplo de actualización de muebles:
    :width: 720
 
 Crear tipo de mueble
-**********************************
+------------------------
+
 Los muebles pueden ser de distintas formas por ejemplo estante, cajon, recipiente entre otros.
 
 Ejemplo de creación de tipos de mueble:
@@ -210,7 +215,8 @@ Ejemplo de creación de tipos de mueble:
    :width: 720
 
 Eliminación de mueble
-**********************************
+------------------------
+
 Para la eliminación de muebles hay que tener en cuenta diversos puntos:
 
 *   Al eliminar un mueble, sus estantes también terminan siendo borrados del sistema.
@@ -232,7 +238,8 @@ Ejemplo de eliminación de muebles:
 
 
 Administración de estantes
-**********************************
+==============================
+
 .. image:: ../_static/view_shelves.png
    :height: 380
    :width: 720
@@ -258,7 +265,8 @@ Como acceder a la vista:
 
 
 Crear estante
-**************
+------------------
+
 La creación de estantes requiere de varias datos los cuales se explicaran:
 
 *   **Nombre**: Este campo indica el nombre del estante, a su vez este campo es obligatorio.
@@ -298,7 +306,8 @@ Ejemplo de creación de muebles:
 
 
 Actualizar estante
-********************
+------------------------
+
 La edición de estantes permitira modificar los valores mencionados en el punto de **Crear estante**, pero a diferencia
 de la ultima funcionalidad mencionada es que limita modificación de diversos datos los cuales son:
 
@@ -327,7 +336,8 @@ Ejemplo de actualización de estantes:
    :width: 720
 
 Eliminar estante
-*****************
+----------------------
+
 Para la eliminación de muebles hay que tener en cuenta diversos puntos:
 
 *   Al eliminar un mueble, sus estantes también terminan siendo borrados del sistema.
@@ -354,7 +364,8 @@ Ejemplo de eliminación de estantes:
     por consiguiente los registros de estos materiales también se eliminarán.
 
 Manejo de filas y columnas de estantes
-****************************************
+--------------------------------------------
+
 Unas de las funcionalidades que trae consigo el manejo de estantes son las filas y columnas que se utilizan para,
 simular el sitio que se ubican los estantes en los muebles, por lo tanto, esta función permite la creación y eliminación
 de filas y columnas, luego de efectuar las acciones deseadas, se debe dar click en el botón de Guardar si no los cambios
@@ -388,7 +399,8 @@ Ejemplo de eliminación de filas y columnas con estantes:
    :width: 720
 
 Reconstrucción de QR
-**********************************
+========================
+
 .. image:: ../_static/update_qr.png
    :height: 380
    :width: 720
@@ -407,7 +419,8 @@ Ejemplo de activación de accion:
 
 
 Administración de objetos
--------------------------------------------
+===============================
+
 Unos de los módulos más importantes es el de objetos que permitirá la creación, edición y eliminación de estos, los cuales
 se dividen en tres tipos:
 
@@ -438,7 +451,8 @@ Permisos requeridos:
         explicar en los siguientes puntos.
 
 Administración de Reactivos
-*****************************
+---------------------------------
+
 Los objetos de tipos reactivos vienen siendo químicos como hidróxido, sulfuro entre otros, existen dos formas para
 ingresar a este módulo.
 
@@ -464,7 +478,8 @@ La segunda forma:
     * **Forma de envase**: Significa que el reactivo es bioacumulable.
 
 Crear Reactivos
-*****************
+^^^^^^^^^^^^^^^^^^^
+
 En la creación de reactivos se requerirá el ingreso de varios datos, los cuales son:
 
 *   **Código**: Este campo se utiliza para ingresar el código de barra o identificación del equipo,
@@ -520,7 +535,8 @@ Ejemplo de creación de reactivo:
    :width: 720
 
 Editar Reactivos
-*******************
+^^^^^^^^^^^^^^^^^^^
+
 En la edición de reactivos se podrá modificar cualquier dato del objeto, solo hay que tener en cuenta que este, cambio
 influye en los estantes que posean este objeto.
 
@@ -539,7 +555,8 @@ Ejemplo de edición de reactivo:
    :width: 720
 
 Buscar Reactivos
-*******************
+^^^^^^^^^^^^^^^^^^^^^^
+
 Esta funcionalidad permite la búsqueda de reactivos por medio del código o nombre de reactivo, además no es requerido,
 ingresar toda la descripción porque por cada letra que se ingresa se filtrarán los reactivos que coincidan con el dato
 ingresado.
@@ -558,7 +575,7 @@ Ejemplo de busqueda de reactivos:
    :width: 720
 
 Eliminar Reactivos
-*******************
+^^^^^^^^^^^^^^^^^^^^^
 
 .. warning::
     A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borrara
@@ -578,7 +595,7 @@ Ejemplo de eliminación de reactivo:
    :width: 720
 
 Administración de Materiales
-**********************************
+---------------------------------
 
 .. image:: ../_static/gif/view_materials.gif
    :height: 380
@@ -590,7 +607,8 @@ Administración de Materiales
 
 
 Crear Materiales
-**********************************
+^^^^^^^^^^^^^^^^^^^^
+
 En la creación de materiales existen dos tipos, los cuales son de normal uso y los contenedores que son utilizados para él
 almacenamiento de reactivos o sustancias, asimismo se requerirá el ingreso de varios datos, los cuales son:
 
@@ -633,7 +651,8 @@ Ejemplo de creación de materiales de tipo contenedor:
    :width: 720
 
 Editar Materiales
-**********************************
+^^^^^^^^^^^^^^^^^^^^^^
+
 En la edición de materiales se podrá modificar cualquier dato del objeto, solo hay que tener en cuenta que este, cambio
 influye en los estantes que posean este objeto.
 Eso sí, hay que tener un especial cuidado con los siguientes campos a la hora de actualizar:
@@ -658,7 +677,8 @@ Ejemplo de actualización de materiales:
    :width: 720
 
 Buscar Materiales
-*******************
+^^^^^^^^^^^^^^^^^^^^^^^
+
 Esta funcionalidad permite la búsqueda de materiales por medio del código o nombre del material, además no es requerido,
 ingresar toda la descripción porque por cada letra que se ingresa se filtrarán los materiales que coincidan con el dato
 ingresado.
@@ -676,7 +696,8 @@ Ejemplo de busquedad de materiales:
    :width: 720
 
 Eliminar Materiales
-*********************
+^^^^^^^^^^^^^^^^^^^^^^^
+
 .. warning::
    A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borraran
     sus registros.
@@ -695,7 +716,8 @@ Ejemplo de eliminación de materiales:
    :width: 720
 
 Administración de Equipos
-**********************************
+-------------------------------
+
 Este módulo permitirá el manejo de los equipos de la organización como pueden ser balanzas, medidores, cajas, entre otros,
  actualmente, para el acceso a este módulo existen 2 formas de ingresar, las cuales se mostrarán en las siguientes imágenes:
 
@@ -712,7 +734,8 @@ La segunda forma:
    :width: 720
 
 Crear Equipos
-***************
+^^^^^^^^^^^^^^^^^
+
 En la creación de equipos se requerirá el ingreso de varios datos, los cuales son:
 
 *   **Codigo**: Este campo se utiliza para ingresar el codigo de barra o identificación del equipo,
@@ -743,7 +766,8 @@ Ejemplo de creación de equipos:
    :width: 720
 
 Editar Equipos
-****************
+^^^^^^^^^^^^^^^^^^^^^^^
+
 En la edición de equipos se podrá modificar cualquier dato del objeto, solo hay que tener en cuenta que este, cambio
 influye en los estantes que posean este objeto.
 
@@ -761,7 +785,8 @@ Ejemplo de actualización de equipos:
    :width: 720
 
 Buscar Equipos
-*****************
+^^^^^^^^^^^^^^^^^
+
 Esta funcionalidad permite la búsqueda de equipos por medio del código o nombre de reactivo, además no es requerido,
 ingresar toda la descripción porque por cada letra que se ingresa se filtrarán los equipos que coincidan con el dato
 ingresado.
@@ -779,8 +804,8 @@ Ejemplo de búsqueda de equipos:
    :width: 720
 
 Eliminar Equipos
-**********************************
-.. warning::
+^^^^^^^^^^^^^^^^^^^^^^
+
    A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borrarán sus registros.
 
 Permisos requeridos:
@@ -795,7 +820,8 @@ Permisos requeridos:
    :width: 720
 
 Administración de características de objetos
------------------------------------------------
+=================================================
+
 Este módulo se encarga del manejo de las características de los objetos propios de los objetos dentro de la organización.
 
 .. image:: ../_static/object_features_view.png
@@ -830,7 +856,8 @@ Permisos requeridos:
     además de la eliminación de estos.
 
 Crear características de objetos
-**********************************
+---------------------------------------
+
 En la creación de características se requerirán solo 2 datos que son obligatorios, los cuales son:
 
 *   **Nombre.**
@@ -850,7 +877,8 @@ Ejemplo de creación de caracteristica de objeto:
    :width: 720
 
 Actualizar características de objetos
-***************************************
+-----------------------------------------
+
 En la actualización de características se requerirán lo mismo campos que la creación y ninguno de estos puede ser nulo.
 
 .. note::
@@ -873,7 +901,7 @@ Ejemplo de actualización de caracaterística de objeto:
    :width: 720
 
 Eliminar características de objetos
-***************************************
+-----------------------------------------
 
 .. caution::
     Hay que tener en cuenta a la hora de eliminar una característica esta, también se borrara de los objetos relacionados con esta.
@@ -894,7 +922,8 @@ Ejemplo de elimnaación de caracaterística de objeto:
    :width: 720
 
 Administración de proveedores
--------------------------------
+==================================
+
 Este módulo se encargará de manejar los proveedores del laboratorio, no es a nivel de organización sino del laboratorio,
 que se esté utilizando en el momento.
 
@@ -921,7 +950,8 @@ Ejemplo de ingreso a modúlo de proveedores:
 
 
 Crear Proveedor
-*****************
+----------------------
+
 En la creación de proveedores se requieren 4 datos, los cuales son:
 
 *   **Nombre**: Este campo es obligatorio de ingresar.
@@ -943,7 +973,8 @@ Ejemplo de creación de proveedor:
 
 
 Actualizar Proveedor
-***********************
+------------------------
+
 En edición de proveedores se permite modificar cualquiera de los datos indicados en el punto de **Crear Proveedor**.
 
 Permisos requeridos:
@@ -960,7 +991,8 @@ Ejemplo de edición de proveedores:
 
 
 Administración de protocolos
--------------------------------------------
+=================================
+
 Este módulo se encagara de manejar los protocolos internos de la organización por parte de la administración
 
 .. image:: ../_static/protocols_index.png
@@ -982,7 +1014,8 @@ Permisos requeridos:
 
 
 Crear Protocolo
-******************
+-------------------
+
 En la creación de protocolos se requerirán 3 datos, los cuales son:
 
 *   **Nombre**: Esta campo se ingresará el nombre del protocolo.
@@ -1002,7 +1035,8 @@ Permisos requeridos:
    :width: 720
 
 Actualizar protocolo
-***********************
+--------------------------
+
 En la edición de protocolos se permitirá modificar cualquiera de los campos que se mencionan en el **Crear Protocolo**.
 
 Permisos requeridos:
@@ -1018,7 +1052,8 @@ Ejemplo de edición de protocolo:
    :width: 720
 
 Descargar protocolos
-***********************
+--------------------------
+
 Permisos requeridos:
 
 *  *view_laboratory*: Permite el ingreso al laboratorio
@@ -1031,7 +1066,7 @@ Ejemplo de edición de protocolo:
    :width: 720
 
 Eliminar protocolo
-***********************
+-------------------------
 
 Permisos requeridos:
 
@@ -1046,7 +1081,8 @@ Ejemplo de eliminación de protocolo:
    :width: 720
 
 Registro de usuarios por QR
-----------------------------
+===============================
+
 Este módulo se encarga de la generación de códigos QR para el registro de usuarios al laboratorio y a su vez a
 la organización mediante el escaneo de la imagen.
 
@@ -1071,7 +1107,8 @@ Ejemplo de ingresar al módulo:
    :width: 720
 
 Crear QR de registro de usuarios
-**********************************
+--------------------------------------
+
 En creación de los QR se requieren varios datos lo cuales son:
 
 *   **Activar usuario**: Este campo se utiliza para indicar cuando un usuario se registra, este pueda tener acceso
@@ -1098,7 +1135,8 @@ Ejemplo de creación de QR:
 
 
 Actualizar QR de registro de usuarios
-***************************************
+-----------------------------------------
+
 En la edición de los archivos QR no se permitira la modificacion del codigo de este pero si los demás campos.
 
 Permisos requeridos:
@@ -1116,7 +1154,8 @@ Ejemplo de edición de QR:
 
 
 Bitácora de registro de usuarios por QR
-******************************************
+-------------------------------------------
+
 Sobre la bitácora de registro de usuario listara los usuarios que se registraron al sistema mediante el uso del QR, viene
 siendo similar a un historial.
 
@@ -1130,7 +1169,7 @@ Ejemplo de ingresar a bitacoras del QR:
    :width: 720
 
 Descargar QR para registro de usuarios
-******************************************
+-------------------------------------------
 
 Permisos requeridos:
 
@@ -1144,7 +1183,8 @@ Ejemplo de como descargar el archivo QR:
    :width: 720
 
 Eliminar QR de registro de usuarios
-***************************************
+--------------------------------------
+
 .. warning::
     Al eliminar un archivo QR del sistema ya este no puede ser utilizado en los lugares que se esté utilizando,
     por consiguiente sería preferible notificar a lo usuarios que va que inutilizado el QR.
@@ -1163,7 +1203,8 @@ Ejemplo de eliminación de QR:
 
 
 Mis procedimientos
-----------------------------
+======================
+
 Este modúlo se encargará de generar procedimientos quimicos dentro de la organización que a su vez permitirán generar
 reservaciones de objetos vinculados a la plantilla de procedimiento asociada.
 
@@ -1194,7 +1235,7 @@ Ejemplo de ingreso a modulo de mis procedimientos
 
 
 Crear procedimiento
-************************
+-------------------------
 
 En la creación de procedimientos se requieren 2 datos en especifico:
 
@@ -1216,7 +1257,7 @@ Ejemplo de creacion de procedimiento
    :width: 720
 
 Editar estado de procedimiento
-***************************************
+------------------------------------
 
 En la edición de estados de procedimiento se puede pasar de Borrador a Revision, mientras que de Revisión a Finalizado como
 se muestran en los siguientes ejemplos:
@@ -1241,7 +1282,7 @@ Permisos Requeridos:
 
 
 Eliminar procedimientos
-***************************************
+---------------------------
 
 .. image:: ../_static/gif/delete_myprocedure.gif
     :height: 380
@@ -1254,7 +1295,7 @@ Permisos requeridos:
 *  *delete_myprocedure*: Permite eliminar el estado de los procedimientos.
 
 Agregar observación en procedimiento
-***************************************
+---------------------------------------
 
 A los procedimientos se les puede ingresar comentarios o observaciones sobre las recetas de la siguiente forma:
 
@@ -1271,7 +1312,8 @@ Permisos requeridos:
 *  *add_commentprocedurestep*: Permite agregar observaciones de los procedimientos.
 
 Editar observación en procedimiento
-***************************************
+-----------------------------------------
+
 En la edicion de observaciones solo lo podra hacer el usuario que la creó:
 
 
@@ -1288,7 +1330,7 @@ Permisos requeridos:
 
 
 Eliminar observación en procedimiento
-***************************************
+-----------------------------------------
 En la eliminación de observaciones de igual forma que en la edición solo el usuario que la créo podra eliminarla:
 
 .. image:: ../_static/gif/delete_my_procedure_observation.gif
@@ -1303,7 +1345,8 @@ Permisos requeridos:
 *  *delete_commentprocedurestep*: Permite eliminar observaciones de los procedimientos.
 
 Generar reservación de procedimiento
-***************************************
+-----------------------------------------
+
 Los procedimientos también permite generar reservaciones donde los materiales que se reservan son los objectos, de los
 pasos de la plantilla de procedimientos, ademas hay que tener en cuenta que si en las estanterías de objectos no existe
 un material o la cantidad de este es insuficiente a lo solicitado no se podra dar paso la reservación.

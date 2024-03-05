@@ -1,8 +1,9 @@
 Administrar procedimientos
-==========================================
+*******************************
 
 Administrar plantillas de procedimientos
--------------------------------------------
+===========================================
+
 /academic/<int:org>/procedure/procedure_list/
 
 Para acceder a este modulo se requieren varios paso que se va a mostrar en las siguientes imagenes:
@@ -43,7 +44,7 @@ Permisos requeridos:
 * *add_procedurestep*: Autoriza el ingreso a la vista de **"Creación de pasos del procedimiento"**.
 
 Crear plantilla de procedimientos
-**********************************
+-------------------------------------
 
 academic/<int:org>/procedure/procedure_create/
 
@@ -70,7 +71,7 @@ Ejemplo de creación de plantilla de procedimiento:
 
 
 Actualizar plantilla de procedimientos
-****************************************
+-----------------------------------------
 
 academic/<int:org>/procedure/procedure_update/<int:pk>/
 
@@ -98,7 +99,7 @@ Ejemplo de actualizacion de plantilla de procedimiento:
 
 
 Visualizar plantilla de procedimientos
-****************************************
+-----------------------------------------
 
 academic/<int:org>/procedure/procedure_detail/<int:pk>/
 
@@ -113,7 +114,7 @@ Permisos requeridos:
 
 
 Agregar pasos
-**************
+------------------
 
 academic/<int:org>/procedure/add_steps_wrapper/<int:pk>/
 
@@ -140,7 +141,7 @@ Permisos Requeridos:
 
 
 Actualizar pasos
-*****************
+--------------------
 
 academic/<int:org>/procedure/step/<int:pk>/update/
 
@@ -164,7 +165,7 @@ Permisos Requeridos:
 
 
 Agregar objectos en los pasos
-*******************************
+---------------------------------
 
 academic/<int:org>/procedure/save_object/<int:pk/
 
@@ -195,7 +196,7 @@ Permisos requeridos:
 
 
 Descartar objecto
-*******************
+----------------------
 
 academic/<int:org>/procedure/remove_object/<int:pk/
 
@@ -214,7 +215,7 @@ Permisos requeridos:
 
 
 Agregar observación
-*********************
+----------------------
 
 academic/<int:org>/procedure/add_observation/<int:pk>/
 
@@ -235,7 +236,7 @@ Permisos requeridos:
 
 
 Eliminar observación
-***********************
+----------------------
 
 academic/<int:org>/procedure/remove_observation/<int:pk>/
 
@@ -259,7 +260,7 @@ Ejemplo de eliminación de observación:
 
 
 Eliminar paso
-***************
+--------------------
 
 academic/<int:org>/procedure/step/delete/
 
@@ -284,7 +285,7 @@ Permisos Requeridos:
 
 
 Eliminar plantilla de procedimientos
-***************************************
+-----------------------------------------
 
 academic/<int:org>/procedure/delete_procedure/
 
@@ -306,42 +307,42 @@ Permisos Requeridos:
 
 
 Administrar mis procedimientos
----------------------------------
+=======================================
 
 academic/<int:org>/myprocedure/<int:lab_pk>/get_list/
 
 
 Crear procedimiento
-********************
+-----------------------
 
 add_procedures/<str:content_type>/<str:model>/
 
 Actualizar procedimientos
-***************************************
+-------------------------------------
 
 academic/<int:org>/myprocedure/<int:lab_pk>/complete_procedure/<int:pk>/
 
 Visualizar comentarios de procedimiento
-****************************************
+-------------------------------------------
 
 spc/api/<int:org>/<int:lab_pk>/api_procedure_comments
 
 Agregar comentario en procedimiento
-***************************************
+-------------------------------------------
 
 /spc/api/<int:org>/<int:lab_pk>/api_my_procedure/add_comment/
 
 Actualizar comentario de procedimiento
-***************************************
+-------------------------------------------
 
 /spc/api/<int:org>/<int:lab_pk>/api_my_procedure/<int:pk>/update_comment/
 
 Eliminar comentario de procedimiento.
-**************************************
+-------------------------------------------
 /spc/api/<int:org>/<int:lab_pk>/api_my_procedure/<int:pk>/delete_comment/
 
 Generar Reservas
-*******************
+-------------------
 
 Eliminar procedimiento
-**************************
+----------------------------
