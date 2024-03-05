@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_urlname_action 'objectview_list' %}
+{% endblock %}
+
+{% block title %}{% trans 'Equipment List' %}{% endblock %}
+
+{% block content %}
+
+<div class="card">
+		<div class="card-header">
+				<h1 class="card-title text-center">{% trans 'Equipment List' %}</h1>
+		</div>
+		<div class="card-body">
+				<table class="table table-striped w-100 table-responsive" id="maintenance_table"></table>
+	</div>
+</div>
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+{% endblock %}
+<script>
+	window.name = "equipmentdetailview";
+
+	var object_urls = {};
+
+	table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
+																		"<'col-sm-4 col-md-4 d-flex align-items-center justify-content-center'B>" +
+																		"<'col-sm-3 col-md-3 d-flex align-items-center justify-content-end 'l>>" +
+																		"<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+
+	maintenance_datatable_inits = {
+				columns: [
+								{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+								{data: "maintenance_date", maintenance_date: "code", title: gettext("Date"), type: "string", visible: true},
+								{data: "provider_of_maintenance", name: "provider_of_maintenance", title: gettext("Provider"), type: "string", visible: true},
+								{data: "validator", name: "validator", title: gettext("Validator"), type: "string", visible: true},
+								{data: "maintenance_observation", name: "maintenance_observation", title: gettext("Observation"), type: "string", visible: true},
+								{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
+			],
+			addfilter: true,
+			dom: table_default_dom
+	}
+	var maintenance_modalids = {
+
+	}
+
+	var maintenance_actions = {
+			table_actions: [],  //table_actions
+			object_actions: [],
+			title: gettext('Actions'),
+			className:  "no-export-col"
+	}
+
+	icons= {
+					create: '<i class="fa fa-plus" aria-hidden="true"></i>',
+					clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+					update: 'fa fa-edit me-1 fa-lg',
+					destroy: 'fa fa-trash fa-lg'
+	}
+
+	let maintenance_objconfig={
+		urls: object_urls,
+		datatable_element: "#maintenance_table",
+		modal_ids: maintenance_modalids,
+		actions: maintenance_actions,
+		datatable_inits: maintenance_datatable_inits,
+		add_filter: true,
+		relation_render: {'field_autocomplete': 'text' },
+		delete_display: data => data['provider_of_maintenance'],
+		create: "btn-success",
+		icons: icons
+	}
+
+
+	let maintenance_ocrud=ObjectCRUD("maintenancecrudobj", maintenance_objconfig)
+	maintenance_ocrud.init();
+
+
+</script>
