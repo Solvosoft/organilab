@@ -307,7 +307,7 @@ class ShelfObjectMaintenance(AbstractOrganizationRef):
                                                 on_delete=models.SET_NULL,
                                                 verbose_name=_("Provider of Maintenance"))
     validator = models.ForeignKey("auth_and_perms.Profile", on_delete=models.SET_NULL, null=True,blank=False, verbose_name=_("Validator"))
-    maintenance_observation = models.DateField(null=True,blank=True, verbose_name=_("Observation"))
+    maintenance_observation = models.TextField(null=True,blank=True, verbose_name=_("Observation"))
 
 
 class ShelfObjectLog(AbstractOrganizationRef):
