@@ -93,7 +93,7 @@ Este paso implica las siguientes acciones:
    :width: 720
 
 
-Administrar roles por organización desde la pestaña "Por Organización"
+Administrar roles de permisos a un usuario por organización desde la pestaña "Por Organización"
 =========================================================================
 
 Agregar rol de permisos a un usuario
@@ -105,7 +105,7 @@ Todos los roles de permisos seleccionados se asignarán a ese usuario en esa org
    :height: 380
    :width: 720
 
-Remove rol de permisos a un usuario
+Remover rol de permisos a un usuario
 --------------------------------------
 
 Remoción de todos los roles de permisos seleccionados a ese usuario en esa organización.
@@ -115,7 +115,7 @@ Remoción de todos los roles de permisos seleccionados a ese usuario en esa orga
    :width: 720
 
 Usar rol seleccionado de permisos y asignarlos a un usuario
-==================================================================
+----------------------------------------------------------------------------
 
 Este paso implica las siguientes acciones:
 
@@ -141,14 +141,14 @@ Eliminar relación entre usuario y laboratorio
    :width: 720
 
 Eliminar relación entre usuario y laboratorio y desactivar usuario de la plataforma
-----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 .. image:: ../_static/gif/delete_relation_user_lab_and_deactivate_user_from_tab_lab.gif
    :height: 380
    :width: 720
 
 Eliminar relación entre usuario y organización desde la pestaña "Por Organización"
-------------------------------------------------------------------------------------------
+====================================================================================
 
 Opción disponible para desvincular a un usuario de una organización, así como también desactivarlo de la plataforma.
 
@@ -157,7 +157,7 @@ usuario sea parte.
 
 
 Eliminar relación entre usuario y organización
-==================================================
+------------------------------------------------------
 
 .. image:: ../_static/gif/delete_relation_user_org_from_tab_org.gif
    :height: 380

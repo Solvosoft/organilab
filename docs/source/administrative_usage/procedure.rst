@@ -13,11 +13,11 @@ Para acceder a este módulo se requieren varios paso que se va a mostrar en las 
 
 Explicación de pasos:
 
-*  *Paso 1*: Es dar clic en la opción organizaciones de la barra lateral izquierda,  porque es necesario haber acceso en una organización.
+*  *Paso 1*: Es dar click en la opción organizaciones de la barra lateral izquierda, porque es necesario haber realizado el ingreso a una organización.
 *  *Paso 2*: En este paso se muestra un selector con un listado de organizaciones que el usuario está vinculado, es necesario que seleccione una.
 *  *Paso 3*: Al seleccionar una organización es necesario dar clic en uno de los siguientes botones que dan acceso a diversos módulos.
 
-Luego de cumplir con los pasos anteriores en la barra del costado izquierdo se habilitaran mas opciones, por consiguiente se debera dar click a las siguientes opciones:
+Luego de cumplir con los pasos anteriores en la barra del costado izquierdo se habilitarán mas opciones, por consiguiente se debera dar click a las siguientes opciones:
 
 .. image:: ../_static/procedure/images/steps_to_view_procedure_templates.png
     :width: 700
@@ -25,8 +25,8 @@ Luego de cumplir con los pasos anteriores en la barra del costado izquierdo se h
 
 Explicación de pasos:
 
-*  *Paso 1*: Es dar clic en la opción *Reportes informes y Procedimientos* de la barra lateral izquierda, esto para habilitar los módulos de informes.
-*  *Paso 2*: En este paso se da clic en la opción *Plantillas de Procedimientos*, para acceder al módulo de plantillas de procedimiento.
+*  *Paso 1*: Es dar click en la opción *Reportes informes y Procedimientos* de la barra lateral izquierda, esto para habilitar los módulos de informes.
+*  *Paso 2*: En este paso se da click en la opción *Plantillas de Procedimientos*, para acceder al módulo de plantillas de procedimiento.
 
     .. note::
         El usuario debe tener el permiso *view_procedure* para que esta opción sea visible en la barra lateral.
@@ -104,14 +104,14 @@ Permisos requeridos:
 
 * *view_procedure*: Permite visualizar el item  y listado de **"Plantillas de procedimientos"**.
 * *change_procedure*: Autoriza el ingreso a la vista de **"Actualización de plantillas de procedimientos"**.
-* *delete_procedurestep*: Permite visualizar el boton de **"Eliminar Paso de plantilla"**.
+* *delete_procedurestep*: Permite visualizar el botón de **"Eliminar Paso de plantilla"**.
 
 
 Agregar pasos
 ------------------
 
-Cuando se mencionan pasos en una plantilla de procedimientos, se hace referencia a las indicaciones requerida das
-a la hora de generar un procedimiento químico, este paso se genera al hacer clic en el botón con el símbolo
+Cuando se mencionan pasos en una plantilla de procedimientos, se hace referencia a las indicaciones requeridas
+a la hora de generar un procedimiento químico, este paso se genera al hacer click en el botón con el símbolo
 **+** en la lista de plantillas de procedimientos.
 
 Datos requeridos:
@@ -136,7 +136,7 @@ Permisos Requeridos:
 Actualizar pasos
 --------------------
 
-En la actualización de pasos trabaja de forma similar que la actualización de plantillas de procedimientos con los mismos
+La actualización de pasos se ejecuta de forma similar que la actualización de plantillas de procedimientos con los mismos
 campos.
 
 Datos requeridos:
@@ -226,7 +226,7 @@ Permisos requeridos:
 Eliminar observación
 ----------------------
 
-Al dar click en icono eliminar de la observación seleccionada se mostrará la siguiente ventana.
+Al dar click en el ícono de eliminar de la observación seleccionada se mostrará la siguiente ventana.
 
 .. image:: ../_static/procedure/observations/images/remove_template_procedure_observation.jpg
   :width: 700
@@ -251,8 +251,7 @@ Eliminar paso
 
 Para eliminar un paso de una plantilla plantilla de procedimientos se debe tener en cuenta varios aspectos:
 
-*   Al eliminar un paso se removerán todos los objetos que poseen que por consecuencia afectaría procedimientos que esten,
-    utiliza esta.
+*   Al eliminar un paso se removerán todos los objetos que poseen que por consecuencia afectaría el procedimiento.
 *   También se removerán las obsevaciones asociadas a la plantilla.
 
 Permisos Requeridos:

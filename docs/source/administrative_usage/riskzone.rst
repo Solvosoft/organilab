@@ -125,7 +125,7 @@ Para eliminar una zona de riego se efectúa de la siguiente manera:
     :width: 720
 
 ..  caution::
-    A la hora de eliminar una zona de riesgo todo los incidentes vinculados a esta tambien se remueven.
+    A la hora de eliminar una zona de riesgo todo los incidentes vinculados a esta también se remueven.
 
 Permisos requeridos:
 *   *view_riskzone*: Permite visualizar las zonas de riesgos.

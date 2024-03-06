@@ -4,16 +4,16 @@ Plantillas para informes
 Administración de platillas para informes
 ===============================================
 
-Cuando hablamos de plantillas de informes se tratara de la creación de formularios que se utilizara para la generación
+Cuando hablamos de plantillas de informes se trata de la creación de formularios que se utilizará para la generación
 de informes  de la organización.
 
 Este módulo usa como base la funcionalidad de arrastre de elementos para la generación de formularios,
 que esta potenciada por la librería **Formio.js**.
 
-Además para tener acceso se debe ingresar previamente en el modulo **Mis Laboratorios**, para que aparezca la opción
+Además para tener acceso se debe ingresar previamente al módulo **Mis Laboratorios**, para que aparezca la opción
 **Reportes informes y Procedimientos** donde se muestra la opción **Plantilla de informes**.
 
-Ejemplo de ingreso al modulo de plantillas de informes:
+Ejemplo de ingreso al módulo de plantillas de informes:
 
 .. image:: ../_static/gif/view_inform_templates.gif
    :height: 380
@@ -32,8 +32,8 @@ Permisos Requeridos:
 Crear plantilla de informes
 -------------------------------
 
-La creación de plantillas de procedimientos requiere inicialmente el **nombre** de esta luego permitira ingresar a una
-vista para ingresar los campos requeridos para la generación de
+La creación de plantillas de procedimientos requiere inicialmente el **nombre** y luego redireccionará a la vista de edición
+para la gestión de campos requeridos en esta plantilla.
 
 Ejemplo de creación de plantilla de informe:
 
@@ -147,14 +147,14 @@ Para comprender como funciona el sistema de arrastre primero se ve en el costado
             producidos por el usuario en la organización.
 
             .. note::
-                Estos incidentos se generan el modulo zonas de riesgos.
+                Estos incidentos se generan el módulo zonas de riesgos.
 
         *   *Laboratorio por usuario*: Al seleccionar esta opción como base, el campo desplegara una lista de
             laboratorios a los que esta vinculado el usuario en todas las organizaciones que este asociado.
         *   *Laboratorio por organización*: Al seleccionar esta opción como base, el campo desplegara una todos los
             laboratorios asociados a la organización que este actualmente accediendo.
         *   *Usuarios en un Laboratorio/Organización*: Este opción desplegara un listado de usuarios vinculados a la
-            organizacion y laboratorio.
+            organización y laboratorio.
         *   *Objetos*: Al seleccionar esta opción como base, se desplegarán un lista con todos los objetos registrados
             por parte de la organización que esta accediendo esto excluye organizaciones padres e hijas.
 
@@ -240,7 +240,7 @@ Permisos Requeridos:
 Administración de informes
 ==================================
 
-Este módulo se encagar del manejo de informes de los laboratorios que son alimentados por **Plantillas de informes** de
+Este módulo se encarga del manejo de informes de los laboratorios que son alimentados por **Plantillas de informes** de
 la organización.
 
 .. image:: ../_static/view_informs.png
@@ -249,9 +249,9 @@ la organización.
 
 ..  warning::
         Hay que tener en cuenta que si una **Plantilla de informe**, que se este utilizando en un informe es eliminada,
-        también los informes vinculados a este seran removidos del sistema.
+        también los informes vinculados a este serán removidos del sistema.
 
-Ejemplo de ingreso a modulo de informes:
+Ejemplo de ingreso a módulo de informes:
 
 .. image:: ../_static/gif/view_inform.gif
     :height: 380
@@ -271,11 +271,11 @@ Permisos requeridos dentro del módulo:
 Crear informes
 -------------------
 
-En la creación de un informe este por defecto su estado se encontrará en *borrador*, asismismo se requerirá el ingreso
+En la creación de un informe este por defecto su estado se encontrará en *borrador*, así mismo se requerirá el ingreso
 de los siguientes datos:
 
 *   **Nombre**: Es un campo obligatorio.
-*   **Platilla de informe**: Este campo listará las platillas asociadas a la organización, es obligatorio la seleción de
+*   **Platilla de informe**: Este campo listará las platillas asociadas a la organización, es obligatorio la selección de
     de una opción.
 
 Ejemplo de creación de informe:
@@ -294,15 +294,15 @@ Cambiar estado informes
 ---------------------------
 
 Los informes se manejan en 3 estados: **Borrador**, **En Revisión**, **Finalizado** y la persona que puede cambiar el
-estado del informe de Revisión a Finalizado o de Finalizado a Borrador, es la que posea el permiso *can_manage_inform_status*
-, por lo tanto la el cambio de estado se realiza de la siguientes formas:
+estado del informe de Revisión a Finalizado o de Finalizado a Borrador, es la que posea el permiso *can_manage_inform_status*,
+por lo tanto el cambio de estado se realiza de las siguientes formas:
 
 *   **Borrador a Revisión**:
         .. image:: ../_static/gif/review_inform.gif
             :height: 380
             :width: 720
 
-*   **Revision a Finalizado**:
+*   **Revisión a Finalizado**:
         .. image:: ../_static/gif/finalize_inform.gif
             :height: 380
             :width: 720
@@ -316,7 +316,7 @@ Permisos requeridos:
 Agregar Observación en informes
 -------------------------------------
 
-La creación de observación la puede realizar, cualquier usuario vinculado al laboratorio puede ingresarla de la siguiente forma:
+La creación de una observación la puede realizar cualquier usuario vinculado al laboratorio y puede ingresarla de la siguiente forma:
 
 .. image:: ../_static/gif/view_inform_template.gif
     :height: 380
