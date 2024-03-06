@@ -4240,7 +4240,7 @@ msgid "First date use"
 msgstr "Primer día de uso"
 
 msgid "Is available to use?"
-msgstr "¿Esta disponible de usar"
+msgstr "¿Esta disponible de usar?"
 
 msgid "Contract of maintenance"
 msgstr "Contracto de mantenimiento"
