@@ -367,12 +367,32 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
     description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     type = serializers.CharField(max_length=2)
     is_public = serializers.BooleanField(required=False)
-    features = serializers.PrimaryKeyRelatedField(many=True, queryset=ObjectFeatures.objects.using(settings.READONLY_DATABASE))
+    features = serializers.PrimaryKeyRelatedField(many=True, queryset=ObjectFeatures.objects.using(settings.READONLY_DATABASE), required=True, allow_empty=False)
     created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
     model = serializers.CharField(max_length=50, required=True)
     serie = serializers.CharField(max_length=50)
     plaque = serializers.CharField(max_length=50)
+
+    def validate(self, data):
+        data = super().validate(data)
+        org_pk_view = self.context['view'].org_pk
+        obj_type = data['type']
+        organization = data['organization']
+
+        if obj_type != Object.EQUIPMENT:
+            logger.debug(
+                f'ValidateEquipmentSerializer --> type ({obj_type}) != Object.EQUIPMENT ({Object.EQUIPMENT})')
+            raise serializers.ValidationError(
+                {'type': _("Type equipment object is not valid.")})
+
+        if organization.pk != org_pk_view:
+            logger.debug(
+                f'ValidateEquipmentSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})')
+            raise serializers.ValidationError(
+                {'organization': _("Organization is not valid.")})
+
+        return data
 
 
     class Meta:

@@ -2315,5 +2315,68 @@
       "features": [1],
       "is_container": false
     }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 10,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "PIZ",
+      "name": "Pinzas",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1],
+      "is_container": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 11,
+    "fields": {
+      "organization": 3,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "GD",
+      "name": "Gradillas",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1],
+      "is_container": false
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 12,
+    "fields": {
+      "organization": 3,
+      "creation_date": "2023-01-10T22:48:14.125Z",
+      "last_update": "2023-01-10T22:48:14.166Z",
+      "created_by": 1,
+      "code": "HN",
+      "name": "Horno",
+      "synonym": null,
+      "type": "2",
+      "is_public": true,
+      "description": "",
+      "model": "",
+      "serie": "",
+      "plaque": "",
+      "features": [1],
+      "is_container": false
+    }
   }
 ]

@@ -370,6 +370,11 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
 
         return queryset.filter(filters).distinct()
 
+    def create(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().create(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
