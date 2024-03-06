@@ -20,6 +20,10 @@ from laboratory.shelfobject.utils import get_available_containers_for_selection,
 class GPaginatorMoreElements(GPaginator):
     page_size = 100
 
+@register_lookups(prefix="rol", basename="rolsearch")
+class RolGModelLookup(BaseSelect2View):
+    model = Rol
+    fields = ['name']
 
 @register_lookups(prefix="organization_rols", basename="organization_rols")
 class OrganizationRolslLookup(BaseSelect2View):
@@ -323,3 +327,30 @@ class ObjectProvidersLookup(BaseSelect2View):
             'errors': self.serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
 
+@register_lookups(prefix="organization_roles", basename="organization_roles")
+class OrganizationRolslLookup(BaseSelect2View):
+    model = Rol
+    org= None
+    fields = ['name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(pk__in=self.org.rol.values_list('pk',flat=True))
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.org = self.serializer.validated_data['organization']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
