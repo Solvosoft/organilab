@@ -286,7 +286,7 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm,forms.ModelForm,GTFor
         self.fields['authorized_roles_to_use_equipment'] = forms.ModelChoiceField(
             queryset=Rol.objects.all(),
             label= _("Authorized roles to use equipment"),
-            widget=AutocompleteSelectMultiple('organization_rols', attrs={
+            widget=AutocompleteSelectMultiple('organization_roles', attrs={
                 'data-dropdownparent': "#equipment_form",
                 'data-s2filter-organization': '#id_organization'
             }))
@@ -341,7 +341,7 @@ class ShelfObjectRefuseEquipmentForm(EquipmentCharacteristicForm, GTForm, forms.
         self.fields['authorized_roles_to_use_equipment'] = forms.ModelChoiceField(
             queryset=Rol.objects.all(),
             label= _("Authorized roles to use equipment"),
-            widget=AutocompleteSelectMultiple('organization_rols', attrs={
+            widget=AutocompleteSelectMultiple('organization_roles', attrs={
                 'data-dropdownparent': "#equipment_refuse_form",
                 'data-s2filter-organization': '#id_organization'
             }))
