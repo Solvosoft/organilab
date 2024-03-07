@@ -1,10 +1,22 @@
 function convertFormToJSON(form, prefix="") {
   const re = new RegExp("^"+prefix);
+  const widget_multiples = ["AutocompleteSelectMultiple","SelectMultiple"]
   return form
     .serializeArray()
     .reduce(function (json, { name, value }) {
-      json[name.replace(re, "")] = value;
-      return json;
+       const data = name.replace(re, "");
+       const widget = $("#id_"+name).data("widget");
+
+        if (widget_multiples.includes(widget)) {
+          if (!Array.isArray(json[data])) {
+            json[data] = [];
+          }
+            value.length > 0 ? json[data].push(value): null;
+
+        } else {
+          json[data] = value;
+        }
+         return json;
     }, {});
 }
 
@@ -51,6 +63,11 @@ function clear_action_form(form){
     // reset iCheck elements
     $(form).find("input[type='radio']").prop('checked', false);
     $(form).find("input[type='radio']").iCheck('update');
+
+   //reset ChunkedUpload elements
+    if($(form).find("input[class='chunkedvalue']").val()){
+        $(form).find("input[class='chunkedupload-input']").data("fileUploadWidget").resetEmpty()
+     }
 
     // reset everything else
     $(form).trigger('reset');

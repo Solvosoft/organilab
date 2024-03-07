@@ -1,7 +1,13 @@
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.urls import reverse
+from django.test import Client
 
-from laboratory.models import ObjectFeatures, Object, Catalog
+from laboratory.models import ObjectFeatures, Object
 from laboratory.tests.utils import BaseLaboratorySetUpTest
+from laboratory.utils import get_pk_org_ancestors_decendants
+import json
+
 
 class ObjectViewTest(BaseLaboratorySetUpTest):
 
@@ -165,3 +171,193 @@ class ObjectFeaturesViewTest(BaseLaboratorySetUpTest):
         success_url = reverse("laboratory:object_feature_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, success_url)
+
+
+class EquipmentViewTest(BaseLaboratorySetUpTest):
+
+    def setUp(self):
+        super().setUp()
+        self.kwargs = {"org_pk": self.org.pk, "lab_pk": self.lab.pk}
+
+        self.kwargs_update = self.kwargs.copy()
+        self.kwargs_destroy1 = self.kwargs.copy()
+        self.kwargs_destroy2 = self.kwargs.copy()
+        self.kwargs_destroy3 = self.kwargs.copy()
+
+        self.kwargs_update.update({"pk": 8})
+        self.kwargs_destroy1.update({"pk": 9})
+        self.kwargs_destroy2.update({"pk": 10})
+        self.kwargs_destroy3.update({"pk": 11})
+
+        detail_url = "laboratory:api-equipment-detail"
+
+        self.url_equipment_view = reverse("laboratory:equipment_list", kwargs=self.kwargs)
+        self.url_equipment_list = reverse("laboratory:api-equipment-list", kwargs=self.kwargs)
+
+        self.url_equipment_update = reverse(detail_url, kwargs=self.kwargs_update)
+        self.url_equipment_destroy1 = reverse(detail_url, kwargs=self.kwargs_destroy1)
+        self.url_equipment_destroy2 = reverse(detail_url, kwargs=self.kwargs_destroy2)
+        self.url_equipment_destroy3 = reverse(detail_url, kwargs=self.kwargs_destroy3)
+
+        self.user_without_perms = get_user_model().objects.filter(username="tuwp").first()
+        self.client2 = Client()
+        self.client2.force_login(self.user_without_perms)
+
+        data_base = {
+            "type": "2",
+            "is_public": True,
+            "features": [1],
+            "created_by": self.user.pk,
+            "organization": self.org.pk
+        }
+
+        self.create_data = data_base.copy()
+        self.create_data.update({
+            "code": "25rfe6",
+            "name": "Mechero",
+            "synonym": "Encendedor",
+            "description": "Entrada de calor controlada a base de gas.",
+            "model": "MK23213",
+            "serie": "3232432",
+            "plaque": "P32r32"
+        })
+
+        self.update_data1 = data_base.copy()
+        self.update_data1.update({
+            "code": "BZ",
+            "name": "Balanza",
+            "synonym": "Pesa",
+            "description": "Instrumento para el cálculo de la masa de un objeto.",
+            "model": "F79L543",
+            "serie": "kd23213",
+            "plaque": "BFDS3E"
+        })
+
+        self.update_data2 = data_base.copy()
+        self.update_data2.update({
+            "code": "HN",
+            "name": "Horno",
+            "synonym": "Fuego,Horneado",
+            "description": "Aparato que permite calentar materiales a temperaturas elevadas, normalmente superiores a 300°C.",
+            "model": "PDLSF",
+            "serie": "FS553",
+            "plaque": "34FERDSA",
+            "organization": 3
+        })
+
+        self.queryset = Object.objects.filter(type=Object.EQUIPMENT)
+
+        filters = (Q(organization__in=get_pk_org_ancestors_decendants(self.user,
+                                                                      self.org.pk),
+                     is_public=True)
+                   | Q(organization__pk=self.org.pk, is_public=False))
+
+        self.queryset = self.queryset.filter(filters).distinct()
+
+    def test_access_to_equipment_view_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 200.
+        response = self.client.get(self.url_equipment_view)
+        self.assertEqual(response.status_code, 200)
+
+    def test_access_to_equipment_view_user_without_perms(self):
+        # User 3 without perms - Check response status code equal to 302. --> Permission required(view_object)
+        response = self.client2.get(self.url_equipment_view)
+        self.assertEqual(response.status_code, 302)
+
+    def test_view_equipment_list_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 200.
+        response = self.client.get(self.url_equipment_list, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json.loads(response.content)['data'])
+
+    def test_view_equipment_list_user_without_perms(self):
+        # User 3 without perms - Check response status code equal to 403. --> Permission required(view_object)
+        response = self.client2.get(self.url_equipment_list, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_create_equipment_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 201. --> Complete and valid data
+        last_obj_pk = self.queryset.last().pk
+        response = self.client.post(self.url_equipment_list, data=self.create_data, content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(self.queryset.filter(name=self.create_data["name"]).exists())
+
+    def test_create_equipment_without_features_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Incomplete data
+        data = self.create_data.copy()
+        del data['features']
+        response = self.client.post(self.url_equipment_list, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_equipment_with_different_type_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Invalid data
+        data = self.create_data.copy()
+        data['type'] = Object.MATERIAL
+        response = self.client.post(self.url_equipment_list, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_equipment_with_different_org_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Invalid data
+        data = self.create_data.copy()
+        data['organization'] = 2
+        response = self.client.post(self.url_equipment_list, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_equipment_user_without_perms(self):
+        # User 3 without perms - Check response status code equal to 403. --> Permissions required(view_object, add_object)
+        response = self.client2.post(self.url_equipment_list, data=self.create_data, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_equipment_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 200.
+        response = self.client.put(self.url_equipment_update, data=self.update_data1, content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_equipment_without_features_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Invalid data
+        data = self.update_data1
+        data["features"] = []
+        response = self.client.put(self.url_equipment_update, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_equipment_with_different_type_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Invalid data
+        data = self.update_data1.copy()
+        data["type"] = Object.REACTIVE
+        response = self.client.put(self.url_equipment_update, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_equipment_with_different_org_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Invalid data
+        data = self.update_data1.copy()
+        data["organization"] = 2
+        response = self.client.put(self.url_equipment_update, data=data, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_equipment_with_different_object_org_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 400. --> Different organization equipment object
+        response = self.client.put(self.url_equipment_update, data=self.update_data2, content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_equipment_user_without_perms(self):
+        # User 3 without perms - Check response status code equal to 403. --> Permissions required(view_object, change_object)
+        response = self.client2.put(self.url_equipment_update, data=self.update_data1, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_equipment_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 204.
+        response = self.client.delete(self.url_equipment_destroy1, content_type='application/json')
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(self.queryset.filter(pk=self.kwargs_destroy1["pk"]).exists())
+
+    def test_delete_equipment_with_different_object_org_user_with_perms(self):
+        # User 1 with perms - Check response status code equal to 204. --> Different organization equipment object
+        response = self.client.delete(self.url_equipment_destroy3, content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(self.queryset.filter(pk=self.kwargs_destroy1["pk"]).exists())
+
+    def test_delete_equipment_user_without_perms(self):
+        # User 3 without perms - Check response status code equal to 403. --> Permissions required(view_object, delete_object)
+        response = self.client2.delete(self.url_equipment_destroy2, content_type='application/json')
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(self.queryset.filter(pk=self.kwargs_destroy2["pk"]).exists())
