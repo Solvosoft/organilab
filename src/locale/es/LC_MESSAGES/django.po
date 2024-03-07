@@ -4268,3 +4268,7 @@ msgstr "Editar equipo"
 
 msgid "Delete equipment"
 msgstr "Eliminar equipo"
+
+msgid "Unknown unit"
+msgstr "Unidad desconocida"
+
