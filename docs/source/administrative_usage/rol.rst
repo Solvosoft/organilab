@@ -94,7 +94,7 @@ Este paso implica las siguientes acciones:
 
 
 Administrar roles de permisos a un usuario por organización desde la pestaña "Por Organización"
-=========================================================================
+===================================================================================================
 
 Agregar rol de permisos a un usuario
 ----------------------------------------
