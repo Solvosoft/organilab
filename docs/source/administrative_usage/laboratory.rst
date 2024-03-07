@@ -696,8 +696,9 @@ Ejemplo de eliminación de materiales:
 
 Administración de Equipos
 **********************************
-Este módulo permitirá el manejo de los equipos de la organización como pueden ser balanzas, medidores, cajas, entre otros,
- actualmente, para el acceso a este módulo existen 2 formas de ingresar, las cuales se mostrarán en las siguientes imágenes:
+
+Este módulo permitirá el manejo de los equipos de la organización como pueden ser balanzas, medidores, cajas, entre otros.
+Actualmente, para el acceso a este módulo existen 2 formas de ingresar, las cuales se mostrarán en las siguientes imágenes:
 
 La primera forma:
 
@@ -713,27 +714,24 @@ La segunda forma:
 
 Crear Equipos
 ***************
+
 En la creación de equipos se requerirá el ingreso de varios datos, los cuales son:
 
-*   **Codigo**: Este campo se utiliza para ingresar el codigo de barra o identificación del equipo,
-    este campo es obligatorio ingresar.
+*   **Código**: Este campo se utiliza para ingresar el código de barra o identificación del equipo, este campo es de carácter obligatorio.
 *   **Nombre**: Este campo es obligatorio de ingresar.
-*   **Sinónimo**: Este campo se utiliza para el ingreso de alias o sinonimos del equipo, este campo no es
-    obligatorio de ingresar.
+*   **Sinónimo**: Este campo se utiliza para el ingreso de alias o sinónimos del equipo, este campo no es obligatorio de ingresar.
 *   **Compartir con otros**: Este campo se utiliza para indicar si el equipo puede ser manipulado por otros si se marca
-    como **No**, este no va se visualizado por otro usuarios.
-*   **Descripcion**: Este campo se utiliza para dar una descripción basica del equipo, esta información no es obligatoria de ingresar.
-*   **Caracteristicas de objeto**: Este campo indica las caracteristicas del objeto las cuales se pueden seleccionar varias,
-    , además este campo es obligatoria seleccionar una y sino existe ninguna visitar el modúlo de **Caracteristicas de objetos**,
-    para la creación de estas.
-*   **Modelo**: Este campo registrara el modelo del equipo, este campo es obligatorio ingresar información.
+    como **No**, este no va ser visualizado por otro usuarios.
+*   **Descripción**: Este campo se utiliza para dar una descripción básica del equipo, esta información no es obligatoria de ingresar.
+*   **Características del objeto**: Este campo indica las características del objeto, es requerido y de selección múltiple, sino existe ninguna opción para seleccionar entonces es necesario visitar el modúlo de **Caracteristicas de objetos**, para la creación de estas.
+*   **Modelo**: Este campo registrará el modelo del equipo, este campo es de carácter obligatorio.
 *   **Serie**: Este campo no es obligatorio de ingresar información.
 *   **Placa**: Este campo no es obligatorio de ingresar información
 
 Permisos requeridos:
 
-*   *view_laboratory*: Permite ingresar al laboratorio.
-*   *add_object*: Permite el ingreso al modulo de equipos, además la creación de objetos.
+*   *view_laboratory*: Permite al usuario ingresar al laboratorio.
+*   *add_object*: Permite que el botón de agregar se habilite y el usuario en sesión pueda agregar nuevos equipos.
 *   *view_object*: Permite visualizar los equipos.
 
 Ejemplo de creación de equipos:
@@ -744,15 +742,15 @@ Ejemplo de creación de equipos:
 
 Editar Equipos
 ****************
-En la edición de equipos se podrá modificar cualquier dato del objeto, solo hay que tener en cuenta que este, cambio
+
+En la edición de equipos se podrá modificar cualquier dato del objeto, solo hay que tener en cuenta que este cambio
 influye en los estantes que posean este objeto.
 
 Permisos requeridos:
 
-*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_laboratory*: Permite al usuario ingresar al laboratorio.
 *   *view_object*: Permite visualizar los equipos.
-*   *add_object*: Permite el ingreso al módulo de equipos.
-*   *change_object*: Permite visualizar el botón de **editar** en los objetos equipos, además su actualización.
+*   *change_object*: Permite que el botón de edición se habilite y el usuario en sesión pueda editar equipos.
 
 Ejemplo de actualización de equipos:
 
@@ -762,6 +760,7 @@ Ejemplo de actualización de equipos:
 
 Buscar Equipos
 *****************
+
 Esta funcionalidad permite la búsqueda de equipos por medio del código o nombre de reactivo, además no es requerido,
 ingresar toda la descripción porque por cada letra que se ingresa se filtrarán los equipos que coincidan con el dato
 ingresado.
@@ -770,25 +769,24 @@ Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
 *   *view_object*: Permite visualizar los equipos.
-*   *add_object*: Permite visualizar los botonos para el ingreso a los módulos de equipos.
 
 Ejemplo de búsqueda de equipos:
 
-.. image:: ../_static/gif/search_object_equipment.gif
+.. image:: ../_static/gif/search_equipment_object.gif
    :height: 380
    :width: 720
 
 Eliminar Equipos
 **********************************
+
 .. warning::
-   A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borrarán sus registros.
+   A la hora de eliminar un objeto hay que tener en cuenta que también se eliminarán todos los registros relacionados al mismo.
 
 Permisos requeridos:
 
 *   *view_laboratory*: Permite ingresar al laboratorio.
-*   *view_object*: Permite visualizar los objetos en el modulo de equipos.
-*   *add_object*: Permite visualizar los botonos para el ingreso al modulo de equipos.
-*   *delete_object*: Permite visualizar el botón de **eliminar** en los equipos.
+*   *view_object*: Permite visualizar los objetos en el módulo de equipos.
+*   *delete_object*: Permite visualizar el botón de **eliminar** y le da el accesso al usuario de dicha acción.
 
 .. image:: ../_static/gif/delete_equipment_object.gif
    :height: 380
