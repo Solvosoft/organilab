@@ -72,7 +72,7 @@ function save_form_schema() {
             if (result) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Your form has been saved',
+                    title: translations_form['saved_success_text'],
                     showConfirmButton: false,
                     timer: 1500
                 })
@@ -81,7 +81,7 @@ function save_form_schema() {
         error: (error) => {
             Swal.fire({
                 icon: 'error',
-                title: 'Something went wrong while saving your form',
+                title: translations_form['saved_error_text'],
                 showConfirmButton: false,
                 timer: 1500
             })
