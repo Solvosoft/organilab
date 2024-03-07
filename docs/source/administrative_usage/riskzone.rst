@@ -1,5 +1,6 @@
 Administración de zona de riesgo
-=====================================
+************************************
+
 Este modulo se encarga del manejo de zonas de riesgos de organización, que es una zona riesgo, esto puede ser un laborato
 rio, sitios o lugares dentro de la institución.
 
@@ -34,8 +35,8 @@ Permisos requeridos para manipular el modulo:
 *   **delete_incidentreport**: Permite eliminar los incidentes.
 *   **do_report**: Permite descargar los datos de los incidentes.
 
-Crear Zona de riesgo
-**********************
+Crear zona de riesgo
+========================
 
 Campos requeridos:
 
@@ -51,14 +52,15 @@ Permisos requeridos:
 *   *view_riskzone*: Permite ingresar al módulo de zonas de riegos.
 *   *add_riskzone*: Permite crear zonas de riesgos.
 
-Ejemplo de creacion de zona de riesgo:
+Ejemplo de creación de zona de riesgo:
 
 .. image:: ../_static/gif/add_risk.gif
     :height: 380
     :width: 720
 
-Editar Zona de riesgo
-************************
+Editar zona de riesgo
+========================
+
 En la edición de zonas de riesgos se permitirá modificar cualquier dato de los mencionados en el punto de **Crear zonas
 de riesgos**.
 
@@ -73,8 +75,9 @@ Ejemplo de edición de zona de riesgo:
     :height: 380
     :width: 720
 
-Detalle de Zona de riesgo
-****************************
+Detalle de zona de riesgo
+===============================
+
 Para visualizar el detalle interno de una zona riesgo se puede realizar de la siguiente forma:
 
 .. image:: ../_static/gif/view_risk_detail.gif
@@ -90,8 +93,9 @@ Permisos requeridos:
 *   *view_riskzone*: Permite visualizar las zonas de riesgos e ingresar al detalle de estos.
 
 Agregar tipo de zona de riesgo
-***********************************
-Los tipos de zona de riesgo sirve para categororizar la zona afectada del o los laboratorios asoscdos.
+======================================
+
+Los tipos de zona de riesgo sirve para categorizar la zona afectada del o los laboratorios asoscdos.
 
 Campo reqierodps:
 
@@ -112,7 +116,8 @@ Ejemplo de creación de tipos de zona de riesgos:
     :width: 720
 
 Eliminar Zona de riesgo
-*************************
+=============================
+
 Para eliminar una zona de riego se efectúa de la siguiente manera:
 
 .. image:: ../_static/gif/remove_risk.gif
@@ -120,7 +125,7 @@ Para eliminar una zona de riego se efectúa de la siguiente manera:
     :width: 720
 
 ..  caution::
-    A la hora de eliminar una zona de riesgo todo los incidentes vinculados a esta tambien se remueven.
+    A la hora de eliminar una zona de riesgo todo los incidentes vinculados a esta también se remueven.
 
 Permisos requeridos:
 *   *view_riskzone*: Permite visualizar las zonas de riesgos.
@@ -128,7 +133,8 @@ Permisos requeridos:
 
 
 Ver incidentes
-**********************
+========================
+
 Como se ha mencionado anteriormente las zonas de riesgos poseen incidentes que son los sucesos o artercados que suceden
 dentro de los laboratorios de la organizacion que afectan la infraestructuro, materiales y personal de la organización,
 se puede aceeder a la vista de la siguiente forma:
@@ -143,8 +149,9 @@ Permisos requeridos:
 *   *view_incident*: Permite visualizar los incidentes dentro de los laboratorios de la organizacion.
 
 Crer incidente
-**********************
-Para la creacion de un incidente se requiere el ingreso de 9 campos que son obligatorios de ingresar.
+========================
+
+Para la creación de un incidente se requiere el ingreso de 9 campos que son obligatorios de ingresar.
 
 Campos requeridos:
 
@@ -178,8 +185,9 @@ Permisos requeridos:
 *   *add_incident*: Permite crear incidentes
 
 Editar incidente
-**********************
-En la edicion de incidente se pernmitira modificar todos los campos mencionadas en el punto **Crear Incidente** de la
+========================
+
+En la edición de incidente se pernmitirá modificar todos los campos mencionadas en el punto **Crear Incidente** de la
 siguiente forma:
 
 .. image:: ../_static/gif/update_incidents.gif
@@ -190,12 +198,13 @@ siguiente forma:
 Permisos requeridos:
 
 *   *view_riskzone*: Permite visualizar el detalle de la zona de riesgo.
-*   *view_incident*: Permite visualizar los incidentel de los aboratorios vinculados en la zona de riesgo.
-*   *change_incident*: Permite editar la informacion de los incidentes.
+*   *view_incident*: Permite visualizar los incident de los laboratorios vinculados en la zona de riesgo.
+*   *change_incident*: Permite editar la información de los incidentes.
 
 
 Eliminar incidente
-**********************
+========================
+
 La eliminación de un incidente se puede realizar de la siguiente forma:
 
 .. image:: ../_static/gif/remove_incidents.gif
@@ -205,17 +214,18 @@ La eliminación de un incidente se puede realizar de la siguiente forma:
 Permisos requeridos:
 
 *   *view_riskzone*: Permite visualizar el detalle de la zona de riesgo.
-*   *view_incident*: Permite visualizar los incidentel de los aboratorios vinculados en la zona de riesgo.
-*   *delete_incident*: Permite eliminar incidentes
+*   *view_incident*: Permite visualizar los incidentes  de los laboratorios vinculados en la zona de riesgo.
+*   *delete_incident*: Permite eliminar incidentes.
 
 
 Descarga de reporte de incidentes
-**********************************
+==========================================
+
 Los incidentes se puede descargar em diversos formate los cuales son:
 
-*   **Xlss**
+*   **Xlsx**
 *   **PDF**
-*   **OdS**
+*   **Ods**
 *   **Xls**
 
 Ejemplo de descargar incidentes en zonas de riesgos:

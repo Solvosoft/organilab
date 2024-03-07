@@ -181,7 +181,50 @@ width: 100%;
     </thead>
 </table>
 {% endif %}
+{% if obj.shelfobjectequipmentcharacteristics %}
+<table class="infoshelfobject">
 
+    <thead class="tborder">
+    <tr>
+        <th class="bold">{% trans "Provider" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.provider|default_if_none:"" }}</th>
+        <th class="bold">{% trans "Price" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.equipment_price|default_if_none:"" }}</th>
+    </tr>
+
+    <tr>
+        <th class="bold">{% trans "Purchase Date" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.purchase_equipment_date }}</th>
+        <th class="bold">{% trans "Delivery Date" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.delivery_equipment_date }}</th>
+    </tr>
+
+    <tr>
+        <th class="bold">{% trans "First date use" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.first_date_use }}</th>
+        <th class="bold">{% trans "Is available to use?" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.available_to_use|yesnotext }}</th>
+    </tr>
+
+    <tr>
+        <th class="bold">{% trans "Has guarantee?" %}:</th>
+        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.have_guarantee|yesnotext }}</th>
+
+    </tr>
+    <tr>
+								<th class="bold" colspan="1">{% trans "Note" %}:</th>
+        <th class="thead" colspan="3">{{ obj.shelfobjectequipmentcharacteristics.notes|default_if_none:"" }}</th>
+    </tr>
+				<tr>
+        <th class="bold" colspan="2">{% trans "Authorized roles to use equipment" %}:</th>
+        <th class="thead" colspan="2">
+            {% for roles in obj.shelfobjectequipmentcharacteristics.authorized_roles_to_use_equipment.all %}
+            <div>* {{ roles }}</div>
+            {% endfor %}
+        </th>    </tr>
+    </thead>
+</table>
+{% endif %}
 
 {% empty %}
 {% trans "No Objects Elements" %}

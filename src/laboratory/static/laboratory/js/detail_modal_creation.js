@@ -31,6 +31,9 @@ function configure_modal(data){
     if (data.object['substance_characteristics']){
         manage_substance_characteristics(data.object['substance_characteristics'], tbody_instance)
     }
+    if (data.object['equipment_characteristics']){
+        manage_equipment_characteristics(data.object['equipment_characteristics'], tbody_instance)
+    }
 }
 
 /*
@@ -168,4 +171,47 @@ function load_array_data(array_list, title, inst){
     let html_section = `<tr><td class="shelfobject_titles">${title}</td><td>
         <ul class="shelfobject_list_elem">${html_object}</ul></td></tr>`
     inst.append(html_section)
+}
+
+/*
+Method that creates the substance characteristics
+I: data (JSON), inst(Instance of HTML to append to)
+O: None
+*/
+function manage_equipment_characteristics(data, inst){
+    let characteristics_lists = {
+        'provider': gettext('Provider'),
+        'have_guarantee': gettext('Has guarantee?'),
+        'available_to_use': gettext('Is available to use?'),
+        'equipment_price': gettext('Price'),
+        'notes': gettext('Note'),
+        'purchase_equipment_date': gettext('Purchase Date'),
+        'delivery_equipment_date': gettext('Delivery Date'),
+        'first_date_use': gettext('First date use'),
+
+    }
+    insert_substance_data(data, inst, characteristics_lists)
+    insert_data_url(data,inst, {'contract_of_maintenance': gettext('Contract of maintenance')})
+    append_data_lists(data, {"authorized_roles_to_use_equipment": gettext("Authorized roles to use equipment")}, inst)
+
+}
+
+/*
+Method that inserts all the substance data except for the ones containing arrays
+I: data (JSON), inst(Instance of HTML to append to), object_titles (dict)
+O: None
+*/
+function insert_data_url(data, inst, object_titles){
+    let html_object = ''
+    titles = Object.keys(object_titles)
+    titles.forEach( (title) => {
+        let value = data[title]
+        html_object += `<tr><td class="shelfobject_titles">${object_titles[title]}</td>`
+        if(value){
+            html_object += `<td><a class="btn btn-outline-success" href="${value}"><i class="fa fa-file-text-o"></i> ${gettext("Download")} </a></td></tr>`
+        }else{
+            html_object += `<td></td></tr>`
+        }
+    })
+    inst.append(html_object)
 }

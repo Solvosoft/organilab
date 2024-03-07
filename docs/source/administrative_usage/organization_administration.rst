@@ -1,5 +1,5 @@
 Descripción general del manejo de organización
-==================================================
+**************************************************
 
 Permisos requeridos:
 
@@ -10,7 +10,7 @@ Permisos requeridos:
 
 
 Crear nueva organización base
-----------------------------------
+===================================
 
 Cuando se menciona una organización base, se hace referencia a la organización raíz (sin antecesor) y que por
 consiguiente tendrá a futuro organizaciones descendientes (organizaciones hijas) o en casos menos comunes solo será la
@@ -28,7 +28,7 @@ sus organizaciones hijas.
 
 
 Crear nueva organización hija
-----------------------------------
+===================================
 
 Las organizaciones hijas pueden tener organizaciones descendientes y siempre tendrán una organización base antecesora.
 
@@ -38,7 +38,7 @@ Las organizaciones hijas pueden tener organizaciones descendientes y siempre ten
 
 
 Cambiar el padre de una organización
----------------------------------------
+===========================================
 
 El padre de una organización hace referencia al antecesor de la misma y este puede ser sustituido por otro o
 simplemente convertirse en una organización base (organización sin padre). Además las organizaciones base también
@@ -51,7 +51,7 @@ vista.
 
 
 Eliminar una organización
-----------------------------------
+===================================
 
 Al eliminar una organización es necesario tener en cuenta si ésta tiene o no organizaciones hijas
 (organizaciones descendientes) debido a que también las organizaciones hijas serán eliminadas.
@@ -62,7 +62,7 @@ Al eliminar una organización es necesario tener en cuenta si ésta tiene o no o
 
 
 Acciones de gestión de una organización
-----------------------------------------------
+==================================================
 
 Las acciones de una organización son las siguientes:
 
@@ -72,7 +72,7 @@ Las acciones de una organización son las siguientes:
 
 
 Desactivar una organización
-*******************************
+------------------------------
 
 Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las siguientes características:
 
@@ -90,7 +90,7 @@ Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las s
 
 
 Clonar una organización
-*******************************
+---------------------------
 
 Al clonar una organización se copian las siguientes características:
 
@@ -109,7 +109,7 @@ Al clonar una organización se copian las siguientes características:
 
 
 Cambiar nombre de una organización
-***************************************
+--------------------------------------
 
 El nombre de una organización es un dato requerido no único que puede ser modificado.
 
@@ -119,10 +119,10 @@ El nombre de una organización es un dato requerido no único que puede ser modi
 
 
 Administración de usuarios
-----------------------------------
+==================================
 
 Agregar usuario a una organización desde la botonera de acciones
-***********************************************************************
+---------------------------------------------------------------------
 
 Al agregar un nuevo usuario a una organización se requiere ingresar los datos de este y definir su perfil en la
 organización, sea administrador, administrador de laboratorio o usuario de laboratorio.
@@ -151,14 +151,14 @@ requerido y a su vez existe la opción de relacionarlo con los laboratorios de l
 
 
 Desde la pestaña 'Por Organización'
-**************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/relate_user_to_org_and_lab_from_tab_org.gif
    :height: 380
    :width: 720
 
 Desde la pestaña 'Por laboratorio'
-**************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. image:: ../_static/gif/relate_user_to_org_and_lab_from_tab_lab.gif
    :height: 380
