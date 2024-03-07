@@ -2,16 +2,19 @@ import logging
 import re
 from django.conf import settings
 from django.forms import model_to_dict
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
+from auth_and_perms.models import Rol
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectLimits, TranferObject, ShelfObjectObservation, Provider, \
-    Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED
+    Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED, \
+    ShelfObjectEquipmentCharacteristics
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
@@ -19,6 +22,7 @@ from laboratory.shelfobject.utils import get_available_containers_for_selection,
     limit_objects_by_shelf, validate_measurement_unit_and_quantity, \
     get_selected_container, group_object_errors_for_serializer
 
+from djgentelella.fields.files import ChunkedFileField
 
 logger = logging.getLogger('organilab')
 
@@ -290,6 +294,15 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 
         return data
 
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+
+        object_type = self.context.get('type_id','-1')
+        if object_type == Object.EQUIPMENT:
+            fields['minimum_limit'].required = False
+            fields['maximum_limit'].required = False
+        return fields
+
 
 class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(many=False,
@@ -431,7 +444,7 @@ class EquipmentShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelS
                                                 queryset=Catalog.objects.using(
                                                     settings.READONLY_DATABASE),
                                                 required=True)
-    quantity = serializers.FloatField(required=True)
+    quantity = serializers.FloatField(required=False, default=1, allow_null=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
@@ -462,7 +475,7 @@ class EquipmentRefuseShelfObjectSerializer(ValidateShelfSerializer, serializers.
                                                 queryset=Catalog.objects.using(
                                                     settings.READONLY_DATABASE),
                                                 required=True)
-    quantity = serializers.FloatField(required=True)
+    quantity = serializers.FloatField(required=False, default=1, allow_null=True)
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
@@ -549,6 +562,8 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
     object_features = serializers.SerializerMethodField(required=False, allow_null=True)
     substance_characteristics = serializers.SerializerMethodField(required=False,
                                                                   allow_null=True)
+    equipment_characteristics = serializers.SerializerMethodField(required=False,
+                                                                  allow_null=True)
 
     class Meta:
         model = ShelfObject
@@ -571,7 +586,12 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
         object_d = model_to_dict(obj.object)
         del object_d['features']
         return object_d
-
+    def get_equipment_characteristics(self, obj):
+        if hasattr(obj, 'shelfobjectequipmentcharacteristics'):
+            charac = ShelfObjectEquipmentCharacteristics.objects.get(shelfobject=obj)
+            characteristics = EquipmentShelfObjectCharacteristicsDetailSerializer(
+                charac, context={"request":self.context.get("request")})
+            return characteristics.data
 
 class ShelfSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
@@ -1145,3 +1165,84 @@ class ValidateShelfInformationPositionSerializer(ValidateShelfSerializer):
 
     position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
+class EquimentShelfobjectCharacteristicSerializer(serializers.ModelSerializer):
+    shelfobject = serializers.PrimaryKeyRelatedField(many=False,
+                                                     required=False,
+                                                queryset=ShelfObject.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                     allow_null=True,allow_empty=True)
+    provider = serializers.PrimaryKeyRelatedField(many=False,
+                                                  required=False,
+                                                queryset=Provider.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                  allow_null=True, allow_empty=True)
+    authorized_roles_to_use_equipment = serializers.PrimaryKeyRelatedField(many=True,
+                                                queryset=Rol.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                required=False, allow_null=True,
+                                                                           allow_empty=True)
+    equipment_price = serializers.FloatField(required=False, default=0.0)
+    purchase_equipment_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    delivery_equipment_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    have_guarantee = serializers.BooleanField(required=False)
+    contract_of_maintenance = ChunkedFileField(required=False, allow_empty_file=True)
+    available_to_use = serializers.BooleanField(required=False, default=False)
+    first_date_use = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    notes = serializers.CharField(allow_null=True, allow_blank=True,required=False)
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+
+        shelfobject = get_object_or_404(ShelfObject, pk=self.initial_data.get('shelfobject'))
+        org = self.context.get('organization', None)
+        obj = shelfobject.object
+        if hasattr(obj, "equipmentcharacteristics"):
+            providers = obj.equipmentcharacteristics.providers.values_list('pk',flat=True)
+            fields['provider'].queryset = Provider.objects.filter(pk__in=providers)
+        fields['authorized_roles_to_use_equipment'].queryset = Rol.objects.filter(organizationstructure__pk=org)
+        return fields
+    class Meta:
+        model = ShelfObjectEquipmentCharacteristics
+        fields = "__all__"
+
+
+class RolDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rol
+        fields = ['name']
+
+class EquipmentShelfObjectCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    provider = serializers.SerializerMethodField()
+    authorized_roles_to_use_equipment = RolDetailSerializer(many=True)
+    contract_of_maintenance = serializers.SerializerMethodField()
+    have_guarantee = serializers.SerializerMethodField()
+    available_to_use = serializers.SerializerMethodField()
+
+    def get_provider(self, obj):
+        if obj.provider:
+            return obj.provider.name
+        return _("Unknown")
+    def get_have_guarantee(self, obj):
+        if obj.have_guarantee:
+            return _("Yes")
+        return _("No")
+    def get_available_to_use(self, obj):
+        if obj.available_to_use:
+            return _("Yes")
+        return _("No")
+
+    def get_contract_of_maintenance(self, obj):
+        request = self.context.get('request')
+        schema = request.scheme + "://"
+        domain = schema + request.get_host()
+        if obj.contract_of_maintenance:
+            return domain+obj.contract_of_maintenance.url
+    class Meta:
+        model = ShelfObjectEquipmentCharacteristics
+        fields = '__all__'

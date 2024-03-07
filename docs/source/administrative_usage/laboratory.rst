@@ -754,8 +754,8 @@ En la creación de equipos se requerirá el ingreso de varios datos, los cuales 
 
 Permisos requeridos:
 
-*   *view_laboratory*: Permite ingresar al laboratorio.
-*   *add_object*: Permite el ingreso al modulo de equipos, además la creación de objetos.
+*   *view_laboratory*: Permite al usuario ingresar al laboratorio.
+*   *add_object*: Permite que el botón de agregar se habilite y el usuario en sesión pueda agregar nuevos equipos.
 *   *view_object*: Permite visualizar los equipos.
 
 Ejemplo de creación de equipos:
@@ -772,10 +772,9 @@ influye en los estantes que posean este objeto.
 
 Permisos requeridos:
 
-*   *view_laboratory*: Permite ingresar al laboratorio.
+*   *view_laboratory*: Permite al usuario ingresar al laboratorio.
 *   *view_object*: Permite visualizar los equipos.
-*   *add_object*: Permite el ingreso al módulo de equipos.
-*   *change_object*: Permite visualizar el botón de **editar** en los objetos equipos, además su actualización.
+*   *change_object*: Permite que el botón de edición se habilite y el usuario en sesión pueda editar equipos.
 
 Ejemplo de actualización de equipos:
 
@@ -798,13 +797,14 @@ Permisos requeridos:
 
 Ejemplo de búsqueda de equipos:
 
-.. image:: ../_static/gif/search_object_equipment.gif
+.. image:: ../_static/gif/search_equipment_object.gif
    :height: 380
    :width: 720
 
 Eliminar Equipos
 ^^^^^^^^^^^^^^^^^^^^^^
 
+.. warning::
    A la hora de eliminar un objeto hay que tener en cuenta que también los lugares donde se utilizan este, se borrarán sus registros.
 
 Permisos requeridos:
@@ -927,6 +927,7 @@ Este módulo se encargará de manejar los proveedores del laboratorio, no es a n
 que se esté utilizando en el momento.
 
 .. image:: ../_static/view_provider.png
+   :alt: Modúlo de proveedores
    :height: 380
    :width: 720
 
@@ -991,7 +992,7 @@ Ejemplo de edición de proveedores:
 Administración de protocolos
 =================================
 
-Este módulo se encaga del manejo de los protocolos internos de la organización por parte de la administración
+Este módulo se encarga del manejo de los protocolos internos de la organización por parte de la administración
 
 .. image:: ../_static/protocols_index.png
    :alt: Módulo de Protocolos
@@ -1120,6 +1121,7 @@ En creación de los QR se requieren varios datos lo cuales son:
     puede ser repetido.
 
 Permisos requeridos:
+
 *  *view_laboratory*: Permitira el ingreso al laboratorio.
 *  *view_registeruserqr*: Permitira ingresa al módulo de registro de usuarios por QR.
 *  *add_registeruserq*: Permitira la creación de registros.

@@ -8,6 +8,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import FieldDoesNotExist
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, get_object_or_404, render
 from django.template.loader import get_template
@@ -19,17 +20,20 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
+from academic.models import MyProcedure
 from auth_and_perms.models import Profile, ProfilePermission
 from laboratory import utils
 from laboratory.forms import LaboratoryCreate, H_CodeForm, LaboratoryEdit, \
     OrganizationUserManagementForm, \
     RegisterUserQRForm, RegisterForm, LoginForm, PasswordCodeForm
 from laboratory.models import Laboratory, OrganizationStructure, RegisterUserQR, \
-    UserOrganization
+    UserOrganization, OrganizationStructureRelations, Inform, InformsPeriod
 from laboratory.utils import organilab_logentry, get_laboratories_by_user_profile, \
-    register_laboratory_contenttype
+    register_laboratory_contenttype, delete_profile_roles_related_to_laboratory, \
+    delete_relation_between_laboratory_with_other_models
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
+from presentation.models import FeedbackEntry
 
 
 @method_decorator(permission_required('laboratory.change_laboratory'), name='dispatch')
@@ -201,17 +205,117 @@ class LaboratoryDeleteView(DeleteView):
     lab_pk_field = 'pk'
 
     def get_success_url(self):
-        return "/"
+        return reverse("laboratory:mylabs", kwargs={"org_pk": self.org})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['laboratory'] = self.object.pk
+        msg_delete_relationship = "%s %s %s, %s" % (self.object.name,
+                                                    _("maintains a relationship with"),
+                                                    self.organization.name,
+                                                    _("are you sure you want to delete this relationship?"))
+
+        msg_delete = "%s %s %s, %s" % (self.object.name,
+                                       _("was created for"),
+                                       self.organization.name,
+                                       _("this action will involve deleting all relations with others organizations."))
+
+        if self.org != self.object.organization.pk:
+            msg_delete = msg_delete_relationship
+        else:
+            org_relations = OrganizationStructureRelations.objects.filter(
+                content_type=ContentType.objects.filter(
+                        app_label=self.object._meta.app_label,
+                        model=self.object._meta.model_name
+                    ).first(),
+                    object_id=self.object.pk
+            ).exclude(organization=self.organization)
+
+            if org_relations.exists():
+                organizations_name = list(org_relations.values_list("organization__name", flat=True))
+                msg_delete += " %s %s." % (_("The related organizations are: "), str(organizations_name)[1:-1])
+
+            msg_delete += _(" Are you sure you want to delete this laboratory? This action is irreversible.")
+
+        context['msg_delete'] = msg_delete
         return context
 
     def form_valid(self, form):
+        user = self.request.user
         success_url = self.get_success_url()
-        utils.organilab_logentry(self.request.user, self.object, DELETION, relobj=self.object)
-        self.object.delete()
+        general_relation_list=[]
+        exclude_fields = ['LabOrgLogEntry', 'LogEntry', 'Permission', 'ProfilePermission']
+        cc=ContentType.objects.filter(
+                app_label=self.object._meta.app_label,
+                model=self.object._meta.model_name
+                ).first()
+        relations_filters = {
+            "content_type": cc,
+            "object_id": self.object.pk
+        }
+        orgrel_filters = {}
+        orgrel_filters.update(relations_filters)
+        if self.org == self.object.organization.pk:
+            utils.organilab_logentry(user, self.object, DELETION,
+                                     "laboratory", relobj=self.organization)
+            FeedbackEntry.objects.filter(laboratory_id=self.object.pk).delete()
+            for ro in cc._meta.related_objects:
+                if ro.related_model.__name__ not in exclude_fields:
+                    query=ro.related_model.objects.filter(content_type=cc,
+                                                          object_id=self.object.pk)
+                    if query.exists():
+                        general_relation_list.append(
+                        {"list": query,
+                         "model_name":  ro.related_model.__name__,
+                         "change_message": "The relation in contenttype between %s and %s was deleted."},
+                        )
+                    #delete_relation_between_laboratory_with_other_models(
+                    #    general_relation_list, user, self.object)
+        else:
+            relations_filters.update({"rol__organizationstructure": self.organization})
+            orgrel_filters['organization']=self.organization
+            for ro in cc._meta.related_objects:
+                if ro.related_model.__name__ not in exclude_fields:
+                    try:
+                        ro.related_model._meta.get_field("organization")
+                        query=ro.related_model.objects.filter(**orgrel_filters)
+                        if query.exists():
+                            general_relation_list.append(
+                            {"list": query,
+                             "model_name": ro.related_model.__name__,
+                             "change_message": "The relation in contenttype between %s and %s was deleted."},
+                            )
+                    except FieldDoesNotExist as e:
+                        pass
+
+                    #delete_relation_between_laboratory_with_other_models(
+                    #    general_relation_list, user, self.object)
+
+        # All profilepermissions related to this laboratory
+        profilepermissions_list = ProfilePermission.objects.filter(**relations_filters)
+
+        if profilepermissions_list:
+            delete_profile_roles_related_to_laboratory(profilepermissions_list,
+                                                       self.organization, self.object)
+
+        """
+        relations_list = OrganizationStructureRelations.objects.filter(**orgrel_filters)
+        myprocedure_list = MyProcedure.objects.filter(**orgrel_filters)
+        inform_list = Inform.objects.filter(**orgrel_filters)
+
+        general_relation_list = [
+            {"list": relations_list, "model_name": "organization structure relations",
+             "change_message": "The relation between %s and %s was deleted."},
+            {"list": myprocedure_list, "model_name": "my procedure",
+             "change_message": "My procedure %s in %s laboratory related to %s organization was deleted."},
+            {"list": inform_list, "model_name": "inform",
+             "change_message": "Inform %s in %s laboratory related to %s organization was deleted."}
+        ]
+        """
+        delete_relation_between_laboratory_with_other_models(general_relation_list, user, self.object)
+
+        if self.org == self.object.organization.pk:
+            self.object.delete()
+
         return HttpResponseRedirect(success_url)
 
 
