@@ -766,14 +766,14 @@ msgstr "Renombrar"
 msgid "Return to Form List"
 msgstr "Regresar al listado"
 
-msgid "Update Form Name"
-msgstr "Actualizar nombre del formulario"
+msgid "Update Inform Template Name"
+msgstr "Actualizar Nombre de Plantilla de Informe"
 
-msgid "The form could not be updated."
-msgstr "El formulario no se pudo actualizar."
+msgid "The inform template could not be updated."
+msgstr "La plantilla de informe no se pudo actualizar."
 
-msgid "The form name has been updated."
-msgstr "El nombre del formulario ha sido actualizado."
+msgid "The inform template name has been updated."
+msgstr "El nombre de la plantilla de informe ha sido actualizado."
 
 msgid "Updated!"
 msgstr "¡Actualizado!"
@@ -796,29 +796,26 @@ msgstr "¡El nombre del formulario se guardó!"
 msgid "Report Template List"
 msgstr "Lista de Plantillas de Reportes"
 
-msgid "Create Form"
-msgstr "Crear Formulario"
-
-msgid "My Forms"
-msgstr "Mis Formularios"
+msgid "Create Inform Template"
+msgstr "Crear Plantilla de Informe"
 
 msgid "Status"
 msgstr "Estado"
 
-msgid "Preview form"
-msgstr "Previsualizar Formulario"
+msgid "Preview inform template"
+msgstr "Previsualizar plantilla de informe"
 
-msgid "Do you want to delete the form"
-msgstr "¿Deseas eliminar el formulario"
+msgid "Do you want to delete the inform template"
+msgstr "¿Deseas eliminar la plantilla de informe"
 
 msgid "This action cannot be undone"
 msgstr "Esta acción no se puede deshacer"
 
 msgid "The form could not be deleted."
-msgstr "El formulario no se pudo eliminar."
+msgstr "La plantilla de informe no se pudo eliminar."
 
 msgid "The form has been deleted."
-msgstr "El formulario fue eliminado."
+msgstr "La plantilla de informe fue eliminada."
 
 msgid "Deleted!"
 msgstr "¡Eliminado!"
@@ -1262,8 +1259,8 @@ msgstr "Protocolo"
 msgid "Protocols"
 msgstr "Protocolos"
 
-msgid "Inform template"
-msgstr "Plantilla de Informe"
+msgid "Informs Templates"
+msgstr "Plantillas de Informes"
 
 msgid "Activate user"
 msgstr "Activar usuario"
@@ -1667,10 +1664,10 @@ msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
 msgid "Do you want to send the report for review?"
-msgstr "¿Desea enviar el reporte a revisión?"
+msgstr "¿Desea enviar el informe a revisión?"
 
 msgid "Do you want to finish the report?"
-msgstr "¿Desea finalizar el reporte?"
+msgstr "¿Desea finalizar el informe?"
 
 msgid "Delete the observation"
 msgstr "Eliminar Observación"
@@ -1795,8 +1792,8 @@ msgstr "Proveedores"
 msgid "Welcome to the Simple laboratory organizer"
 msgstr "Bienvenido al organizador de laboratorio"
 
-msgid "Templates of inform"
-msgstr "Plantillas para informes"
+msgid "My Informs"
+msgstr "Mis Informes"
 
 msgid "State"
 msgstr "Estado"
@@ -2779,8 +2776,8 @@ msgstr "Organizaciones y permisos"
 msgid "Manage Organizations"
 msgstr "Administración de Organizaciones"
 
-msgid "Reports Informs and Procedures"
-msgstr "Reportes informes y Procedimientos"
+msgid "Reports, Informs and Procedures"
+msgstr "Reportes, Informes y Procedimientos"
 
 msgid "Report List"
 msgstr "Listado de Reportes"
@@ -4272,3 +4269,11 @@ msgstr "Eliminar equipo"
 msgid "Unknown unit"
 msgstr "Unidad desconocida"
 
+msgid "Your inform template has been saved"
+msgstr "Tu plantilla de informe fue guardada"
+
+msgid "Something went wrong while saving your form"
+msgstr "Algo salió mal al guardar tu formulario"
+
+msgid "The inform template has been saved!"
+msgstr "La plantilla de informe fue guardada"

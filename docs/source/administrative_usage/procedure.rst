@@ -25,7 +25,7 @@ Luego de cumplir con los pasos anteriores en la barra del costado izquierdo se h
 
 Explicación de pasos:
 
-*  *Paso 1*: Es dar click en la opción *Reportes informes y Procedimientos* de la barra lateral izquierda, esto para habilitar los módulos de informes.
+*  *Paso 1*: Es dar click en la opción *Reportes, Informes y Procedimientos* de la barra lateral izquierda, esto para habilitar los módulos de informes.
 *  *Paso 2*: En este paso se da click en la opción *Plantillas de Procedimientos*, para acceder al módulo de plantillas de procedimiento.
 
     .. note::

@@ -11,7 +11,7 @@ Este módulo usa como base la funcionalidad de arrastre de elementos para la gen
 que esta potenciada por la librería **Formio.js**.
 
 Además para tener acceso se debe ingresar previamente al módulo **Mis Laboratorios**, para que aparezca la opción
-**Reportes informes y Procedimientos** donde se muestra la opción **Plantilla de informes**.
+**Reportes, Informes y Procedimientos** donde se muestra la opción **Plantilla de informes**.
 
 Ejemplo de ingreso al módulo de plantillas de informes:
 

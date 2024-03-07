@@ -19,10 +19,10 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 
 msgid "Do you want to send the report for review?"
-msgstr "¿Desea enviar el reporte a revisión?"
+msgstr "¿Desea enviar el informe a revisión?"
 
 msgid "Do you want to finish the report?"
-msgstr "¿Desea finalizar el reporte?"
+msgstr "¿Desea finalizar el informe?"
 
 msgid "Added"
 msgstr "Agregado"
