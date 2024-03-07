@@ -15,13 +15,16 @@ from sga.api.sga_components_viewsets import WarningWordAPI, WarningWordTableView
 from authentication.users import ChangeUser, password_change, get_profile
 from laboratory import views
 from laboratory.api import shelfobject as ShelfObjectApi
-from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, CommentAPI, ProtocolViewSet, \
-    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, ShelfObjectObservationView
+from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, \
+    CommentAPI, ProtocolViewSet, \
+    LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, \
+    ShelfObjectObservationView, EquipmentManagementViewset
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchDisposalObject
-from laboratory.sustance.views import create_edit_sustance, sustance_list, SustanceListJson, SubstanceDelete
+from laboratory.sustance.views import create_edit_sustance, sustance_list, \
+    SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import inform_period
 from laboratory.views import labroom, shelfobject, laboratory, organizations
@@ -29,7 +32,8 @@ from laboratory.views.informs import get_informs, create_informs, complete_infor
 from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
-from laboratory.views.objects import ObjectView, block_notifications
+from laboratory.views.objects import ObjectView, block_notifications, \
+    view_equipment_list
 from laboratory.views.organizations import OrganizationDeleteView, \
     OrganizationCreateView, OrganizationUpdateView, OrganizationActionsFormview
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
@@ -133,6 +137,10 @@ sustance_urls = [
     path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
+equipment_urls = [
+    path('', view_equipment_list, name='equipment_list'),
+]
+
 organization_urls = [
     path('organization/manage/actions', OrganizationActionsFormview.as_view(),
          name='organization_actions'),
@@ -223,6 +231,9 @@ shelfobjectrouter.register('api_search_labview', ShelfObjectApi.SearchLabView, b
 shelfcontainerrouter = DefaultRouter()
 shelfcontainerrouter.register('api_container_list', ContainerManagementViewset, basename='api-container-in-shelf')
 
+objectrouter = DefaultRouter()
+objectrouter.register('api_equipment_list', EquipmentManagementViewset, basename='api-equipment')
+
 
 '''MULTILAB'''
 urlpatterns += organization_urls + [
@@ -241,7 +252,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/provider/', include(provider_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
-
+    path('lab/<int:org_pk>/<int:lab_pk>/equipment/', include(equipment_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('so/api/<int:org_pk>/<int:lab_pk>/', include(shelfobjectrouter.urls)),
     path('so/api/<int:org_pk>/<int:lab_pk>/<int:shelf>/', include(shelfcontainerrouter.urls)),
@@ -255,4 +266,5 @@ urlpatterns += organization_urls + [
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
     path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
     path('sga_components/api/<int:org_pk>/', include(sgacomponentsrouter.urls)),
+    path('equipment/api/<int:org_pk>/<int:lab_pk>/', include(objectrouter.urls)),
 ]

@@ -4256,3 +4256,15 @@ msgstr "Fecha de compra"
 
 msgid "Authorized roles to use equipment"
 msgstr "Roles autorizados para el uso del equipo"
+
+msgid "Equipment List"
+msgstr "Listado de Equipos"
+
+msgid "Create equipment"
+msgstr "Crear equipo"
+
+msgid "Update equipment"
+msgstr "Editar equipo"
+
+msgid "Delete equipment"
+msgstr "Eliminar equipo"
