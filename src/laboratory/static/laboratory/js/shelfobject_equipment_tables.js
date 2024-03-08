@@ -1,3 +1,14 @@
+const get_multiple_text = (data) => {
+    result = data.map(obj => obj.text);
+    return result.join(", ");
+}
+
+const render_file = (data) => {
+    if(data){
+        return `<a href="${data.url}" title="${data.display_name}" download class="btn btn-outline-success"><i class="fa fa-download"></i> ${gettext("Download")}</a>`
+      }
+    return data;
+}
 table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
                     "<'col-sm-4 col-md-4 d-flex align-items-center justify-content-center'B>" +
                     "<'col-sm-3 col-md-3 d-flex align-items-center justify-content-end 'l>>" +
@@ -9,7 +20,7 @@ maintenance_datatable_inits = {
 						{data: "maintenance_date", name:"maintenance_date", title: gettext("Date"), type: "string", visible: true},
 						{data: "provider_of_maintenance", name: "provider_of_maintenance", title: gettext("Provider"), type: "string", visible: true,
 						render: data => data['text']},
-						{data: "validator", name: "validator", title: gettext("Validator"), type: "string", visible: true},
+						{data: "validator", name: "validator", title: gettext("Validator"), type: "string", visible: true, render: data=> data["text"]},
 						{data: "maintenance_observation", name: "maintenance_observation", title: gettext("Observation"), type: "string", visible: true},
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
@@ -34,7 +45,7 @@ var calibrate_datatable_inits = {
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
 						{data: "calibration_date", name:"calibration_date", title: gettext("Date"), type: "date", visible: true},
 						{data: "calibrate_name", name: "calibrate_name", title: gettext("Calibrator"), type: "string", visible: true},
-						{data: "validator", name: "validator", title: gettext("Validator"), type: "string", visible: true},
+						{data: "validator.text", name: "validator", title: gettext("Validator"), type: "string", visible: true},
 						{data: "observation", name: "observation", title: gettext("Observation"), type: "string", visible: true},
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
@@ -47,7 +58,9 @@ var training_datatable_inits = {
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
 						{data: "training_initial_date", name:"training_initial_date", title: gettext("Initial date"), type: "date", visible: true},
 						{data: "training_final_date", name:"training_final_date", title: gettext("Final date"), type: "date", visible: true},
-						{data: "number_of_hours", name:"number_of_hours", title: gettext("Hours"), type: "date", visible: true},
+						{data: "number_of_hours", name:"number_of_hours", title: gettext("Hours"), type: "number", visible: true},
+						{data: "intern_people_receive_training", name:"intern_people_receive_training", title: gettext("Internal people"),
+						type: "string", visible: true, render: data => get_multiple_text(data)},
 						{data: "observation", name:"observation", title: gettext("Observation"), type: "string", visible: true},
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
@@ -60,6 +73,7 @@ var guarantee_datatable_inits = {
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
 						{data: "guarantee_initial_date", name:"guarantee_initial_date", title: gettext("Initial date"), type: "date", visible: true},
 						{data: "guarantee_final_date", name:"guarantee_final_date", title: gettext("Final date"), type: "date", visible: true},
+						{data: "contract", name:"contract", title: gettext("Contract"), type: "date", visible: true, render: data=> render_file(data)},
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 

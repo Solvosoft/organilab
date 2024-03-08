@@ -51,11 +51,10 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     ShelfObjectLogSerializer, ValidateShelfObjectCalibrateSerializer, \
     ShelfObjectCalibrateSerializer, ShelfObjectCalibrateDatatableSerializer, \
     UpdateShelfObjectCalibrateSerializer, ShelfObjectGuaranteeDatatableSerializer, \
-    CreateShelfObjectGuaranteeSerializer, ShelfObjectGuaranteeSerializer, \
-    UpdateShelfObjectGuaranteeSerializer, CreateShelfObjectTrainingSerializer, \
+    ShelfObjectGuaranteeSerializer, ValidateShelfObjectTrainingSerializer, \
     ShelfObjectTrainingeDatatableSerializer, ShelfObjectTrainingSerializer, \
     ShelfObjectLogtFilter, ShelfObjectCalibrateFilter, ShelfObjectTrainingFilter, \
-    ShelfObjectMaintenanceFilter
+    ShelfObjectMaintenanceFilter, ValidateShelfObjectGuaranteeSerializer
 
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
@@ -1312,6 +1311,7 @@ the second tag will modify laboratory room result as a first tag.
 
 
 class ShelfobjectActionsBase(AuthAllPermBaseObjectManagement):
+
     org_pk, lab_pk, shelfobject= None, None, None
 
     def filter_queryset(self, queryset):
@@ -1368,10 +1368,10 @@ class ShelfObjectMaintanenceViewset(ShelfobjectActionsBase):
     queryset = ShelfObjectMaintenance.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['provider_of_maintenance', 'validator']  # for the global search
+    search_fields = ['provider_of_maintenance', 'validator']
     filterset_class = ShelfObjectMaintenanceFilter
     ordering_fields = ['pk']
-    ordering = ('pk',)  # default order
+    ordering = ('pk',)
 
 
 class ShelfObjectLogViewset(ShelfobjectActionsBase):
@@ -1396,10 +1396,10 @@ class ShelfObjectLogViewset(ShelfobjectActionsBase):
     queryset = ShelfObjectLog.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['description']  # for the global search
+    search_fields = ['description']
     filterset_class = ShelfObjectLogtFilter
-    ordering_fields = ['description']
-    ordering = ('pk',)  # default order
+    ordering_fields = ['pk']
+    ordering = ('pk',)
 
 
 class ShelfObjectCalibrateViewset(ShelfobjectActionsBase):
@@ -1424,18 +1424,18 @@ class ShelfObjectCalibrateViewset(ShelfobjectActionsBase):
     queryset = ShelfObjectCalibrate.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['calibration_date']  # for the global search
+    search_fields = ['calibration_date']
     filterset_class = ShelfObjectCalibrateFilter
     ordering_fields = ['calibration_date']
-    ordering = ('calibration_date',)  # default order
+    ordering = ('calibration_date',)
 
 
 class ShelfObjectGuaranteeViewset(ShelfobjectActionsBase):
     serializer_class = {
         'list': ShelfObjectGuaranteeDatatableSerializer,
         'destroy': ShelfObjectGuaranteeSerializer,
-        'create': CreateShelfObjectGuaranteeSerializer,
-        'update': UpdateShelfObjectGuaranteeSerializer,
+        'create': ValidateShelfObjectGuaranteeSerializer,
+        'update': ValidateShelfObjectGuaranteeSerializer,
     }
     perms = {
         "create": ["laboratory.add_shelfobjectguarantee",
@@ -1452,17 +1452,17 @@ class ShelfObjectGuaranteeViewset(ShelfobjectActionsBase):
     queryset = ShelfObjectGuarantee.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['guarantee_initial_date']  # for the global search
+    search_fields = ['guarantee_initial_date']
     ordering_fields = ['pk']
-    ordering = ('pk',)  # default order
+    ordering = ('pk',)
 
 
 class ShelfObjectTrainingViewset(ShelfobjectActionsBase):
     serializer_class = {
         'list': ShelfObjectTrainingeDatatableSerializer,
         'destroy': ShelfObjectTrainingSerializer,
-        'create': CreateShelfObjectTrainingSerializer,
-        'update': CreateShelfObjectTrainingSerializer,
+        'create': ValidateShelfObjectTrainingSerializer,
+        'update': ValidateShelfObjectTrainingSerializer,
     }
     perms = {
         "create": ["laboratory.add_shelfobjecttraining",
@@ -1479,8 +1479,8 @@ class ShelfObjectTrainingViewset(ShelfobjectActionsBase):
     queryset = ShelfObjectTraining.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['training_initial_date']  # for the global search
+    search_fields = ['training_initial_date']
     filterset_class = ShelfObjectTrainingFilter
     ordering_fields = ['pk']
-    ordering = ('pk',)  # default order
+    ordering = ('pk',)
 

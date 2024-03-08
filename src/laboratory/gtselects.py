@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
     ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer
-from auth_and_perms.models import Rol
+from auth_and_perms.models import Rol, Profile
 from laboratory.models import Object, Catalog, Provider, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
@@ -354,3 +354,37 @@ class OrganizationRolslLookup(BaseSelect2View):
             'status': 'Bad request',
             'errors': self.serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
+@register_lookups(prefix="org_profiles", basename="org_profiles")
+class OrganizationProfileslLookup(BaseSelect2View):
+    model = Profile
+    org= None
+    fields = ['name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(pk__in=self.org.users.values_list('profile__pk',flat=True)).distinct()
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.org = self.serializer.validated_data['organization']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        name = obj.user.get_full_name()
+        if not name:
+            name = obj.username
+        return name
