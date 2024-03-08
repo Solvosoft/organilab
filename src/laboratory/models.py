@@ -275,6 +275,8 @@ class ShelfObject(models.Model):
         verbose_name = _('Shelf object')
         verbose_name_plural = _('Shelf objects')
         ordering = ['pk','object__name']
+        permissions = [('can_view_contract', 'Can view contract'),]
+
 
     def __str__(self):
         return '%s - %s %s' % (self.object, self.quantity, str(self.measurement_unit))
@@ -317,7 +319,7 @@ class ShelfObjectLog(AbstractOrganizationRef):
 class ShelfObjectCalibrate(AbstractOrganizationRef):
     shelfobject = models.ForeignKey(ShelfObject, null=False, on_delete=models.CASCADE)
     observation = models.TextField(null=True, blank=True, verbose_name=_("Observation"))
-    calibrate_name = models.CharField(max_length=40,null=False, blank=True, verbose_name=_("Name of Calibrator"))
+    calibrate_name = models.CharField(max_length=100, null=False, blank=True, verbose_name=_("Name of Calibrator"))
     validator = models.ForeignKey("auth_and_perms.Profile", on_delete=models.SET_NULL, null=True,  verbose_name=_("Validator"))
     calibration_date = models.DateField(null=False, blank=False, verbose_name=_("Calibration date"))
 

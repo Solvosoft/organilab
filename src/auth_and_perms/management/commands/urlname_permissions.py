@@ -157,6 +157,11 @@ URLNAME_PERMISSIONS = {
             'category': 'Shelf',
             'permission': 'laboratory.can_add_disposal'
         },
+        {
+            'name': 'View Contracts',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.can_view_contract'
+        },
     ],
     'laboratory_update': [
         {

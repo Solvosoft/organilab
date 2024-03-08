@@ -207,7 +207,7 @@ function insert_data_url(data, inst, object_titles){
     titles.forEach( (title) => {
         let value = data[title]
         html_object += `<tr><td class="shelfobject_titles">${object_titles[title]}</td>`
-        if(value){
+        if(value && data['can_download_contract']){
             html_object += `<td><a class="btn btn-outline-success" href="${value}"><i class="fa fa-file-text-o"></i> ${gettext("Download")} </a></td></tr>`
         }else{
             html_object += `<td></td></tr>`
