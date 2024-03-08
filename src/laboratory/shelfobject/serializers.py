@@ -1227,6 +1227,7 @@ class EquipmentShelfObjectCharacteristicsDetailSerializer(serializers.ModelSeria
     contract_of_maintenance = serializers.SerializerMethodField()
     have_guarantee = serializers.SerializerMethodField()
     available_to_use = serializers.SerializerMethodField()
+    can_download_contract = serializers.SerializerMethodField()
 
     def get_provider(self, obj):
         if obj.provider:
@@ -1247,6 +1248,13 @@ class EquipmentShelfObjectCharacteristicsDetailSerializer(serializers.ModelSeria
         domain = schema + request.get_host()
         if obj.contract_of_maintenance:
             return domain+obj.contract_of_maintenance.url
+
+    def get_can_download_contract(self, obj):
+        request = self.context.get('request')
+        if request.user.has_perms(["laboratory.can_view_contract"]):
+            return True
+        return None
+
     class Meta:
         model = ShelfObjectEquipmentCharacteristics
         fields = '__all__'
