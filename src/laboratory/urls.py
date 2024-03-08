@@ -7,8 +7,12 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from academic.api.views import ProcedureStepCommentAPI, ProcedureStepCommentTableView
+from laboratory.api.shelfobject import ShelfObjectMaintanenceViewset, \
+    ShelfObjectLogViewset, ShelfObjectCalibrateViewset, ShelfObjectGuaranteeViewset, \
+    ShelfObjectTrainingViewset
 from laboratory.shelfobject_container.views import show_shelf_container
 from laboratory.shelfobject_container.viewsets import ContainerManagementViewset
+from laboratory.views.shelfobject import view_equipment_shelfobject_detail
 from sga.api.sga_components_viewsets import WarningWordAPI, WarningWordTableView, \
     DangerIndicationAPI, DangerIndicationTableView, \
     PrudenceAdviceAPI, PrudenceAdviceTableView
@@ -223,6 +227,25 @@ shelfobjectrouter.register('api_search_labview', ShelfObjectApi.SearchLabView, b
 shelfcontainerrouter = DefaultRouter()
 shelfcontainerrouter.register('api_container_list', ContainerManagementViewset, basename='api-container-in-shelf')
 
+shelfobjectmaintenance = DefaultRouter()
+shelfobjectmaintenance.register('api_shelfobject_maintenance_list', ShelfObjectMaintanenceViewset, basename='api-shelfobject-maintenance')
+
+shelfobjectlog = DefaultRouter()
+shelfobjectlog.register('api_shelfobject_log_list', ShelfObjectLogViewset, basename='api-shelfobject-log')
+
+shelfobjectcalibrate_router = DefaultRouter()
+shelfobjectcalibrate_router.register('api_shelfobject_calibrate', ShelfObjectCalibrateViewset, basename='api-shelfobject-calibrate')
+
+shelfobjectguarantee_router = DefaultRouter()
+shelfobjectguarantee_router.register('api_shelfobject_guarentee', ShelfObjectGuaranteeViewset, basename='api-shelfobject-guarantee')
+
+shelfobjecttraining_router = DefaultRouter()
+shelfobjecttraining_router.register('api_shelfobject_training', ShelfObjectTrainingViewset, basename='api-shelfobject-training')
+
+equipment_shelfobject_url = [
+    path('', view_equipment_shelfobject_detail, name='equipment_shelfobject_detail'),
+]
+
 
 '''MULTILAB'''
 urlpatterns += organization_urls + [
@@ -255,4 +278,10 @@ urlpatterns += organization_urls + [
     path('register_user_qr/<int:org_pk>/<int:lab_pk>/', include(user_register_qr)),
     path('spc/api/<int:org_pk>/<int:lab_pk>/', include(stepcommentsrouter.urls)),
     path('sga_components/api/<int:org_pk>/', include(sgacomponentsrouter.urls)),
+    path('shelfobject/maintenance/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjectmaintenance.urls)),
+    path('shelfobject/log/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjectlog.urls)),
+    path('shelfobject/calibrate/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjectcalibrate_router.urls)),
+    path('shelfobject/guarantee/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjectguarantee_router.urls)),
+    path('shelfobject/training/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjecttraining_router.urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/detail/', include(equipment_shelfobject_url)),
 ]

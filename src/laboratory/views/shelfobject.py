@@ -41,6 +41,10 @@ from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListV
 from presentation.models import QRModel
 from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
 from ..logsustances import log_object_change, log_object_add_change
+from ..shelfobject.forms import ShelfobjectMaintenanceForm, \
+    UpdateShelfobjectMaintenanceForm, ShelfobjectLogForm, ShelfobjectCalibrateForm, \
+    UpdateShelfobjectCalibrateForm, ShelfObjectGuaranteeForm, \
+    UpdateShelfObjectGuaranteeForm, ShelfObjectTrainingForm
 from ..utils import organilab_logentry
 from django.core.exceptions import ValidationError
 
@@ -580,9 +584,37 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     return response
 
 @permission_required('laboratory.view_shelfobject')
-def view_equipment_shelfobject_detail(request, org_pk, lab_pk):
+def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
+        "pk": pk,
+        "create_maintenance_form": ShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk, "organization": org_pk,
+                                           "created_by": request.user.pk, "shelfobject":pk}, org_pk=org_pk, prefix="create"),
+        "update_maintenance_form": UpdateShelfobjectMaintenanceForm(prefix="update", org_pk=org_pk),
+        "create_log_form": ShelfobjectLogForm(initial={"organization": org_pk,"created_by": request.user.pk, "shelfobject": pk},
+                                               prefix="create"),
+        "create_calibrate_form": ShelfobjectCalibrateForm(initial={"organization": org_pk,"created_by": request.user.pk, "shelfobject": pk,
+                                                             "validator": request.user.profile.pk},
+                                               prefix="create_calibrate"),
+        "update_calibrate_form": UpdateShelfobjectCalibrateForm(initial={"organization": org_pk,"created_by": request.user.pk, "shelfobject": pk,
+                                                             "validator": request.user.profile.pk},
+                                               prefix="update_calibrate"),
+        "guarantee_form": ShelfObjectGuaranteeForm(
+            initial={"organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            prefix="guarantee"),
+        "update_guarantee_form": UpdateShelfObjectGuaranteeForm(
+            initial={"organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            prefix="guarantee"),
+        "update_training_form": ShelfObjectTrainingForm(
+            initial={"organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            prefix="training_form"),
+        "training_form": ShelfObjectTrainingForm(
+            initial={"organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            prefix="training"),
     }
-    return render(request, "laboratory/shelfobject/equiment_detail.html", context=context)
+    return render(request, "laboratory/shelfobject/equipment_edit.html", context=context)
