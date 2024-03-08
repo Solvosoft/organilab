@@ -64,10 +64,7 @@ from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_to, create_new_shelfobject_from_object_in, clone_shelfobject_to, \
     save_shelfobject_characteristics, delete_shelfobjects
 
-from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
-    move_shelfobject_to, create_new_shelfobject_from_object_in, clone_shelfobject_to
-
-from laboratory.utils import save_object_by_action
+from laboratory.utils import save_object_by_action,PermissionByLaboratoryInOrganization
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
