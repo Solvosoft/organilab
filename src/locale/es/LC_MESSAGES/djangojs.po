@@ -19,10 +19,10 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 
 msgid "Do you want to send the report for review?"
-msgstr "¿Desea enviar el reporte a revisión?"
+msgstr "¿Desea enviar el informe a revisión?"
 
 msgid "Do you want to finish the report?"
-msgstr "¿Desea finalizar el reporte?"
+msgstr "¿Desea finalizar el informe?"
 
 msgid "Added"
 msgstr "Agregado"
@@ -548,3 +548,30 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Price"
+msgstr "Precio"
+
+msgid "Provider"
+msgstr "Proveedor"
+
+msgid "First date use"
+msgstr "Primer día de uso"
+
+msgid "Is available to use?"
+msgstr "¿Esta disponible de usar"
+
+msgid "Contract of maintenance"
+msgstr "Contracto de mantenimiento"
+
+msgid "Has guarantee?"
+msgstr "¿Tiene Garantía?"
+
+msgid "Delivery Date"
+msgstr "Fecha de entrega"
+
+msgid "Purchase Date"
+msgstr "Fecha de compra"
+
+msgid "Authorized roles to use equipment"
+msgstr "Roles autorizados para el uso del equipo"

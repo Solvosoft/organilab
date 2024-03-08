@@ -79,6 +79,6 @@ class DerbAPITest(TestCase):
 
     def test_objects_api(self):
         self.create_object()
-        response = self.client.get(reverse('derb:api_objects', kwargs=self.url_attr))
+        response = self.client.get(reverse('derb:api_objects', kwargs=self.url_attr)+"?limit=100")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response=response, text="Test Object")

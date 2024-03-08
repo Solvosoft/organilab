@@ -63,7 +63,14 @@ ambiente de laboratorio como lo son las balanzas, el microscopio y embudos.
    :height: 380
    :width: 720
 
+Explicación de campos exclusivos a objetos de estantería de tipo equipo:
 
+*   **Proveedor:** El listado de proveedores disponibles para seleccionar serán los vinculados al equipo base escogido.
+*   **Roles autorizados para el uso del equipo:** Los roles a seleccionar serán los vinculados a la organización.
+*   **Contracto de mantenimiento:** El documento puede ser en cualquier formato *PDF*, *Doc*, *Ods* o imagen.
+
+..  note::
+    La cantidad del objeto creado será de **1**, por defecto.
 
 Ver los contenedores del estante
 ======================================

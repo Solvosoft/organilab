@@ -19,9 +19,9 @@
             <div class="btn-group btn-group-sm" role="group" aria-label="Button actions">
 
         {% if perms.derb.add_customform %}
-                <button title="Create form"
+                <button title="{% trans 'Create Inform Template' %}"
                         type="button"
-                        class="btn btn-outline-primary create_btn" >{% trans 'Create Form' %}</button>
+                        class="btn btn-outline-primary create_btn" >{% trans 'Create Inform Template' %}</button>
         {% endif %}
             </div>
         </div>
@@ -30,7 +30,7 @@
 
         <div class="col-md-6" >
             <h1 >
-                {% trans 'My Forms' %}
+                {% trans 'Informs Templates' %}
             </h1>
         </div>
 
@@ -72,7 +72,7 @@
                 </td>
 
                 <td style="width: 120px">
-                    <a title="{% trans 'Preview form' %}" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' org_pk form.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                    <a title="{% trans 'Preview inform template' %}" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' org_pk form.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
                     <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}" data-url="{% url 'derb:edit_view' org_pk form.id %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                     <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}" data-url="{% url 'derb:delete_form' org_pk form.id %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
 
@@ -90,15 +90,15 @@
 {% block js %}
 <script>
 const translations = {
-    create_title: "{% trans 'Create Form' %}",
+    create_title: "{% trans 'Create Inform Template' %}",
     btn_create: "{% trans 'Create' %}",
     btn_cancel: "{% trans 'Cancel' %}",
     create_text: "{% trans 'Name' %}",
-    delete_title: "{% trans 'Do you want to delete the form' %}",
+    delete_title: "{% trans 'Do you want to delete the inform template' %}",
     btn_delete: "{% trans 'Delete' %}",
     delete_text: "{% trans 'This action cannot be undone' %}",
-    delete_error_text: "{% trans 'The form could not be deleted.' %}",
-    delete_success_text: "{% trans 'The form has been deleted.' %}",
+    delete_error_text: "{% trans 'The inform template could not be deleted.' %}",
+    delete_success_text: "{% trans 'The inform template has been deleted.' %}",
     delete_success_title: "{% trans 'Deleted!' %}",
 }
 </script>
