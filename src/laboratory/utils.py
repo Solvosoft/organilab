@@ -8,8 +8,11 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
+from djgentelella.permission_management import all_permission
+from rest_framework.permissions import BasePermission
 
 from auth_and_perms.models import Profile, User
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
@@ -439,3 +442,40 @@ def delete_relation_between_laboratory_with_other_models(general_relation_list, 
                                                                  relation_obj),
                                relobj=relation_obj.organization if hasattr(relation_obj, 'organization') else laboratory)
         relation_list["list"].delete()
+
+
+class PermissionByLaboratoryInOrganization(BasePermission):
+
+    def has_permission(self, request, view):
+        org_pk=view.kwargs.get('org_pk')
+        lab_pk=view.kwargs.get('lab_pk')
+        dev = True
+        if org_pk is None or lab_pk is None:
+            return False
+        view.organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=org_pk)
+        view.laboratory = get_object_or_404(
+            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+
+        try:
+            user_is_allowed_on_organization(view.request.user, view.organization)
+            organization_can_change_laboratory(view.laboratory, view.organization,
+                                               raise_exec=True)
+        except Exception as e:
+            dev=False
+        return dev
+
+    def has_object_permission(self, request, view, obj):
+        """
+        Return `True` if permission is granted, `False` otherwise.
+        """
+        return self.has_permission(request, view)
+
+
+
+def get_actions_by_perms(user, actions_list):
+    actions = {}
+    for action, perms in actions_list.items() :
+        actions[action] = all_permission(user, perms)
+    return actions

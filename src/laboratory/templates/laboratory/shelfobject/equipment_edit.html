@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% load gtsettings %}
+{% block pre_head %}
+    {% define_urlname_action 'objectview_list' %}
+{% endblock %}
+
+{% block title %}{% trans 'Equipment edit' %}{% endblock %}
+
+{% block content %}
+
+<div class="card">
+		<div class="card-header">
+				<h1 class="card-title text-center">{% trans 'Logs' %}</h1>
+		</div>
+		<div class="card-body">
+				<table class="table table-striped w-100 table-responsive" id="log_table"></table>
+	</div>
+</div>
+
+<br>
+<div class="card">
+		<div class="card-header">
+				<h1 class="card-title text-center">{% trans 'Calibrations' %}</h1>
+		</div>
+		<div class="card-body">
+				<table class="table table-striped w-100 table-responsive" id="calibrate_table"></table>
+	</div>
+</div>
+
+<br>
+<div class="card">
+		<div class="card-header">
+				<h1 class="card-title text-center">{% trans 'Maintenance log' %}</h1>
+		</div>
+		<div class="card-body">
+				<table class="table table-striped w-100 table-responsive" id="maintenance_table"></table>
+	</div>
+</div>
+
+<br>
+<div class="card">
+		<div class="card-header">
+				<h1 class="card-title text-center">{% trans 'Training' %}</h1>
+		</div>
+		<div class="card-body">
+				<table class="table table-striped w-100 table-responsive" id="training_table"></table>
+	</div>
+</div>
+
+<br>
+<div class="card">
+		<div class="card-header">
+				<h1 class="card-title text-center">{% trans 'Guarantees' %}</h1>
+		</div>
+		<div class="card-body">
+				<table class="table table-striped w-100 table-responsive" id="guarantee_table"></table>
+	</div>
+</div>
+
+{% url "laboratory:api-shelfobject-maintenance-list" org_pk lab_pk pk as create_maintenance_url %}
+{% trans 'Create maintenance' as create_maintenance_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_maintenance_form id="create_maintenance_modal" title=create_maintenance_tittle form_id="create_maintenance_form" url=create_maintenance_url %}
+
+{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 as detail_maintenance_url %}
+{% trans 'Update maintenance' as update_maintenance_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_maintenance_form id="update_maintenance_modal" title=update_maintenance_tittle form_id="update_maintenance_form" url=detail_maintenance_url %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_maintenance_modal" form_id="delete_maintenance_form" url=detail_maintenance_url %}
+
+{% url "laboratory:api-shelfobject-log-list" org_pk lab_pk pk as add_log_url %}
+{% trans 'Create log' as create_log_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_log_form id="create_log_modal" title=create_log_tittle form_id="create_log_form" url=add_log_url %}
+
+{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 as detail_log_url %}
+{% trans 'Update log' as update_log_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_log_form id="update_log_modal" title=update_log_tittle form_id="update_log_form" url=detail_log_url %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_log_modal" form_id="delete_log_form" url=detail_log_url %}
+
+{% url "laboratory:api-shelfobject-calibrate-list" org_pk lab_pk pk as add_calibrate_url %}
+{% trans 'Create calibrate' as create_calibrate_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_calibrate_form id="create_calibrate_modal" title=create_calibrate_tittle form_id="create_calibrate_form" url=add_calibrate_url %}
+
+{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 as detail_calibrate_url %}
+{% trans 'Update calibrate' as update_calibrate_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_calibrate_form id="update_calibrate_modal" title=update_calibrate_tittle form_id="update_calibrate_form" url=detail_calibrate_url %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_calibrate_modal" form_id="delete_calibrate_form" url=detail_calibrate_url %}
+
+{% url "laboratory:api-shelfobject-guarantee-list" org_pk lab_pk pk as add_guarantee_url %}
+{% trans 'Create guarantee' as create_guarantee_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=guarantee_form id="create_guarantee_modal" title=create_guarantee_tittle form_id="create_guarantee_form" url=add_guarantee_url %}
+
+{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 as detail_guarantee_url %}
+{% trans 'Update guarantee' as update_guarantee_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_guarantee_form id="update_guarantee_modal" title=update_guarantee_tittle form_id="update_guarantee_form" url=detail_guarantee_url %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_guarantee_modal" form_id="delete_guarantee_form" url=detail_guarantee_url %}
+
+
+{% url "laboratory:api-shelfobject-training-list" org_pk lab_pk pk as add_training_url %}
+{% trans 'Create training' as create_training_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=training_form id="create_training_modal" title=create_training_tittle form_id="create_training_form" url=add_training_url %}
+
+{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 as detail_training_url %}
+{% trans 'Update training' as create_training_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_training_form id="update_training_modal" title=update_training_tittle form_id="update_training_form" url=detail_training_url %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_training_modal" form_id="delete_training_form" url=detail_training_url %}
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+
+	window.name = "equipmenteditview";
+
+	var object_urls = {
+	maintenance: {
+							list_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							create_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							destroy_url: "{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 %}",
+							update_url: "{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 %}"
+		},
+		log: {
+							list_url: "{% url 'laboratory:api-shelfobject-log-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							create_url: "{% url 'laboratory:api-shelfobject-log-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							destroy_url: "{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 %}",
+							update_url: "{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 %}"
+		},
+		calibrate: {
+							list_url: "{% url 'laboratory:api-shelfobject-calibrate-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							create_url: "{% url 'laboratory:api-shelfobject-calibrate-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							destroy_url: "{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 %}",
+							update_url: "{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 %}"
+		},
+		training: {
+							list_url: "{% url 'laboratory:api-shelfobject-training-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							create_url: "{% url 'laboratory:api-shelfobject-training-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							destroy_url: "{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 %}",
+							update_url: "{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 %}"
+		},
+			guarantee: {
+							list_url: "{% url 'laboratory:api-shelfobject-guarantee-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							create_url: "{% url 'laboratory:api-shelfobject-guarantee-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+							destroy_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}",
+							update_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}"
+		}
+	};
+
+</script>
+    <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

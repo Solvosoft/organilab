@@ -3,12 +3,14 @@ from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
-    LaboratoryRoom, Furniture, ShelfObjectMaintenance
+    LaboratoryRoom, Furniture, ShelfObjectMaintenance, ShelfObjectLog, \
+    ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
@@ -501,20 +503,139 @@ class ContainerManagementForm(ContainerForm):
     shelf = forms.CharField(widget=genwidgets.HiddenInput)
 
 
-class EquipmentMaintenanceForm(GTForm, forms.ModelForm):
+class ShelfobjectMaintenanceForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         org = kwargs.pop('org_pk')
-        super(EquipmentMaintenanceForm, self).__init__(*args, **kwargs)
+        super(ShelfobjectMaintenanceForm, self).__init__(*args, **kwargs)
         self.fields["provider_of_maintenance"].queryset = Provider.objects.filter(laboratory__organization__pk=org)
 
     class Meta:
         model = ShelfObjectMaintenance
-        fields = ['maintenance_date', 'provider_of_maintenance', 'maintenance_observation']
+        fields = "__all__"
 
         widgets = {
             'maintenance_date': genwidgets.DateInput,
             'provider_of_maintenance': genwidgets.Select,
-            'maintenance_observation': genwidgets.Textarea
+            'maintenance_observation': genwidgets.Textarea,
+            'organization': genwidgets.HiddenInput,
+            'validator': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject':genwidgets.HiddenInput,
+        }
+class UpdateShelfobjectMaintenanceForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        org = kwargs.pop('org_pk')
+        super(UpdateShelfobjectMaintenanceForm, self).__init__(*args, **kwargs)
+        self.fields["provider_of_maintenance"].queryset = Provider.objects.filter(laboratory__organization__pk=org)
+
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = "__all__"
+        exclude = ["organization","created_by","validator","shelfobject"]
+
+        widgets = {
+            'maintenance_date': genwidgets.DateInput,
+            'provider_of_maintenance': genwidgets.Select,
+            'maintenance_observation': genwidgets.Textarea,
         }
 
+class ShelfobjectLogForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = ShelfObjectLog
+        fields = "__all__"
+
+        widgets = {
+            'description': genwidgets.Textarea,
+            'organization': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject':genwidgets.HiddenInput,
+        }
+
+class ShelfobjectCalibrateForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = ShelfObjectCalibrate
+        fields = "__all__"
+        field_order = ['calibrate_name', 'calibration_date', 'observation']
+
+        widgets = {
+            'calibrate_name': genwidgets.TextInput,
+            'calibration_date': genwidgets.DateInput,
+            'observation': genwidgets.Textarea,
+            'organization': genwidgets.HiddenInput,
+            'validator': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject':genwidgets.HiddenInput,
+        }
+
+
+class UpdateShelfobjectCalibrateForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = ShelfObjectCalibrate
+        fields = "__all__"
+        field_order = ['calibrate_name', 'calibration_date', 'observation']
+        exclude = ["organization","created_by","validator","shelfobject"]
+
+        widgets = {
+            'calibrate_name': genwidgets.TextInput,
+            'calibration_date': genwidgets.DateInput,
+            'observation': genwidgets.Textarea,
+            'organization': genwidgets.HiddenInput,
+            'validator': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject':genwidgets.HiddenInput,
+        }
+
+class ShelfObjectGuaranteeForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = ShelfObjectGuarantee
+        fields = "__all__"
+
+        widgets = {
+            'guarantee_initial_date': genwidgets.DateInput,
+            'guarantee_final_date': genwidgets.DateInput,
+            'contract': FileChunkedUpload,
+            'organization': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject':genwidgets.HiddenInput,
+        }
+
+class UpdateShelfObjectGuaranteeForm(GTForm, forms.ModelForm):
+
+    class Meta:
+        model = ShelfObjectGuarantee
+        fields = "__all__"
+        exclude = ["organization","created_by","shelfobject", "contract"]
+
+        widgets = {
+            'guarantee_initial_date': genwidgets.DateInput,
+            'guarantee_final_date': genwidgets.DateInput,
+        }
+
+class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = ShelfObjectTraining
+        fields = "__all__"
+
+        widgets = {
+            'training_initial_date': genwidgets.DateInput,
+            'training_final_date': genwidgets.DateInput,
+            'number_of_hours': genwidgets.NumberInput,
+            'intern_people_receive_training': genwidgets.SelectMultiple,
+            'external_people_receive_training': genwidgets.Textarea,
+            'observation': genwidgets.Textarea,
+            'organization': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject':genwidgets.HiddenInput,
+        }

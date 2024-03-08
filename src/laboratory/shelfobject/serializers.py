@@ -1,24 +1,32 @@
 import logging
 import re
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.forms import model_to_dict
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django_filters import FilterSet
+from djgentelella.fields.files import ChunkedFileField
+from djgentelella.serializers.selects import GTS2SerializerBase
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
+from auth_and_perms.models import Profile
 from laboratory.api.serializers import BaseShelfObjectSerializer
 from rest_framework import serializers
 from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectLimits, TranferObject, ShelfObjectObservation, Provider, \
-    Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED
+    Furniture, LaboratoryRoom, SustanceCharacteristics, REQUESTED, \
+    ShelfObjectMaintenance, OrganizationStructure, ShelfObjectLog, ShelfObjectCalibrate, \
+    ShelfObjectGuarantee, ShelfObjectTraining
+from laboratory.utils import get_actions_by_perms
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
     get_furniture_queryset_by_filters, get_lab_room_queryset_by_filters, \
     limit_objects_by_shelf, validate_measurement_unit_and_quantity, \
     get_selected_container, group_object_errors_for_serializer
-
+from djgentelella.serializers.selects import GTS2SerializerBase
 
 logger = logging.getLogger('organilab')
 
@@ -1145,3 +1153,357 @@ class ValidateShelfInformationPositionSerializer(ValidateShelfSerializer):
 
     position = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
+
+class ProviderDisplayNameSerializer(GTS2SerializerBase):
+    display_fields = 'name'
+
+class CreateMaintenanceSerializer(serializers.ModelSerializer):
+    maintenance_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))
+    maintenance_observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+    validator = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = "__all__"
+
+class UpdateMaintenanceSerializer(serializers.ModelSerializer):
+    maintenance_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=True)
+    provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))
+    maintenance_observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = ["maintenance_date","provider_of_maintenance","maintenance_observation"]
+
+class MaintenanceSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    provider_of_maintenance = ProviderDisplayNameSerializer(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_shelfobjectmaintenance",
+                       "laboratory.view_shelfobjectmaintenance"],
+            "update": ["laboratory.change_shelfobjectmaintenance",
+                       "laboratory.view_shelfobjectmaintenance"],
+            "destroy": ["laboratory.delete_shelfobjectmaintenance",
+                        "laboratory.view_shelfobjectmaintenance"],
+            "detail": ["laboratory.view_shelfobjectmaintenance"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = ['id', 'maintenance_date', 'provider_of_maintenance', 'validator',
+                  'maintenance_observation', 'actions']
+
+
+class MaintenanceDatatableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=MaintenanceSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class ValidateShelfObjectLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ShelfObjectLog
+        fields = ["id","shelfobject","description"]
+
+class ShelfObjectLogSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_shelfobjectlog",
+                       "laboratory.view_shelfobjectlog"],
+            "update": ["laboratory.change_shelfobjectlog",
+                       "laboratory.view_shelfobjectlog"],
+            "destroy": ["laboratory.delete_shelfobjectlog",
+                        "laboratory.view_shelfobjectlog"],
+            "detail": ["laboratory.view_shelfobjectlog"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = ShelfObjectLog
+        fields = ['id', 'description','last_update','actions']
+
+
+class ShelfObjectLogDatatableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectLogSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ValidateShelfObjectCalibrateSerializer(serializers.ModelSerializer):
+    calibration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    calibrate_name = serializers.CharField(max_length=50, required=True, allow_null=False,allow_blank=False)
+    observation = serializers.CharField(max_length=500, required=False, allow_null=True,allow_blank=True)
+    validator = serializers.PrimaryKeyRelatedField(queryset= Profile.objects.using(settings.READONLY_DATABASE))
+    shelfobject = serializers.PrimaryKeyRelatedField(queryset= ShelfObject.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset= OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    created_by = serializers.PrimaryKeyRelatedField(queryset= User.objects.using(settings.READONLY_DATABASE))
+
+    class Meta:
+        model = ShelfObjectCalibrate
+        fields = ['id', 'shelfobject','calibration_date','calibrate_name','validator','organization',
+                  'created_by','observation']
+
+
+class UpdateShelfObjectCalibrateSerializer(serializers.ModelSerializer):
+    calibration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    calibrate_name = serializers.CharField(max_length=100,required=True, allow_null=False, allow_blank=False)
+    observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = ["calibration_date","calibrate_name","observation"]
+class ShelfObjectCalibrateSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    validator = serializers.SerializerMethodField()
+    def get_validator(self,obj):
+        if obj.validator:
+            return obj.validator.__str__()
+        return ""
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_shelfobjectcalibrate",
+                       "laboratory.view_shelfobjectcalibrate"],
+            "update": ["laboratory.change_shelfobjectcalibrate",
+                       "laboratory.view_shelfobjectcalibrate"],
+            "destroy": ["laboratory.delete_shelfobjectcalibrate",
+                        "laboratory.view_shelfobjectcalibrate"],
+            "detail": ["laboratory.view_shelfobjectcalibrate"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = ShelfObjectCalibrate
+        fields = ['id', 'calibration_date','calibrate_name','validator','observation','actions']
+
+
+class ShelfObjectCalibrateDatatableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectCalibrateSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class CreateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
+    guarantee_initial_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    guarantee_final_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    contract = ChunkedFileField(required=False, allow_empty_file=True)
+    shelfobject = serializers.PrimaryKeyRelatedField(queryset= ShelfObject.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset= OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    created_by = serializers.PrimaryKeyRelatedField(queryset= User.objects.using(settings.READONLY_DATABASE))
+
+    class Meta:
+        model = ShelfObjectGuarantee
+        fields = ["id","shelfobject","guarantee_initial_date", "guarantee_final_date",
+                  "contract",'organization','created_by']
+
+    def validate(self, data):
+        initial_date = data['guarantee_initial_date']
+        final_date = data['guarantee_final_date']
+        errors = {}
+
+        if initial_date > final_date:
+            errors.update({'guarantee_initial_date': _("Initial date cannot be greater than final date.")})
+
+        if errors:
+            raise serializers.ValidationError(errors
+                                              )
+        return data
+
+class UpdateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
+    guarantee_initial_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    guarantee_final_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+
+    class Meta:
+        model = ShelfObjectGuarantee
+        exclude = ['shelfobject','organization','created_by']
+
+
+    def validate(self, data):
+        initial_date = data['guarantee_initial_date']
+        final_date = data['guarantee_final_date']
+        errors = {}
+        print(354135)
+
+        if initial_date > final_date:
+            errors.update({'guarantee_initial_date': _("Initial date cannot be greater than final date.")})
+
+        if errors:
+            raise serializers.ValidationError(errors)
+        return data
+
+class ShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_shelfobjectguarantee", "laboratory.view_shelfobjectguarantee"],
+            "update": ["laboratory.change_shelfobjectguarantee", "laboratory.view_shelfobjectguarantee"],
+            "destroy": ["laboratory.delete_shelfobjectguarantee", "laboratory.view_shelfobjectguarantee"],
+            "detail": ["laboratory.view_shelfobjectguarantee"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = ShelfObjectGuarantee
+        fields = ['id', 'guarantee_initial_date','guarantee_final_date','contract','actions']
+
+
+class ShelfObjectGuaranteeDatatableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectGuaranteeSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class CreateShelfObjectTrainingSerializer(serializers.ModelSerializer):
+    training_initial_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    training_final_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    number_of_hours = serializers.IntegerField(required=True)
+    intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), many=True)
+    observation = serializers.CharField(max_length=500, required=False, allow_blank="")
+    external_people_receive_training = serializers.CharField(max_length=500, required=False, allow_blank="")
+    shelfobject = serializers.PrimaryKeyRelatedField(queryset= ShelfObject.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(queryset= OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    created_by = serializers.PrimaryKeyRelatedField(queryset= User.objects.using(settings.READONLY_DATABASE))
+
+    class Meta:
+        model = ShelfObjectTraining
+        fields = ["id","shelfobject","training_initial_date", "training_final_date",
+                  "number_of_hours","intern_people_receive_training","observation",
+                  "external_people_receive_training",'organization','created_by']
+
+    def validate(self, data):
+        initial_date = data['training_initial_date']
+        final_date = data['training_final_date']
+        errors = {}
+
+        if initial_date > final_date:
+            errors.update({'training_initial_date': _("Initial date cannot be greater than final date.")})
+
+        if errors:
+            raise serializers.ValidationError(errors
+                                              )
+        return data
+class UpdateShelfObjectTrainingSerializer(serializers.ModelSerializer):
+    training_initial_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    training_final_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True,
+        allow_null=False)
+    number_of_hours = serializers.IntegerField(required=True)
+    intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), many=True)
+    observation = serializers.CharField(max_length=500, required=False, allow_blank="")
+    external_people_receive_training = serializers.CharField(max_length=500, required=False, allow_blank="")
+
+    class Meta:
+        model = ShelfObjectTraining
+        exclude = ['shelfobject','organization','created_by']
+
+    def validate(self, data):
+        initial_date = data['training_initial_date']
+        final_date = data['training_final_date']
+        errors = {}
+
+        if initial_date > final_date:
+            errors.update({'training_initial_date': _("Initial date cannot be greater than final date.")})
+
+        if errors:
+            raise serializers.ValidationError(errors
+                                              )
+        return data
+class ShelfObjectTrainingSerializer(serializers.ModelSerializer):
+
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_shelfobjecttraining",
+                       "laboratory.view_shelfobjecttraining"],
+            "update": ["laboratory.change_shelfobjecttraining",
+                       "laboratory.view_shelfobjecttraining"],
+            "destroy": ["laboratory.delete_shelfobjecttraining",
+                        "laboratory.view_shelfobjecttraining"],
+            "detail": ["laboratory.view_shelfobjecttraining"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = ShelfObjectTraining
+        fields = ['id', 'training_initial_date','training_final_date','number_of_hours',
+                  'intern_people_receive_training','observation','actions',
+                  'external_people_receive_training']
+
+
+class ShelfObjectTrainingeDatatableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectTrainingSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ShelfObjectLogtFilter(FilterSet):
+    class Meta:
+        model = ShelfObjectLog
+        fields = {'id': ['exact'],
+                   'description': ['icontains'],
+                   }
+
+class ShelfObjectCalibrateFilter(FilterSet):
+    class Meta:
+        model = ShelfObjectCalibrate
+        fields = {'id': ['exact'],
+                   'calibrate_name': ['icontains'],
+                   'observation': ['icontains'],
+                   }
+class ShelfObjectTrainingFilter(FilterSet):
+    class Meta:
+        model = ShelfObjectTraining
+        fields = {'id': ['exact'],
+                   'number_of_hours': ['exact'],
+                   'observation': ['icontains'],
+                   }
+
+class ShelfObjectMaintenanceFilter(FilterSet):
+    class Meta:
+        model = ShelfObjectMaintenance
+        fields = {'id': ['exact'],
+                   'provider_of_maintenance__name': ['icontains'],
+                   'validator': ['exact'],
+                   'maintenance_observation': ['icontains'],
+                   }
