@@ -183,7 +183,7 @@ class ShelfObjectLimits(models.Model):
     expiration_date = models.DateField(null=True, blank=True,
                                        verbose_name=_('Expiration date'))
 
-class EquipmentCharacteristics(AbstractOrganizationRef):
+class EquipmentCharacteristics(models.Model):
     object = models.OneToOneField(Object, on_delete=models.CASCADE)
     use_manual = models.FileField(upload_to=upload_files, null=True, blank=True,
                                   verbose_name=_("Use manual"))
