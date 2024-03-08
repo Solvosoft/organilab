@@ -14,7 +14,7 @@
         <h1 id="form_name"> </h1>
         <a title="{% trans 'Rename' %}" onclick="editForm()" class="btn btn-sm btn-secondary edit_name_btn" ><span class="fa fa-edit"></span> {% trans 'Rename' %}</a>
     </div>
-    
+
     <div class="container">
         <div class="row">
             <div class="col-md-12 d-grid pt-5 text-center">
@@ -33,19 +33,21 @@
     {% block js %}
 <script>
 const translations_form = {
-    update_title: "{% trans 'Update Form Name' %}",
+    update_title: "{% trans 'Update Inform Template Name' %}",
     btn_update: "{% trans 'Update' %}",
     btn_cancel: "{% trans 'Cancel' %}",
     update_text: "{% trans 'Name' %}",
-    update_error_text: "{% trans 'The form could not be updated.' %}",
-    update_success_text: "{% trans 'The form name has been updated.' %}",
+    update_error_text: "{% trans 'The inform template could not be updated.' %}",
+    update_success_text: "{% trans 'The inform template name has been updated.' %}",
     update_success_title: "{% trans 'Updated!' %}",
     return_title: "{% trans 'Save or discard your changes to proceed' %}",
     return_text: "{% trans 'Discarding cannot be undone.' %}",
     return_save: "{% trans 'Save' %}",
     return_discard: "{% trans 'Discard' %}",
     return_success_title: "{% trans 'Saved!' %}",
-    return_success_text: "{% trans 'The form name has been saved!' %}",
+    return_success_text: "{% trans 'The inform template has been saved!' %}",
+    saved_success_text: "{% trans 'Your inform template has been saved' %}",
+    saved_error_text: "{% trans 'Something went wrong while saving your form' %}",
 }
 </script>
     <script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
@@ -61,7 +63,7 @@ const translations_form = {
 </script>
     <script type="text/javascript">
         var form_schema;
-        var saved = {{ saved_schema | safe }};    
+        var saved = {{ saved_schema | safe }};
         document.getElementById("form_name").textContent = saved.name;
 
         function save() {

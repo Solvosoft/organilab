@@ -457,7 +457,6 @@ class PermissionByLaboratoryInOrganization(BasePermission):
             pk=org_pk)
         view.laboratory = get_object_or_404(
             Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
-
         try:
             user_is_allowed_on_organization(view.request.user, view.organization)
             organization_can_change_laboratory(view.laboratory, view.organization,

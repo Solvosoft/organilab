@@ -10,7 +10,7 @@ function deleteForm() {
     var url = $(this).data('url');
 
     Swal.fire({
-        title: translations['delete_title'] + name + '?',
+        title: translations['delete_title'] + " " + name + '?',
         text: translations['delete_text'],
         icon: 'warning',
         showCloseButton: true,
@@ -19,19 +19,19 @@ function deleteForm() {
 
         }).then((result) => {
         if (result.isConfirmed) {
-            
+
             $.ajax({
-                type: 'POST', 
+                type: 'POST',
                 url: url,
-                data: id, 
+                data: id,
                 headers: {'X-CSRFToken': csrftoken},
-                mode: 'same-origin', 
+                mode: 'same-origin',
                 cache: false,
-                success: function (response) { 
+                success: function (response) {
                     if (response.length == 0) {
                         alert('An error has occurred');
                     } else {
-                        $('#tr_' + id).hide(); 
+                        $('#tr_' + id).hide();
                         Swal.fire(
                         translations['delete_success_title'],
                         translations['delete_success_text'],
@@ -47,7 +47,7 @@ function deleteForm() {
                     )
                 }
             });
-            
+
         }
         })
 }
@@ -57,7 +57,7 @@ function createForm() {
         title: translations['create_title'],
         text: translations['create_text'],
         input: 'text',
-        showCancelButton: true, 
+        showCancelButton: true,
         showCloseButton: true,
         confirmButtonText: translations['btn_create'],
         cancelButtonText: translations['btn_cancel'],
@@ -75,11 +75,11 @@ function createForm() {
             var name = result.value;
             var status = 'admin';
             $.ajax({
-                type: 'POST', 
+                type: 'POST',
                 url: window.urls['create'],
-                data: { 'name' : name, 'status': status}, 
+                data: { 'name' : name, 'status': status},
                 headers: {'X-CSRFToken': csrftoken},
-                mode: 'same-origin', 
+                mode: 'same-origin',
                 success: function(data, status, jqxhr) {
                     window.location.href = data['url']
                 },
@@ -96,7 +96,7 @@ function createForm() {
 }
 
 function editForm() {
-    var id = $(this).attr('form_id'); 
+    var id = $(this).attr('form_id');
     var url = $(this).data('url');
     location.href = url;
 }
