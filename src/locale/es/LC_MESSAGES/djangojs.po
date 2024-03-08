@@ -559,7 +559,7 @@ msgid "First date use"
 msgstr "Primer día de uso"
 
 msgid "Is available to use?"
-msgstr "¿Esta disponible de usar"
+msgstr "¿Esta disponible de usar?"
 
 msgid "Contract of maintenance"
 msgstr "Contracto de mantenimiento"
@@ -575,3 +575,52 @@ msgstr "Fecha de compra"
 
 msgid "Authorized roles to use equipment"
 msgstr "Roles autorizados para el uso del equipo"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Maintenance date"
+msgstr "Fecha de mantenimiento"
+
+msgid "Provider of Maintenance"
+msgstr "Proveedor del mantenimiento"
+
+msgid "Name of Calibrator"
+msgstr "Nombre del calibrador"
+
+msgid "Calibration date"
+msgstr "Fecha de calibración"
+
+msgid "Validator"
+msgstr "Validador"
+
+msgid "Number of hours"
+msgstr "Cantidad de horas"
+
+msgid "Intern people receive training"
+msgstr "Personal interno que recibió la capacitación"
+
+msgid "External people receive training"
+msgstr "Personal externo que recibió la capacitación"
+
+msgid "Contract"
+msgstr "Contracto"
+
+msgid "Final date"
+msgstr "Fecha inicial"
+
+msgid "Initial date"
+msgstr "Fecha inicial"
+
+msgid "Hours"
+msgstr "Horas"
+
+msgid "Observation"
+msgstr "Observación"
+
+msgid "Internal people"
+msgstr "Personas internas"
+
+msgid "Calibrator"
+msgstr "Calibrador"
+

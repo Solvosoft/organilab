@@ -293,6 +293,6 @@ urlpatterns += organization_urls + [
     path('shelfobject/calibrate/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjectcalibrate_router.urls)),
     path('shelfobject/guarantee/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjectguarantee_router.urls)),
     path('shelfobject/training/api/<int:org_pk>/<int:lab_pk>/<int:shelfobject>/', include(shelfobjecttraining_router.urls)),
-    path('lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/detail/', include(equipment_shelfobject_url)),
+    path('lab/<int:org_pk>/<int:lab_pk>/shelfobject/<int:pk>/edit/', include(equipment_shelfobject_url)),
     path('equipment/api/<int:org_pk>/<int:lab_pk>/', include(objectrouter.urls)),
 ]

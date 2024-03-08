@@ -1252,24 +1252,62 @@ class EquipmentShelfObjectCharacteristicsDetailSerializer(serializers.ModelSeria
         fields = '__all__'
 
 
+class ValidateShelfobjectEditSerializer(serializers.Serializer):
+    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    shelfobject = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
+    created_by = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.using(settings.READONLY_DATABASE))
+
+    def validate(self, data):
+        org_context = self.context['view'].org_pk
+        lab_context = self.context['view'].lab_pk
+        shelfobject_context = self.context['view'].shelfobject
+        organization = data['organization']
+        shelfobject = data['shelfobject']
+
+        if org_context != organization.pk:
+            raise serializers.ValidationError({'organization': _("Initial date cannot be greater than final date.")})
+
+        if org_context != organization.pk:
+            logger.debug(f'ValidateShelfobjectEditSerializer --> organization.pk ({organization.pk}) != org_context ({org_context})')
+            raise serializers.ValidationError(
+                {'organization': _("Organization is not valid.")})
+        if shelfobject_context != shelfobject.pk:
+            logger.debug(f'ValidateShelfobjectEditSerializer --> organization.pk ({organization.pk}) != org_context ({org_context})')
+            raise serializers.ValidationError({'shelfobject': _("The shelfobject is not valid")})
+
+        if lab_context != shelfobject.in_where_laboratory.pk:
+            logger.debug(f'ValidateShelfobjectEditSerializer --> laboratory.pk ({lab_context}) != '
+                         f'shelfobject.in_where_laboratory.pk ({shelfobject.in_where_laboratory.pk})')
+            raise serializers.ValidationError({'shelfobject': _("The shelfobject do not belong to the laboratory")})
+
+        if organization != shelfobject.in_where_laboratory.organization.pk:
+            logger.debug(f'ValidateShelfobjectEditSerializer --> organization.pk ({organization.pk}) != '
+                         f'shelfobject.in_where_laboratory.organization.pk: ({shelfobject.in_where_laboratory.organization.pk:})')
+            raise serializers.ValidationError({'shelfobject': _("The shelfobject do not belong to the organization")})
+
+        return data
 class ProviderDisplayNameSerializer(GTS2SerializerBase):
     display_fields = 'name'
 
-class CreateMaintenanceSerializer(serializers.ModelSerializer):
+class CustomDateInputFormat(serializers.DateField):
+    def to_representation(self, value):
+        return value.strftime('%d/%m/%Y')
+
+
+class CreateMaintenanceSerializer(ValidateShelfobjectEditSerializer, serializers.ModelSerializer):
     maintenance_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=False,
         allow_null=True)
     provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))
     maintenance_observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
     validator = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE))
-    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
 
     class Meta:
         model = ShelfObjectMaintenance
         fields = "__all__"
 
-class UpdateMaintenanceSerializer(serializers.ModelSerializer):
+class UpdateMaintenanceSerializer(ValidateShelfobjectEditSerializer,serializers.ModelSerializer):
     maintenance_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=True)
@@ -1278,13 +1316,14 @@ class UpdateMaintenanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObjectMaintenance
-        fields = ["maintenance_date","provider_of_maintenance","maintenance_observation"]
+        exclude = ["validator"]
 
 
 class MaintenanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     provider_of_maintenance = ProviderDisplayNameSerializer(many=False)
-
+    validator = GTS2SerializerBase(many=False)
+    maintenance_date = CustomDateInputFormat()
     def get_actions(self, obj):
         user = self.context["request"].user
         action_list = {
@@ -1311,11 +1350,11 @@ class MaintenanceDatatableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
-class ValidateShelfObjectLogSerializer(serializers.ModelSerializer):
+class ValidateShelfObjectLogSerializer(ValidateShelfobjectEditSerializer,serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObjectLog
-        fields = ["id","shelfobject","description"]
+        fields = "__all__"
 
 
 class ShelfObjectLogSerializer(serializers.ModelSerializer):
@@ -1346,16 +1385,13 @@ class ShelfObjectLogDatatableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
-class ValidateShelfObjectCalibrateSerializer(serializers.ModelSerializer):
+class ValidateShelfObjectCalibrateSerializer(ValidateShelfobjectEditSerializer,serializers.ModelSerializer):
     calibration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
     calibrate_name = serializers.CharField(max_length=50, required=True, allow_null=False,allow_blank=False)
     observation = serializers.CharField(max_length=500, required=False, allow_null=True,allow_blank=True)
     validator = serializers.PrimaryKeyRelatedField(queryset= Profile.objects.using(settings.READONLY_DATABASE))
-    shelfobject = serializers.PrimaryKeyRelatedField(queryset= ShelfObject.objects.using(settings.READONLY_DATABASE))
-    organization = serializers.PrimaryKeyRelatedField(queryset= OrganizationStructure.objects.using(settings.READONLY_DATABASE))
-    created_by = serializers.PrimaryKeyRelatedField(queryset= User.objects.using(settings.READONLY_DATABASE))
 
     class Meta:
         model = ShelfObjectCalibrate
@@ -1363,7 +1399,7 @@ class ValidateShelfObjectCalibrateSerializer(serializers.ModelSerializer):
                   'created_by','observation']
 
 
-class UpdateShelfObjectCalibrateSerializer(serializers.ModelSerializer):
+class UpdateShelfObjectCalibrateSerializer(ValidateShelfobjectEditSerializer,serializers.ModelSerializer):
     calibration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
@@ -1371,17 +1407,15 @@ class UpdateShelfObjectCalibrateSerializer(serializers.ModelSerializer):
     observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
     class Meta:
-        model = ShelfObjectMaintenance
-        fields = ["calibration_date","calibrate_name","observation"]
+        model = ShelfObjectCalibrate
+        exclude = ["validator"]
 
 
 class ShelfObjectCalibrateSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-    validator = serializers.SerializerMethodField()
-    def get_validator(self,obj):
-        if obj.validator:
-            return obj.validator.__str__()
-        return ""
+    validator = GTS2SerializerBase(many=False)
+    calibration_date = CustomDateInputFormat()
+
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -1408,7 +1442,7 @@ class ShelfObjectCalibrateDatatableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
-class CreateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
+class ValidateShelfObjectGuaranteeSerializer(ValidateShelfobjectEditSerializer,serializers.ModelSerializer):
     guarantee_initial_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
@@ -1416,9 +1450,6 @@ class CreateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
     contract = ChunkedFileField(required=False, allow_empty_file=True)
-    shelfobject = serializers.PrimaryKeyRelatedField(queryset= ShelfObject.objects.using(settings.READONLY_DATABASE))
-    organization = serializers.PrimaryKeyRelatedField(queryset= OrganizationStructure.objects.using(settings.READONLY_DATABASE))
-    created_by = serializers.PrimaryKeyRelatedField(queryset= User.objects.using(settings.READONLY_DATABASE))
 
     class Meta:
         model = ShelfObjectGuarantee
@@ -1426,6 +1457,8 @@ class CreateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
                   "contract",'organization','created_by']
 
     def validate(self, data):
+        super().validate(data)
+
         initial_date = data['guarantee_initial_date']
         final_date = data['guarantee_final_date']
         errors = {}
@@ -1438,33 +1471,12 @@ class CreateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
                                               )
         return data
 
-class UpdateShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
-    guarantee_initial_date = DateFieldWithEmptyString(
-        input_formats=settings.DATE_INPUT_FORMATS, required=True,
-        allow_null=False)
-    guarantee_final_date = DateFieldWithEmptyString(
-        input_formats=settings.DATE_INPUT_FORMATS, required=True,
-        allow_null=False)
-
-    class Meta:
-        model = ShelfObjectGuarantee
-        exclude = ['shelfobject','organization','created_by']
-
-
-    def validate(self, data):
-        initial_date = data['guarantee_initial_date']
-        final_date = data['guarantee_final_date']
-        errors = {}
-
-        if initial_date > final_date:
-            errors.update({'guarantee_initial_date': _("Initial date cannot be greater than final date.")})
-
-        if errors:
-            raise serializers.ValidationError(errors)
-        return data
 
 class ShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
+    guarantee_initial_date = CustomDateInputFormat()
+    guarantee_final_date = CustomDateInputFormat()
+    contract = ChunkedFileField(required=False, allow_empty_file=True)
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -1487,7 +1499,8 @@ class ShelfObjectGuaranteeDatatableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
-class CreateShelfObjectTrainingSerializer(serializers.ModelSerializer):
+
+class ValidateShelfObjectTrainingSerializer(ValidateShelfobjectEditSerializer, serializers.ModelSerializer):
     training_initial_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
@@ -1495,12 +1508,10 @@ class CreateShelfObjectTrainingSerializer(serializers.ModelSerializer):
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
     number_of_hours = serializers.IntegerField(required=True)
-    intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), many=True)
+    intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE),
+                                                                        many=True)
     observation = serializers.CharField(max_length=500, required=False, allow_blank="")
     external_people_receive_training = serializers.CharField(max_length=500, required=False, allow_blank="")
-    shelfobject = serializers.PrimaryKeyRelatedField(queryset= ShelfObject.objects.using(settings.READONLY_DATABASE))
-    organization = serializers.PrimaryKeyRelatedField(queryset= OrganizationStructure.objects.using(settings.READONLY_DATABASE))
-    created_by = serializers.PrimaryKeyRelatedField(queryset= User.objects.using(settings.READONLY_DATABASE))
 
     class Meta:
         model = ShelfObjectTraining
@@ -1508,7 +1519,16 @@ class CreateShelfObjectTrainingSerializer(serializers.ModelSerializer):
                   "number_of_hours","intern_people_receive_training","observation",
                   "external_people_receive_training",'organization','created_by']
 
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        org_pk = self.context['view'].org_pk
+        organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),pk=org_pk)
+        fields['intern_people_receive_training'].queryset = organization.users.values_list('profile__pk',flat=True).distinct()
+        return fields
+
     def validate(self, data):
+        super().validate(data)
+
         initial_date = data['training_initial_date']
         final_date = data['training_final_date']
         errors = {}
@@ -1520,37 +1540,14 @@ class CreateShelfObjectTrainingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors
                                               )
         return data
-class UpdateShelfObjectTrainingSerializer(serializers.ModelSerializer):
-    training_initial_date = DateFieldWithEmptyString(
-        input_formats=settings.DATE_INPUT_FORMATS, required=True,
-        allow_null=False)
-    training_final_date = DateFieldWithEmptyString(
-        input_formats=settings.DATE_INPUT_FORMATS, required=True,
-        allow_null=False)
-    number_of_hours = serializers.IntegerField(required=True)
-    intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), many=True)
-    observation = serializers.CharField(max_length=500, required=False, allow_blank="")
-    external_people_receive_training = serializers.CharField(max_length=500, required=False, allow_blank="")
 
-    class Meta:
-        model = ShelfObjectTraining
-        exclude = ['shelfobject','organization','created_by']
 
-    def validate(self, data):
-        initial_date = data['training_initial_date']
-        final_date = data['training_final_date']
-        errors = {}
-
-        if initial_date > final_date:
-            errors.update({'training_initial_date': _("Initial date cannot be greater than final date.")})
-
-        if errors:
-            raise serializers.ValidationError(errors
-                                              )
-        return data
 class ShelfObjectTrainingSerializer(serializers.ModelSerializer):
 
     actions = serializers.SerializerMethodField()
+    intern_people_receive_training= GTS2SerializerBase(many=True)
+    training_initial_date = CustomDateInputFormat()
+    training_final_date = CustomDateInputFormat()
 
     def get_actions(self, obj):
         user = self.context["request"].user

@@ -585,12 +585,15 @@ class UpdateShelfobjectMaintenanceForm(GTForm, forms.ModelForm):
     class Meta:
         model = ShelfObjectMaintenance
         fields = "__all__"
-        exclude = ["organization","created_by","validator","shelfobject"]
 
         widgets = {
             'maintenance_date': genwidgets.DateInput,
             'provider_of_maintenance': genwidgets.Select,
             'maintenance_observation': genwidgets.Textarea,
+            'organization': genwidgets.HiddenInput,
+            'validator': genwidgets.HiddenInput,
+            'created_by': genwidgets.HiddenInput,
+            'shelfobject': genwidgets.HiddenInput,
         }
 
 class ShelfobjectLogForm(GTForm, forms.ModelForm):
@@ -609,11 +612,12 @@ class ShelfobjectLogForm(GTForm, forms.ModelForm):
 
 class ShelfobjectCalibrateForm(GTForm, forms.ModelForm):
 
-
+    field_order = ('calibrate_name', 'calibration_date', 'observation',
+                   'organization', 'validator', 'created_by', "shelfobject")
     class Meta:
         model = ShelfObjectCalibrate
         fields = "__all__"
-        field_order = ['calibrate_name', 'calibration_date', 'observation']
+
 
         widgets = {
             'calibrate_name': genwidgets.TextInput,
@@ -629,11 +633,11 @@ class ShelfobjectCalibrateForm(GTForm, forms.ModelForm):
 class UpdateShelfobjectCalibrateForm(GTForm, forms.ModelForm):
 
 
+    field_order = ('calibrate_name', 'calibration_date', 'observation',
+                   'organization', 'validator', 'created_by', "shelfobject")
     class Meta:
         model = ShelfObjectCalibrate
         fields = "__all__"
-        field_order = ['calibrate_name', 'calibration_date', 'observation']
-        exclude = ["organization","created_by","validator","shelfobject"]
 
         widgets = {
             'calibrate_name': genwidgets.TextInput,
@@ -661,20 +665,19 @@ class ShelfObjectGuaranteeForm(GTForm, forms.ModelForm):
             'shelfobject':genwidgets.HiddenInput,
         }
 
-class UpdateShelfObjectGuaranteeForm(GTForm, forms.ModelForm):
-
-    class Meta:
-        model = ShelfObjectGuarantee
-        fields = "__all__"
-        exclude = ["organization","created_by","shelfobject", "contract"]
-
-        widgets = {
-            'guarantee_initial_date': genwidgets.DateInput,
-            'guarantee_final_date': genwidgets.DateInput,
-        }
 
 class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(ShelfObjectTrainingForm, self).__init__(*args, **kwargs)
+
+        self.fields['intern_people_receive_training'] = forms.ModelChoiceField(
+            queryset=Profile.objects.all(),
+            label=_("Intern people receive training"),
+            widget=AutocompleteSelectMultiple('org_profiles', attrs={
+                'data-dropdownparent': "#create_training_form",
+                'data-s2filter-organization': '#organization'
+            }))
 
     class Meta:
         model = ShelfObjectTraining

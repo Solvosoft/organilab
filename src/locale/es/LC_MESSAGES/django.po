@@ -4239,9 +4239,6 @@ msgstr "Bitácora de mantenimientos"
 msgid "Calibrations"
 msgstr "Calibraciones"
 
-msgid "Logs"
-msgstr "Bitácoras"
-
 msgid "Price"
 msgstr "Precio"
 
@@ -4292,3 +4289,76 @@ msgstr "Algo salió mal al guardar tu formulario"
 
 msgid "The inform template has been saved!"
 msgstr "La plantilla de informe fue guardada"
+
+msgid "Maintenance date"
+msgstr "Fecha de mantenimiento"
+
+msgid "Provider of Maintenance"
+msgstr "Proveedor del mantenimiento"
+
+msgid "Name of Calibrator"
+msgstr "Nombre del calibrador"
+
+msgid "Calibration date"
+msgstr "Fecha de calibración"
+
+msgid "Validator"
+msgstr "Validador"
+
+msgid "Number of hours"
+msgstr "Cantidad de horas"
+
+msgid "Intern people receive training"
+msgstr "Personal interno que recibió la capacitación"
+
+msgid "External people receive training"
+msgstr "Personal externo que recibió la capacitación"
+
+msgid "Contract"
+msgstr "Contracto"
+
+msgid "Create guarantee"
+msgstr "Crear garantía"
+
+msgid "Edit guarantee"
+msgstr "Actualizar garantía"
+
+msgid "Create training"
+msgstr "Crear capacitación"
+
+msgid "Edit training"
+msgstr "Editar training"
+
+msgid "Create calibration"
+msgstr "Crear calibración"
+
+msgid "Edit calibration"
+msgstr "Editar calibración"
+
+msgid "Create log"
+msgstr "Crear bítacora"
+
+msgid "Edit log"
+msgstr "Editar bítacora"
+
+msgid "Create maintenance"
+msgstr "Crear mantenimiento"
+
+msgid "Edit maintenance"
+msgstr "Editar mantenimiento"
+
+msgid "The shelfobject is not valid"
+msgstr "El objecto de estantería no es válido"
+
+msgid "The shelfobject is not valid"
+msgstr "El objecto de estantería no es válido"
+
+msgid "The shelfobject do not belong to the laboratory"
+msgstr "El objecto de estantería no pertenece al laboratorio"
+
+msgid "The shelfobject do not belong to the organization"
+msgstr "El objecto de estantería no pertenece a la organization"
+
+msgid "The shelfobject do not belong to the organization"
+msgstr "El objecto de estantería no pertenece a la organization"
+
