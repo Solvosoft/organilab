@@ -2457,5 +2457,90 @@ URLNAME_PERMISSIONS = {
         'category': 'Recipient Size',
         'permission': 'sga.view_recipientsize'
         }
-    ]
+    ],
+
+    'equipment_shelfobject_actions': [
+
+        {
+            'name': 'View Shelfobject Log',
+            'category': 'Shelfobject Log',
+            'permission': 'laboratory.view_shelfobjectlog'
+        },
+        {
+            'name': 'Add Shelfobject Log',
+            'category': 'Shelfobject Log',
+            'permission': 'laboratory.add_shelfobjectlog'
+        },
+        {
+            'name': 'Change Shelfobject Log',
+            'category': 'Shelfobject Log',
+            'permission': 'laboratory.change_shelfobjectlog'
+        },
+        {
+            'name': 'Delete Shelfobject Log',
+            'category': 'Shelfobject Log',
+            'permission': 'laboratory.delete_shelfobjectlog'
+        },
+        {
+            'name': 'View Shelfobject Calibrations',
+            'category': 'Shelfobject Calibrate',
+            'permission': 'laboratory.view_shelfobjectcalibrate'
+        },
+        {
+            'name': 'Add Shelfobject Calibration',
+            'category': 'Shelfobject Calibrate',
+            'permission': 'laboratory.add_shelfobjectcalibrate'
+        },
+        {
+            'name': 'Change Shelfobject Calibration',
+            'category': 'Shelfobject Calibrate',
+            'permission': 'laboratory.change_shelfobjectcalibrate'
+        },
+        {
+            'name': 'Delete Shelfobject Calibration',
+            'category': 'Shelfobject Calibrate',
+            'permission': 'laboratory.delete_shelfobjectcalibrate'
+        },
+        {
+            'name': 'View Shelfobject Guarantee',
+            'category': 'Shelfobject Guarantee',
+            'permission': 'laboratory.view_shelfobjectguarantee'
+        },
+        {
+            'name': 'Add Shelfobject Guarantee',
+            'category': 'Shelfobject Guarantee',
+            'permission': 'laboratory.add_shelfobjectguarantee'
+        },
+        {
+            'name': 'Change Shelfobject Guarantee',
+            'category': 'Shelfobject Guarantee',
+            'permission': 'laboratory.change_shelfobjectguarantee'
+        },
+        {
+            'name': 'Delete Shelfobject Guarantee',
+            'category': 'Shelfobject Guarantee',
+            'permission': 'laboratory.delete_shelfobjectguarantee'
+        },
+        {
+            'name': 'View Shelfobject Training',
+            'category': 'Shelfobject Training',
+            'permission': 'laboratory.view_shelfobjecttraining'
+        },
+        {
+            'name': 'Add Shelfobject Training',
+            'category': 'Shelfobject Training',
+            'permission': 'laboratory.add_shelfobjecttraining'
+        },
+        {
+            'name': 'Change Shelfobject Training',
+            'category': 'Shelfobject Training',
+            'permission': 'laboratory.change_shelfobjecttraining'
+        },
+        {
+            'name': 'Delete Shelfobject Training',
+            'category': 'Shelfobject Training',
+            'permission': 'laboratory.delete_shelfobjecttraining'
+        },
+    ],
+
 }
