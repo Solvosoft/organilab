@@ -54,7 +54,8 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     ShelfObjectGuaranteeSerializer, ValidateShelfObjectTrainingSerializer, \
     ShelfObjectTrainingeDatatableSerializer, ShelfObjectTrainingSerializer, \
     ShelfObjectLogtFilter, ShelfObjectCalibrateFilter, ShelfObjectTrainingFilter, \
-    ShelfObjectMaintenanceFilter, ValidateShelfObjectGuaranteeSerializer
+    ShelfObjectMaintenanceFilter, ValidateShelfObjectGuaranteeSerializer, \
+    ShelfObjectGuarenteeFilter
 
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
@@ -1452,6 +1453,7 @@ class ShelfObjectGuaranteeViewset(ShelfobjectActionsBase):
     queryset = ShelfObjectGuarantee.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_class = ShelfObjectGuarenteeFilter
     search_fields = ['guarantee_initial_date']
     ordering_fields = ['pk']
     ordering = ('pk',)

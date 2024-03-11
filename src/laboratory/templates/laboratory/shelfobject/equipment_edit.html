@@ -5,7 +5,7 @@
 {% load organilab_tags %}
 {% load gtsettings %}
 {% block pre_head %}
-    {% define_urlname_action 'objectview_list' %}
+    {% define_urlname_action 'equipment_shelfobject_actions' %}
 {% endblock %}
 
 {% block title %}{% trans 'Equipment edit' %}{% endblock %}
@@ -63,7 +63,7 @@
 
 {% url "laboratory:api-shelfobject-maintenance-list" org_pk lab_pk pk as create_maintenance_url %}
 {% trans 'Create maintenance' as create_maintenance_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=maintenance_form id="create_maintenance_modal" title=create_maintenance_tittle form_id="create_maintenance_form" url=create_maintenance_url %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_maintenance_form id="create_maintenance_modal" title=create_maintenance_tittle form_id="create_maintenance_form" url=create_maintenance_url %}
 
 {% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 as detail_maintenance_url %}
 {% trans 'Edit maintenance' as update_maintenance_tittle %}
@@ -151,6 +151,11 @@
 							update_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}"
 		}
 	};
+
+	const selects2_api_urls = {
+					profiles :"{% url 'org_profiles-list' %}"+"?organization="+"{{org_pk}}",
+					providers :"{% url 'org_providers-list' %}"+"?organization="+"{{org_pk}}",
+	}
 
 </script>
     <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
