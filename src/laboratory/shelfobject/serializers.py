@@ -5,10 +5,15 @@ from django.contrib.auth.models import User
 from django.forms import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils import formats
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_filters import FilterSet
+from django_filters import FilterSet, DateTimeFromToRangeFilter, DateFromToRangeFilter, \
+    ModelMultipleChoiceFilter
+from django_filters.widgets import CSVWidget
+from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget, DateRangeTextWidget
 from djgentelella.fields.files import ChunkedFileField
+from djgentelella.serializers import GTDateField, GTDateTimeField
 from djgentelella.serializers.selects import GTS2SerializerBase
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
@@ -1273,6 +1278,7 @@ class ValidateShelfobjectEditSerializer(serializers.Serializer):
         organization = data['organization']
         shelfobject = data['shelfobject']
 
+
         if org_context != organization.pk:
             raise serializers.ValidationError({'organization': _("Initial date cannot be greater than final date.")})
 
@@ -1289,7 +1295,7 @@ class ValidateShelfobjectEditSerializer(serializers.Serializer):
                          f'shelfobject.in_where_laboratory.pk ({shelfobject.in_where_laboratory.pk})')
             raise serializers.ValidationError({'shelfobject': _("The shelfobject do not belong to the laboratory")})
 
-        if organization != shelfobject.in_where_laboratory.organization.pk:
+        if organization.pk != shelfobject.in_where_laboratory.organization.pk:
             logger.debug(f'ValidateShelfobjectEditSerializer --> organization.pk ({organization.pk}) != '
                          f'shelfobject.in_where_laboratory.organization.pk: ({shelfobject.in_where_laboratory.organization.pk:})')
             raise serializers.ValidationError({'shelfobject': _("The shelfobject do not belong to the organization")})
@@ -1367,7 +1373,10 @@ class ValidateShelfObjectLogSerializer(ValidateShelfobjectEditSerializer,seriali
 
 class ShelfObjectLogSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-
+    last_update = GTDateTimeField(
+        allow_empty_str=True,
+        input_formats=[formats.get_format('DATETIME_INPUT_FORMATS')[0]],
+        format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
     def get_actions(self, obj):
         user = self.context["request"].user
         action_list = {
@@ -1482,8 +1491,8 @@ class ValidateShelfObjectGuaranteeSerializer(ValidateShelfobjectEditSerializer,s
 
 class ShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-    guarantee_initial_date = CustomDateInputFormat()
-    guarantee_final_date = CustomDateInputFormat()
+    guarantee_initial_date = GTDateField()
+    guarantee_final_date = GTDateField()
     contract = ChunkedFileField(required=False, allow_empty_file=True)
 
     def get_actions(self, obj):
@@ -1585,6 +1594,8 @@ class ShelfObjectTrainingeDatatableSerializer(serializers.Serializer):
 
 
 class ShelfObjectLogtFilter(FilterSet):
+    last_update = DateTimeFromToRangeFilter(
+        widget=DateTimeRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD HH:MM:SS'}))
     class Meta:
         model = ShelfObjectLog
         fields = {'id': ['exact'],
@@ -1592,13 +1603,19 @@ class ShelfObjectLogtFilter(FilterSet):
                    }
 
 class ShelfObjectCalibrateFilter(FilterSet):
+    calibration_date = DateFromToRangeFilter(
+    widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
     class Meta:
         model = ShelfObjectCalibrate
         fields = {'id': ['exact'],
                    'calibrate_name': ['icontains'],
                    'observation': ['icontains'],
+                   'validator': ['exact']
                    }
 class ShelfObjectTrainingFilter(FilterSet):
+    intern_people_receive_training = ModelMultipleChoiceFilter(queryset=Profile.objects.all(),
+                                                 widget=CSVWidget()
+                                                 )
     class Meta:
         model = ShelfObjectTraining
         fields = {'id': ['exact'],
@@ -1607,10 +1624,28 @@ class ShelfObjectTrainingFilter(FilterSet):
                    }
 
 class ShelfObjectMaintenanceFilter(FilterSet):
+
+    maintenance_date = DateFromToRangeFilter(
+    widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
+
     class Meta:
         model = ShelfObjectMaintenance
         fields = {'id': ['exact'],
                    'provider_of_maintenance__name': ['icontains'],
                    'validator': ['exact'],
                    'maintenance_observation': ['icontains'],
-                   }
+                   'validator': ['exact'],
+                   'provider_of_maintenance': ['exact']
+
+                  }
+
+class ShelfObjectGuarenteeFilter(FilterSet):
+
+    guarantee_initial_date = DateFromToRangeFilter(
+    widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
+    guarantee_final_date = DateFromToRangeFilter(
+    widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
+
+    class Meta:
+        model = ShelfObjectGuarantee
+        fields = ["guarantee_initial_date", "guarantee_final_date"]

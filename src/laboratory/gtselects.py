@@ -388,3 +388,31 @@ class OrganizationProfileslLookup(BaseSelect2View):
         if not name:
             name = obj.username
         return name
+
+@register_lookups(prefix="org_providers", basename="org_providers")
+class OrganizationProviderslLookup(BaseSelect2View):
+    model = Provider
+    org= None
+    fields = ['name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(laboratory__organization=self.org).distinct()
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.org = self.serializer.validated_data['organization']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
