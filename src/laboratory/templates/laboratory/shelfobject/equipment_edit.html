@@ -12,6 +12,32 @@
 
 {% block content %}
 <input type="hidden" value="{{org_pk}}" id="organization">
+
+<div class="row">
+    <div class=" mb-3 col-md-12">
+      <div class="row g-0" >
+        <div class="col-md-4 d-flex align-content-center bd-highlight flex-wrap">
+            <img src="data:image/svg+xml;base64,{{qr.b64_image}}" class="img-fluid rounded-start m-auto" alt="{% trans 'QR object' %}" >
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+              {% if object.marked_as_discard %}
+              <div class="d-flex justify-content-end ">  <i class="fa fa-trash fa-lg text-danger" aria-hidden="true" title="{% trans 'Is discard' %}"></i></div>
+              {% endif %}
+            <h5 class="card-title text-success">{{ object.object.code }} -- {{ object.object.name }}
+													<!--<a class="btn btn-sm btn-secondary ms-2" data-modalid="edit_shelfobject">
+									<i class="fa fa-edit" title="{% trans 'Edit Shelfobject' %}"></i>
+								</a>-->
+                <div class="d-flex justify-content-evenly"></div>
+            </h5>
+            <p class="d-flex justify-content-start" style="text-align: justify">{{ object.object.description }}</p>
+                <hr>
+										</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 <div class="card">
 		<div class="card-header">
 				<h1 class="card-title text-center">{% trans 'Logs' %}</h1>

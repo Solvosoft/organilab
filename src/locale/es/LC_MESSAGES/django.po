@@ -4356,9 +4356,6 @@ msgstr "El objeto de estantería no pertenece al laboratorio"
 msgid "The shelfobject do not belong to the organization"
 msgstr "El objeto de estantería no pertenece a la organización"
 
-msgid "The shelfobject do not belong to the organization"
-msgstr "El objeto de estantería no pertenece a la organization"
-
 msgid "Maintenance"
 msgstr "Mantenimiento"
 
@@ -4412,9 +4409,6 @@ msgstr "Mantenimiento eliminado"
 
 msgid "Maintenance created"
 msgstr "Mantenimiento creado"
-
-msgid "Calibration created"
-msgstr "Calibracion creada"
 
 msgid "Place"
 msgstr "Lugar"
