@@ -1,30 +1,30 @@
+import logging
+
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
-from djgentelella.permission_management import all_permission
+from django.utils.translation import gettext_lazy as _
+from django_filters import DateFromToRangeFilter, CharFilter
+from django_filters import FilterSet
+from djgentelella.fields.drfdatetime import DateRangeTextWidget
+from djgentelella.fields.files import ChunkedFileField
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import BasePermission
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
+    organization_can_change_laboratory
 from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, \
     Shelf, Laboratory, \
-    ShelfObjectObservation, Object, ObjectFeatures
-from laboratory.utils import get_actions_by_perms
-from reservations_management.models import ReservedProducts, Reservations
-from organilab.settings import DATETIME_INPUT_FORMATS, DATE_INPUT_FORMATS
+    ShelfObjectObservation, Object, ObjectFeatures, Provider, Catalog, EquipmentType, \
+    EquipmentCharacteristics
 from laboratory.models import Protocol
-from django.utils.translation import gettext_lazy as _
-
-from django_filters import DateFromToRangeFilter, DateTimeFromToRangeFilter, filters, BooleanFilter, CharFilter
-from djgentelella.fields.drfdatetime import DateRangeTextWidget, DateTimeRangeTextWidget
-from django_filters import FilterSet
-import logging
+from laboratory.utils import get_actions_by_perms
+from organilab.settings import DATETIME_INPUT_FORMATS
+from reservations_management.models import ReservedProducts, Reservations
 
 logger = logging.getLogger('organilab')
 
@@ -363,13 +363,20 @@ class CreateObservationShelfObjectSerializer(serializers.ModelSerializer):
 class ValidateEquipmentSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=255)
     code = serializers.CharField(max_length=255)
-    synonym = serializers.CharField(max_length=255, allow_null=True, allow_blank=True, required=False)
-    description = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+    synonym = serializers.CharField(max_length=255, allow_null=True, allow_blank=True,
+                                    required=False)
+    description = serializers.CharField(allow_null=True, allow_blank=True,
+                                        required=False)
     type = serializers.CharField(max_length=2)
     is_public = serializers.BooleanField(required=False)
-    features = serializers.PrimaryKeyRelatedField(many=True, queryset=ObjectFeatures.objects.using(settings.READONLY_DATABASE), required=True, allow_empty=False)
-    created_by = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
-    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    features = serializers.PrimaryKeyRelatedField(many=True,
+                                                  queryset=ObjectFeatures.objects.using(
+                                                      settings.READONLY_DATABASE),
+                                                  required=True, allow_empty=False)
+    created_by = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.using(settings.READONLY_DATABASE), allow_empty=True, allow_null=True)
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
     model = serializers.CharField(max_length=50, required=True)
     serie = serializers.CharField(max_length=50)
     plaque = serializers.CharField(max_length=50)
@@ -394,11 +401,36 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
 
         return data
 
-
     class Meta:
         model = Object
-        fields = ['id', 'name', 'code', 'synonym', 'description', 'type', 'is_public',
-                  'features', 'created_by', 'organization', 'model', 'serie', 'plaque']
+        fields = "__all__"
+
+
+class ValidateEquipmentCharacteristicsSerializer(serializers.ModelSerializer):
+    object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(
+        settings.READONLY_DATABASE),
+        allow_empty=True, allow_null=True, required=False)
+    use_manual = ChunkedFileField()
+    calibration_required = serializers.BooleanField(required=False)
+    operation_voltage = serializers.CharField(max_length=40, allow_null=True, allow_blank=True)
+    operation_amperage = serializers.CharField(max_length=40, allow_null=True, allow_blank=True)
+    providers = serializers.PrimaryKeyRelatedField(many=True, queryset=Provider.objects.using(settings.READONLY_DATABASE), required=True, allow_empty=False)
+    use_specials_conditions = serializers.CharField(allow_null=True, allow_blank=True,
+                                        required=False)
+    generate_pathological_waste = serializers.BooleanField(required=False)
+    clean_period_according_to_provider = serializers.IntegerField(allow_null=True)
+    instrumental_family = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.using(
+                                                       settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True)
+    equipment_type = serializers.PrimaryKeyRelatedField(
+        queryset=EquipmentType.objects.using(
+            settings.READONLY_DATABASE),
+        allow_empty=True, allow_null=True)
+
+
+    class Meta:
+        model = EquipmentCharacteristics
+        fields = "__all__"
 
 
 class EquipmentFilter(FilterSet):
@@ -413,10 +445,84 @@ class EquipmentFilter(FilterSet):
 class ObjDisplayNameSerializer(GTS2SerializerBase):
     display_fields = 'name'
 
+class ObjDisplayDescriptionSerializer(GTS2SerializerBase):
+    display_fields = 'description'
+
 
 class EquipmentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     features = ObjDisplayNameSerializer(many=True)
+    use_manual = serializers.SerializerMethodField()
+    calibration_required = serializers.SerializerMethodField()
+    operation_voltage = serializers.SerializerMethodField()
+    operation_amperage = serializers.SerializerMethodField()
+    providers = serializers.SerializerMethodField()
+    use_specials_conditions = serializers.SerializerMethodField()
+    generate_pathological_waste = serializers.SerializerMethodField()
+    clean_period_according_to_provider = serializers.SerializerMethodField()
+    instrumental_family = serializers.SerializerMethodField()
+    equipment_type = serializers.SerializerMethodField()
+
+    def get_use_manual(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            file_value = obj.equipmentcharacteristics.use_manual
+            return ChunkedFileField().to_representation(file_value)
+        return None
+
+    def get_calibration_required(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            return obj.equipmentcharacteristics.calibration_required
+        return False
+
+    def get_operation_voltage(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            return obj.equipmentcharacteristics.operation_voltage
+        return ""
+
+    def get_operation_amperage(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            return obj.equipmentcharacteristics.operation_amperage
+        return ""
+
+    def get_providers(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            providers = obj.equipmentcharacteristics.providers.all()
+            if providers:
+                return [{'id': provider.pk, 'text': provider.name, 'disabled': False,
+                         'selected': True} for provider in providers]
+        return None
+
+    def get_use_specials_conditions(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            return obj.equipmentcharacteristics.use_specials_conditions
+        return ""
+
+    def get_generate_pathological_waste(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            return obj.equipmentcharacteristics.generate_pathological_waste
+        return False
+
+    def get_clean_period_according_to_provider(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            return obj.equipmentcharacteristics.clean_period_according_to_provider
+        return ""
+
+    def get_instrumental_family(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            instrumental_family = obj.equipmentcharacteristics.instrumental_family
+            if instrumental_family:
+                return {'id': instrumental_family.pk,
+                        'text': instrumental_family.description, 'disabled': False,
+                        'selected': True}
+        return None
+
+    def get_equipment_type(self, obj):
+        if hasattr(obj, 'equipmentcharacteristics') and obj.equipmentcharacteristics:
+            equipment_type = obj.equipmentcharacteristics.equipment_type
+            if equipment_type:
+                return {'id': equipment_type.pk, 'text': equipment_type.name,
+                        'disabled': False, 'selected': True}
+        return None
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -430,9 +536,12 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Object
-        fields = ['id', 'name', 'code', 'synonym', 'description', 'type', 'is_public',
-                  'features', 'created_by', 'organization', 'model', 'serie', 'plaque',
-                  'actions']
+        fields = ['id', 'code', 'name', 'synonym', 'is_public', 'description', 'features',
+                  'type', 'organization', 'created_by', 'model', 'serie', 'plaque',
+                  'use_manual', 'calibration_required', 'operation_voltage',
+                  'operation_amperage', 'use_specials_conditions',
+                  'generate_pathological_waste', 'clean_period_according_to_provider',
+                  'instrumental_family', 'equipment_type', 'providers', 'actions']
 
 
 class EquipmentDataTableSerializer(serializers.Serializer):
