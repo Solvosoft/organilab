@@ -183,7 +183,7 @@ class ShelfObjectLimits(models.Model):
     expiration_date = models.DateField(null=True, blank=True,
                                        verbose_name=_('Expiration date'))
 
-class EquipmentCharacteristics(AbstractOrganizationRef):
+class EquipmentCharacteristics(models.Model):
     object = models.OneToOneField(Object, on_delete=models.CASCADE)
     use_manual = models.FileField(upload_to=upload_files, null=True, blank=True,
                                   verbose_name=_("Use manual"))
@@ -329,7 +329,7 @@ class ShelfObjectTraining(AbstractOrganizationRef):
     training_final_date = models.DateField(null=False, blank=False, verbose_name=_("Final date"))
     number_of_hours = models.IntegerField(null=False, blank=False, verbose_name=_("Number of hours"))
     intern_people_receive_training = models.ManyToManyField("auth_and_perms.Profile",
-                                                            verbose_name=_("Intern people receive training"))
+                                                            verbose_name=_("Internal participants in training"))
     external_people_receive_training = models.TextField(blank=True, null=True,
                                                         verbose_name=_("External people receive training"))
     observation = models.TextField(blank=True, null=True, verbose_name=_("Observation"))

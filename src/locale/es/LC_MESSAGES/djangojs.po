@@ -607,7 +607,7 @@ msgid "Contract"
 msgstr "Contrato"
 
 msgid "Final date"
-msgstr "Fecha inicial"
+msgstr "Fecha final"
 
 msgid "Initial date"
 msgstr "Fecha inicial"
@@ -633,6 +633,9 @@ msgstr "Lugar"
 msgid "Created by"
 msgstr "Creado por"
 
-msgid "You do not have permissions to see contract."
-msgstr "No tiene permisos para ve el contrato."
+msgid "You do not have permissions to see or download contract."
+msgstr "No tienes permisos para ver o descargar el contrato."
+
+msgid "Internal participants"
+msgstr "Participantes internos"
 

@@ -1423,7 +1423,7 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
         if validate_shelfobject.is_valid():
             instance = validate_shelfobject.save()
             ShelfObjectObservation.objects.create(description=instance.maintenance_observation,
-                                                  action_taken= _("Update maintenance"),
+                                                  action_taken= _("Maintenance updated"),
                                                   shelf_object=instance.shelfobject,
                                                   created_by=self.request.user)
             utils.organilab_logentry(request.user, instance, CHANGE,
@@ -1725,12 +1725,16 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagement):
                                                                                         'lab_pk':self.lab_pk,
                                                                                         'shelfobject': self.shelfobject})
         if serializer.is_valid():
-            guarantee = serializer.save()
-            ShelfObjectObservation.objects.create(description=_("New Guarentee from to"),
+            guarentee = serializer.save()
+            ShelfObjectObservation.objects.create(description=_("New Guarentee from %(initial_date)s to %(final_date)s") % {
+                'initial_date': guarentee.guarantee_initial_date,
+                'final_date': guarentee.guarantee_final_date,
+            },
+
                                                   action_taken=_("Guarentee created"),
-                                                  shelf_object=guarantee.shelfobject,
+                                                  shelf_object=guarentee.shelfobject,
                                                   created_by=self.request.user)
-            utils.organilab_logentry(request.user, guarantee, ADDITION,
+            utils.organilab_logentry(request.user, guarentee, ADDITION,
                                      'shelfobjectguarantee',
                                      changed_data=[serializer.validated_data],
                                      relobj=self.lab_pk)
@@ -1786,7 +1790,7 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagement):
         if validate_shelfobject.is_valid():
             validate_shelfobject.save()
             ShelfObjectObservation.objects.create(description = _("Updating guarentee"),
-                                                  action_taken = "Guarentee updated",
+                                                  action_taken = _("Guarentee updated"),
                                                   shelf_object = validate_shelfobject.validated_data["shelfobject"],
                                                   created_by = self.request.user)
             utils.organilab_logentry(request.user, guarantee, CHANGE,
