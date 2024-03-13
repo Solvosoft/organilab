@@ -6,6 +6,7 @@
 {% load gtsettings %}
 {% block pre_head %}
     {% define_urlname_action 'equipment_shelfobject_actions' %}
+    {% define_urlname_action 'view_shelfobject_contracts' %}
 {% endblock %}
 
 {% block title %}{% trans 'Equipment edit' %}{% endblock %}
@@ -187,7 +188,7 @@ var can_contract = false;
 					users :"{% url 'userorg-list' %}"+"?organization="+"{{org_pk}}",
 	}
 const provider_url = "{% url 'laboratory:list_provider' lab_pk=lab_pk org_pk=org_pk %}";
-	console.log(provider_url)
+
 </script>
     <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
