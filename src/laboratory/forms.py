@@ -660,6 +660,7 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
         }
 
 class EquipmentForm(GTForm, forms.ModelForm):
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
     use_manual = forms.FileField(widget=FileChunkedUpload, required=False,
                                  label=_("Use manual"))
     calibration_required = forms.BooleanField(widget=genwidgets.YesNoInput,
@@ -679,7 +680,7 @@ class EquipmentForm(GTForm, forms.ModelForm):
                                                      required=False, label=_(
             "Generate pathological waste?"))
     clean_period_according_to_provider = forms.IntegerField(
-        widget=genwidgets.NumberInput, required=False,
+        widget=genwidgets.NumberInput, required=False, initial=0,
         label=_("Clean period according to provider"))
     instrumental_family = forms.ModelChoiceField(widget=genwidgets.Select,
                                                  queryset=Catalog.objects.none(),
@@ -695,10 +696,10 @@ class EquipmentForm(GTForm, forms.ModelForm):
         laboratory_pk = kwargs.pop('laboratory_pk')
         super(EquipmentForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
-        laboratory_id = "id_%s-laboratory" % self.prefix
-        organization_id = "id_%s-organization" % self.prefix
+        laboratory_id = "#id_%s-laboratory" % self.prefix
+        organization_id = "#id_%s-organization" % self.prefix
         self.fields['providers'].queryset = Provider.objects.filter(
-            laboratory__pk=laboratory_pk)
+            laboratory__pk=laboratory_pk).distinct()
         self.fields['instrumental_family'] = forms.ModelChoiceField(widget=AutocompleteSelect(
             'instrumentalfamily',
             attrs={
