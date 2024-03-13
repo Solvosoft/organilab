@@ -402,16 +402,16 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
 
         return response_data, equipment_changed_data, equipment_ch_changed_data
 
-    def get_equipment_ch_serializer(self, instance, request, partial):
+    def get_equipment_ch_serializer(self, instance, request, partial, lab_pk):
         if hasattr(instance, 'equipmentcharacteristics'):
             equipment_ch_instance = instance.equipmentcharacteristics
             equipment_ch_serializer = ValidateEquipmentCharacteristicsSerializer(
-                equipment_ch_instance, data=request.data, partial=partial)
+                equipment_ch_instance, data=request.data, partial=partial, context={"lab_pk": lab_pk})
         else:
             data = request.data
             data.update({"object": instance.pk})
             equipment_ch_serializer = ValidateEquipmentCharacteristicsSerializer(
-                data=data, partial=partial)
+                data=data, partial=partial, context={"lab_pk": lab_pk})
 
         return equipment_ch_serializer
 
@@ -435,7 +435,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         # Serializers
         equipment_serializer = self.get_serializer(data=request.data)
         equipment_ch_serializer = ValidateEquipmentCharacteristicsSerializer(
-            data=request.data)
+            data=request.data, context={"lab_pk": self.lab_pk})
 
         if equipment_serializer.is_valid():
             if equipment_ch_serializer.is_valid():
@@ -509,7 +509,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         equipment_serializer = self.get_serializer(instance, data=request.data,
                                                    partial=partial)
         equipment_ch_serializer = self.get_equipment_ch_serializer(
-            instance, request, partial)
+            instance, request, partial, self.lab_pk)
 
         if equipment_serializer.is_valid():
             if equipment_ch_serializer.is_valid():

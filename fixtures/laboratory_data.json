@@ -2378,5 +2378,21 @@
       "features": [1],
       "is_container": false
     }
+  },
+  {
+    "model": "laboratory.equipmenttype",
+    "pk": 1,
+    "fields": {
+      "name": "Equipo Análitico",
+      "description": "Proporcionan información detallada acerca de las características químicas del material a identificar."
+    }
+  },
+  {
+    "model": "laboratory.equipmenttype",
+    "pk": 2,
+    "fields": {
+      "name": "Equipo Auxiliar",
+      "description": "Permiten realizar las actividades cotidianas en una clase de laboratorio."
+    }
   }
 ]
