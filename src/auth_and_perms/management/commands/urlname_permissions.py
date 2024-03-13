@@ -2542,5 +2542,13 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.delete_shelfobjecttraining'
         },
     ],
+    'view_shelfobject_contracts': [
+
+        {
+            'name': 'View Contracts',
+            'category': 'Contracts',
+            'permission': 'laboratory.can_view_contract'
+        },
+    ]
 
 }
