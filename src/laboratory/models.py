@@ -333,6 +333,7 @@ class ShelfObjectTraining(AbstractOrganizationRef):
     external_people_receive_training = models.TextField(blank=True, null=True,
                                                         verbose_name=_("External people receive training"))
     observation = models.TextField(blank=True, null=True, verbose_name=_("Observation"))
+    place = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Place"))
 
 class ShelfObjectGuarantee(AbstractOrganizationRef):
     shelfobject = models.ForeignKey(ShelfObject, null=False, on_delete=models.CASCADE)

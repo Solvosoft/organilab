@@ -613,10 +613,10 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
         "update_training_form": ShelfObjectTrainingForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},
-            prefix="training_form"),
+            prefix="training_form", id_form= "#update_training_form"),
         "training_form": ShelfObjectTrainingForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},
-            prefix="training"),
+            prefix="training", id_form="#create_training_form"),
     }
     return render(request, "laboratory/shelfobject/equipment_edit.html", context=context)

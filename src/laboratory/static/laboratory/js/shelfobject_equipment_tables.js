@@ -1,8 +1,12 @@
 
 const render_file = (data) => {
-    if(data){
-        return `<a href="${data.url}" title="${data.display_name}" download class="btn btn-outline-success"><i class="fa fa-download"></i> ${gettext("Download")}</a>`
-      }
+    if(can_contract){
+        if(data){
+            return `<a href="${data.url}" title="${data.display_name}" download class="btn btn-outline-success"><i class="fa fa-download"></i> ${gettext("Download")}</a>`
+          }
+    }else{
+        return gettext("You do not have permissions to see or download contract.");
+    }
     return data;
 }
 table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
@@ -30,7 +34,9 @@ var logs_datatable_inits = {
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
 						{data: "last_update", name:"last_update", title: gettext("Date"), type: "date", visible: true,
 						render: DataTable.render.datetime(),"dateformat":  document.datetime_format },
-						{data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},
+						{data: "created_by", name: "created_by", title: gettext("Created by"),
+						type: "select2", visible: true, url: selects2_api_urls['users'], render: selectobjprint({display_name: "text"})},
+					    {data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
@@ -58,6 +64,7 @@ var training_datatable_inits = {
 						{data: "training_initial_date", name:"training_initial_date", title: gettext("Initial date"), type: "date", visible: true},
 						{data: "training_final_date", name:"training_final_date", title: gettext("Final date"), type: "date", visible: true},
 						{data: "number_of_hours", name:"number_of_hours", title: gettext("Hours"), type: "number", visible: true},
+						{data: "place", name:"place", title: gettext("Place"), type: "string", visible: true},
 						{data: "intern_people_receive_training", name:"intern_people_receive_training", title: gettext("Internal people"),
 						type: "select2", visible: true,multiple: true, url: selects2_api_urls['profiles'],
 						render: gt_print_list_object("text")},
@@ -75,7 +82,9 @@ var guarantee_datatable_inits = {
 						type: "date",  visible: true},
 						{data: "guarantee_final_date", name:"guarantee_final_date", title: gettext("Final date"),
 						type: "date", visible: true},
-						{data: "contract", name:"contract", title: gettext("Contract"), type: "date", visible: true, render: data=> render_file(data)},
+						{data: "created_by", name: "created_by", title: gettext("Created by"),
+						type: "select2", visible: true, url: selects2_api_urls['users'], render: selectobjprint({display_name: "text"})},
+						{data: "contract", name:"contract", title: gettext("Contract"), visible: true, type:"readonly", render: data=> render_file(data)},
 						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 						],
 		    	addfilter: true,
@@ -137,8 +146,18 @@ var guarantee_actions = {
 			title: gettext('Actions'),
 			className:  "no-export-col"
 }
+
 var training_actions = {
-		    table_actions: [],  //table_actions
+		    table_actions: [
+		    {
+		            action:  function(data){
+                        window.open(provider_url,"_blank")
+                        },
+                    text: `<i class="fa fa-building-o" aria-hidden="true"></i>`,
+                    titleAttr: gettext('Providers'),
+                    className: "btn btn-success"
+                    }
+                    ],
 			object_actions: [],
 			title: gettext('Actions'),
 			className:  "no-export-col"
