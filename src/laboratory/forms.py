@@ -698,8 +698,13 @@ class EquipmentForm(GTForm, forms.ModelForm):
         self.fields["model"].required = True
         laboratory_id = "#id_%s-laboratory" % self.prefix
         organization_id = "#id_%s-organization" % self.prefix
-        self.fields['providers'].queryset = Provider.objects.filter(
+
+        provider_not_available = Provider.objects.filter(laboratory__isnull=True)
+        providers_by_lab = Provider.objects.filter(
             laboratory__pk=laboratory_pk).distinct()
+        provider_list = provider_not_available.union(providers_by_lab).order_by("name")
+        self.fields['providers'].queryset = provider_list
+
         self.fields['instrumental_family'] = forms.ModelChoiceField(widget=AutocompleteSelect(
             'instrumentalfamily',
             attrs={
