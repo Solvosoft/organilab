@@ -4308,8 +4308,8 @@ msgstr "Validador"
 msgid "Number of hours"
 msgstr "Cantidad de horas"
 
-msgid "Intern people receive training"
-msgstr "Personal interno que recibió la capacitación"
+msgid "Internal participants in training"
+msgstr "Participantes internos en la capacitación"
 
 msgid "External people receive training"
 msgstr "Personal externo que recibió la capacitación"
@@ -4336,10 +4336,10 @@ msgid "Edit calibration"
 msgstr "Editar calibración"
 
 msgid "Create log"
-msgstr "Crear bítacora"
+msgstr "Crear bitácora"
 
 msgid "Edit log"
-msgstr "Editar bítacora"
+msgstr "Editar bitácora"
 
 msgid "Create maintenance"
 msgstr "Crear mantenimiento"
@@ -4396,10 +4396,10 @@ msgid "Calibration do not exists"
 msgstr "La calibración no existe"
 
 msgid "Log do not exists"
-msgstr "La bítacora no existe"
+msgstr "La bitácora no existe"
 
 msgid "Calibration created"
-msgstr "Calibracion creada"
+msgstr "Calibración creada"
 
 msgid "Maintenance do not exists"
 msgstr "El mantenimiento no existe"
@@ -4410,6 +4410,12 @@ msgstr "Mantenimiento eliminado"
 msgid "Maintenance created"
 msgstr "Mantenimiento creado"
 
+msgid "Maintenance updated"
+msgstr "Mantenimiento actualizado"
+
 msgid "Place"
 msgstr "Lugar"
+
+msgid "New Guarentee from %(initial_date)t to %(final_date)t"
+msgstr "Nueva garantía del %(initial_date)t al %(final_date)"
 

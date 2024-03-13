@@ -674,7 +674,7 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 
         self.fields['intern_people_receive_training'] = forms.ModelChoiceField(
             queryset=Profile.objects.all(),
-            label=_("Intern people receive training"),
+            label=_("Internal participants in training"),
             widget=AutocompleteSelectMultiple('org_profiles', attrs={
                 'data-dropdownparent': id_form,
                 'data-s2filter-organization': '#organization'

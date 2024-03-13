@@ -65,7 +65,7 @@ var training_datatable_inits = {
 						{data: "training_final_date", name:"training_final_date", title: gettext("Final date"), type: "date", visible: true},
 						{data: "number_of_hours", name:"number_of_hours", title: gettext("Hours"), type: "number", visible: true},
 						{data: "place", name:"place", title: gettext("Place"), type: "string", visible: true},
-						{data: "intern_people_receive_training", name:"intern_people_receive_training", title: gettext("Internal people"),
+						{data: "intern_people_receive_training", name:"intern_people_receive_training", title: gettext("Internal participants"),
 						type: "select2", visible: true,multiple: true, url: selects2_api_urls['profiles'],
 						render: gt_print_list_object("text")},
 						{data: "observation", name:"observation", title: gettext("Observation"), type: "string", visible: true},
