@@ -41,6 +41,7 @@ from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListV
 from presentation.models import QRModel
 from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
 from ..logsustances import log_object_change, log_object_add_change
+from ..qr_utils import get_or_create_qr_shelf_object
 from ..shelfobject.forms import ShelfobjectMaintenanceForm, \
     UpdateShelfobjectMaintenanceForm, ShelfobjectLogForm, ShelfobjectCalibrateForm, \
     UpdateShelfobjectCalibrateForm, ShelfObjectGuaranteeForm, \
@@ -585,10 +586,15 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
 
 @permission_required('laboratory.view_shelfobject')
 def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
+    shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE),pk=pk)
+    qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
+
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
         "pk": pk,
+        "object": shelfobject,
+        "qr":qr,
         "create_maintenance_form": ShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
                                                                        "organization": org_pk, "created_by": request.user.pk, "shelfobject":pk},
                                                               org_pk=org_pk, prefix="create_maintenance"),

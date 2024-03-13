@@ -1269,12 +1269,12 @@ class ValidateShelfobjectEditSerializer(serializers.Serializer):
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
     shelfobject = serializers.PrimaryKeyRelatedField(queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
     created_by = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.using(settings.READONLY_DATABASE))
+        queryset=User.objects.using(settings.READONLY_DATABASE), required=False)
 
     def validate(self, data):
-        org_context = self.context['view'].org_pk
-        lab_context = self.context['view'].lab_pk
-        shelfobject_context = self.context['view'].shelfobject
+        org_context = self.context['org_pk']
+        lab_context = self.context['lab_pk']
+        shelfobject_context = self.context['shelfobject']
         organization = data['organization']
         shelfobject = data['shelfobject']
 
@@ -1303,6 +1303,9 @@ class ValidateShelfobjectEditSerializer(serializers.Serializer):
         return data
 class ProviderDisplayNameSerializer(GTS2SerializerBase):
     display_fields = 'name'
+
+class UserDisplayNameSerializer(GTS2SerializerBase):
+    display_fields = ['first_name','last_name']
 
 class CustomDateInputFormat(serializers.DateField):
     def to_representation(self, value):
@@ -1374,9 +1377,14 @@ class ValidateShelfObjectLogSerializer(ValidateShelfobjectEditSerializer,seriali
 class ShelfObjectLogSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     last_update = GTDateTimeField(
+        required=False,
         allow_empty_str=True,
-        input_formats=[formats.get_format('DATETIME_INPUT_FORMATS')[0]],
-        format=formats.get_format('DATETIME_INPUT_FORMATS')[0])
+        input_formats=["%d-%m-%Y %H:%M:%S"],
+        format="%d/%m/%Y %H:%M:%S",
+    )
+    created_by = UserDisplayNameSerializer(many=False, required=False)
+
+
     def get_actions(self, obj):
         user = self.context["request"].user
         action_list = {
@@ -1392,7 +1400,7 @@ class ShelfObjectLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObjectLog
-        fields = ['id', 'description','last_update','actions']
+        fields = ['id', 'description','last_update','created_by','actions']
 
 
 class ShelfObjectLogDatatableSerializer(serializers.Serializer):
@@ -1406,8 +1414,8 @@ class ValidateShelfObjectCalibrateSerializer(ValidateShelfobjectEditSerializer,s
     calibration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
-    calibrate_name = serializers.CharField(max_length=50, required=True, allow_null=False,allow_blank=False)
-    observation = serializers.CharField(max_length=500, required=False, allow_null=True,allow_blank=True)
+    calibrate_name = serializers.CharField(max_length=100, required=True, allow_null=False,allow_blank=False)
+    observation = serializers.CharField(required=False, allow_null=True,allow_blank=True)
     validator = serializers.PrimaryKeyRelatedField(queryset= Profile.objects.using(settings.READONLY_DATABASE))
 
     class Meta:
@@ -1491,8 +1499,9 @@ class ValidateShelfObjectGuaranteeSerializer(ValidateShelfobjectEditSerializer,s
 
 class ShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-    guarantee_initial_date = GTDateField()
-    guarantee_final_date = GTDateField()
+    guarantee_initial_date = GTDateField(required=False)
+    guarantee_final_date = GTDateField(required=False)
+    created_by = UserDisplayNameSerializer(many=False, required=False)
     contract = ChunkedFileField(required=False, allow_empty_file=True)
 
     def get_actions(self, obj):
@@ -1507,7 +1516,7 @@ class ShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObjectGuarantee
-        fields = ['id', 'guarantee_initial_date','guarantee_final_date','contract','actions']
+        fields = ['id', 'created_by', 'guarantee_initial_date','guarantee_final_date','contract','actions']
 
 
 class ShelfObjectGuaranteeDatatableSerializer(serializers.Serializer):
@@ -1528,17 +1537,18 @@ class ValidateShelfObjectTrainingSerializer(ValidateShelfobjectEditSerializer, s
     intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE),
                                                                         many=True)
     observation = serializers.CharField(max_length=500, required=False, allow_blank="")
-    external_people_receive_training = serializers.CharField(max_length=500, required=False, allow_blank="")
+    external_people_receive_training = serializers.CharField(required=False, allow_blank="")
+    place = serializers.CharField(max_length=100, required=False, allow_blank="")
 
     class Meta:
         model = ShelfObjectTraining
         fields = ["id","shelfobject","training_initial_date", "training_final_date",
                   "number_of_hours","intern_people_receive_training","observation",
-                  "external_people_receive_training",'organization','created_by']
+                  "external_people_receive_training",'organization','place','created_by']
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
-        org_pk = self.context['view'].org_pk
+        org_pk = self.context['org_pk']
         organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),pk=org_pk)
         fields['intern_people_receive_training'].queryset = organization.users.values_list('profile__pk',flat=True).distinct()
         return fields
@@ -1582,7 +1592,7 @@ class ShelfObjectTrainingSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObjectTraining
         fields = ['id', 'training_initial_date','training_final_date','number_of_hours',
-                  'intern_people_receive_training','observation','actions',
+                  'intern_people_receive_training','observation','actions', 'place',
                   'external_people_receive_training']
 
 
@@ -1600,6 +1610,7 @@ class ShelfObjectLogtFilter(FilterSet):
         model = ShelfObjectLog
         fields = {'id': ['exact'],
                    'description': ['icontains'],
+                   'created_by': ['exact'],
                    }
 
 class ShelfObjectCalibrateFilter(FilterSet):
@@ -1621,7 +1632,9 @@ class ShelfObjectTrainingFilter(FilterSet):
         fields = {'id': ['exact'],
                    'number_of_hours': ['exact'],
                    'observation': ['icontains'],
-                   }
+                  'created_by': ['exact'],
+                  'place': ['icontains'],
+                  }
 
 class ShelfObjectMaintenanceFilter(FilterSet):
 
@@ -1648,4 +1661,4 @@ class ShelfObjectGuarenteeFilter(FilterSet):
 
     class Meta:
         model = ShelfObjectGuarantee
-        fields = ["guarantee_initial_date", "guarantee_final_date"]
+        fields = {"created_by": ["exact"]}

@@ -24,7 +24,7 @@
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesomodal" title="{% trans 'Move' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-arrows" aria-hidden="true"></i></a>
 {% endif %}
 {% if shelfobject.object.type == shelfobject.object.EQUIPMENT %}
-<a class="ms-2" href="{% url 'laboratory:equipment_shelfobject_detail' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" target="_blank" title="{% trans 'Maintenance' %}"><i class="fa fa-archive" aria-hidden="true"></i></a>
+<a class="ms-2" href="{% url 'laboratory:equipment_shelfobject_detail' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}"  title="{% trans 'Maintenance' %}" target="_blank"><i class="fa fa-archive" aria-hidden="true"></i></a>
 {% endif %}
 
 
