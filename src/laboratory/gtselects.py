@@ -99,7 +99,7 @@ class ObjectGModelLookup(BaseSelect2View):
 
 
 @register_lookups(prefix="userbase", basename="userbase")
-class User(BaseSelect2View):
+class UserLookup(BaseSelect2View):
     model = User
     fields = ['username']
     authentication_classes = [SessionAuthentication]
@@ -332,6 +332,9 @@ class OrganizationRolslLookup(BaseSelect2View):
     model = Rol
     org= None
     fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -359,8 +362,10 @@ class OrganizationRolslLookup(BaseSelect2View):
 class OrganizationProfileslLookup(BaseSelect2View):
     model = Profile
     org= None
-    fields = ['name']
-
+    fields = ['user__first_name', 'user__last_name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
     def get_queryset(self):
         queryset = super().get_queryset()
 
@@ -394,6 +399,9 @@ class OrganizationProviderslLookup(BaseSelect2View):
     model = Provider
     org= None
     fields = ['name']
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -416,3 +424,41 @@ class OrganizationProviderslLookup(BaseSelect2View):
             'status': 'Bad request',
             'errors': self.serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
+@register_lookups(prefix="userorg", basename="userorg")
+class UsersOrganizationsLookup(BaseSelect2View):
+    model = User
+    fields = ['first_name', 'last_name']
+    org= None
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    permission_classes = [IsAuthenticated]
+    org= None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(organizationstructure=self.org).distinct()
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET, context={'user': request.user})
+
+        if self.serializer.is_valid():
+            self.org = self.serializer.validated_data['organization']
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        name = obj.get_full_name()
+        if not name:
+            name = obj.username
+        return name

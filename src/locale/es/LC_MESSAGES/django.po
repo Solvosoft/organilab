@@ -215,7 +215,7 @@ msgid "Create Step"
 msgstr "Crear Paso"
 
 msgid "Create Object"
-msgstr "Crear Objecto"
+msgstr "Crear Objeto"
 
 msgid "Actions"
 msgstr "Acciones"
@@ -227,10 +227,10 @@ msgid "Objects"
 msgstr "Objetos"
 
 msgid "Remove object"
-msgstr "Eliminar Objecto"
+msgstr "Eliminar Objeto"
 
 msgid "Do you want to remove the object?"
-msgstr "¿Desea eliminar el objecto?"
+msgstr "¿Desea eliminar el objeto?"
 
 msgid "There is no object in the inventory with this unit of measurement"
 msgstr "No existe ningún objeto en el inventario con esta unidad de medida"
@@ -266,13 +266,13 @@ msgid "User doesn't have permissions"
 msgstr "El usuario no tiene permisos"
 
 msgid "Shelfobject does not belong to this laboratory."
-msgstr "El objecto de estante no pertenece a este laboratorio."
+msgstr "El objeto de estante no pertenece a este laboratorio."
 
 msgid "Shelfobject does not belong to this organization."
-msgstr "El objecto de estante no pertenece a esta organización."
+msgstr "El objeto de estante no pertenece a esta organización."
 
 msgid "Shelfobject does not belong to this shelf."
-msgstr "El objecto de estante no pertenece a este estante."
+msgstr "El objeto de estante no pertenece a este estante."
 
 msgid "Shelf does not belong to this laboratory."
 msgstr "El estante no pertenece a este laboratorio."
@@ -873,7 +873,7 @@ msgid "Status Change of %(pre_status)s of %(description)s"
 msgstr "Cambio de estado de %(pre_status)s a %(description)s"
 
 msgid "The object status was updated successfully"
-msgstr "El estado del objecto fue actualizado correctamente"
+msgstr "El estado del objeto fue actualizado correctamente"
 
 msgid "Object was moved successfully."
 msgstr "El objeto fue movido exitosamente."
@@ -1474,7 +1474,7 @@ msgid ""
 "Measurement unit cannot be different than the container object measurement unit: "
 "%(unit)s."
 msgstr ""
-"La unidad de medida no puede ser diferente que la unidad de medida del objecto del "
+"La unidad de medida no puede ser diferente que la unidad de medida del objeto del "
 "contenedor: %(unit)s."
 
 msgid "Sustance saved successfully"
@@ -2344,7 +2344,7 @@ msgid "New Container type"
 msgstr "Nuevo estante contenedor"
 
 msgid "New Shelfobject status"
-msgstr "Nuevo estado de objecto"
+msgstr "Nuevo estado de objeto"
 
 msgid "Laboratory was created successfully"
 msgstr "Laboratorio creado exitosamente"
@@ -4252,7 +4252,7 @@ msgid "Is available to use?"
 msgstr "¿Esta disponible de usar?"
 
 msgid "Contract of maintenance"
-msgstr "Contracto de mantenimiento"
+msgstr "Contrato de mantenimiento"
 
 msgid "Has guarantee?"
 msgstr "¿Tiene Garantía?"
@@ -4315,7 +4315,7 @@ msgid "External people receive training"
 msgstr "Personal externo que recibió la capacitación"
 
 msgid "Contract"
-msgstr "Contracto"
+msgstr "Contrato"
 
 msgid "Create guarantee"
 msgstr "Crear garantía"
@@ -4348,17 +4348,74 @@ msgid "Edit maintenance"
 msgstr "Editar mantenimiento"
 
 msgid "The shelfobject is not valid"
-msgstr "El objecto de estantería no es válido"
-
-msgid "The shelfobject is not valid"
-msgstr "El objecto de estantería no es válido"
+msgstr "El objeto de estantería no es válido"
 
 msgid "The shelfobject do not belong to the laboratory"
-msgstr "El objecto de estantería no pertenece al laboratorio"
+msgstr "El objeto de estantería no pertenece al laboratorio"
 
 msgid "The shelfobject do not belong to the organization"
-msgstr "El objecto de estantería no pertenece a la organization"
+msgstr "El objeto de estantería no pertenece a la organización"
 
 msgid "The shelfobject do not belong to the organization"
-msgstr "El objecto de estantería no pertenece a la organization"
+msgstr "El objeto de estantería no pertenece a la organization"
+
+msgid "Maintenance"
+msgstr "Mantenimiento"
+
+msgid "Training updated"
+msgstr "Capacitación actualizada"
+
+msgid "Training created"
+msgstr "Capacitación creada"
+
+msgid "Training deleted"
+msgstr "Capacitación eliminada"
+
+msgid "Training do not exists"
+msgstr "La Formacion no existe"
+
+msgid "Updating guarentee"
+msgstr "Actualización de garantía"
+
+msgid "Guarentee updated"
+msgstr "Garantía actualizada"
+
+msgid "Guarantee do not exists"
+msgstr "La garantía no existe"
+
+msgid "Guarentee deleted"
+msgstr "Garantía eliminada"
+
+msgid "Guarentee created"
+msgstr "Garantía creada"
+
+msgid "Calibration updated"
+msgstr "Calibración actualizada"
+
+msgid "Calibration deleted"
+msgstr "Calibración eliminada"
+
+msgid "Calibration do not exists"
+msgstr "La calibración no existe"
+
+msgid "Log do not exists"
+msgstr "La bítacora no existe"
+
+msgid "Calibration created"
+msgstr "Calibracion creada"
+
+msgid "Maintenance do not exists"
+msgstr "El mantenimiento no existe"
+
+msgid "Maintenance deleted"
+msgstr "Mantenimiento eliminado"
+
+msgid "Maintenance created"
+msgstr "Mantenimiento creado"
+
+msgid "Calibration created"
+msgstr "Calibracion creada"
+
+msgid "Place"
+msgstr "Lugar"
 

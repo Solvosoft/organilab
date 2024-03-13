@@ -669,13 +669,14 @@ class ShelfObjectGuaranteeForm(GTForm, forms.ModelForm):
 class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+        id_form = kwargs.pop('id_form')
         super(ShelfObjectTrainingForm, self).__init__(*args, **kwargs)
 
         self.fields['intern_people_receive_training'] = forms.ModelChoiceField(
             queryset=Profile.objects.all(),
             label=_("Intern people receive training"),
             widget=AutocompleteSelectMultiple('org_profiles', attrs={
-                'data-dropdownparent': "#create_training_form",
+                'data-dropdownparent': id_form,
                 'data-s2filter-organization': '#organization'
             }))
 
@@ -690,6 +691,7 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
             'intern_people_receive_training': genwidgets.SelectMultiple,
             'external_people_receive_training': genwidgets.Textarea,
             'observation': genwidgets.Textarea,
+            'place': genwidgets.TextInput,
             'organization': genwidgets.HiddenInput,
             'created_by': genwidgets.HiddenInput,
             'shelfobject':genwidgets.HiddenInput,

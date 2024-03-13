@@ -139,13 +139,13 @@ msgid "The observation was not removed"
 msgstr "La observación no fue eliminada"
 
 msgid "Are you sure to delete this object"
-msgstr "Estas seguro de eliminar el objecto"
+msgstr "Estas seguro de eliminar el objeto"
 
 msgid "Object"
 msgstr "Objeto"
 
 msgid "The object was not removed"
-msgstr "El objecto no fue eliminado"
+msgstr "El objeto no fue eliminado"
 
 msgid "Deleted!"
 msgstr "¡Eliminado!"
@@ -562,7 +562,7 @@ msgid "Is available to use?"
 msgstr "¿Esta disponible de usar?"
 
 msgid "Contract of maintenance"
-msgstr "Contracto de mantenimiento"
+msgstr "Contrato de mantenimiento"
 
 msgid "Has guarantee?"
 msgstr "¿Tiene Garantía?"
@@ -604,7 +604,7 @@ msgid "External people receive training"
 msgstr "Personal externo que recibió la capacitación"
 
 msgid "Contract"
-msgstr "Contracto"
+msgstr "Contrato"
 
 msgid "Final date"
 msgstr "Fecha inicial"
@@ -623,4 +623,16 @@ msgstr "Personas internas"
 
 msgid "Calibrator"
 msgstr "Calibrador"
+
+msgid "Providers"
+msgstr "Proveedores"
+
+msgid "Place"
+msgstr "Lugar"
+
+msgid "Created by"
+msgstr "Creado por"
+
+msgid "You do not have permissions to see contract."
+msgstr "No tiene permisos para ve el contrato."
 
