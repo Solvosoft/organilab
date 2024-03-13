@@ -410,7 +410,7 @@ class ValidateEquipmentCharacteristicsSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(
         settings.READONLY_DATABASE),
         allow_empty=True, allow_null=True, required=False)
-    use_manual = ChunkedFileField()
+    use_manual = ChunkedFileField(allow_null=True, required=False, allow_empty_file=True)
     calibration_required = serializers.BooleanField(required=False)
     operation_voltage = serializers.CharField(max_length=40, allow_null=True, allow_blank=True)
     operation_amperage = serializers.CharField(max_length=40, allow_null=True, allow_blank=True)
@@ -426,6 +426,20 @@ class ValidateEquipmentCharacteristicsSerializer(serializers.ModelSerializer):
         queryset=EquipmentType.objects.using(
             settings.READONLY_DATABASE),
         allow_empty=True, allow_null=True)
+
+
+    def validate(self, data):
+        data = super().validate(data)
+        lab_pk = self.context.get("lab_pk")
+        providers = data['providers']
+
+        for provider in providers:
+            if provider.laboratory and provider.laboratory.pk != lab_pk:
+                logger.debug(
+                    f'ValidateEquipmentCharacteristicsSerializer --> provider.laboratory.pk ({provider.laboratory.pk}) != lab_pk ({lab_pk})')
+                raise serializers.ValidationError(
+                    {'providers': _("Providers list is not valid.")})
+        return data
 
 
     class Meta:

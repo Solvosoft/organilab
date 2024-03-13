@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.test import Client
 
-from laboratory.models import ObjectFeatures, Object
+from laboratory.models import ObjectFeatures, Object, Provider
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 from laboratory.utils import get_pk_org_ancestors_decendants
 import json
@@ -207,8 +207,18 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
             "type": "2",
             "is_public": True,
             "features": [1],
+            "providers": [1],
+            "use_manual": None,
+            "calibration_required": False,
+            "operation_voltage": "",
+            "operation_amperage": "",
+            "generate_pathological_waste": False,
+            "clean_period_according_to_provider": 3,
+            "instrumental_family": None,
+            "equipment_type": 2,
             "created_by": self.user.pk,
-            "organization": self.org.pk
+            "organization": self.org.pk,
+            "laboratory": self.lab.pk,
         }
 
         self.create_data = data_base.copy()
@@ -219,7 +229,10 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
             "description": "Entrada de calor controlada a base de gas.",
             "model": "MK23213",
             "serie": "3232432",
-            "plaque": "P32r32"
+            "plaque": "P32r32",
+            "use_specials_conditions": "El uso adecuado de este equipo requiere que "
+                                       "las las condiciones donde vaya a ser "
+                                       "utilizado sean óptimas."
         })
 
         self.update_data1 = data_base.copy()
@@ -230,7 +243,9 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
             "description": "Instrumento para el cálculo de la masa de un objeto.",
             "model": "F79L543",
             "serie": "kd23213",
-            "plaque": "BFDS3E"
+            "plaque": "BFDS3E",
+            "use_specials_conditions": "Evitar golpes al equipo y exposión prolongada a "
+                                       "condiciones calurosas y húmedas."
         })
 
         self.update_data2 = data_base.copy()
@@ -277,7 +292,6 @@ class EquipmentViewTest(BaseLaboratorySetUpTest):
 
     def test_create_equipment_user_with_perms(self):
         # User 1 with perms - Check response status code equal to 201. --> Complete and valid data
-        last_obj_pk = self.queryset.last().pk
         response = self.client.post(self.url_equipment_list, data=self.create_data, content_type='application/json')
         self.assertEqual(response.status_code, 201)
         self.assertTrue(self.queryset.filter(name=self.create_data["name"]).exists())
