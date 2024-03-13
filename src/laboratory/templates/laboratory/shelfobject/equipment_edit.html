@@ -107,7 +107,7 @@
 {% include 'gentelella/blocks/modal_template.html' with form=training_form id="create_training_modal" title=create_training_tittle form_id="create_training_form" url=add_training_url %}
 
 {% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 as detail_training_url %}
-{% trans 'Edit training' as create_training_tittle %}
+{% trans 'Edit training' as update_training_tittle %}
 {% include 'gentelella/blocks/modal_template.html' with form=update_training_form id="update_training_modal" title=update_training_tittle form_id="update_training_form" url=detail_training_url %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_training_modal" form_id="delete_training_form" url=detail_training_url %}
@@ -118,7 +118,10 @@
 <script>
 
 	window.name = "equipmenteditview";
-
+var can_contract = false;
+{% if perms.laboratory.can_view_contract %}
+	can_contract = true;
+{% endif %}
 	var object_urls = {
 	maintenance: {
 							list_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
@@ -155,8 +158,10 @@
 	const selects2_api_urls = {
 					profiles :"{% url 'org_profiles-list' %}"+"?organization="+"{{org_pk}}",
 					providers :"{% url 'org_providers-list' %}"+"?organization="+"{{org_pk}}",
+					users :"{% url 'userorg-list' %}"+"?organization="+"{{org_pk}}",
 	}
-
+const provider_url = "{% url 'laboratory:list_provider' lab_pk=lab_pk org_pk=org_pk %}";
+	console.log(provider_url)
 </script>
     <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
