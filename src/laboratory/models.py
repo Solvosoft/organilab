@@ -68,6 +68,9 @@ class EquipmentType(models.Model):
     name = models.CharField(max_length=255, verbose_name=_("Name"))
     description = models.CharField(max_length=255, verbose_name=_("Description"))
 
+    def __str__(self):
+        return self.name
+
 
 class Object(AbstractOrganizationRef):
     REACTIVE = '0'

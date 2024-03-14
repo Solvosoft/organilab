@@ -4419,3 +4419,36 @@ msgstr "Lugar"
 msgid "New Guarentee from %(initial_date)t to %(final_date)t"
 msgstr "Nueva garantía del %(initial_date)t al %(final_date)"
 
+
+msgid "Type equipment object is not valid."
+msgstr "Tipo de objeto de equipo no es válido."
+
+msgid "Organization is not valid."
+msgstr "La organización no es válida."
+
+msgid "Use manual"
+msgstr "Manual de uso"
+
+msgid "Is calibration required?"
+msgstr "¿Requiere calibración?"
+
+msgid "Operation voltage"
+msgstr "Voltaje de operación"
+
+msgid "Operation amperage"
+msgstr "Amperaje de operación"
+
+msgid "Use specials conditions"
+msgstr "Condiciones especiales de uso"
+
+msgid "Generate pathological waste?"
+msgstr "¿Genera residuo patológico?"
+
+msgid "Clean period according to provider"
+msgstr "Período de limpieza según proveedor"
+
+msgid "Instrumental family"
+msgstr "Familia instrumental"
+
+msgid "Equipment type"
+msgstr "Tipo de equipo"

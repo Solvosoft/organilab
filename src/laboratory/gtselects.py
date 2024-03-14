@@ -9,7 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
-    ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer
+    ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer, \
+    UserAccessOrgLabValidateSerializer
 from auth_and_perms.models import Rol, Profile
 from laboratory.models import Object, Catalog, Provider, ShelfObject
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
@@ -353,6 +354,29 @@ class OrganizationRolslLookup(BaseSelect2View):
             self.org = self.serializer.validated_data['organization']
             return super().list(request, *args, **kwargs)
 
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@register_lookups(prefix="instrumentalfamily", basename="instrumentalfamily")
+class InstrumentalFamilyLookup(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(key="instrumental_family")
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = UserAccessOrgLabValidateSerializer(data=request.GET, context={'user': request.user})
+        if self.serializer.is_valid():
+            return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',
             'errors': self.serializer.errors,
