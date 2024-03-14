@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
+from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile, Rol
@@ -20,10 +21,12 @@ from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, \
     InformScheduler, RegisterUserQR, \
-    ShelfObjectLimits, ShelfObject, ShelfObjectObservation, MaterialCapacity
+    ShelfObject, ShelfObjectObservation, EquipmentType
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, LaboratoryRoom, Furniture
+from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, \
+    LaboratoryRoom, Furniture
+
 
 class UserAccessForm(forms.Form):
     access = forms.BooleanField(widget=forms.CheckboxInput(
@@ -657,15 +660,64 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
         }
 
 class EquipmentForm(GTForm, forms.ModelForm):
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
+    use_manual = forms.FileField(widget=FileChunkedUpload, required=False,
+                                 label=_("Use manual"))
+    calibration_required = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False, label=_(
+            "Is calibration required?"))
+    operation_voltage = forms.CharField(widget=genwidgets.TextInput, required=False,
+                                        label=_("Operation voltage"))
+    operation_amperage = forms.CharField(widget=genwidgets.TextInput, required=False,
+                                         label=_("Operation amperage"))
+    providers = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                               queryset=Provider.objects.none(),
+                                               required=False,
+                                               label=_("Providers"))
+    use_specials_conditions = forms.CharField(widget=genwidgets.Textarea,
+                                              required=False, label=_("Use specials conditions"))
+    generate_pathological_waste = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                                     required=False, label=_(
+            "Generate pathological waste?"))
+    clean_period_according_to_provider = forms.IntegerField(
+        widget=genwidgets.NumberInput, required=False, initial=0,
+        label=_("Clean period according to provider"))
+    instrumental_family = forms.ModelChoiceField(widget=genwidgets.Select,
+                                                 queryset=Catalog.objects.none(),
+                                                 blank=True, required=False,
+                                                 label=_("Instrumental family"))
+    equipment_type = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=EquipmentType.objects.all(),
+                                            blank=True, required=False,
+                                            label=_("Equipment type"))
 
     def __init__(self, *args, **kwargs):
+        modal_id = kwargs.pop('modal_id')
+        laboratory_pk = kwargs.pop('laboratory_pk')
         super(EquipmentForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
+        laboratory_id = "#id_%s-laboratory" % self.prefix
+        organization_id = "#id_%s-organization" % self.prefix
+
+        provider_not_available = Provider.objects.filter(laboratory__isnull=True)
+        providers_by_lab = Provider.objects.filter(
+            laboratory__pk=laboratory_pk).distinct()
+        provider_list = provider_not_available.union(providers_by_lab).order_by("name")
+        self.fields['providers'].queryset = provider_list
+
+        self.fields['instrumental_family'] = forms.ModelChoiceField(widget=AutocompleteSelect(
+            'instrumentalfamily',
+            attrs={
+                'data-dropdownparent': modal_id,
+                'data-s2filter-laboratory': laboratory_id,
+                'data-s2filter-organization': organization_id
+            }),
+            queryset=Catalog.objects.none(), blank=True, required=False,
+            label=_("Instrumental family"))
 
     class Meta:
         model = Object
-        fields = ['code', 'name', 'synonym', 'description', 'type', 'is_public',
-                  'features', 'created_by', 'organization', 'model', 'serie', 'plaque']
+        exclude = ['is_container']
         widgets = {
             'features': genwidgets.SelectMultiple(),
             'code': genwidgets.TextInput,

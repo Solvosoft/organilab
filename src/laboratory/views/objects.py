@@ -231,9 +231,14 @@ def view_equipment_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
-        "create_form": EquipmentForm(initial={"type": Object.EQUIPMENT, "organization": org_pk,
-                                           "created_by": request.user.pk}, prefix="create"),
-        "update_form": EquipmentForm(prefix="update")
+        "create_form": EquipmentForm(prefix="create", initial={"type": Object.EQUIPMENT,
+                                                               "organization": org_pk,
+                                                               "laboratory": lab_pk,
+                                                               "created_by": request.user.pk},
+                                     modal_id="#create_obj_form",
+                                     laboratory_pk=lab_pk),
+        "update_form": EquipmentForm(prefix="update", initial={"laboratory": lab_pk},
+                                     modal_id="#update_obj_form", laboratory_pk=lab_pk)
     }
     return render(request, "laboratory/equipment/list.html", context=context)
 

@@ -1,7 +1,9 @@
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from django.contrib.admin.models import LogEntry
+from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Value, DateField, Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -9,10 +11,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
+from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
 
 from api.utils import AllPermissionOrganizationByAction
@@ -24,14 +28,15 @@ from laboratory.api.serializers import ReservedProductsSerializer, \
     ReservationSerializer, \
     ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, \
     LogEntryFilterSet, ShelfObjectSerialize, \
-    LogEntryUserDataTableSerializer
+    LogEntryUserDataTableSerializer, ValidateEquipmentCharacteristicsSerializer
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
     Laboratory, InformsPeriod, ShelfObject, Shelf, Object
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
 from laboratory.utils import get_logentries_org_management, \
-    get_pk_org_ancestors_decendants, PermissionByLaboratoryInOrganization
+    get_pk_org_ancestors_decendants, PermissionByLaboratoryInOrganization, \
+    organilab_logentry
 from reservations_management.models import ReservedProducts
 
 
@@ -72,6 +77,7 @@ class ApiReservedProductsCRUD(APIView):
         solicitud.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class ApiReservationCRUD(APIView):
     def post(self, request):
         serializer = ReservationSerializer(data=request.data)
@@ -80,17 +86,18 @@ class ApiReservationCRUD(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CommentAPI(viewsets.ModelViewSet):
     perms = {
-             "create": ["laboratory.add_commentinform"],
-             "list": ['laboratory.view_commentinform'],
-             "retrieve": ['laboratory.view_commentinform'],
-             "update": ['laboratory.change_commentinform'],
-             "destroy": ['laboratory.delete_commentinform'],
-             }
+        "create": ["laboratory.add_commentinform"],
+        "list": ['laboratory.view_commentinform'],
+        "retrieve": ['laboratory.view_commentinform'],
+        "update": ['laboratory.change_commentinform'],
+        "destroy": ['laboratory.delete_commentinform'],
+    }
     authentication_classes = [SessionAuthentication, BaseAuthentication]
     permission_classes = [IsAuthenticated, AllPermissionOrganizationByAction]
-    queryset= CommentInform.objects.all()
+    queryset = CommentInform.objects.all()
     serializer_class = CommentsSerializer
 
     def get_comment(self, pk):
@@ -102,16 +109,18 @@ class CommentAPI(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = CommentsSerializer(data=request.data)
         if serializer.is_valid():
-            inform=Inform.objects.filter(pk=request.data['inform']).first()
+            inform = Inform.objects.filter(pk=request.data['inform']).first()
 
             CommentInform.objects.create(
                 created_by=request.user,
-                comment = serializer.data['comment'],
-                inform = inform
+                comment=serializer.data['comment'],
+                inform=inform
             )
-            comments=self.get_queryset().filter(inform=inform).order_by('pk')
-            template = render_to_string('laboratory/comment.html', {'comments':comments, 'user':request.user},request)
-            return Response({'data':template}, status=status.HTTP_201_CREATED)
+            comments = self.get_queryset().filter(inform=inform).order_by('pk')
+            template = render_to_string('laboratory/comment.html',
+                                        {'comments': comments, 'user': request.user},
+                                        request)
+            return Response({'data': template}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):
@@ -122,14 +131,17 @@ class CommentAPI(viewsets.ModelViewSet):
             form = CommentInformForm(request.GET)
 
             if form.is_valid():
-                comments = queryset.filter(inform__pk=form.cleaned_data['inform']).order_by('pk')
+                comments = queryset.filter(
+                    inform__pk=form.cleaned_data['inform']).order_by('pk')
 
-        template = render_to_string('laboratory/comment.html', {'comments': comments, 'user':request.user}, request)
-        return Response({'data':template})
+        template = render_to_string('laboratory/comment.html',
+                                    {'comments': comments, 'user': request.user},
+                                    request)
+        return Response({'data': template})
 
     def update(self, request, pk=None, *args, **kwargs):
-        comment=None
-        serializer= None
+        comment = None
+        serializer = None
         if pk:
             serializer = CommentsSerializer(data=request.data)
             if serializer.is_valid():
@@ -137,27 +149,31 @@ class CommentAPI(viewsets.ModelViewSet):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             if comment.created_by == self.request.user:
-                comment.comment=request.data['comment']
+                comment.comment = request.data['comment']
                 comment.save()
                 template = render_to_string('laboratory/comment.html',
-                                            {'comments': self.get_queryset().filter(inform=comment.inform).order_by('pk'),
-                                             'user': request.user},request)
+                                            {'comments': self.get_queryset().filter(
+                                                inform=comment.inform).order_by('pk'),
+                                             'user': request.user}, request)
 
-                return Response({'data':template}, status=status.HTTP_200_OK)
+                return Response({'data': template}, status=status.HTTP_200_OK)
             else:
-                return  Response({"error":"Only the user that create this observation can update"}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"error": "Only the user that create this observation can update"},
+                    status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def destroy(self, request, pk=None, *args, **kwargs):
         if pk:
             comment = self.get_comment(pk)
-            inform=comment.inform
+            inform = comment.inform
             if comment.created_by == self.request.user:
                 comment.delete()
-                template= render_to_string('laboratory/comment.html', {'comments': self.get_queryset().filter(inform=inform).order_by('pk'), 'user':request.user},request)
+                template = render_to_string('laboratory/comment.html', {
+                    'comments': self.get_queryset().filter(inform=inform).order_by(
+                        'pk'), 'user': request.user}, request)
 
-                return Response({'data':template},status=status.HTTP_200_OK)
+                return Response({'data': template}, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -173,7 +189,7 @@ class ProtocolViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'short_description']
     filterset_class = ProtocolFilterSet
     ordering_fields = ['pk']
-    ordering = ('pk', )
+    ordering = ('pk',)
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -184,11 +200,11 @@ class ProtocolViewSet(viewsets.ModelViewSet):
             queryset = queryset.none()
         return queryset
 
-
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': Protocol.objects.count(), 'recordsFiltered': queryset.count(),
+        response = {'data': data, 'recordsTotal': Protocol.objects.count(),
+                    'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
@@ -201,9 +217,9 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['object_repr', 'action_flag']
-    filterset_class =LogEntryFilterSet
+    filterset_class = LogEntryFilterSet
     ordering_fields = ['pk']
-    ordering = ('pk', )
+    ordering = ('pk',)
     can_use_inactive_organization = True
 
     def get_queryset(self):
@@ -220,8 +236,8 @@ class LogEntryViewSet(viewsets.ModelViewSet):
                 self.serializer_class = LogEntryUserDataTableSerializer
                 qr_obj = int(qr_obj)
                 detail = [
-                    "[{'changed': {'fields': ['Login', %d]}}]" %(qr_obj),
-                    "[{'added': {'fields': ['Register', %d]}}]" %(qr_obj)
+                    "[{'changed': {'fields': ['Login', %d]}}]" % (qr_obj),
+                    "[{'added': {'fields': ['Register', %d]}}]" % (qr_obj)
                 ]
 
                 filters.update({
@@ -239,7 +255,8 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': LogEntry.objects.count(), 'recordsFiltered': queryset.count(),
+        response = {'data': data, 'recordsTotal': LogEntry.objects.count(),
+                    'recordsFiltered': queryset.count(),
                     'draw': self.request.GET.get('draw', 1)}
         return Response(self.get_serializer(response).data)
 
@@ -261,9 +278,10 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
         if not period:
             return self.queryset.none()
         period = get_object_or_404(InformsPeriod, pk=period)
-        queryset = super().get_queryset().filter(pk__in=period.informs.values_list('pk', flat=True),
-                                                 organization=self.organization)
-        queryset=queryset.annotate(
+        queryset = super().get_queryset().filter(
+            pk__in=period.informs.values_list('pk', flat=True),
+            organization=self.organization)
+        queryset = queryset.annotate(
             start_application_date=Value(period.start_application_date, DateField()),
             close_application_date=Value(period.close_application_date, DateField())
         )
@@ -288,8 +306,10 @@ class ShelfObjectAPI(APIView):
 
     def get(self, request, org_pk):
         solicitud = self.get_object(request.GET['shelf'])
-        serializer = ShelfObjectSerialize(solicitud,context={'org_pk':org_pk}, many=True)
+        serializer = ShelfObjectSerialize(solicitud, context={'org_pk': org_pk},
+                                          many=True)
         return Response(serializer.data)
+
 
 class ShelfObjectGraphicAPI(APIView):
     def get(self, request):
@@ -299,10 +319,10 @@ class ShelfObjectGraphicAPI(APIView):
         if queryset:
             self.show_chart = True
             for obj in queryset:
-               data.append(obj.quantity)
-               labels.append(obj.object.name)
+                data.append(obj.quantity)
+                labels.append(obj.object.name)
 
-        return Response({'labels':labels,'data':data})
+        return Response({'labels': labels, 'data': data})
 
 
 @method_decorator(permission_required('laboratory.delete_shelf'), name='dispatch')
@@ -311,18 +331,23 @@ class ShelfList(APIView):
         serializer = serializers.ShelfPkList(data=request.data)
         if serializer.is_valid(raise_exception=True):
             shelfs = Shelf.objects.filter(pk__in=serializer.data['shelfs'])
-            data = render_to_string(template_name="laboratory/components/shelfdetail.html", context={'shelfs':shelfs}, request=request)
-        return Response({'data':data})
+            data = render_to_string(
+                template_name="laboratory/components/shelfdetail.html",
+                context={'shelfs': shelfs}, request=request)
+        return Response({'data': data})
 
 
 @permission_required('laboratory.view_shelfobject')
 def ShelfObjectObservationView(request, org_pk, lab_pk, pk):
     template = 'laboratory/shelfobject/shelfobject_observations.html'
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
-    laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+    laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
+                                   pk=lab_pk)
     user_is_allowed_on_organization(request.user, organization)
     organization_can_change_laboratory(laboratory, organization, raise_exec=True)
-    shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
+    shelfobject = get_object_or_404(
+        ShelfObject.objects.using(settings.READONLY_DATABASE), pk=pk)
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
     status_form = ShelfObjectStatusForm(org_pk=org_pk)
     observation_form = ObservationShelfObjectForm()
@@ -359,7 +384,36 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     ordering_fields = ['code']
     ordering = ('code',)  # default order
     operation_type = ''
-    org_pk, lab_pk = None, None
+    org_pk, lab_pk, org = None, None, None
+
+    def get_response_validate_data(self, equipment_serializer, equipment_ch_serializer):
+        equipment_changed_data = list(
+            equipment_serializer.validated_data.keys())
+        equipment_ch_changed_data = list(
+            equipment_ch_serializer.validated_data.keys())
+
+        # Multiple response data
+        response_data = equipment_serializer.data
+        equipment_ch_data = equipment_ch_serializer.data
+
+        # THIS ID SHOULDN'T REPLACE THE MAIN ID(EQUIPMENT OBJECT)
+        del equipment_ch_data['id']
+        response_data.update(equipment_ch_data)
+
+        return response_data, equipment_changed_data, equipment_ch_changed_data
+
+    def get_equipment_ch_serializer(self, instance, request, partial, lab_pk):
+        if hasattr(instance, 'equipmentcharacteristics'):
+            equipment_ch_instance = instance.equipmentcharacteristics
+            equipment_ch_serializer = ValidateEquipmentCharacteristicsSerializer(
+                equipment_ch_instance, data=request.data, partial=partial, context={"lab_pk": lab_pk})
+        else:
+            data = request.data
+            data.update({"object": instance.pk})
+            equipment_ch_serializer = ValidateEquipmentCharacteristicsSerializer(
+                data=data, partial=partial, context={"lab_pk": lab_pk})
+
+        return equipment_ch_serializer
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -373,17 +427,127 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().create(request, *args, **kwargs)
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=self.org_pk)
+        errors, response_data, headers = {}, {}, self.get_success_headers({})
+
+        # Serializers
+        equipment_serializer = self.get_serializer(data=request.data)
+        equipment_ch_serializer = ValidateEquipmentCharacteristicsSerializer(
+            data=request.data, context={"lab_pk": self.lab_pk})
+
+        if equipment_serializer.is_valid():
+            if equipment_ch_serializer.is_valid():
+                instance = equipment_serializer.save()
+                equipment_ch_serializer.save(object=instance)
+
+                response_data, equipment_changed_data, equipment_ch_changed_data = self.get_response_validate_data(
+                    equipment_serializer, equipment_ch_serializer)
+
+                # Multiple headers
+                headers = self.get_success_headers(response_data)
+
+                # Log Entry Create Action
+                organilab_logentry(request.user, instance, ADDITION, "equipment object",
+                                   changed_data=equipment_changed_data,
+                                   relobj=organization)
+
+                if hasattr(instance, 'equipmentcharacteristics'):
+                    organilab_logentry(request.user, instance, ADDITION,
+                                       "equipment characteristics",
+                                       changed_data=equipment_ch_changed_data,
+                                       relobj=organization)
+
+                return Response(response_data, status=status.HTTP_201_CREATED,
+                                headers=headers)
+            else:
+                errors.update(equipment_ch_serializer.errors)
+        else:
+            errors.update(equipment_serializer.errors)
+            if not equipment_ch_serializer.is_valid():
+                errors.update(equipment_ch_serializer.errors)
+
+        if errors:
+            raise ValidationError(errors)
 
     def destroy(self, request, *args, **kwargs):
+        # EquipmentCharacteristics has OnetoOne relation with Object(Equipment) -->
+        # ON DELETE CASCADE
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().destroy(request, *args, **kwargs)
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=self.org_pk)
+        instance = self.get_object()
+        equipment_ch_instance = None
+
+        if hasattr(instance, 'equipmentcharacteristics'):
+            equipment_ch_instance = instance.equipmentcharacteristics
+
+        destroy = super().destroy(request, *args, **kwargs)
+
+        # Log Entry Destroy Action
+        organilab_logentry(request.user, instance, DELETION, "equipment object",
+                           relobj=organization)
+
+        if equipment_ch_instance:
+            organilab_logentry(request.user, equipment_ch_instance, DELETION,
+                               "equipment characteristics",
+                               relobj=organization)
+        return destroy
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().update(request, *args, **kwargs)
+        organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org_pk)
+        errors, response_data = {}, {}
+        equipment_ch_action = CHANGE
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        equipment_serializer = self.get_serializer(instance, data=request.data,
+                                                   partial=partial)
+        equipment_ch_serializer = self.get_equipment_ch_serializer(
+            instance, request, partial, self.lab_pk)
+
+        if equipment_serializer.is_valid():
+            if equipment_ch_serializer.is_valid():
+                instance = equipment_serializer.save()
+                equipment_ch = equipment_ch_serializer.save()
+
+                if getattr(instance, '_prefetched_objects_cache', None):
+                    # If 'prefetch_related' has been applied to a queryset, we need to
+                    # forcibly invalidate the prefetch cache on the instance.
+                    instance._prefetched_objects_cache = {}
+
+                response_data, equipment_changed_data, equipment_ch_changed_data = self.get_response_validate_data(
+                    equipment_serializer, equipment_ch_serializer)
+
+                # Log Entry Update Action
+                organilab_logentry(request.user, instance, CHANGE, "equipment object",
+                                   changed_data=equipment_changed_data,
+                                   relobj=organization)
+
+                if not hasattr(instance, 'equipmentcharacteristics'):
+                    equipment_ch_action = ADDITION
+
+                organilab_logentry(request.user, equipment_ch, equipment_ch_action,
+                                   "equipment characteristics",
+                                   changed_data=equipment_ch_changed_data,
+                                   relobj=organization)
+
+            else:
+                errors.update(equipment_ch_serializer.errors)
+        else:
+            errors.update(equipment_serializer.errors)
+            if not equipment_ch_serializer.is_valid():
+                errors.update(equipment_ch_serializer.errors)
+
+        if errors:
+            raise ValidationError(errors)
+
+        return Response(response_data)
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']

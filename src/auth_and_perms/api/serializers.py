@@ -205,8 +205,37 @@ class DeleteUserFromContenttypeSerializer(serializers.Serializer):
     organization = serializers.PrimaryKeyRelatedField(many=False, queryset=OrganizationStructure.objects.all())
     disable_user = serializers.BooleanField(default=False)
 
+class UserAccessOrgLabValidateSerializer(serializers.Serializer):
+    laboratory = serializers.PrimaryKeyRelatedField(
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
 
-class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
+    def validate(self, data):
+        laboratory = data['laboratory']
+        organization = data['organization']
+        user = self.context.get('user')
+
+        has_permission = organization_can_change_laboratory(laboratory, organization)
+        check_user_access = check_user_access_kwargs_org_lab(organization.pk,
+                                                             laboratory.pk, user)
+
+        if not has_permission:
+            logger.debug(
+                f'ValidateUserAccessOrgLabSerializer --> organization_can_change_laboratory is ({has_permission})')
+            raise serializers.ValidationError(
+                {'organization': _("Organization can't change this laboratory")})
+
+        if not check_user_access:
+            logger.debug(
+                f'ValidateUserAccessOrgLabSerializer --> check_user_access_kwargs_org_lab is ({check_user_access})')
+            raise serializers.ValidationError(
+                {'user': _("User doesn't have permissions")})
+
+        return data
+
+
+class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
     laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
     organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
     shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE),
@@ -216,24 +245,11 @@ class ValidateUserAccessOrgLabSerializer(serializers.Serializer):
         required=False)
 
     def validate(self, data):
+        data = super().validate(data)
         laboratory = data['laboratory']
         organization = data['organization']
-        user = self.context.get('user')
         shelf_object = data.get("shelfobject")
         shelf = data.get("shelf")
-
-        has_permission = organization_can_change_laboratory(laboratory, organization)
-        check_user_access = check_user_access_kwargs_org_lab(organization.pk, laboratory.pk, user)
-
-        if not has_permission:
-            logger.debug(
-                f'ValidateUserAccessOrgLabSerializer --> organization_can_change_laboratory is ({has_permission})')
-            raise serializers.ValidationError({'organization': _("Organization can't change this laboratory")})
-
-        if not check_user_access:
-            logger.debug(
-                f'ValidateUserAccessOrgLabSerializer --> check_user_access_kwargs_org_lab is ({check_user_access})')
-            raise serializers.ValidationError({'user': _("User doesn't have permissions")})
 
         if shelf_object:
             if shelf_object.in_where_laboratory != laboratory:
