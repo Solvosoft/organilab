@@ -12,6 +12,8 @@ from laboratory.api.shelfobject import ShelfObjectMaintanenceViewset, \
     ShelfObjectTrainingViewset
 from laboratory.shelfobject_container.views import show_shelf_container
 from laboratory.shelfobject_container.viewsets import ContainerManagementViewset
+from laboratory.views.catalogs import view_instrumental_family_list, \
+    view_equipmenttype_list
 from laboratory.views.shelfobject import view_equipment_shelfobject_detail
 from sga.api.sga_components_viewsets import WarningWordAPI, WarningWordTableView, \
     DangerIndicationAPI, DangerIndicationTableView, \
@@ -22,7 +24,8 @@ from laboratory.api import shelfobject as ShelfObjectApi
 from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, \
     CommentAPI, ProtocolViewSet, \
     LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, \
-    ShelfObjectObservationView, EquipmentManagementViewset
+    ShelfObjectObservationView, EquipmentManagementViewset, \
+    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -143,6 +146,8 @@ sustance_urls = [
 
 equipment_urls = [
     path('', view_equipment_list, name='equipment_list'),
+    path('instrumental/', view_instrumental_family_list, name='instrumentalfamily_list'),
+    path('equipmenttype/', view_equipmenttype_list, name='equipmenttype_list'),
 ]
 
 organization_urls = [
@@ -255,6 +260,9 @@ equipment_shelfobject_url = [
 ]
 objectrouter = DefaultRouter()
 objectrouter.register('api_equipment_list', EquipmentManagementViewset, basename='api-equipment')
+objectrouter.register('api_instrumentalfamily_list', InstrumentalFamilyManagementViewset, basename='api-instrumentalfamily')
+objectrouter.register('api_equipmenttype_list', EquipmentTypeManagementViewset, basename='api-equipmenttype')
+
 
 
 '''MULTILAB'''

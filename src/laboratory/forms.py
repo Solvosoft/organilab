@@ -836,3 +836,21 @@ class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
     def clean(self):
         if not self.instance.active:
             raise ValidationError(_("Organization cannot be inactive"))
+
+
+class InstrumentalFamilyForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Catalog
+        fields =['description']
+        widgets = {
+            'description': genwidgets.Textarea
+        }
+
+class EquipmentTypeForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = EquipmentType
+        fields =['name','description']
+        widgets = {
+            'name': genwidgets.TextInput,
+            'description': genwidgets.Textarea
+        }

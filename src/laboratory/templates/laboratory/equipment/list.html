@@ -5,6 +5,7 @@
 {% load gtsettings %}
 {% block pre_head %}
     {% define_urlname_action 'objectview_list' %}
+    {% define_urlname_action 'equipment_manager' %}
 {% endblock %}
 
 {% block title %}{% trans 'Equipment List' %}{% endblock %}
@@ -13,6 +14,23 @@
 <h1 class="text-center">{% trans 'Equipment List' %}</h1>
 
 <div class="row">
+
+<div class="btn-toolbar justify-content-between"  aria-label="Control button">
+	<div class="btn-group" role="group">
+		 {% if perms.laboratory.add_provider %}
+  <a target="_blank" href="{% url 'laboratory:list_provider'  org_pk=org_pk lab_pk=lab_pk %}" class="btn btn-outline-primary">{% trans 'Provider' %}</a>
+  	{% endif %}
+		{% if perms.laboratory.add_objectfeatures %}
+		<a  target="_blank" href="{% url 'laboratory:object_feature_create' org_pk=org_pk lab_pk=lab_pk %}" class="btn btn-outline-primary">{% trans 'Object features' %}</a>
+		{% endif %}
+		{% if perms.laboratory.view_catalog %}
+  <a  target="_blank" href="{% url 'laboratory:instrumentalfamily_list' org_pk=org_pk lab_pk=lab_pk %}" class="btn btn-outline-primary">{% trans 'Instrumental family' %}</a>
+  {% endif %}
+		{% if perms.laboratory.view_equipmenttype %}
+		<a  target="_blank" href="{% url 'laboratory:equipmenttype_list' org_pk=org_pk lab_pk=lab_pk %}" class="btn btn-outline-primary">{% trans 'Equipment type' %}</a>
+		{% endif %}
+	</div>
+</div>
 	<table class="table table-striped w-100 table-responsive" id="equipment_table"></table>
 </div>
 

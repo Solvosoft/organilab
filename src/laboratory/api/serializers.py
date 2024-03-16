@@ -3,13 +3,9 @@ import logging
 from django.conf import settings
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
-from django.db.models import Q
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django_filters import DateFromToRangeFilter, CharFilter
-from django_filters import FilterSet
-from djgentelella.fields.drfdatetime import DateRangeTextWidget
 from djgentelella.fields.files import ChunkedFileField
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
@@ -27,6 +23,7 @@ from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
 
 logger = logging.getLogger('organilab')
+
 
 class ReservedProductsSerializer(serializers.ModelSerializer):
     initial_date = serializers.DateTimeField(input_formats=DATETIME_INPUT_FORMATS)
@@ -55,13 +52,6 @@ class CommentsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ProtocolFilterSet(FilterSet):
-
-    class Meta:
-        model = Protocol
-        fields = {}
-
-
 class ProtocolSerializer(serializers.ModelSerializer):
     action = serializers.SerializerMethodField()
     file = serializers.SerializerMethodField()
@@ -76,7 +66,8 @@ class ProtocolSerializer(serializers.ModelSerializer):
         return {
             'url': obj.file.url,
             'class': 'btn btn-sm btn-outline-success',
-            'display_name': "<i class='fa fa-download' aria-hidden='true'></i> %s" % _("Download")
+            'display_name': "<i class='fa fa-download' aria-hidden='true'></i> %s" % _(
+                "Download")
         }
 
     def get_action(self, obj):
@@ -84,13 +75,15 @@ class ProtocolSerializer(serializers.ModelSerializer):
         org_pk = self.context['request'].GET['org_pk']
         btn = ''
         if user.has_perm('laboratory.change_protocol'):
-            btn += "<a href=\"%s\" class='btn btn-outline-warning btn-sm'><i class='fa fa-edit' aria-hidden='true'></i> %s</a>"%(
-                reverse('laboratory:protocol_update', args=(org_pk, obj.laboratory.pk, obj.pk)),
+            btn += "<a href=\"%s\" class='btn btn-outline-warning btn-sm'><i class='fa fa-edit' aria-hidden='true'></i> %s</a>" % (
+                reverse('laboratory:protocol_update',
+                        args=(org_pk, obj.laboratory.pk, obj.pk)),
                 _("Edit")
             )
         if user.has_perm('laboratory.delete_protocol'):
-            btn += "<a href=\"%s\" class='btn btn-outline-danger btn-sm'><i class='fa fa-trash' aria-hidden='true'></i> %s</a>"%(
-                reverse('laboratory:protocol_delete', args=(org_pk, obj.laboratory.pk, obj.pk)),
+            btn += "<a href=\"%s\" class='btn btn-outline-danger btn-sm'><i class='fa fa-trash' aria-hidden='true'></i> %s</a>" % (
+                reverse('laboratory:protocol_delete',
+                        args=(org_pk, obj.laboratory.pk, obj.pk)),
                 _("Delete")
             )
 
@@ -106,19 +99,6 @@ class ProtocolDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
-
-class LogEntryFilterSet(FilterSet):
-    action_time = DateFromToRangeFilter(widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
-    user = CharFilter(field_name='user', method='filter_user')
-
-    def filter_user(self, queryset, name, value):
-        return queryset.filter(Q(user__first_name__icontains=value)|Q(user__last_name__icontains=value)|Q(user__username__icontains=value))
-
-    class Meta:
-        model = LogEntry
-        fields =[ 'object_repr', 'change_message', 'action_flag', 'user']
-
 
 
 class LogEntryUserSerializer(serializers.ModelSerializer):
@@ -142,10 +122,10 @@ class LogEntryUserSerializer(serializers.ModelSerializer):
             return _("Register") if obj.action_flag == 1 else ("Login")
         return ''
 
-
     class Meta:
         model = LogEntry
         fields = '__all__'
+
 
 class LogEntryUserDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=LogEntryUserSerializer(), required=True)
@@ -173,7 +153,6 @@ class LogEntrySerializer(serializers.ModelSerializer):
     def get_action_flag(self, obj):
         return obj.get_action_flag_display()
 
-
     class Meta:
         model = LogEntry
         fields = '__all__'
@@ -199,7 +178,7 @@ class InformSerializer(serializers.ModelSerializer):
         if obj and self.context['request'].user.has_perm('laboratory.add_inform'):
             return """
                     <a href="%s"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                    """%(
+                    """ % (
                 reverse('laboratory:complete_inform', kwargs={
                     'org_pk': self.context['view'].kwargs['pk'],
                     'lab_pk': obj.object_id,
@@ -210,7 +189,8 @@ class InformSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Inform
-        fields = ['name', 'start_application_date', 'close_application_date', 'status', 'action']
+        fields = ['name', 'start_application_date', 'close_application_date', 'status',
+                  'action']
 
 
 class InformDataTableSerializer(serializers.Serializer):
@@ -218,12 +198,6 @@ class InformDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
-
-class InformFilterSet(FilterSet):
-    class Meta:
-        model = Inform
-        fields = {'name': ['icontains'], 'status': ['exact']}
 
 
 class BaseShelfObjectSerializer:
@@ -265,7 +239,7 @@ class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerialize
             if obj.created_by:
                 return """
                         <a href="%s" class="btn btn-secondary" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                        """%(
+                        """ % (
                     reverse('laboratory:profile_detail', kwargs={
                         'org_pk': org_pk,
                         'pk': obj.created_by.pk
@@ -277,14 +251,17 @@ class ShelfObjectSerialize(BaseShelfObjectSerializer, serializers.ModelSerialize
 
     class Meta:
         model = ShelfObject
-        fields = ['object_name', 'unit','quantity','last_update','created_by','action']
+        fields = ['object_name', 'unit', 'quantity', 'last_update', 'created_by',
+                  'action']
 
 
 class ShelfPkList(serializers.Serializer):
-    shelfs=serializers.ListField(child=serializers.IntegerField(), allow_null=False, allow_empty=False)
+    shelfs = serializers.ListField(child=serializers.IntegerField(), allow_null=False,
+                                   allow_empty=False)
 
 
-class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers.ModelSerializer):
+class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer,
+                                          serializers.ModelSerializer):
     object_type = serializers.SerializerMethodField()
     object_name = serializers.SerializerMethodField()
     unit = serializers.SerializerMethodField()
@@ -294,7 +271,7 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
     actions = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
-        context={
+        context = {
             'laboratory': self.context['view'].laboratory,
             'org_pk': self.context['view'].organization,
             'shelfobject': obj
@@ -305,39 +282,45 @@ class ShelfObjectLaboratoryViewSerializer(BaseShelfObjectSerializer, serializers
             context=context
         )
 
-
     class Meta:
         model = ShelfObject
-        fields = ['pk','object_type', 'object_name', 'unit','quantity','last_update','created_by', 'container', 'actions']
+        fields = ['pk', 'object_type', 'object_name', 'unit', 'quantity', 'last_update',
+                  'created_by', 'container', 'actions']
 
 
 class ShelfObjectTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=ShelfObjectLaboratoryViewSerializer(), required=True)
+    data = serializers.ListField(child=ShelfObjectLaboratoryViewSerializer(),
+                                 required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
 
 class BaseOrganizationLaboratory(serializers.Serializer):
-    organization = serializers.PrimaryKeyRelatedField(queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
-    laboratory = serializers.PrimaryKeyRelatedField(queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    laboratory = serializers.PrimaryKeyRelatedField(
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE))
 
     def validate_organization(self, value):
         user_is_allowed_on_organization(self.user, value)
         return value
 
     def validate(self, value):
-        if not organization_can_change_laboratory(value['laboratory'], value['organization']):
+        if not organization_can_change_laboratory(value['laboratory'],
+                                                  value['organization']):
             raise ValidationError(detail="Wrong Laboratory")
         return value
+
     user = None
 
     def set_user(self, user):
-        self.user=user
+        self.user = user
 
 
 class ShelfLabViewSerializer(serializers.Serializer):
-    shelf = serializers.PrimaryKeyRelatedField(queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=False)
+    shelf = serializers.PrimaryKeyRelatedField(
+        queryset=Shelf.objects.using(settings.READONLY_DATABASE), required=False)
 
     def __init__(self, *args, **kwargs):
         self.laboratory = kwargs.pop('laboratory')
@@ -346,7 +329,7 @@ class ShelfLabViewSerializer(serializers.Serializer):
     def validate(self, value):
         value = super().validate(value)
         if 'shelf' not in value:
-            value['shelf']=None
+            value['shelf'] = None
 
         if value['shelf'] is not None:
             if self.laboratory != value['shelf'].furniture.labroom.laboratory:
@@ -374,7 +357,8 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
                                                       settings.READONLY_DATABASE),
                                                   required=True, allow_empty=False)
     created_by = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.using(settings.READONLY_DATABASE), allow_empty=True, allow_null=True)
+        queryset=User.objects.using(settings.READONLY_DATABASE), allow_empty=True,
+        allow_null=True)
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
     model = serializers.CharField(max_length=50, required=True)
@@ -410,23 +394,29 @@ class ValidateEquipmentCharacteristicsSerializer(serializers.ModelSerializer):
     object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(
         settings.READONLY_DATABASE),
         allow_empty=True, allow_null=True, required=False)
-    use_manual = ChunkedFileField(allow_null=True, required=False, allow_empty_file=True)
+    use_manual = ChunkedFileField(allow_null=True, required=False,
+                                  allow_empty_file=True)
     calibration_required = serializers.BooleanField(required=False)
-    operation_voltage = serializers.CharField(max_length=40, allow_null=True, allow_blank=True)
-    operation_amperage = serializers.CharField(max_length=40, allow_null=True, allow_blank=True)
-    providers = serializers.PrimaryKeyRelatedField(many=True, queryset=Provider.objects.using(settings.READONLY_DATABASE), required=True, allow_empty=False)
+    operation_voltage = serializers.CharField(max_length=40, allow_null=True,
+                                              allow_blank=True)
+    operation_amperage = serializers.CharField(max_length=40, allow_null=True,
+                                               allow_blank=True)
+    providers = serializers.PrimaryKeyRelatedField(many=True,
+                                                   queryset=Provider.objects.using(
+                                                       settings.READONLY_DATABASE),
+                                                   required=True, allow_empty=False)
     use_specials_conditions = serializers.CharField(allow_null=True, allow_blank=True,
-                                        required=False)
+                                                    required=False)
     generate_pathological_waste = serializers.BooleanField(required=False)
     clean_period_according_to_provider = serializers.IntegerField(allow_null=True)
-    instrumental_family = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.using(
-                                                       settings.READONLY_DATABASE),
-                                                   allow_empty=True, allow_null=True)
+    instrumental_family = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.using(
+            settings.READONLY_DATABASE),
+        allow_empty=True, allow_null=True)
     equipment_type = serializers.PrimaryKeyRelatedField(
         queryset=EquipmentType.objects.using(
             settings.READONLY_DATABASE),
         allow_empty=True, allow_null=True)
-
 
     def validate(self, data):
         data = super().validate(data)
@@ -441,23 +431,14 @@ class ValidateEquipmentCharacteristicsSerializer(serializers.ModelSerializer):
                     {'providers': _("Providers list is not valid.")})
         return data
 
-
     class Meta:
         model = EquipmentCharacteristics
         fields = "__all__"
 
 
-class EquipmentFilter(FilterSet):
-    class Meta:
-        model = Object
-        fields = {'id': ['exact'],
-                   'name': ['icontains'],
-                   'code': ['icontains']
-                   }
-
-
 class ObjDisplayNameSerializer(GTS2SerializerBase):
     display_fields = 'name'
+
 
 class ObjDisplayDescriptionSerializer(GTS2SerializerBase):
     display_fields = 'description'
@@ -550,7 +531,8 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Object
-        fields = ['id', 'code', 'name', 'synonym', 'is_public', 'description', 'features',
+        fields = ['id', 'code', 'name', 'synonym', 'is_public', 'description',
+                  'features',
                   'type', 'organization', 'created_by', 'model', 'serie', 'plaque',
                   'use_manual', 'calibration_required', 'operation_voltage',
                   'operation_amperage', 'use_specials_conditions',
@@ -560,6 +542,42 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class EquipmentDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=EquipmentSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class EquipmentTypeSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        return {}
+
+    class Meta:
+        model = EquipmentType
+        fields = ['id', 'name', 'description', 'actions']
+
+
+class EquipmentTypeDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=EquipmentTypeSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class InstrumentalFamilySerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        return {}
+
+    class Meta:
+        model = Catalog
+        fields = ['description', 'id', 'actions']
+
+
+class InstrumentalFamilyDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=InstrumentalFamilySerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
