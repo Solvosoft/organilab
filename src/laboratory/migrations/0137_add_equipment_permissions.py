@@ -22,7 +22,7 @@ def register_permissions(apps, schema_editor):
         Q(codename__icontains='can_view_contract')|
         Q(codename__icontains='view_logentry')
                               )
-    g=Group.objects.filter(name='RegisterOrganization').first()
+    g, ok=Group.objects.get_or_create(name='RegisterOrganization')
     g.permissions.add(*perms)
 
     rols=Rol.objects.filter(name__icontains='Administración de Organización')
