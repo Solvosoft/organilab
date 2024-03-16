@@ -1,6 +1,6 @@
 .PHONY: help clean clean-pyc clean-build list test  docs release sdist
 setup_version := `python src/organilab/__init__.py`
-
+current_path := `pwd`
 help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
@@ -73,3 +73,10 @@ docs_full:
 	pip install 'sphinx<7' sphinx-rtd-theme==1.2.2
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
+
+build_docker_selenium:
+	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
+
+run_docker_selenium:
+	 docker run --network="host"  -v $(current_path)/src:/organilab/src  -v $(current_path)/fixtures:/organilab/fixtures -v $(current_path)/docs:/organilab/docs  -ti organilabselenium:$(setup_version) $(run)
+
