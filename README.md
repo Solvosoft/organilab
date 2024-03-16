@@ -7,7 +7,7 @@
 
 Simple laboratory organizer with multiples features:
 
-- Laboratory builder and elegant presentation 
+- Laboratory builder and elegant presentation
 - Multi-laboratory management
 - Reservation system
 - Solution Calculator
@@ -19,9 +19,9 @@ Simple laboratory organizer with multiples features:
 
 Documentation will be available in [read the docs](http://organilab.readthedocs.io/)
 
-# Installation 
+# Installation
 
-Clone this repository 
+Clone this repository
 
 	$ git clone git@github.com:solvo/organilab.git
 	$ cd organilab
@@ -32,10 +32,10 @@ Create a virtualenv
 	$ python -m venv ~/entornos/organilab
 	$ source ~/entornos/organilab/bin/activate
 
-Install requirements 
+Install requirements
 
 	$ pip install -r requirements.txt
-		
+
 # Run in development
 
 Check your database configuration and sync your models
@@ -46,7 +46,7 @@ Check your database configuration and sync your models
     $ python manage.py loadgroup
     $ python manage.py load_sga
     $ python manage.py loaddata sga_components.json
-    
+
 Could be required to call python manage.py initial_data
 
 Create a superuser for admin views
@@ -57,7 +57,7 @@ Run your development server
 
 	$ python manage.py runserver
 
-Create translations 
+Create translations
 
 	$ django-admin makemessages --all --no-location --no-obsolete
 
@@ -78,7 +78,7 @@ docker build -f docker/Dockerfile -t solvosoft/organilab
 
 Run with **bind mount folder** to sync with changes without rebuild image:
 ```bash
-docker run -it --name organilab -p 80:80 -p 8000:8000 \ 
+docker run -it --name organilab -p 80:80 -p 8000:8000 \
     -v `pwd`/src/:/organilab --env DBHOST=YOUR_PG_HOST \
 	solvosoft/organilab
 ```
@@ -89,6 +89,23 @@ docker run -it organilab python manage.py runserver 0.0.0.0:8000
 ```
 And finally each change you make in your local files will restart the environment in order to apply them.
 
-## happy hacking	
+## Testing with selenium and docker
+
+Run all selenium test is too slow, so you maybe want to generate a gif of your test.
+
+First create a docker image:
+
+```bash
+make build_docker_selenium
+```
+
+Run your test, please note that quotes ("") are required on the command before run=.
+
+```
+make run_docker_selenium run="python manage.py test  --no-input --tag=selenium laboratory.tests.selenium_tests.manage_organizations.test_laboratory_tab"
+```
+
+
+## happy hacking
 
 

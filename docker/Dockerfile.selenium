@@ -1,0 +1,41 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11-bookworm
+ENV PYTHONUNBUFFERED 1
+
+ARG UID=1000
+ENV USER="organilab"
+ARG RESOLUTION="1920x1080x24"
+ENV XVFB_RES="${RESOLUTION}"
+ARG XARGS=""
+ENV XVFB_ARGS="${XARGS}"
+ENV DISPLAY=:1
+ENV HEADLESS=1
+
+RUN useradd -u $UID -ms /bin/bash $USER
+
+RUN mkdir -p /organilab/src /organilab/fixtures /organilab/docs  /app /run/logs/ /run/static/
+WORKDIR /organilab/src
+
+RUN apt-get update && \
+    apt-get install -y xserver-xorg-video-dummy gdebi-core wget nano xvfb libxslt-dev libxml2-dev python3-setuptools python3-cffi libcairo2 libffi-dev libpq-dev nginx supervisor python3-gdal
+
+#RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#RUN gdebi --quiet --non-interactive google-chrome-stable_current_amd64.deb
+RUN apt-get install -y chromium chromium-driver
+
+ADD requirements.txt /app
+ADD test_requirements.txt /app
+ADD docker/xvfb-startup.sh /app
+
+RUN pip install --upgrade --trusted-host pypi.python.org --no-cache-dir pip requests setuptools && \
+pip install --trusted-host pypi.python.org --no-cache-dir -r /app/requirements.txt && \
+pip install --trusted-host pypi.python.org --no-cache-dir -r /app/test_requirements.txt
+
+RUN apt-get -y autoremove && \
+     apt-get -y clean   && \
+     rm -rf /var/lib/apt/lists/*
+
+EXPOSE 9222
+
+ENTRYPOINT ["/app/xvfb-startup.sh"]
+CMD ["python manage.py test  --no-input --tag=selenium"]

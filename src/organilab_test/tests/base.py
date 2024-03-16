@@ -1,4 +1,5 @@
 import glob
+import os
 import shutil
 from importlib import import_module
 from pathlib import Path
@@ -14,7 +15,7 @@ from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
-
+from selenium.webdriver.chrome.service import Service
 
 class SeleniumBase(StaticLiveServerTestCase):
 
@@ -27,7 +28,16 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.ob = Screenshot.Screenshot()
         cls.options = webdriver.FirefoxOptions()
 
-        cls.selenium = webdriver.Chrome()
+        driverpath = os.getenv("CHROMEDRIVER_DIR", '/usr/bin/chromedriver')
+        options = webdriver.ChromeOptions()
+        options.add_argument("--no-sandbox")
+        options.add_argument("--headless")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--remote-debugging-port=9222")
+        service = Service(executable_path=driverpath)
+
+        cls.selenium = webdriver.Chrome(options=options, service=service)
         cls.selenium.set_window_size(1280, 720)
 
         cls.tmp = Path(settings.BASE_DIR) / 'tmp'
