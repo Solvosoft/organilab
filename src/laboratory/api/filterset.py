@@ -58,7 +58,7 @@ class EquipmentFilter(FilterSet):
 class ProtocolFilterSet(FilterSet):
     class Meta:
         model = Protocol
-        fields = '__all__'
+        fields = {}
 
 
 class LogEntryFilterSet(FilterSet):
