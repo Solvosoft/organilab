@@ -231,6 +231,7 @@ def view_equipment_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
+        "laboratory": lab_pk,
         "create_form": EquipmentForm(prefix="create", initial={"type": Object.EQUIPMENT,
                                                                "organization": org_pk,
                                                                "laboratory": lab_pk,

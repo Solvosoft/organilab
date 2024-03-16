@@ -2549,6 +2549,49 @@ URLNAME_PERMISSIONS = {
             'category': 'Contracts',
             'permission': 'laboratory.can_view_contract'
         },
+    ],
+    'equipment_manager': [
+
+        {
+            'name': 'View Equipment Type',
+            'category': 'Equipment',
+            'permission': 'laboratory.view_equipmenttype'
+        },
+        {
+            'name': 'Add Equipment Type',
+            'category': 'Equipment',
+            'permission': 'laboratory.add_equipmenttype'
+        },
+        {
+            'name': 'Change Equipment Type',
+            'category': 'Equipment',
+            'permission': 'laboratory.change_equipmenttype'
+        },
+        {
+            'name': 'Delete Equipment Type',
+            'category': 'Equipment',
+            'permission': 'laboratory.delete_equipmenttype'
+        },
+        {
+            'name': 'Add Object Features',
+            'category': 'Equipment',
+            'permission': 'laboratory.add_objectfeatures'
+        },
+        {
+            'name': 'Add Instrumental Family',
+            'category': 'Equipment',
+            'permission': 'laboratory.add_catalog'
+        },
+        {
+            'name': 'View Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.view_provider'
+        },
+        {
+            'name': 'Add Provider',
+            'category': 'Provider',
+            'permission': 'laboratory.add_provider'
+        },
     ]
 
 }

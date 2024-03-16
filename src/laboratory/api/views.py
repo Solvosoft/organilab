@@ -1,9 +1,7 @@
-from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Value, DateField, Q
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -14,24 +12,24 @@ from rest_framework.authentication import SessionAuthentication, BaseAuthenticat
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.utils.serializer_helpers import ReturnList
 from rest_framework.views import APIView
 
 from api.utils import AllPermissionOrganizationByAction
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
     organization_can_change_laboratory
-from laboratory.api import serializers
+from laboratory.api import serializers, filterset
+from laboratory.api.filterset import ProtocolFilterSet, LogEntryFilterSet
 from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import ReservedProductsSerializer, \
     ReservationSerializer, \
-    ReservedProductsSerializerUpdate, CommentsSerializer, ProtocolFilterSet, \
-    LogEntryFilterSet, ShelfObjectSerialize, \
+    ReservedProductsSerializerUpdate, CommentsSerializer, \
+    ShelfObjectSerialize, \
     LogEntryUserDataTableSerializer, ValidateEquipmentCharacteristicsSerializer
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
-    Laboratory, InformsPeriod, ShelfObject, Shelf, Object
+    Laboratory, InformsPeriod, ShelfObject, Shelf, Object, Catalog, EquipmentType
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
 from laboratory.utils import get_logentries_org_management, \
@@ -269,7 +267,7 @@ class InformViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['name', 'creation_date', ]  # for the global search
-    filterset_class = serializers.InformFilterSet
+    filterset_class = filterset.InformFilterSet
     ordering_fields = ['creation_date']
     ordering = ('-creation_date',)  # default order
 
@@ -380,7 +378,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['code', 'name']  # for the global search
-    filterset_class = serializers.EquipmentFilter
+    filterset_class = filterset.EquipmentFilter
     ordering_fields = ['code']
     ordering = ('code',)  # default order
     operation_type = ''
@@ -548,6 +546,101 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
             raise ValidationError(errors)
 
         return Response(response_data)
+
+    def list(self, request, *args, **kwargs):
+        self.org_pk = kwargs['org_pk']
+        self.lab_pk = kwargs['lab_pk']
+        return super().list(request, *args, **kwargs)
+
+class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        'list': serializers.InstrumentalFamilyDataTableSerializer,
+        'destroy': serializers.InstrumentalFamilySerializer,
+        'create': serializers.InstrumentalFamilySerializer,
+        'update': serializers.InstrumentalFamilySerializer
+    }
+    perms = {
+        'list': ["laboratory.view_object"],
+        'create': ["laboratory.add_object", "laboratory.view_object"],
+        'update': ["laboratory.change_object", "laboratory.view_object"],
+        'destroy': ["laboratory.delete_object", "laboratory.view_object"]
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+
+    queryset = Catalog.objects.filter(key="instrumental_family")
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['id', 'description']  # for the global search
+    filterset_class = filterset.InstrumentalFamilyFilter
+    ordering_fields = ['description']
+    ordering = ('id',)  # default order
+    operation_type = ''
+    org_pk, lab_pk, org = None, None, None
+
+    def create(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(key="instrumental_family")
+
+    def destroy(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().destroy(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().update(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        self.org_pk = kwargs['org_pk']
+        self.lab_pk = kwargs['lab_pk']
+        return super().list(request, *args, **kwargs)
+
+class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        'list': serializers.EquipmentTypeDataTableSerializer,
+        'destroy': serializers.EquipmentTypeSerializer,
+        'create': serializers.EquipmentTypeSerializer,
+        'update': serializers.EquipmentTypeSerializer
+    }
+    perms = {
+        'list': ["laboratory.view_equipmenttype"],
+        'create': ["laboratory.add_equipmenttype"],
+        'update': ["laboratory.change_equipmenttype"],
+        'destroy': ["laboratory.delete_equipmenttype"]
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+
+    queryset = EquipmentType.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['id', 'description', 'name']  # for the global search
+    filterset_class = filterset.EquipmentTypeFilter
+    ordering_fields = ['description', 'name']
+    ordering = ('id',)  # default order
+    operation_type = ''
+    org_pk, lab_pk, org = None, None, None
+
+    def create(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().create(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().destroy(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        return super().update(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']
