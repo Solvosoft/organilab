@@ -635,7 +635,21 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
     def destroy(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().destroy(request, *args, **kwargs)
+        instance = self.get_object()
+        organization =get_object_or_404(OrganizationStructure.objects.using(
+            settings.READONLY_DATABASE), pk=self.org_pk)
+
+        delete_equipment_list = list(Object.objects.filter(type=Object.EQUIPMENT,
+            equipmentcharacteristics__equipment_type=instance).values_list('pk', flat=True))
+
+        destroy = super().destroy(request, *args, **kwargs)
+        Object.objects.filter(pk__in=delete_equipment_list).delete()
+
+        organilab_logentry(request.user, instance, DELETION,
+                           "equipment type",
+                           relobj=organization)
+
+        return destroy
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
