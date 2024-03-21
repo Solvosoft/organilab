@@ -51,7 +51,8 @@ class EquipmentFilter(FilterSet):
         model = Object
         fields = {'id': ['exact'],
                   'name': ['icontains'],
-                  'code': ['icontains']
+                  'code': ['icontains'],
+                  'equipmentcharacteristics__equipment_type': ['exact']
                   }
 
 
