@@ -639,3 +639,8 @@ msgstr "No tienes permisos para ver o descargar el contrato."
 msgid "Internal participants"
 msgstr "Participantes internos"
 
+msgid "Create"
+msgstr "Crear"
+
+msgid "Equipment Type"
+msgstr "Tipo de Equipo"
