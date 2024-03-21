@@ -1311,12 +1311,20 @@ class CustomDateInputFormat(serializers.DateField):
     def to_representation(self, value):
         return value.strftime('%d/%m/%Y')
 
+class ValidateMaintenenceProviders(serializers.Serializer):
+    provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))
 
-class CreateMaintenanceSerializer(ValidateShelfobjectEditSerializer, serializers.ModelSerializer):
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        org_pk = self.context['org_pk']
+        organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),pk=org_pk)
+        fields['provider_of_maintenance'].queryset = Provider.objects.filter(laboratory__organization=organization)
+        return fields
+
+class CreateMaintenanceSerializer(ValidateShelfobjectEditSerializer, ValidateMaintenenceProviders, serializers.ModelSerializer):
     maintenance_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=False,
         allow_null=True)
-    provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))
     maintenance_observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
     validator = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE))
 
@@ -1324,11 +1332,12 @@ class CreateMaintenanceSerializer(ValidateShelfobjectEditSerializer, serializers
         model = ShelfObjectMaintenance
         fields = "__all__"
 
-class UpdateMaintenanceSerializer(ValidateShelfobjectEditSerializer,serializers.ModelSerializer):
+
+
+class UpdateMaintenanceSerializer(ValidateShelfobjectEditSerializer,ValidateMaintenenceProviders,serializers.ModelSerializer):
     maintenance_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=True)
-    provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))
     maintenance_observation = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
     class Meta:
@@ -1533,10 +1542,10 @@ class ValidateShelfObjectTrainingSerializer(ValidateShelfobjectEditSerializer, s
     training_final_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=True,
         allow_null=False)
-    number_of_hours = serializers.IntegerField(required=True)
+    number_of_hours = serializers.IntegerField(required=True, min_value=0)
     intern_people_receive_training = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE),
                                                                         many=True)
-    observation = serializers.CharField(max_length=500, required=False, allow_blank="")
+    observation = serializers.CharField(required=False, allow_blank="")
     external_people_receive_training = serializers.CharField(required=False, allow_blank="")
     place = serializers.CharField(max_length=100, required=False, allow_blank="")
 
