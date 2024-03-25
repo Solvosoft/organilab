@@ -55,7 +55,8 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     ShelfObjectTrainingeDatatableSerializer, ShelfObjectTrainingSerializer, \
     ShelfObjectLogtFilter, ShelfObjectCalibrateFilter, ShelfObjectTrainingFilter, \
     ShelfObjectMaintenanceFilter, ValidateShelfObjectGuaranteeSerializer, \
-    ShelfObjectGuarenteeFilter, ValidateShelfobjectEditSerializer
+    ShelfObjectGuarenteeFilter, ValidateShelfobjectEditSerializer, \
+    EditEquipmentShelfObjectSerializer, EditEquimentShelfobjectCharacteristicSerializer
 
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
@@ -418,6 +419,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
         "manage_shelfobject_container": ["laboratory.change_shelfobject"],
+        "edit_shelfobject": ["laboratory.change_shelfobject"],
+        "get_shelfobject": ["laboratory.viwe_shelfobject"],
 
     }
 
@@ -1130,6 +1133,49 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['put'])
+    def edit_equipment_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "edit_shelfobject")
+        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
+        serializer_equipment_charac = None
+        serializer_equipment = EditEquipmentShelfObjectSerializer(instance=shelf_object,data=request.data)
+        if hasattr(shelf_object,"shelfobjectequipmentcharacteristics"):
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,data=request.data)
+        else:
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(data=request.data)
+
+        errors = {}
+        if serializer_equipment.is_valid():
+           serializer_equipment.save()
+        else:
+            errors = serializer_equipment.errors
+
+        if serializer_equipment_charac.is_valid():
+            serializer_equipment_charac.save()
+        else:
+            errors = serializer_equipment_charac.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Shelfobject was updated successfully.")},
+                            status=status.HTTP_200_OK)
+
+
+    @action(detail=True, methods=['get'])
+    def get_equipment_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "get_shelfobject")
+        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
+        data = EditEquipmentShelfObjectSerializer(instance=shelf_object).data
+        if hasattr(shelf_object,"shelfobjectequipmentcharacteristics"):
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,
+                                                                                          context={"get_data":True,
+                                                                                                   "organization":org_pk})
+            data.update(serializer_equipment_charac.data)
+
+        return JsonResponse(data, status=status.HTTP_200_OK)
 
 class SearchLabView(viewsets.GenericViewSet):
     """

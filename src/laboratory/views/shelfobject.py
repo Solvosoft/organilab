@@ -45,7 +45,7 @@ from ..qr_utils import get_or_create_qr_shelf_object
 from ..shelfobject.forms import ShelfobjectMaintenanceForm, \
     UpdateShelfobjectMaintenanceForm, ShelfobjectLogForm, ShelfobjectCalibrateForm, \
     UpdateShelfobjectCalibrateForm, ShelfObjectGuaranteeForm, \
-    ShelfObjectTrainingForm
+    ShelfObjectTrainingForm, EditEquimentShelfobjectForm
 from ..utils import organilab_logentry
 from django.core.exceptions import ValidationError
 
@@ -594,6 +594,8 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
         "lab_pk": lab_pk,
         "pk": pk,
         "object": shelfobject,
+        "edit_form": EditEquimentShelfobjectForm(instance=shelfobject.shelfobjectequipmentcharacteristics, org_pk=org_pk,initial={"status":shelfobject.status,
+                                                                                                                    "description": shelfobject.description}),
         "qr":qr,
         "create_maintenance_form": ShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
                                                                        "organization": org_pk, "created_by": request.user.pk, "shelfobject":pk},

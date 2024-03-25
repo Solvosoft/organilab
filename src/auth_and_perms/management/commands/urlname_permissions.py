@@ -2592,6 +2592,14 @@ URLNAME_PERMISSIONS = {
             'category': 'Provider',
             'permission': 'laboratory.add_provider'
         },
-    ]
+    ],
+    'edit_equipment_shelfobject': [
+
+        {
+            'name': 'Change Shelf Object',
+            'category': 'Shelf Object',
+            'permission': 'laboratory.change_shelfobject'
+        },
+    ],
 
 }
