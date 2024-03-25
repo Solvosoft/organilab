@@ -1278,10 +1278,6 @@ class ValidateShelfobjectEditSerializer(serializers.Serializer):
         organization = data['organization']
         shelfobject = data['shelfobject']
 
-
-        if org_context != organization.pk:
-            raise serializers.ValidationError({'organization': _("Initial date cannot be greater than final date.")})
-
         if org_context != organization.pk:
             logger.debug(f'ValidateShelfobjectEditSerializer --> organization.pk ({organization.pk}) != org_context ({org_context})')
             raise serializers.ValidationError(
@@ -1673,7 +1669,6 @@ class ShelfObjectGuarenteeFilter(FilterSet):
         fields = {"created_by": ["exact"]}
 
 
-
 class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerializer):
 
     shelfobject = serializers.PrimaryKeyRelatedField(many=False,
@@ -1682,7 +1677,7 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
                                                     settings.READONLY_DATABASE),
                                                      allow_null=True,allow_empty=True)
     provider = serializers.PrimaryKeyRelatedField(many=False,
-                                                  required=False,
+                                                  required=True,
                                                 queryset=Provider.objects.using(
                                                     settings.READONLY_DATABASE),
                                                   allow_null=True, allow_empty=True)
@@ -1717,6 +1712,18 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
                 fields['provider'].queryset = Provider.objects.filter(pk__in=providers)
             fields['authorized_roles_to_use_equipment'].queryset = Rol.objects.filter(organizationstructure__pk=org)
         return fields
+
+    def validate(self, data):
+
+        shelfobject = data['shelfobject']
+
+        if shelfobject.object.type != Object.EQUIPMENT:
+           logger.debug(
+                f'EditEquimentShelfobjectCharacteristicSerializer --> shelfobject.object.type ({shelfobject.object.type}) !=  '
+                f'Object.EQUIPMENT ({Object.EQUIPMENT})')
+           raise serializers.ValidationError({'shelfobject': _("The shelfobject not is an equipment")})
+
+        return data
     class Meta:
         model = ShelfObjectEquipmentCharacteristics
         fields = ["shelfobject","provider","authorized_roles_to_use_equipment","equipment_price",
@@ -1734,3 +1741,24 @@ class EditEquipmentShelfObjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObject
         fields = ["status", "description"]
+
+    def validate(self, data):
+        org_context = self.context['org_pk']
+        lab_context = self.context['lab_pk']
+        shelfobject = self.instance
+
+        if lab_context != shelfobject.in_where_laboratory.pk:
+            logger.debug(
+                f'EditEquimentShelfobjectCharacteristicSerializer --> laboratory.pk ({lab_context}) != '
+                f'shelfobject.in_where_laboratory.pk ({shelfobject.in_where_laboratory.pk})')
+            raise serializers.ValidationError(
+                {'shelfobject': _("The shelfobject do not belong to the laboratory")})
+
+        if org_context != shelfobject.in_where_laboratory.organization.pk:
+            logger.debug(
+                f'EditEquimentShelfobjectCharacteristicSerializer --> org_context ({org_context}) != '
+                f'shelfobject.in_where_laboratory.organization.pk: ({shelfobject.in_where_laboratory.organization.pk:})')
+            raise serializers.ValidationError(
+                {'shelfobject': _("The shelfobject do not belong to the organization")})
+
+        return data

@@ -4455,3 +4455,6 @@ msgstr "Tipo de equipo"
 
 msgid "Edit Shelfobject"
 msgstr "Editar objeto de estantería"
+
+msgid "The shelf object not is an equipment"
+msgstr "El objeto de estantería no es un equipo"
