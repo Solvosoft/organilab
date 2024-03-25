@@ -10,6 +10,7 @@ $("#edit_button").click((e)=>{
 			},
 			success: (data) => {
 			Object.entries(data).forEach(function([name, value]){
+
 			    var inputfield = $("#equipment_form").find('input[name="'+name+'"], textarea[name="'+name+'"]')
 				var select_input = $("#id_"+name)
 				let done=false;
