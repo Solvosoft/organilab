@@ -23,7 +23,6 @@ def notify_shelf_object_reach_limit(sender, **kwargs):
 def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
     if hasattr(instance, "measurement_unit") and hasattr(instance,"quantity"):
-        print(instance)
         try:
             base_unit = BaseUnitValues.objects.get(
                 measurement_unit=instance.measurement_unit
