@@ -4452,3 +4452,6 @@ msgstr "Familia instrumental"
 
 msgid "Equipment type"
 msgstr "Tipo de equipo"
+
+msgid "Edit Shelfobject"
+msgstr "Editar objeto de estantería"
