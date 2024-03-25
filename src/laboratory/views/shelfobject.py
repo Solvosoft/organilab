@@ -588,14 +588,20 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
 def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE),pk=pk)
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
-
+    form = None
+    if hasattr(shelfobject,"shelfobjectequipmentcharacteristics"):
+        form=EditEquimentShelfobjectForm(instance=shelfobject.shelfobjectequipmentcharacteristics, org_pk=org_pk,initial={"status":shelfobject.status,
+                                                                                                                    "description": shelfobject.description})
+    else:
+        form = EditEquimentShelfobjectForm(org_pk=org_pk,
+                                           initial={"status":shelfobject.status,
+                                                    "description": shelfobject.description})
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
         "pk": pk,
         "object": shelfobject,
-        "edit_form": EditEquimentShelfobjectForm(instance=shelfobject.shelfobjectequipmentcharacteristics, org_pk=org_pk,initial={"status":shelfobject.status,
-                                                                                                                    "description": shelfobject.description}),
+        "edit_form": form,
         "qr":qr,
         "create_maintenance_form": ShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
                                                                        "organization": org_pk, "created_by": request.user.pk, "shelfobject":pk},

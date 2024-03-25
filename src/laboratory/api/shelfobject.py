@@ -1139,23 +1139,32 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "edit_shelfobject")
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
         serializer_equipment_charac = None
-        serializer_equipment = EditEquipmentShelfObjectSerializer(instance=shelf_object,data=request.data)
+        context = {"lab_pk":lab_pk,"org_pk":org_pk}
+        serializer_equipment = EditEquipmentShelfObjectSerializer(instance=shelf_object,
+                                                                  data=request.data,
+                                                                  context=context)
         if hasattr(shelf_object,"shelfobjectequipmentcharacteristics"):
-            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,data=request.data)
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,
+                                                                                          data=request.data,
+                                                                                          context=context)
         else:
-            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(data=request.data)
+            data = request.data.copy()
+            data.update({"shelfobject": shelf_object.pk})
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(data=data, context=context)
 
         errors = {}
+
         if serializer_equipment.is_valid():
-           serializer_equipment.save()
+            serializer_equipment.save()
+
+            if serializer_equipment_charac.is_valid():
+                serializer_equipment_charac.save()
+            else:
+                errors = serializer_equipment_charac.errors
+
         else:
             errors = serializer_equipment.errors
-
-        if serializer_equipment_charac.is_valid():
-            serializer_equipment_charac.save()
-        else:
-            errors = serializer_equipment_charac.errors
-
+        print(errors)
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
