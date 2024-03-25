@@ -1671,3 +1671,66 @@ class ShelfObjectGuarenteeFilter(FilterSet):
     class Meta:
         model = ShelfObjectGuarantee
         fields = {"created_by": ["exact"]}
+
+
+
+class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerializer):
+
+    shelfobject = serializers.PrimaryKeyRelatedField(many=False,
+                                                     required=True,
+                                                queryset=ShelfObject.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                     allow_null=True,allow_empty=True)
+    provider = serializers.PrimaryKeyRelatedField(many=False,
+                                                  required=False,
+                                                queryset=Provider.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                  allow_null=True, allow_empty=True)
+    authorized_roles_to_use_equipment = serializers.PrimaryKeyRelatedField(many=True,
+                                                queryset=Rol.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                required=False, allow_null=True,
+                                                                           allow_empty=True)
+    equipment_price = serializers.FloatField(required=False, default=0.0, min_value=0)
+    purchase_equipment_date = CustomDateInputFormat(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    delivery_equipment_date = CustomDateInputFormat(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    have_guarantee = serializers.BooleanField(required=False)
+    contract_of_maintenance = ChunkedFileField(required=False, allow_empty_file=True)
+    available_to_use = serializers.BooleanField(required=False, default=False)
+    first_date_use = CustomDateInputFormat(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False,
+        allow_null=True)
+    notes = serializers.CharField(allow_null=True, allow_blank=True,required=False)
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        if not self.context.get("get_data", None):
+            shelfobject = get_object_or_404(ShelfObject, pk=self.initial_data.get('shelfobject'))
+            org = self.context.get('organization', None)
+            obj = shelfobject.object
+            if hasattr(obj, "equipmentcharacteristics"):
+                providers = obj.equipmentcharacteristics.providers.values_list('pk',flat=True)
+                fields['provider'].queryset = Provider.objects.filter(pk__in=providers)
+            fields['authorized_roles_to_use_equipment'].queryset = Rol.objects.filter(organizationstructure__pk=org)
+        return fields
+    class Meta:
+        model = ShelfObjectEquipmentCharacteristics
+        fields = ["shelfobject","provider","authorized_roles_to_use_equipment","equipment_price",
+                  "purchase_equipment_date","delivery_equipment_date","have_guarantee",
+                  "contract_of_maintenance","available_to_use","first_date_use","notes"]
+
+class EditEquipmentShelfObjectSerializer(serializers.ModelSerializer):
+
+    status = serializers.PrimaryKeyRelatedField(many=False,
+                                                queryset=Catalog.objects.using(
+                                                    settings.READONLY_DATABASE),
+                                                required=True)
+    description = serializers.CharField(required=False)
+
+    class Meta:
+        model = ShelfObject
+        fields = ["status", "description"]
