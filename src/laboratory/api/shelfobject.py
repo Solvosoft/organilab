@@ -1154,19 +1154,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         errors = {}
 
-        if serializer_equipment.is_valid():
-            obj = serializer_equipment.save()
-            utils.organilab_logentry(request.user, obj, CHANGE,
-                                     'shelfobject', relobj=self.lab_pk)
-            if serializer_equipment_charac.is_valid():
-                obj_ch = serializer_equipment_charac.save()
-                utils.organilab_logentry(request.user, obj_ch, CHANGE,
-                                         'shelfobjectequipmentcharacteristics', relobj=self.lab_pk)
+        if serializer_equipment_charac.is_valid():
+            obj_ch = serializer_equipment_charac.save()
+            utils.organilab_logentry(request.user, obj_ch, CHANGE,
+                                     'shelfobjectequipmentcharacteristics',
+                                     relobj=lab_pk)
+
+            if serializer_equipment.is_valid():
+                obj = serializer_equipment.save()
+                utils.organilab_logentry(request.user, obj, CHANGE,
+                                         'shelfobject', relobj=lab_pk)
             else:
-                errors = serializer_equipment_charac.errors
+                errors = serializer_equipment.errors
 
         else:
-            errors = serializer_equipment.errors
+            errors = serializer_equipment_charac.errors
 
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)

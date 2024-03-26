@@ -2274,6 +2274,22 @@
       "container": 6
     }
   },
+    {
+    "model": "laboratory.shelfobject",
+    "pk": 15,
+    "fields": {
+      "shelf": 15,
+      "object": 7,
+      "quantity": 2.0,
+      "in_where_laboratory": 1,
+      "limit_quantity": 7.0,
+      "measurement_unit": 64,
+      "marked_as_discard": false,
+      "creation_date": "2023-01-31T19:33:49.240Z",
+      "last_update": "2023-01-31T19:33:49.272Z",
+      "container": null
+    }
+  },
   {
     "model": "laboratory.object",
     "pk": 8,
@@ -2393,6 +2409,27 @@
     "fields": {
       "name": "Equipo Auxiliar",
       "description": "Permiten realizar las actividades cotidianas en una clase de laboratorio."
+    }
+  },
+    {
+    "model": "laboratory.shelfobjectequipmentcharacteristics",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2024-03-22T16:26:26.184Z",
+      "last_update": "2024-03-25T20:44:54.934Z",
+      "created_by": 1,
+      "shelfobject": 15,
+      "provider": 2,
+      "equipment_price": 25800.0,
+      "purchase_equipment_date": "2024-03-23",
+      "delivery_equipment_date": "2024-03-31",
+      "have_guarantee": false,
+      "contract_of_maintenance": "",
+      "notes": "Good",
+      "available_to_use": true,
+      "first_date_use": "2024-03-23",
+      "authorized_roles_to_use_equipment": [1, 5]
     }
   }
 ]
