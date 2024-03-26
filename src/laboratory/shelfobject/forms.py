@@ -9,7 +9,8 @@ from auth_and_perms.models import Profile, Rol
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
     LaboratoryRoom, Furniture, ShelfObjectMaintenance, ShelfObjectLog, \
-    ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining
+    ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining, \
+    ShelfObjectEquipmentCharacteristics, OrganizationStructure
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
@@ -695,4 +696,50 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
             'organization': genwidgets.HiddenInput,
             'created_by': genwidgets.HiddenInput,
             'shelfobject':genwidgets.HiddenInput,
+        }
+
+class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
+    description = forms.CharField(widget=genwidgets.Textarea, label=_("Description"))
+    status = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='shelfobject_status'), label=_("Status"), widget=genwidgets.Select)
+
+
+    def __init__(self, *args, **kwargs):
+        org = kwargs.pop("org_pk")
+        super(EditEquimentShelfobjectForm, self).__init__(*args, **kwargs)
+
+        self.fields['provider'] = forms.ModelChoiceField(
+            queryset=Provider.objects.all(),
+            label= _("Provider"),
+            widget=AutocompleteSelect('object_providers', attrs={
+                'data-dropdownparent': "#equipment_form",
+                'data-s2filter-object': '#id_object',
+                'data-s2filter-laboratory': '#id_laboratory',
+                'data-s2filter-organization': '#id_organization'
+            }))
+        org= OrganizationStructure.objects.get(pk=org)
+        self.fields['authorized_roles_to_use_equipment'].queryset= Rol.objects.filter(pk__in=org.rol.values_list('pk',flat=True))
+
+    field_order = ["status","provider","authorized_roles_to_use_equipment",
+                       "equipment_price","purchase_equipment_date", "delivery_equipment_date",
+                       "available_to_use", "first_date_use", "have_guarantee",
+                       "contract_of_maintenance", "notes", "description"]
+    class Meta:
+
+        model = ShelfObjectEquipmentCharacteristics
+        fields = "__all__"
+
+        exclude = ["created_by"]
+        widgets = {
+            "organization": genwidgets.HiddenInput,
+            "shelfobject": genwidgets.HiddenInput,
+            "provider": genwidgets.Select,
+            "authorized_roles_to_use_equipment": genwidgets.SelectMultiple,
+            "equipment_price": genwidgets.TextInput,
+            "purchase_equipment_date": genwidgets.DateInput,
+            "delivery_equipment_date": genwidgets.DateInput,
+            "have_guarantee": genwidgets.YesNoInput,
+            "notes": genwidgets.Textarea,
+            "contract_of_maintenance": FileChunkedUpload,
+            "available_to_use":genwidgets.YesNoInput,
+            "first_date_use":genwidgets.DateInput,
         }
