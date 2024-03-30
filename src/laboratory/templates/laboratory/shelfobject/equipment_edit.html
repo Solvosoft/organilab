@@ -44,6 +44,29 @@
       </div>
     </div>
 
+
+<div class="card mb-3">
+	<div class="card-header">
+		<h3 class="card-title text-center"  data-bs-toggle="collapse" href="#editequipmentcollapse" role="button" aria-expanded="false" aria-controls="editequipmentcollapse">
+			{% trans 'Click to edit equipment'%}</h3>
+	</div>
+	<div class="collapse multi-collapse" id="editequipmentcollapse">
+	<div class="card-body">
+		<form id="equipment_form" autocomplete="off" action="{% url 'laboratory:api-shelfobject-edit-equipment-shelfobject'  org_pk lab_pk object.pk %}">
+						{% csrf_token %}
+						{{edit_form.as_horizontal}}
+					<input type="hidden" class="form_prefix" value="" />
+		</form>
+	</div>
+		<div class="card-footer">
+		<button class="btn btn-success formadd">{% trans 'Update' %}</button>
+	</div>
+	</div>
+
+</div>
+
+
+
 <div class="card">
 		<div class="card-header">
 				<h1 class="card-title text-center">{% trans 'Logs' %}</h1>
@@ -144,26 +167,6 @@
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_training_modal" form_id="delete_training_form" url=detail_training_url %}
 
-<div class="modal fade" id="edit_equipment" tabindex="-1" aria-labelledby="edit_equipmentLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="edit_equipmentLabel">{% trans 'Edit Shelfobject' %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-							<form id="equipment_form" autocomplete="off">
-            {% csrf_token %}
-        				{{edit_form.as_horizontal}}
-							</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> {% trans 'Close' %}</button>
-        <button type="button" id="save_equipment" class="btn btn-success"> <i class="fa fa-floppy-o" aria-hidden="true"></i> {% trans 'Save' %}</button>
-						</div>
-    </div>
-  </div>
-</div>
 {% endblock %}
 {% block js %}
 {{block.super}}
@@ -219,7 +222,7 @@ window.name = "equipmenteditview";
 	const provider_url = "{% url 'laboratory:list_provider' lab_pk=lab_pk org_pk=org_pk %}";
 
 </script>
-    <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
-    <script type="text/javascript" src="{% static 'laboratory/js/edit_equipment_shelfobject.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'laboratory/js/edit_equipment_shelfobject.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock %}

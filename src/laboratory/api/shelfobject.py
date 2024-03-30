@@ -1171,7 +1171,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             errors = serializer_equipment_charac.errors
 
         if errors:
-            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(errors, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse({"detail": _("Shelfobject was updated successfully.")},
                             status=status.HTTP_200_OK)
