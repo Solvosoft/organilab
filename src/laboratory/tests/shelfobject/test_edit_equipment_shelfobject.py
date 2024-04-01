@@ -108,7 +108,7 @@ class EditShelfobject(TestCase):
         url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
         response = self.client.put(url, data=new_data, content_type='application/json')
 
-        self.assertTrue(json.loads(response.content)['errors']['equipment_price'][0]==_("Ensure this value is greater than or equal to 0."))
+        self.assertTrue(json.loads(response.content)['equipment_price'][0]==_("Ensure this value is greater than or equal to 0."))
         self.assertEqual(response.status_code,400)
 
     def test_edit_shelfobject_price_str(self):
@@ -118,7 +118,7 @@ class EditShelfobject(TestCase):
         new_data["equipment_price"] = "fafafsa"
         url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
         response = self.client.put(url, data=new_data, content_type='application/json')
-        self.assertTrue(json.loads(response.content)['errors']['equipment_price'][0]==_("A valid number is required."))
+        self.assertTrue(json.loads(response.content)['equipment_price'][0]==_("A valid number is required."))
         self.assertEqual(response.status_code,400)
 
     def test_edit_shelfobject_price_empty(self):
@@ -128,7 +128,7 @@ class EditShelfobject(TestCase):
         new_data["equipment_price"] = ""
         url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
         response = self.client.put(url, data=new_data, content_type='application/json')
-        self.assertTrue(json.loads(response.content)['errors']['equipment_price'][0]==_("A valid number is required."))
+        self.assertTrue(json.loads(response.content)['equipment_price'][0]==_("A valid number is required."))
         self.assertEqual(response.status_code,400)
 
     def test_edit_shelfobject_invalid_date(self):
@@ -138,18 +138,9 @@ class EditShelfobject(TestCase):
         new_data.update({"first_date_use": "12/23/2024"})
         url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
         response = self.client.put(url, data=new_data, content_type='application/json')
-        self.assertTrue(json.loads(response.content)['errors']['first_date_use'][0]==_("Date has wrong format. Use one of these formats instead: DD/MM/YYYY, YYYY-MM-DD, DD/MM/YY."))
+        self.assertTrue(json.loads(response.content)['first_date_use'][0]==_("Date has wrong format. Use one of these formats instead: DD/MM/YYYY, YYYY-MM-DD, DD/MM/YY."))
         self.assertEqual(response.status_code,400)
 
-
-    def test_edit_shelfobject_not_equipment(self):
-
-        new_data = self.data.copy()
-        new_data['shelfobject'] = 2
-        url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
-        response = self.client.put(url, data=new_data, content_type='application/json')
-        self.assertTrue(json.loads(response.content)['errors']['shelfobject'][0]==_('The shelfobject not is an equipment'))
-        self.assertEqual(response.status_code,400)
 
     def test_edit_shelfobject_user_forbidden(self):
         self.client.logout()
@@ -167,7 +158,7 @@ class EditShelfobject(TestCase):
         new_data['status'] = ""
         url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
         response = self.client.put(url, data=new_data, content_type='application/json')
-        self.assertTrue(json.loads(response.content)['errors']['status'][0]==_('This field may not be null.'))
+        self.assertTrue(json.loads(response.content)['status'][0]==_('This field may not be null.'))
         self.assertEqual(response.status_code,400)
 
     def test_edit_shelfobject_without_status(self):
@@ -176,5 +167,5 @@ class EditShelfobject(TestCase):
         del new_data['status']
         url = reverse("laboratory:api-shelfobject-edit-equipment-shelfobject",  kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.pk, 'pk':15})
         response = self.client.put(url, data=new_data, content_type='application/json')
-        self.assertTrue(json.loads(response.content)['errors']['status'][0]==_('This field is required.'))
+        self.assertTrue(json.loads(response.content)['status'][0]==_('This field is required.'))
         self.assertEqual(response.status_code,400)

@@ -599,6 +599,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
+        "laboratory": lab_pk,
         "pk": pk,
         "object": shelfobject,
         "edit_form": form,

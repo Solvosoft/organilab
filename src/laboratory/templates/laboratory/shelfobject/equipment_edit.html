@@ -29,11 +29,6 @@
               <div class="d-flex justify-content-end ">  <i class="fa fa-trash fa-lg text-danger" aria-hidden="true" title="{% trans 'Is discard' %}"></i></div>
               {% endif %}
             <h5 class="card-title text-success">{{ object.object.code }} -- {{ object.object.name }}
-													{% if request.user.perms == laboratory.change_shelfobject %}
-													<button class="btn btn-sm btn-secondary ms-2" id="edit_button" data-bs-toggle="modal" data-bs-target="#edit_equipment">
-																<i class="fa fa-edit" title="{% trans 'Edit Shelfobject' %}"></i>
-													</button>
-													{% endif %}
 													<div class="d-flex justify-content-evenly"></div>
             </h5>
             <p class="d-flex justify-content-start" style="text-align: justify">{{ object.object.description }}</p>
@@ -171,10 +166,6 @@
 {% block js %}
 {{block.super}}
 <script>
-	edit_equipment_urls = {
-																			get: "{% url 'laboratory:api-shelfobject-get-equipment-shelfobject' org_pk=org_pk lab_pk=lab_pk pk=object.pk %}",
-																			edit: "{% url 'laboratory:api-shelfobject-edit-equipment-shelfobject' org_pk=org_pk lab_pk=lab_pk pk=object.pk %}"
-	}
 
 window.name = "equipmenteditview";
 	var can_contract = false;

@@ -1303,9 +1303,15 @@ class ProviderDisplayNameSerializer(GTS2SerializerBase):
 class UserDisplayNameSerializer(GTS2SerializerBase):
     display_fields = ['first_name','last_name']
 
+
 class CustomDateInputFormat(serializers.DateField):
     def to_representation(self, value):
         return value.strftime('%d/%m/%Y')
+
+    def to_internal_value(self, value):
+        if not value:
+            return None
+        return super(CustomDateInputFormat, self).to_internal_value(value)
 
 class ValidateMaintenenceProviders(serializers.Serializer):
     provider_of_maintenance = serializers.PrimaryKeyRelatedField(queryset=Provider.objects.using(settings.READONLY_DATABASE))

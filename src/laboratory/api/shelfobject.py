@@ -1143,13 +1143,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         serializer_equipment = EditEquipmentShelfObjectSerializer(instance=shelf_object,
                                                                   data=request.data,
                                                                   context=context)
+        data = request.data.copy()
+        data.update({"shelfobject": shelf_object.pk})
+
         if hasattr(shelf_object,"shelfobjectequipmentcharacteristics"):
             serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,
-                                                                                          data=request.data,
+                                                                                          data=data,
                                                                                           context=context)
         else:
-            data = request.data.copy()
-            data.update({"shelfobject": shelf_object.pk})
             serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(data=data, context=context)
 
         errors = {}
@@ -1176,20 +1177,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         return JsonResponse({"detail": _("Shelfobject was updated successfully.")},
                             status=status.HTTP_200_OK)
 
-
-    @action(detail=True, methods=['get'])
-    def get_equipment_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
-
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, "get_shelfobject")
-        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
-        data = EditEquipmentShelfObjectSerializer(instance=shelf_object).data
-        if hasattr(shelf_object,"shelfobjectequipmentcharacteristics"):
-            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,
-                                                                                          context={"get_data":True,
-                                                                                                   "organization":org_pk})
-            data.update(serializer_equipment_charac.data)
-
-        return JsonResponse(data, status=status.HTTP_200_OK)
 
 class SearchLabView(viewsets.GenericViewSet):
     """
