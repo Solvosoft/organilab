@@ -162,35 +162,26 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         path_list = [
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]","screenshot_name":"reactive_object"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[1]/a"},
-            {"path": "//*[@id='id_name']", "extra_action": "clearInput"},
             {"path": "//*[@id='id_name']", "extra_action": "setvalue", "value": "BEA143 Beakers 50 mL"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[1]/span[2]"},
             {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {"path": "//*[@id='id_synonym']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_synonym']", "extra_action": "setvalue", "value":"ss454"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[2]/span[2]/span[1]/span"},
             {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {"path": "//*[@id='id_code']", "extra_action": "clearIvput"},
             {"path": "//*[@id='id_code']", "extra_action": "setvalue", "value": "CE-456"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[3]/span[2]/span[1]/span"},
             {"path": "/html/body/span/span/span/ul/li[2]"},
-            {"path": "//*[@id='id_description']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_description']", "extra_action": "setvalue", "value":
                 "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente ,",
                 "scroll":"window.scrollTo(0, 400)"
             },
-            {"path": "//*[@id='id_molecular_formula']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_molecular_formula']", "extra_action": "setvalue", "value": "AE2"},
-            {"path": "//*[@id='id_cas_id_number']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_cas_id_number']", "extra_action": "setvalue", "value": "12633468"},
-            {"path": "//*[@id='id_model']", "extra_action": "clearinput",
-             "scroll": "window.scrollTo(0, 400)"},
+            {"path": "//*[@id='id_model']", "scroll": "window.scrollTo(0, 400)"},
             {"path": "//*[@id='id_model']", "extra_action": "setvalue",
              "value": "CA-546"},
-            {"path": "//*[@id='id_serie']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_serie']", "extra_action": "setvalue",
              "value": "B54897"},
-            {"path": "//*[@id='id_plaque']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_plaque']", "extra_action": "setvalue", "value": "5634646465"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[2]/div[9]/span[2]/span[1]/span"},
             {"path": "/html/body/span/span/span/ul/li[2]"},
@@ -214,8 +205,8 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
         path_list = [
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a[2]"},
-            {"path": "//*[@id='id_name']", "extra_action": "clearInput"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[2]/td[4]/a[1]"},
+            {"path": "//*[@id='id_name']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_name']", "extra_action": "setvalue", "value": "BEA143 Beakers 50 mL"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[1]/span[2]"},
             {"path": "/html/body/span/span/span[2]/ul/li[2]"},
@@ -223,7 +214,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             {"path": "//*[@id='id_synonym']", "extra_action": "setvalue", "value":"ss454"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[2]/span[2]/span[1]/span"},
             {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {"path": "//*[@id='id_code']", "extra_action": "clearIvput"},
+            {"path": "//*[@id='id_code']", "extra_action": "clearinput"},
             {"path": "//*[@id='id_code']", "extra_action": "setvalue", "value": "CE-456"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[3]/span[2]/span[1]/span"},
             {"path": "/html/body/span/span/span/ul/li[2]"},
@@ -254,7 +245,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         path_list = [
 
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a[3]"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a[2]"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/form/input[3]"},
 
             ]
