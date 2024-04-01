@@ -214,7 +214,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
         path_list = [
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"},
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[2]/a"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a[2]"},
             {"path": "//*[@id='id_name']", "extra_action": "clearInput"},
             {"path": "//*[@id='id_name']", "extra_action": "setvalue", "value": "BEA143 Beakers 50 mL"},
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[1]/span[2]"},
@@ -252,8 +252,9 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
     def test_delete_reactive(self):
         self.selenium.get(url= self.live_server_url + str(reverse('laboratory:labindex',kwargs={"org_pk":1,"lab_pk":1})))
         path_list = [
+
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a[3]"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/form/input[3]"},
 
             ]
