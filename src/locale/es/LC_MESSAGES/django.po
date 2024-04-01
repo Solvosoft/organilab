@@ -4458,3 +4458,9 @@ msgstr "Editar objeto de estantería"
 
 msgid "The shelf object not is an equipment"
 msgstr "El objeto de estantería no es un equipo"
+
+msgid "Shelfobject was updated successfully."
+msgstr "El objeto de estantería fue actualizado correctamente."
+
+msgid "Click to edit equipment"
+msgstr "Haga clic para editar el equipo"

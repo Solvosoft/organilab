@@ -714,7 +714,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
                 'data-dropdownparent': "#equipment_form",
                 'data-s2filter-object': '#id_object',
                 'data-s2filter-laboratory': '#id_laboratory',
-                'data-s2filter-organization': '#id_organization'
+                'data-s2filter-organization': '#organization'
             }))
         org= OrganizationStructure.objects.get(pk=org)
         self.fields['authorized_roles_to_use_equipment'].queryset= Rol.objects.filter(pk__in=org.rol.values_list('pk',flat=True))
