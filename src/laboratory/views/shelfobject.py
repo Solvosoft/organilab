@@ -27,7 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
-from djgentelella.forms.forms import CustomForm, GTForm
+from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
@@ -151,7 +151,7 @@ class ShelfObjectForm(forms.ModelForm,GTForm):
 
         }
 
-class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
+class ShelfObjectRefuseForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         objecttype = kwargs.pop('objecttype', None)
@@ -209,7 +209,7 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
         }
 
 
-class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
+class ShelfObjectFormUpdate(GTForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput, required=False)
     row = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
@@ -224,7 +224,7 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
             'measurement_unit': core.Select
         }
 
-class ShelfObjectRefuseFormUpdate(CustomForm, forms.ModelForm):
+class ShelfObjectRefuseFormUpdate(GTForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput, required=False)
     row = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
