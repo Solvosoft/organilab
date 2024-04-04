@@ -581,7 +581,11 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().create(request, *args, **kwargs)
+        create = super().create(request, *args, **kwargs)
+        instance = self.get_object()
+        organilab_logentry(request.user, instance, ADDITION, "catalog",
+                           changed_data=["key", "description"])
+        return create
 
     def perform_create(self, serializer):
         serializer.save(key="instrumental_family")
@@ -589,12 +593,19 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
     def destroy(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().destroy(request, *args, **kwargs)
+        instance = self.get_object()
+        organilab_logentry(request.user, instance, DELETION, "catalog")
+        destroy = super().destroy(request, *args, **kwargs)
+        return destroy
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().update(request, *args, **kwargs)
+        update = super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        organilab_logentry(request.user, instance, CHANGE, "catalog",
+                           changed_data=["key", "description"])
+        return update
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']
@@ -630,7 +641,14 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().create(request, *args, **kwargs)
+        organization = get_object_or_404(OrganizationStructure.objects.using(
+            settings.READONLY_DATABASE), pk=self.org_pk)
+        create = super().create(request, *args, **kwargs)
+        instance = self.get_object()
+        organilab_logentry(request.user, instance, ADDITION, "equipment type",
+                           changed_data=["name", "description"],
+                           relobj=organization)
+        return create
 
     def destroy(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -642,19 +660,37 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
         delete_equipment_list = list(Object.objects.filter(type=Object.EQUIPMENT,
             equipmentcharacteristics__equipment_type=instance).values_list('pk', flat=True))
 
-        destroy = super().destroy(request, *args, **kwargs)
-        Object.objects.filter(pk__in=delete_equipment_list).delete()
-
         organilab_logentry(request.user, instance, DELETION,
                            "equipment type",
                            relobj=organization)
+
+        destroy = super().destroy(request, *args, **kwargs)
+        equipment_list = Object.objects.filter(pk__in=delete_equipment_list)
+        shelfobject_equipment_list = ShelfObject.objects.filter(object__in=equipment_list)
+
+        for obj_equipment in equipment_list:
+            organilab_logentry(request.user, obj_equipment, DELETION, "equipment object",
+                               relobj=organization)
+
+        for shelfobj_equipment in shelfobject_equipment_list:
+            organilab_logentry(request.user, shelfobj_equipment, DELETION, "shelfobject equipment",
+                               relobj=organization)
+
+        equipment_list.delete()
 
         return destroy
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
-        return super().update(request, *args, **kwargs)
+        organization = get_object_or_404(OrganizationStructure.objects.using(
+            settings.READONLY_DATABASE), pk=self.org_pk)
+        update = super().update(request, *args, **kwargs)
+        instance = self.get_object()
+        organilab_logentry(request.user, instance, CHANGE, "equipment type",
+                           changed_data=["name", "description"],
+                           relobj=organization)
+        return update
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']
