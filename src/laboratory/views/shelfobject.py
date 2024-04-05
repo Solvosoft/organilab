@@ -583,13 +583,16 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE),pk=pk)
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
     form = None
-    if hasattr(shelfobject,"shelfobjectequipmentcharacteristics"):
-        form=EditEquimentShelfobjectForm(instance=shelfobject.shelfobjectequipmentcharacteristics, org_pk=org_pk,initial={"status":shelfobject.status,
-                                                                                                                    "description": shelfobject.description})
+    if hasattr(shelfobject, "shelfobjectequipmentcharacteristics"):
+        form = EditEquimentShelfobjectForm(
+            instance=shelfobject.shelfobjectequipmentcharacteristics,
+            org_pk=org_pk, initial={"status": shelfobject.status, "description":
+                shelfobject.description, "marked_as_discard":
+                shelfobject.marked_as_discard})
     else:
-        form = EditEquimentShelfobjectForm(org_pk=org_pk,
-                                           initial={"status":shelfobject.status,
-                                                    "description": shelfobject.description})
+        form = EditEquimentShelfobjectForm(org_pk=org_pk, initial={
+            "status": shelfobject.status, "marked_as_discard":
+                shelfobject.marked_as_discard, "description": shelfobject.description})
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
@@ -597,24 +600,31 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
         "pk": pk,
         "object": shelfobject,
         "edit_form": form,
-        "qr":qr,
-        "create_maintenance_form": ShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
-                                                                       "organization": org_pk, "created_by": request.user.pk, "shelfobject":pk},
-                                                              org_pk=org_pk, prefix="create_maintenance"),
-        "update_maintenance_form": UpdateShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
-                                                                             "organization": org_pk, "created_by": request.user.pk,
-                                                                             "shelfobject":pk},
-                                                                    prefix="update_maintenance", org_pk=org_pk),
+        "qr": qr,
+        "create_maintenance_form": ShelfobjectMaintenanceForm(
+            initial={"validator": request.user.profile.pk,
+                     "organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            org_pk=org_pk, prefix="create_maintenance"),
+        "update_maintenance_form": UpdateShelfobjectMaintenanceForm(
+            initial={"validator": request.user.profile.pk,
+                     "organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            prefix="update_maintenance", org_pk=org_pk),
         "create_log_form": ShelfobjectLogForm(initial={"organization": org_pk,
-                                                       "created_by": request.user.pk, "shelfobject": pk},
-                                               prefix="create_log"),
-        "create_calibrate_form": ShelfobjectCalibrateForm(initial={"organization": org_pk,
-                                                                   "created_by": request.user.pk, "shelfobject": pk,
-                                                             "validator": request.user.profile.pk},
-                                               prefix="create_calibrate"),
-        "update_calibrate_form": UpdateShelfobjectCalibrateForm(initial={"organization": org_pk,"created_by": request.user.pk, "shelfobject": pk,
-                                                             "validator": request.user.profile.pk},
-                                               prefix="update_calibrate"),
+                                                       "created_by": request.user.pk,
+                                                       "shelfobject": pk},
+                                              prefix="create_log"),
+        "create_calibrate_form": ShelfobjectCalibrateForm(
+            initial={"organization": org_pk,
+                     "created_by": request.user.pk, "shelfobject": pk,
+                     "validator": request.user.profile.pk},
+            prefix="create_calibrate"),
+        "update_calibrate_form": UpdateShelfobjectCalibrateForm(
+            initial={"organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk,
+                     "validator": request.user.profile.pk},
+            prefix="update_calibrate"),
         "guarantee_form": ShelfObjectGuaranteeForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},
@@ -622,7 +632,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
         "update_training_form": ShelfObjectTrainingForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},
-            prefix="training_form", id_form= "#update_training_form"),
+            prefix="training_form", id_form="#update_training_form"),
         "training_form": ShelfObjectTrainingForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},

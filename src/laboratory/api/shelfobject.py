@@ -1138,7 +1138,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         self._check_permission_on_laboratory(request, org_pk, lab_pk, "edit_shelfobject")
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
-        serializer_equipment_charac = None
         context = {"lab_pk":lab_pk,"org_pk":org_pk}
         serializer_equipment = EditEquipmentShelfObjectSerializer(instance=shelf_object,
                                                                   data=request.data,
