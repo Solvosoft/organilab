@@ -6,49 +6,42 @@ Created on 26/12/2016
 '''
 
 import json
-from base64 import b64decode
 
-import cairosvg
-import base64
 from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
 from djgentelella.decorators.perms import all_permission_required
-from djgentelella.forms.forms import CustomForm, GTForm
+from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
+    organization_can_change_laboratory
 from laboratory import utils
-from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm, ValidateShelfForm
-
-from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
-from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
+from laboratory.forms import ReservationModalForm, ShelfObjectListForm, \
+    ValidateShelfForm
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, \
+    OrganizationStructure, Furniture
+from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, DetailView
 from presentation.models import QRModel
-from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
-from ..logsustances import log_object_change, log_object_add_change
+from ..logsustances import log_object_change
 from ..qr_utils import get_or_create_qr_shelf_object
 from ..shelfobject.forms import ShelfobjectMaintenanceForm, \
     UpdateShelfobjectMaintenanceForm, ShelfobjectLogForm, ShelfobjectCalibrateForm, \
     UpdateShelfobjectCalibrateForm, ShelfObjectGuaranteeForm, \
     ShelfObjectTrainingForm, EditEquimentShelfobjectForm
-from ..utils import organilab_logentry
-from django.core.exceptions import ValidationError
 
 
 @login_required
@@ -152,7 +145,7 @@ class ShelfObjectForm(forms.ModelForm,GTForm):
 
         }
 
-class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
+class ShelfObjectRefuseForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         objecttype = kwargs.pop('objecttype', None)
@@ -210,7 +203,7 @@ class ShelfObjectRefuseForm(CustomForm, forms.ModelForm):
         }
 
 
-class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
+class ShelfObjectFormUpdate(GTForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput, required=False)
     row = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
@@ -225,7 +218,7 @@ class ShelfObjectFormUpdate(CustomForm, forms.ModelForm):
             'measurement_unit': core.Select
         }
 
-class ShelfObjectRefuseFormUpdate(CustomForm, forms.ModelForm):
+class ShelfObjectRefuseFormUpdate(GTForm, forms.ModelForm):
     col = forms.IntegerField(widget=forms.HiddenInput, required=False)
     row = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
