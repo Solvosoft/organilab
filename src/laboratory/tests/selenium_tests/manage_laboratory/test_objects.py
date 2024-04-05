@@ -273,8 +273,8 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
 
     def test_view_object_features_dropdown(self):
         path_list = self.path_base+[
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[5]"},
-            {"path":".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[5]/ul/li[9]/a"}
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/a"},
+            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[9]/a"},
             ]
         self.create_gif_process(path_list, "view_object_features_dropdown")
 
