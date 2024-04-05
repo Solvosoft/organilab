@@ -1727,7 +1727,7 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
            logger.debug(
                 f'EditEquimentShelfobjectCharacteristicSerializer --> shelfobject.object.type ({shelfobject.object.type}) !=  '
                 f'Object.EQUIPMENT ({Object.EQUIPMENT})')
-           raise serializers.ValidationError({'shelfobject': _("The shelfobject not is an equipment")})
+           raise serializers.ValidationError({'shelfobject': _("Shelf object is not an equipment")})
 
         return data
     class Meta:

@@ -27,6 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
+from djgentelella.decorators.perms import all_permission_required
 from djgentelella.forms.forms import CustomForm, GTForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
@@ -584,7 +585,7 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     response['Content-Disposition'] = 'attachment; filename="shelfobject_%s.svg"' % (shelfobject.pk)
     return response
 
-@permission_required('laboratory.view_shelfobject')
+@all_permission_required(['laboratory.change_shelfobject', 'laboratory.view_shelfobject'])
 def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE),pk=pk)
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
