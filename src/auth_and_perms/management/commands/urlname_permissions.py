@@ -2458,87 +2458,86 @@ URLNAME_PERMISSIONS = {
         'permission': 'sga.view_recipientsize'
         }
     ],
-
     'equipment_shelfobject_actions': [
 
         {
-            'name': 'View Shelfobject Log',
-            'category': 'Shelfobject Log',
+            'name': 'View Shelf Object Log',
+            'category': 'Shelf Object Log',
             'permission': 'laboratory.view_shelfobjectlog'
         },
         {
-            'name': 'Add Shelfobject Log',
-            'category': 'Shelfobject Log',
+            'name': 'Add Shelf Object Log',
+            'category': 'Shelf Object Log',
             'permission': 'laboratory.add_shelfobjectlog'
         },
         {
-            'name': 'Change Shelfobject Log',
-            'category': 'Shelfobject Log',
+            'name': 'Change Shelf Object Log',
+            'category': 'Shelf Object Log',
             'permission': 'laboratory.change_shelfobjectlog'
         },
         {
-            'name': 'Delete Shelfobject Log',
-            'category': 'Shelfobject Log',
+            'name': 'Delete Shelf Object Log',
+            'category': 'Shelf Object Log',
             'permission': 'laboratory.delete_shelfobjectlog'
         },
         {
-            'name': 'View Shelfobject Calibrations',
-            'category': 'Shelfobject Calibrate',
+            'name': 'View Shelf Object Calibration',
+            'category': 'Shelf Object Calibration',
             'permission': 'laboratory.view_shelfobjectcalibrate'
         },
         {
-            'name': 'Add Shelfobject Calibration',
-            'category': 'Shelfobject Calibrate',
+            'name': 'Add Shelf Object Calibration',
+            'category': 'Shelf Object Calibration',
             'permission': 'laboratory.add_shelfobjectcalibrate'
         },
         {
-            'name': 'Change Shelfobject Calibration',
-            'category': 'Shelfobject Calibrate',
+            'name': 'Change Shelf Object Calibration',
+            'category': 'Shelf Object Calibration',
             'permission': 'laboratory.change_shelfobjectcalibrate'
         },
         {
-            'name': 'Delete Shelfobject Calibration',
-            'category': 'Shelfobject Calibrate',
+            'name': 'Delete Shelf Object Calibration',
+            'category': 'Shelf Object Calibration',
             'permission': 'laboratory.delete_shelfobjectcalibrate'
         },
         {
-            'name': 'View Shelfobject Guarantee',
-            'category': 'Shelfobject Guarantee',
+            'name': 'View Shelf Object Guarantee',
+            'category': 'Shelf Object Guarantee',
             'permission': 'laboratory.view_shelfobjectguarantee'
         },
         {
-            'name': 'Add Shelfobject Guarantee',
-            'category': 'Shelfobject Guarantee',
+            'name': 'Add Shelf Object Guarantee',
+            'category': 'Shelf Object Guarantee',
             'permission': 'laboratory.add_shelfobjectguarantee'
         },
         {
-            'name': 'Change Shelfobject Guarantee',
-            'category': 'Shelfobject Guarantee',
+            'name': 'Change Shelf Object Guarantee',
+            'category': 'Shelf Object Guarantee',
             'permission': 'laboratory.change_shelfobjectguarantee'
         },
         {
-            'name': 'Delete Shelfobject Guarantee',
-            'category': 'Shelfobject Guarantee',
+            'name': 'Delete Shelf Object Guarantee',
+            'category': 'Shelf Object Guarantee',
             'permission': 'laboratory.delete_shelfobjectguarantee'
         },
         {
-            'name': 'View Shelfobject Training',
-            'category': 'Shelfobject Training',
+            'name': 'View Shelf Object Training',
+            'category': 'Shelf Object Training',
             'permission': 'laboratory.view_shelfobjecttraining'
         },
         {
-            'name': 'Add Shelfobject Training',
-            'category': 'Shelfobject Training',
+            'name': 'Add Shelf Object Training',
+            'category': 'Shelf Object Training',
             'permission': 'laboratory.add_shelfobjecttraining'
         },
         {
-            'name': 'Change Shelfobject Training',
-            'category': 'Shelfobject Training',
+            'name': 'Change Shelf Object Training',
+            'category': 'Shelf Object Training',
             'permission': 'laboratory.change_shelfobjecttraining'
         },
         {
-            'name': 'Delete Shelfobject Training',
-            'category': 'Shelfobject Training',
+            'name': 'Delete Shelf Object Training',
+            'category': 'Shelf Object Training',
             'permission': 'laboratory.delete_shelfobjecttraining'
         },
     ],
@@ -2551,36 +2550,45 @@ URLNAME_PERMISSIONS = {
         },
     ],
     'equipment_manager': [
-
         {
             'name': 'View Equipment Type',
-            'category': 'Equipment',
+            'category': 'Equipment Type',
             'permission': 'laboratory.view_equipmenttype'
         },
         {
             'name': 'Add Equipment Type',
-            'category': 'Equipment',
+            'category': 'Equipment Type',
             'permission': 'laboratory.add_equipmenttype'
         },
         {
             'name': 'Change Equipment Type',
-            'category': 'Equipment',
+            'category': 'Equipment Type',
             'permission': 'laboratory.change_equipmenttype'
         },
         {
             'name': 'Delete Equipment Type',
-            'category': 'Equipment',
+            'category': 'Equipment Type',
             'permission': 'laboratory.delete_equipmenttype'
         },
         {
             'name': 'Add Object Features',
-            'category': 'Equipment',
+            'category': 'Object Features',
             'permission': 'laboratory.add_objectfeatures'
         },
         {
+            'name': 'View Object Features',
+            'category': 'Object Features',
+            'permission': 'laboratory.view_objectfeatures'
+        },
+        {
             'name': 'Add Instrumental Family',
-            'category': 'Equipment',
+            'category': 'Instrumental Family',
             'permission': 'laboratory.add_catalog'
+        },
+{
+            'name': 'View Instrumental Family',
+            'category': 'Instrumental Family',
+            'permission': 'laboratory.view_catalog'
         },
         {
             'name': 'View Provider',
@@ -2601,5 +2609,48 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.change_shelfobject'
         },
     ],
-
+    'instrumental_family': [
+        {
+            'name': 'Add Instrumental Family',
+            'category': 'Instrumental Family',
+            'permission': 'laboratory.add_catalog'
+        },
+        {
+            'name': 'Change Instrumental Family',
+            'category': 'Instrumental Family',
+            'permission': 'laboratory.change_catalog'
+        },
+        {
+            'name': 'Delete Instrumental Family',
+            'category': 'Instrumental Family',
+            'permission': 'laboratory.delete_catalog'
+        },
+        {
+            'name': 'View Instrumental Family',
+            'category': 'Instrumental Family',
+            'permission': 'laboratory.view_catalog'
+        }
+    ],
+    'equipment_type': [
+        {
+            'name': 'View Equipment Type',
+            'category': 'Equipment Type',
+            'permission': 'laboratory.view_equipmenttype'
+        },
+        {
+            'name': 'Add Equipment Type',
+            'category': 'Equipment Type',
+            'permission': 'laboratory.add_equipmenttype'
+        },
+        {
+            'name': 'Change Equipment Type',
+            'category': 'Equipment Type',
+            'permission': 'laboratory.change_equipmenttype'
+        },
+        {
+            'name': 'Delete Equipment Type',
+            'category': 'Equipment Type',
+            'permission': 'laboratory.delete_equipmenttype'
+        }
+    ]
 }
