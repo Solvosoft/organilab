@@ -4453,14 +4453,44 @@ msgstr "Familia instrumental"
 msgid "Equipment type"
 msgstr "Tipo de equipo"
 
-msgid "Edit Shelfobject"
-msgstr "Editar objeto de estantería"
+msgid "Instrumental Family List"
+msgstr "Lista de Familia Instrumental"
 
-msgid "The shelf object not is an equipment"
+msgid "Equipment Type List"
+msgstr "Lista de Tipos de Equipo"
+
+msgid "Update instrumental family record"
+msgstr "Actualizar registro de familia instrumental"
+
+msgid "Update equipment type record"
+msgstr "Actualizar registro de tipos de equipo"
+
+msgid "Create equipment type record"
+msgstr "Crear registro de tipos de equipo"
+
+msgid "Create instrumental family record"
+msgstr "Crear registro de familia instrumental"
+
+msgid "implies also deleting all equipment related to it."
+msgstr "implica eliminar todos los equipos relacionados a el."
+
+msgid "equipment type"
+msgstr "tipo de equipo"
+
+msgid "Deleting the"
+msgstr "Eliminar el"
+
+msgid "Deleting"
+msgstr "Eliminar"
+
+msgid "Edit Shelf Object"
+msgstr "Editar Objeto de Estantería"
+
+msgid "Shelf object is not an equipment"
 msgstr "El objeto de estantería no es un equipo"
 
 msgid "Shelfobject was updated successfully."
 msgstr "El objeto de estantería fue actualizado correctamente."
 
 msgid "Click to edit equipment"
-msgstr "Haga clic para editar el equipo"
+msgstr "Clic para editar el equipo"
