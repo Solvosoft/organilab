@@ -295,13 +295,13 @@ class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
                                  verbose_name=_("Provider"))
     authorized_roles_to_use_equipment = models.ManyToManyField('auth_and_perms.Rol',
                                                                verbose_name=_("Authorized roles to use equipment"))
-    equipment_price = models.FloatField(null=True, blank=True, verbose_name=_("Equipment price"))
-    purchase_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Purchase equipment date"))
-    delivery_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Delivery equipment date"))
-    have_guarantee = models.BooleanField(default=False, verbose_name=_("Have guarantee?"))
+    equipment_price = models.FloatField(null=True, blank=True, verbose_name=_("Price"))
+    purchase_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Purchase Date"))
+    delivery_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Delivery Date"))
+    have_guarantee = models.BooleanField(default=False, verbose_name=_("Has guarantee?"))
     contract_of_maintenance = models.FileField(upload_to=upload_files, verbose_name=_("Contract of maintenance"))
     notes = models.TextField(null=True, blank=True, verbose_name=_("Note"))
-    available_to_use = models.BooleanField(default=False, verbose_name=_("Available to use?"))
+    available_to_use = models.BooleanField(default=False, verbose_name=_("Is available to use?"))
     first_date_use = models.DateField(null=True,blank=True, verbose_name=_("First date use"))
 
 

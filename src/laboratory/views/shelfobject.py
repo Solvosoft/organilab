@@ -6,48 +6,42 @@ Created on 26/12/2016
 '''
 
 import json
-from base64 import b64decode
 
-import cairosvg
-import base64
 from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormView
 from django_ajax.decorators import ajax
 from django_ajax.mixin import AJAXMixin
+from djgentelella.decorators.perms import all_permission_required
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core
 from djgentelella.widgets.selects import AutocompleteSelect
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
+    organization_can_change_laboratory
 from laboratory import utils
-from laboratory.forms import ReservationModalForm, AddObjectForm, SubtractObjectForm, ShelfObjectOptions, \
-    ShelfObjectListForm, ValidateShelfForm
-
-from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, OrganizationStructure, Furniture
-from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, ListView, DetailView
+from laboratory.forms import ReservationModalForm, ShelfObjectListForm, \
+    ValidateShelfForm
+from laboratory.models import ShelfObject, Shelf, Object, Laboratory, TranferObject, \
+    OrganizationStructure, Furniture
+from laboratory.views.djgeneric import CreateView, UpdateView, DeleteView, DetailView
 from presentation.models import QRModel
-from ..api.serializers import ShelfObjectSerialize, ShelfObjectLaboratoryViewSerializer
-from ..logsustances import log_object_change, log_object_add_change
+from ..logsustances import log_object_change
 from ..qr_utils import get_or_create_qr_shelf_object
 from ..shelfobject.forms import ShelfobjectMaintenanceForm, \
     UpdateShelfobjectMaintenanceForm, ShelfobjectLogForm, ShelfobjectCalibrateForm, \
     UpdateShelfobjectCalibrateForm, ShelfObjectGuaranteeForm, \
-    ShelfObjectTrainingForm
-from ..utils import organilab_logentry
-from django.core.exceptions import ValidationError
+    ShelfObjectTrainingForm, EditEquimentShelfobjectForm
 
 
 @login_required
@@ -584,34 +578,53 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     response['Content-Disposition'] = 'attachment; filename="shelfobject_%s.svg"' % (shelfobject.pk)
     return response
 
-@permission_required('laboratory.view_shelfobject')
+@all_permission_required(['laboratory.change_shelfobject', 'laboratory.view_shelfobject'])
 def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(ShelfObject.objects.using(settings.READONLY_DATABASE),pk=pk)
     qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
-
+    form = None
+    if hasattr(shelfobject, "shelfobjectequipmentcharacteristics"):
+        form = EditEquimentShelfobjectForm(
+            instance=shelfobject.shelfobjectequipmentcharacteristics,
+            org_pk=org_pk, initial={"status": shelfobject.status, "description":
+                shelfobject.description, "marked_as_discard":
+                shelfobject.marked_as_discard})
+    else:
+        form = EditEquimentShelfobjectForm(org_pk=org_pk, initial={
+            "status": shelfobject.status, "marked_as_discard":
+                shelfobject.marked_as_discard, "description": shelfobject.description})
     context = {
         "org_pk": org_pk,
         "lab_pk": lab_pk,
+        "laboratory": lab_pk,
         "pk": pk,
         "object": shelfobject,
-        "qr":qr,
-        "create_maintenance_form": ShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
-                                                                       "organization": org_pk, "created_by": request.user.pk, "shelfobject":pk},
-                                                              org_pk=org_pk, prefix="create_maintenance"),
-        "update_maintenance_form": UpdateShelfobjectMaintenanceForm(initial={"validator": request.user.profile.pk,
-                                                                             "organization": org_pk, "created_by": request.user.pk,
-                                                                             "shelfobject":pk},
-                                                                    prefix="update_maintenance", org_pk=org_pk),
+        "edit_form": form,
+        "qr": qr,
+        "create_maintenance_form": ShelfobjectMaintenanceForm(
+            initial={"validator": request.user.profile.pk,
+                     "organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            org_pk=org_pk, prefix="create_maintenance"),
+        "update_maintenance_form": UpdateShelfobjectMaintenanceForm(
+            initial={"validator": request.user.profile.pk,
+                     "organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk},
+            prefix="update_maintenance", org_pk=org_pk),
         "create_log_form": ShelfobjectLogForm(initial={"organization": org_pk,
-                                                       "created_by": request.user.pk, "shelfobject": pk},
-                                               prefix="create_log"),
-        "create_calibrate_form": ShelfobjectCalibrateForm(initial={"organization": org_pk,
-                                                                   "created_by": request.user.pk, "shelfobject": pk,
-                                                             "validator": request.user.profile.pk},
-                                               prefix="create_calibrate"),
-        "update_calibrate_form": UpdateShelfobjectCalibrateForm(initial={"organization": org_pk,"created_by": request.user.pk, "shelfobject": pk,
-                                                             "validator": request.user.profile.pk},
-                                               prefix="update_calibrate"),
+                                                       "created_by": request.user.pk,
+                                                       "shelfobject": pk},
+                                              prefix="create_log"),
+        "create_calibrate_form": ShelfobjectCalibrateForm(
+            initial={"organization": org_pk,
+                     "created_by": request.user.pk, "shelfobject": pk,
+                     "validator": request.user.profile.pk},
+            prefix="create_calibrate"),
+        "update_calibrate_form": UpdateShelfobjectCalibrateForm(
+            initial={"organization": org_pk, "created_by": request.user.pk,
+                     "shelfobject": pk,
+                     "validator": request.user.profile.pk},
+            prefix="update_calibrate"),
         "guarantee_form": ShelfObjectGuaranteeForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},
@@ -619,7 +632,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
         "update_training_form": ShelfObjectTrainingForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},
-            prefix="training_form", id_form= "#update_training_form"),
+            prefix="training_form", id_form="#update_training_form"),
         "training_form": ShelfObjectTrainingForm(
             initial={"organization": org_pk, "created_by": request.user.pk,
                      "shelfobject": pk},

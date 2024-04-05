@@ -4255,7 +4255,7 @@ msgid "Contract of maintenance"
 msgstr "Contrato de mantenimiento"
 
 msgid "Has guarantee?"
-msgstr "¿Tiene Garantía?"
+msgstr "¿Tiene garantía?"
 
 msgid "Delivery Date"
 msgstr "Fecha de entrega"
@@ -4482,3 +4482,15 @@ msgstr "Eliminar el"
 
 msgid "Deleting"
 msgstr "Eliminar"
+
+msgid "Edit Shelf Object"
+msgstr "Editar Objeto de Estantería"
+
+msgid "Shelf object is not an equipment"
+msgstr "El objeto de estantería no es un equipo"
+
+msgid "Shelfobject was updated successfully."
+msgstr "El objeto de estantería fue actualizado correctamente."
+
+msgid "Click to edit equipment"
+msgstr "Clic para editar el equipo"
