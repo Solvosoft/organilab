@@ -4255,7 +4255,7 @@ msgid "Contract of maintenance"
 msgstr "Contrato de mantenimiento"
 
 msgid "Has guarantee?"
-msgstr "¿Tiene Garantía?"
+msgstr "¿Tiene garantía?"
 
 msgid "Delivery Date"
 msgstr "Fecha de entrega"

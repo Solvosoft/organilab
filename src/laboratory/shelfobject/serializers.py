@@ -1635,9 +1635,13 @@ class ShelfObjectCalibrateFilter(FilterSet):
                    'validator': ['exact']
                    }
 class ShelfObjectTrainingFilter(FilterSet):
-    intern_people_receive_training = ModelMultipleChoiceFilter(queryset=Profile.objects.all(),
-                                                 widget=CSVWidget()
-                                                 )
+    intern_people_receive_training = ModelMultipleChoiceFilter(
+        queryset=Profile.objects.all(), widget=CSVWidget())
+    training_initial_date = DateFromToRangeFilter(
+        widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
+    training_final_date = DateFromToRangeFilter(
+        widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
+
     class Meta:
         model = ShelfObjectTraining
         fields = {'id': ['exact'],
@@ -1648,7 +1652,6 @@ class ShelfObjectTrainingFilter(FilterSet):
                   }
 
 class ShelfObjectMaintenanceFilter(FilterSet):
-
     maintenance_date = DateFromToRangeFilter(
     widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
 
@@ -1658,13 +1661,10 @@ class ShelfObjectMaintenanceFilter(FilterSet):
                    'provider_of_maintenance__name': ['icontains'],
                    'validator': ['exact'],
                    'maintenance_observation': ['icontains'],
-                   'validator': ['exact'],
                    'provider_of_maintenance': ['exact']
-
                   }
 
 class ShelfObjectGuarenteeFilter(FilterSet):
-
     guarantee_initial_date = DateFromToRangeFilter(
     widget=DateRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD'}))
     guarantee_final_date = DateFromToRangeFilter(
@@ -1737,16 +1737,16 @@ class EditEquimentShelfobjectCharacteristicSerializer(serializers.ModelSerialize
                   "contract_of_maintenance","available_to_use","first_date_use","notes"]
 
 class EditEquipmentShelfObjectSerializer(serializers.ModelSerializer):
-
     status = serializers.PrimaryKeyRelatedField(many=False,
                                                 queryset=Catalog.objects.using(
                                                     settings.READONLY_DATABASE),
                                                 required=True)
     description = serializers.CharField(required=False)
+    marked_as_discard = serializers.BooleanField(required=False)
 
     class Meta:
         model = ShelfObject
-        fields = ["status", "description"]
+        fields = ["status", "description", "marked_as_discard"]
 
     def validate(self, data):
         org_context = self.context['org_pk']

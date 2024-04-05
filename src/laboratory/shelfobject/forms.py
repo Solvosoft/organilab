@@ -701,7 +701,7 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
     description = forms.CharField(widget=genwidgets.Textarea, label=_("Description"))
     status = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='shelfobject_status'), label=_("Status"), widget=genwidgets.Select)
-
+    marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
     def __init__(self, *args, **kwargs):
         org = kwargs.pop("org_pk")
@@ -719,10 +719,11 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         org= OrganizationStructure.objects.get(pk=org)
         self.fields['authorized_roles_to_use_equipment'].queryset= Rol.objects.filter(pk__in=org.rol.values_list('pk',flat=True))
 
-    field_order = ["status","provider","authorized_roles_to_use_equipment",
-                       "equipment_price","purchase_equipment_date", "delivery_equipment_date",
-                       "available_to_use", "first_date_use", "have_guarantee",
-                       "contract_of_maintenance", "notes", "description"]
+    field_order = ["status", "marked_as_discard", "description", "provider",
+                   "authorized_roles_to_use_equipment", "equipment_price",
+                   "purchase_equipment_date", "delivery_equipment_date",
+                   "have_guarantee", "contract_of_maintenance", "available_to_use",
+                   "first_date_use", "notes"]
     class Meta:
 
         model = ShelfObjectEquipmentCharacteristics
