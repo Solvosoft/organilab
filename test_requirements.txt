@@ -6,3 +6,4 @@ virtualenv==20.24.4
 pyproject-api==1.5.4
 selenium==4.5.0
 selenium-screenshot==2.0.0
+tblib==3.0.0

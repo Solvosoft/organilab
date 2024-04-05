@@ -78,5 +78,5 @@ build_docker_selenium:
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
 
 run_docker_selenium:
-	 docker run --network="host"  -v $(current_path)/src:/organilab/src  -v $(current_path)/fixtures:/organilab/fixtures -v $(current_path)/docs:/organilab/docs  -ti organilabselenium:$(setup_version) $(run)
+	 docker run --network="host"  -v $(current_path)/src:/organilab/src -v $(current_path)/logs:/organilab/logs -v $(current_path)/fixtures:/organilab/fixtures -v $(current_path)/docs:/organilab/docs  -ti organilabselenium:$(setup_version) $(run)
 

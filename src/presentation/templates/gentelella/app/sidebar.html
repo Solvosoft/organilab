@@ -1,7 +1,7 @@
 {% load i18n shelf_position laboratory static %}
 <div class="left_col scroll-view">
     <div class="navbar nav_title" style="border: 0;  ">
-        <a href="{% if laboratory and org_pk %}{% url 'laboratory:labindex' org_pk laboratory  %}{% else %}{% url 'index' %}{% endif %}"
+        <a href="{% if laboratory is not None and org_pk is not None %}{% url 'laboratory:labindex' org_pk laboratory  %}{% else %}{% url 'index' %}{% endif %}"
            class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
     </div>
     <div class="clearfix"></div>

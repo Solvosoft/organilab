@@ -15,44 +15,52 @@ class NotInTestingFilter(Filter):
 
         return not settings.TESTING_MODE
 
-
+TESTING_MODE=True
 LANGUAGE_CODE='en'
-
+DJANGO_LOG_LEVEL='DEBUG'
 
 LOGGING = {
    'version': 1,
-   'disable_existing_loggers': True,
+   'disable_existing_loggers': False,
    'formatters': {
        'verbose': {
            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
        },
    },
-   'filters': {
-            'testing': {
-                '()': NotInTestingFilter
-            }
-        },
-
    'handlers': {
        'console': {
-           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-           'class': 'logging.StreamHandler',
-           'stream': os.devnull,
-           'formatter': 'verbose',
-            'filters': ['testing']
-
+           "class": "logging.FileHandler",
+           "filename": "/organilab/logs/output.log",
+       },
+       "templates": {
+           "level": "DEBUG",
+           "class": "logging.FileHandler",
+           "filename": "/organilab/logs/templates.log",
        },
    },
    'loggers': {
        'fontTools.subset': {
            'handlers': ['console'],
-           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+           'level': DJANGO_LOG_LEVEL,
            'propagate': True,
        },
-       '': {
+       'root': {
            'handlers': ['console'],
-           'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-           'propagate': True,
+           'level': DJANGO_LOG_LEVEL,
        },
+       'django': {
+           'handlers': ['console'],
+           'level': "INFO",
+
+       },
+       'django.server': {
+           'handlers': ['console'],
+           'level': 'WARNING',
+
+       },
+        'django.template': {
+            'handlers': ['templates'],
+            'level': DJANGO_LOG_LEVEL,
+        },
    },
 }
