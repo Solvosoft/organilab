@@ -560,10 +560,10 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
         'update': serializers.InstrumentalFamilySerializer
     }
     perms = {
-        'list': ["laboratory.view_object"],
-        'create': ["laboratory.add_object", "laboratory.view_object"],
-        'update': ["laboratory.change_object", "laboratory.view_object"],
-        'destroy': ["laboratory.delete_object", "laboratory.view_object"]
+        'list': ["laboratory.view_catalog"],
+        'create': ["laboratory.add_catalog", "laboratory.view_catalog"],
+        'update': ["laboratory.change_catalog", "laboratory.view_catalog"],
+        'destroy': ["laboratory.delete_catalog", "laboratory.view_catalog"]
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
