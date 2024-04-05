@@ -38,4 +38,4 @@ RUN apt-get -y autoremove && \
 EXPOSE 9222
 
 ENTRYPOINT ["/app/xvfb-startup.sh"]
-CMD ["python manage.py test  --no-input --tag=selenium"]
+CMD ["python manage.py test --settings organilab.test_settings --no-input --debug-mode --tag=selenium"]

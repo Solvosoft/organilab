@@ -43,7 +43,7 @@
                     </div>
                     <div class="col-1">
 																								{%if node.0.active %}
-                        		<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
+                        		<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop.counter0 %} selected {% endif %}/>
                     				{%endif%}
 																				</div>
                 </div>
@@ -118,7 +118,7 @@
                     {% if perms.laboratory.change_organizationstructure and node.0.active %}
                     <li class="list-group-item">
                         <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}"
-																														data-org="{{node.0.pk}}" data-display="{{node.0.node}}" title="{% trans 'Change parent of organization' %}">
+																														data-org="{{node.0.pk}}" data-display="{{node.0.name}}" title="{% trans 'Change parent of organization' %}">
                             <i class="fa fa-sort-amount-desc text-secondary"></i></span>
                     </li>
                     {% endif %}

@@ -6,7 +6,7 @@
     <div class="nav toggle" style="margin-top:9px;">
         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
     </div>
-    {% if laboratory and org_pk %}
+    {% if laboratory is not None and org_pk is not None %}
         <ul class="nav navbar-nav float-start">
             <li><a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">{% show_laboratory_name %}</a></li>
         </ul>

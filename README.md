@@ -102,7 +102,7 @@ make build_docker_selenium
 Run your test, please note that quotes ("") are required on the command before run=.
 
 ```
-make run_docker_selenium run="python manage.py test  --no-input --tag=selenium laboratory.tests.selenium_tests.manage_organizations.test_laboratory_tab"
+make run_docker_selenium run="python manage.py test --debug-mode --settings organilab.test_settings --no-input --tag=selenium laboratory.tests.selenium_tests.manage_organizations.test_laboratory_tab"
 ```
 
 

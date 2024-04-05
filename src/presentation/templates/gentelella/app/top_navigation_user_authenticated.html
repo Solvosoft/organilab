@@ -12,14 +12,14 @@
     </li>
     {% endif %}
     {% endif %}
-{% if org_pk %}
+{% if org_pk is not None %}
 <li>
     <a href="{% url 'laboratory:mylabs' org_pk %}" title="{% trans 'My laboratories' %}">
         <strong>{% trans 'My laboratories' %}</strong>
     </a>
 </li>
 {% endif %}
-{% if laboratory and org_pk %}
+{% if laboratory is not None and org_pk is not None %}
 
 
         {% if perms.djreservation.add_reservation %}
