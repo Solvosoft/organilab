@@ -4,7 +4,7 @@ from django.shortcuts import render
 from laboratory.forms import InstrumentalFamilyForm, EquipmentTypeForm
 
 
-@permission_required('laboratory.view_object')
+@permission_required('laboratory.view_catalog')
 def view_instrumental_family_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,

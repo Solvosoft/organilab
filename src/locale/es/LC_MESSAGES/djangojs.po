@@ -644,3 +644,6 @@ msgstr "Crear"
 
 msgid "Equipment Type"
 msgstr "Tipo de Equipo"
+
+msgid "Last Update"
+msgstr "Última Actualización"
