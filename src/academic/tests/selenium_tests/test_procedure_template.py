@@ -32,6 +32,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
 
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[3]"},
+            {"path": ".//input[@name='title']","extra_action":"clearInput"},
             {"path": ".//input[@name='title']","extra_action":"setvalue","value":"Se limpiaran laboratorios"},
             {"path": ".//form[1]",
              "extra_action": 'script',
@@ -111,8 +112,8 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
     def object_step(self):
         path_list = [
             {"path": ".//table[@id= 'procedure']/tbody/tr[1]/td[3]/a[1]"},
-            {"path": ".//a[@title='Editar']"},
-            {"path": ".//span[@title='Crear Objecto']", "scroll": "window.scrollTo(0, 300)"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div[2]/a[2]"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div/div/span", "scroll": "window.scrollTo(0, 300)"},
             {"path": ".//span[@class='select2-selection select2-selection--single']"},
             {"path": ".//ul[@class='select2-results__options']"},
             {"path": ".//input[@id='id_quantity']", "extra_action": "clearInput"},
