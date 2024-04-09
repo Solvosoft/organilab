@@ -10,7 +10,7 @@ class InformSeleniumBase(SeleniumBase):
         super().setUp()
         self.user = User.objects.get(pk=1)
         self.force_login(user=self.user, driver=self.selenium, base_url=self.live_server_url)
-        print(MenuItem.objects.values('icon'))
+
         self.path_base = [
             {"path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div/div/span/span[1]/span"},
             {"path": "/html/body/span/span/span/ul/li[1]"},
