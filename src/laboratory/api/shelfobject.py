@@ -55,7 +55,8 @@ from laboratory.shelfobject.serializers import IncreaseShelfObjectSerializer, \
     ShelfObjectTrainingeDatatableSerializer, ShelfObjectTrainingSerializer, \
     ShelfObjectLogtFilter, ShelfObjectCalibrateFilter, ShelfObjectTrainingFilter, \
     ShelfObjectMaintenanceFilter, ValidateShelfObjectGuaranteeSerializer, \
-    ShelfObjectGuarenteeFilter, ValidateShelfobjectEditSerializer
+    ShelfObjectGuarenteeFilter, ValidateShelfobjectEditSerializer, \
+    EditEquipmentShelfObjectSerializer, EditEquimentShelfobjectCharacteristicSerializer
 
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     move_shelfobject_partial_quantity_to, build_shelfobject_qr, \
@@ -418,6 +419,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
         "manage_shelfobject_container": ["laboratory.change_shelfobject"],
+        "edit_shelfobject": ["laboratory.change_shelfobject"],
+        "get_shelfobject": ["laboratory.viwe_shelfobject"],
 
     }
 
@@ -1130,6 +1133,49 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=['put'])
+    def edit_equipment_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "edit_shelfobject")
+        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
+        context = {"lab_pk":lab_pk,"org_pk":org_pk}
+        serializer_equipment = EditEquipmentShelfObjectSerializer(instance=shelf_object,
+                                                                  data=request.data,
+                                                                  context=context)
+        data = request.data.copy()
+        data.update({"shelfobject": shelf_object.pk})
+
+        if hasattr(shelf_object,"shelfobjectequipmentcharacteristics"):
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(instance=shelf_object.shelfobjectequipmentcharacteristics,
+                                                                                          data=data,
+                                                                                          context=context)
+        else:
+            serializer_equipment_charac = EditEquimentShelfobjectCharacteristicSerializer(data=data, context=context)
+
+        errors = {}
+
+        if serializer_equipment_charac.is_valid():
+            obj_ch = serializer_equipment_charac.save()
+            utils.organilab_logentry(request.user, obj_ch, CHANGE,
+                                     'shelfobjectequipmentcharacteristics',
+                                     relobj=lab_pk)
+
+            if serializer_equipment.is_valid():
+                obj = serializer_equipment.save()
+                utils.organilab_logentry(request.user, obj, CHANGE,
+                                         'shelfobject', relobj=lab_pk)
+            else:
+                errors = serializer_equipment.errors
+
+        else:
+            errors = serializer_equipment_charac.errors
+
+        if errors:
+            return JsonResponse(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse({"detail": _("Shelfobject was updated successfully.")},
+                            status=status.HTTP_200_OK)
+
 
 class SearchLabView(viewsets.GenericViewSet):
     """
@@ -1310,7 +1356,28 @@ the second tag will modify laboratory room result as a first tag.
         return JsonResponse({'search_list': search_list}, status=status.HTTP_200_OK)
 
 
-class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
+class AuthAllPermBaseObjectManagementShelfObjectBase(AuthAllPermBaseObjectManagement):
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    ordering_fields = ['pk']
+    ordering = ('pk',)
+    org_pk, lab_pk, shelfobject = None, None, None
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        if self.shelfobject:
+            return queryset.filter(shelfobject=self.shelfobject).distinct()
+        return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+        self.org_pk = kwargs['org_pk']
+        self.lab_pk = kwargs['lab_pk']
+        self.shelfobject = kwargs['shelfobject']
+        return super().list(request, *args, **kwargs)
+
+
+class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
     serializer_class = {
         'list': MaintenanceDatatableSerializer,
         'destroy': MaintenanceSerializer,
@@ -1327,30 +1394,12 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
         "detail": ["laboratory.view_shelfobjectmaintenance"]
     }
 
-    permission_classes = (PermissionByLaboratoryInOrganization,)
-
     queryset = ShelfObjectMaintenance.objects.all()
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['provider_of_maintenance__name', 'validator__user__first_name',
                      'validator__user__last_name','maintenance_observation']
     filterset_class = ShelfObjectMaintenanceFilter
     ordering_fields = ['maintenance_date']
     ordering = ('maintenance_date',)
-    org_pk, lab_pk, shelfobject = None, None, None
-
-    def get_object(self, pk):
-        try:
-            return ShelfObjectMaintenance.objects.get(pk=pk)
-        except ShelfObjectMaintenance.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        if self.shelfobject:
-            return queryset.filter(shelfobject=self.shelfobject).distinct()
-        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -1362,23 +1411,25 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
             'shelfobject': self.shelfobject})
         if serializer.is_valid():
             maintenance = serializer.save()
-            ShelfObjectObservation.objects.create(description= maintenance.maintenance_observation,
-                                                  action_taken= _("Maintenance created"),
-                                                  shelf_object=maintenance.shelfobject,
-                                                  created_by=self.request.user)
+            ShelfObjectObservation.objects.create(
+                description=maintenance.maintenance_observation,
+                action_taken=_("Maintenance created"),
+                shelf_object=maintenance.shelfobject,
+                created_by=self.request.user)
             utils.organilab_logentry(request.user, maintenance, ADDITION,
-                                     'shelfobjectmaintenance', relobj=self.lab_pk)
+                                     'shelfobjectmaintenance',
+                                     relobj=self.lab_pk)
             return JsonResponse({}, status=status.HTTP_201_CREATED)
 
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
 
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
 
-        instance = self.get_object(pk)
+        instance = self.get_object()
 
         validate_shelfobject = ValidateShelfobjectEditSerializer(
             data={"shelfobject": self.shelfobject,
@@ -1388,7 +1439,8 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
                      'shelfobject': self.shelfobject})
 
         if validate_shelfobject.is_valid(raise_exception=True):
-            ShelfObjectObservation.objects.create(description=instance.maintenance_observation,
+            ShelfObjectObservation.objects.create(description=
+                                                  instance.maintenance_observation,
                                                   action_taken=_("Maintenance deleted"),
                                                   shelf_object=instance.shelfobject,
                                                   created_by=self.request.user)
@@ -1400,19 +1452,13 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse({"detail": "Maintenance do not exists"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request, *args, **kwargs):
-        self.org_pk = kwargs['org_pk']
-        self.lab_pk = kwargs['lab_pk']
-        self.shelfobject = kwargs['shelfobject']
-        return super().list(request, *args, **kwargs)
-
-    def update(self, request, pk, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
         request.data.update({"created_by": self.request.user.pk})
 
-        instance = self.get_object(pk)
+        instance = self.get_object()
 
         validate_shelfobject = UpdateMaintenanceSerializer(
             instance=instance, data=request.data,
@@ -1422,10 +1468,11 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
 
         if validate_shelfobject.is_valid():
             instance = validate_shelfobject.save()
-            ShelfObjectObservation.objects.create(description=instance.maintenance_observation,
-                                                  action_taken= _("Maintenance updated"),
-                                                  shelf_object=instance.shelfobject,
-                                                  created_by=self.request.user)
+            ShelfObjectObservation.objects.create(
+                description=instance.maintenance_observation,
+                action_taken=_("Maintenance updated"),
+                shelf_object=instance.shelfobject,
+                created_by=self.request.user)
             utils.organilab_logentry(request.user, instance, CHANGE,
                                      'shelfobjectmaintenance', relobj=self.lab_pk)
             return JsonResponse({}, status=status.HTTP_200_OK)
@@ -1433,8 +1480,7 @@ class ShelfObjectMaintanenceViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse(validate_shelfobject.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-
-class ShelfObjectLogViewset(AuthAllPermBaseObjectManagement):
+class ShelfObjectLogViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
     serializer_class = {
         'list': ShelfObjectLogDatatableSerializer,
         'destroy': ShelfObjectLogSerializer,
@@ -1451,34 +1497,15 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagement):
         "detail": ["laboratory.view_shelfobjectlog"]
     }
 
-    permission_classes = (PermissionByLaboratoryInOrganization,)
-
     queryset = ShelfObjectLog.objects.all()
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['description','created_by__first_name', 'created_by__last_name']
     filterset_class = ShelfObjectLogtFilter
-    ordering_fields = ['pk']
-    ordering = ('pk',)
-
-    org_pk, lab_pk, shelfobject = None, None, None
-
-    def get_object(self, pk):
-        try:
-            return ShelfObjectLog.objects.get(pk=pk)
-        except ShelfObjectLog.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        if self.shelfobject:
-            return queryset.filter(shelfobject=self.shelfobject).distinct()
-        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
+
         serializer = ValidateShelfObjectLogSerializer(data=request.data, context={
             'org_pk': self.org_pk,
             'lab_pk': self.lab_pk,
@@ -1494,13 +1521,11 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagement):
 
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk, *args, **kwargs):
-
+    def destroy(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
-
-        instance = self.get_object(pk)
+        instance = self.get_object()
 
         validate_log = ValidateShelfobjectEditSerializer(
             data={"shelfobject": self.shelfobject,
@@ -1519,19 +1544,12 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse({"detail": "Log do not exists"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request, *args, **kwargs):
-        self.org_pk = kwargs['org_pk']
-        self.lab_pk = kwargs['lab_pk']
-        self.shelfobject = kwargs['shelfobject']
-        return super().list(request, *args, **kwargs)
-
-    def update(self, request, pk, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
         request.data.update({"created_by": self.request.user.pk})
-
-        instance = self.get_object(pk)
+        instance = self.get_object()
 
         validate_log = ValidateShelfObjectLogSerializer(
             instance=instance, data=request.data,
@@ -1550,7 +1568,7 @@ class ShelfObjectLogViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse(validate_log.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
+class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
     serializer_class = {
         'list': ShelfObjectCalibrateDatatableSerializer,
         'destroy': ShelfObjectCalibrateSerializer,
@@ -1567,28 +1585,12 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
         "detail": ["laboratory.view_shelfobjectcalibrate"]
     }
 
-    permission_classes = (PermissionByLaboratoryInOrganization,)
-
     queryset = ShelfObjectCalibrate.objects.all()
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['calibrate_name', 'observation', "validator__user__first_name",
                      "validator__user__last_name"]
     filterset_class = ShelfObjectCalibrateFilter
     ordering_fields = ['calibration_date']
     ordering = ('calibration_date',)
-    org_pk, lab_pk, shelfobject = None, None, None
-
-    def get_object(self, pk):
-        try:
-            return ShelfObjectCalibrate.objects.get(pk=pk)
-        except ShelfObjectCalibrate.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        if self.shelfobject:
-            return queryset.filter(shelfobject=self.shelfobject).distinct()
-        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -1600,8 +1602,8 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
             'shelfobject': self.shelfobject})
         if serializer.is_valid():
             calibration = serializer.save()
-            ShelfObjectObservation.objects.create(description= calibration.observation,
-                                                  action_taken= _("Calibration created"),
+            ShelfObjectObservation.objects.create(description=calibration.observation,
+                                                  action_taken=_("Calibration created"),
                                                   shelf_object=calibration.shelfobject,
                                                   created_by=self.request.user)
             utils.organilab_logentry(request.user, calibration, ADDITION,
@@ -1613,13 +1615,12 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
 
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
 
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
-
-        instance = self.get_object(pk)
+        instance = self.get_object()
 
         validate_calibrate = ValidateShelfobjectEditSerializer(
             data={"shelfobject": self.shelfobject,
@@ -1647,14 +1648,13 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
         self.shelfobject = kwargs['shelfobject']
         return super().list(request, *args, **kwargs)
 
-    def update(self, request, pk, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
         request.data.update({"created_by": self.request.user.pk})
         request.data.update({"validator": self.request.user.profile.pk})
-
-        instance = self.get_object(pk)
+        instance = self.get_object()
 
         validate_calibrate = ValidateShelfObjectCalibrateSerializer(
             instance=instance, data=request.data,
@@ -1665,7 +1665,7 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
         if validate_calibrate.is_valid():
             instance = validate_calibrate.save()
             ShelfObjectObservation.objects.create(description=instance.observation,
-                                                  action_taken= _("Calibration updated"),
+                                                  action_taken=_("Calibration updated"),
                                                   shelf_object=instance.shelfobject,
                                                   created_by=self.request.user)
             utils.organilab_logentry(request.user, instance, CHANGE,
@@ -1677,7 +1677,7 @@ class ShelfObjectCalibrateViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse(validate_calibrate.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagement):
+class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
     serializer_class = {
         'list': ShelfObjectGuaranteeDatatableSerializer,
         'destroy': ShelfObjectGuaranteeSerializer,
@@ -1694,28 +1694,9 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagement):
         "detail": ["laboratory.view_shelfobjectguarantee"]
     }
 
-    permission_classes = (PermissionByLaboratoryInOrganization,)
-
     queryset = ShelfObjectGuarantee.objects.all()
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = ShelfObjectGuarenteeFilter
     search_fields = ['created_by__first_name','created_by__last_name']
-    ordering_fields = ['pk']
-    ordering = ('pk',)
-    org_pk, lab_pk, shelfobject = None, None, None
-
-
-    def get_object(self, pk):
-        try:
-            return ShelfObjectGuarantee.objects.get(pk=pk)
-        except ShelfObjectGuarantee.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        if self.shelfobject:
-            return queryset.filter(shelfobject=self.shelfobject).distinct()
-        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -1742,13 +1723,12 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagement):
 
         return JsonResponse(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
 
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
-
-        guarantee = self.get_object(pk)
+        guarantee = self.get_object()
 
         validate_shelfobject = ValidateShelfobjectEditSerializer(data = {"shelfobject":self.shelfobject,
                                                                          "organization": self.org_pk},
@@ -1768,40 +1748,37 @@ class ShelfObjectGuaranteeViewset(AuthAllPermBaseObjectManagement):
 
         return JsonResponse({"detail": "Guarantee do not exists"},status=status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request, *args, **kwargs):
-        self.org_pk = kwargs['org_pk']
-        self.lab_pk = kwargs['lab_pk']
-        self.shelfobject = kwargs['shelfobject']
-        return super().list(request, *args, **kwargs)
-
-    def update(self, request, pk, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
-        request.data.update({"created_by":self.request.user.pk})
+        request.data.update({"created_by": self.request.user.pk})
+        guarantee = self.get_object()
 
-        guarantee = self.get_object(pk)
-
-        validate_shelfobject = ValidateShelfObjectGuaranteeSerializer(instance=guarantee, data =request.data,
-                                                                 context = {'org_pk':self.org_pk,
-                                                                          'lab_pk':self.lab_pk,
-                                                                          'shelfobject': self.shelfobject})
+        validate_shelfobject = ValidateShelfObjectGuaranteeSerializer(
+            instance=guarantee, data=request.data,
+            context={'org_pk': self.org_pk,
+                     'lab_pk': self.lab_pk,
+                     'shelfobject': self.shelfobject})
 
         if validate_shelfobject.is_valid():
             validate_shelfobject.save()
-            ShelfObjectObservation.objects.create(description = _("Updating guarentee"),
-                                                  action_taken = _("Guarentee updated"),
-                                                  shelf_object = validate_shelfobject.validated_data["shelfobject"],
-                                                  created_by = self.request.user)
+            ShelfObjectObservation.objects.create(description=_("Updating guarentee"),
+                                                  action_taken=_("Guarentee updated"),
+                                                  shelf_object=
+                                                  validate_shelfobject.validated_data[
+                                                      "shelfobject"],
+                                                  created_by=self.request.user)
             utils.organilab_logentry(request.user, guarantee, CHANGE,
                                      'shelfobjectguarantee',
                                      changed_data=[validate_shelfobject.validated_data]
-                                     ,relobj=self.lab_pk)
-            return JsonResponse({},status=status.HTTP_200_OK)
+                                     , relobj=self.lab_pk)
+            return JsonResponse({}, status=status.HTTP_200_OK)
 
-        return JsonResponse(validate_shelfobject.errors,status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(validate_shelfobject.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
-class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagement):
+class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagementShelfObjectBase):
     serializer_class = {
         'list': ShelfObjectTrainingeDatatableSerializer,
         'destroy': ShelfObjectTrainingSerializer,
@@ -1818,36 +1795,20 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagement):
         "detail": ["laboratory.view_shelfobjecttraining"]
     }
 
-    permission_classes = (PermissionByLaboratoryInOrganization,)
-
     queryset = ShelfObjectTraining.objects.all()
-    pagination_class = LimitOffsetPagination
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ['place','observation','number_of_hours']
     filterset_class = ShelfObjectTrainingFilter
     ordering_fields = ['training_initial_date']
     ordering = ('training_initial_date',)
-    org_pk, lab_pk, shelfobject = None, None, None
-
-    def get_object(self, pk):
-        try:
-            return ShelfObjectTraining.objects.get(pk=pk)
-        except ShelfObjectTraining.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        if self.shelfobject:
-            return queryset.filter(shelfobject=self.shelfobject).distinct()
-        return queryset.none()
 
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
-        serializer = ValidateShelfObjectTrainingSerializer(data=request.data, context={'org_pk':self.org_pk,
-                                                                                        'lab_pk':self.lab_pk,
-                                                                                        'shelfobject': self.shelfobject})
+        serializer = ValidateShelfObjectTrainingSerializer(data=request.data, context={
+            'org_pk': self.org_pk,
+            'lab_pk': self.lab_pk,
+            'shelfobject': self.shelfobject})
         if serializer.is_valid():
             instance = serializer.save()
             ShelfObjectObservation.objects.create(description=instance.observation,
@@ -1858,65 +1819,64 @@ class ShelfObjectTrainingViewset(AuthAllPermBaseObjectManagement):
                                      'shelfobjecttraining',
                                      changed_data=[serializer.validated_data],
                                      relobj=self.lab_pk)
-            return JsonResponse({},status=status.HTTP_201_CREATED)
+            return JsonResponse({}, status=status.HTTP_201_CREATED)
 
-        return JsonResponse(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
 
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
+        instance = self.get_object()
 
-        instance = self.get_object(pk)
-
-        validate_shelfobject = ValidateShelfobjectEditSerializer(data = {"shelfobject":self.shelfobject,
-                                                                         "organization": self.org_pk},
-                                                                 context = {'org_pk':self.org_pk,
-                                                                          'lab_pk':self.lab_pk,
-                                                                          'shelfobject': self.shelfobject})
+        validate_shelfobject = ValidateShelfobjectEditSerializer(
+            data={"shelfobject": self.shelfobject,
+                  "organization": self.org_pk},
+            context={'org_pk': self.org_pk,
+                     'lab_pk': self.lab_pk,
+                     'shelfobject': self.shelfobject})
 
         if validate_shelfobject.is_valid(raise_exception=True):
-            ShelfObjectObservation.objects.create(description = instance.observation,
-                                                  action_taken = _("Training deleted"),
-                                                  shelf_object = validate_shelfobject.validated_data["shelfobject"],
-                                                  created_by = self.request.user)
+            ShelfObjectObservation.objects.create(description=instance.observation,
+                                                  action_taken=_("Training deleted"),
+                                                  shelf_object=
+                                                  validate_shelfobject.validated_data[
+                                                      "shelfobject"],
+                                                  created_by=self.request.user)
             utils.organilab_logentry(request.user, instance, DELETION,
                                      'shelfobjecttraining', relobj=self.lab_pk)
             instance.delete()
-            return JsonResponse({},status=status.HTTP_200_OK)
+            return JsonResponse({}, status=status.HTTP_200_OK)
 
-        return JsonResponse({"detail": "Training do not exists"},status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"detail": "Training do not exists"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-    def list(self, request, *args, **kwargs):
-        self.org_pk = kwargs['org_pk']
-        self.lab_pk = kwargs['lab_pk']
-        self.shelfobject = kwargs['shelfobject']
-        return super().list(request, *args, **kwargs)
-
-    def update(self, request, pk, *args, **kwargs):
+    def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         self.shelfobject = kwargs['shelfobject']
-        request.data.update({"created_by":self.request.user.pk})
+        request.data.update({"created_by": self.request.user.pk})
+        instance = self.get_object()
 
-        instance = self.get_object(pk)
-
-        validate_shelfobject = ValidateShelfObjectTrainingSerializer(instance=instance, data =request.data,
-                                                                 context = {'org_pk':self.org_pk,
-                                                                          'lab_pk':self.lab_pk,
-                                                                          'shelfobject': self.shelfobject})
+        validate_shelfobject = ValidateShelfObjectTrainingSerializer(
+            instance=instance, data=request.data, context={
+                'org_pk': self.org_pk, 'lab_pk': self.lab_pk, 'shelfobject':
+                    self.shelfobject})
 
         if validate_shelfobject.is_valid():
             validate_shelfobject.save()
-            ShelfObjectObservation.objects.create(description = instance.observation,
-                                                  action_taken = _("Training updated"),
-                                                  shelf_object = validate_shelfobject.validated_data["shelfobject"],
-                                                  created_by = self.request.user)
+            ShelfObjectObservation.objects.create(description=instance.observation,
+                                                  action_taken=_("Training updated"),
+                                                  shelf_object=
+                                                  validate_shelfobject.validated_data[
+                                                      "shelfobject"],
+                                                  created_by=self.request.user)
             utils.organilab_logentry(request.user, instance, CHANGE,
                                      'shelfobjecttraining',
                                      changed_data=[validate_shelfobject.validated_data],
                                      relobj=self.lab_pk)
-            return JsonResponse({},status=status.HTTP_200_OK)
+            return JsonResponse({}, status=status.HTTP_200_OK)
 
-        return JsonResponse(validate_shelfobject.errors,status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(validate_shelfobject.errors,
+                            status=status.HTTP_400_BAD_REQUEST)

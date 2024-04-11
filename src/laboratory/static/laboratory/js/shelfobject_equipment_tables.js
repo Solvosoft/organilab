@@ -32,8 +32,7 @@ maintenance_datatable_inits = {
 var logs_datatable_inits = {
 				columns: [
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-						{data: "last_update", name:"last_update", title: gettext("Date"), type: "date", visible: true,
-						render: DataTable.render.datetime(),"dateformat":  document.datetime_format },
+						{data: "last_update", name:"last_update", title: gettext("Last Update"), type: "date", visible: true},
 						{data: "created_by", name: "created_by", title: gettext("Created by"),
 						type: "select2", visible: true, url: selects2_api_urls['users'], render: selectobjprint({display_name: "text"})},
 					    {data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},

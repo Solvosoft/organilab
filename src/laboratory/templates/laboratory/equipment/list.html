@@ -50,6 +50,10 @@
 <script>
 window.name = "equipmentlistview";
 
+	const selects2_api_urls = {
+					equipmenttype : "{% url 'equipmenttype-list' %}"+"?organization="+"{{org_pk}}"+"&laboratory="+"{{lab_pk}}"
+	}
+
 var object_urls = {
 	list_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
 	create_url: "{% url 'laboratory:api-equipment-list' org_pk lab_pk %}",
@@ -67,6 +71,8 @@ datatable_inits = {
 							{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
 							{data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
 							{data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+							{data: "equipment_type", name: "equipmentcharacteristics__equipment_type", title: gettext("Equipment Type"),
+						 type: "select2", visible: true, url: selects2_api_urls['equipmenttype'], render: selectobjprint({display_name: "text"})},
 							{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 		],
 		addfilter: true,

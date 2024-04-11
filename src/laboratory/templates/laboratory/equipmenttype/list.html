@@ -4,7 +4,7 @@
 {% load urlname_tags %}
 {% load gtsettings %}
 {% block pre_head %}
-    {% define_urlname_action 'equipment_manager' %}
+    {% define_urlname_action 'equipment_type' %}
 {% endblock %}
 
 {% block title %}{% trans 'Equipment Type List' %}{% endblock %}
@@ -83,7 +83,7 @@ let objconfig={
 	datatable_inits: datatable_inits,
 	add_filter: true,
 	relation_render: {'field_autocomplete': 'text' },
-	delete_display: data => data['name'],
+	delete_display: data => data['delete_msg'],
 	create: "btn-success",
 	icons: icons
 }
