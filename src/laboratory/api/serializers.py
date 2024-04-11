@@ -408,7 +408,7 @@ class ValidateEquipmentCharacteristicsSerializer(serializers.ModelSerializer):
     use_specials_conditions = serializers.CharField(allow_null=True, allow_blank=True,
                                                     required=False)
     generate_pathological_waste = serializers.BooleanField(required=False)
-    clean_period_according_to_provider = serializers.IntegerField(allow_null=True)
+    clean_period_according_to_provider = serializers.IntegerField(min_value=0, allow_null=True)
     instrumental_family = serializers.PrimaryKeyRelatedField(
         queryset=Catalog.objects.using(
             settings.READONLY_DATABASE),
@@ -549,13 +549,27 @@ class EquipmentDataTableSerializer(serializers.Serializer):
 
 class EquipmentTypeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
+    delete_msg = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
         return {}
 
+    def get_delete_msg(self, obj):
+        delete_msg = (_("Deleting the"), _("equipment type"), "<b>"+obj.name+"</b>",
+                                 _("implies also deleting all equipment related to it."))
+
+        if not self.context['request'].user.profile.language == "es":
+            delete_msg = list(delete_msg)
+            delete_msg[0] = _("Deleting")
+            delete_msg[1] = "<b>"+obj.name+"</b>"
+            delete_msg[2] = _("equipment type")
+            delete_msg = tuple(delete_msg)
+
+        return "%s %s %s %s" % delete_msg
+
     class Meta:
         model = EquipmentType
-        fields = ['id', 'name', 'description', 'actions']
+        fields = ['id', 'name', 'description', 'actions', 'delete_msg']
 
 
 class EquipmentTypeDataTableSerializer(serializers.Serializer):

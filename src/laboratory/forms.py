@@ -839,17 +839,24 @@ class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
 
 
 class InstrumentalFamilyForm(GTForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(InstrumentalFamilyForm, self).__init__(*args, **kwargs)
+        self.fields["description"].label = _("Description")
+
+
     class Meta:
         model = Catalog
-        fields =['description']
+        fields = ['description']
         widgets = {
             'description': genwidgets.Textarea
         }
 
 class EquipmentTypeForm(GTForm, forms.ModelForm):
+
     class Meta:
         model = EquipmentType
-        fields =['name','description']
+        fields = ['name', 'description']
         widgets = {
             'name': genwidgets.TextInput,
             'description': genwidgets.Textarea

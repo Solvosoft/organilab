@@ -7,12 +7,15 @@
 {% block pre_head %}
     {% define_urlname_action 'equipment_shelfobject_actions' %}
     {% define_urlname_action 'view_shelfobject_contracts' %}
+    {% define_urlname_action 'edit_equipment_shelfobject' %}
 {% endblock %}
 
-{% block title %}{% trans 'Equipment edit' %}{% endblock %}
+{% block title %}{% trans 'Edit Shelf Object' %}{% endblock %}
 
 {% block content %}
 <input type="hidden" value="{{org_pk}}" id="organization">
+<input type="hidden" value="{{object.object.pk}}" id="id_object">
+<input type="hidden" value="{{lab_pk}}" id="id_laboratory">
 
 <div class="row">
     <div class=" mb-3 col-md-12">
@@ -26,10 +29,7 @@
               <div class="d-flex justify-content-end ">  <i class="fa fa-trash fa-lg text-danger" aria-hidden="true" title="{% trans 'Is discard' %}"></i></div>
               {% endif %}
             <h5 class="card-title text-success">{{ object.object.code }} -- {{ object.object.name }}
-													<!--<a class="btn btn-sm btn-secondary ms-2" data-modalid="edit_shelfobject">
-									<i class="fa fa-edit" title="{% trans 'Edit Shelfobject' %}"></i>
-								</a>-->
-                <div class="d-flex justify-content-evenly"></div>
+													<div class="d-flex justify-content-evenly"></div>
             </h5>
             <p class="d-flex justify-content-start" style="text-align: justify">{{ object.object.description }}</p>
                 <hr>
@@ -38,6 +38,29 @@
         </div>
       </div>
     </div>
+
+
+<div class="card mb-3">
+	<div class="card-header">
+		<h3 class="card-title text-center"  data-bs-toggle="collapse" href="#editequipmentcollapse" role="button" aria-expanded="false" aria-controls="editequipmentcollapse">
+			{% trans 'Click to edit equipment'%}</h3>
+	</div>
+	<div class="collapse multi-collapse" id="editequipmentcollapse">
+	<div class="card-body">
+		<form id="equipment_form" autocomplete="off" action="{% url 'laboratory:api-shelfobject-edit-equipment-shelfobject'  org_pk lab_pk object.pk %}">
+						{% csrf_token %}
+						{{edit_form.as_horizontal}}
+					<input type="hidden" class="form_prefix" value="" />
+		</form>
+	</div>
+		<div class="card-footer">
+		<button class="btn btn-success formadd">{% trans 'Update' %}</button>
+	</div>
+	</div>
+
+</div>
+
+
 
 <div class="card">
 		<div class="card-header">
@@ -144,51 +167,53 @@
 {{block.super}}
 <script>
 
-	window.name = "equipmenteditview";
-var can_contract = false;
-{% if perms.laboratory.can_view_contract %}
-	can_contract = true;
-{% endif %}
-	var object_urls = {
-	maintenance: {
-							list_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							create_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							destroy_url: "{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 %}",
-							update_url: "{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 %}"
-		},
-		log: {
-							list_url: "{% url 'laboratory:api-shelfobject-log-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							create_url: "{% url 'laboratory:api-shelfobject-log-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							destroy_url: "{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 %}",
-							update_url: "{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 %}"
-		},
-		calibrate: {
-							list_url: "{% url 'laboratory:api-shelfobject-calibrate-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							create_url: "{% url 'laboratory:api-shelfobject-calibrate-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							destroy_url: "{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 %}",
-							update_url: "{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 %}"
-		},
-		training: {
-							list_url: "{% url 'laboratory:api-shelfobject-training-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							create_url: "{% url 'laboratory:api-shelfobject-training-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							destroy_url: "{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 %}",
-							update_url: "{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 %}"
-		},
-			guarantee: {
-							list_url: "{% url 'laboratory:api-shelfobject-guarantee-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							create_url: "{% url 'laboratory:api-shelfobject-guarantee-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
-							destroy_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}",
-							update_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}"
-		}
-	};
+window.name = "equipmenteditview";
+	var can_contract = false;
+	{% if perms.laboratory.can_view_contract %}
+		can_contract = true;
+	{% endif %}
+		var object_urls = {
+		maintenance: {
+								list_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								create_url: "{% url 'laboratory:api-shelfobject-maintenance-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								destroy_url: "{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 %}",
+								update_url: "{% url "laboratory:api-shelfobject-maintenance-detail" org_pk lab_pk pk 0 %}"
+			},
+			log: {
+								list_url: "{% url 'laboratory:api-shelfobject-log-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								create_url: "{% url 'laboratory:api-shelfobject-log-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								destroy_url: "{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 %}",
+								update_url: "{% url "laboratory:api-shelfobject-log-detail" org_pk lab_pk pk 0 %}"
+			},
+			calibrate: {
+								list_url: "{% url 'laboratory:api-shelfobject-calibrate-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								create_url: "{% url 'laboratory:api-shelfobject-calibrate-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								destroy_url: "{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 %}",
+								update_url: "{% url "laboratory:api-shelfobject-calibrate-detail" org_pk lab_pk pk 0 %}"
+			},
+			training: {
+								list_url: "{% url 'laboratory:api-shelfobject-training-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								create_url: "{% url 'laboratory:api-shelfobject-training-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								destroy_url: "{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 %}",
+								update_url: "{% url "laboratory:api-shelfobject-training-detail" org_pk lab_pk pk 0 %}"
+			},
+				guarantee: {
+								list_url: "{% url 'laboratory:api-shelfobject-guarantee-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								create_url: "{% url 'laboratory:api-shelfobject-guarantee-list' org_pk=org_pk lab_pk=lab_pk shelfobject=pk %}",
+								destroy_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}",
+								update_url: "{% url "laboratory:api-shelfobject-guarantee-detail" org_pk lab_pk pk 0 %}"
+			}
+		};
 
-	const selects2_api_urls = {
-					profiles :"{% url 'org_profiles-list' %}"+"?organization="+"{{org_pk}}",
-					providers :"{% url 'org_providers-list' %}"+"?organization="+"{{org_pk}}",
-					users :"{% url 'userorg-list' %}"+"?organization="+"{{org_pk}}",
-	}
-const provider_url = "{% url 'laboratory:list_provider' lab_pk=lab_pk org_pk=org_pk %}";
+		const selects2_api_urls = {
+						profiles :"{% url 'org_profiles-list' %}"+"?organization="+"{{org_pk}}",
+						providers :"{% url 'org_providers-list' %}"+"?organization="+"{{org_pk}}",
+						users :"{% url 'userorg-list' %}"+"?organization="+"{{org_pk}}",
+		}
+	const provider_url = "{% url 'laboratory:list_provider' lab_pk=lab_pk org_pk=org_pk %}";
 
 </script>
-    <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>
+<script type="text/javascript" src="{% static 'laboratory/js/edit_equipment_shelfobject.js' %}?v={% get_organilab_version %}"></script>
+
 {% endblock %}

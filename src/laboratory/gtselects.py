@@ -12,7 +12,7 @@ from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
     ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer, \
     UserAccessOrgLabValidateSerializer
 from auth_and_perms.models import Rol, Profile
-from laboratory.models import Object, Catalog, Provider, ShelfObject
+from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
 from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
@@ -486,3 +486,23 @@ class UsersOrganizationsLookup(BaseSelect2View):
         if not name:
             name = obj.username
         return name
+
+
+@register_lookups(prefix="equipmenttype", basename="equipmenttype")
+class EquipmentTypeLookup(BaseSelect2View):
+    model = EquipmentType
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        serializer = UserAccessOrgLabValidateSerializer(data=request.GET, context={'user': request.user})
+
+        if serializer.is_valid():
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
