@@ -1351,7 +1351,7 @@ class MaintenanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     provider_of_maintenance = ProviderDisplayNameSerializer(many=False)
     validator = GTS2SerializerBase(many=False)
-    maintenance_date = CustomDateInputFormat()
+    maintenance_date = GTDateField()
     def get_actions(self, obj):
         user = self.context["request"].user
         action_list = {
@@ -1450,8 +1450,7 @@ class UpdateShelfObjectCalibrateSerializer(ValidateShelfobjectEditSerializer,ser
 class ShelfObjectCalibrateSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     validator = GTS2SerializerBase(many=False)
-    calibration_date = CustomDateInputFormat()
-
+    calibration_date = GTDateField()
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -1510,8 +1509,8 @@ class ValidateShelfObjectGuaranteeSerializer(ValidateShelfobjectEditSerializer,s
 
 class ShelfObjectGuaranteeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
-    guarantee_initial_date = GTDateField(required=False)
-    guarantee_final_date = GTDateField(required=False)
+    guarantee_initial_date = GTDateField()
+    guarantee_final_date = GTDateField()
     created_by = UserDisplayNameSerializer(many=False, required=False)
     contract = ChunkedFileField(required=False, allow_empty_file=True)
 
@@ -1584,8 +1583,8 @@ class ShelfObjectTrainingSerializer(serializers.ModelSerializer):
 
     actions = serializers.SerializerMethodField()
     intern_people_receive_training= GTS2SerializerBase(many=True)
-    training_initial_date = CustomDateInputFormat()
-    training_final_date = CustomDateInputFormat()
+    training_initial_date = GTDateField()
+    training_final_date = GTDateField()
 
     def get_actions(self, obj):
         user = self.context["request"].user
