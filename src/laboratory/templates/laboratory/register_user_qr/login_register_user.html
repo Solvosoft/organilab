@@ -22,7 +22,7 @@
 			<div class="card">
 				<div class="card-body">
 
-					<form action="{% url 'laboratory:create_user_qr' org_pk lab_pk pk instance %}" method="POST" id="registerform">
+					<form action="{% url 'laboratory:create_user_qr' org_pk lab_pk pk %}{% if instance %}/{{instance}}{% endif %}" method="POST" id="registerform">
 						{% csrf_token %}
 						<div class="row">
 							<h2 class="text-center"><strong>{% trans 'Register User' %}</strong></h2>
