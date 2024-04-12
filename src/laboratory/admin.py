@@ -22,7 +22,7 @@ class Object_Admin(admin.ModelAdmin):
 
 
 class OrganizationStrutureAdmin(admin.ModelAdmin):
-    search_fields = ["name", 'laboratories']
+    search_fields = ["name", 'laboratory__name']
     list_display = ["name", 'laboratories']
     mptt_level_indent = 20
 
