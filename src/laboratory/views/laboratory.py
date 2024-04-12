@@ -576,12 +576,13 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
     user_qr = get_object_or_404(RegisterUserQR, pk=pk)
     password_form = PasswordCodeForm(user=None, code=user_qr.code)
     register_form = RegisterForm(obj=None)
-    instance, obj = None, None
+    instance, obj, context = None, None, {}
 
     if request.method == "POST":
         if user:
             instance = get_object_or_404(User, pk=user)
             obj = instance.pk
+            context.update({'instance': instance.pk})
         register_form = RegisterForm(request.POST, instance=instance, obj=obj)
 
         if register_form.is_valid():
@@ -605,13 +606,14 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
                 login(request, instance)
                 return redirect(reverse('laboratory:labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk}))
 
-    return render(request, 'laboratory/register_user_qr/login_register_user.html', context={
+    context.update({
         'pk': pk,
         'org_pk': org_pk,
         'lab_pk': lab_pk,
         'login_form': LoginForm(),
         'password_form': password_form,
         'register_form': register_form,
-        'instance': instance.pk if instance else 0,
-        'next': reverse('laboratory:redirect_user_to_labindex', kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
+        'next': reverse('laboratory:redirect_user_to_labindex',
+                        kwargs={'org_pk': org_pk, 'lab_pk': lab_pk, 'pk': pk})
     })
+    return render(request, 'laboratory/register_user_qr/login_register_user.html', context=context)
