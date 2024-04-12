@@ -17,7 +17,8 @@ table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center ju
 maintenance_datatable_inits = {
 				columns: [
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-						{data: "maintenance_date", name:"maintenance_date", title: gettext("Date"), type: "date", visible: true},
+						{data: "maintenance_date", name:"maintenance_date", title: gettext("Date"), type: "date",
+						"dateformat":  document.date_format, visible: true},
 						{data: "provider_of_maintenance", name: "provider_of_maintenance", title: gettext("Provider"),
 						type: "select2", visible: true, url: selects2_api_urls['providers'], render: selectobjprint({display_name: "text"})},
 						{data: "validator", name: "validator", title: gettext("Validator"), type: "select2", visible: true,
@@ -32,7 +33,8 @@ maintenance_datatable_inits = {
 var logs_datatable_inits = {
 				columns: [
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-						{data: "last_update", name:"last_update", title: gettext("Last Update"), type: "date", visible: true},
+						{data: "last_update", name:"last_update", title: gettext("Last Update"), type: "date",
+						"dateformat":  document.datetime_format, visible: true},
 						{data: "created_by", name: "created_by", title: gettext("Created by"),
 						type: "select2", visible: true, url: selects2_api_urls['users'], render: selectobjprint({display_name: "text"})},
 					    {data: "description", name: "description", title: gettext("Description"), type: "string", visible: true},
@@ -46,7 +48,8 @@ var logs_datatable_inits = {
 var calibrate_datatable_inits = {
 				columns: [
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-						{data: "calibration_date", name:"calibration_date", title: gettext("Date"), type: "date", visible: true},
+						{data: "calibration_date", name:"calibration_date", title: gettext("Date"), type: "date",
+						"dateformat":  document.date_format, visible: true},
 						{data: "calibrate_name", name: "calibrate_name", title: gettext("Calibrator"), type: "string", visible: true},
 						{data: "validator", name: "validator", title: gettext("Validator"),type: "select2", visible: true,
 						url: selects2_api_urls['profiles'],	render: selectobjprint({display_name: "text"})},
@@ -60,8 +63,10 @@ var calibrate_datatable_inits = {
 var training_datatable_inits = {
 				columns: [
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-						{data: "training_initial_date", name:"training_initial_date", title: gettext("Initial date"), type: "date", visible: true},
-						{data: "training_final_date", name:"training_final_date", title: gettext("Final date"), type: "date", visible: true},
+						{data: "training_initial_date", name:"training_initial_date", title: gettext("Initial date"), type: "date",
+						"dateformat":  document.date_format, visible: true},
+						{data: "training_final_date", name:"training_final_date", title: gettext("Final date"), type: "date",
+						"dateformat":  document.date_format, visible: true},
 						{data: "number_of_hours", name:"number_of_hours", title: gettext("Hours"), type: "number", visible: true},
 						{data: "place", name:"place", title: gettext("Place"), type: "string", visible: true},
 						{data: "intern_people_receive_training", name:"intern_people_receive_training", title: gettext("Internal participants"),
@@ -78,9 +83,9 @@ var guarantee_datatable_inits = {
 				columns: [
 						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
 						{data: "guarantee_initial_date", name:"guarantee_initial_date", title: gettext("Initial date"),
-						type: "date",  visible: true},
+						type: "date",  "dateformat":  document.date_format, visible: true},
 						{data: "guarantee_final_date", name:"guarantee_final_date", title: gettext("Final date"),
-						type: "date", visible: true},
+						type: "date", "dateformat":  document.date_format, visible: true},
 						{data: "created_by", name: "created_by", title: gettext("Created by"),
 						type: "select2", visible: true, url: selects2_api_urls['users'], render: selectobjprint({display_name: "text"})},
 						{data: "contract", name:"contract", title: gettext("Contract"), visible: true, type:"readonly", render: data=> render_file(data)},
