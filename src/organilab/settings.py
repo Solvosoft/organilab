@@ -185,7 +185,7 @@ STATIC_URL = os.getenv('STATIC_URL', '/static/')
 STATIC_ROOT = os.getenv('STATIC_ROOT', '/run/static/')
 
 MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
-MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(BASE_DIR, 'media/'))
+MEDIA_ROOT = os.getenv('MEDIA_ROOT',  str(BASE_DIR.parent/ 'media/'))
 TINYMCE_UPLOAD_PATH=Path(MEDIA_ROOT) / 'editorupload/'
 
 FIXTURE_DIRS = os.getenv('FIXTURE_DIRS',  str(BASE_DIR.parent/ 'fixtures/') ).split(',')
