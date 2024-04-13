@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 09:31-0600\n"
-"PO-Revision-Date: 2024-01-08 09:32-0600\n"
+"POT-Creation-Date: 2024-04-12 23:38-0600\n"
+"PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -396,6 +396,36 @@ msgstr "¿Es Lista de Seveso III?"
 msgid "Molecular Formula"
 msgstr "Formula Molecular"
 
+msgid "Provider"
+msgstr "Proveedor"
+
+msgid "Has guarantee?"
+msgstr "¿Tiene Garantía?"
+
+msgid "Is available to use?"
+msgstr "¿Esta disponible de usar?"
+
+msgid "Price"
+msgstr "Precio"
+
+msgid "Note"
+msgstr "Nota"
+
+msgid "Purchase Date"
+msgstr "Fecha de compra"
+
+msgid "Delivery Date"
+msgstr "Fecha de entrega"
+
+msgid "First date use"
+msgstr "Primer día de uso"
+
+msgid "Contract of maintenance"
+msgstr "Contrato de mantenimiento"
+
+msgid "Authorized roles to use equipment"
+msgstr "Roles autorizados para el uso del equipo"
+
 msgid "No shelf selected"
 msgstr "No se ha seleccionado un estante"
 
@@ -474,6 +504,45 @@ msgstr "Nuevo"
 msgid "Difference"
 msgstr "Diferencia"
 
+msgid "You do not have permissions to see or download contract."
+msgstr "No tienes permisos para ver o descargar el contrato."
+
+msgid "Validator"
+msgstr "Validador"
+
+msgid "Observation"
+msgstr "Observación"
+
+msgid "Last Update"
+msgstr "Última Actualización"
+
+msgid "Created by"
+msgstr "Creado por"
+
+msgid "Calibrator"
+msgstr "Calibrador"
+
+msgid "Initial date"
+msgstr "Fecha inicial"
+
+msgid "Final date"
+msgstr "Fecha final"
+
+msgid "Hours"
+msgstr "Horas"
+
+msgid "Place"
+msgstr "Lugar"
+
+msgid "Internal participants"
+msgstr "Participantes internos"
+
+msgid "Contract"
+msgstr "Contrato"
+
+msgid "Providers"
+msgstr "Proveedores"
+
 msgid "Action Taken"
 msgstr "Acción Tomada"
 
@@ -548,102 +617,3 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
-
-msgid "Price"
-msgstr "Precio"
-
-msgid "Provider"
-msgstr "Proveedor"
-
-msgid "First date use"
-msgstr "Primer día de uso"
-
-msgid "Is available to use?"
-msgstr "¿Esta disponible de usar?"
-
-msgid "Contract of maintenance"
-msgstr "Contrato de mantenimiento"
-
-msgid "Has guarantee?"
-msgstr "¿Tiene Garantía?"
-
-msgid "Delivery Date"
-msgstr "Fecha de entrega"
-
-msgid "Purchase Date"
-msgstr "Fecha de compra"
-
-msgid "Authorized roles to use equipment"
-msgstr "Roles autorizados para el uso del equipo"
-
-msgid "Note"
-msgstr "Nota"
-
-msgid "Maintenance date"
-msgstr "Fecha de mantenimiento"
-
-msgid "Provider of Maintenance"
-msgstr "Proveedor del mantenimiento"
-
-msgid "Name of Calibrator"
-msgstr "Nombre del calibrador"
-
-msgid "Calibration date"
-msgstr "Fecha de calibración"
-
-msgid "Validator"
-msgstr "Validador"
-
-msgid "Number of hours"
-msgstr "Cantidad de horas"
-
-msgid "Intern people receive training"
-msgstr "Personal interno que recibió la capacitación"
-
-msgid "External people receive training"
-msgstr "Personal externo que recibió la capacitación"
-
-msgid "Contract"
-msgstr "Contrato"
-
-msgid "Final date"
-msgstr "Fecha final"
-
-msgid "Initial date"
-msgstr "Fecha inicial"
-
-msgid "Hours"
-msgstr "Horas"
-
-msgid "Observation"
-msgstr "Observación"
-
-msgid "Internal people"
-msgstr "Personas internas"
-
-msgid "Calibrator"
-msgstr "Calibrador"
-
-msgid "Providers"
-msgstr "Proveedores"
-
-msgid "Place"
-msgstr "Lugar"
-
-msgid "Created by"
-msgstr "Creado por"
-
-msgid "You do not have permissions to see or download contract."
-msgstr "No tienes permisos para ver o descargar el contrato."
-
-msgid "Internal participants"
-msgstr "Participantes internos"
-
-msgid "Create"
-msgstr "Crear"
-
-msgid "Equipment Type"
-msgstr "Tipo de Equipo"
-
-msgid "Last Update"
-msgstr "Última Actualización"
