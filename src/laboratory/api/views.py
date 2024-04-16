@@ -582,9 +582,12 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         create = super().create(request, *args, **kwargs)
-        instance = self.get_object()
-        organilab_logentry(request.user, instance, ADDITION, "catalog",
-                           changed_data=["key", "description"])
+        if create.status_code == 201:
+            if 'id' in create.data.keys():
+                instance = get_object_or_404(Catalog.objects.using(
+                    settings.READONLY_DATABASE), pk=create.data['id'])
+                organilab_logentry(request.user, instance, ADDITION, "catalog",
+                               changed_data=["key", "description"])
         return create
 
     def perform_create(self, serializer):
@@ -644,10 +647,13 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
         organization = get_object_or_404(OrganizationStructure.objects.using(
             settings.READONLY_DATABASE), pk=self.org_pk)
         create = super().create(request, *args, **kwargs)
-        instance = self.get_object()
-        organilab_logentry(request.user, instance, ADDITION, "equipment type",
-                           changed_data=["name", "description"],
-                           relobj=organization)
+
+        if create.status_code == 201:
+            if 'id' in create.data.keys():
+                instance = get_object_or_404(EquipmentType.objects.using(
+                    settings.READONLY_DATABASE), pk=create.data['id'])
+                organilab_logentry(request.user, instance, ADDITION, "equipment type",
+                                   changed_data=["name", "description"], relobj=organization)
         return create
 
     def destroy(self, request, *args, **kwargs):

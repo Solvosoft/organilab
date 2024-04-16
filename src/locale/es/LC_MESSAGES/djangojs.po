@@ -617,3 +617,9 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Create"
+msgstr "Crear"
