@@ -27,8 +27,7 @@ from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
 
 from auth_and_perms.models import Profile
-from laboratory.api.serializers import ShelfObjectSerialize, ShelfObjectSerializer, \
-    PrecursorSerializer
+from laboratory.api.serializers import ShelfObjectSerialize, PrecursorSerializer
 from laboratory.forms import H_CodeForm
 from laboratory.models import Laboratory, LaboratoryRoom, Object, Furniture, \
     ShelfObject, CLInventory, \
