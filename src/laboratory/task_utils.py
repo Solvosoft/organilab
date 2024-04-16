@@ -1,6 +1,8 @@
+from django.db.models import Sum
 from django.utils import timezone
 
-from laboratory.models import Laboratory, InformsPeriod, Inform
+from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
+    ShelfObject, ObjectLogChange
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -35,3 +37,60 @@ def create_informsperiods(informscheduler, now=timezone.now()):
                 schema=informscheduler.inform_template.schema,
             )
             ip.informs.add(inform)
+
+
+def save_object_report_precursor(report):
+    lab = report.laboratory
+    for precursor in ShelfObject.objects.filter(in_where_laboratory=lab,
+                                                object__sustancecharacteristics__is_precursor=True):
+
+        obj = PrecursorReportValues.objects.filter(precursor_report=report,
+                                                object=precursor.object,
+                                                measurement_unit= precursor.measurement_unit).first()
+
+        if obj:
+            add_quantity = precursor.quantity
+            obj.quantity=add_quantity+precursor.quantity
+            obj.final_balance=add_quantity+precursor.final_balance
+            obj.stock=add_quantity+precursor.stock
+            obj.save()
+        else:
+
+            object_list = ObjectLogChange.objects.filter(laboratory=lab, precursor=True,
+                                                         object=precursor.object,
+                                                         measurement_unit=precursor.measurement_unit,
+                                                         update_time__month=report.month,
+                                                         update_time__year=report.year)
+
+            providers = [ol.provider for ol in object_list.filter(provider__isnull=False)]
+            subject = [ol.subject for ol in object_list.filter(subject__isnull=False)]
+            bills = [ol.bill for ol in object_list.filter(bill__isnull=False)]
+
+            PrecursorReportValues.objects.create(precursor_report=report,
+                                                 object=precursor.object,
+                                                 measurement_unit= precursor.measurement_unit,
+                                                 quantity = precursor.quantity,
+                                                 new_income = object_list.filter(type_action__in=[0,1]).aggregate(amount=Sum('diff_value', default=0))["amount"],
+                                                 bills = ", ".join(bills),
+                                                 providers=", ".join(providers),
+                                                 stock = precursor.quantity,
+                                                 month_expense = object_list.filter(type_action__in=[2,3]).aggregate(amount=Sum('diff_value', default=0))["amount"],
+                                                 final_balance = precursor.quantity,
+                                                 reason_to_spend = ", ".join(subject)
+                                                 )
+
+
+def build_precursor_report_from_reports(first_report, second_report):
+    if second_report:
+        first_report = PrecursorReportValues.objects.filter(precursor_report= first_report)
+        second_report = PrecursorReportValues.objects.filter(precursor_report= second_report)
+        for obj in first_report:
+
+            old_obj = second_report.filter(object=obj.object, measurement_unit=obj.measurement_unit).first()
+            if old_obj:
+                obj.previous_balance = old_obj.final_balance
+                obj.save()
+
+
+
+
