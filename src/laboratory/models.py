@@ -939,6 +939,22 @@ MONTHS = (
     (12, _('December')),
 )
 
+class PrecursorReportValues(models.Model):
+    precursor_report= models.ForeignKey("PrecursorReport", on_delete= models.CASCADE)
+    object = models.ForeignKey(Object, on_delete=models.CASCADE)
+    measurement_unit = catalog.GTForeignKey(Catalog,
+                                            on_delete=models.DO_NOTHING,
+                                            verbose_name=_('measurement unit'),
+                                            key_name="key", key_value='units')
+    quantity = models.FloatField(default=0.0)
+    previous_balance = models.CharField(max_length=200, blank=True)
+    new_income = models.FloatField(default=0.0)
+    bills = models.CharField(max_length=200, blank=True)
+    providers = models.CharField(max_length=200, blank=True)
+    stock = models.FloatField(default=0.0)
+    month_expense = models.FloatField(default=0.0)
+    final_balance = models.FloatField(default=0.0)
+    reason_to_spend = models.TextField(blank=True)
 
 class PrecursorReport(models.Model):
     month = models.IntegerField(choices=MONTHS)
@@ -946,6 +962,8 @@ class PrecursorReport(models.Model):
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE,
                                    verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
+    report_values = models.ManyToManyField(Object,through=PrecursorReportValues)
+
 
 
 STATUS_CHOICES = (

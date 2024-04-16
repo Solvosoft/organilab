@@ -30,7 +30,7 @@
                 <tr>
                     <td class="text-center">{{report.consecutive}}</td>
                     <td class="text-center">{{report.get_month_display}} {{report.year}}</td>
-                    <td class="text-center"><a class="btn btn-success" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=ods&month={{report.month}}&year={{report.year}}&consecutive={{report.consecutive}}">{% trans 'Download'%}</a></td>
+                    <td class="text-center"><a class="btn btn-success" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=ods&pk={{report.pk}}">{% trans 'Download'%}</a></td>
                 </tr>
                 {% endfor %}
                 </tbody>

@@ -4494,3 +4494,27 @@ msgstr "El objeto de estantería fue actualizado correctamente."
 
 msgid "Click to edit equipment"
 msgstr "Clic para editar el equipo"
+
+msgid "Final balance of the previous report"
+msgstr "Saldo final del reporte anterios"
+
+msgid "Income during the month"
+msgstr "Ingresos durante el mes"
+
+msgid "Import or local purchase invoice number that covers the entry"
+msgstr "Número de factura de importación o compra local que ampara el ingreso"
+
+msgid "Proveedor que suplió el producto adquirido (en caso de compra local)"
+msgstr "Supplier that supplied the purchased product (in case of local purchase)"
+
+msgid "Total Stock"
+msgstr "Total de existencias"
+
+msgid "Dispatch or expense during this month"
+msgstr "Despacho o gasto durante este mes"
+
+msgid "Balance at the end of the month reported in this reportt"
+msgstr "Saldo al final del mes reportado en este informe"
+
+msgid "Reason for dispatch or expense"
+msgstr "Razón del despacho o gasto"
