@@ -61,11 +61,6 @@ var object_urls = {
 	update_url: "{% url "laboratory:api-equipment-detail" org_pk lab_pk 0 %}"
 }
 
-table_default_dom = "<'row mb-1'<'col-sm-4 col-md-4 d-flex align-items-center justify-content-start'f>" +
-                 "<'col-sm-4 col-md-4 d-flex align-items-center justify-content-center'B>" +
-                 "<'col-sm-3 col-md-3 d-flex align-items-center justify-content-end 'l>>" +
-                 "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
-
 datatable_inits = {
 			columns: [
 							{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
@@ -75,8 +70,7 @@ datatable_inits = {
 						 type: "select2", visible: true, url: selects2_api_urls['equipmenttype'], render: selectobjprint({display_name: "text"})},
 							{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 		],
-		addfilter: true,
-		dom: table_default_dom
+		addfilter: true
 }
 var equipment_modalids = {
 	create: "#create_obj_modal",
