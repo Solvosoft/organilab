@@ -617,3 +617,12 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 
 msgid "Weight"
 msgstr "Peso"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "First Name"
+msgstr "Nombre"
+
+msgid "Last Name"
+msgstr "Apellidos"

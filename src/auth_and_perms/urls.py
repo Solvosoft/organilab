@@ -4,7 +4,7 @@ from auth_and_perms.api.viewsets import RolAPI, UpdateRolOrganizationProfilePerm
     OrganizationAPI, \
     UserLaboratoryOrganization, UserInOrganization, DeleteUserFromContenttypeViewSet, \
     ProfileToContenttypeObjectAPI, UpdateGroupsByProfile, SearchShelfObjectOrganization, \
-    OrganizationButtons, ExternalUserToOrganizationViewSet
+    OrganizationButtons, ExternalUserToOrganizationViewSet, UserManagementViewset
 from auth_and_perms.views import organizationstructure as orgstruct
 
 from rest_framework.routers import SimpleRouter
@@ -12,6 +12,7 @@ from rest_framework.routers import SimpleRouter
 from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
 from auth_and_perms.views.select_organization import select_organization_by_user
+from auth_and_perms.views.users import users_list
 from authentication.views import SignDataRequestViewSet
 
 routes = SimpleRouter()
@@ -24,6 +25,7 @@ routes.register('extuserinorgrol', ExternalUserToOrganizationViewSet, 'api-extus
 routes.register('deluserorgcontt', DeleteUserFromContenttypeViewSet, 'api-deluserorgcontt' )
 routes.register('relusertocontenttype', ProfileToContenttypeObjectAPI, 'api-relusertocontenttype' )
 routes.register('searchshelfobjectorg', SearchShelfObjectOrganization, 'api-searchshelfobjectorg' )
+routes.register('users_list', UserManagementViewset, basename='api-users')
 
 app_name='auth_and_perms'
 
@@ -46,5 +48,6 @@ urlpatterns = [
     path('organization/manage/relorgcont/add/', orgstruct.add_contenttype_to_org, name="add_contenttype_to_org"),
     path('digitalsignature/notify', SignDataRequestViewSet.as_view({'post': 'create'})),
     path('update_groups_by_profile/', UpdateGroupsByProfile.as_view(), name="api_update_groups_by_profile"),
-    path('organization_buttons/', OrganizationButtons.as_view(), name="api_organization_buttons")
+    path('organization_buttons/', OrganizationButtons.as_view(), name="api_organization_buttons"),
+    path('users/', users_list, name="users_list")
 ]
