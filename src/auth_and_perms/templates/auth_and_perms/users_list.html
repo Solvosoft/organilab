@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% load gtsettings %}
+{% block pre_head %}
+{% define_urlname_action 'manage_users' %}
+{% endblock %}
+
+{% block title %}{% trans 'Users List' %}{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{% trans 'Users List' %}</h1>
+
+<div class="row">
+	<table class="table table-striped w-100 table-responsive" id="users_table"></table>
+</div>
+
+{% url "auth_and_perms:api-users-detail" 0 as delete_obj_url %}
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=delete_obj_url %}
+
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+window.name = "userlistview";
+
+const selects2_api_urls = {}
+
+var object_urls = {
+	list_url: "{% url 'auth_and_perms:api-users-list' %}",
+	destroy_url: "{% url "auth_and_perms:api-users-detail" 0 %}",
+}
+
+datatable_inits = {
+			columns: [
+							{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+							{data: "username", name: "username", title: gettext("Username"), type: "string", visible: true},
+							{data: "first_name", name: "first_name", title: gettext("First Name"), type: "string", visible: true},
+							{data: "last_name", name: "last_name", title: gettext("Last Name"), type: "string", visible: true},
+							{data: "email", name: "email", title: gettext("Email"), type: "string", visible: true},
+						 {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
+		],
+		addfilter: true
+}
+var users_modalids = {
+	destroy: "#delete_obj_modal",
+}
+
+var users_actions = {
+	 table_actions: [],  //table_actions
+	 object_actions: [],
+		title: gettext('Actions'),
+		className:  "no-export-col"
+}
+
+let objconfig={
+	urls: object_urls,
+	datatable_element: "#users_table",
+	modal_ids: users_modalids,
+	actions: users_actions,
+	datatable_inits: datatable_inits,
+	add_filter: true,
+	relation_render: {'field_autocomplete': 'text' },
+	delete_display: data => data['delete_msg'],
+	create: "btn-success"
+}
+
+
+let ocrud=ObjectCRUD("userscrudobj", objconfig)
+ocrud.init();
+
+
+</script>
+{% endblock %}

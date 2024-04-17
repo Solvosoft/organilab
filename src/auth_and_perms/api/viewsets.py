@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -23,7 +24,8 @@ from auth_and_perms.api.serializers import RolSerializer, \
     ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer, \
     ShelfObjectSerializer, ValidateSearchShelfObjectSerializer, \
     ShelfObjectDataTableSerializer, ValidateOrganizationSerializer, \
-    ExternalUserSerializer, AddExternalUserSerializer
+    ExternalUserSerializer, AddExternalUserSerializer, UserDataTableSerializer, \
+    UserSerializer, UserFilter
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, \
     OrganizationForViewsetForm, SearchShelfObjectViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
@@ -458,3 +460,21 @@ class OrganizationButtons(APIView):
         else:
             return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class UserManagementViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        'list': UserDataTableSerializer,
+        'destroy': UserSerializer,
+    }
+    perms = {
+        'list': ["auth.view_user"],
+        'destroy': ["auth.delete_user"]
+    }
+
+    queryset = User.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['id', 'username', 'first_name', 'last_name', 'email']  # for the global search
+    filterset_class = UserFilter
+    ordering_fields = ['username', 'first_name']
+    ordering = ('id',)  # default order

@@ -4569,3 +4569,12 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Users List"
+msgstr "Lista de Usuarios"
+
+msgid "The user"
+msgstr "El usuario"
+
+msgid "could have relations with multiple elements."
+msgstr "puede tener relaciones con múltiples elementos."

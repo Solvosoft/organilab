@@ -18,7 +18,7 @@ import logging
 
 from django.conf import settings
 
-from laboratory.utils import check_user_access_kwargs_org_lab
+from laboratory.utils import check_user_access_kwargs_org_lab, get_actions_by_perms
 
 logger = logging.getLogger('organilab')
 
@@ -359,3 +359,40 @@ class ValidateLabOrgObjectSerializer(serializers.Serializer):
                                                 allow_null=False,allow_empty=False)
 
 
+class UserSerializer(serializers.ModelSerializer):
+    delete_msg = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_delete_msg(self, obj):
+        return "%s %s %s" % (_("The user"), obj.get_full_name(),
+                             _("could have relations with multiple elements."))
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "destroy": ["auth.delete_user", "auth.view_user"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'delete_msg',
+                  'actions']
+
+
+class UserDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=UserSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class UserFilter(FilterSet):
+    class Meta:
+        model = User
+        fields = {'id': ['exact'],
+                  'username': ['icontains'],
+                  'first_name': ['icontains'],
+                  'last_name': ['icontains'],
+                  'email': ['icontains'],
+                  }
