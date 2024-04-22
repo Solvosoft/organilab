@@ -4518,3 +4518,22 @@ msgstr "Saldo al final del mes reportado en este informe"
 
 msgid "Reason for dispatch or expense"
 msgstr "Razón del despacho o gasto"
+
+msgid "Name of the substance or product"
+msgstr "Nombre de la sustancia o producto"
+
+msgid "Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d"
+msgstr "Nombre de la sustancia o producto: %(lab)s  N° Inscripción: %(consecutive)d"
+
+msgid "Activity to which the company is dedicated: %(activity)s"
+msgstr "Actividad a la que se dedica la empresa: %(activity)s"
+
+msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
+msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
+
+msgid "Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s:"
+msgstr "Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
+
+msgid "Report_of_precursors_%(consecutive)d"
+msgstr "Reporte_sobre_precursores_%(consecutive)d"
+

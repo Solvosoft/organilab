@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.admin.models import CHANGE, ADDITION
 from django.shortcuts import get_object_or_404
 
 from laboratory.models import ObjectLogChange, OrganizationStructure
@@ -36,6 +37,7 @@ def log_object_add_change(user, laboratory, shelfobject, old, new, msg, provider
         precursor=shelfobject.object.is_precursor,
         measurement_unit=shelfobject.measurement_unit,
         subject=msg,
+        type_action=ADDITION,
         provider=provider,
         bill=bill,
         note='',

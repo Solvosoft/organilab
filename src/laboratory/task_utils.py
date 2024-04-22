@@ -50,9 +50,7 @@ def save_object_report_precursor(report):
 
         if obj:
             add_quantity = precursor.quantity
-            obj.quantity=add_quantity+precursor.quantity
-            obj.final_balance=add_quantity+precursor.final_balance
-            obj.stock=add_quantity+precursor.stock
+            obj.quantity += add_quantity
             obj.save()
         else:
 
@@ -65,16 +63,16 @@ def save_object_report_precursor(report):
             providers = [ol.provider for ol in object_list.filter(provider__isnull=False)]
             subject = [ol.subject for ol in object_list.filter(subject__isnull=False)]
             bills = [ol.bill for ol in object_list.filter(bill__isnull=False)]
-
+            income = object_list.filter(type_action__in=[0,1]).aggregate(amount=Sum('diff_value', default=0))["amount"]
             PrecursorReportValues.objects.create(precursor_report=report,
                                                  object=precursor.object,
                                                  measurement_unit= precursor.measurement_unit,
                                                  quantity = precursor.quantity,
-                                                 new_income = object_list.filter(type_action__in=[0,1]).aggregate(amount=Sum('diff_value', default=0))["amount"],
+                                                 new_income = income,
                                                  bills = ", ".join(bills),
                                                  providers=", ".join(providers),
                                                  stock = precursor.quantity,
-                                                 month_expense = object_list.filter(type_action__in=[2,3]).aggregate(amount=Sum('diff_value', default=0))["amount"],
+                                                 month_expense = abs(object_list.filter(type_action__in=[2,3]).aggregate(amount=Sum('diff_value', default=0))["amount"]),
                                                  final_balance = precursor.quantity,
                                                  reason_to_spend = ", ".join(subject)
                                                  )
@@ -89,6 +87,8 @@ def build_precursor_report_from_reports(first_report, second_report):
             old_obj = second_report.filter(object=obj.object, measurement_unit=obj.measurement_unit).first()
             if old_obj:
                 obj.previous_balance = old_obj.final_balance
+                obj.stock = old_obj.final_balance+obj.new_income
+                obj.final_balance = obj.stock-obj.month_expense
                 obj.save()
 
 

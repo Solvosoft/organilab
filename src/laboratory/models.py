@@ -947,7 +947,7 @@ class PrecursorReportValues(models.Model):
                                             verbose_name=_('measurement unit'),
                                             key_name="key", key_value='units')
     quantity = models.FloatField(default=0.0)
-    previous_balance = models.CharField(max_length=200, blank=True)
+    previous_balance = models.FloatField(default=0.0)
     new_income = models.FloatField(default=0.0)
     bills = models.CharField(max_length=200, blank=True)
     providers = models.CharField(max_length=200, blank=True)
