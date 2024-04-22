@@ -230,36 +230,37 @@ class PrecursorsView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['datalist'] = PrecursorReport.objects.filter(laboratory__pk=int(self.lab))
+        context['datalist'] = PrecursorReport.objects.filter(laboratory__pk=int(self.lab)).order_by('-pk')
         return context
 
     def get_book(self, context):
         laboratory = Laboratory.objects.get(pk=self.lab)
         month = date.today()
         month=month.strftime("%B")
-        serializer = PrecursorSerializer(data= self.requests.GET)
+        serializer = PrecursorSerializer(data= self.request.GET)
         book=[]
         if serializer.is_valid():
-            report = PrecursorReport.objects.get(pk=serializer.validated_data["pk"])
 
-            first_line = [
-                _("Coordinator"), laboratory.coordinator, _('Unit'), laboratory.unit, "#"+_('Consecutive'), report.consecutive,
-            ]
-            second_line = [
-                _("Laboratory or work center"), laboratory.name, _('Month'), _(month),
-            ]
-            third_line = [
-                _("Email"), laboratory.email, _('Phone'), laboratory.phone_number,
-            ]
-            #SALDO FINAL DEL REPORTE ANTERIOR
-            #INGRESOS DURANTE EL MES
-            #Número de factura de importación o compra local que ampara el ingreso
-            #Proveedor que suplió el producto adquirido (en caso de compra local)
-            #TOTAL DE EXISTENCIA
-            #Despacho o gasto durante este mes
-            #Saldo al final del mes reportado en este informe
-            #Razón del despacho o gasto
-            book = [first_line, second_line, third_line,[], [str(_('Nombre de la sustancia o producto')),
+            report = PrecursorReport.objects.get(pk=serializer.validated_data["pk"])
+            first_line = [_("Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d") % {
+                'lab': laboratory.name,
+                'consecutive': report.consecutive
+            }]
+            second_line = [_("Activity to which the company is dedicated: %(activity)s") % {
+                "activity":""
+            }]
+            third_line = [_("Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s") % {
+                "month":report.get_month_display(),
+                "year": report.year,
+                "tel": laboratory.phone_number
+            }]
+            fourth_line = [_("Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s") % {
+                "responsible": "",
+                "signature": "",
+                "position":""
+            }]
+
+            book = [first_line, second_line, third_line, fourth_line,[], [str(_('Name of the substance or product ')),
                                                                  str(_('Unit')),
                                                                  str(_('Final balance of the previous report')),
                                                                  str(_('Income during the month')),
@@ -271,7 +272,8 @@ class PrecursorsView(ReportListView):
                                                                  str(_('Reason for dispatch or expense')),
                                                                  ]]
             objects = PrecursorReportValues.objects.filter(precursor_report=report)
-            for obj in objects.distinct():
+            for obj in objects.distinct().order_by("object__name"):
+
                 book.append([obj.object.name,
                                  obj.measurement_unit.description,
                                  obj.previous_balance,
@@ -283,7 +285,9 @@ class PrecursorsView(ReportListView):
                                  obj.final_balance,
                                  obj.reason_to_spend
                                      ])
-            self.file_name = f'Reporte_precursor_{report.consecutive}'
+            self.file_name = _('Report_of_precursors_%(consecutive)d') % {
+                "consecutive": report.consecutive
+            }
         return book
 
 
