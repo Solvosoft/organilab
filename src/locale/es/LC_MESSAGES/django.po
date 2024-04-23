@@ -4569,3 +4569,6 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Email address is associated to an username."
+msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
