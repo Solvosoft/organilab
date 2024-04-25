@@ -343,7 +343,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             kwargs['initial']['col'] = form.cleaned_data['col']
         return kwargs
 
-
+#fixme Delete
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
