@@ -19,12 +19,12 @@ class Command(BaseCommand):
         ObjectLogChange.objects.filter(subject="Update", diff_value__gte=0).update(type_action=ADDITION)
         for lab in Laboratory.objects.all():
             queryset = ObjectLogChange.objects.filter(laboratory=lab, precursor=True)
+            PrecursorReport.objects.filter(laboratory=lab).delete()
             if queryset.exists():
                 first_filters = queryset.values("update_time__month", "update_time__year").first()
                 month = first_filters['update_time__month']
                 years = sorted(set(list(queryset.values_list("update_time__year", flat=True))))
 
-                PrecursorReport.objects.filter(laboratory=lab).delete()
 
                 if len(years)>0:
                     for i, year in enumerate(years):
