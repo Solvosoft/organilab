@@ -471,3 +471,65 @@ Clasificación de la prioridad de búsqueda
 
     .. image:: ../_static/priority_search.png
 
+
+Edición de Objectos de estantería tipo equipo
+================================================
+
+
+Bitácora de mantenimientos
+----------------------------------------------
+Este acción registrara los mantenimientos realizados al equipo con los siguientes datos:
+*   **Fecha de mantenimiento**
+*   **Proveedor:** Los proveedores que se pueden registrar son los asociados a la organización
+*   **Observaciones**
+
+Crear mantenimiento
+^^^^^^^^^^^^^^^^^^^^^^
+
+Editar mantenimiento
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Buscar mantenimientos
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Las bitácoras de mantenimiento se puede filtrar por la persona que los registro que el **Validador**, la fecha que
+permite efectuar la busqueda mediante rangos de fechas, proveedor y ultimo mantenimiento.
+
+
+Eliminar mantenimiento
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
+Capacitaciones
+------------------
+
+Crear capacitación
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Editar capacitación
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Buscar capacitación
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Eliminar capacitación
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Garantías
+------------
+Esta accion hace referencia a las garantía que posee el equipo:
+
+Crear garantía
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Editar garantía
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Buscar garantías
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Eliminar garantía
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
