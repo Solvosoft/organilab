@@ -250,6 +250,67 @@
     }
   },
   {
+    "model": "laboratory.provider",
+    "pk": 1,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "name": "No se dispone de proveedor",
+      "phone_number": "61569029",
+      "email": "contacto@organilab.org",
+      "legal_identity": "",
+      "laboratory": null
+    }
+  },
+  {
+    "model": "laboratory.provider",
+    "pk": 2,
+    "fields": {
+      "created_by": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "name": "Distribuidor de equipos de laboratorio",
+      "phone_number": "22222222",
+      "email": "distqui@gmail.com",
+      "legal_identity": "3-516516565",
+      "laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.equipmenttype",
+    "pk": 1,
+    "fields": {
+      "name": "Familia Clase A",
+      "description": "La familia clase es la catalogada en los tipos de equipos..."
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 159,
+    "fields": {
+      "key": "instrumental_family",
+      "description": "Analítica"
+    }
+  },
+  {
+    "model": "laboratory.equipmentcharacteristics",
+    "pk": 1,
+    "fields": {
+      "object": 1,
+      "use_manual": null,
+      "calibration_required": true,
+      "operation_voltage": "",
+      "operation_amperage": "",
+      "providers": [1, 2],
+      "use_specials_conditions": "",
+      "generate_pathological_waste": true,
+      "clean_period_according_to_provider": 1,
+      "instrumental_family": 1,
+      "equipment_type": 1
+    }
+  },
+  {
     "model": "laboratory.shelfobject",
     "pk": 1,
     "fields": {
@@ -266,21 +327,28 @@
       "shelf_object_url": "http://127.0.0.1:8000/lab/1/1/rooms/?labroom=1&furniture=1&shelf=1&shelfobject=1",
       "container": null,
       "status": 158,
-      "description": "Equipo"
+      "description": ""
     }
   },
   {
-    "model": "laboratory.provider",
+    "model": "laboratory.shelfObjectequipmentcharacteristics",
     "pk": 1,
     "fields": {
-      "created_by": 1,
+      "organization": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z",
-      "name": "Distribuidor de equipos de laboratorio",
-      "phone_number": "22222222",
-      "email": "distqui@gmail.com",
-      "legal_identity": "3-516516565",
-      "laboratory": 1
+      "created_by": 1,
+      "shelfobject": 1,
+      "provider": null,
+      "authorized_roles_to_use_equipment": [],
+      "equipment_price": 0.0,
+      "purchase_equipment_date": "2023-01-31",
+      "delivery_equipment_date": "2023-01-31",
+      "have_guarantee": false,
+      "contract_of_maintenance": null,
+      "notes": "",
+      "available_to_use": true,
+      "first_date_use": "2023-02-01"
     }
   }
 ]
