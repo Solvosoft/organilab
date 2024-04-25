@@ -81,8 +81,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
     def test_update_observation_my_procedure(self):
         path_list = self.path_base+[
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div[1]/div/div/div/div/div[2]/table/tbody/tr[1]/td[5]/a[1]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div[1]/form/div/div[2]/div/div[2]/input",
-             "scroll": "window.scrollTo(0, 200)"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div[1]/form/div/div[1]/div/div[2]/input"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div[2]/div/div[2]/div/table/tbody/tr/td[4]/div[1]/i[1]",
              "scroll": "window.scrollTo(0, 0)"},
             {"path": "/html/body/div[4]/div/div[2]/textarea", "extra_action": "clearinput"},
@@ -97,8 +96,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
     def test_delete_observation_my_procedure(self):
         path_list = self.path_base+[
             {"path": "/html/body/div[1]/div[1]/div[3]/div/div[1]/div/div/div/div/div[2]/table/tbody/tr[1]/td[5]/a[1]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div[1]/form/div/div[2]/div/div[2]/input",
-             "scroll": "window.scrollTo(0, 200)"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div[1]/form/div/div[1]/div/div[2]/input"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[2]/div[2]/div/div[2]/div/table/tbody/tr/td[4]/div[1]/i[2]",
              "scroll": "window.scrollTo(0, 0)"},
             {"path": "/html/body/div[4]/div/div[3]/button[1]"},

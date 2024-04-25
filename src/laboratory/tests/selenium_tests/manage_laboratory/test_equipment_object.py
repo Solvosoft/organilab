@@ -56,8 +56,8 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
             {"path": "//*[@id='create_obj_form']/div[3]/div/input"},
             {"path": "//*[@id='create_obj_form']/div[3]/div/input", "extra_action": "setvalue",
              "value": "Vaso de precipitado", "scroll": "$('#create_obj_modal').scrollTop(100);"},
-            {"path": "//*[@id='create_obj_form']/div[4]/div/textarea", "scroll": "$('#create_obj_modal').scrollTop(200);"},
-            {"path": "//*[@id='create_obj_form']/div[4]/div/textarea", "extra_action": "setvalue",
+            {"path": "//*[@id='create_obj_form']/div[5]/div/textarea", "scroll": "$('#create_obj_modal').scrollTop(200);"},
+            {"path": "//*[@id='create_obj_form']/div[5]/div/textarea", "extra_action": "setvalue",
              "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente "
                       "en el laboratorio, sobre todo, para preparar o calentar sustancias, medir o traspasar líquidos. Es cilíndrico con un fondo plano; se le encuentra de varias capacidades, desde 1 ml hasta de varios litros. Normalmente es de vidrio, de metal o de "
                       "un plástico en especial y es aquel cuyo objetivo es contener gases o líquidos. Tiene componentes de teflón u otros materiales resistentes a la corrosión."},
@@ -70,6 +70,18 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
             {"path": "//*[@id='create_obj_form']/div[8]/div/input", "extra_action": "setvalue", "value": "B54897"},
             {"path": "//*[@id='create_obj_form']/div[9]/div/input"},
             {"path": "//*[@id='create_obj_form']/div[9]/div/input", "extra_action": "setvalue", "value": "5634646465"},
+            {"path": "//*[@id='create_obj_form']/div[12]/div/input"},
+            {"path": "//*[@id='create_obj_form']/div[12]/div/input", "extra_action": "setvalue", "value": "20"},
+            {"path": "//*[@id='create_obj_form']/div[13]/div/input"},
+            {"path": "//*[@id='create_obj_form']/div[13]/div/input", "extra_action": "setvalue", "value": "60"},
+            {"path": "//*[@id='create_obj_form']/div[14]/div/span"},
+            {"path": "/html/body/span/span/span/ul/li"},
+            {"path": "//*[@id='create_obj_form']/div[15]/div/textarea"},
+            {"path": "//*[@id='create_obj_form']/div[15]/div/textarea", "extra_action":"setvalue",
+             "value": "Utilizar Guantes aislantes, no permitir la manipulaciṕn de menores de edad"},
+            {"path": "//*[@id='create_obj_form']/div[17]/div/input", "extra_action": "clearinput"},
+            {"path": "//*[@id='create_obj_form']/div[17]/div/input", "extra_action":"setvalue",
+             "value": "2", "scroll": "$('#create_obj_modal').scrollTop(700)"},
             {"path": "//*[@id='create_obj_modal']/div/div/div[3]/button[2]"},
         ]
 
@@ -84,10 +96,41 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
             {"path": "//*[@id='equipment_table']/tbody/tr[1]/td[3]/div/i"},
             {"path": "//*[@id='update_obj_form']/div[3]/div/input",
              "extra_action": "setvalue", "value": "Báscula,Romana"},
-            {"path": "//*[@id='update_obj_form']/div[4]/div/textarea", "extra_action": "clearinput"},
-            {"path": "//*[@id='update_obj_form']/div[4]/div/textarea",
+
+            {"path": "//*[@id='update_obj_form']/div[5]/div/textarea", "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[5]/div/textarea",
              "extra_action": "setvalue", "value":
                  "Instrumento científico diseñado para medir la fuerza de la gravedad sobre un objeto."},
+
+            {"path": "//*[@id='update_obj_form']/div[7]/div/input", "scroll": "$('#update_obj_form').scrollTop(650)"},
+            {"path": "//*[@id='update_obj_form']/div[7]/div/input", "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[7]/div/input", "extra_action": "setvalue", "value": "CA-546"},
+
+            {"path": "//*[@id='update_obj_form']/div[8]/div/input", "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[8]/div/input",
+             "extra_action": "setvalue", "value": "B54897"},
+
+            {"path": "//*[@id='update_obj_form']/div[9]/div/input", "scroll": "$('#update_obj_form').scrollTop(800)"},
+            {"path": "//*[@id='update_obj_form']/div[9]/div/input", "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[9]/div/input",
+             "extra_action": "setvalue", "value": "5634646465"},
+
+            {"path": "//*[@id='update_obj_form']/div[12]/div/input", "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[12]/div/input",
+             "extra_action": "setvalue", "value": "20"},
+
+            {"path": "//*[@id='update_obj_form']/div[13]/div/input"},
+            {"path": "//*[@id='update_obj_form']/div[13]/div/input",
+             "extra_action": "setvalue", "value": "60"},
+
+            {"path": "//*[@id='update_obj_form']/div[14]/div/span"},
+            {"path": "/html/body/span/span/span/ul/li"},
+
+            {"path": "//*[@id='update_obj_form']/div[17]/div/input",
+             "extra_action": "clearinput"},
+            {"path": "//*[@id='update_obj_form']/div[17]/div/input",
+             "extra_action": "setvalue",
+             "value": "2"},
             {"path": "//*[@id='update_obj_modal']/div/div/div[3]/button[2]", "scroll": "$('#update_obj_modal').scrollTop(350);"}
         ]
 

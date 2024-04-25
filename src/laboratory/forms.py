@@ -464,8 +464,6 @@ class RegisterForm(forms.ModelForm, GTForm):
 
         if email:
             user_obj = User.objects.filter(email=email)
-            if self.obj:
-                user_obj = user_obj.exclude(pk=self.obj)
 
             if user_obj.exists():
                 raise ValidationError(_("Email address is already exists."))
