@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
-    ShelfObject, ObjectLogChange
+    ShelfObject, ObjectLogChange, PrecursorReport
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -41,6 +41,7 @@ def create_informsperiods(informscheduler, now=timezone.now()):
 
 def save_object_report_precursor(report):
     lab = report.laboratory
+    reports = PrecursorReport.objects.filter(laboratory=lab).order_by("-pk")
     for precursor in ShelfObject.objects.filter(in_where_laboratory=lab,
                                                 object__sustancecharacteristics__is_precursor=True):
 
@@ -51,6 +52,9 @@ def save_object_report_precursor(report):
         if obj:
             add_quantity = precursor.quantity
             obj.quantity += add_quantity
+            if reports.count()>1:
+                if reports[1].report_values.count() == 0:
+                    obj.previous_balance += add_quantity
             obj.save()
         else:
 
@@ -63,17 +67,19 @@ def save_object_report_precursor(report):
             providers = [ol.provider for ol in object_list.filter(provider__isnull=False)]
             subject = [ol.subject for ol in object_list.filter(subject__isnull=False)]
             bills = [ol.bill for ol in object_list.filter(bill__isnull=False)]
-            income = object_list.filter(type_action__in=[0,1]).aggregate(amount=Sum('diff_value', default=0))["amount"]
-            PrecursorReportValues.objects.create(precursor_report=report,
-                                                 object=precursor.object,
-                                                 measurement_unit= precursor.measurement_unit,
+            income = object_list.filter(type_action__in=[0,1,2], diff_value__gte=0).aggregate(amount=Sum('diff_value', default=0))["amount"]
+            expenses = abs(object_list.filter(type_action__in=[2,3], diff_value__lte=0).aggregate(amount=Sum('diff_value', default=0))["amount"])
+
+            PrecursorReportValues.objects.create(precursor_report = report,
+                                                 object = precursor.object,
+                                                 measurement_unit = precursor.measurement_unit,
                                                  quantity = precursor.quantity,
                                                  new_income = income,
                                                  bills = ", ".join(bills),
                                                  providers=", ".join(providers),
-                                                 stock = precursor.quantity,
-                                                 month_expense = abs(object_list.filter(type_action__in=[2,3]).aggregate(amount=Sum('diff_value', default=0))["amount"]),
-                                                 final_balance = precursor.quantity,
+                                                 stock = income+0,
+                                                 month_expense = expenses,
+                                                 final_balance = income-expenses,
                                                  reason_to_spend = ", ".join(subject)
                                                  )
 
