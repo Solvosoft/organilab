@@ -1418,7 +1418,7 @@ msgid "February"
 msgstr "Febrero"
 
 msgid "March"
-msgstr "Buscar"
+msgstr "Marzo"
 
 msgid "April"
 msgstr "Abril"
