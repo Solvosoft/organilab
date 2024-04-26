@@ -282,5 +282,35 @@
       "legal_identity": "3-516516565",
       "laboratory": 1
     }
+  },
+  {
+  "model": "laboratory.shelfobjectmaintenance",
+  "pk": 1,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-25T21:12:17.828Z",
+    "last_update": "2024-04-25T21:12:17.829Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "maintenance_date": "2024-04-25",
+    "provider_of_maintenance": 1,
+    "validator": 1,
+    "maintenance_observation": "Cleaning"
   }
+},
+  {
+  "model": "laboratory.shelfobjectguarantee",
+  "pk": 2,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-25T22:48:16.075Z",
+    "last_update": "2024-04-25T22:48:16.075Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "guarantee_initial_date": "2024-04-25",
+    "guarantee_final_date": "2024-04-28",
+    "contract": null
+
+  }
+}
 ]
