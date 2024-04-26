@@ -10,11 +10,9 @@ class ShelfObjectEquipmentGuarantee(ShelfObjectEquipmentSeleniumTest):
 
     def setUp(self):
         super().setUp()
-        self.init_path= []
 
 
     def test_view_shelfobject_guarantee(self):
-        initial_date, initial_date_strftime = self.get_format_increase_decrease_date(now(), 1)
 
         path_list = [
             {"path" :"/html/body/div[1]/div/div[3]/div/div/div[7]/div[1]/h1",
@@ -71,3 +69,23 @@ class ShelfObjectEquipmentGuarantee(ShelfObjectEquipmentSeleniumTest):
         general_path_list = [self.path_base, path_list]
         self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
                                             "delete_shelfobject_equipment_guarantee")
+
+    def test_search_user_shelfobject_guarantee(self):
+
+        path_list = [
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[7]/div[2]/div/div[2]/div/table/thead/tr[2]/th[4]/span/span[1]/span", "scroll":"window.scrollTo(0, document.body.scrollHeight)"},
+            {"path": "/html/body/span/span/span[2]/ul/li[1]"},
+        ]
+        general_path_list = [self.path_base, path_list]
+        self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
+                                            "search_user_shelfobject_equipment_guarantee")
+
+    def test_search_shelfobject_guarantee(self):
+
+        path_list = [
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[7]/div[2]/div/div[1]/div[1]/div/label/input", "scroll":"window.scrollTo(0, document.body.scrollHeight)"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[7]/div[2]/div/div[1]/div[1]/div/label/input", "extra_action":"setvalu", "value": "Sora"},
+        ]
+        general_path_list = [self.path_base, path_list]
+        self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
+                                            "search_shelfobject_equipment_guarantee")

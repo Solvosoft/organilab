@@ -486,8 +486,16 @@ Este acción registrara los mantenimientos realizados al equipo con los siguient
 Crear mantenimiento
 ^^^^^^^^^^^^^^^^^^^^^^
 
+.. image:: ../_static/gif/add_shelfobject_equipment_maintenance.gif
+   :height: 380
+   :width: 720
+
 Editar mantenimiento
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/edit_shelfobject_equipment_maintenance.gif
+   :height: 380
+   :width: 720
 
 Buscar mantenimientos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -498,6 +506,9 @@ permite efectuar la busqueda mediante rangos de fechas, proveedor y ultimo mante
 Eliminar mantenimiento
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. image:: ../_static/gif/delete_shelfobject_equipment_maintenance.gif
+   :height: 380
+   :width: 720
 
 
 Capacitaciones
@@ -506,14 +517,26 @@ Capacitaciones
 Crear capacitación
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. image:: ../_static/gif/add_shelfobject_equipment_training.gif
+   :height: 380
+   :width: 720
+
 Editar capacitación
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/edit_shelfobject_equipment_training.gif
+   :height: 380
+   :width: 720
 
 Buscar capacitación
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Eliminar capacitación
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/delete_shelfobject_equipment_training.gif
+   :height: 380
+   :width: 720
 
 Garantías
 ------------
@@ -522,14 +545,32 @@ Esta accion hace referencia a las garantía que posee el equipo:
 Crear garantía
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. image:: ../_static/gif/add_shelfobject_equipment_guarantee.gif
+   :height: 380
+   :width: 720
+
 Editar garantía
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/edit_shelfobject_equipment_guarantee.gif
+   :height: 380
+   :width: 720
 
 Buscar garantías
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. image:: ../_static/gif/search_shelfobject_equipment_guarantee.gif
+   :height: 380
+   :width: 720
+
+.. image:: ../_static/gif/search_user_shelfobject_equipment_guarantee.gif
+   :height: 380
+   :width: 720
 
 Eliminar garantía
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. image:: ../_static/gif/delete_shelfobject_equipment_guarantee.gif
+   :height: 380
+   :width: 720
 

@@ -331,6 +331,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.create_screenshot(order=order)
         for obj in path_list:
             self.apply_utils(obj)
+            print(obj['path'])
             element = self.selenium.find_element(By.XPATH, obj['path'])
             order = self.create_screenshot(order=order)
             x, y = self.get_x_y_element(element)
