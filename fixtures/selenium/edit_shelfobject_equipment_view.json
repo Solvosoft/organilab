@@ -350,5 +350,59 @@
       "available_to_use": true,
       "first_date_use": "2023-02-01"
     }
+  },
+  {
+    "model": "laboratory.shelfobjectlog",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": 1,
+      "shelfobject": 1,
+      "description": "La balanza retorna a la sala de inventario."
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectlog",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": 1,
+      "shelfobject": 1,
+      "description": "El equipo requiere una revisión."
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectcalibrate",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": 1,
+      "shelfobject": 1,
+      "observation": "Limpieza del equipo.",
+      "calibrate_name": "Gustavo Mora",
+      "validator": 1,
+      "calibration_date": "2023-02-25"
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectcalibrate",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": 1,
+      "shelfobject": 1,
+      "observation": "El técnico indica que el equipo requiere las siguientes...",
+      "calibrate_name": "Gustavo Mora Torres",
+      "validator": 1,
+      "calibration_date": "2023-04-25"
+    }
   }
 ]
