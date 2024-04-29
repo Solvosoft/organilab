@@ -31,7 +31,7 @@ class Command(BaseCommand):
                         months = 12-month
                         i=1
                         if year == day.year:
-                            months = day.month
+                            months = day.month-1
                         else:
                             months = 12
 
