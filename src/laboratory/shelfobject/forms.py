@@ -701,7 +701,7 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
     description = forms.CharField(widget=genwidgets.Textarea, label=_("Description"))
     status = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='shelfobject_status'), label=_("Status"), widget=genwidgets.Select)
-    marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
+    marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("Mark as discard"))
 
     def __init__(self, *args, **kwargs):
         org = kwargs.pop("org_pk")
