@@ -626,3 +626,9 @@ msgstr "Nombre"
 
 msgid "Last Name"
 msgstr "Apellidos"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Create"
+msgstr "Crear"
