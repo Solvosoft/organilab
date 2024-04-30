@@ -500,3 +500,43 @@ class ObjectByOrganization(BaseSelect2View):
 
     def get_text_display(self, obj):
         return str(obj)
+
+
+
+@register_lookups(prefix="userorg", basename="userorg")
+class UsersOrganizationsLookup(BaseSelect2View):
+    model = User
+    fields = ['username', 'first_name', 'last_name']
+    org= None
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    permission_classes = [IsAuthenticated]
+    user_base = None
+    user_session = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.user_base:
+            queryset = queryset.exclude(pk__in=[self.user_base.pk, self.user_session.pk]).distinct()
+        else:
+            queryset = queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(data=request.GET)
+
+        if self.serializer.is_valid():
+            self.user_base = self.serializer.validated_data['user_base']
+            self.user_session = request.user
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        name = obj.get_full_name()
+        return "(%s) %s" % (obj.username, name)
