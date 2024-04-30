@@ -12,7 +12,7 @@ from rest_framework.routers import SimpleRouter
 from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
 from auth_and_perms.views.select_organization import select_organization_by_user
-from auth_and_perms.views.users import users_list
+from auth_and_perms.views.users import users_list, merge_users
 from authentication.views import SignDataRequestViewSet
 
 routes = SimpleRouter()
@@ -49,5 +49,6 @@ urlpatterns = [
     path('digitalsignature/notify', SignDataRequestViewSet.as_view({'post': 'create'})),
     path('update_groups_by_profile/', UpdateGroupsByProfile.as_view(), name="api_update_groups_by_profile"),
     path('organization_buttons/', OrganizationButtons.as_view(), name="api_organization_buttons"),
-    path('users/', users_list, name="users_list")
+    path('users/', users_list, name="users_list"),
+    path('users/merge/<int:user_base>/<int:user_delete>/', merge_users, name="merge_users")
 ]

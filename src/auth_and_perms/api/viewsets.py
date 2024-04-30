@@ -2,18 +2,21 @@ from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 from api.utils import AllPermissionOrganization
@@ -25,7 +28,7 @@ from auth_and_perms.api.serializers import RolSerializer, \
     ShelfObjectSerializer, ValidateSearchShelfObjectSerializer, \
     ShelfObjectDataTableSerializer, ValidateOrganizationSerializer, \
     ExternalUserSerializer, AddExternalUserSerializer, UserDataTableSerializer, \
-    UserSerializer, UserFilter
+    UserSerializer, UserFilter, ValidateUserSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, \
     OrganizationForViewsetForm, SearchShelfObjectViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
@@ -465,10 +468,12 @@ class UserManagementViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
         'list': UserDataTableSerializer,
         'destroy': UserSerializer,
+        'merge': ValidateUserSerializer,
     }
     perms = {
         'list': ["auth.view_user"],
-        'destroy': ["auth.delete_user"]
+        'destroy': ["auth.delete_user"],
+        'merge': ["auth.change_user"]
     }
 
     queryset = User.objects.all()
@@ -478,3 +483,16 @@ class UserManagementViewset(AuthAllPermBaseObjectManagement):
     filterset_class = UserFilter
     ordering_fields = ['username', 'first_name']
     ordering = ('id',)  # default order
+
+    @action(detail=False, methods=['post'])
+    def merge(self, request, *args, **kwargs):
+        serializer = self.serializer_class["merge"](data=request.data)
+
+        if serializer.is_valid():
+            return Response({"success_url": reverse(
+                "auth_and_perms:merge_users", kwargs={"user_base":
+                            serializer.validated_data["user_base"].pk,
+                          "user_delete": serializer.validated_data["user"].pk})},
+                status=status.HTTP_200_OK)
+        else:
+            raise ValidationError(serializer.errors)

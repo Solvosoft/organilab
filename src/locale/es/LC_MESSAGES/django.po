@@ -4576,5 +4576,8 @@ msgstr "Lista de Usuarios"
 msgid "The user"
 msgstr "El usuario"
 
-msgid "could have relations with multiple elements."
-msgstr "puede tener relaciones con múltiples elementos."
+msgid "could be related with multiple elements."
+msgstr "puede estar relacionado con múltiples elementos."
+
+msgid "Merge users"
+msgstr "Fusión de usuarios"

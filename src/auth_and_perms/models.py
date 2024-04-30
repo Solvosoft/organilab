@@ -28,6 +28,7 @@ class Profile(models.Model):
     class Meta:
         permissions = (
             ('can_add_external_user_in_org', _('Can add external user to organization')),
+            ('can_manage_users', _('Can manage users')),
         )
 
 def get_random_color():

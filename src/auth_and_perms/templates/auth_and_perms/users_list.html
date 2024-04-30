@@ -16,6 +16,11 @@
 	<table class="table table-striped w-100 table-responsive" id="users_table"></table>
 </div>
 
+{% trans 'Merge users' as mergemodaltitle %}
+{% trans 'Continue' as btn_save_text %}
+{% url "auth_and_perms:api-users-merge" as merge_obj_url %}
+{% include 'gentelella/blocks/modal_template_btn_save.html' with form=merge_form id="merge_obj_modal" form_id="merge_obj_form" url=merge_obj_url title=mergemodaltitle btn_save_text=btn_save_text %}
+
 {% url "auth_and_perms:api-users-detail" 0 as delete_obj_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=delete_obj_url %}
 
@@ -31,6 +36,7 @@ const selects2_api_urls = {}
 var object_urls = {
 	list_url: "{% url 'auth_and_perms:api-users-list' %}",
 	destroy_url: "{% url "auth_and_perms:api-users-detail" 0 %}",
+	merge_url: "{% url "auth_and_perms:api-users-merge" %}",
 }
 
 datatable_inits = {
@@ -46,11 +52,24 @@ datatable_inits = {
 }
 var users_modalids = {
 	destroy: "#delete_obj_modal",
+	merge: "#merge_obj_modal",
 }
+
 
 var users_actions = {
 	 table_actions: [],  //table_actions
-	 object_actions: [],
+	 object_actions: [
+	 	{
+    'name': "merge",
+    'action': "merge",
+    'in_action_column': true,
+    'i_class': 'fa fa-user-circle-o',
+    'method': 'POST',
+    'title': gettext("Merge"),
+    'data_fn': function(data){ return data; },
+    'error_fn': function(errors) {}
+  	}
+	 ],
 		title: gettext('Actions'),
 		className:  "no-export-col"
 }
@@ -64,11 +83,29 @@ let objconfig={
 	add_filter: true,
 	relation_render: {'field_autocomplete': 'text' },
 	delete_display: data => data['delete_msg'],
-	create: "btn-success"
+	create: "btn-success",
+ can_merge: users_modalids.hasOwnProperty("merge")
+
 }
 
-
 let ocrud=ObjectCRUD("userscrudobj", objconfig)
+
+ocrud.merge = function(obj, action){
+	let merge_conf = Object.assign({}, {}, ocrud.config.modal_ids.merge);
+	ocrud.merge_form = GTBaseFormModal(ocrud.config.modal_ids.merge, ocrud.datatable, merge_conf);
+	ocrud.merge_form.fn_success = function(instance){
+		return function(data){
+					if(data !== false){
+							window.location = data.success_url;
+					}
+		}
+	};
+
+	ocrud.merge_form.init();
+	ocrud.merge_form.url = ocrud.config.urls.merge_url;
+$("#merge_obj_form  #id_user_base").val(obj.id);
+	ocrud.merge_form.show_modal();
+}
 ocrud.init();
 
 

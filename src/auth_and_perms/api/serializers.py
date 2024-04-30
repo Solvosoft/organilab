@@ -365,14 +365,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_delete_msg(self, obj):
         return "%s %s %s" % (_("The user"), obj.get_full_name(),
-                             _("could have relations with multiple elements."))
+                             _("could be related with multiple elements."))
 
     def get_actions(self, obj):
         user = self.context["request"].user
-        action_list = {
-            "destroy": ["auth.delete_user", "auth.view_user"]
+        permissions_by_action = {
+            "merge": ["profile.can_manage_users"],
+            "destroy": ["profile.can_manage_users"]
         }
-        return get_actions_by_perms(user, action_list)
+        action_list = get_actions_by_perms(user, permissions_by_action)
+
+        if user == obj:
+            action_list["destroy"] = False
+        return action_list
 
     class Meta:
         model = User
@@ -396,3 +401,8 @@ class UserFilter(FilterSet):
                   'last_name': ['icontains'],
                   'email': ['icontains'],
                   }
+
+
+class ValidateUserSerializer(serializers.Serializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+    user_base = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
