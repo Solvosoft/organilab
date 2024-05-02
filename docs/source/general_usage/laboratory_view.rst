@@ -277,6 +277,72 @@ para administrar el contenedor de los objetos en estante.
    :width: 720
 
 
+Mantenimiento de un equipo
+--------------------------------------------------------
+
+
+1. Edición de las características
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: ../_static/gif/edit_shelfobject_equipment.gif
+   :height: 380
+   :width: 720
+
+2. Bitácora
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    * Creación de un registro.
+
+    .. image:: ../_static/gif/create_shelfobject_equipment_log.gif
+        :height: 380
+        :class: margingif
+
+    * Edición de un registro.
+
+    .. image:: ../_static/gif/edit_shelfobject_equipment_log.gif
+        :height: 380
+        :width: 720
+
+    * Eliminación de un registro.
+
+    .. image:: ../_static/gif/create_shelfobject_equipment_log.gif
+        :height: 380
+        :width: 720
+
+
+3. Calibraciones
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    * Creación de un registro de calibración.
+
+    .. image:: ../_static/gif/create_shelfobject_equipment_calibration.gif
+        :height: 380
+        :width: 720
+
+    * Edición de un registro de calibración.
+
+    .. image:: ../_static/gif/edit_shelfobject_equipment_calibration.gif
+        :height: 380
+        :width: 720
+
+    * Eliminación de un registro de calibración.
+
+    .. image:: ../_static/gif/delete_shelfobject_equipment_calibration.gif
+        :height: 380
+        :width: 720
+
+
+4. Bitácora de mantenimientos
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+5. Capacitaciones
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+6. Garantías
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+
 Ver la bitácora de un objeto en el estante
 --------------------------------------------------------
 
