@@ -76,8 +76,9 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 #        self.unidad = set(DangerIndication.objects.filter(sustancecharacteristics__in=sc).values_list(
 #            'sustancecharacteristics__obj__shelfobject__measurement_unit__description', flat=True))
         for dangerindication in queryset:
+            shelf_object = ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__h_code=dangerindication).aggregate(total = Sum("quantity_base_unit", default=0))
             labels.append(dangerindication.code)
-            self.data.append(dangerindication.sc_count)
+            self.data.append(shelf_object["total"])
 
         if not labels:
             labels.append(_("No data registered"))
@@ -125,9 +126,11 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "white_organ").values('pk', 'description')
         self.aggrateparams = {}
+        self.data = []
         labels = []
         for catalog in self.catalogs:
             labels.append(catalog['description'])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__white_organ=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
             self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
                 object__sustancecharacteristics__white_organ= catalog['pk']
             ))
@@ -147,7 +150,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -177,9 +180,12 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "Precursor").values('pk', 'description')
         self.aggrateparams = {}
+        self.data = []
         labels = []
         for catalog in self.catalogs:
             labels.append(catalog['description'])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__precursor_type=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+
             self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
                 object__sustancecharacteristics__precursor_type= catalog['pk']
             ))
@@ -199,7 +205,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -229,10 +235,13 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
         self.catalogs = Catalog.objects.filter(key = "nfpa").values('pk', 'description')
         self.aggrateparams = {}
         labels = []
+        self.data = []
         for catalog in self.catalogs:
             labels.append(catalog['description'])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__nfpa__pk=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+
             self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__precursor_type= catalog['pk']
+                object__sustancecharacteristics__nfpa= catalog['pk']
             ))
         return labels
 
@@ -282,8 +291,11 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
         self.catalogs = Catalog.objects.filter(key = "ue_code").values('pk', 'description')
         self.aggrateparams = {}
         labels = []
+        self.data = []
         for catalog in self.catalogs:
             labels.append(catalog['description'])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__ue_code=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+
             self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
                 object__sustancecharacteristics__ue_code= catalog['pk']
             ))
@@ -303,7 +315,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -334,9 +346,12 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "storage_class").values('pk', 'description')
         self.aggrateparams = {}
+        self.data = []
         labels = []
         for catalog in self.catalogs:
             labels.append(catalog['description'])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__storage_class=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+
             self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
                 object__sustancecharacteristics__storage_class= catalog['pk']
             ))
@@ -356,6 +371,6 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
