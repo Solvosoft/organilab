@@ -17,14 +17,23 @@ class Command(BaseCommand):
         day = date.today()
         ObjectLogChange.objects.filter(subject="Update", diff_value__lte=0).update(type_action=CHANGE)
         ObjectLogChange.objects.filter(subject="Update", diff_value__gte=0).update(type_action=ADDITION)
-        for lab in Laboratory.objects.all():
-            queryset = ObjectLogChange.objects.filter(laboratory=lab, precursor=True)
+        for lab in Laboratory.objects.filter(pk=57):
+            queryset = ObjectLogChange.objects.filter(laboratory=lab)
             PrecursorReport.objects.filter(laboratory=lab).delete()
             if queryset.exists():
                 first_filters = queryset.values("update_time__month", "update_time__year").first()
                 month = first_filters['update_time__month']
-                years = sorted(set(list(queryset.values_list("update_time__year", flat=True))))
+                x_years = sorted(set(list(queryset.values_list("update_time__year", flat=True))))[0]
+                rest_x = day.year-x_years
+                year_diiff= (int(day.year)-x_years) if rest_x > 0 else 0
+                #print(year_diiff)
+                years =  [x_years]
+                while year_diiff>0:
+                    x_years += 1
+                    years.append(x_years)
+                    year_diiff-=1
 
+                years = list(set(years))
 
                 if len(years)>0:
                     for i, year in enumerate(years):

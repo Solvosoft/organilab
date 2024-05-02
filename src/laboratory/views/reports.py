@@ -236,12 +236,14 @@ class PrecursorsView(ReportListView):
     def get_book(self, context):
         laboratory = Laboratory.objects.get(pk=self.lab)
         month = date.today()
-        month=month.strftime("%B")
+        month= ""
         serializer = PrecursorSerializer(data= self.request.GET)
         book=[]
         if serializer.is_valid():
 
             report = PrecursorReport.objects.get(pk=serializer.validated_data["pk"])
+            month = report.get_month_display()
+            print(month)
             first_line = [_("Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d") % {
                 'lab': laboratory.name,
                 'consecutive': report.consecutive
@@ -285,8 +287,9 @@ class PrecursorsView(ReportListView):
                                  obj.final_balance,
                                  obj.reason_to_spend
                                      ])
-            self.file_name = _('Report_of_precursors_%(consecutive)d') % {
-                "consecutive": report.consecutive
+            self.file_name = _('Report_of_precursors_%(month)s_%(consecutive)d') % {
+                "consecutive": report.consecutive,
+                "month": month
             }
         return book
 
