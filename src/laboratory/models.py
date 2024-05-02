@@ -299,7 +299,7 @@ class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
     purchase_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Purchase Date"))
     delivery_equipment_date = models.DateField(null=True, blank=True, verbose_name=_("Delivery Date"))
     have_guarantee = models.BooleanField(default=False, verbose_name=_("Has guarantee?"))
-    contract_of_maintenance = models.FileField(upload_to=upload_files, verbose_name=_("Contract of maintenance"))
+    contract_of_maintenance = models.FileField(upload_to=upload_files, null=True, blank=True, verbose_name=_("Contract of maintenance"))
     notes = models.TextField(null=True, blank=True, verbose_name=_("Note"))
     available_to_use = models.BooleanField(default=False, verbose_name=_("Is available to use?"))
     first_date_use = models.DateField(null=True,blank=True, verbose_name=_("First date use"))
