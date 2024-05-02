@@ -363,6 +363,46 @@
       1
     ]
   }
+},
+  {
+  "model": "laboratory.shelfobjecttraining",
+  "pk": 2,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-26T17:18:20.868Z",
+    "last_update": "2024-04-26T17:18:20.868Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "training_initial_date": "2024-07-25",
+    "training_final_date": "2024-07-25",
+    "number_of_hours": 2,
+    "external_people_receive_training": "ninguna",
+    "observation": "Capacitación de manejo de equipo",
+    "place": "Heredia",
+    "intern_people_receive_training": [
+      1
+    ]
+  }
+},
+  {
+  "model": "laboratory.shelfobjecttraining",
+  "pk": 3,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-26T17:18:20.868Z",
+    "last_update": "2024-04-26T17:18:20.868Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "training_initial_date": "2024-06-25",
+    "training_final_date": "2024-06-25",
+    "number_of_hours": 3,
+    "external_people_receive_training": "ninguna",
+    "observation": "Capacitación",
+    "place": "Oficina central",
+    "intern_people_receive_training": [
+      1
+    ]
+  }
 }
 
 ]

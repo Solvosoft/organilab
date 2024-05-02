@@ -71,3 +71,20 @@ class ShelfObjectEquipmentMaintenance(ShelfObjectEquipmentSeleniumTest):
         general_path_list = [self.path_base, path_list]
         self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
                                             "delete_shelfobject_equipment_maintenance")
+
+    def test_search_shelfobject_maintenance(self):
+
+        path_list = [
+            {"path" :"/html/body/div[1]/div/div[3]/div/div/div[4]",
+             "scroll": "window.scrollTo(0, 1400)"},
+
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[5]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[5]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input", "extra_action":"setvalue", "value": "limpieza"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[5]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input", "extra_action": "clearinput"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[5]/div[2]/div/div[2]/div/table/thead/tr[2]/th[4]/span"},
+            {"path": "/html/body/span/span/span[2]/ul/li[1]"},
+
+        ]
+        general_path_list = [self.path_base, path_list]
+        self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
+                                            "search_shelfobject_equipment_maintenance")
