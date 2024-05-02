@@ -88,3 +88,26 @@ class ShelfObjectEquipmentTraining(ShelfObjectEquipmentSeleniumTest):
         general_path_list = [self.path_base, path_list]
         self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
                                             "delete_shelfobject_equipment_training")
+
+    def test_search_shelfobject_training(self):
+
+        path_list = [
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[1]/h1",
+             "scroll": "window.scrollTo(0, 1950)"},
+
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[4]/input", "extra_action":"setvalue", "value": 2},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[4]/input", "extra_action": "clearinput"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input", "extra_action":"setvalue", "value": "Heredia"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input", "extra_action": "clearinput"},
+            {
+                "path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[1]/div[1]/div/label/input"},
+            {
+                "path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[1]/div[1]/div/label/input",
+                "extra_action": "setvalue", "value": 1},
+
+        ]
+        general_path_list = [self.path_base, path_list]
+        self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],
+                                            "search_shelfobject_equipment_training")
