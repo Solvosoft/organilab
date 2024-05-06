@@ -4584,3 +4584,21 @@ msgstr "Fusión de usuarios"
 
 msgid "Email address is associated to an username."
 msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
+
+msgid "Is active"
+msgstr "Esta activo"
+
+msgid "Is super user"
+msgstr "Es super usuario"
+
+msgid "Merge Users"
+msgstr "Fusión de Usuarios"
+
+msgid "Take into consideration on the right side information to update the user base."
+msgstr "Tome en consideración la información del lado derecho para actualizar el usuario base."
+
+msgid "User Delete"
+msgstr "Usuario a Eliminar"
+
+msgid "User Base"
+msgstr "Usuario Base"
