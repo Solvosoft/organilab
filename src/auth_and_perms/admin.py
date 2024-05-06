@@ -37,8 +37,12 @@ class AuthorizedApplicationAdmin(admin.ModelAdmin):
             return obj.user.auth_token.key
         return 'unknown'
 
+class ProfileAdmin(admin.ModelAdmin):
+    search_fields = ['user__username', 'user__email']
 
+class ProfilePermissionAdmin(admin.ModelAdmin):
+    search_fields = ['profile__user__email']
 admin.site.register(models.AuthorizedApplication, AuthorizedApplicationAdmin)
-admin.site.register(models.Profile)
+admin.site.register(models.Profile, ProfileAdmin)
 admin.site.register(models.Rol, RolAdmin)
-admin.site.register(models.ProfilePermission)
+admin.site.register(models.ProfilePermission, ProfilePermissionAdmin)

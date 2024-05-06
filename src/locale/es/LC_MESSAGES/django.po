@@ -4612,3 +4612,5 @@ msgstr "Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:
 msgid "Report_of_precursors_%(month)s_%(consecutive)d"
 msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
 
+msgid "Email address is associated to an username."
+msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."

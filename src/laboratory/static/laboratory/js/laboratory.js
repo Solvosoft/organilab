@@ -322,8 +322,11 @@ $(document).ready(function(){
     addfilter=false);
 
     //shelfselected
-    $('input[name="shelfselected"]').change(function(){
-        datatableelement.ajax.reload();
+    $('input[name="shelfselected"]').change(function(event){
+        if(event.currentTarget.checked ){
+            datatableelement.ajax.reload();
+        }
+
     });
 
     $('#shelfobjecttable').on( 'init.dt', function () {
