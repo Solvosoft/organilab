@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UsernameField
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.db.models import Q
 from django.forms import ModelForm
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -463,10 +464,13 @@ class RegisterForm(forms.ModelForm, GTForm):
         email = self.cleaned_data['email']
 
         if email:
-            user_obj = User.objects.filter(email=email)
+            user_email = User.objects.filter(email=email)
+            user_username = User.objects.filter(username=email)
 
-            if user_obj.exists():
+            if user_email.exists():
                 raise ValidationError(_("Email address is already exists."))
+            elif user_username.exists():
+                raise ValidationError(_("Email address is associated to an username."))
             else:
                 return email
 

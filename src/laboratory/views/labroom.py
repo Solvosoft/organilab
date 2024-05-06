@@ -33,6 +33,8 @@ from ..shelfobject.forms import TransferOutShelfObjectForm, \
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
 
+def display_shelfobject(data, name):
+    return "%s %s"%(data['object__code'],data[name])
 
 @method_decorator(permission_required('laboratory.view_laboratoryroom'),
                   name='dispatch')
@@ -108,17 +110,20 @@ class LaboratoryRoomsList(ListView):
         }
 
 
-    def get_whitelist_by_object(self, model, filters, color, value='name'):
+    def get_whitelist_by_object(self, model, filters, color, value='name',
+                                filter_values=None, display_fnc=lambda x,y: x[y]):
         suggestions_tag = []
         contenttype = ContentType.objects.filter(
             app_label='laboratory',
             model=model
         ).first()
 
+        if filter_values is None:
+            filter_values=['pk', value]
         MODEL = contenttype.model_class()
-        queryset = MODEL.objects.filter(**filters).values('pk', value).distinct()
+        queryset = MODEL.objects.filter(**filters).values(*filter_values).distinct()
         whitelist = [
-            {'pk': x['pk'], 'value': "%d: %s" % (x['pk'], x[value]), 'objtype': model, 'color': color}
+            {'pk': x['pk'], 'value': "%d: %s" % (x['pk'], display_fnc(x,value)), 'objtype': model, 'color': color}
             for x in queryset]
 
         if whitelist:
@@ -132,7 +137,9 @@ class LaboratoryRoomsList(ListView):
         suggestions_tag += self.get_whitelist_by_object('shelf', {'furniture__labroom__laboratory': self.lab}, color_by_obj['shelf'])
         suggestions_tag += self.get_whitelist_by_object('shelfobject',
                                                         {'in_where_laboratory': self.lab, 'containershelfobject': None},
-                                                        color_by_obj['shelfobject'], value='object__name')
+                                                        color_by_obj['shelfobject'],
+                                                        filter_values=['pk', 'object__name', 'object__code'],
+                                                        value='object__name', display_fnc=display_shelfobject)
         suggestions_tag += self.get_whitelist_by_object('object',
                                                         {'shelfobject__in_where_laboratory': self.lab,
                                                          'shelfobject__containershelfobject': None}, color_by_obj['object'],
