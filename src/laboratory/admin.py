@@ -57,6 +57,9 @@ def export_laboratory(admin, request, queryset):
 
 class LaboratoryAdmin(admin.ModelAdmin):
     actions = [export_laboratory]
+    search_fields = ['name']
+    list_filter = ['organization']
+
 
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
