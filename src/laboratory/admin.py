@@ -60,6 +60,23 @@ class LaboratoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
     list_filter = ['organization']
 
+class PrecursorReportValuesInline(admin.TabularInline):
+    model = models.PrecursorReportValues
+    fields =  ["object", "measurement_unit", "previous_balance", "new_income", "stock", "month_expense", "final_balance"]
+
+class PrecursorReportAdmin(admin.ModelAdmin):
+    search_fields = ["laboratory__name","month","year"]
+    list_filter = ["laboratory__name","month","year"]
+    list_display = ["consecutive","laboratory","month","year"]
+    inlines = (PrecursorReportValuesInline, )
+
+class PrecursorReportValuesAdmin(admin.ModelAdmin):
+    search_fields = ["precursor_report__laboratory__name","object__code", "object__name"]
+
+    list_display = ["precursor_report","object","measurement_unit", "final_balance"]
+
+class BaseUnittAdmin(admin.ModelAdmin):
+    list_display = ["measurement_unit","si_value"]
 
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
@@ -74,13 +91,15 @@ admin.site.register(models.BlockedListNotification)
 admin.site.register(models.Provider)
 admin.site.register(models.ObjectLogChange)
 admin.site.register(models.TranferObject)
-admin.site.register(models.PrecursorReport)
+admin.site.register(models.PrecursorReport,PrecursorReportAdmin)
 admin.site.register(models.RegisterUserQR)
 admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
 admin.site.register(models.UserOrganization)
 admin.site.register(models.InformScheduler, InformSchedulerAdmin)
 admin.site.register(models.ShelfObjectObservation)
-admin.site.register(models.PrecursorReportValues)
+admin.site.register(models.BaseUnitValues,BaseUnittAdmin)
+admin.site.register(models.PrecursorReportValues,PrecursorReportValuesAdmin)
+
 
 
 admin.site.site_header = _('Organilab Administration site')

@@ -940,21 +940,21 @@ MONTHS = (
 )
 
 class PrecursorReportValues(models.Model):
-    precursor_report= models.ForeignKey("PrecursorReport", on_delete= models.CASCADE)
-    object = models.ForeignKey(Object, on_delete=models.CASCADE)
+    precursor_report= models.ForeignKey("PrecursorReport", on_delete= models.CASCADE, verbose_name=_("Report"))
+    object = models.ForeignKey(Object, on_delete=models.CASCADE, verbose_name=_("Object"))
     measurement_unit = catalog.GTForeignKey(Catalog,
                                             on_delete=models.DO_NOTHING,
-                                            verbose_name=_('measurement unit'),
+                                            verbose_name=_('Measurement unit'),
                                             key_name="key", key_value='units')
-    quantity = models.FloatField(default=0.0)
-    previous_balance = models.FloatField(default=0.0)
-    new_income = models.FloatField(default=0.0)
-    bills = models.CharField(max_length=200, blank=True)
-    providers = models.CharField(max_length=200, blank=True)
-    stock = models.FloatField(default=0.0)
-    month_expense = models.FloatField(default=0.0)
-    final_balance = models.FloatField(default=0.0)
-    reason_to_spend = models.TextField(blank=True)
+    quantity = models.FloatField(default=0.0, verbose_name=_("Quantity"))
+    previous_balance = models.FloatField(default=0.0, verbose_name=_("Previous balance"))
+    new_income = models.FloatField(default=0.0, verbose_name=_("New income"))
+    bills = models.CharField(max_length=200, blank=True, verbose_name=_("Bills"))
+    providers = models.CharField(max_length=200, blank=True, verbose_name=_("Providers"))
+    stock = models.FloatField(default=0.0, verbose_name=_("Stock"))
+    month_expense = models.FloatField(default=0.0, verbose_name=_("Month expense"))
+    final_balance = models.FloatField(default=0.0, verbose_name=_("Final balance"))
+    reason_to_spend = models.TextField(blank=True, verbose_name=_("Reason to spend"))
 
 class PrecursorReport(models.Model):
     month = models.IntegerField(choices=MONTHS)
