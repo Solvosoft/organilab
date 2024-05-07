@@ -2,7 +2,7 @@ from django.db.models import Sum
 from django.utils import timezone
 
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
-    ShelfObject, ObjectLogChange, PrecursorReport
+    ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -44,13 +44,13 @@ def save_object_report_precursor(report):
     reports = PrecursorReport.objects.filter(laboratory=lab).order_by("-pk")
     for precursor in ShelfObject.objects.filter(in_where_laboratory=lab,
                                                 object__sustancecharacteristics__is_precursor=True):
-
+        unit = get_base_unit(precursor.measurement_unit)
         obj = PrecursorReportValues.objects.filter(precursor_report=report,
                                                 object=precursor.object,
-                                                measurement_unit= precursor.measurement_unit).first()
+                                                measurement_unit= unit).first()
 
         if obj:
-            add_quantity = precursor.quantity
+            add_quantity = precursor.quantity_base_unit
             obj.quantity += add_quantity
             if reports.count()>1:
                 if reports[1].report_values.count() == 0:
@@ -60,7 +60,7 @@ def save_object_report_precursor(report):
 
             object_list = ObjectLogChange.objects.filter(laboratory=lab, precursor=True,
                                                          object=precursor.object,
-                                                         measurement_unit=precursor.measurement_unit,
+                                                         measurement_unit=unit,
                                                          update_time__month=report.month,
                                                          update_time__year=report.year)
 
@@ -72,8 +72,8 @@ def save_object_report_precursor(report):
 
             PrecursorReportValues.objects.create(precursor_report = report,
                                                  object = precursor.object,
-                                                 measurement_unit = precursor.measurement_unit,
-                                                 quantity = precursor.quantity,
+                                                 measurement_unit = unit,
+                                                 quantity = precursor.quantity_base_unit,
                                                  new_income = income,
                                                  bills = ", ".join(bills),
                                                  providers=", ".join(providers),
@@ -100,3 +100,11 @@ def build_precursor_report_from_reports(first_report, second_report):
 
 
 
+def get_base_unit(unit):
+    if unit.description in ["Gramos","Miligramos"]:
+        return BaseUnitValues.objects.filter(pk=8).first().measurement_unit
+    if unit.description in ["Milímetros", "Centímetros"]:
+        return BaseUnitValues.objects.filter(pk=1).first().measurement_unit
+    if unit.description in ["Mililitros"]:
+        return BaseUnitValues.objects.filter(pk=4).first().measurement_unit
+    return unit

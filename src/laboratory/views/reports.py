@@ -243,7 +243,7 @@ class PrecursorsView(ReportListView):
 
             report = PrecursorReport.objects.get(pk=serializer.validated_data["pk"])
             month = report.get_month_display()
-            print(month)
+
             first_line = [_("Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d") % {
                 'lab': laboratory.name,
                 'consecutive': report.consecutive
@@ -259,10 +259,10 @@ class PrecursorsView(ReportListView):
             fourth_line = [_("Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s") % {
                 "responsible": "",
                 "signature": "",
-                "position":""
+                "position": ""
             }]
 
-            book = [first_line, second_line, third_line, fourth_line,[], [str(_('Name of the substance or product ')),
+            book = [first_line, second_line, third_line, fourth_line,[], [str(_('Name of the substance or product')),
                                                                  str(_('Unit')),
                                                                  str(_('Final balance of the previous report')),
                                                                  str(_('Income during the month')),
