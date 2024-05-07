@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from api.utils import AllPermissionOrganization
 from auth_and_perms.api.serializers import ValidateProfileSerializer, \
-    ValidateOrganizationSerializer
+    ValidateOrganizationSerializer, ValidateUserSerializer
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.node_tree import get_tree_organization_pks_by_user, \
     get_org_parents_info
@@ -503,8 +503,8 @@ class ObjectByOrganization(BaseSelect2View):
 
 
 
-@register_lookups(prefix="userorg", basename="userorg")
-class UsersOrganizationsLookup(BaseSelect2View):
+@register_lookups(prefix="usersmerge", basename="usersmerge")
+class UsersMerge(BaseSelect2View):
     model = User
     fields = ['username', 'first_name', 'last_name']
     org= None
@@ -521,11 +521,10 @@ class UsersOrganizationsLookup(BaseSelect2View):
             queryset = queryset.exclude(pk__in=[self.user_base.pk, self.user_session.pk]).distinct()
         else:
             queryset = queryset.none()
-
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateOrganizationSerializer(data=request.GET)
+        self.serializer = ValidateUserSerializer(data=request.GET)
 
         if self.serializer.is_valid():
             self.user_base = self.serializer.validated_data['user_base']
