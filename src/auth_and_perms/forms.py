@@ -268,9 +268,9 @@ class UserForm(GTForm, forms.ModelForm):
     first_name = forms.CharField(widget=genwidgets.TextInput, label=_("First name"))
     last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last name"))
     email = forms.CharField(widget=genwidgets.EmailMaskInput, label=_("Email"))
-    is_superuser = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is super user"))
-    is_active = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is active"))
-    is_staff = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is staff"))
+    is_superuser = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is super user"), required=False)
+    is_active = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is active"), required=False)
+    is_staff = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is staff"), required=False)
 
     field_order = ["username", "first_name", "last_name", "email",
                             "is_superuser", "is_active", "is_staff"]

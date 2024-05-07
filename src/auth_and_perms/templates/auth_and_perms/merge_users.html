@@ -20,7 +20,7 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<h2 class="text-center mb-3"><b>{% trans 'User Base' %}</b></h2>
-				<form class="form" action="" method="POST">
+				<form class="form" action="{% url 'auth_and_perms:save_user_merge' user_base user_delete %}" method="POST" id="userbaseform">
 					{% csrf_token %}
 					{{ user_base_form }}
 				</form>
@@ -34,7 +34,7 @@
 	<div class="card-footer text-center">
 		<a class="btn btn-md btn-danger" href="{% url 'auth_and_perms:users_list' %}"> {% trans "Cancel" %}
 		</a>
-		<button class="btn btn-md btn-success" type="submit"> {% trans "Save" %}
+		<button class="btn btn-md btn-success" type="submit" form="userbaseform"> {% trans "Save" %}
 		</button>
 	</div>
 </div>
