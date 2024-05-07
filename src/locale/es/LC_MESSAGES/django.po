@@ -4579,8 +4579,8 @@ msgstr "Ingresos durante el mes"
 msgid "Import or local purchase invoice number that covers the entry"
 msgstr "Número de factura de importación o compra local que ampara el ingreso"
 
-msgid "Proveedor que suplió el producto adquirido (en caso de compra local)"
-msgstr "Supplier that supplied the purchased product (in case of local purchase)"
+msgid "Supplier that supplied the purchased product (in case of local purchase)"
+msgstr "Proveedor que suplió el producto adquirido (en caso de compra local)"
 
 msgid "Total Stock"
 msgstr "Total de existencias"
@@ -4588,7 +4588,7 @@ msgstr "Total de existencias"
 msgid "Dispatch or expense during this month"
 msgstr "Despacho o gasto durante este mes"
 
-msgid "Balance at the end of the month reported in this reportt"
+msgid "Balance at the end of the month reported in this report"
 msgstr "Saldo al final del mes reportado en este informe"
 
 msgid "Reason for dispatch or expense"
@@ -4606,7 +4606,7 @@ msgstr "Actividad a la que se dedica la empresa: %(activity)s"
 msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
 msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
 
-msgid "Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s:"
+msgid "Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s"
 msgstr "Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
 
 msgid "Report_of_precursors_%(month)s_%(consecutive)d"
