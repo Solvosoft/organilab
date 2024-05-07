@@ -4614,3 +4614,24 @@ msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
 
 msgid "Email address is associated to an username."
 msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
+
+msgid "Month expense"
+msgstr "Gasto mensual"
+
+msgid "Previous balance"
+msgstr "Balance anterior"
+
+msgid "New income"
+msgstr "Nuevo ingreso"
+
+msgid "Bills"
+msgstr "Facturas"
+
+msgid "Stock"
+msgstr "Existencias"
+
+msgid "Reason to spend"
+msgstr "Razon del gasto"
+
+msgid "Final balance"
+msgstr "Balance final"
