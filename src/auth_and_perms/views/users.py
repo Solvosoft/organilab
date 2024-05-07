@@ -20,9 +20,8 @@ from sga.models import SubstanceObservation
 
 
 def users_list(request):
-     merge_form = MergeUsers(user_session=request.user.pk)
      return render(request,"auth_and_perms/users_list.html", context={
-         "merge_form": merge_form})
+         "merge_form": MergeUsers()})
 
 def merge_users(request, user_base, user_delete):
     user_base_instance = get_object_or_404(User, pk=user_base)

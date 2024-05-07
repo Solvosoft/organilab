@@ -253,13 +253,11 @@ class SearchShelfObjectViewsetForm(forms.Form):
 
 
 class MergeUsers(GTForm):
-    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.none(), label=_("User"))
     user_base = forms.IntegerField(widget=genwidgets.HiddenInput)
-
-    def __init__(self, *args, **kwargs):
-        user_session = kwargs.pop('user_session')
-        super().__init__(*args, **kwargs)
-        self.fields["user"].queryset = User.objects.all().exclude(pk=user_session)
+    user = forms.ModelChoiceField(widget=AutocompleteSelect('usersmerge', attrs={
+                'data-dropdownparent': "#merge_obj_modal",
+                'data-s2filter-user_base': '#id_user_base',
+            }), queryset=User.objects.all(), label=_("User"))
 
 
 class UserForm(GTForm, forms.ModelForm):
