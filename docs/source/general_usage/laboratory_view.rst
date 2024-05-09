@@ -280,6 +280,13 @@ para administrar el contenedor de los objetos en estante.
 Mantenimiento de un equipo
 --------------------------------------------------------
 
+En esta sección se podrá visualizar las diferentes acciones en el mantenimiento de un equipo como lo son la
+**edición de sus características** (Proveedor, contrato de mantenimiento y otros), los registros en **bitácora**
+(Cualquier evento importante de anotar con respecto al equipo), sus **calibraciones** (Quienes fueron los calibradores y
+validadores reponsables de dicho equipo), su **mantenimiento** (Registro de mantenimiento que haya tenido el equipo),
+**capacitaciones** (Cuando, en que lugar y quienes recibieron alguna capacitación con el uso de este equipo) y
+finalmente **garantías** (Control sobre las garantías del equipo y su respectivo contrato).
+
 
 1. Edición de las características
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -291,6 +298,12 @@ Mantenimiento de un equipo
 2. Bitácora
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+    * Ver los registro.
+
+    .. image:: ../_static/gif/view_shelfobject_equipment_logs.gif
+        :height: 380
+        :class: margingif
+
     * Creación de un registro.
 
     .. image:: ../_static/gif/create_shelfobject_equipment_log.gif
@@ -301,35 +314,53 @@ Mantenimiento de un equipo
 
     .. image:: ../_static/gif/edit_shelfobject_equipment_log.gif
         :height: 380
-        :width: 720
+        :class: margingif
 
     * Eliminación de un registro.
 
     .. image:: ../_static/gif/create_shelfobject_equipment_log.gif
         :height: 380
-        :width: 720
+        :class: margingif
+
+    * Buscar registros.
+
+    .. image:: ../_static/gif/search_shelfobject_equipment_logs.gif
+        :height: 380
+        :class: margingif
 
 
 3. Calibraciones
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+    * Ver los registro de calibración.
+
+    .. image:: ../_static/gif/view_shelfobject_equipment_calibrations.gif
+        :height: 380
+        :class: margingif
+
     * Creación de un registro de calibración.
 
     .. image:: ../_static/gif/create_shelfobject_equipment_calibration.gif
         :height: 380
-        :width: 720
+        :class: margingif
 
     * Edición de un registro de calibración.
 
     .. image:: ../_static/gif/edit_shelfobject_equipment_calibration.gif
         :height: 380
-        :width: 720
+        :class: margingif
 
     * Eliminación de un registro de calibración.
 
     .. image:: ../_static/gif/delete_shelfobject_equipment_calibration.gif
         :height: 380
-        :width: 720
+        :class: margingif
+
+    * Buscar registros de calibración.
+
+    .. image:: ../_static/gif/search_shelfobject_equipment_calibrations.gif
+        :height: 380
+        :class: margingif
 
 
 4. Bitácora de mantenimientos
