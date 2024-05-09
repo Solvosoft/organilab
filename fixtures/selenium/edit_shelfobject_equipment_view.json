@@ -104,6 +104,24 @@
       ]
     }
   },
+    {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "adminpass",
+      "last_login": "2023-01-10T22:49:30.603Z",
+      "is_superuser": true,
+      "username": "Sora",
+      "first_name": "Sora",
+      "last_name": "Sanabria",
+      "email": "orgadmin@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2018-07-09T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
   {
     "model": "laboratory.organizationstructure",
     "pk": 1,
@@ -113,7 +131,7 @@
       "position": 0,
       "level": 0,
       "rol": [1, 2, 3, 4],
-      "users": [1]
+      "users": [1,4]
     }
   },
   {
@@ -404,5 +422,109 @@
       "validator": 1,
       "calibration_date": "2023-04-25"
     }
+  },
+  {
+  "model": "laboratory.shelfobjectmaintenance",
+  "pk": 1,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-25T21:12:17.828Z",
+    "last_update": "2024-04-25T21:12:17.829Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "maintenance_date": "2024-04-25",
+    "provider_of_maintenance": 1,
+    "validator": 1,
+    "maintenance_observation": "Cleaning"
   }
+},
+  {
+    "model": "laboratory.shelfobjectguarantee",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2024-04-25T22:48:16.075Z",
+      "last_update": "2024-04-25T22:48:16.075Z",
+      "created_by": 1,
+      "shelfobject": 1,
+      "guarantee_initial_date": "2024-04-25",
+      "guarantee_final_date": "2024-04-28",
+      "contract": null
+    }
+  },
+  {
+    "model": "laboratory.shelfobjectguarantee",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2024-04-25T22:48:16.075Z",
+      "last_update": "2024-04-25T22:48:16.075Z",
+      "created_by": 4,
+      "shelfobject": 1,
+      "guarantee_initial_date": "2024-04-20",
+      "guarantee_final_date": "2024-04-28",
+      "contract": null
+    }
+  },
+  {
+  "model": "laboratory.shelfobjecttraining",
+  "pk": 1,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-26T17:18:20.868Z",
+    "last_update": "2024-04-26T17:18:20.868Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "training_initial_date": "2024-04-25",
+    "training_final_date": "2024-04-25",
+    "number_of_hours": 1,
+    "external_people_receive_training": "ninguna",
+    "observation": "Induccion a la empresa",
+    "place": "San jose",
+    "intern_people_receive_training": [
+      1
+    ]
+  }
+},
+  {
+  "model": "laboratory.shelfobjecttraining",
+  "pk": 2,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-26T17:18:20.868Z",
+    "last_update": "2024-04-26T17:18:20.868Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "training_initial_date": "2024-07-25",
+    "training_final_date": "2024-07-25",
+    "number_of_hours": 2,
+    "external_people_receive_training": "ninguna",
+    "observation": "Capacitación de manejo de equipo",
+    "place": "Heredia",
+    "intern_people_receive_training": [
+      1
+    ]
+  }
+},
+  {
+  "model": "laboratory.shelfobjecttraining",
+  "pk": 3,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2024-04-26T17:18:20.868Z",
+    "last_update": "2024-04-26T17:18:20.868Z",
+    "created_by": 1,
+    "shelfobject": 1,
+    "training_initial_date": "2024-06-25",
+    "training_final_date": "2024-06-25",
+    "number_of_hours": 3,
+    "external_people_receive_training": "ninguna",
+    "observation": "Capacitación",
+    "place": "Oficina central",
+    "intern_people_receive_training": [
+      1
+    ]
+  }
+}
+
 ]

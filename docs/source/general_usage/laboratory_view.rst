@@ -536,4 +536,3 @@ Clasificación de la prioridad de búsqueda
  por defecto este elemento será seleccionado como un antecesor.
 
     .. image:: ../_static/priority_search.png
-
