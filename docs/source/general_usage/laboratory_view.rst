@@ -384,7 +384,7 @@ finalmente **garantías** (Control sobre las garantías del equipo y su respecti
         :height: 380
         :class: margingif
 
-    * Buscar registros.
+    * Buscar registros de mantenimientos.
 
     .. image:: ../_static/gif/search_shelfobject_equipment_maintenance.gif
         :height: 380
@@ -405,13 +405,13 @@ finalmente **garantías** (Control sobre las garantías del equipo y su respecti
         :height: 380
         :class: margingif
 
-    * Eliminación de un registro de Capacitación.
+    * Eliminación de un registro de capacitación.
 
     .. image:: ../_static/gif/delete_shelfobject_equipment_training.gif
         :height: 380
         :class: margingif
 
-    * Buscar registros.
+    * Buscar registros de capacitaciones.
 
     .. image:: ../_static/gif/search_shelfobject_equipment_training.gif
         :height: 380
@@ -438,7 +438,7 @@ finalmente **garantías** (Control sobre las garantías del equipo y su respecti
         :height: 380
         :class: margingif
 
-    * Buscar registros.
+    * Buscar registros de garantías.
 
     .. image:: ../_static/gif/search_shelfobject_equipment_guarantee.gif
         :height: 380
