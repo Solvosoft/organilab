@@ -15,8 +15,8 @@ class ShelfObjectEquipmentGuarantee(ShelfObjectEquipmentSeleniumTest):
     def test_view_shelfobject_guarantee(self):
 
         path_list = [
-            {"path" :"/html/body/div[1]/div/div[3]/div/div/div[7]/div[1]/h1",
-                "scroll":"window.scrollTo(0, document.body.scrollHeight)"},
+            {"path" : "/html/body/div[1]/div/div[3]/div/div/div[7]/div[1]/h1",
+                "scroll":"window.scrollTo(0, 2700)"},
         ]
         general_path_list = [self.path_base, path_list]
         self.create_gif_by_change_focus_tab(general_path_list, ["equipmenteditview"],

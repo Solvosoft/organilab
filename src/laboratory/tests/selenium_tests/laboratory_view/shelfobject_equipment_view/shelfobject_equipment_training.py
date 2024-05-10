@@ -95,7 +95,7 @@ class ShelfObjectEquipmentTraining(ShelfObjectEquipmentSeleniumTest):
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[1]/h1",
              "scroll": "window.scrollTo(0, 1950)"},
 
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input"},
+            {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input", "scroll": "window.scrollTo(0, 2200)"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[4]/input", "extra_action":"setvalue", "value": 2},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[4]/input", "extra_action": "clearinput"},
             {"path": "/html/body/div[1]/div/div[3]/div/div/div[6]/div[2]/div/div[2]/div/table/thead/tr[2]/th[5]/input"},

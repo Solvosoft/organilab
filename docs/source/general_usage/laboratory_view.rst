@@ -335,12 +335,83 @@ Mantenimiento de un equipo
 4. Bitácora de mantenimientos
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+    * Creación de un registro de mantenimiento.
+
+    .. image:: ../_static/gif/add_shelfobject_equipment_maintenance.gif
+        :height: 380
+        :class: margingif
+
+    * Edición de un registro de mantenimiento.
+
+    .. image:: ../_static/gif/edit_shelfobject_equipment_maintenance.gif
+        :height: 380
+        :class: margingif
+
+    * Eliminación de un registro de mantenimiento.
+
+    .. image:: ../_static/gif/delete_shelfobject_equipment_maintenance.gif
+        :height: 380
+        :class: margingif
+
+    * Buscar registros.
+
+    .. image:: ../_static/gif/search_shelfobject_equipment_maintenance.gif
+        :height: 380
+        :class: margingif
+
 5. Capacitaciones
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    * Creación de un registro de capacitación.
+
+    .. image:: ../_static/gif/add_shelfobject_equipment_training.gif
+        :height: 380
+        :class: margingif
+
+    * Edición de un registro de capacitación.
+
+    .. image:: ../_static/gif/edit_shelfobject_equipment_training.gif
+        :height: 380
+        :class: margingif
+
+    * Eliminación de un registro de Capacitación.
+
+    .. image:: ../_static/gif/delete_shelfobject_equipment_training.gif
+        :height: 380
+        :class: margingif
+
+    * Buscar registros.
+
+    .. image:: ../_static/gif/search_shelfobject_equipment_training.gif
+        :height: 380
+        :class: margingif
 
 6. Garantías
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+    * Creación de un registro de gararantía.
+
+    .. image:: ../_static/gif/add_shelfobject_equipment_guarantee.gif
+        :height: 380
+        :class: margingif
+
+    * Edición de un registro de gararantía.
+
+    .. image:: ../_static/gif/edit_shelfobject_equipment_guarantee.gif
+        :height: 380
+        :class: margingif
+
+    * Eliminación de un registro de gararantía.
+
+    .. image:: ../_static/gif/delete_shelfobject_equipment_guarantee.gif
+        :height: 380
+        :class: margingif
+
+    * Buscar registros.
+
+    .. image:: ../_static/gif/search_shelfobject_equipment_guarantee.gif
+        :height: 380
+        :class: margingif
 
 
 Ver la bitácora de un objeto en el estante
