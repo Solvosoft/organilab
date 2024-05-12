@@ -20,6 +20,7 @@ def create_menu(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('djgentelella', '0010_menuitem_position'),
         ('auth_and_perms', '0013_impostorlog'),
     ]
 
