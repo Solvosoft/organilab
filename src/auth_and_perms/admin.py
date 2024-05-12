@@ -42,7 +42,14 @@ class ProfileAdmin(admin.ModelAdmin):
 
 class ProfilePermissionAdmin(admin.ModelAdmin):
     search_fields = ['profile__user__email']
+
+class ImpostorAdmin(admin.ModelAdmin):
+    search_fields = ['impostor__username','imposted_as__username']
+    list_display = ['__str__', 'impostor_ip', 'logged_in', 'logged_out']
+    date_hierarchy = 'logged_in'
+
 admin.site.register(models.AuthorizedApplication, AuthorizedApplicationAdmin)
 admin.site.register(models.Profile, ProfileAdmin)
 admin.site.register(models.Rol, RolAdmin)
 admin.site.register(models.ProfilePermission, ProfilePermissionAdmin)
+admin.site.register(models.ImpostorLog, ImpostorAdmin)

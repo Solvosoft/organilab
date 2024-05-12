@@ -1,11 +1,16 @@
 from django.conf import settings
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import logout as auth_logout, get_user_model
+from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
+from django.utils.functional import SimpleLazyObject
 
-from auth_and_perms.models import RegistrationUser
+from auth_and_perms.models import RegistrationUser, ImpostorLog
+from django.utils.deprecation import MiddlewareMixin
+
+from auth_and_perms.utils import get_ip_address
 
 
 class ProfileLanguageMiddleware:
@@ -36,3 +41,31 @@ class ProfileLanguageMiddleware:
         if default_profile_lang in  languages:
             translation.activate(default_profile_lang)
 
+
+class ImpostorMiddleware(MiddlewareMixin):
+
+    def process_request(self, request):
+        if not hasattr(request, "session"):
+            raise ImproperlyConfigured(
+                "The Django authentication middleware requires session "
+                "middleware to be installed. Edit your MIDDLEWARE setting to "
+                "insert "
+                "'django.contrib.sessions.middleware.SessionMiddleware' before "
+                "'django.contrib.auth.middleware.AuthenticationMiddleware'."
+            )
+        impostor=request.session.get('impostor', None)
+        if impostor:
+            User = get_user_model()
+            impostor_token = request.COOKIES.get('impostor_token') or None
+            ipaddress=get_ip_address(request)
+            imposted_as = User.objects.filter(pk=impostor).first()
+            if imposted_as and impostor_token:
+                impostor_log=ImpostorLog.objects.filter(
+                    impostor=request.user,
+                    imposted_as=imposted_as,
+                    impostor_ip=ipaddress,
+                    token=impostor_token
+                ).first()
+                if impostor_log:
+                    request.impostor_info=impostor_log
+                    request.user = SimpleLazyObject(lambda: imposted_as)
