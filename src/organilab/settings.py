@@ -69,6 +69,7 @@ INSTALLED_APPS = [
 ]
 
 
+
 IMAGE_CROPPING_JQUERY_URL = None
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
     'request.middleware.RequestMiddleware',
+    'auth_and_perms.middleware.ImpostorMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'djreservation.middleware.ReservationMiddleware',

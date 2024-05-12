@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 23:38-0600\n"
+"POT-Creation-Date: 2024-05-11 18:18-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -378,6 +378,30 @@ msgstr "Rol de Perfil"
 msgid "Profile Rols"
 msgstr "Roles de Perfil"
 
+msgid "Impostor"
+msgstr "Impostor"
+
+msgid "Logged in as"
+msgstr "Autenticado como"
+
+msgid "Impostor's IP address"
+msgstr "Dirección IP del Impostor"
+
+msgid "Logged on"
+msgstr "Autenticado"
+
+msgid "Logged out"
+msgstr "Cerrar Sesión"
+
+msgid "Token"
+msgstr "Token"
+
+msgid "Impostor log"
+msgstr "Bitácora de impostor"
+
+msgid "Impostor logs"
+msgstr "Bitácoras de impostor"
+
 #, python-format
 msgid "User %(user)s not allowed on organization %(organization)r "
 msgstr ""
@@ -654,6 +678,15 @@ msgstr "Elemento guardado exitosamente"
 
 msgid "Error, form is invalid"
 msgstr "Error el formulario es inválido"
+
+msgid "You have active impostor session"
+msgstr "Tiene una sesión de impostor activa"
+
+msgid "Request User is the same as current user"
+msgstr "Usuario solicitando es el mismo que el usuario actual"
+
+msgid "User not in organization"
+msgstr "Usuario no existe en la organización"
 
 msgid "Form data is wrong, you need to pass a valid laboratory as contenttype"
 msgstr "Formulario erróneo, debe pasar un laboratorio válido como contenttype"
@@ -1044,6 +1077,9 @@ msgstr "El código ya existe."
 
 msgid "Email address is already exists."
 msgstr "La dirección de correo ya existe."
+
+msgid "Email address is associated to an username."
+msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
 
 msgid "Username"
 msgstr "Nombre de usuario"
@@ -1446,6 +1482,30 @@ msgstr "Noviembre"
 
 msgid "December"
 msgstr "Diciembre"
+
+msgid "Report"
+msgstr "Reporte"
+
+msgid "Previous balance"
+msgstr "Balance anterior"
+
+msgid "New income"
+msgstr "Nuevo ingreso"
+
+msgid "Bills"
+msgstr "Facturas"
+
+msgid "Stock"
+msgstr "Existencias"
+
+msgid "Month expense"
+msgstr "Gasto mensual"
+
+msgid "Final balance"
+msgstr "Balance final"
+
+msgid "Reason to spend"
+msgstr "Razón del gasto"
 
 msgid "Inform"
 msgstr "Información"
@@ -2747,44 +2807,58 @@ msgstr "Reporte de Objetos Reactivos Precursores"
 msgid "Changes on Objects Report"
 msgstr "Reporte de Cambio de Objetos"
 
-msgid "#Consecutivo"
-msgstr "Consecutivo"
+#, python-format
+msgid ""
+"Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d"
+msgstr ""
+"Nombre de la sustancia o producto: %(lab)s  N° Inscripción: %(consecutive)d"
 
-msgid "Laboratorio o centro de trabajo"
-msgstr "Laboratorio o centro de trabajo"
+#, python-format
+msgid "Activity to which the company is dedicated: %(activity)s"
+msgstr "Actividad a la que se dedica la empresa: %(activity)s"
 
-msgid "Nombre de la sustancia o producto"
+#, python-format
+msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
+msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
+
+#, python-format
+msgid ""
+"Responsible: %(responsible)s  Signature: %(signature)s  Position: "
+"%(position)s"
+msgstr ""
+"Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
+
+msgid "Name of the substance or product"
 msgstr "Nombre de la sustancia o producto"
 
-msgid "Unid"
-msgstr "Unidad"
+msgid "Final balance of the previous report"
+msgstr "Saldo final del reporte anterios"
 
-msgid "Saldo final de reporte anterior"
-msgstr "Saldo final de reporte anterior"
+msgid "Income during the month"
+msgstr "Ingresos durante el mes"
 
-msgid "Ingresos durante el mes"
-msgstr "Saldo final de reporte anterior"
+msgid "Import or local purchase invoice number that covers the entry"
+msgstr "Número de factura de importación o compra local que ampara el ingreso"
 
-msgid "Numero de factura"
-msgstr "Numero de factura"
+msgid ""
+"Supplier that supplied the purchased product (in case of local purchase)"
+msgstr "Proveedor que suplió el producto adquirido (en caso de compra local)"
 
-msgid "Proveedor"
-msgstr "Proveedores"
-
-msgid "Total de existencias"
+msgid "Total Stock"
 msgstr "Total de existencias"
 
-msgid "Gasto durante el mes"
-msgstr "No hay piezas de mueble"
+msgid "Dispatch or expense during this month"
+msgstr "Despacho o gasto durante este mes"
 
-msgid "Saldo al final del mes reportado en este informe"
+msgid "Balance at the end of the month reported in this report"
 msgstr "Saldo al final del mes reportado en este informe"
 
-msgid "Razon de gasto o despacho"
-msgstr "Razon de gasto o despacho"
+msgid "Reason for dispatch or expense"
+msgstr "Razón del despacho o gasto"
 
-msgid "Asunto"
-msgstr "Asunto"
+#, python-format
+msgid "Report_of_precursors_%(month)s_%(consecutive)d"
+msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
 
 msgid "User Reactive Exposition in Organization Report"
 msgstr "Reporte Exposición Reactiva del Usuario en la Organización"
@@ -2984,6 +3058,9 @@ msgstr "Entradas del blog"
 msgid "Blog"
 msgstr "Blog"
 
+msgid "Logout"
+msgstr "Salir"
+
 msgid "Tutorials"
 msgstr "Tutoriales"
 
@@ -3024,9 +3101,6 @@ msgstr "¿Olvidó su contraseña?"
 
 msgid "Register to platform"
 msgstr "Registrar a la plataforma"
-
-msgid "Logged out"
-msgstr "Cerrar Sesión"
 
 msgid "Do you want to login again?"
 msgstr "¿Desea iniciar sesión nuevamente?"
@@ -3316,9 +3390,6 @@ msgstr "Encolando creación de reporte"
 
 msgid "Download the report in this link"
 msgstr "Descargar el reporte en este enlace"
-
-msgid "Report"
-msgstr "Reporte"
 
 msgid "seconds"
 msgstr "segundos"
@@ -4569,69 +4640,3 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
-
-msgid "Final balance of the previous report"
-msgstr "Saldo final del reporte anterios"
-
-msgid "Income during the month"
-msgstr "Ingresos durante el mes"
-
-msgid "Import or local purchase invoice number that covers the entry"
-msgstr "Número de factura de importación o compra local que ampara el ingreso"
-
-msgid "Supplier that supplied the purchased product (in case of local purchase)"
-msgstr "Proveedor que suplió el producto adquirido (en caso de compra local)"
-
-msgid "Total Stock"
-msgstr "Total de existencias"
-
-msgid "Dispatch or expense during this month"
-msgstr "Despacho o gasto durante este mes"
-
-msgid "Balance at the end of the month reported in this report"
-msgstr "Saldo al final del mes reportado en este informe"
-
-msgid "Reason for dispatch or expense"
-msgstr "Razón del despacho o gasto"
-
-msgid "Name of the substance or product"
-msgstr "Nombre de la sustancia o producto"
-
-msgid "Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d"
-msgstr "Nombre de la sustancia o producto: %(lab)s  N° Inscripción: %(consecutive)d"
-
-msgid "Activity to which the company is dedicated: %(activity)s"
-msgstr "Actividad a la que se dedica la empresa: %(activity)s"
-
-msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
-msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
-
-msgid "Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s"
-msgstr "Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
-
-msgid "Report_of_precursors_%(month)s_%(consecutive)d"
-msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
-
-msgid "Email address is associated to an username."
-msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
-
-msgid "Month expense"
-msgstr "Gasto mensual"
-
-msgid "Previous balance"
-msgstr "Balance anterior"
-
-msgid "New income"
-msgstr "Nuevo ingreso"
-
-msgid "Bills"
-msgstr "Facturas"
-
-msgid "Stock"
-msgstr "Existencias"
-
-msgid "Reason to spend"
-msgstr "Razon del gasto"
-
-msgid "Final balance"
-msgstr "Balance final"
