@@ -106,7 +106,7 @@ def get_rols_from_organization(rootpk, rolfilters={}, org=None):
     return query.values_list('rol', flat=True)
 
 
-def get_users_from_organization(rootpk, userfilters={}, org=None, return_query=False):
+def get_users_from_organization(rootpk, userfilters={}, org=None):
     if org is None:
         org = OrganizationStructure.objects.filter(pk=rootpk).first()
     orgs = list(OrganizationStructure.objects.filter(pk=rootpk).descendants(of=org, include_self=True).values_list('pk', flat=True))
@@ -115,8 +115,7 @@ def get_users_from_organization(rootpk, userfilters={}, org=None, return_query=F
     query=UserOrganization.objects.filter(
         organization__in=orgs, user__isnull=False,status=True
     )
-    if return_query:
-        return query
+
     return query.values_list('user', flat=True)
 
 
