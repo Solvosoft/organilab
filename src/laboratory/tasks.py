@@ -47,6 +47,8 @@ def create_precursor_reports():
 
         if previos_report.exists():
             previos_report = previos_report.last()
+        else:
+            previos_report = None
 
         report = PrecursorReport.objects.create(
                 month=day.month,
