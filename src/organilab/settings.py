@@ -15,14 +15,24 @@ SECRET_KEY = os.getenv('SECRET_KEY',
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
+GLITCHTIP_DSN=os.getenv("GLITCHTIP_DSN", None)
+if not DEBUG and GLITCHTIP_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=GLITCHTIP_DSN,
+        integrations=[DjangoIntegration()],
+        auto_session_tracking=False,
+        traces_sample_rate=0
+    )
+
 CSRF_TRUSTED_SCHEME=os.getenv('CSRF_TRUSTED_SCHEME', 'https')
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
     CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
-    REQUEST_BASE_URL = "https://" + ALLOWED_HOSTS[0]
 else:
     ALLOWED_HOSTS = []
-    REQUEST_BASE_URL='http://localhost'
 
 ADMINS = [('Solvo', 'sitio@solvosoft.com'),]
 # Application definition
@@ -64,8 +74,7 @@ INSTALLED_APPS = [
     'derb',
     'django_otp',
     'django_otp.plugins.otp_totp',
-    'report',
-    'request'
+    'report'
 ]
 
 
@@ -80,7 +89,6 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_otp.middleware.OTPMiddleware',
-    'request.middleware.RequestMiddleware',
     'auth_and_perms.middleware.ImpostorMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -388,21 +396,3 @@ if not DEBUG:
 
 DEFAULT_SHELF_ULIMIT=0
 DEFAULT_MIN_QUANTITY = 0.0000001
-
-
-REQUEST_IGNORE_PATHS = (
-    r'^static/',
-    r'^jsi18n/',
-    r'^djsi18n/',
-    r'^favicon.ico',
-    r'^notification/',
-    r'^admin/jsi18n/',
-)
-
-REQUEST_TRAFFIC_MODULES = (
-    'request.traffic.Error',
-    'request.traffic.Hit',
-    'request.traffic.UniqueVisitor',
-    'request.traffic.User',
-    'request.traffic.UniqueUser'
-)
