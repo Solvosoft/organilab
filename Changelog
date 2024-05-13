@@ -6,3 +6,6 @@
 
 13/10/2023
     - python manage.py set_mediafiles_names
+
+29/04/2024
+    - python manage.py precursor_report

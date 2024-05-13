@@ -595,3 +595,6 @@ class InstrumentalFamilyDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+class PrecursorSerializer(serializers.Serializer):
+    pk = serializers.IntegerField()

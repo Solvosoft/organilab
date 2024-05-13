@@ -1418,13 +1418,13 @@ msgid "February"
 msgstr "Febrero"
 
 msgid "March"
-msgstr "Buscar"
+msgstr "Marzo"
 
 msgid "April"
 msgstr "Abril"
 
 msgid "May"
-msgstr "Día"
+msgstr "Mayo"
 
 msgid "June"
 msgstr "Junio"
@@ -4523,7 +4523,7 @@ msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
 msgid "Invalid form"
-msgstr "Formularion inválido"
+msgstr "Formulario inválido"
 
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
@@ -4582,6 +4582,48 @@ msgstr "puede estar relacionado con múltiples elementos."
 msgid "Merge users"
 msgstr "Fusión de usuarios"
 
+msgid "Final balance of the previous report"
+msgstr "Saldo final del reporte anterios"
+
+msgid "Income during the month"
+msgstr "Ingresos durante el mes"
+
+msgid "Import or local purchase invoice number that covers the entry"
+msgstr "Número de factura de importación o compra local que ampara el ingreso"
+
+msgid "Supplier that supplied the purchased product (in case of local purchase)"
+msgstr "Proveedor que suplió el producto adquirido (en caso de compra local)"
+
+msgid "Total Stock"
+msgstr "Total de existencias"
+
+msgid "Dispatch or expense during this month"
+msgstr "Despacho o gasto durante este mes"
+
+msgid "Balance at the end of the month reported in this report"
+msgstr "Saldo al final del mes reportado en este informe"
+
+msgid "Reason for dispatch or expense"
+msgstr "Razón del despacho o gasto"
+
+msgid "Name of the substance or product"
+msgstr "Nombre de la sustancia o producto"
+
+msgid "Name of natural or legal person: %(lab)s  N° Registration: %(consecutive)d"
+msgstr "Nombre de la sustancia o producto: %(lab)s  N° Inscripción: %(consecutive)d"
+
+msgid "Activity to which the company is dedicated: %(activity)s"
+msgstr "Actividad a la que se dedica la empresa: %(activity)s"
+
+msgid "Report of the Month:: %(month)s of the year: %(year)d Tel: %(tel)s"
+msgstr "Informe del mes de %(month)s  del año %(year)d  Telefono: %(tel)s"
+
+msgid "Responsible: %(responsible)s  Signature: %(signature)s  Position: %(position)s"
+msgstr "Responsable: %(responsible)s  Firma: %(signature)s  Cargo: %(position)s:"
+
+msgid "Report_of_precursors_%(month)s_%(consecutive)d"
+msgstr "Reporte_sobre_precursores_%(month)s_%(consecutive)d"
+
 msgid "Email address is associated to an username."
 msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
 
@@ -4602,3 +4644,24 @@ msgstr "Usuario a Eliminar"
 
 msgid "User Base"
 msgstr "Usuario Base"
+
+msgid "Month expense"
+msgstr "Gasto mensual"
+
+msgid "Previous balance"
+msgstr "Balance anterior"
+
+msgid "New income"
+msgstr "Nuevo ingreso"
+
+msgid "Bills"
+msgstr "Facturas"
+
+msgid "Stock"
+msgstr "Existencias"
+
+msgid "Reason to spend"
+msgstr "Razon del gasto"
+
+msgid "Final balance"
+msgstr "Balance final"
