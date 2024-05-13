@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
@@ -32,7 +33,9 @@ def add_user_impostor(request, org_pk, pk):
             exist_instance=ImpostorLog.objects.filter(
                 impostor=request.user,
                 imposted_as=imposted_as,
-                impostor_ip=ipaddress).exists()
+                impostor_ip=ipaddress,
+                active=True
+                ).exists()
             if not exist_instance:
                 instance=ImpostorLog(
                     impostor=request.user,
@@ -42,7 +45,9 @@ def add_user_impostor(request, org_pk, pk):
                 request.session['impostor']=pk
                 response.set_cookie('impostor_token', str(instance.token))
             else:
-                messages.error(request, _("You have active impostor session"))
+                messages.error(request, mark_safe(_('You have active impostor session <a href="%(reverseurl)s?all=1">Finish it</a>')%{
+                    'reverseurl': reverse('auth_and_perms:remove_impostor')
+                }))
         else:
             messages.error(request, _("Request User is the same as current user"))
     else:
@@ -51,10 +56,21 @@ def add_user_impostor(request, org_pk, pk):
 
 @login_required
 def remove_impostor(request):
-    ipaddress = get_ip_address(request)
-    ImpostorLog.objects.filter(
-        imposted_as=request.user,
-        impostor_ip=ipaddress).update(active=False, logged_out=now())
+    delall = request.GET.get('all', None)
+    if delall:
+        if hasattr(request, 'impostor_info'):
+            ImpostorLog.objects.filter(
+                impostor=request.impostor_info.impostor,
+                active=True).update(active=False, logged_out=now())
+        else:
+            ImpostorLog.objects.filter(
+                impostor=request.user,
+                active=True).update(active=False, logged_out=now())
+    else:
+        ipaddress = get_ip_address(request)
+        ImpostorLog.objects.filter(
+            imposted_as=request.user,
+            impostor_ip=ipaddress).update(active=False, logged_out=now())
     impostor = request.session.get('impostor', None)
     if impostor:
         del request.session['impostor']
