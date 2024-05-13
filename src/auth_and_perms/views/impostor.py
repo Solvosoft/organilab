@@ -45,7 +45,7 @@ def add_user_impostor(request, org_pk, pk):
                 request.session['impostor']=pk
                 response.set_cookie('impostor_token', str(instance.token))
             else:
-                messages.error(request, mark_safe(_('You have active impostor session <a href="%(reverseurl)s?all=1">Finish it</a>')%{
+                messages.error(request, mark_safe(_('You have active impostor session <a class="text-white fw-bold text-decoration-underline" href="%(reverseurl)s?all=1">Finish it</a>')%{
                     'reverseurl': reverse('auth_and_perms:remove_impostor')
                 }))
         else:
