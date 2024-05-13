@@ -16,6 +16,7 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import re_path, path, include, reverse_lazy
 from django.views.decorators.cache import cache_page
 from django.views.generic import RedirectView
@@ -39,8 +40,14 @@ from derb import urls as derb_urls
 from report import urls as report_urls
 from django.views.i18n import JavaScriptCatalog
 
+def check_ok(request):
+    fail=request.GET.get('fail', None)
+    if fail:
+        division_by_zero = 1 / 0
+    return HttpResponse("ok")
 
 urlpatterns = urls_djgentelela + auth_urls + [
+    path('check_ok/', check_ok),
     path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
     path('index/', include('presentation.urls')),
     path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
