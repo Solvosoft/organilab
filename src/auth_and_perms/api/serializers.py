@@ -403,5 +403,9 @@ class UserFilter(FilterSet):
                   }
 
 
-class ValidateUserSerializer(serializers.Serializer):
+class ValidateUserBaseSerializer(serializers.Serializer):
     user_base = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+
+class ValidateUserSerializer(ValidateUserBaseSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
