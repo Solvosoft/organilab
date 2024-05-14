@@ -12,7 +12,7 @@ from rest_framework.response import Response
 
 from api.utils import AllPermissionOrganization
 from auth_and_perms.api.serializers import ValidateProfileSerializer, \
-    ValidateOrganizationSerializer, ValidateUserSerializer
+    ValidateOrganizationSerializer, ValidateUserSerializer, ValidateUserBaseSerializer
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.node_tree import get_tree_organization_pks_by_user, \
     get_org_parents_info
@@ -524,7 +524,7 @@ class UsersMerge(BaseSelect2View):
         return queryset
 
     def list(self, request, *args, **kwargs):
-        self.serializer = ValidateUserSerializer(data=request.GET)
+        self.serializer = ValidateUserBaseSerializer(data=request.GET)
 
         if self.serializer.is_valid():
             self.user_base = self.serializer.validated_data['user_base']

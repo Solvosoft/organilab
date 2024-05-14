@@ -4665,3 +4665,48 @@ msgstr "Razon del gasto"
 
 msgid "Final balance"
 msgstr "Balance final"
+
+msgid "Dear"
+msgstr "Estimado/a"
+
+msgid "We would like to inform you that an update has been made to your account information. The reason for this update is as follows:"
+msgstr "Le informamos que se ha realizado una actualización de la información de su cuenta. El motivo por el cual esto ha ocurrido es el siguiente:"
+
+msgid "Account consolidation by an administrator: An administrator from your organization has decided to consolidate the accounts that belong to you in order to centralize access. This action aims to simplify account management and provide you with a smoother experience when accessing our resources."
+msgstr "Unificación de cuentas por parte de un administrador: Un administrador de su organización ha decidido unificar las cuentas que le pertenecen con el fin de centralizar el acceso. Esta acción tiene como objetivo simplificar la administración de cuentas y proporcionarle una experiencia más fluida al acceder a nuestros recursos."
+
+msgid "From now on, you can log in to your account using the following username:"
+msgstr "A partir de este momento, podrá acceder a su cuenta utilizando el siguiente nombre de usuario:"
+
+msgid "If you do not remember your password, you can use the following link to recover it:"
+msgstr "En caso de que no recuerde su contraseña, puede utilizar el siguiente enlace para recuperarla:"
+
+msgid "We appreciate your understanding and cooperation during this account update process. We value your trust in our services and strive to provide you with an optimal experience."
+msgstr "Agradecemos su comprensión y cooperación durante este proceso de actualización de cuenta. Valoramos su confianza en nuestros servicios y nos esforzamos por brindarle una experiencia óptima."
+
+msgid "We would like to inform you that the user"
+msgstr "Le informamos que el usuario"
+
+msgid "was deleted. The reasons for this delete are as follows:"
+msgstr "fue eliminado. Los motivos por los cuales esto ha ocurrido son los siguiente:"
+
+msgid "Account inactive for a long time."
+msgstr "Cuenta inactiva por un largo tiempo."
+
+msgid "System purification."
+msgstr "Purificación del sistema."
+
+msgid "This measure has been taken to optimize our resources, ensure more efficient management, and enhance the security of our services."
+msgstr "Esta medida se ha tomado con el objetivo de optimizar nuestros recursos y garantizar una gestión más eficiente, así como mejorar la seguridad de nuestros servicios."
+
+msgid "If you have any questions or require further assistance, please do not hesitate to contact our support team. We will be glad to assist you."
+msgstr "Si tiene alguna pregunta o necesita asistencia adicional, no dude en ponerse en contacto con nuestro equipo de soporte. Estaremos encantados de ayudarlo."
+
+msgid "Sincerely,"
+msgstr "Atentamente,"
+
+msgid "Account Update: Merger with Another Account."
+msgstr "Actualización de Cuenta: Fusión de con otra cuenta."
+
+msgid "Account Delete"
+msgstr "Eliminación de Cuenta"
