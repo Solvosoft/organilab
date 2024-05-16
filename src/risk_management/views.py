@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from rest_framework import status
 
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, BaseUnitValues
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm
 from risk_management.models import RiskZone, ZoneType
@@ -112,6 +112,13 @@ class ZoneDelete(DeleteView):
 @method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
 class ZoneDetail(DetailView):
     model = RiskZone
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['units'] = BaseUnitValues.objects.all().exclude(pk__in=[5,3,2,7,9])
+        return context
+
+
 
 @permission_required('risk_management.add_zonetype')
 def add_zone_type_view(request, org_pk):

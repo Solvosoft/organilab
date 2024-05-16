@@ -82,6 +82,7 @@
   <li class="nav-item" role="presentation">
           <button class="nav-link active" id="pills-{{lab.pk}}-di" data-bs-toggle="pill" data-bs-target="#dangerindication_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-di" aria-selected="true">
               {% trans 'Danger Indication' %}</button>
+
   </li>
   <li class="nav-item" role="presentation">
           <button class="nav-link" id="pills-{{lab.pk}}-wo" data-bs-toggle="pill" data-bs-target="#whiteorgan_{{lab.pk}}" type="button" role="tab" aria-controls="pills-{{lab.pk}}-wo" >
@@ -108,10 +109,16 @@
 <div class="tab-content" id="{{lab.pk}}pills-tabContent">
 
                     <div id="dangerindication_{{lab.pk}}" class="tab-pane fade show active">
-                                                {% url "dangerindicationchart-detail" lab.pk as graph_url %}
 
-{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
-                    </div>
+																					{% for unit in units %}
+
+																					<div>
+																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
+                                                {% url "dangerindicationchart-detail" lab.pk as graph_url %}
+																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
+																					</div>
+																					{% endfor %}
+
                     <div id="whiteorgan_{{lab.pk}}" class="tab-pane fade">
                                                 {% url "whiteorganchart-detail" lab.pk as graph_url %}
 
