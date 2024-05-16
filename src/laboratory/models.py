@@ -354,6 +354,9 @@ class BaseUnitValues(models.Model):
                                                unique=True)
     si_value = models.FloatField(default=1)
 
+    def __str__(self):
+        return self.measurement_unit.description
+
 
 class ShelfObjectObservation(BaseCreationObj):
     action_taken = models.CharField(max_length=50, default=_("Object Change"),

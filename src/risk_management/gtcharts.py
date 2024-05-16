@@ -68,15 +68,25 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         labels=[]
         self.data=[]
+        print(self.request.GET["unit"])
+        unit_filters = {}
+        if self.request.GET["unit"] == "Litros":
+            unit_filters["measurement_unit__pk__in"] = [62,63]
+        elif self.request.GET["unit"] == "Kilogramos":
+            unit_filters["measurement_unit__pk__in"] = [66,67,65]
+        elif self.request.GET["unit"] == "Metros":
+            unit_filters["measurement_unit__pk__in"] = [59,60,61]
+        else:
+            unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         sc=SustanceCharacteristics.objects.filter(obj__shelfobject__in_where_laboratory=self.laboratory)
-        queryset = DangerIndication.objects.annotate(sc_count=Count('sustancecharacteristics')).filter(sustancecharacteristics__in=sc)
+        queryset = DangerIndication.objects.filter(sustancecharacteristics__in=sc)
 #        queryset = DangerIndication.objects.annotate(sc_count=Sum('sustancecharacteristics__obj__shelfobject')).filter(sustancecharacteristics__in=sc)
 
 
 #        self.unidad = set(DangerIndication.objects.filter(sustancecharacteristics__in=sc).values_list(
 #            'sustancecharacteristics__obj__shelfobject__measurement_unit__description', flat=True))
         for dangerindication in queryset:
-            shelf_object = ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__h_code=dangerindication).aggregate(total = Sum("quantity_base_unit", default=0))
+            shelf_object = ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__h_code=dangerindication, **unit_filters).aggregate(total = Sum("quantity_base_unit", default=0))
             labels.append(dangerindication.code)
             self.data.append(shelf_object["total"])
 
