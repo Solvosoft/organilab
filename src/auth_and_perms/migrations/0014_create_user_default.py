@@ -4,9 +4,16 @@ from django.db import migrations
 
 def create_user_default(apps, schema_editor):
     User = apps.get_model('auth', 'User')
-    User.objects.create(username="soporte@organilab.org", email="soporte@organilab.org",
+    Profile = apps.get_model('auth_and_perms', 'Profile')
+    user=User.objects.create(username="soporte@organilab.org", email="soporte@organilab.org",
                         first_name="Usuario preservador de integridad")
-
+    Profile.objects.create(
+        user = user,
+        phone_number = "8888888",
+        id_card = "888888",
+        job_position = "Integrity",
+        language = 'es'
+    )
 def delete_user_default(apps, schema_editor):
     User = apps.get_model('auth', 'User')
     User.objects.filter(username="soporte@organilab.org").delete()

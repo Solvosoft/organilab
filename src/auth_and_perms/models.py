@@ -1,6 +1,7 @@
 import random
 import uuid
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission, User
@@ -8,6 +9,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
@@ -133,6 +135,13 @@ class AuthorizedApplication(models.Model):
     notification_url = models.URLField()
     token = models.TextField()
 
+def user_expiration_date():
+    return now()+relativedelta(months=1)
+
+class DeleteUserList(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    creation_date = models.DateTimeField(auto_now=True)
+    expiration_date = models.DateTimeField(default=user_expiration_date)
 
 class ImpostorLog(models.Model):
     impostor = models.ForeignKey(

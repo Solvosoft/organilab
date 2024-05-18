@@ -65,32 +65,6 @@ def send_email(request, user):
               )
 
 
-def send_email_user_management(request, user_base, user_delete, action):
-    schema = request.scheme + "://"
-
-    context = {
-        'user_base': user_base,
-        'user_delete': user_delete,
-        'domain': schema + request.get_host(),
-        'action': action
-    }
-    send_mail(subject=_(
-        "Account Update: Merger with Another Account.") if action == "merge" else _(
-        "Account Delete"),
-              message="Por favor use un visor de html",
-              recipient_list=[user_base.email],
-              from_email=settings.DEFAULT_FROM_EMAIL,
-              html_message=render_to_string(
-                  'auth_and_perms/user_management_notification.html',
-                  context=context
-              )
-              )
-
-
-def user_management(request, user_base, user_delete, action):
-    send_email_user_management(request, user_base, user_delete, action)
-    user_delete.delete()
-
 
 def get_ip_address(request):
     """

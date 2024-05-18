@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.forms import MergeUsers, UserForm
-from auth_and_perms.utils import user_management
+from auth_and_perms.users import user_management
 
 
 def users_list(request):
