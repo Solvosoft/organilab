@@ -63,3 +63,24 @@ def send_email(request, user):
                   context=context
               )
               )
+
+
+def get_ip_address(request):
+    """
+    try to obtain the ip address from request
+
+    :param request:
+    :return:
+    """
+    try:
+        ip_addr = request.META.get(
+            "HTTP_X_FORWARDED_FOR",
+            request.META.get("HTTP_X_REAL_IP", request.META.get("REMOTE_ADDR", "")),
+        )
+    except AttributeError:
+        ip_addr = ""
+    # if there are several ip addresses separated by comma like HTTP_X_FORWARDED_FOR returns,
+    # take only the first one, which is the client's address
+    if "," in ip_addr:
+        ip_addr = ip_addr.split(",", 1)[0].strip()
+    return ip_addr
