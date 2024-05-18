@@ -13,7 +13,7 @@ from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
 from auth_and_perms.views.impostor import add_user_impostor, remove_impostor
 from auth_and_perms.views.select_organization import select_organization_by_user
-from auth_and_perms.views.users import users_list, merge_users
+from auth_and_perms.views.users import users_list, merge_users, save_user_merge
 from authentication.views import SignDataRequestViewSet
 
 routes = SimpleRouter()
@@ -53,5 +53,6 @@ urlpatterns = [
     path('update_groups_by_profile/', UpdateGroupsByProfile.as_view(), name="api_update_groups_by_profile"),
     path('organization_buttons/', OrganizationButtons.as_view(), name="api_organization_buttons"),
     path('users/', users_list, name="users_list"),
-    path('users/merge/<int:user_base>/<int:user_delete>/', merge_users, name="merge_users")
+    path('users/merge/<int:user_base>/<int:user_delete>/', merge_users, name="merge_users"),
+    path('users/merge/save/<int:user_base>/<int:user_delete>/', save_user_merge, name="save_user_merge")
 ]

@@ -253,10 +253,34 @@ class SearchShelfObjectViewsetForm(forms.Form):
 
 
 class MergeUsers(GTForm):
-    user = forms.ModelChoiceField(widget=genwidgets.Select, queryset=User.objects.none(), label=_("User"))
     user_base = forms.IntegerField(widget=genwidgets.HiddenInput)
+    user = forms.ModelChoiceField(widget=AutocompleteSelect('usersmerge', attrs={
+                'data-dropdownparent': "#merge_obj_modal",
+                'data-s2filter-user_base': '#id_user_base',
+            }), queryset=User.objects.all(), label=_("User"))
+
+
+class UserForm(GTForm, forms.ModelForm):
+
+    username = forms.CharField(widget=genwidgets.TextInput, label=_("Username"))
+    first_name = forms.CharField(widget=genwidgets.TextInput, label=_("First name"))
+    last_name = forms.CharField(widget=genwidgets.TextInput, label=_("Last name"))
+    email = forms.CharField(widget=genwidgets.EmailMaskInput, label=_("Email"))
+    is_superuser = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is super user"), required=False)
+    is_active = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Is active"), required=False)
+
+    field_order = ["username", "first_name", "last_name", "email", "is_superuser",
+                   "is_active"]
 
     def __init__(self, *args, **kwargs):
-        user_session = kwargs.pop('user_session')
+        user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
-        self.fields["user"].queryset = User.objects.all().exclude(pk=user_session)
+
+        if not user.is_superuser:
+            self.fields['is_superuser'].disabled = True
+
+
+    class Meta:
+        model = User
+        exclude = ["groups", "user_permissions", "password", "date_joined", "last_login",
+                   "is_staff"]
