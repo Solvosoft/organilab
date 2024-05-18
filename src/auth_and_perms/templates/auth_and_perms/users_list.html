@@ -19,7 +19,7 @@
 {% trans 'Merge users' as mergemodaltitle %}
 {% trans 'Continue' as btn_save_text %}
 {% url "auth_and_perms:api-users-merge" as merge_obj_url %}
-{% include 'gentelella/blocks/modal_template_btn_save.html' with form=merge_form id="merge_obj_modal" form_id="merge_obj_form" url=merge_obj_url title=mergemodaltitle btn_save_text=btn_save_text %}
+{% include 'gentelella/blocks/modal_template.html' with form=merge_form id="merge_obj_modal" form_id="merge_obj_form" url=merge_obj_url title=mergemodaltitle btn_save_text=btn_save_text %}
 
 {% url "auth_and_perms:api-users-detail" 0 as delete_obj_url %}
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=delete_obj_url %}
