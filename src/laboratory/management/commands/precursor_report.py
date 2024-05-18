@@ -45,8 +45,7 @@ class Command(BaseCommand):
                 save_object_report_precursor(report)
                 build_precursor_report_from_reports(report, previos_report)
                 previos_report=report
-
-
+        PrecursorReport.objects.filter(month=actual_date.month, year=actual_date.year).delete()
 
     def handle(self, *args, **options):
         self.get_change_log()
