@@ -1,0 +1,22 @@
+{% extends 'gentelella/registration/email_base.html' %}
+{% load i18n %}
+{% block content %}
+{% trans 'Dear' %} {{user_delete.get_full_name}},
+	<br><br>
+	{% trans 'We would like to inform you that the user' %} <b>{{user_delete.username}}</b> {% trans 'was deleted. The reasons for this delete are as follows:' %}
+		<br><br>
+		1) {% trans 'Account inactive for a long time.' %}
+	<br>
+	 2) {% trans 'System purification.' %}
+	<br><br>
+	{% trans 'This measure has been taken to optimize our resources, ensure more efficient management, and enhance the security of our services.' %}
+	{% endif %}
+	<br><br>
+	{% trans 'If you have any questions or require further assistance, please do not hesitate to contact our support team. We will be glad to assist you.' %}
+	<br><br>
+	{% trans 'Sincerely,' %}
+<br><br>
+	Organilab
+</p>
+
+{% endblock %}
