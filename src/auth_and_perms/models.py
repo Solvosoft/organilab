@@ -1,6 +1,8 @@
 import random
+import uuid
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -130,3 +132,60 @@ class AuthorizedApplication(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     notification_url = models.URLField()
     token = models.TextField()
+
+
+class ImpostorLog(models.Model):
+    impostor = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("Impostor"),
+        related_name="impostor",
+        db_index=True,
+        on_delete=models.CASCADE,
+    )
+    imposted_as = models.ForeignKey(
+        get_user_model(),
+        verbose_name=_("Logged in as"),
+        related_name="imposted_as",
+        db_index=True,
+        on_delete=models.CASCADE,
+    )
+    impostor_ip = models.GenericIPAddressField(
+        verbose_name=_("Impostor's IP address"), null=True, blank=True
+    )
+    logged_in = models.DateTimeField(verbose_name=_("Logged on"), auto_now_add=True)
+    logged_out = models.DateTimeField(
+        verbose_name=_("Logged out"), null=True, blank=True
+    )
+    token = models.CharField(
+        verbose_name=_("Token"), max_length=36, blank=True, db_index=True
+    )
+    active = models.BooleanField(default=True)
+    def save(self, *args, **kwargs):
+        """
+        Custom save method
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        if not self.token and self.impostor:
+            self.token = str(uuid.uuid4())
+
+        super(ImpostorLog, self).save(*args, **kwargs)
+
+    class Meta:
+        """
+        Description of the Meta Class.
+        """
+
+        verbose_name = _("Impostor log")
+        verbose_name_plural = _("Impostor logs")
+        ordering = ("-logged_in", "impostor")
+
+    def __str__(self):
+        """
+        str representation of the object.
+
+        :return:
+        """
+        return "{} as {}".format(self.impostor, self.imposted_as)

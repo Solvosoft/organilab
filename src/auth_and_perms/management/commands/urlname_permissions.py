@@ -1072,6 +1072,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'auth_and_perms.can_add_external_user_in_org'
         },
         {
+            'name': 'Switch to other user',
+            'category': 'User',
+            'permission': 'auth_and_perms.change_impostorlog'
+        },
+        {
             'name': 'Add Organization Structure',
             'category': 'Organization Structure',
             'permission': 'laboratory.add_organizationstructure'
@@ -1487,6 +1492,11 @@ URLNAME_PERMISSIONS = {
             'name': 'View User',
             'category': 'User',
             'permission': 'auth.view_user'
+        },
+        {
+            'name': 'Switch to other user',
+            'category': 'User',
+            'permission': 'auth_and_perms.change_impostorlog'
         }
     ],
     'password_change': [

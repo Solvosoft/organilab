@@ -7,12 +7,14 @@ from click.core import F
 from django.conf import settings
 
 
-from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, Furniture
+from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, \
+    Furniture
 
 from datetime import date
 
 from .limit_shelfobject import send_email_limit_objs
-from .task_utils import create_informsperiods
+from .task_utils import create_informsperiods, save_object_report_precursor, \
+    build_precursor_report_from_reports
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 
@@ -36,17 +38,25 @@ def setup_daily_tasks(sender, **kwargs):
     sender.add_periodic_task(
         2, notify_about_product_limit_reach.s(), name='notify')
 
-
 @app.task()
 def create_precursor_reports():
     day = date.today()
+
     for lab in Laboratory.objects.all():
-        PrecursorReport.objects.create(
+        previos_report = PrecursorReport.objects.filter(laboratory=lab)
+
+        if previos_report.exists():
+            previos_report = previos_report.last()
+
+        report = PrecursorReport.objects.create(
                 month=day.month,
                 year=day.year,
                 laboratory=lab,
                 consecutive=add_consecutive(lab)
             )
+        save_object_report_precursor(report)
+        build_precursor_report_from_reports(report, previos_report)
+
 
 
 def add_consecutive(lab):

@@ -1,6 +1,10 @@
 from django import forms
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
+
+from laboratory.models import OrganizationStructureRelations
 from laboratory.utils import get_user_laboratories
 from risk_management.models import RiskZone, IncidentReport, ZoneType
 from djgentelella.widgets import core as djgentelella
@@ -16,7 +20,14 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
         queryset = get_user_laboratories(user)
 
         if queryset.exists() and org_pk:
-            queryset = queryset.filter(organization__pk=org_pk)
+            extra_labs = OrganizationStructureRelations.objects.filter(organization__pk=org_pk,
+                                                                 content_type=ContentType.objects.filter(
+                                                                     app_label='laboratory',
+                                                                     model='laboratory'
+                                                                 ).first(),
+                                                                 ).values_list("object_id", flat=True)
+
+            queryset = queryset.filter(Q(organization__pk=org_pk) | Q(pk__in=extra_labs)).distinct()
 
         self.fields['laboratories'].queryset = queryset
         self.fields['zone_type'].widget.attrs['add_url'] = reverse(

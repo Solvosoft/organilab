@@ -260,7 +260,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         self.object.save()
         file.close()
 
-        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', 0, "Create", create=True, organization=self.org)
+        log_object_change(self.request.user, self.lab, self.object, 0, self.object.quantity, '', ADDITION, "Create", create=True, organization=self.org)
         utils.organilab_logentry(self.request.user, self.object, ADDITION,  changed_data=form.changed_data, relobj=self.lab)
 
         return {
@@ -315,7 +315,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
     def form_valid(self, form):
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         self.object = form.save()
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', 0,"Edit", create=False, organization=self.org)
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', CHANGE,"Edit", create=False, organization=self.org)
         utils.organilab_logentry(self.request.user, self.object, CHANGE,  changed_data=form.changed_data, relobj=self.lab)
 
         row = form.cleaned_data['row']
@@ -343,7 +343,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             kwargs['initial']['col'] = form.cleaned_data['col']
         return kwargs
 
-
+#fixme Delete
 @method_decorator(permission_required('laboratory.change_shelfobject'), name='dispatch')
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
@@ -368,7 +368,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         self.fvalid = True
         old = self.model.objects.filter(pk=self.object.id).values('quantity')[0]['quantity']
         response = UpdateView.form_valid(self, form)
-        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', 0, "Update",
+        log_object_change(self.request.user, self.lab, self.object, old, self.object.quantity, '', CHANGE, "Update",
                           create=False, organization=self.org)
         return response
 
