@@ -11,6 +11,7 @@ from rest_framework.routers import SimpleRouter
 
 from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
+from auth_and_perms.views.impostor import add_user_impostor, remove_impostor
 from auth_and_perms.views.select_organization import select_organization_by_user
 from auth_and_perms.views.users import users_list, merge_users
 from authentication.views import SignDataRequestViewSet
@@ -32,6 +33,8 @@ app_name='auth_and_perms'
 urlpatterns = [
     path('organizations/', select_organization_by_user, name='select_organization_by_user'),
     path('api/', include(routes.urls)),
+    path('switch_user/<int:org_pk>/<int:pk>', add_user_impostor, name="change_to_impostor"),
+    path('end_switch_user', remove_impostor, name="remove_impostor"),
     path('login_bccr', fva_rest_authentication.login_with_bccr, name="login_with_bccr"),
     path('create_profile_by_digital_signature/<int:pk>', user_org_creation.create_profile_by_digital_signature, name="create_profile_by_digital_signature"),
     path('organization/registration',  user_org_creation.register_user_to_platform, name='register_user_to_platform'),

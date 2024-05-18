@@ -133,10 +133,15 @@ class ProfileSerializer(serializers.ModelSerializer):
             action_uuid, str(contenttypeobj),  obj.pk,  str(obj), contenttypeobj._meta.app_label, contenttypeobj._meta.model_name,
             contenttypeobj.pk
         )
-
+        impostor=''
+        if self.context['request'].user.has_perm('auth_and_perms.change_impostorlog'):
+            if obj.user.pk != self.context['request'].user.pk:
+                impostor = '<a class="mr-2" href="%s" target="_blank"><i class="fa fa-user-secret" aria-hidden="true"></i></a>'%(
+                reverse('auth_and_perms:change_to_impostor', kwargs={'pk': obj.user.pk, 'org_pk': org.pk})
+            )
         return """
-        <i %s class="fa fa-trash mr-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true"></i>
-        """ % (datatext, action_uuid, org.pk)
+        <i %s class="fa fa-trash mr-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true"></i>%s
+        """ % (datatext, action_uuid, org.pk, impostor)
 
     class Meta:
         model = Profile
