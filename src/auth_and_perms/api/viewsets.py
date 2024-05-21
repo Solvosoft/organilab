@@ -28,11 +28,12 @@ from auth_and_perms.api.serializers import RolSerializer, \
     ShelfObjectSerializer, ValidateSearchShelfObjectSerializer, \
     ShelfObjectDataTableSerializer, ValidateOrganizationSerializer, \
     ExternalUserSerializer, AddExternalUserSerializer, UserDataTableSerializer, \
-    UserSerializer, UserFilter, ValidateUserSerializer
+    UserSerializer, UserFilter, ValidateUserSerializer, ValidateDeleteUserSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, \
     OrganizationForViewsetForm, SearchShelfObjectViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from auth_and_perms.users import send_email_user_management, delete_user
 from laboratory.models import OrganizationStructure, Laboratory, UserOrganization, \
     ShelfObject
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user, \
@@ -467,7 +468,7 @@ class OrganizationButtons(APIView):
 class UserManagementViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
         'list': UserDataTableSerializer,
-        'destroy': UserSerializer,
+        'destroy': ValidateDeleteUserSerializer,
         'merge': ValidateUserSerializer,
     }
     perms = {
@@ -483,6 +484,26 @@ class UserManagementViewset(AuthAllPermBaseObjectManagement):
     filterset_class = UserFilter
     ordering_fields = ['username', 'first_name']
     ordering = ('id',)  # default order
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        queryset = queryset.exclude(username="soporte@organilab.org")
+        return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class["destroy"](data={"user_delete": instance.pk},
+                                                      context={
+                                                          "user_session": request.user})
+
+        if serializer.is_valid():
+            user_base = User.objects.filter(username="soporte@organilab.org").first()
+            user_delete = serializer.validated_data["user_delete"]
+            send_email_user_management(request, user_base, user_delete, "delete")
+            delete_user(user_delete, user_base)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise ValidationError(serializer.errors)
 
     @action(detail=False, methods=['post'])
     def merge(self, request, *args, **kwargs):

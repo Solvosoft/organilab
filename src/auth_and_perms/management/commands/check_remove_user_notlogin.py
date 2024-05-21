@@ -16,7 +16,7 @@ class Command(BaseCommand):
     def enqueue_users(self):
         User=get_user_model()
         User.objects.all()
-        year_ago =  now() + relativedelta(years=1)
+        year_ago = now() - relativedelta(years=1)
         deletelist = []
         for user in User.objects.exclude(username="soporte@organilab.org").filter(
             deleteuserlist__isnull=True,
@@ -28,10 +28,6 @@ class Command(BaseCommand):
         print("Actual: ", User.objects.all().count())
         print("Remove: ", len(deletelist))
 
-    def get_now(self):
-        # fixme: remove this and put now() only
-        return now()  #+ relativedelta(months=1, days=1)
-
     def delete_users(self):
         User = get_user_model()
         site = Site.objects.all().last()
@@ -39,21 +35,19 @@ class Command(BaseCommand):
             settings.ALLOWED_HOSTS.append(site.domain)
         request = RequestFactory().get('/')
 
-        request.META['HTTP_HOST']=site.domain
-        request.META['SERVER_PORT']="80" if settings.DEBUG else "443"
-        user_base=User.objects.filter(username="soporte@organilab.org").first()
-        del_count=0
-        for user_delete in DeleteUserList.objects.filter(expiration_date__lte=self.get_now()):
+        request.META['HTTP_HOST'] = site.domain
+        request.META['SERVER_PORT'] = "80" if settings.DEBUG else "443"
+        user_base = User.objects.filter(username="soporte@organilab.org").first()
+        del_count = 0
+        for user_delete in DeleteUserList.objects.filter(expiration_date__lte=now()):
             send_email_user_management(request, user_base, user_delete, "delete")
-            print(user_delete.user.username)
             delete_user(user_delete.user, user_base)
-            user_delete.delete()
-            del_count+=1
+            del_count += 1
         print("Delete users", del_count)
         print("Actual to users delete ", DeleteUserList.objects.all().count())
         print("Actual to users ", User.objects.all().count())
 
-    def handle(self, *args, **options) :
+    def handle(self, *args, **options):
         self.enqueue_users()
         self.delete_users()
 

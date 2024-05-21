@@ -78,8 +78,7 @@ def merge_information_user(to_delete, to_related):
 def delete_user(to_delete, to_related):
     merge_information_user(to_delete, to_related)
     send_delete_user_email(to_delete)
-    print("Deleting:", to_delete.username)
-    print(to_delete.delete())
+    to_delete.delete()
 
 def user_management(request, user_base, user_delete, action):
     send_email_user_management(request, user_base, user_delete, action)

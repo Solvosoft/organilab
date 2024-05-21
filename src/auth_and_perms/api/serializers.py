@@ -414,3 +414,19 @@ class ValidateUserBaseSerializer(serializers.Serializer):
 
 class ValidateUserSerializer(ValidateUserBaseSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+class ValidateDeleteUserSerializer(serializers.Serializer):
+    user_delete = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+    def validate(self, data):
+        data = super().validate(data)
+        user_delete = data['user_delete']
+        user_session = self.context.get("user_session")
+
+        if user_delete.username == "soporte@organilab.org" or user_delete == user_session:
+            logger.debug(
+                f'ValidateDeleteUserSerializer --> user_delete.username == '
+                f'"soporte@organilab.org')
+            raise serializers.ValidationError({'user_delete': _("User delete invalid")})
+
+        return data
