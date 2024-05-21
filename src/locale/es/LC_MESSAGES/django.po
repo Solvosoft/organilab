@@ -4482,3 +4482,12 @@ msgstr "Actualización de Cuenta: Fusión de con otra cuenta."
 
 msgid "Account Delete"
 msgstr "Eliminación de Cuenta"
+
+msgid "Thanks for be part of Organilab, we will miss you."
+msgstr "Gracias por ser parte de Organilab, te extrañaremos."
+
+msgid "Please use a html reader client"
+msgstr "Por favor use un cliente de lectura html"
+
+msgid "User delete invalid"
+msgstr "Usuario a eliminar inválido"
