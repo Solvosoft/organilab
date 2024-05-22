@@ -4491,3 +4491,9 @@ msgstr "Por favor use un cliente de lectura html"
 
 msgid "User delete invalid"
 msgstr "Usuario a eliminar inválido"
+
+msgid "working days"
+msgstr "días hábiles"
+
+msgid "working day"
+msgstr "día hábil"
