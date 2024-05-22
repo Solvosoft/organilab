@@ -1,0 +1,12 @@
+{% extends 'gentelella/registration/email_base.html' %}
+{% load i18n %}
+{% block content %}
+Estimado/a {{user.get_full_name|default_if_none:user.username}},
+<br><br>
+
+Por este medio le hacemos saber que usted cuenta con un año de inactividad en nuestra plataforma Organilab y
+cuenta con {{available_time}} para volver a ingresar antes de que su usuario sea eliminado.
+
+<br><br>
+En caso de que no recuerde su contraseña, puede utilizar el siguiente enlace para recuperarla:  <a href="{{domain}}{% url 'password_reset' %}" target="_blank">Clic aquí</a>
+{% endblock %}

@@ -5,9 +5,9 @@ from dateutil.relativedelta import relativedelta
 from django.utils.timezone import now
 from django.contrib.sites.models import Site
 from django.test import RequestFactory
-
+from django.utils.translation import gettext_lazy as _
 from auth_and_perms.models import DeleteUserList
-from auth_and_perms.users import delete_user
+from auth_and_perms.users import delete_user, send_email_delete_user_warning
 from auth_and_perms.users import send_email_user_management
 
 
@@ -20,13 +20,20 @@ class Command(BaseCommand):
         deletelist = []
         for user in User.objects.exclude(username="soporte@organilab.org").filter(
             deleteuserlist__isnull=True,
-            last_login__lte=year_ago):
+            last_login__gte=year_ago):
             deletelist.append(DeleteUserList(user=user))
         if deletelist:
             DeleteUserList.objects.bulk_create(deletelist)
 
+            for obj in deletelist:
+                send_email_delete_user_warning(obj.user, "30", "working days")
+
         print("Actual: ", User.objects.all().count())
         print("Remove: ", len(deletelist))
+
+    def get_now(self):
+        # fixme: remove this and put now() only
+        return now()  #+ relativedelta(months=1, days=1)
 
     def delete_users(self):
         User = get_user_model()
@@ -39,8 +46,10 @@ class Command(BaseCommand):
         request.META['SERVER_PORT'] = "80" if settings.DEBUG else "443"
         user_base = User.objects.filter(username="soporte@organilab.org").first()
         del_count = 0
-        for user_delete in DeleteUserList.objects.filter(expiration_date__lte=now()):
+        for user_delete in DeleteUserList.objects.filter(expiration_date__lte=
+                                                         self.get_now()):
             send_email_user_management(request, user_base, user_delete, "delete")
+            print(user_delete.user.username)
             delete_user(user_delete.user, user_base)
             del_count += 1
         print("Delete users", del_count)
@@ -50,6 +59,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.enqueue_users()
         self.delete_users()
-
-
-

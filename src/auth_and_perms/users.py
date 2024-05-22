@@ -49,6 +49,25 @@ def send_delete_user_email(user_delete):
                       )
         activate(oldlang)
 
+def send_email_delete_user_warning(user_delete, days, msg):
+    if hasattr(user_delete, 'profile'):
+        lang = user_delete.profile.language
+        oldlang = get_language()
+        context = {'lang': lang, 'user': user_delete}
+        activate(lang)
+        context.update({"available_time": "%s %s" % (days, _(msg))})
+        send_mail(subject=_("Delete User Notification"),
+                      message=_(""),
+                      recipient_list=[user_delete.email],
+                      from_email=settings.DEFAULT_FROM_EMAIL,
+                      html_message=render_to_string(
+                          "auth_and_perms/mail/"+lang+"/user_delete_warning.html",
+                          context=context
+                      )
+                      )
+        activate(oldlang)
+
+
 def merge_information_user(to_delete, to_related):
     for field in to_delete._meta.get_fields():
         if field.name == 'sga_substance':
@@ -83,3 +102,8 @@ def delete_user(to_delete, to_related):
 def user_management(request, user_base, user_delete, action):
     send_email_user_management(request, user_base, user_delete, action)
     delete_user(user_delete, user_base)
+
+
+def warning_notification_delete_user(queryset, days, msg):
+    for obj in queryset:
+        send_email_delete_user_warning(obj.user, days, msg)

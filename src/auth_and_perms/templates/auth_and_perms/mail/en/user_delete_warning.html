@@ -1,0 +1,5 @@
+{% extends 'gentelella/registration/email_base.html' %}
+{% load i18n %}
+{% block content %}
+{% trans 'Dear' %} {{user.get_full_name|default_if_none:user.username}},
+{% endblock %}

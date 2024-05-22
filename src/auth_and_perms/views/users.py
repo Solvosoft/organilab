@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
@@ -8,10 +9,13 @@ from auth_and_perms.forms import MergeUsers, UserForm
 from auth_and_perms.users import user_management
 
 
+@permission_required('auth_and_perms.can_manage_users')
 def users_list(request):
      return render(request,"auth_and_perms/users_list.html", context={
          "merge_form": MergeUsers()})
 
+
+@permission_required('auth_and_perms.can_manage_users')
 def merge_users(request, user_base, user_delete):
     user_base_instance = get_object_or_404(User, pk=user_base)
     user_delete_instance = get_object_or_404(User, pk=user_delete)
@@ -26,6 +30,7 @@ def merge_users(request, user_base, user_delete):
     return render(request, "auth_and_perms/merge_users.html", context=context)
 
 
+@permission_required('auth_and_perms.can_manage_users')
 def save_user_merge(request, user_base, user_delete):
     user_base_instance = get_object_or_404(User, pk=user_base)
     user_delete_instance = get_object_or_404(User, pk=user_delete)
