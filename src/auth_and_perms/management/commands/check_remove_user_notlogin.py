@@ -20,7 +20,7 @@ class Command(BaseCommand):
         deletelist = []
         for user in User.objects.exclude(username="soporte@organilab.org").filter(
             deleteuserlist__isnull=True,
-            last_login__gte=year_ago):
+            last_login__lte=year_ago):
             deletelist.append(DeleteUserList(user=user))
         if deletelist:
             DeleteUserList.objects.bulk_create(deletelist)
