@@ -3,11 +3,10 @@
 {% block content %}
 Estimado/a {{user.get_full_name|default_if_none:user.username}},
 <br><br>
-Le recordamos que por políticas de uso de la plataforma Organilab, se establece por protocolo, que las cuentas con más
-de 12  meses sin actividad en el sitio web organilab.org, son borradas automáticamente. Este mensaje de recordatorio de
-vencimiento es para informar que cuenta con {{days}} {% if days > 1 %}días{% else %}día{% endif %} calendario a partir
-de esta fecha, para ingresar a la plataforma y continuar accediendo desde su usuario actual. Pasado este tiempo tendrá
-que confeccionar otro usuario para poder acceder.
+Le informamos que por políticas de uso de la plataforma Organilab, se establece por protocolo, que las cuentas con más
+de 12  meses sin actividad en el sitio web organilab.org, son borradas automáticamente. Este mensaje es para informar
+que cuenta con 30 días calendario a partir de esta fecha, para ingresar a la plataforma y continuar accediendo desde su
+usuario actual. Pasado los 30 días tendrá que confeccionar otro usuario para poder acceder.
 <br><br>
 Importante: si su usuario es administrador de organización, el borrado de su cuenta podria eliminar la organización, si
 no se cuenta con otro usuario administrador dentro de la organización.

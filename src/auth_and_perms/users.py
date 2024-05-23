@@ -54,19 +54,19 @@ def send_delete_user_email(user_delete):
                       )
         activate(oldlang)
 
-def send_email_delete_user_warning(user_delete, days, msg):
+def send_email_delete_user_warning(user_delete, days, template_name="user_delete_warning"):
     if hasattr(user_delete, 'profile'):
         lang = user_delete.profile.language
         oldlang = get_language()
         context = {'lang': lang, 'user': user_delete}
         activate(lang)
-        context.update({"available_time": "%s %s" % (str(days), _(msg))})
+        context.update({"days": int(days)})
         send_mail(subject=_("Delete User Notification"),
                       message=_(""),
                       recipient_list=[user_delete.email],
                       from_email=settings.DEFAULT_FROM_EMAIL,
                       html_message=render_to_string(
-                          "auth_and_perms/mail/"+lang+"/user_delete_warning.html",
+                          "auth_and_perms/mail/"+lang+"/"+template_name+".html",
                           context=context
                       )
                       )
@@ -109,9 +109,9 @@ def user_management(request, user_base, user_delete, action):
     delete_user(user_delete, user_base)
 
 
-def warning_notification_delete_user(days, msg):
+def warning_notification_delete_user(days):
     working_days_date = now() + relativedelta(days=days)
     queryset = DeleteUserList.objects.filter(expiration_date=working_days_date)
 
     for obj in queryset:
-        send_email_delete_user_warning(obj.user, days, msg)
+        send_email_delete_user_warning(obj.user, days)

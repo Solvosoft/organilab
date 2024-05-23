@@ -1,7 +1,20 @@
 {% extends 'gentelella/registration/email_base.html' %}
 {% load i18n %}
 {% block content %}
-Esto es un adiós <strong>{{user}}</strong>.
-
-No olvides apoyar a Organilab.
+Estimado/a {{user.get_full_name|default_if_none:user.username}},
+<br><br>
+Le informamos que se ha borrado la cuenta {{user.username}}. Las razones de la eliminacion se debe a:
+<br><br>
+Por políticas de uso seguro de la plataforma Organilab, se establece por protocolo, que las cuentas con más de 12 meses sin actividad en el sitio web organilab.org, son borradas automáticamente.
+<br><br>
+<br><br>
+Para poder acceder de nuevo a nuestros servicios debe confeccionar un nuevo usuario.
+<br><br>
+Importante: si su usuario es administrador de organización, el borrado de su cuenta podria eliminar la organización, si no se cuenta con otro usuario administrador dentro de la organización.
+<br><br>
+Si tiene alguna pregunta o necesita asistencia adicional, no dude en ponerse en contacto con nuestro equipo de soporte. Estaremos encantados de ayudarlo. Agradecemos su comprensión y valoramos su confianza en nuestros servicios y nos esforzamos por brindarle una experiencia óptima.
+<br><br>
+Atentamente,
+<br><br>
+Organilab
 {% endblock %}

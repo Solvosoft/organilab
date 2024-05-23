@@ -3,14 +3,14 @@
 {% block content %}
 {% trans 'Dear' %} {{user.get_full_name|default_if_none:user.username}},
 <br><br>
-This is a reminder that, according to the policies of the Organilab platform, accounts that have been inactive on the
-organilab.org website for more than 12 months are automatically deleted. This reminder message is to inform you that you
-have {{days}} calendar {% if days > 1 %}days{% else %}day{% endif %} from this date to log in to the platform and
-continue accessing it with your current user. After this time, you will have to create a new user to access.
-<br><br>
+We are writing to inform you that, according to the policies of Organilab platform usage, accounts that have been
+inactive on the organilab.org website for more than 12 months are automatically deleted. This message is to inform you
+that you have 30 calendar days from this date to log in to the platform and continue accessing it with your current
+user. After the 30 days, you will have to create a new user to access.
+
 Important: if your user is an organization administrator, deleting your account could also delete the organization, if
 there is no other administrator user within the organization.
-<br><br>
+
 If you have any questions or require further assistance, please don't hesitate to contact our support team. We will be
 glad to assist you. We appreciate your understanding and value your trust in our services, and we strive to provide you
 with an optimal experience.

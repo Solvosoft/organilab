@@ -26,7 +26,7 @@ class Command(BaseCommand):
             DeleteUserList.objects.bulk_create(deletelist)
 
             for obj in deletelist:
-                send_email_delete_user_warning(obj.user, "30", "working days")
+                send_email_delete_user_warning(obj.user, 30, template_name="user_delete_warning_thirty_days")
 
         print("Actual: ", User.objects.all().count())
         print("Remove: ", len(deletelist))
