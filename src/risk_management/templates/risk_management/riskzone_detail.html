@@ -109,38 +109,64 @@
 <div class="tab-content" id="{{lab.pk}}pills-tabContent">
 
                     <div id="dangerindication_{{lab.pk}}" class="tab-pane fade show active">
-
+																				{% url "dangerindicationchart-detail" lab.pk as graph_url %}
 																					{% for unit in units %}
-
 																					<div>
 																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
-                                                {% url "dangerindicationchart-detail" lab.pk as graph_url %}
 																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
 																					</div>
 																					{% endfor %}
+																					</div>
 
                     <div id="whiteorgan_{{lab.pk}}" class="tab-pane fade">
-                                                {% url "whiteorganchart-detail" lab.pk as graph_url %}
+                    	{% url "whiteorganchart-detail" lab.pk as graph_url %}
+																					{% for unit in units %}
+																					<div>
+																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
+																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
+																					</div>
+																					{% endfor %}
+                    </div>
 
-{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
-                    </div>
                     <div id="precursortype_{{lab.pk}}" class="tab-pane fade">
-                    {% url "precursortypechart-detail" lab.pk as graph_url %}
-{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
+																					{% url "precursortypechart-detail" lab.pk as graph_url %}
+																					{% for unit in units %}
+																					<div>
+																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
+																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
+																					</div>
+																					{% endfor %}
                     </div>
+
                     <div id="storageclass_{{lab.pk}}" class="tab-pane fade">
-                        {% url "storageclasschart-detail" lab.pk as graph_url %}
-{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
-                    </div>
+																					{% url "storageclasschart-detail" lab.pk as graph_url %}
+																					{% for unit in units %}
+																					<div>
+																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
+																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
+																					</div>
+																					{% endfor %}
+																				</div>
 
                     <div id="uecode_{{lab.pk}}" class="tab-pane fade">
-                    {% url "uecodechart-detail" lab.pk as graph_url %}
-{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
-                    </div>
+                    	{% url "uecodechart-detail" lab.pk as graph_url %}
+																					{% for unit in units %}
+																					<div>
+																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
+																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
+																					</div>
+																					{% endfor %}
+																				</div>
+
                     <div id="nfpa_{{lab.pk}}" class="tab-pane fade">
-                                                {% url "nfpachart-detail" lab.pk as graph_url %}
-{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url %}
-                    </div>
+																					{% url "nfpachart-detail" lab.pk as graph_url %}
+																					{% for unit in units %}
+																					<div>
+																						<h2 class="title text-center">{{unit.measurement_unit.description}}</h2>
+																						{% include 'gentelella/widgets/chartjs.html' with graph_url=graph_url|add:"?unit="|add:unit.measurement_unit.description %}
+																					</div>
+																					{% endfor %}
+																				</div>
 </div>
                 </li>
             {% endfor %}
