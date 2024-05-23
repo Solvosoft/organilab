@@ -1,6 +1,6 @@
 from random import randint
 from rest_framework import permissions
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum, Q, DecimalField
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -68,7 +68,6 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         labels=[]
         self.data=[]
-        print(self.request.GET["unit"])
         unit_filters = {}
         if self.request.GET["unit"] == "Litros":
             unit_filters["measurement_unit__pk__in"] = [62,63]
@@ -79,16 +78,15 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
         else:
             unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         sc=SustanceCharacteristics.objects.filter(obj__shelfobject__in_where_laboratory=self.laboratory)
-        queryset = DangerIndication.objects.filter(sustancecharacteristics__in=sc)
-#        queryset = DangerIndication.objects.annotate(sc_count=Sum('sustancecharacteristics__obj__shelfobject')).filter(sustancecharacteristics__in=sc)
+        queryset = DangerIndication.objects.filter(sustancecharacteristics__in=sc).distinct()
 
-
-#        self.unidad = set(DangerIndication.objects.filter(sustancecharacteristics__in=sc).values_list(
-#            'sustancecharacteristics__obj__shelfobject__measurement_unit__description', flat=True))
         for dangerindication in queryset:
-            shelf_object = ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__h_code=dangerindication, **unit_filters).aggregate(total = Sum("quantity_base_unit", default=0))
+            shelf_object = ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__h_code=dangerindication,
+                                                      **unit_filters).aggregate(total = Sum("quantity_base_unit", default=0,
+                                                                                            output_field=DecimalField()))
             labels.append(dangerindication.code)
             self.data.append(shelf_object["total"])
+
 
         if not labels:
             labels.append(_("No data registered"))
@@ -136,23 +134,33 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "white_organ").values('pk', 'description')
         self.aggrateparams = {}
-        self.data = []
+        self.data=[]
+        unit_filters = {}
+        if self.request.GET["unit"] == "Litros":
+            unit_filters["measurement_unit__pk__in"] = [62,63]
+        elif self.request.GET["unit"] == "Kilogramos":
+            unit_filters["measurement_unit__pk__in"] = [66,67,65]
+        elif self.request.GET["unit"] == "Metros":
+            unit_filters["measurement_unit__pk__in"] = [59,60,61]
+        else:
+            unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         labels = []
+
         for catalog in self.catalogs:
             labels.append(catalog['description'])
-            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__white_organ=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__white_organ= catalog['pk']
-            ))
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory,
+                                                        object__sustancecharacteristics__white_organ=catalog["pk"],
+                                                        **unit_filters).
+                             aggregate(total = Sum("quantity_base_unit", default=0, output_field=DecimalField()))["total"])
+
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
+        self.get_labels()
+
         data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
         #
         return [
 
@@ -172,7 +180,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def get_title(self):
         return {'display': True,
-                'text': _('Sustances per Percursor Type')
+                'text': _('Sustances per Precursor Type')
                 }
 
     def list(self, request):
@@ -189,26 +197,30 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "Precursor").values('pk', 'description')
-        self.aggrateparams = {}
-        self.data = []
+        self.data=[]
+        unit_filters = {}
+        if self.request.GET["unit"] == "Litros":
+            unit_filters["measurement_unit__pk__in"] = [62,63]
+        elif self.request.GET["unit"] == "Kilogramos":
+            unit_filters["measurement_unit__pk__in"] = [66,67,65]
+        elif self.request.GET["unit"] == "Metros":
+            unit_filters["measurement_unit__pk__in"] = [59,60,61]
+        else:
+            unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         labels = []
+
         for catalog in self.catalogs:
             labels.append(catalog['description'])
-            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__precursor_type=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory,
+                                                        object__sustancecharacteristics__precursor_type=catalog["pk"],
+                                                        **unit_filters).
+                             aggregate(total = Sum("quantity_base_unit", default=0, output_field=DecimalField()))["total"])
 
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__precursor_type= catalog['pk']
-            ))
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
         return [
 
             {'label': _('Count elements by Precursor Type'),
@@ -243,33 +255,38 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "nfpa").values('pk', 'description')
-        self.aggrateparams = {}
+        self.data=[]
+        unit_filters = {}
+        if self.request.GET["unit"] == "Litros":
+            unit_filters["measurement_unit__pk__in"] = [62,63]
+        elif self.request.GET["unit"] == "Kilogramos":
+            unit_filters["measurement_unit__pk__in"] = [66,67,65]
+        elif self.request.GET["unit"] == "Metros":
+            unit_filters["measurement_unit__pk__in"] = [59,60,61]
+        else:
+            unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         labels = []
-        self.data = []
+
         for catalog in self.catalogs:
             labels.append(catalog['description'])
-            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__nfpa__pk=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory,
+                                                        object__sustancecharacteristics__nfpa__pk=catalog["pk"],
+                                                        **unit_filters).
+                             aggregate(total = Sum("quantity_base_unit", default=0, output_field=DecimalField()))["total"])
 
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__nfpa= catalog['pk']
-            ))
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
+
         return [
 
             {'label': _('Count elements by NFPA'),
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -299,26 +316,31 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "ue_code").values('pk', 'description')
-        self.aggrateparams = {}
+        self.data=[]
+        unit_filters = {}
+        if self.request.GET["unit"] == "Litros":
+            unit_filters["measurement_unit__pk__in"] = [62,63]
+        elif self.request.GET["unit"] == "Kilogramos":
+            unit_filters["measurement_unit__pk__in"] = [66,67,65]
+        elif self.request.GET["unit"] == "Metros":
+            unit_filters["measurement_unit__pk__in"] = [59,60,61]
+        else:
+            unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         labels = []
-        self.data = []
+
         for catalog in self.catalogs:
             labels.append(catalog['description'])
-            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__ue_code=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory,
+                                                        object__sustancecharacteristics__ue_code=catalog["pk"],
+                                                        **unit_filters).
+                             aggregate(total = Sum("quantity_base_unit", default=0, output_field=DecimalField()))["total"])
 
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__ue_code= catalog['pk']
-            ))
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
+
         return [
 
             {'label': _('Count elements by UE Code'),
@@ -355,26 +377,31 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "storage_class").values('pk', 'description')
-        self.aggrateparams = {}
-        self.data = []
+        self.data=[]
+        unit_filters = {}
+        if self.request.GET["unit"] == "Litros":
+            unit_filters["measurement_unit__pk__in"] = [62,63]
+        elif self.request.GET["unit"] == "Kilogramos":
+            unit_filters["measurement_unit__pk__in"] = [66,67,65]
+        elif self.request.GET["unit"] == "Metros":
+            unit_filters["measurement_unit__pk__in"] = [59,60,61]
+        else:
+            unit_filters["measurement_unit__description"] = Catalog.objects.get(description=self.request.GET["unit"])
         labels = []
+
         for catalog in self.catalogs:
             labels.append(catalog['description'])
-            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory, object__sustancecharacteristics__storage_class=catalog["pk"]).aggregate(total = Sum("quantity_base_unit", default=0))["total"])
+            self.data.append(ShelfObject.objects.filter(in_where_laboratory = self.laboratory,
+                                                        object__sustancecharacteristics__storage_class=catalog["pk"],
+                                                        **unit_filters).
+                             aggregate(total = Sum("quantity_base_unit", default=0, output_field=DecimalField()))["total"])
 
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__storage_class= catalog['pk']
-            ))
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
+
         return [
 
             {'label': _('Count elements by Storage Class'),
