@@ -1,15 +1,30 @@
 {% extends 'gentelella/registration/email_base.html' %}
 {% load i18n %}
 {% block content %}
-{% trans 'Dear' %} {{user_base.get_full_name}},
-	<br><br>
-		{% trans 'We would like to inform you that an update has been made to your account information. The reason for this update is as follows:' %}
-		<br><br>
-		{% trans 'Account consolidation by an administrator: An administrator from your organization has decided to consolidate the accounts that belong to you in order to centralize access. This action aims to simplify account management and provide you with a smoother experience when accessing our resources.' %}
- 	<br><br>
-	{% trans 'From now on, you can log in to your account using the following username:' %} {{user_base.username}}
- 	<br><br>
- 	{% trans 'If you do not remember your password, you can use the following link to recover it:' %} <a href="{{domain}}{% url 'password_reset' %}" target="_blank">{% trans 'Click here' %}</a>
- 	<br><br>
-	{% trans 'We appreciate your understanding and cooperation during this account update process. We value your trust in our services and strive to provide you with an optimal experience.' %}
+Dear {{user.get_full_name|default_if_none:user.username}},
+<br><br>
+We would like to inform you that your account information has been updated. The reasons for this update are due to the detection of one of the following cases:
+<br><br>
+It has been detected that you have registered twice in the system with the same username, but in accounts associated with two different email addresses.
+<br><br>
+A second account has been created with the same email address when accepting an invitation to join an organization or external laboratory.
+<br><br>
+For security reasons in data handling and service quality, the following decisions have been made according to the internal protocol for user management.
+<br><br>
+<br><br>
+1) User deletion and information transfer: It has been decided to remove a specific user and transfer their information to your account. This measure has been taken to optimize our resources, ensure more efficient management, and enhance the security of our services.
+<br><br>
+2) Account consolidation by an administrator: An administrator from your organization has decided to consolidate the accounts that belong to you in order to centralize access. This action aims to simplify account management and provide you with a smoother experience when accessing our resources.
+<br><br>
+From now on, you can log in to your account using the following username: {{user.username}}
+<br><br>
+If you don't remember your password, you can use the following link to recover it: <a href="{{domain}}{% url 'password_reset' %}" target="_blank">Click here</a>
+<br><br>
+If you have any questions or require further assistance, please don't hesitate to contact our support team. We will be glad to assist you.
+<br><br>
+We appreciate your understanding and cooperation during this account update process. We value your trust in our services and strive to provide you with an optimal experience.
+<br><br>
+Sincerely,
+<br><br>
+Organilab
 {% endblock content %}

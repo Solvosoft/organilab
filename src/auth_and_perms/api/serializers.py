@@ -426,7 +426,7 @@ class ValidateDeleteUserSerializer(serializers.Serializer):
         if user_delete.username == "soporte@organilab.org" or user_delete == user_session:
             logger.debug(
                 f'ValidateDeleteUserSerializer --> user_delete.username == '
-                f'"soporte@organilab.org')
+                f'"soporte@organilab.org or user_delete == user_session')
             raise serializers.ValidationError({'user_delete': _("User delete invalid")})
 
         return data

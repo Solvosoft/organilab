@@ -1,22 +1,20 @@
 {% extends 'gentelella/registration/email_base.html' %}
 {% load i18n %}
 {% block content %}
-{% trans 'Dear' %} {{user_delete.get_full_name}},
-	<br><br>
-	{% trans 'We would like to inform you that the user' %} <b>{{user_delete.username}}</b> {% trans 'was deleted. The reasons for this delete are as follows:' %}
-		<br><br>
-		1) {% trans 'Account inactive for a long time.' %}
-	<br>
-	 2) {% trans 'System purification.' %}
-	<br><br>
-	{% trans 'This measure has been taken to optimize our resources, ensure more efficient management, and enhance the security of our services.' %}
-	{% endif %}
-	<br><br>
-	{% trans 'If you have any questions or require further assistance, please do not hesitate to contact our support team. We will be glad to assist you.' %}
-	<br><br>
-	{% trans 'Sincerely,' %}
+Dear {{user.get_full_name|default_if_none:user.username}},
 <br><br>
-	Organilab
-</p>
-
+We inform you that your account {{user.username}} has been deleted. The reason for deletion is:
+<br><br>
+According to the policies of Organilab platform usage, accounts that have been inactive on the organilab.org website for more than 12 months are automatically deleted.
+<br><br>
+<br><br>
+To regain access to our services, you will have to create a new user.
+<br><br>
+Important: if your user is an organization administrator, deleting your account could also delete the organization, if there is no other administrator user within the organization.
+<br><br>
+If you have any questions or require further assistance, please don't hesitate to contact our support team. We will be glad to assist you. We appreciate your understanding and value your trust in our services, and we strive to provide you with an optimal experience.
+<br><br>
+Sincerely,
+<br><br>
+Organilab
 {% endblock %}
