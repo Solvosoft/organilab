@@ -21,14 +21,6 @@ def update_delete_users_list():
 
 @app.task()
 def send_notification_warning_delete_user():
-    eight_working_days = now() + relativedelta(days=8)
-    one_working_day = now() + relativedelta(days=1)
-
-    eight_days_queryset = DeleteUserList.objects.filter(
-        expiration_date=eight_working_days)
-
-    one_day_queryset = DeleteUserList.objects.filter(expiration_date=one_working_day)
-
-    warning_notification_delete_user(eight_days_queryset, "8", "working days")
-    warning_notification_delete_user(one_day_queryset, "1", "working day")
+    warning_notification_delete_user("8", "working days")
+    warning_notification_delete_user("1", "working day")
 

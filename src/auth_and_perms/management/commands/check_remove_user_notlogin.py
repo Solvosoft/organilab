@@ -1,11 +1,11 @@
-from django.conf import settings
-from django.core.management import BaseCommand
-from django.contrib.auth import get_user_model
 from dateutil.relativedelta import relativedelta
-from django.utils.timezone import now
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+from django.core.management import BaseCommand
 from django.test import RequestFactory
-from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
+
 from auth_and_perms.models import DeleteUserList
 from auth_and_perms.users import delete_user, send_email_delete_user_warning
 from auth_and_perms.users import send_email_user_management

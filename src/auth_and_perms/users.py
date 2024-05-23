@@ -4,6 +4,11 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.db.models.fields.related import ManyToOneRel
 from django.utils.translation import activate, get_language
+from django.utils.timezone import now
+from dateutil.relativedelta import relativedelta
+
+from auth_and_perms.models import DeleteUserList
+
 
 def send_email_user_management(request, user_base, user_delete, action):
     schema = request.scheme + "://"
@@ -55,7 +60,7 @@ def send_email_delete_user_warning(user_delete, days, msg):
         oldlang = get_language()
         context = {'lang': lang, 'user': user_delete}
         activate(lang)
-        context.update({"available_time": "%s %s" % (days, _(msg))})
+        context.update({"available_time": "%s %s" % (str(days), _(msg))})
         send_mail(subject=_("Delete User Notification"),
                       message=_(""),
                       recipient_list=[user_delete.email],
@@ -104,6 +109,9 @@ def user_management(request, user_base, user_delete, action):
     delete_user(user_delete, user_base)
 
 
-def warning_notification_delete_user(queryset, days, msg):
+def warning_notification_delete_user(days, msg):
+    working_days_date = now() + relativedelta(days=days)
+    queryset = DeleteUserList.objects.filter(expiration_date=working_days_date)
+
     for obj in queryset:
         send_email_delete_user_warning(obj.user, days, msg)
