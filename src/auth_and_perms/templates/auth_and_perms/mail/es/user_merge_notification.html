@@ -1,7 +1,7 @@
 {% extends 'gentelella/registration/email_base.html' %}
 {% load i18n %}
 {% block content %}
-Estimado/a {{user.get_full_name|default_if_none:user.username}},
+Estimado/a {{user_delete.get_full_name|default_if_none:user_delete.username}},
 <br><br>
 Le informamos que se ha realizado una actualización de la información de su cuenta. Las razones de esta actualización se deben a que se ha detectado alguno de los siguientes casos:
 <br><br>
@@ -16,7 +16,7 @@ Por motivos de seguridad en el manejo de datos y calidad en el servicio se han t
 <br><br>
 2) Unificación de cuentas por parte de un administrador: Un administrador de su organización ha decidido unificar las cuentas que le pertenecen con el fin de centralizar el acceso. Esta acción tiene como objetivo simplificar la administración de cuentas y proporcionarle una experiencia más fluida al acceder a nuestros recursos.
 <br><br>
-A partir de este momento, podrá acceder a su cuenta utilizando el siguiente nombre de usuario: {{user.username}}
+A partir de este momento, podrá acceder a su cuenta utilizando el siguiente nombre de usuario: {{user_base.username}}
 <br><br>
 En caso de que no recuerde su contraseña, puede utilizar el siguiente enlace para recuperarla: <a href="{{domain}}{% url 'password_reset' %}" target="_blank">Clic aquí</a>
 <br><br>

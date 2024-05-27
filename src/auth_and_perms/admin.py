@@ -1,10 +1,13 @@
 import zipfile
 
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.core import serializers
 from django.http import HttpResponse
 import io
 from auth_and_perms import models
+from auth_and_perms.users import delete_user, send_email_user_management
+
 
 @admin.action(description='Export Laboratory')
 def export_rol_perms(admin, request, queryset):
@@ -48,8 +51,23 @@ class ImpostorAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'impostor_ip', 'logged_in', 'logged_out']
     date_hierarchy = 'logged_in'
 
+class DeleteUserListAdmin(admin.ModelAdmin):
+    search_fields = ['user__username']
+    list_display = ['__str__', 'last_login', 'creation_date', 'expiration_date']
+    date_hierarchy =  'expiration_date'
+    actions = ['merge_and_delete']
+
+    @admin.action(description="Remove user correctly")
+    def merge_and_delete(self, request, queryset):
+        User = get_user_model()
+        user_base = User.objects.filter(username="soporte@organilab.org").first()
+        for user_delete in queryset:
+            send_email_user_management(request, user_base, user_delete.user, "delete")
+            delete_user(user_delete.user, user_base)
+
 admin.site.register(models.AuthorizedApplication, AuthorizedApplicationAdmin)
 admin.site.register(models.Profile, ProfileAdmin)
 admin.site.register(models.Rol, RolAdmin)
 admin.site.register(models.ProfilePermission, ProfilePermissionAdmin)
 admin.site.register(models.ImpostorLog, ImpostorAdmin)
+admin.site.register(models.DeleteUserList, DeleteUserListAdmin)
