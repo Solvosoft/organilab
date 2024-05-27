@@ -142,6 +142,10 @@ class DeleteUserList(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True)
     expiration_date = models.DateTimeField(default=user_expiration_date)
+    last_login = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return str(self.user)
 
 class ImpostorLog(models.Model):
     impostor = models.ForeignKey(

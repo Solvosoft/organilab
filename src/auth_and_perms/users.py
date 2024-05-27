@@ -62,21 +62,20 @@ def send_email_delete_user_warning(user_delete, days, template_name="user_delete
         activate(lang)
         context.update({"days": int(days)})
         send_mail(subject=_("Delete User Notification"),
-                      message=_(""),
+                      message=_("Your account was deleted"),
                       recipient_list=[user_delete.email],
                       from_email=settings.DEFAULT_FROM_EMAIL,
                       html_message=render_to_string(
                           "auth_and_perms/mail/"+lang+"/"+template_name+".html",
                           context=context
-                      )
+                      ),
+                    fail_silently=True
                       )
         activate(oldlang)
 
 
 def merge_information_user(to_delete, to_related):
     for field in to_delete._meta.get_fields():
-        if field.name == 'sga_substance':
-            print(field)
         if field.name in ['user_permissions', 'groups', 'profile', 'usertotpdevice',
                           'registrationuser', 'authorizedapplication', 'deleteuserlist',
                           'auth_token', 'chunked_uploads', 'totpdevice']:

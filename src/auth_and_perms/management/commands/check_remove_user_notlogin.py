@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.core.management import BaseCommand
+from django.db.models import Q
 from django.test import RequestFactory
 from django.utils.timezone import now
 
@@ -19,9 +20,9 @@ class Command(BaseCommand):
         year_ago = now() - relativedelta(years=1)
         deletelist = []
         for user in User.objects.exclude(username="soporte@organilab.org").filter(
-            deleteuserlist__isnull=True,
-            last_login__lte=year_ago):
-            deletelist.append(DeleteUserList(user=user))
+            deleteuserlist__isnull=True).filter(
+            Q(last_login__lte=year_ago)|Q(last_login__isnull=True)):
+            deletelist.append(DeleteUserList(user=user, last_login=user.last_login))
         if deletelist:
             DeleteUserList.objects.bulk_create(deletelist)
 
@@ -56,6 +57,13 @@ class Command(BaseCommand):
         print("Actual to users delete ", DeleteUserList.objects.all().count())
         print("Actual to users ", User.objects.all().count())
 
+    def debug_remove_all_users(self):
+        User = get_user_model()
+        for user in User.objects.exclude(email="soporte@organilab.org"):
+            a = DeleteUserList(user=user, last_login=user.last_login)
+            a.save()
+
     def handle(self, *args, **options):
+        # self.debug_remove_all_users()
         self.enqueue_users()
         self.delete_users()
