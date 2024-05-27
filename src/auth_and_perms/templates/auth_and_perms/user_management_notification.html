@@ -1,0 +1,19 @@
+{% extends 'gentelella/registration/email_base.html' %}
+{% load i18n %}
+{% block content %}
+<p>
+	{% if action != "merge" %}
+	{% trans 'Dear' %} {{user_base.get_full_name}},
+	<br><br>
+		{% trans 'We would like to inform you that an update has been made to your account information. The reason for this update is as follows:' %}
+		<br><br>
+		{% trans 'Account consolidation by an administrator: An administrator from your organization has decided to consolidate the accounts that belong to you in order to centralize access. This action aims to simplify account management and provide you with a smoother experience when accessing our resources.' %}
+ 	<br><br>
+	{% trans 'From now on, you can log in to your account using the following username:' %} {{user_base.username}}
+ 	<br><br>
+ 	{% trans 'If you do not remember your password, you can use the following link to recover it:' %} <a href="{{domain}}{% url 'password_reset' %}" target="_blank">{% trans 'Click here' %}</a>
+ 	<br><br>
+	{% trans 'We appreciate your understanding and cooperation during this account update process. We value your trust in our services and strive to provide you with an optimal experience.' %}
+	{% else %}
+
+{% endblock %}

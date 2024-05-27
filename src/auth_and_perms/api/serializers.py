@@ -18,7 +18,7 @@ import logging
 
 from django.conf import settings
 
-from laboratory.utils import check_user_access_kwargs_org_lab
+from laboratory.utils import check_user_access_kwargs_org_lab, get_actions_by_perms
 
 logger = logging.getLogger('organilab')
 
@@ -364,3 +364,69 @@ class ValidateLabOrgObjectSerializer(serializers.Serializer):
                                                 allow_null=False,allow_empty=False)
 
 
+class UserSerializer(serializers.ModelSerializer):
+    delete_msg = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_delete_msg(self, obj):
+        return "%s %s %s" % (_("The user"), obj.get_full_name(),
+                             _("could be related with multiple elements."))
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        permissions_by_action = {
+            "merge": ["profile.can_manage_users"],
+            "destroy": ["profile.can_manage_users"]
+        }
+        action_list = get_actions_by_perms(user, permissions_by_action)
+
+        if user == obj:
+            action_list["destroy"] = False
+        return action_list
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'delete_msg',
+                  'actions']
+
+
+class UserDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=UserSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class UserFilter(FilterSet):
+    class Meta:
+        model = User
+        fields = {'id': ['exact'],
+                  'username': ['icontains'],
+                  'first_name': ['icontains'],
+                  'last_name': ['icontains'],
+                  'email': ['icontains'],
+                  }
+
+
+class ValidateUserBaseSerializer(serializers.Serializer):
+    user_base = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+
+class ValidateUserSerializer(ValidateUserBaseSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+class ValidateDeleteUserSerializer(serializers.Serializer):
+    user_delete = serializers.PrimaryKeyRelatedField(queryset=User.objects.using(settings.READONLY_DATABASE))
+
+    def validate(self, data):
+        data = super().validate(data)
+        user_delete = data['user_delete']
+        user_session = self.context.get("user_session")
+
+        if user_delete.username == "soporte@organilab.org" or user_delete == user_session:
+            logger.debug(
+                f'ValidateDeleteUserSerializer --> user_delete.username == '
+                f'"soporte@organilab.org or user_delete == user_session')
+            raise serializers.ValidationError({'user_delete': _("User delete invalid")})
+
+        return data

@@ -2,17 +2,21 @@ from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext_lazy as _
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 from api.utils import AllPermissionOrganization
@@ -23,11 +27,13 @@ from auth_and_perms.api.serializers import RolSerializer, \
     ProfileAssociateOrganizationSerializer, ValidateGroupsByProfileSerializer, \
     ShelfObjectSerializer, ValidateSearchShelfObjectSerializer, \
     ShelfObjectDataTableSerializer, ValidateOrganizationSerializer, \
-    ExternalUserSerializer, AddExternalUserSerializer
+    ExternalUserSerializer, AddExternalUserSerializer, UserDataTableSerializer, \
+    UserSerializer, UserFilter, ValidateUserSerializer, ValidateDeleteUserSerializer
 from auth_and_perms.forms import LaboratoryAndOrganizationForm, \
     OrganizationForViewsetForm, SearchShelfObjectViewsetForm
 from auth_and_perms.models import Rol, ProfilePermission, Profile
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from auth_and_perms.users import send_email_user_management, delete_user
 from laboratory.models import OrganizationStructure, Laboratory, UserOrganization, \
     ShelfObject
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user, \
@@ -458,3 +464,56 @@ class OrganizationButtons(APIView):
         else:
             return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class UserManagementViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        'list': UserDataTableSerializer,
+        'destroy': ValidateDeleteUserSerializer,
+        'merge': ValidateUserSerializer,
+    }
+    perms = {
+        'list': ["auth.view_user"],
+        'destroy': ["auth.delete_user"],
+        'merge': ["auth.change_user"]
+    }
+
+    queryset = User.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['id', 'username', 'first_name', 'last_name', 'email']  # for the global search
+    filterset_class = UserFilter
+    ordering_fields = ['username', 'first_name']
+    ordering = ('id',)  # default order
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        queryset = queryset.exclude(username="soporte@organilab.org")
+        return queryset
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.serializer_class["destroy"](data={"user_delete": instance.pk},
+                                                      context={
+                                                          "user_session": request.user})
+
+        if serializer.is_valid():
+            user_base = User.objects.filter(username="soporte@organilab.org").first()
+            user_delete = serializer.validated_data["user_delete"]
+            send_email_user_management(request, user_base, user_delete, "delete")
+            delete_user(user_delete, user_base)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            raise ValidationError(serializer.errors)
+
+    @action(detail=False, methods=['post'])
+    def merge(self, request, *args, **kwargs):
+        serializer = self.serializer_class["merge"](data=request.data)
+
+        if serializer.is_valid():
+            return Response({"success_url": reverse(
+                "auth_and_perms:merge_users", kwargs={"user_base":
+                            serializer.validated_data["user_base"].pk,
+                          "user_delete": serializer.validated_data["user"].pk})},
+                status=status.HTTP_200_OK)
+        else:
+            raise ValidationError(serializer.errors)

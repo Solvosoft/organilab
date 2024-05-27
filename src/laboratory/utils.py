@@ -475,6 +475,6 @@ class PermissionByLaboratoryInOrganization(BasePermission):
 
 def get_actions_by_perms(user, actions_list):
     actions = {}
-    for action, perms in actions_list.items() :
+    for action, perms in actions_list.items():
         actions[action] = all_permission(user, perms)
     return actions

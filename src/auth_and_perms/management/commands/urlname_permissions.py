@@ -2662,5 +2662,23 @@ URLNAME_PERMISSIONS = {
             'category': 'Equipment Type',
             'permission': 'laboratory.delete_equipmenttype'
         }
+    ],
+    'manage_users': [
+        {
+            'name': 'Change User',
+            'category': 'User',
+            'permission': 'auth.change_user'
+        },
+        {
+            'name': 'Delete User',
+            'category': 'User',
+            'permission': 'auth.delete_user'
+        },
+        {
+            'name': 'View User',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        }
     ]
+
 }

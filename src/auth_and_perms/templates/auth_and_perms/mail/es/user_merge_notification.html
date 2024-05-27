@@ -1,0 +1,30 @@
+{% extends 'gentelella/registration/email_base.html' %}
+{% load i18n %}
+{% block content %}
+Estimado/a {{user_delete.get_full_name|default_if_none:user_delete.username}},
+<br><br>
+Le informamos que se ha realizado una actualización de la información de su cuenta. Las razones de esta actualización se deben a que se ha detectado alguno de los siguientes casos:
+<br><br>
+Registrarse dos veces en el sistema con el mismo nombre de usuario pero en cuentas asociadas con dos correos electrónicos diferentes.
+<br><br>
+Que se haya creado una segunda cuenta con la misma dirección de correo, al aceptar la invitación a formar parte de una organización o laboratorio externo a su organización.
+<br><br>
+Por motivos de seguridad en el manejo de datos y calidad en el servicio se han tomado las siguientes decisiones de acuerdo con el protocolo interno de manejo de usuarios.
+<br><br>
+<br><br>
+1) Eliminación de usuario y transferencia de información: Se ha decidido eliminar a un usuario específico y transferir su información a su cuenta. Esta medida se ha tomado con el objetivo de optimizar nuestros recursos y garantizar una gestión más eficiente, así como mejorar la seguridad de nuestros servicios.
+<br><br>
+2) Unificación de cuentas por parte de un administrador: Un administrador de su organización ha decidido unificar las cuentas que le pertenecen con el fin de centralizar el acceso. Esta acción tiene como objetivo simplificar la administración de cuentas y proporcionarle una experiencia más fluida al acceder a nuestros recursos.
+<br><br>
+A partir de este momento, podrá acceder a su cuenta utilizando el siguiente nombre de usuario: {{user_base.username}}
+<br><br>
+En caso de que no recuerde su contraseña, puede utilizar el siguiente enlace para recuperarla: <a href="{{domain}}{% url 'password_reset' %}" target="_blank">Clic aquí</a>
+<br><br>
+Si tiene alguna pregunta o necesita asistencia adicional, no dude en ponerse en contacto con nuestro equipo de soporte. Estaremos encantados de ayudarlo.
+<br><br>
+Agradecemos su comprensión y cooperación durante este proceso de actualización de cuenta. Valoramos su confianza en nuestros servicios y nos esforzamos por brindarle una experiencia óptima.
+<br><br>
+Atentamente,
+<br><br>
+Organilab
+{% endblock %}

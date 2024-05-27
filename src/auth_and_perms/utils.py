@@ -1,5 +1,5 @@
 import uuid
-
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -63,6 +63,7 @@ def send_email(request, user):
                   context=context
               )
               )
+
 
 
 def get_ip_address(request):
