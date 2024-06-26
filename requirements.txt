@@ -7,7 +7,7 @@ django-json-rpc==0.7.2
 django-location-field==2.1.0
 django-recaptcha==3.0.0
 django-reservation==0.2.10
-djangorestframework==3.14.0
+djangorestframework==3.15.2
 openpyxl==3.0.3
 Pillow>=7.1.2
 psycopg2-binary==2.9.5
