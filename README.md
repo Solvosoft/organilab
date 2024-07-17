@@ -1,7 +1,7 @@
 # organilab
 
 [![Tests](https://github.com/Solvosoft/organilab/actions/workflows/tests.yml/badge.svg)](https://github.com/Solvosoft/organilab/actions/workflows/tests.yml)
-[![Documentation](https://img.shields.io/readthedocs/organilab?label=Read%20the%20Docs&logo=read%20the%20docs&logoColor=white)](http://organilab.readthedocs.io/en/latest/?badge=latest)
+[![Documentation](https://img.shields.io/readthedocs/organilab?label=Read%20the%20Docs&logo=read%20the%20docs&logoColor=white)](http://organilab.readthedocs.io/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/django)
 ![Coverage](https://solvosoft.github.io/organilab/coverage.svg)
 
