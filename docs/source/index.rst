@@ -22,6 +22,7 @@ Contents:
    administrative_usage/index
    developers/index
    usage_cases/index
+   desc_funcionalidades/index
 
 
 
