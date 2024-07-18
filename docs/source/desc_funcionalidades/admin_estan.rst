@@ -1,4 +1,4 @@
-Módulo 6: Administración de Sustancias y Equipos en las Estanterías
+Artículo 6: Administración de Sustancias y Equipos en las Estanterías
 ====================================================================================
 
 La vista **Objeto de Estantería** de Organilab, también conocida como **Manejo de Sustancias y Equipos**, ofrece una plataforma integral para la administración de las sustancias y equipos almacenados en las estanterías de su laboratorio.

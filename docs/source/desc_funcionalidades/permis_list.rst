@@ -127,17 +127,17 @@ Procedimiento:
     •   *Eliminar procedimiento*: Esta opción habilita la ventana para eliminar un procedimiento existente. 
     •   *Cambiar procedimiento*: Esta opción habilita la ventana para modificar un procedimiento existente. 
 
-*****************************
+
 
 Objeto requerido de procedimiento:
------------------------------------
+******************************************************
 
     • *Agregar objeto requerido de procedimiento*: Esta opción habilita la ventana para agregar un nuevo objeto requerido de procedimiento. 
     • *Ver objeto requerido de procedimiento*: Esta opción habilita la ventana para ver los objetos requeridos de procedimiento existentes. 
     • *Eliminar objeto requerido de procedimiento*: Esta opción habilita la ventana para eliminar un objeto requerido de procedimiento existente. 
 
 Paso de procedimiento:
------------------------------------
+******************************************************
 
     • *Ver paso de procedimiento*: Esta opción habilita la ventana para ver los pasos de procedimiento. 
     • *Agregar paso de procedimiento*: Esta opción habilita la ventana para agregar un nuevo paso de procedimiento. 
