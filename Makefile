@@ -62,7 +62,6 @@ start:
 	cd src && python manage.py migrate && python manage.py createcachetable
 	python manage.py load_urlname_permissions
 	python manage.py loadgroup
-	python manage.py load_sga
 	python manage.py loaddata sga_components.json
 
 
@@ -80,3 +79,6 @@ build_docker_selenium:
 run_docker_selenium:
 	 docker run --network="host"  -v $(current_path)/src:/organilab/src  -v $(current_path)/fixtures:/organilab/fixtures -v $(current_path)/docs:/organilab/docs  -ti organilabselenium:$(setup_version) $(run)
 
+
+database_config:
+	cd src && python manage.py migrate && python manage.py createcachetable && python manage.py load_urlname_permissions && python manage.py loadgroup && python manage.py loaddata sga_components.json
