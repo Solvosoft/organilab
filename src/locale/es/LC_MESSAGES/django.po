@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 18:18-0600\n"
+"POT-Creation-Date: 2024-07-22 14:24-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -679,8 +679,11 @@ msgstr "Elemento guardado exitosamente"
 msgid "Error, form is invalid"
 msgstr "Error el formulario es inválido"
 
-msgid "You have active impostor session"
-msgstr "Tiene una sesión de impostor activa"
+#, python-format
+msgid ""
+"You have active impostor session <a class=\"text-white fw-bold text-"
+"decoration-underline\" href=\"%(reverseurl)s?all=1\">Finish it</a>"
+msgstr ""
 
 msgid "Request User is the same as current user"
 msgstr "Usuario solicitando es el mismo que el usuario actual"
@@ -3022,6 +3025,87 @@ msgstr "Imagen QR en SVG"
 msgid "Base64 Image QR"
 msgstr "Imagen QR en Base 64"
 
+msgid "Organilab - General Information"
+msgstr "Organilab - Información General"
+
+msgid "What is Organilab?"
+msgstr "¿En qué consiste Organilab?"
+
+msgid ""
+"It is a software that offers a comprehensive solution for the management of "
+"laboratories in an automated manner.  It includes data security, inventory "
+"management, traceability of chemicals and analysis equipment, and management "
+"of safety and health in the laboratory."
+msgstr "Es un software que ofrece una solución integral para la gestión de laboratorios "
+"de manera automatizada. Incluye seguridad de los datos, manejo de inventarios, trazabilidad "
+"de las sustancias químicas y los equipos de análisis, gestión de seguridad y salud en el laboratorio."
+
+msgid ""
+"It is designed to comply with the standards of INTE/ISO/IEC 17025:2017 and "
+"ISO 14001."
+msgstr "Está diseñado para cumplir con los estándares de las normas INTE/ISO/IEC 17025:2017 e ISO 14001."
+
+msgid "Main Features"
+msgstr "Principales Funcionalidades"
+
+msgid "Emulation of the distribution of a real laboratory."
+msgstr "Emulación de distribución en un laboratorio real."
+
+msgid "Elaboration of reports, documents, and procedure templates."
+msgstr "Elaboración de reportes, informes y plantillas de procedimientos."
+
+msgid "Waste management."
+msgstr "Gestión de desechos."
+
+msgid "Identification of reagents and equipment by QR codes."
+msgstr "Identificación de reactivos y equipos por códigos QR."
+
+msgid "Inventory management."
+msgstr "Manejo de Inventarios."
+
+msgid ""
+"Management of hierarchies, roles, permissions, and users of the laboratory."
+msgstr "Manejo de jerarquías, roles, permisos y usuarios del laboratorio."
+
+msgid "And many others..."
+msgstr "Y muchos otros..."
+
+msgid "Sponsor"
+msgstr "Patrocinio"
+
+msgid ""
+"Join the sponsor program and build a better software accessible to everyone."
+msgstr "Únete al programa de patrocinadores y has un mejor software accesible para todos."
+
+msgid "Get More Information"
+msgstr "Obtener Más Información"
+
+msgid ""
+"Use the following survey to subscribe and receive more personalized "
+"information about our software."
+msgstr "Usa el siguiente formulario para subscribirte y recibir información personalidada sobre nuestro software."
+
+msgid "Information of the person interested in Organilab"
+msgstr "Información de la persona interesada en Organilab"
+
+msgid "Webinar: Introduction to Inventory Management with Organilab"
+msgstr "Webinar: Introducción al manejo de Inventario con Organilab"
+
+msgid ""
+"For people or institutions who contribute through Open Collective, we offer "
+"a 2-hour webinar during the week of July 31 to August 3."
+msgstr "Para las personas o instituciones que contribuyan a través de Open Collective,  "
+"les ofrecemos un  webinar de 2 horas la semana del 31 julio al 3 de agosto."
+
+msgid ""
+"If you want to participate, please use the following survey to enter your "
+"information and choose your preferred schedule."
+msgstr "Si deseas participar, por favor usa el siguiente formulario para ingresar tu "
+"información y elegir el horario de tu preferencia."
+
+msgid "Webinar participation"
+msgstr "Participación en el webinar"
+
 msgid "Administration"
 msgstr "Administración"
 
@@ -3203,9 +3287,6 @@ msgstr ""
 
 msgid "Welcome to Organilab"
 msgstr "Bienvenido a Organilab"
-
-msgid "Sponsor"
-msgstr "Patrocinadores"
 
 msgid "Donate"
 msgstr "Donar"
