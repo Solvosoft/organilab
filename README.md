@@ -32,6 +32,11 @@ Create a virtualenv
 	$ python -m venv ~/entornos/organilab
 	$ source ~/entornos/organilab/bin/activate
 
+Note: If you are using a python 3.* or greater version you need to execute the following command instead.
+
+    $ python3 -m venv ~/entornos/organilab
+
+
 Install requirements
 
 	$ pip install -r requirements.txt
@@ -40,18 +45,19 @@ Install requirements
 
 Check your database configuration and sync your models
 
-	$ python manage.py migrate
-	$ python manage.py createcachetable
-    $ python manage.py load_urlname_permissions
-    $ python manage.py loadgroup
-    $ python manage.py load_sga
-    $ python manage.py loaddata sga_components.json
+    $ make database_config
 
-Could be required to call python manage.py initial_data
+Could be required to call python manage.py loaddata initial_data.json
 
 Create a superuser for admin views
 
 	$ python manage.py createsuperuser
+    $ python manage.py shell
+    $ from auth_and_perms.models import Profile
+    $ from django.contrib.auth.models import User
+    $ user = User.objects.get(username=#USERNAME#)
+    $ profile = Profile.objects.create(user=user)
+    $ ctrl + z
 
 Run your development server
 
@@ -73,7 +79,7 @@ Compile translations
 
 Create your image organilab
 ```bash
-docker build -f docker/Dockerfile -t solvosoft/organilab
+docker build -f docker/Dockerfile -t solvosoft/organilab .
 ```
 
 Run with **bind mount folder** to sync with changes without rebuild image:
