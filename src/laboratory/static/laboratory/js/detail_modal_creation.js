@@ -25,14 +25,17 @@ function configure_modal(data){
         'serie': gettext('Serie'),
         'plaque': gettext('Plaque')
     }
-    insert_substance_data(data.object.object_inst, tbody_instance, object_titles)
-    insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')})
-    append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance)
+    insert_substance_data(data.object.object_inst, tbody_instance, object_titles);
+    insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')});
+
+    if(data.object['object_features']){
+        append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance);
+    }
     if (data.object['substance_characteristics']){
-        manage_substance_characteristics(data.object['substance_characteristics'], tbody_instance)
+        manage_substance_characteristics(data.object['substance_characteristics'], tbody_instance);
     }
     if (data.object['equipment_characteristics']){
-        manage_equipment_characteristics(data.object['equipment_characteristics'], tbody_instance)
+        manage_equipment_characteristics(data.object['equipment_characteristics'], tbody_instance);
     }
 }
 
