@@ -43,12 +43,12 @@ def create_precursor_reports():
     day = date.today()
 
     for lab in Laboratory.objects.all():
-        previos_report = PrecursorReport.objects.filter(laboratory=lab)
+        previous_report = PrecursorReport.objects.filter(laboratory=lab)
 
-        if previos_report.exists():
-            previos_report = previos_report.last()
+        if previous_report.exists():
+            previous_report = previous_report.last()
         else:
-            previos_report = None
+            previous_report = None
 
         report = PrecursorReport.objects.create(
                 month=day.month,
@@ -57,7 +57,7 @@ def create_precursor_reports():
                 consecutive=add_consecutive(lab)
             )
         save_object_report_precursor(report)
-        build_precursor_report_from_reports(report, previos_report)
+        build_precursor_report_from_reports(report, previous_report)
 
 
 
