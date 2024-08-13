@@ -14,7 +14,10 @@ from datetime import date
 
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import create_informsperiods, save_object_report_precursor, \
-    build_precursor_report_from_reports
+    build_precursor_report_from_reports, add_consecutive
+
+from dateutil.relativedelta import relativedelta
+from django.utils.timezone import now
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 
@@ -59,15 +62,22 @@ def create_precursor_reports():
         save_object_report_precursor(report)
         build_precursor_report_from_reports(report, previous_report)
 
+@app.task()
+def verify_precursor_reports():
+    day = now() - relativedelta(months=1)
+    for lab in Laboratory.objects.filter(pk=55):
+        previous_report = PrecursorReport.objects.filter(laboratory=lab, month=day.month, year=day.year)
+        if not previous_report.exists():
+            previous_report = PrecursorReport.objects.filter(laboratory=lab).last()
+            report = PrecursorReport.objects.create(
+                month=day.month,
+                year=day.year,
+                laboratory=lab,
+                consecutive=add_consecutive(lab)
+            )
+            save_object_report_precursor(report)
+            build_precursor_report_from_reports(report, previous_report)
 
-
-def add_consecutive(lab):
-    report = PrecursorReport.objects.filter(laboratory=lab).last()
-    consecutive = 1
-    if report is not None:
-        consecutive = int(report.consecutive)+1
-
-    return consecutive
 
 
 @app.task

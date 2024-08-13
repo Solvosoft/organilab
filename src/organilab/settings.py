@@ -273,6 +273,10 @@ CELERYBEAT_SCHEDULE = {
         'task': 'laboratory.tasks.create_precursor_reports',
         'schedule': crontab(minute=2, hour=0, day_of_month=1),
     },
+    'verify_precursor_reports': {
+        'task': 'laboratory.tasks.verify_precursor_reports',
+        'schedule': crontab(hour='/*6', day_of_month="/*2"),
+    },
 }
 
 INTERNAL_IPS = ('127.0.0.1',)
