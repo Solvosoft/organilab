@@ -230,7 +230,7 @@ class PrecursorsView(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['datalist'] = PrecursorReport.objects.filter(laboratory__pk=int(self.lab)).order_by('-pk')
+        context['datalist'] = PrecursorReport.objects.filter(laboratory__pk=int(self.lab)).order_by('-consecutive')
         return context
 
     def get_book(self, context):

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _
 
 from laboratory import models
-from laboratory.task_utils import create_informsperiods
+from laboratory.task_utils import create_informsperiods, create_new_precursosr_report
 from presentation.utils import update_qr_instance
 from django.core import serializers
 
@@ -55,8 +55,12 @@ def export_laboratory(admin, request, queryset):
     return response
 
 
+@admin.action(description='Generate precursor report')
+def generate_precursor_report(admin, request, queryset):
+    create_new_precursosr_report(queryset)
+
 class LaboratoryAdmin(admin.ModelAdmin):
-    actions = [export_laboratory]
+    actions = [export_laboratory, generate_precursor_report]
     search_fields = ['name']
     list_filter = ['organization']
 
