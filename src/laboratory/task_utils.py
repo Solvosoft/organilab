@@ -111,16 +111,6 @@ def get_base_unit(unit):
         return BaseUnitValues.objects.filter(pk=4).first().measurement_unit
     return unit
 
-def set_precursor_report_consecutive(laboratory):
-    reports = PrecursorReport.objects.filter(laboratory=laboratory)
-    years= sorted(set(reports.values_list("year",flat=True).order_by("-year")))
-    consecutive=1
-    for year in years:
-        reports_month = reports.filter(year=year).order_by("month")
-        for res in reports_month:
-            res.consecutive=consecutive
-            res.save()
-            consecutive+=1
 
 def create_new_precursosr_report(laboratories):
     day = now() - relativedelta(months=1)
@@ -132,17 +122,7 @@ def create_new_precursosr_report(laboratories):
                 month=day.month,
                 year=day.year,
                 laboratory=lab,
-                consecutive=add_consecutive(lab)
             )
             save_object_report_precursor(report)
             build_precursor_report_from_reports(report, previous_report)
-            set_precursor_report_consecutive(lab)
 
-
-def add_consecutive(lab):
-    report = PrecursorReport.objects.filter(laboratory=lab).last()
-    consecutive = 1
-    if report is not None:
-        consecutive = int(report.consecutive)+1
-
-    return consecutive

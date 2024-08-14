@@ -964,7 +964,17 @@ class PrecursorReport(models.Model):
     consecutive = models.IntegerField(default=1)
     report_values = models.ManyToManyField(Object,through=PrecursorReportValues)
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            print(self.laboratory)
+            max_consecutive = PrecursorReport.objects.filter(
+                laboratory=self.laboratory).aggregate(Max("consecutive"))["consecutive__max"]
 
+            if max_consecutive is None:
+                self.consecutive=1
+            else:
+                self.consecutive= max_consecutive+1
+        super().save(*args, **kwargs)
 
 STATUS_CHOICES = (
     (_('Eraser'), _('Eraser')),

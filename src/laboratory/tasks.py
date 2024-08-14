@@ -14,7 +14,7 @@ from datetime import date
 
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import create_informsperiods, save_object_report_precursor, \
-    build_precursor_report_from_reports, add_consecutive
+    build_precursor_report_from_reports
 
 from dateutil.relativedelta import relativedelta
 from django.utils.timezone import now
@@ -57,7 +57,6 @@ def create_precursor_reports():
                 month=day.month,
                 year=day.year,
                 laboratory=lab,
-                consecutive=add_consecutive(lab)
             )
         save_object_report_precursor(report)
         build_precursor_report_from_reports(report, previous_report)
@@ -73,7 +72,6 @@ def verify_precursor_reports():
                 month=day.month,
                 year=day.year,
                 laboratory=lab,
-                consecutive=add_consecutive(lab)
             )
             save_object_report_precursor(report)
             build_precursor_report_from_reports(report, previous_report)
