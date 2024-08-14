@@ -8,7 +8,6 @@ from laboratory.models import ObjectLogChange, PrecursorReport, \
     Laboratory
 from laboratory.task_utils import save_object_report_precursor, \
     build_precursor_report_from_reports
-from laboratory.tasks import add_consecutive
 
 
 class Command(BaseCommand):
@@ -34,7 +33,6 @@ class Command(BaseCommand):
                     month=current_time.month,
                     year=current_time.year,
                     laboratory=lab,
-                    consecutive=add_consecutive(lab)
                 )
                 save_object_report_precursor(report)
                 build_precursor_report_from_reports(report, previos_report)

@@ -275,7 +275,7 @@ CELERYBEAT_SCHEDULE = {
     },
     'verify_precursor_reports': {
         'task': 'laboratory.tasks.verify_precursor_reports',
-        'schedule': crontab(hour='/*6', day_of_month="/*2"),
+        'schedule': crontab(hour='*/6', day_of_month="*/2"),
     },
 }
 
