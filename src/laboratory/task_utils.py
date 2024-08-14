@@ -1,5 +1,7 @@
+from dateutil.relativedelta import relativedelta
 from django.db.models import Sum
 from django.utils import timezone
+from django.utils.timezone import now
 
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
     ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
@@ -108,3 +110,19 @@ def get_base_unit(unit):
     if unit.description in ["Mililitros"]:
         return BaseUnitValues.objects.filter(pk=4).first().measurement_unit
     return unit
+
+
+def create_new_precursosr_report(laboratories):
+    day = now() - relativedelta(months=1)
+    for lab in laboratories:
+        previous_report = PrecursorReport.objects.filter(laboratory=lab, month=day.month, year=day.year)
+        if not previous_report.exists():
+            previous_report = PrecursorReport.objects.filter(laboratory=lab).last()
+            report = PrecursorReport.objects.create(
+                month=day.month,
+                year=day.year,
+                laboratory=lab,
+            )
+            save_object_report_precursor(report)
+            build_precursor_report_from_reports(report, previous_report)
+
