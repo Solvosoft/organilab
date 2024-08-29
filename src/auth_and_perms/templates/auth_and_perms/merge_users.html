@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% load urlname_tags %}
+{% block pre_head %}
+{% define_urlname_action 'manage_users' %}
+{% endblock %}
+{% block title %}{% trans 'Merge Users' %}{% endblock %}
+{% block content %}
+<div class="card mt-4">
+	<div class="card-header card-title text-center">
+		<h1 class="text-center">{% trans 'Merge Users' %}</h1>
+		<h2>
+		{% trans "Take into consideration on the right side information to update the user base." %}
+			</h2>
+	</div>
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-6">
+				<h2 class="text-center mb-3"><b>{% trans 'User Base' %}</b></h2>
+				<form class="form" action="{% url 'auth_and_perms:save_user_merge' user_base user_delete %}" method="POST"
+										id="userbaseform">
+					{% csrf_token %}
+					{{ user_base_form }}
+				</form>
+			</div>
+			<div class="col-sm-6" id="user_delete">
+				<h2 class="text-center mb-3"><b>{% trans 'User Delete' %}</b></h2>
+				{{ user_delete_form }}
+			</div>
+		</div>
+	</div>
+	<div class="card-footer text-center">
+		<a class="btn btn-md btn-danger" href="{% url 'auth_and_perms:users_list' %}"> {% trans "Cancel" %}
+		</a>
+		<button class="btn btn-md btn-success" type="button" onclick="$('#userbaseform').submit();"> {% trans "Save" %}
+		</button>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+{{block.super}}
+<script>
+	window.name = "mergeusersview";
+	$("#user_delete :input").attr("disabled", true);
+</script>
+{% endblock %}

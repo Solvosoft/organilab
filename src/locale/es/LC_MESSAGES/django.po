@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 18:18-0600\n"
+"POT-Creation-Date: 2024-05-25 22:53-0600\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -285,11 +285,20 @@ msgstr "El estante no pertenece a esta organización."
 msgid "Organization cannot be inactive"
 msgstr "Organización no puede ser inactivada"
 
+msgid "The user"
+msgstr "El usuario"
+
+msgid "could be related with multiple elements."
+msgstr "puede estar relacionado con múltiples elementos."
+
+msgid "User delete invalid"
+msgstr "Usuario a eliminar inválido"
+
 msgid "Laboratory modification not authorized"
 msgstr "Modificación en el laboratorio no autorizada"
 
 msgid "Profile was updated successfully."
-msgstr "El perfil fue actualizado exitosamente"
+msgstr "El perfil fue actualizado exitosamente."
 
 msgid "Users"
 msgstr "Usuarios"
@@ -354,6 +363,18 @@ msgstr "Activar Organización"
 msgid "Search by object"
 msgstr "Buscar por objeto"
 
+msgid "User"
+msgstr "Usuario"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Is super user"
+msgstr "Es super usuario"
+
+msgid "Is active"
+msgstr "Esta activo"
+
 msgid "Organization not found"
 msgstr "Organización no existe"
 
@@ -362,6 +383,9 @@ msgstr "Tarjeta de identificación"
 
 msgid "Can add external user to organization"
 msgstr "Puede agregar usuarios externos a la organización"
+
+msgid "Can manage users"
+msgstr "Puede manejar usuarios"
 
 msgid "permissions"
 msgstr "permisos"
@@ -405,7 +429,7 @@ msgstr "Bitácoras de impostor"
 #, python-format
 msgid "User %(user)s not allowed on organization %(organization)r "
 msgstr ""
-"Usuario %(user)s no está autorizado en la organización %(organization)r"
+"Usuario %(user)s no está autorizado en la organización %(organization)r "
 
 msgid "You can modify this laboratory"
 msgstr "Puede editar este laboratorio"
@@ -431,7 +455,7 @@ msgid ""
 "called FreeOTP:"
 msgstr ""
 "Usted necesita un generador de OTP para registrarse en la plataforma, por "
-"favor use una aplicación llamada FreeOTP"
+"favor use una aplicación llamada FreeOTP:"
 
 msgid ""
 "For Costa Rica citicen, use your digital signature to login on organilab"
@@ -462,7 +486,7 @@ msgstr "Descargar e instalar Gaudi"
 msgid "Connect you card on computer and wait for connect success popup "
 msgstr ""
 "Conecte su tarjeta a la computadora y espere hasta el emergente de conexión "
-"satisfactoria"
+"satisfactoria "
 
 msgid "Your OTP Seed"
 msgstr "Su semilla OTP"
@@ -491,9 +515,6 @@ msgstr "Agregar Nuevo Rol"
 
 msgid "Add User"
 msgstr "Agregar Usuario"
-
-msgid "User"
-msgstr "Usuario"
 
 msgid "Related Users"
 msgstr "Usuario relacionado"
@@ -616,6 +637,25 @@ msgstr "Buscar usuario"
 msgid "Actions for Organization"
 msgstr "Acciones de la organización"
 
+msgid "Dear"
+msgstr "Estimado/a"
+
+msgid "Merge Users"
+msgstr "Fusión de Usuarios"
+
+msgid ""
+"Take into consideration on the right side information to update the user "
+"base."
+msgstr ""
+"Tome en consideración la información del lado derecho para actualizar el "
+"usuario base."
+
+msgid "User Base"
+msgstr "Usuario Base"
+
+msgid "User Delete"
+msgstr "Usuario a Eliminar"
+
 msgid "My laboratories"
 msgstr "Mis Laboratorios"
 
@@ -670,6 +710,59 @@ msgstr "Confirmar"
 msgid "Roles registered on this organization"
 msgstr "Roles registrados en esta organización"
 
+msgid ""
+"We would like to inform you that an update has been made to your account "
+"information. The reason for this update is as follows:"
+msgstr ""
+"Le informamos que se ha realizado una actualización de la información de su "
+"cuenta. El motivo por el cual esto ha ocurrido es el siguiente:"
+
+msgid ""
+"Account consolidation by an administrator: An administrator from your "
+"organization has decided to consolidate the accounts that belong to you in "
+"order to centralize access. This action aims to simplify account management "
+"and provide you with a smoother experience when accessing our resources."
+msgstr ""
+"Unificación de cuentas por parte de un administrador: Un administrador de su "
+"organización ha decidido unificar las cuentas que le pertenecen con el fin "
+"de centralizar el acceso. Esta acción tiene como objetivo simplificar la "
+"administración de cuentas y proporcionarle una experiencia más fluida al "
+"acceder a nuestros recursos."
+
+msgid ""
+"From now on, you can log in to your account using the following username:"
+msgstr ""
+"A partir de este momento, podrá acceder a su cuenta utilizando el siguiente "
+"nombre de usuario:"
+
+msgid ""
+"If you do not remember your password, you can use the following link to "
+"recover it:"
+msgstr ""
+"En caso de que no recuerde su contraseña, puede utilizar el siguiente enlace "
+"para recuperarla:"
+
+msgid "Click here"
+msgstr "pulsa acá"
+
+msgid ""
+"We appreciate your understanding and cooperation during this account update "
+"process. We value your trust in our services and strive to provide you with "
+"an optimal experience."
+msgstr ""
+"Agradecemos su comprensión y cooperación durante este proceso de "
+"actualización de cuenta. Valoramos su confianza en nuestros servicios y nos "
+"esforzamos por brindarle una experiencia óptima."
+
+msgid "Users List"
+msgstr "Lista de Usuarios"
+
+msgid "Merge users"
+msgstr "Fusión de usuarios"
+
+msgid "Continue"
+msgstr "Continuar"
+
 msgid "Organization doesn't exists"
 msgstr "Organización no existe"
 
@@ -679,8 +772,34 @@ msgstr "Elemento guardado exitosamente"
 msgid "Error, form is invalid"
 msgstr "Error el formulario es inválido"
 
-msgid "You have active impostor session"
-msgstr "Tiene una sesión de impostor activa"
+msgid "Account Update: Merger with Another Account."
+msgstr "Actualización de Cuenta: Fusión de con otra cuenta."
+
+msgid "Account Delete"
+msgstr "Eliminación de Cuenta"
+
+msgid "Please use a html reader client"
+msgstr "Por favor use un cliente de lectura html"
+
+msgid "Thanks for be part of Organilab, we will miss you."
+msgstr "Gracias por ser parte de Organilab, te extrañaremos."
+
+msgid "Your account was removed"
+msgstr "Su cuenta fue removida"
+
+msgid "Delete User Notification"
+msgstr "Notificación de la lista de usuarios a bloquear"
+
+msgid "Your account was deleted"
+msgstr "Su cuenta fue eliminada"
+
+#, python-format
+msgid ""
+"You have active impostor session <a class=\"text-white fw-bold text-"
+"decoration-underline\" href=\"%(reverseurl)s?all=1\">Finish it</a>"
+msgstr ""
+"Tienes una sesión de impostor activa <a class=\"text-white fw-bold text-"
+"decoration-underline\" href=\"%(reverseurl)s?all=1\">Termínala</a>"
 
 msgid "Request User is the same as current user"
 msgstr "Usuario solicitando es el mismo que el usuario actual"
@@ -760,10 +879,10 @@ msgstr ""
 "cambio de contraseña del usuario, comuníquese con él para que revise su "
 "correo.\n"
 "Algunos correos podrían llegar al SPAM, por favor revisar también la bandeja "
-"de correos SPAM"
+"de correos SPAM."
 
 msgid "The email is used as username."
-msgstr "El correo será usado como nombre de usuario"
+msgstr "El correo será usado como nombre de usuario."
 
 msgid ""
 "The user is created with the default role of Student, so they will be ready "
@@ -781,13 +900,13 @@ msgstr ""
 "cada laboratorio.\n"
 "Recuerde puede usar la funcionalidad de creación de usuarios mediante QR "
 "provista en la administración del laboratorio para simplificar la asignación "
-"de roles a un gran número de usuarios"
+"de roles a un gran número de usuarios."
 
 msgid "Feedback"
 msgstr "Retroalimentación"
 
 msgid "If you had some problem using Organilab, please let us know about it"
-msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber "
+msgstr "Si tuviste algún problema usando Organilab, por favor dejanos saber"
 
 msgid "Send"
 msgstr "Enviar"
@@ -851,7 +970,7 @@ msgid "Saved!"
 msgstr "¡Guardado!"
 
 msgid "The inform template has been saved!"
-msgstr "La plantilla de informe fue guardada"
+msgstr "¡La plantilla de informe fue guardada!"
 
 msgid "Your inform template has been saved"
 msgstr "Tu plantilla de informe fue guardada"
@@ -1080,9 +1199,6 @@ msgstr "La dirección de correo ya existe."
 
 msgid "Email address is associated to an username."
 msgstr "La dirección de correo se encuentra asociada a un nombre de usuario."
-
-msgid "Username"
-msgstr "Nombre de usuario"
 
 #, python-format
 msgid ""
@@ -1505,7 +1621,7 @@ msgid "Final balance"
 msgstr "Balance final"
 
 msgid "Reason to spend"
-msgstr "Razón del gasto"
+msgstr "Razon del gasto"
 
 msgid "Inform"
 msgstr "Información"
@@ -1547,7 +1663,7 @@ msgid ""
 "This select only shows shelves with same measurement unit than current object"
 msgstr ""
 "Esta selección solo muestra los estantes que tengan la misma unidad de "
-"medida que el objeto actual."
+"medida que el objeto actual"
 
 msgid ""
 "This select only shows shelves with some of the following features: <br>1) "
@@ -1631,7 +1747,7 @@ msgid "Furniture is not in available furnitures list."
 msgstr "Mueble no está en la lista de muebles disponibles."
 
 msgid "Shelf is not in available shelves list."
-msgstr "Estante no está disponible en la lista de estantes"
+msgstr "Estante no está disponible en la lista de estantes."
 
 msgid "Object cannot be moved to same shelf."
 msgstr "Object no puede ser movido al mismo estante."
@@ -3174,7 +3290,7 @@ msgid ""
 msgstr ""
 "Este correo ha sido enviado porque alguien trató de reiniciar su contraseña, "
 "si usted no fue por favor elimine este correo y no realice ninguna otra "
-"acción"
+"acción}"
 
 msgid "Reset password"
 msgstr "Recuperar contraseña"
@@ -3293,9 +3409,6 @@ msgstr "Donar a Organilab"
 
 msgid "Thank for support this project making your donation."
 msgstr "Gracias por apoyar este proyecto con una donación."
-
-msgid "Continue"
-msgstr "Continuar"
 
 msgid "Donation Details"
 msgstr "Detalle de la donación"
@@ -4594,7 +4707,7 @@ msgid "Tag Template saved successfully"
 msgstr "Plantilla de la etiqueta guardada con éxito"
 
 msgid "Invalid form"
-msgstr "Formularion inválido"
+msgstr "Formulario inválido"
 
 msgid "SGA label was deleted successfully"
 msgstr "Etiqueta SGA fue eliminada exitosamente"
