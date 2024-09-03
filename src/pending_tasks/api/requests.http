@@ -1,0 +1,18 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=PyCharm
+
+###
+
+GET http://127.0.0.1:8000/pending_tasks/api/pending_task_list/
+
+###
+
+PATCH http://localhost:8000/pending_tasks/api/pending_task_list/1/updated_task_status/
+Content-Type: application/json
+
+{
+    "status": 1
+}
+
+###
