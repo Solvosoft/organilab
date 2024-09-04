@@ -22,7 +22,7 @@ from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, \
     InformScheduler, RegisterUserQR, \
-    ShelfObject, ShelfObjectObservation, EquipmentType
+    ShelfObject, ShelfObjectObservation, EquipmentType, MaterialCapacity
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, \
@@ -862,4 +862,30 @@ class EquipmentTypeForm(GTForm, forms.ModelForm):
         widgets = {
             'name': genwidgets.TextInput,
             'description': genwidgets.Textarea
+        }
+
+
+class MaterialForm(MaterialCapacityObjectForm, forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        modal_id = kwargs.pop('modal_id')
+        laboratory_pk = kwargs.pop('laboratory_pk')
+        super(MaterialForm, self).__init__(*args, **kwargs)
+        self.fields['object'].required = False
+        self.fields['is_container'].initial = True
+
+    class Meta:
+        model = Object
+        exclude = ["model","serie","plaque"]
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym': genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'is_container': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
         }

@@ -80,3 +80,12 @@ class InformFilterSet(FilterSet):
     class Meta:
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
+
+class MaterialFilter(FilterSet):
+
+    class Meta:
+        model = Object
+        fields = {'id': ['exact'],
+                  'name': ['icontains'],
+                  'code': ['icontains'],
+                  }

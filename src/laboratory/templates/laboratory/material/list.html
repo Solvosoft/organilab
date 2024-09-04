@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% block pre_head %}
+{% define_urlname_action 'objectview_list' %}
+{% endblock %}
+{% block title %}
+{% trans 'Material management' %}{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{% trans 'Material List' %}</h1>
+
+<div>
+    <table class="table table-striped w-100 table-responsive" id="material_table"></table>
+</div>
+
+{% url "laboratory:api-material-list" org_pk lab_pk as list_obj_url %}
+{% trans 'Create material' as create_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url %}
+
+{% url "laboratory:api-material-detail" org_pk lab_pk 0 as detail_obj_url %}
+{% trans 'Update material' as update_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+
+{% endblock %}
+
+
+{% block js %}
+{{block.super}}
+<script>
+    var object_urls = {
+        list_url: "{% url 'laboratory:api-material-list' org_pk lab_pk %}",
+        create_url: "{% url 'laboratory:api-material-list' org_pk lab_pk %}",
+        destroy_url: "{% url 'laboratory:api-material-detail' org_pk lab_pk 0 %}",
+        update_url: "{% url 'laboratory:api-material-detail' org_pk lab_pk 0 %}"
+    }
+
+    datatable_inits = {
+        columns: [
+            {data: "id", name: "id", title: "ID", type: "string", visible: false},
+            {data: "code", name: "code", title: "Code", type: "string", visible: true},
+            {data: "name", name: "name", title: "Name", type: "string", visible: true},
+												{data: "actions", name: "actions", title: "Actions", type: "string", visible: true},
+        ],
+        addfilter: true
+    }
+
+    var material_modalids = {
+        create: "#create_obj_modal",
+        destroy: "#delete_obj_modal",
+        update: "#update_obj_modal"
+    }
+
+    var material_actions = {
+        table_actions: [],
+        object_actions: [],
+        title: gettext('Actions'),
+        className: "no-export-col"
+    }
+
+    icons = {
+        create: '<i class="fa fa-plus" aria-hidden="true"></i>',
+        clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+        detail: 'fa fa-eye',
+        update: 'fa fa-edit me-1 fa-lg',
+        destroy: 'fa fa-trash fa-lg'
+    }
+
+    let objconfig = {
+        urls: object_urls,
+        datatable_element: "#material_table",
+        modal_ids: material_modalids,
+        actions: material_actions,
+        datatable_inits: datatable_inits,
+        add_filter: true,
+        relation_render: {'field_autocomplete': 'text' },
+        delete_display: data => data['code'],
+        create: "btn-success",
+        icons: icons
+    }
+
+    let ocrud = ObjectCRUD("materialcrudobj", objconfig);
+    ocrud.init();
+</script>
+
+{%  endblock %}

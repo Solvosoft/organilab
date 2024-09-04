@@ -18,7 +18,7 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm
+from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm, MaterialForm
 from laboratory.models import Laboratory, BlockedListNotification, \
     OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
@@ -243,3 +243,20 @@ def view_equipment_list(request, org_pk, lab_pk):
     }
     return render(request, "laboratory/equipment/list.html", context=context)
 
+
+@permission_required('laboratory.view_object')
+def view_material_list(request, org_pk, lab_pk):
+    context = {
+        "org_pk": org_pk,
+        "lab_pk": lab_pk,
+        "laboratory": lab_pk,
+        "create_form": MaterialForm(prefix="create", initial={"type": Object.MATERIAL,
+                                                               "organization": org_pk,
+                                                               "laboratory": lab_pk,
+                                                               "created_by": request.user.pk},
+                                     modal_id="#create_obj_form",
+                                     laboratory_pk=lab_pk),
+        "update_form": MaterialForm(prefix="update", initial={"laboratory": lab_pk},
+                                     modal_id="#update_obj_form", laboratory_pk=lab_pk)
+    }
+    return render(request, "laboratory/material/list.html", context=context)
