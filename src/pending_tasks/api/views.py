@@ -40,11 +40,11 @@ class PendingTaskViewSet(AuthAllPermBaseObjectManagement):
             instance.validate_profile = request.user.profile
             instance.save()
             logger.info(f"Task {instance.id} assigned to user {request.user.username}")
-            return Response(PendingTaskSerializer(instance).data)
+            return Response(PendingTaskSerializer(instance).data, status=status.HTTP_200_OK)
         else:
             logger.warning(
                 f"Task {instance.id} could not be assigned, already assigned to {instance.validate_profile.user.username}")
-            return Response({'error': 'Unable to assign task'},
+            return Response({'error': 'Task already assigned'},
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True)
@@ -56,7 +56,7 @@ class PendingTaskViewSet(AuthAllPermBaseObjectManagement):
                 instance.save()
                 logger.info(
                     f"Task {instance.id} unassigned from user {request.user.username}")
-                return Response(PendingTaskSerializer(instance).data)
+                return Response(PendingTaskSerializer(instance).data, status=status.HTTP_200_OK)
             else:
                 logger.warning(
                     f"Task {instance.id} could not be unassigned, status is {instance.status}")
@@ -65,7 +65,7 @@ class PendingTaskViewSet(AuthAllPermBaseObjectManagement):
         else:
             logger.warning(
                 f"User {request.user.username} tried to unassign task {instance.id}, but is not assigned")
-            return Response({'error': 'Unable to unassign task'},
+            return Response({'error': f'Task not assigned to user {request.user.username}'},
                             status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['patch'])
@@ -78,7 +78,7 @@ class PendingTaskViewSet(AuthAllPermBaseObjectManagement):
                 instance.save()
                 logger.info(
                     f"Task {instance.id} status updated to {new_status} by user {request.user.username}")
-                return Response(PendingTaskSerializer(instance).data)
+                return Response(PendingTaskSerializer(instance).data, status=status.HTTP_200_OK)
             else:
                 logger.warning(
                     f"Invalid status {new_status} provided for task {instance.id}")
@@ -87,5 +87,5 @@ class PendingTaskViewSet(AuthAllPermBaseObjectManagement):
         else:
             logger.warning(
                 f"User {request.user.username} tried to update task {instance.id}, but is not assigned")
-            return Response({'error': 'Unable to update task'},
+            return Response({'error': f'Task not assigned to user {request.user.username}'},
                             status=status.HTTP_400_BAD_REQUEST)
