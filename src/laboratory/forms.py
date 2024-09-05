@@ -865,11 +865,20 @@ class EquipmentTypeForm(GTForm, forms.ModelForm):
         }
 
 
-class MaterialForm(MaterialCapacityObjectForm, forms.ModelForm):
+class MaterialForm(GTForm, forms.ModelForm):
+    capacity = forms.FloatField(required=False, widget=genwidgets.TextInput,
+                                min_value=settings.DEFAULT_MIN_QUANTITY,
+                                label=_("Capacity"))
+    capacity_measurement_unit = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key='units'),
+        required=False,
+        widget=genwidgets.Select(),
+        label=_("Capacity measurement unit"))
+    object = forms.ModelChoiceField(queryset=Object.objects.all(), required=False,
+                                    widget=genwidgets.HiddenInput)
 
     def __init__(self, *args, **kwargs):
         modal_id = kwargs.pop('modal_id')
-        laboratory_pk = kwargs.pop('laboratory_pk')
         super(MaterialForm, self).__init__(*args, **kwargs)
         self.fields['object'].required = False
 

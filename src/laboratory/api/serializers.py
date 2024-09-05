@@ -645,6 +645,18 @@ class ValidateMaterialCapacitySerializer(serializers.ModelSerializer):
     capacity = serializers.FloatField(min_value=1)
     capacity_measurement_unit = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key='units'))
 
+    def validate(self, data):
+        data = super().validate(data)
+        material_object = data.get('object')
+
+        if material_object and material_object.type != Object.MATERIAL:
+            logger.debug(
+                f'ValidateMaterialCapacitySerializer --> type ({material_object.type}) != Object.MATERIAL ({Object.MATERIAL})'
+            )
+            raise serializers.ValidationError(
+                {'type': _("Type object is not valid.")}
+            )
+        return data
 
     class Meta:
         model = MaterialCapacity
@@ -678,7 +690,7 @@ class ValidateMaterialSerializer(serializers.ModelSerializer):
             logger.debug(
                 f'ValidateMaterialSerializer --> type ({obj_type}) != Object.MATERIAL ({Object.MATERIAL})')
             raise serializers.ValidationError(
-                {'type': _("Type material object is not valid.")})
+                {'type': _("Type object is not valid.")})
 
         return data
 

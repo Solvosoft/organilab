@@ -255,9 +255,9 @@ def view_material_list(request, org_pk, lab_pk):
                                                                "laboratory": lab_pk,
                                                                "created_by": request.user.pk,
                                                               "is_container": True},
-                                     modal_id="#create_obj_form",
-                                     laboratory_pk=lab_pk),
+                                     modal_id="#create_obj_form"
+                                ),
         "update_form": MaterialForm(prefix="update",
-                                     modal_id="#update_obj_form", laboratory_pk=lab_pk)
+                                     modal_id="#update_obj_form")
     }
     return render(request, "laboratory/material/list.html", context=context)
