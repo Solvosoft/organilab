@@ -238,8 +238,8 @@ def view_equipment_list(request, org_pk, lab_pk):
                                                                "created_by": request.user.pk},
                                      modal_id="#create_obj_form",
                                      laboratory_pk=lab_pk),
-        "update_form": EquipmentForm(prefix="update", initial={"laboratory": lab_pk},
-                                     modal_id="#update_obj_form", laboratory_pk=lab_pk)
+        "update_form": EquipmentForm(prefix="update",modal_id="#update_obj_form",
+                                     laboratory_pk=lab_pk)
     }
     return render(request, "laboratory/equipment/list.html", context=context)
 

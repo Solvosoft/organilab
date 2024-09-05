@@ -376,7 +376,7 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
             logger.debug(
                 f'ValidateEquipmentSerializer --> type ({obj_type}) != Object.EQUIPMENT ({Object.EQUIPMENT})')
             raise serializers.ValidationError(
-                {'type': _("Type equipment object is not valid.")})
+                {'type': _("Type reactive object is not valid.")})
 
         if organization.pk != org_pk_view:
             logger.debug(
@@ -648,9 +648,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
 
 
 class ValidateReactiveCharacteristicsSerializer(serializers.ModelSerializer):
-    obj = (serializers.PrimaryKeyRelatedField
-              (queryset=Object.objects.using(settings.READONLY_DATABASE),
-               allow_empty=True, allow_null=True, required=False))
+    obj = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE), allow_empty=True, allow_null=True, required=False)
 
     iarc = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key='IARC').using(settings.READONLY_DATABASE),
                                                    allow_empty=True, allow_null=True, required=False)
@@ -723,6 +721,8 @@ class ReactiveSerializer(serializers.ModelSerializer):
     seveso_list = serializers.SerializerMethodField()
     img_representation = serializers.SerializerMethodField()
 
+    combined_booleans = serializers.SerializerMethodField()
+
     def get_iarc(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
             iarc = obj.sustancecharacteristics.iarc
@@ -741,10 +741,10 @@ class ReactiveSerializer(serializers.ModelSerializer):
 
     def get_white_organ(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-            white_organ = obj.sustancecharacteristics.white_organ.all()
-            if white_organ:
+            white_organs = obj.sustancecharacteristics.white_organ.all()
+            if white_organs:
                 return [{'id': white_organ.pk, 'text': white_organ.description, 'disabled': False,
-                         'selected': True} for white_organ in white_organ]
+                         'selected': True} for white_organ in white_organs]
         return None
 
     def get_bioaccumulable(self, obj):
@@ -765,8 +765,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
     def get_security_sheet(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
             file_value = obj.sustancecharacteristics.security_sheet
-            return ChunkedFileField().to_representation(file_value)
-        return None
+            if file_value:
+                return ChunkedFileField().to_representation(file_value)
+            return None
 
     def get_is_precursor(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
@@ -783,34 +784,34 @@ class ReactiveSerializer(serializers.ModelSerializer):
 
     def get_h_code(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-            h_code = obj.sustancecharacteristics.h_code.all()
-            if h_code:
+            h_codes = obj.sustancecharacteristics.h_code.all()
+            if h_codes:
                 return [{'id': h_code.pk, 'text': h_code.description, 'disabled': False,
-                         'selected': True} for h_code in h_code]
+                         'selected': True} for h_code in h_codes]
         return None
 
     def get_ue_code(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-            ue_code = obj.sustancecharacteristics.ue_code.all()
-            if ue_code:
+            ue_codes = obj.sustancecharacteristics.ue_code.all()
+            if ue_codes:
                 return [{'id': ue_code.pk, 'text': ue_code.description, 'disabled': False,
-                         'selected': True} for ue_code in ue_code]
+                         'selected': True} for ue_code in ue_codes]
         return None
 
     def get_nfpa(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-            nfpa = obj.sustancecharacteristics.nfpa.all()
-            if nfpa:
+            nfpas = obj.sustancecharacteristics.nfpa.all()
+            if nfpas:
                 return [{'id': nfpa.pk, 'text': nfpa.description, 'disabled': False,
-                         'selected': True} for nfpa in nfpa]
+                         'selected': True} for nfpa in nfpas]
         return None
 
     def get_storage_class(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
-            storage_class = obj.sustancecharacteristics.storage_class.all()
-            if storage_class:
+            storage_classes = obj.sustancecharacteristics.storage_class.all()
+            if storage_classes:
                 return [{'id': storage_class.pk, 'text': storage_class.description, 'disabled': False,
-                         'selected': True} for storage_class in storage_class]
+                         'selected': True} for storage_class in storage_classes]
         return None
 
     def get_seveso_list(self, obj):
@@ -821,8 +822,16 @@ class ReactiveSerializer(serializers.ModelSerializer):
     def get_img_representation(self, obj):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
             file_value = obj.sustancecharacteristics.img_representation
-            return ChunkedFileField().to_representation(file_value)
-        return None
+            if file_value:
+                return ChunkedFileField().to_representation(file_value)
+            return None
+
+    def get_combined_booleans(self, obj):
+        is_public = '<i class="fa fa-users fa-fw text-success"></i>' if obj.is_public else '<i class="fa fa-user-times fa-fw text-warning"></i>'
+        precursor = '<i class="fa fa-check-circle fa-fw text-success"></i>' if obj.sustancecharacteristics.is_precursor else '<i class="fa fa-times-circle fa-fw text-warning"></i>'
+        bioaccumulable = '<i class="fa fa-leaf fa-fw text-success"></i>' if obj.sustancecharacteristics.bioaccumulable else '<i class="fa fa-flask fa-fw text-warning"></i>'
+
+        return f"{is_public} {precursor} {bioaccumulable}"
 
 
     def get_actions(self, obj):
@@ -842,7 +851,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
                   'plaque', 'iarc', 'imdg', 'white_organ', 'bioaccumulable',
                   'molecular_formula', 'cas_id_number', 'security_sheet', 'is_precursor',
                   'precursor_type', 'h_code', 'ue_code', 'nfpa',
-                  'storage_class', 'seveso_list','img_representation','actions']
+                  'storage_class', 'seveso_list','img_representation', 'combined_booleans','actions']
 
 class ReactiveDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ReactiveSerializer(), required=True)

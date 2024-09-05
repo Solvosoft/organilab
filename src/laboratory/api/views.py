@@ -378,7 +378,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
     queryset = Object.objects.filter(type=Object.EQUIPMENT)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['code', 'name']  # for the global search
+    search_fields = ['code', 'name', 'synonym']  # for the global search
     filterset_class = filterset.EquipmentFilter
     ordering_fields = ['code']
     ordering = ('code',)  # default order
@@ -395,7 +395,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         response_data = equipment_serializer.data
         equipment_ch_data = equipment_ch_serializer.data
 
-        # THIS ID SHOULDN'T REPLACE THE MAIN ID(EQUIPMENT OBJECT)
+        # THIS ID SHOULDN'T REPLACE THE MAIN ID(REACTIVE OBJECT)
         del equipment_ch_data['id']
         response_data.update(equipment_ch_data)
 
@@ -729,7 +729,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
     ordering_fields = ['code']
     ordering = ('code',)  # default order
     operation_type = ''
-    org_pk, lab_pk, org = None, None, None
+    org_pk, org = None, None
 
     def get_response_validate_data(self, reactive_serializer, reactive_ch_serializer):
         reactive_changed_data = list(
@@ -747,16 +747,16 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
         return response_data, reactive_changed_data, reactive_ch_changed_data
 
-    def get_reactive_ch_serializer(self, instance, request, partial, lab_pk):
+    def get_reactive_ch_serializer(self, instance, request, partial):
         if hasattr(instance, 'sustancecharacteristics'):
             reactive_ch_instance = instance.sustancecharacteristics
             reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
-                reactive_ch_instance, data=request.data, partial=partial, context={"lab_pk": lab_pk})
+                reactive_ch_instance, data=request.data, partial=partial)
         else:
             data = request.data
             data.update({"object": instance.pk})
             reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
-                data=data, partial=partial, context={"lab_pk": lab_pk})
+                data=data, partial=partial)
 
         return reactive_ch_serializer
 
@@ -771,7 +771,6 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
     def create(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
-        self.lab_pk = kwargs["lab_pk"]
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=self.org_pk)
@@ -780,7 +779,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         # Serializers
         reactive_serializer = self.get_serializer(data=request.data)
         reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
-            data=request.data, context={"lab_pk": self.lab_pk})
+            data=request.data)
 
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
@@ -817,10 +816,9 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             raise ValidationError(errors)
 
     def destroy(self, request, *args, **kwargs):
-        # EquipmentCharacteristics has OnetoOne relation with Object(Equipment) -->
+        # ReactiveCharacteristics has OnetoOne relation with Object(Equipment) -->
         # ON DELETE CASCADE
         self.org_pk = kwargs["org_pk"]
-        self.lab_pk = kwargs["lab_pk"]
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=self.org_pk)
@@ -844,7 +842,6 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
-        self.lab_pk = kwargs["lab_pk"]
         organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org_pk)
         errors, response_data = {}, {}
@@ -854,7 +851,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         reactive_serializer = self.get_serializer(instance, data=request.data,
                                                    partial=partial)
         reactive_ch_serializer = self.get_reactive_ch_serializer(
-            instance, request, partial, self.lab_pk)
+            instance, request, partial)
 
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
@@ -896,6 +893,5 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs['org_pk']
-        self.lab_pk = kwargs['lab_pk']
         return super().list(request, *args, **kwargs)
 

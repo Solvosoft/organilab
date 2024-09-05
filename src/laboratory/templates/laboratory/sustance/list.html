@@ -51,22 +51,7 @@ var object_urls = {
 datatable_inits = {
     columns: [
                 {data: "id", name: "id", title: "ID", type: "string", visible: false},
-					        				{
-																				data: null,
-																				name: "combined_booleans",
-																				title: "Booleans",
-																				type: "string",
-																				render: function(data, type, row, meta) {
-																								let is_public = row.is_public ? '<i class="fa fa-users fa-fw text-success"></i>' :
-																									'<i class="fa fa-user-times fa-fw text-warning"></i>';
-																								let precursor = row.is_precursor ? '<i class="fa fa-check-circle fa-fw text-success"></i>' :
-																									'<i class="fa fa-times-circle fa-fw text-warning"></i>';
-																								let bioaccumulable = row.bioaccumulable ? '<i class="fa fa-leaf fa-fw text-success"></i>' :
-																									'<i class="fa fa-flask text-warning"></i>';
-
-																								return `${is_public} ${precursor} ${bioaccumulable}`;
-																				}
-																},
+                {data: "combined_booleans", name: "combined_booleans", type: "boolean"},
                 {data: "code", name: "code", title: "Code", type: "string", visible: true},
                 {data: "name", name: "name", title: "Name", type: "string", visible: true},
                 {data: "synonym", name: "synonym", title: "Synonym", type: "string", visible: true},

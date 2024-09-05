@@ -139,8 +139,8 @@ reports_all_lab = [
 
 sustance_urls = [
     path('', view_reactive_list, name='sustance_list'),
-    path('add/', create_edit_sustance, name='sustance_add'),
-    path('edit/<int:pk>/', create_edit_sustance, name='sustance_manage'),
+    #path('add/', create_edit_sustance, name='sustance_add'),
+    #path('edit/<int:pk>/', create_edit_sustance, name='sustance_manage'),
     #path('delete/<int:pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
     #path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
 ]

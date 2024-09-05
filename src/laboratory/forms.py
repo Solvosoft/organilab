@@ -869,18 +869,18 @@ class ReactiveForm(GTForm, forms.ModelForm):
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
 
     iarc = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=Catalog.objects.filter(key='IARC').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='IARC'),
                                             blank=True, required=False,
                                             label=_("Iarc"))
 
 
     imdg = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=Catalog.objects.filter(key='IDMG').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='IDMG'),
                                             blank=True, required=False,
                                             label=_("Imdg"))
 
     white_organ = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='white_organ').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='white_organ'),
                                             blank=True, required=False,
                                             label=_("White Organ"))
 
@@ -903,27 +903,27 @@ class ReactiveForm(GTForm, forms.ModelForm):
                                         label=_("Is Precursor?"))
 
     precursor_type = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=Catalog.objects.filter(key='Precursor').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='Precursor'),
                                             blank=True, required=False,
                                             label=_("Precursor type"))
 
     h_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=DangerIndication.objects.all().using(settings.READONLY_DATABASE),
+                                            queryset=DangerIndication.objects.all(),
                                             blank=True, required=False,
                                             label=_("Danger indication  "))
 
     ue_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='ue_code').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='ue_code'),
                                             blank=True, required=False,
                                             label=_("UE Codes"))
 
     nfpa = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='nfpa').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='nfpa'),
                                             blank=True, required=False,
                                             label=_("NFPA codes"))
 
     storage_class = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='storage_class').using(settings.READONLY_DATABASE),
+                                            queryset=Catalog.objects.filter(key='storage_class'),
                                             blank=True, required=False,
                                             label=_("Storage class"))
 
@@ -936,12 +936,11 @@ class ReactiveForm(GTForm, forms.ModelForm):
 
 
     def __init__(self, *args, **kwargs):
-        modal_id = kwargs.pop('modal_id')
-        laboratory_pk = kwargs.pop('laboratory_pk')
+        kwargs.pop('modal_id')
+        kwargs.pop('laboratory_pk')
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
-        laboratory_id = "#id_%s-laboratory" % self.prefix
-        organization_id = "#id_%s-organization" % self.prefix
+
 
 
     class Meta:
