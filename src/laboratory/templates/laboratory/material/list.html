@@ -30,6 +30,11 @@
 {% block js %}
 {{block.super}}
 <script>
+
+		const selects2_api_urls = {
+					capacitymeasurementunit : "{% url 'capacitymeasurementunit-list' %}"+"?organization="+"{{org_pk}}"+"&laboratory="+"{{lab_pk}}"
+	}
+
     var object_urls = {
         list_url: "{% url 'laboratory:api-material-list' org_pk lab_pk %}",
         create_url: "{% url 'laboratory:api-material-list' org_pk lab_pk %}",
@@ -42,7 +47,12 @@
             {data: "id", name: "id", title: "ID", type: "string", visible: false},
             {data: "code", name: "code", title: "Code", type: "string", visible: true},
             {data: "name", name: "name", title: "Name", type: "string", visible: true},
-												{data: "actions", name: "actions", title: "Actions", type: "string", visible: true},
+            {data: "capacity", name: "materialcapacity__capacity", title: "Capacity", type: "num", visible: true},
+            {data: "capacity_measurement_unit", name: "materialcapacity__capacity_measurement_unit",
+            title: "Unit",
+            type: "select2", visible: true,  url: selects2_api_urls['capacitymeasurementunit'],
+            render: selectobjprint({display_name: "text"})},
+            {data: "actions", name: "actions", title: "Actions", type: "string", visible: true},
         ],
         addfilter: true
     }

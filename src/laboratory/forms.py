@@ -872,7 +872,7 @@ class MaterialForm(MaterialCapacityObjectForm, forms.ModelForm):
         laboratory_pk = kwargs.pop('laboratory_pk')
         super(MaterialForm, self).__init__(*args, **kwargs)
         self.fields['object'].required = False
-        self.fields['is_container'].initial = True
+
 
     class Meta:
         model = Object

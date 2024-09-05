@@ -253,10 +253,11 @@ def view_material_list(request, org_pk, lab_pk):
         "create_form": MaterialForm(prefix="create", initial={"type": Object.MATERIAL,
                                                                "organization": org_pk,
                                                                "laboratory": lab_pk,
-                                                               "created_by": request.user.pk},
+                                                               "created_by": request.user.pk,
+                                                              "is_container": True},
                                      modal_id="#create_obj_form",
                                      laboratory_pk=lab_pk),
-        "update_form": MaterialForm(prefix="update", initial={"laboratory": lab_pk},
+        "update_form": MaterialForm(prefix="update",
                                      modal_id="#update_obj_form", laboratory_pk=lab_pk)
     }
     return render(request, "laboratory/material/list.html", context=context)

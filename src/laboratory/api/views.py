@@ -759,7 +759,7 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
         response_data = material_serializer.data
         material_ca_data = material_ca_serializer.data
 
-        # THIS ID SHOULDN'T REPLACE THE MAIN ID(EQUIPMENT OBJECT)
+        # THIS ID SHOULDN'T REPLACE THE MAIN ID(MATERIAL OBJECT)
         del material_ca_data['id']
         response_data.update(material_ca_data)
 
@@ -775,16 +775,16 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
 
         # Serializers
         material_serializer = self.get_serializer(data=request.data)
-        material_ca_serializer = ValidateMaterialCapacitySerializer(
+        material_capacity_serializer = ValidateMaterialCapacitySerializer(
             data=request.data, context={"lab_pk": self.lab_pk})
 
         if material_serializer.is_valid():
-            if material_ca_serializer.is_valid():
+            if material_capacity_serializer.is_valid():
                 instance = material_serializer.save()
-                material_ca_serializer.save(object=instance)
+                material_capacity_serializer.save(object=instance)
 
-                response_data, material_changed_data, material_ca_changed_data = self.get_response_validate_data(
-                    material_serializer, material_ca_serializer)
+                response_data, material_changed_data, material_capacity_changed_data = self.get_response_validate_data(
+                    material_serializer, material_capacity_serializer)
 
                 # Multiple headers
                 headers = self.get_success_headers(response_data)
@@ -797,36 +797,35 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
                 if hasattr(instance, 'materialcapacity'):
                     organilab_logentry(request.user, instance, ADDITION,
                                        "material capacity",
-                                       changed_data=material_ca_changed_data,
+                                       changed_data=material_capacity_changed_data,
                                        relobj=organization)
 
                 return Response(response_data, status=status.HTTP_201_CREATED,
                                 headers=headers)
             else:
-                errors.update(material_ca_serializer.errors)
+                errors.update(material_capacity_serializer.errors)
         else:
             errors.update(material_serializer.errors)
-            if not material_ca_serializer.is_valid():
-                errors.update(material_ca_serializer.errors)
+            if not material_capacity_serializer.is_valid():
+                errors.update(material_capacity_serializer.errors)
 
         if errors:
             raise ValidationError(errors)
 
-    def get_material_ca_serializer(self, instance, request, partial, lab_pk):
+    def get_material_capacity_serializer(self, instance, request, partial, lab_pk):
         data = request.data
 
         if hasattr(instance, 'materialcapacity'):
             data['object'] = instance.pk
-            material_ca_instance = instance.materialcapacity
-            material_ca_serializer = ValidateMaterialCapacitySerializer(
-                material_ca_instance, data=data, partial=partial,
-                context={"lab_pk": lab_pk})
+            material_capacity_instance = instance.materialcapacity
+            material_capacity_serializer = ValidateMaterialCapacitySerializer(
+                material_capacity_instance, data=data, partial=partial)
         else:
             data.update({"object": instance.pk})
-            material_ca_serializer = ValidateMaterialCapacitySerializer(
-                data=data, partial=partial, context={"lab_pk": lab_pk})
+            material_capacity_serializer = ValidateMaterialCapacitySerializer(
+                data=data, partial=partial)
 
-        return material_ca_serializer
+        return material_capacity_serializer
 
     def update(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
@@ -835,26 +834,26 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=self.org_pk)
         errors, response_data = {}, {}
-        material_ca_action = CHANGE
+        material_capacity_action = CHANGE
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         material_serializer = self.get_serializer(instance, data=request.data,
                                                    partial=partial)
-        material_ca_serializer = self.get_material_ca_serializer(
+        material_capacity_serializer = self.get_material_capacity_serializer(
             instance, request, partial, self.lab_pk)
 
         if material_serializer.is_valid():
-            if material_ca_serializer.is_valid():
+            if material_capacity_serializer.is_valid():
                 instance = material_serializer.save()
-                material_ca = material_ca_serializer.save()
+                material_capacity = material_capacity_serializer.save()
 
                 if getattr(instance, '_prefetched_objects_cache', None):
                     # If 'prefetch_related' has been applied to a queryset, we need to
                     # forcibly invalidate the prefetch cache on the instance.
                     instance._prefetched_objects_cache = {}
 
-                response_data, material_changed_data, material_ca_changed_data = self.get_response_validate_data(
-                    material_serializer, material_ca_serializer)
+                response_data, material_changed_data, material_capacity_changed_data = self.get_response_validate_data(
+                    material_serializer, material_capacity_serializer)
 
                 # Log Entry Update Action
                 organilab_logentry(request.user, instance, CHANGE, "material object",
@@ -862,19 +861,19 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
                                    relobj=organization)
 
                 if not hasattr(instance, 'materialcapacity'):
-                    material_ca_action = ADDITION
+                    material_capacity_action = ADDITION
 
-                organilab_logentry(request.user, material_ca, material_ca_action,
+                organilab_logentry(request.user, material_capacity, material_capacity_action,
                                    "material capacity",
-                                   changed_data=material_ca_changed_data,
+                                   changed_data=material_capacity_changed_data,
                                    relobj=organization)
 
             else:
-                errors.update(material_ca_serializer.errors)
+                errors.update(material_capacity_serializer.errors)
         else:
             errors.update(material_serializer.errors)
-            if not material_ca_serializer.is_valid():
-                errors.update(material_ca_serializer.errors)
+            if not material_capacity_serializer.is_valid():
+                errors.update(material_capacity_serializer.errors)
 
         if errors:
             raise ValidationError(errors)
@@ -890,7 +889,7 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
             OrganizationStructure.objects.using(settings.READONLY_DATABASE),
             pk=self.org_pk)
         instance = self.get_object()
-        material_ca_instance = instance.materialcapacity
+        material_capacity_instance = instance.materialcapacity
 
         if hasattr(instance, 'materialcapacity'):
             instance.materialcapacity.delete()
@@ -900,8 +899,8 @@ class MaterialManagementViewset(AuthAllPermBaseObjectManagement):
         organilab_logentry(request.user, instance, DELETION, "material object",
                            relobj=organization)
 
-        if material_ca_instance:
-            organilab_logentry(request.user, material_ca_instance, DELETION,
+        if material_capacity_instance:
+            organilab_logentry(request.user, material_capacity_instance, DELETION,
                                "material capacity",
                                relobj=organization)
         return destroy
