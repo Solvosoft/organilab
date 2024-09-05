@@ -8,6 +8,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from rest_framework import viewsets
+
+from laboratory.api.serializers import ReactiveSerializer
 from laboratory.views.djgeneric import DeleteView
 from django_datatables_view.base_datatable_view import BaseDatatableView
 from laboratory.models import Object, Laboratory, OrganizationStructure
@@ -81,7 +84,6 @@ def sustance_list(request, org_pk, lab_pk):
         'laboratory': lab_pk,
         'org_pk': org_pk,
     })
-
 
 @method_decorator(permission_required('laboratory.delete_object'), name='dispatch')
 class SubstanceDelete(DeleteView):

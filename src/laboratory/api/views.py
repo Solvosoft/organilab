@@ -26,7 +26,8 @@ from laboratory.api.serializers import ReservedProductsSerializer, \
     ReservationSerializer, \
     ReservedProductsSerializerUpdate, CommentsSerializer, \
     ShelfObjectSerialize, \
-    LogEntryUserDataTableSerializer, ValidateEquipmentCharacteristicsSerializer
+    LogEntryUserDataTableSerializer, ValidateEquipmentCharacteristicsSerializer, \
+    ValidateReactiveCharacteristicsSerializer
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import CommentInform, Inform, Protocol, OrganizationStructure, \
     Laboratory, InformsPeriod, ShelfObject, Shelf, Object, Catalog, EquipmentType
@@ -702,3 +703,199 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
         self.org_pk = kwargs['org_pk']
         self.lab_pk = kwargs['lab_pk']
         return super().list(request, *args, **kwargs)
+
+
+class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        'list': serializers.ReactiveDataTableSerializer,
+        'destroy': serializers.ReactiveSerializer,
+        'create': serializers.ValidateReactiveSerializer,
+        'update': serializers.ValidateReactiveSerializer
+    }
+    perms = {
+        'list': ["laboratory.view_object"],
+        'create': ["laboratory.add_object", "laboratory.view_object"],
+        'update': ["laboratory.change_object", "laboratory.view_object"],
+        'destroy': ["laboratory.delete_object", "laboratory.view_object"]
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+
+    queryset = Object.objects.filter(type=Object.REACTIVE)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ['code', 'name']  # for the global search
+    filterset_class = filterset.ReactiveFilter
+    ordering_fields = ['code']
+    ordering = ('code',)  # default order
+    operation_type = ''
+    org_pk, lab_pk, org = None, None, None
+
+    def get_response_validate_data(self, reactive_serializer, reactive_ch_serializer):
+        reactive_changed_data = list(
+            reactive_serializer.validated_data.keys())
+        reactive_ch_changed_data = list(
+            reactive_ch_serializer.validated_data.keys())
+
+        # Multiple response data
+        response_data = reactive_serializer.data
+        reactive_ch_data = reactive_ch_serializer.data
+
+        # THIS ID SHOULDN'T REPLACE THE MAIN ID(EQUIPMENT OBJECT)
+        del reactive_ch_data['id']
+        response_data.update(reactive_ch_data)
+
+        return response_data, reactive_changed_data, reactive_ch_changed_data
+
+    def get_reactive_ch_serializer(self, instance, request, partial, lab_pk):
+        if hasattr(instance, 'sustancecharacteristics'):
+            reactive_ch_instance = instance.sustancecharacteristics
+            reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
+                reactive_ch_instance, data=request.data, partial=partial, context={"lab_pk": lab_pk})
+        else:
+            data = request.data
+            data.update({"object": instance.pk})
+            reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
+                data=data, partial=partial, context={"lab_pk": lab_pk})
+
+        return reactive_ch_serializer
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        filters = (Q(organization__in=get_pk_org_ancestors_decendants(self.request.user,
+                                                                      self.org_pk),
+                     is_public=True)
+                   | Q(organization__pk=self.org_pk, is_public=False))
+
+        return queryset.filter(filters).distinct()
+
+    def create(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=self.org_pk)
+        errors, response_data, headers = {}, {}, self.get_success_headers({})
+
+        # Serializers
+        reactive_serializer = self.get_serializer(data=request.data)
+        reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
+            data=request.data, context={"lab_pk": self.lab_pk})
+
+        if reactive_serializer.is_valid():
+            if reactive_ch_serializer.is_valid():
+                instance = reactive_serializer.save()
+                reactive_ch_serializer.save(obj=instance)
+
+                response_data, reactive_changed_data, reactive_ch_changed_data = self.get_response_validate_data(
+                    reactive_serializer, reactive_ch_serializer)
+
+                # Multiple headers
+                headers = self.get_success_headers(response_data)
+
+                # Log Entry Create Action
+                organilab_logentry(request.user, instance, ADDITION, "reactive object",
+                                   changed_data=reactive_changed_data,
+                                   relobj=organization)
+
+                if hasattr(instance, 'sustancecharacteristics'):
+                    organilab_logentry(request.user, instance, ADDITION,
+                                       "sustance characteristics",
+                                       changed_data=reactive_ch_changed_data,
+                                       relobj=organization)
+
+                return Response(response_data, status=status.HTTP_201_CREATED,
+                                headers=headers)
+            else:
+                errors.update(reactive_ch_serializer.errors)
+        else:
+            errors.update(reactive_serializer.errors)
+            if not reactive_ch_serializer.is_valid():
+                errors.update(reactive_ch_serializer.errors)
+
+        if errors:
+            raise ValidationError(errors)
+
+    def destroy(self, request, *args, **kwargs):
+        # EquipmentCharacteristics has OnetoOne relation with Object(Equipment) -->
+        # ON DELETE CASCADE
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+            pk=self.org_pk)
+        instance = self.get_object()
+        reactive_ch_instance = None
+
+        if hasattr(instance, 'sustancecharacteristics'):
+            reactive_ch_instance = instance.sustancecharacteristics
+
+        destroy = super().destroy(request, *args, **kwargs)
+
+        # Log Entry Destroy Action
+        organilab_logentry(request.user, instance, DELETION, "reactive object",
+                           relobj=organization)
+
+        if reactive_ch_instance:
+            organilab_logentry(request.user, reactive_ch_instance, DELETION,
+                               "sustance characteristics",
+                               relobj=organization)
+        return destroy
+
+    def update(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
+        organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org_pk)
+        errors, response_data = {}, {}
+        reactive_ch_action = CHANGE
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        reactive_serializer = self.get_serializer(instance, data=request.data,
+                                                   partial=partial)
+        reactive_ch_serializer = self.get_reactive_ch_serializer(
+            instance, request, partial, self.lab_pk)
+
+        if reactive_serializer.is_valid():
+            if reactive_ch_serializer.is_valid():
+                instance = reactive_serializer.save()
+                reactive_ch = reactive_ch_serializer.save()
+
+                if getattr(instance, '_prefetched_objects_cache', None):
+                    # If 'prefetch_related' has been applied to a queryset, we need to
+                    # forcibly invalidate the prefetch cache on the instance.
+                    instance._prefetched_objects_cache = {}
+
+                response_data, reactive_changed_data, reactive_ch_changed_data = self.get_response_validate_data(
+                    reactive_serializer, reactive_ch_serializer)
+
+                # Log Entry Update Action
+                organilab_logentry(request.user, instance, CHANGE, "reactive object",
+                                   changed_data=reactive_changed_data,
+                                   relobj=organization)
+
+                if not hasattr(instance, 'sustancecharacteristics'):
+                    reactive_ch_action = ADDITION
+
+                organilab_logentry(request.user, reactive_ch, reactive_ch_action,
+                                   "sustance characteristics",
+                                   changed_data=reactive_ch_changed_data,
+                                   relobj=organization)
+
+            else:
+                errors.update(reactive_ch_serializer.errors)
+        else:
+            errors.update(reactive_serializer.errors)
+            if not reactive_ch_serializer.is_valid():
+                errors.update(reactive_ch_serializer.errors)
+
+        if errors:
+            raise ValidationError(errors)
+
+        return Response(response_data)
+
+    def list(self, request, *args, **kwargs):
+        self.org_pk = kwargs['org_pk']
+        self.lab_pk = kwargs['lab_pk']
+        return super().list(request, *args, **kwargs)
+
