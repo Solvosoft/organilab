@@ -44,15 +44,15 @@
 
     datatable_inits = {
         columns: [
-            {data: "id", name: "id", title: "ID", type: "string", visible: false},
-            {data: "code", name: "code", title: "Code", type: "string", visible: true},
-            {data: "name", name: "name", title: "Name", type: "string", visible: true},
-            {data: "capacity", name: "materialcapacity__capacity", title: "Capacity", type: "num", visible: true},
+            {data: "id", name: "id", title: gettext("ID"), type: "string", visible: false},
+            {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
+            {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+            {data: "capacity", name: "materialcapacity__capacity", title: gettext("Capacity"), type: "num", visible: true},
             {data: "capacity_measurement_unit", name: "materialcapacity__capacity_measurement_unit",
-            title: "Unit",
+            title: gettext("Unit"),
             type: "select2", visible: true,  url: selects2_api_urls['capacitymeasurementunit'],
             render: selectobjprint({display_name: "text"})},
-            {data: "actions", name: "actions", title: "Actions", type: "string", visible: true},
+            {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true},
         ],
         addfilter: true
     }
