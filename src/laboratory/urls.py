@@ -25,7 +25,8 @@ from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, \
     CommentAPI, ProtocolViewSet, \
     LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, \
     ShelfObjectObservationView, EquipmentManagementViewset, \
-    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset
+    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset, \
+    ReactiveManagementViewset
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -40,7 +41,7 @@ from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications, \
-    view_equipment_list
+    view_equipment_list, view_reactive_list
 from laboratory.views.organizations import OrganizationDeleteView, \
     OrganizationCreateView, OrganizationUpdateView, OrganizationActionsFormview
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
@@ -137,11 +138,11 @@ reports_all_lab = [
 ]
 
 sustance_urls = [
-    path('', sustance_list, name='sustance_list'),
+    path('', view_reactive_list, name='sustance_list'),
     path('add/', create_edit_sustance, name='sustance_add'),
     path('edit/<int:pk>/', create_edit_sustance, name='sustance_manage'),
-    path('delete/<int:pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
-    path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
+    #path('delete/<int:pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
+    #path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
 equipment_urls = [
@@ -263,6 +264,8 @@ objectrouter = DefaultRouter()
 objectrouter.register('api_equipment_list', EquipmentManagementViewset, basename='api-equipment')
 objectrouter.register('api_instrumentalfamily_list', InstrumentalFamilyManagementViewset, basename='api-instrumentalfamily')
 objectrouter.register('api_equipmenttype_list', EquipmentTypeManagementViewset, basename='api-equipmenttype')
+objectrouter.register("api_reactive_list", ReactiveManagementViewset, basename="api-reactive")
+
 
 
 
