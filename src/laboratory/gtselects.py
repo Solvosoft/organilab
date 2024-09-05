@@ -506,3 +506,25 @@ class EquipmentTypeLookup(BaseSelect2View):
             'status': 'Bad request',
             'errors': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
+@register_lookups(prefix="capacitymeasurementunit", basename="capacitymeasurementunit")
+class CapacityMeasurementUnitLookup(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(key="units")
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        serializer = UserAccessOrgLabValidateSerializer(data=request.GET, context={'user': request.user})
+
+        if serializer.is_valid():
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)

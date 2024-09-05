@@ -103,7 +103,7 @@
                 {% if perms.laboratory.view_object %}
                 <li class="list-group-item">
                     <a  href="{% url 'laboratory:sustance_list' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Reactive' %}</strong></a>
-                    /  <a  href="{% url 'laboratory:objectview_list' org_pk laboratory %}?type_id=1"><strong>{% trans 'Material' %}</strong></a>
+                    /  <a  href="{% url 'laboratory:material_list' org_pk laboratory %}"><strong>{% trans 'Material' %}</strong></a>
                     /  <a  href="{% url 'laboratory:equipment_list' org_pk laboratory %}"><strong>{% trans 'Equipment' %}</strong></a>
                 </li>
               {% endif %}

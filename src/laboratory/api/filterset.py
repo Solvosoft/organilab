@@ -1,6 +1,7 @@
 from django.contrib.admin.models import LogEntry
 from django.db.models import Q
-from django_filters import FilterSet, DateFromToRangeFilter, CharFilter
+from django_filters import FilterSet, DateFromToRangeFilter, CharFilter, \
+    ModelChoiceFilter
 from django.db.models.functions import Concat
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
@@ -80,3 +81,16 @@ class InformFilterSet(FilterSet):
     class Meta:
         model = Inform
         fields = {'name': ['icontains'], 'status': ['exact']}
+
+class MaterialFilter(FilterSet):
+
+
+
+    class Meta:
+        model = Object
+        fields = {'id': ['exact'],
+                  'name': ['icontains'],
+                  'code': ['icontains'],
+                  'materialcapacity__capacity': ['exact'],
+                  'materialcapacity__capacity_measurement_unit': ['exact'],
+                  }

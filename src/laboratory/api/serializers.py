@@ -16,7 +16,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
 from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, \
     Shelf, Laboratory, \
     ShelfObjectObservation, Object, ObjectFeatures, Provider, Catalog, EquipmentType, \
-    EquipmentCharacteristics
+    EquipmentCharacteristics, MaterialCapacity
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms
 from organilab.settings import DATETIME_INPUT_FORMATS
@@ -598,3 +598,108 @@ class InstrumentalFamilyDataTableSerializer(serializers.Serializer):
 
 class PrecursorSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
+
+
+class MaterialSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    features = ObjDisplayNameSerializer(many=True)
+    capacity = serializers.SerializerMethodField()
+    capacity_measurement_unit = serializers.SerializerMethodField()
+
+    def get_capacity(self, obj):
+        if hasattr(obj,'materialcapacity') and obj.materialcapacity:
+            return obj.materialcapacity.capacity
+        return ""
+
+    def get_capacity_measurement_unit(self, obj):
+        if hasattr(obj, 'materialcapacity') and obj.materialcapacity:
+            capacity_measurement_unit = obj.materialcapacity.capacity_measurement_unit
+            if capacity_measurement_unit:
+                return {'id': capacity_measurement_unit.pk,
+                        'text': capacity_measurement_unit.description, 'disabled': False,
+                        'selected': True}
+        return None
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_object", "laboratory.view_object"],
+            "update": ["laboratory.change_object", "laboratory.view_object"],
+            "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+            "detail": ["laboratory.view_object"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = Object
+        fields = ['id', 'code', 'name', 'synonym', 'is_public', 'description',
+                  'features',
+                  'type', 'organization', 'created_by', 'is_container',
+                  'capacity', 'capacity_measurement_unit', 'actions']
+
+
+class ValidateMaterialCapacitySerializer(serializers.ModelSerializer):
+    object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(
+        settings.READONLY_DATABASE),
+        allow_empty=True, allow_null=True, required=False)
+    capacity = serializers.FloatField(min_value=1)
+    capacity_measurement_unit = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key='units'))
+
+    def validate(self, data):
+        data = super().validate(data)
+        material_object = data.get('object')
+
+        if material_object and material_object.type != Object.MATERIAL:
+            logger.debug(
+                f'ValidateMaterialCapacitySerializer --> type ({material_object.type}) != Object.MATERIAL ({Object.MATERIAL})'
+            )
+            raise serializers.ValidationError(
+                {'type': _("Type object is not valid.")}
+            )
+        return data
+
+    class Meta:
+        model = MaterialCapacity
+        fields = "__all__"
+
+class ValidateMaterialSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    code = serializers.CharField(max_length=255)
+    synonym = serializers.CharField(max_length=255, allow_null=True, allow_blank=True,
+                                    required=False)
+    description = serializers.CharField(allow_null=True, allow_blank=True,
+                                        required=False)
+    type = serializers.CharField(max_length=2, default=Object.MATERIAL)
+    is_public = serializers.BooleanField(required=False)
+    is_container = serializers.BooleanField(required=False)
+    features = serializers.PrimaryKeyRelatedField(many=True,
+                                                  queryset=ObjectFeatures.objects.using(
+                                                      settings.READONLY_DATABASE),
+                                                  required=True, allow_empty=False)
+    created_by = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.using(settings.READONLY_DATABASE), allow_empty=True,
+        allow_null=True)
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+
+    def validate(self, data):
+        data = super().validate(data)
+        obj_type = data['type']
+
+        if obj_type != Object.MATERIAL:
+            logger.debug(
+                f'ValidateMaterialSerializer --> type ({obj_type}) != Object.MATERIAL ({Object.MATERIAL})')
+            raise serializers.ValidationError(
+                {'type': _("Type object is not valid.")})
+
+        return data
+
+    class Meta:
+        model = Object
+        fields = "__all__"
+
+class MaterialDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=MaterialSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

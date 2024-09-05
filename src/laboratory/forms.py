@@ -22,7 +22,7 @@ from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
 from laboratory.models import OrganizationStructure, CommentInform, Catalog, \
     InformScheduler, RegisterUserQR, \
-    ShelfObject, ShelfObjectObservation, EquipmentType
+    ShelfObject, ShelfObjectObservation, EquipmentType, MaterialCapacity
 from reservations_management.models import ReservedProducts
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, \
@@ -862,4 +862,39 @@ class EquipmentTypeForm(GTForm, forms.ModelForm):
         widgets = {
             'name': genwidgets.TextInput,
             'description': genwidgets.Textarea
+        }
+
+
+class MaterialForm(GTForm, forms.ModelForm):
+    capacity = forms.FloatField(required=False, widget=genwidgets.TextInput,
+                                min_value=settings.DEFAULT_MIN_QUANTITY,
+                                label=_("Capacity"))
+    capacity_measurement_unit = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key='units'),
+        required=False,
+        widget=genwidgets.Select(),
+        label=_("Capacity measurement unit"))
+    object = forms.ModelChoiceField(queryset=Object.objects.all(), required=False,
+                                    widget=genwidgets.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        modal_id = kwargs.pop('modal_id')
+        super(MaterialForm, self).__init__(*args, **kwargs)
+        self.fields['object'].required = False
+
+
+    class Meta:
+        model = Object
+        exclude = ["model","serie","plaque"]
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym': genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'is_container': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
         }

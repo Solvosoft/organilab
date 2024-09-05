@@ -25,7 +25,8 @@ from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, \
     CommentAPI, ProtocolViewSet, \
     LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, \
     ShelfObjectObservationView, EquipmentManagementViewset, \
-    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset
+    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset, \
+    MaterialManagementViewset
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
@@ -40,7 +41,7 @@ from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications, \
-    view_equipment_list
+    view_equipment_list, view_material_list
 from laboratory.views.organizations import OrganizationDeleteView, \
     OrganizationCreateView, OrganizationUpdateView, OrganizationActionsFormview
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
@@ -148,6 +149,10 @@ equipment_urls = [
     path('', view_equipment_list, name='equipment_list'),
     path('instrumental/', view_instrumental_family_list, name='instrumentalfamily_list'),
     path('equipmenttype/', view_equipmenttype_list, name='equipmenttype_list'),
+]
+
+material_urls = [
+    path('', view_material_list, name='material_list'),
 ]
 
 organization_urls = [
@@ -259,8 +264,11 @@ shelfobjecttraining_router.register('api_shelfobject_training', ShelfObjectTrain
 equipment_shelfobject_url = [
     path('', view_equipment_shelfobject_detail, name='equipment_shelfobject_detail'),
 ]
+
+
 objectrouter = DefaultRouter()
 objectrouter.register('api_equipment_list', EquipmentManagementViewset, basename='api-equipment')
+objectrouter.register('api_material_list', MaterialManagementViewset, basename='api-material')
 objectrouter.register('api_instrumentalfamily_list', InstrumentalFamilyManagementViewset, basename='api-instrumentalfamily')
 objectrouter.register('api_equipmenttype_list', EquipmentTypeManagementViewset, basename='api-equipmenttype')
 
@@ -284,6 +292,7 @@ urlpatterns += organization_urls + [
     path('lab/<int:org_pk>/<int:lab_pk>/informs/', include(informs_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/sustance/', include(sustance_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/equipment/', include(equipment_urls)),
+    path('lab/<int:org_pk>/<int:lab_pk>/material/', include(material_urls)),
     path('lab/<int:org_pk>/<int:lab_pk>/blocknotifications/', block_notifications, name="block_notification"),
     path('so/api/<int:org_pk>/<int:lab_pk>/', include(shelfobjectrouter.urls)),
     path('so/api/<int:org_pk>/<int:lab_pk>/<int:shelf>/', include(shelfcontainerrouter.urls)),
