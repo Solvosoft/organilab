@@ -1,91 +1,89 @@
 import logging
 
+from django.contrib.admin.models import CHANGE
 from django.db.models import Q
-from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
+
+from pending_tasks.api.model_viewset_without_create import AuthAllPermBaseObjectWithoutCreate
 from rest_framework.decorators import action
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework import status
 
+from laboratory.utils import organilab_logentry
+from pending_tasks.api import filterset
 from pending_tasks.models import PendingTask
 from pending_tasks.api.serializers import PendingTaskSerializer, \
-    PendingTaskListSerializer, PendingTaskValidateSerializer
+    PendingTaskListSerializer, PendingTaskValidateSerializer, ProfileValidateSerializer, \
+    CurrentStatusValidateSerializer, NewStatusValidateSerializer
 
-logger = logging.getLogger("django")
+logger = logging.getLogger("organilab")
 
-
-class PendingTaskViewSet(AuthAllPermBaseObjectManagement):
-    queryset = PendingTask.objects.all()
-
+class PendingTaskViewSet(AuthAllPermBaseObjectWithoutCreate):
     serializer_class = {
         'list': PendingTaskListSerializer,
         'destroy': PendingTaskSerializer,
-        'create': PendingTaskValidateSerializer,
         'update': PendingTaskValidateSerializer,
+    }
+
+    perms = {
+        'list': ["pending_tasks.view_pending_task"],
+        'update': ["pending_tasks.change_pending_task"],
+        'destroy': ["pending_tasks.delete_pending_task"],
     }
 
     permission_classes = (BasePermission,)
 
-    ordering = ('creation_date',)
+    queryset = PendingTask.objects.all()
+    search_fields = ['description']
+    filterset_class = filterset.PendingTaskFilterSet
+    ordering_fields = ['creation_date']
+    ordering = ('-creation_date',)
 
-    def get_queryset(self):
-        return PendingTask.objects.filter(
-            Q(validate_profile=self.request.user.profile) | Q(
-                validate_profile__isnull=True))
+    def filter_queryset(self, queryset):
+        profile = self.request.user.profile
+        rols = profile.profilepermission_set.all().values_list('rol', flat=True)
+        queryset = queryset.filter( Q(profile=profile) |
+            Q(profile__isnull=True, rols__in=rols))
+        return queryset
+
+    def _get_task_and_data(self, request):
+        task = self.get_object()
+        data = {'profile': request.user.profile.id}
+        data.update(request.data)
+        return task, data
 
     @action(detail=True)
     def task_assign(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.validate_profile is None:
-            instance.validate_profile = request.user.profile
-            instance.save()
-            logger.info(f"Task {instance.id} assigned to user {request.user.username}")
-            return Response(PendingTaskSerializer(instance).data, status=status.HTTP_200_OK)
+        task, data = self._get_task_and_data(request)
+        serializer = ProfileValidateSerializer(data=data, context={'task': task})
+        if serializer.is_valid():
+            task.profile = serializer.validated_data['profile']
+            task.save()
+            organilab_logentry(request.user, task, CHANGE, "pending task", changed_data=['profile'])
+            return Response(PendingTaskSerializer(task).data, status=status.HTTP_200_OK)
         else:
-            logger.warning(
-                f"Task {instance.id} could not be assigned, already assigned to {instance.validate_profile.user.username}")
-            return Response({'error': 'Task already assigned'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True)
     def task_unassign(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.validate_profile == request.user.profile:
-            if instance.status == 0:
-                instance.validate_profile = None
-                instance.save()
-                logger.info(
-                    f"Task {instance.id} unassigned from user {request.user.username}")
-                return Response(PendingTaskSerializer(instance).data, status=status.HTTP_200_OK)
-            else:
-                logger.warning(
-                    f"Task {instance.id} could not be unassigned, status is {instance.status}")
-                return Response({'error': 'Task is in process or finished'},
-                                status=status.HTTP_400_BAD_REQUEST)
+        task, data = self._get_task_and_data(request)
+        serializer = CurrentStatusValidateSerializer(data=data, context={'task': task})
+        if serializer.is_valid():
+            task.profile = None
+            task.save()
+            organilab_logentry(request.user, task, CHANGE, "pending task", changed_data=['profile'])
+            return Response(PendingTaskSerializer(task).data, status=status.HTTP_200_OK)
         else:
-            logger.warning(
-                f"User {request.user.username} tried to unassign task {instance.id}, but is not assigned")
-            return Response({'error': f'Task not assigned to user {request.user.username}'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['patch'])
     def updated_task_status(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.validate_profile == request.user.profile:
-            new_status = request.data.get('status')
-            if new_status in [0, 1, 2]:
-                instance.status = new_status
-                instance.save()
-                logger.info(
-                    f"Task {instance.id} status updated to {new_status} by user {request.user.username}")
-                return Response(PendingTaskSerializer(instance).data, status=status.HTTP_200_OK)
-            else:
-                logger.warning(
-                    f"Invalid status {new_status} provided for task {instance.id}")
-                return Response({'error': 'Invalid status'},
-                                status=status.HTTP_400_BAD_REQUEST)
+        task, data = self._get_task_and_data(request)
+        serializer = NewStatusValidateSerializer(data=data, context={'task': task})
+        if serializer.is_valid():
+            task.status = serializer.validated_data.get('status')
+            task.save()
+            organilab_logentry(request.user, task, CHANGE, "pending task", changed_data=['status'])
+            return Response(PendingTaskSerializer(task).data, status=status.HTTP_200_OK)
         else:
-            logger.warning(
-                f"User {request.user.username} tried to update task {instance.id}, but is not assigned")
-            return Response({'error': f'Task not assigned to user {request.user.username}'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
