@@ -76,7 +76,7 @@ class PrecursorReportValuesAdmin(admin.ModelAdmin):
     list_display = ["precursor_report","object","measurement_unit", "final_balance"]
 
 class BaseUnittAdmin(admin.ModelAdmin):
-    list_display = ["measurement_unit","si_value"]
+    list_display = ["measurement_unit_base", "measurement_unit", "si_value"]
 
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
