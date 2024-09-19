@@ -609,6 +609,7 @@ class ShelfSerializer(serializers.ModelSerializer):
     quantity_storage_status = serializers.SerializerMethodField()
     percentage_storage_status = serializers.SerializerMethodField()
     shelf_info = serializers.SerializerMethodField()
+    total =serializers.SerializerMethodField()
 
     def get_type(self, obj):
         return str(obj.type) if obj.type else ""
@@ -648,6 +649,24 @@ class ShelfSerializer(serializers.ModelSerializer):
 
         return f'{round(total, 3)} {_("of")} {quantity}'
 
+    def get_total(self, obj):
+        if obj.measurement_unit:
+            total = obj.get_total_refuse(include_containers=False,
+                                         measurement_unit=obj.measurement_unit)
+        else:
+            total_detail = ""
+            measurement_unit_list = list(set(obj.get_objects().filter(containershelfobject=None) \
+                .values_list('measurement_unit', 'measurement_unit__description')))
+
+            for unit in measurement_unit_list:
+                total_detail += "%.2f %s<br>" % (
+                    obj.get_total_refuse(include_containers=False,
+                                         measurement_unit=unit[0]), unit[1]
+                )
+            return total_detail
+
+        return round(total, 3)
+
     def get_percentage_storage_status(self, obj):
         percentage = ""
 
@@ -666,6 +685,7 @@ class ShelfSerializer(serializers.ModelSerializer):
             'obj': obj,
             'type': self.get_type(obj),
             'quantity': self.get_quantity(obj),
+            'total': self.get_total(obj),
             'discard': obj.discard,
             'measurement_unit': self.get_measurement_unit(obj),
             'quantity_storage_status': self.get_quantity_storage_status(obj),
@@ -679,7 +699,7 @@ class ShelfSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shelf
-        fields = ['name', 'type', 'quantity', 'discard', 'measurement_unit',
+        fields = ['name', 'type', 'quantity', 'total', 'discard', 'measurement_unit',
                   'quantity_storage_status', 'shelf_info',
                   'percentage_storage_status']
 

@@ -16,7 +16,7 @@ def create_base_unit(apps, schema_editor):
         {"base": "Kilogramos", "unit": "Miligramos", "value": 1000000.0},
         {"base": "PSI", "unit": "PSI", "value": 0.0001450377},
         {"base": "Pascales", "unit": "Pascales", "value": 1.0},
-        {"base": "Atmósfera", "unit": "Atmósfera", "value": 0.00000986923},
+        {"base": "Pascales", "unit": "Atmósfera", "value": 0.00000986923},
         {"base": "Metro cúbico", "unit": "Metro cúbico", "value": 0.001},
         {"base": "Unidades", "unit": "Unidades", "value": 1.0},
     ]
@@ -26,12 +26,18 @@ def create_base_unit(apps, schema_editor):
 
     delete_base_unit(apps, schema_editor)
 
+    units_list = []
+
     for unit in measurement_unit_list:
         base_unit_instance = Catalog.objects.get(description=unit["base"])
         unit_instance = Catalog.objects.get(description=unit["unit"])
-        BaseUnitValues.objects.create(measurement_unit_base=base_unit_instance,
-                                measurement_unit=unit_instance,
-                                si_value=unit["value"])
+        unit = BaseUnitValues(measurement_unit_base=base_unit_instance,
+                          measurement_unit=unit_instance,
+                          si_value=unit["value"])
+
+        units_list.append(unit)
+
+    BaseUnitValues.objects.bulk_create(units_list)
 
 def delete_base_unit(apps, schema_editor):
     BaseUnitValues = apps.get_model('laboratory', 'BaseUnitValues')
