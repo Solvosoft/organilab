@@ -3,33 +3,32 @@ from laboratory.models import BaseUnitValues
 # from laboratory.utils_base_unit import get_conversion_units
 
 
-def get_base_unit(unit): #This function is used within the save_object_report_precursor function in task_utils.py
+def get_base_unit(unit):
+    unitbase = None
     query = BaseUnitValues.objects.filter(measurement_unit=unit)
-    if query.exists():
-        unit = query.first().measurement_unit_base
-        return unit
-    else:
-        return None
+    if query.exists() and query.first().measurement_unit_base:
+        unitbase = query.first().measurement_unit_base
+
+    return unitbase
 
 def get_conversion_units(unit, amount):
     query = BaseUnitValues.objects.filter(measurement_unit=unit)
     if query.exists():
         unit = query.first()
-        base = unit.measurement_unit_base
+        base = unit.measurement_unit
         value = unit.si_value
 
-        if base.description in ["Mililitros", "Milímetros", "Gramos", "Centimetros", "Miligramos"]:
+        if base.description in ["Mililitros", "Milímetros", "Gramos", "Centimetros", "Miligramos", "Atmósfera"]:
 
-            converted_amount = amount * value
-            result = converted_amount/value
+
+            result = amount / value
 
             return result
 
         if base.description in ["Litros", "Kilogramos", "Metros", "Pascales",
-                                "Unidades", "PSI", "Atmósfera", "Metro cúbico"]:
+                                "Unidades", "PSI", "Metro cúbico"]:
 
-            converted_amount = amount * value
-            return converted_amount
+            return amount
 
 
     else:

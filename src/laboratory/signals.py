@@ -25,8 +25,10 @@ def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
     if hasattr(instance, "measurement_unit") and hasattr(instance,"quantity"):
         try:
-            instance.quantity_base_unit = get_conversion_units(
-                instance.measurement_unit, instance.quantity)
+
+                instance.quantity_base_unit = get_conversion_units(
+                    instance.measurement_unit, instance.quantity)
+
         except BaseUnitValues.DoesNotExist as e:
             None
 
