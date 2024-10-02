@@ -4640,3 +4640,9 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Unit to Base Unit"
+msgstr "Unidad a Unidad Base"
+
+msgid "Measurement Unit Base"
+msgstr "Unidad de Medida Base"

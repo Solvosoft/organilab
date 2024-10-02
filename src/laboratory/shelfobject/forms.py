@@ -10,7 +10,7 @@ from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
     LaboratoryRoom, Furniture, ShelfObjectMaintenance, ShelfObjectLog, \
     ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining, \
-    ShelfObjectEquipmentCharacteristics, OrganizationStructure
+    ShelfObjectEquipmentCharacteristics, OrganizationStructure, BaseUnitValues
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer

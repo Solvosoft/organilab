@@ -1,6 +1,8 @@
 from laboratory.models import BaseUnitValues
+from laboratory.models import Shelf
 
 # from laboratory.utils_base_unit import get_conversion_units
+# from laboratory.utils_base_unit import get_conversion_from_two_units
 
 
 def get_base_unit(unit):
@@ -18,18 +20,34 @@ def get_conversion_units(unit, amount):
         base = unit.measurement_unit
         value = unit.si_value
 
-        if base.description in ["Mililitros", "Milímetros", "Gramos", "Centimetros", "Miligramos", "Atmósfera"]:
-
-
-            result = amount / value
-
-            return result
-
-        if base.description in ["Litros", "Kilogramos", "Metros", "Pascales",
-                                "Unidades", "PSI", "Metro cúbico"]:
-
+        if base.description == unit.measurement_unit_base.description:
             return amount
 
+        result = amount / value
+        return result
 
+    else:
+        return None
+
+
+def get_conversion_from_two_units(unit, unit2, amount):
+    query = BaseUnitValues.objects.filter(measurement_unit=unit)
+    query2 = BaseUnitValues.objects.filter(measurement_unit=unit2)
+
+    if query.exists() and query2.exists():
+        unit1 = query.first()
+        value1 = unit1.si_value
+
+        unit2 = query2.first()
+        value2 = unit2.si_value
+
+        print(unit1)
+        print(unit2)
+
+        if value1 > value2:
+            result = amount / (value1 / value2)
+        else:
+            result = amount * (value2 / value1)
+        return result
     else:
         return None

@@ -6,11 +6,13 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
-    Shelf
+    Shelf, BaseUnitValues
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
     save_object_by_action
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
+from laboratory.utils_base_unit import get_conversion_units, \
+    get_conversion_from_two_units
 
 logger = logging.getLogger('organilab')
 
@@ -284,13 +286,18 @@ def limit_objects_by_shelf(shelf, object):
 
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None, container=None):
     errors = {}
+
     total = shelf.get_total_refuse(include_containers=False, measurement_unit=shelf.measurement_unit) + quantity
 
-    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
+    shelfbaseunit = BaseUnitValues.objects.filter(measurement_unit=shelf.measurement_unit).first()
+    baseunit = BaseUnitValues.objects.filter(measurement_unit=measurement_unit).first()
+
+    if (baseunit.measurement_unit_base and shelfbaseunit.measurement_unit_base and
+        baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base):
         # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
         logger.debug(
             f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
-            f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
+            f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({measurement_unit})')
         errors.update({'measurement_unit': _(
             "Measurement unit cannot be different than the shelf's measurement unit.")})
     if total > shelf.quantity and not shelf.infinity_quantity:
