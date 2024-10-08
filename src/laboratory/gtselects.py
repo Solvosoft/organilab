@@ -17,6 +17,7 @@ from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentT
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
 from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
+from laboratory.utils_base_unit import get_related_units
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -122,19 +123,7 @@ class CatalogUnitLookup(BaseSelect2View):
         if self.shelf:
             if self.shelf.measurement_unit:
                 subunit = self.shelf.measurement_unit
-                base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=subunit)
-
-                if base_unit.exists():
-                    base_unit = base_unit.first()
-
-                    subunits = BaseUnitValues.objects.filter(
-                        measurement_unit_base=base_unit.measurement_unit_base)
-
-                    subunit_ids = subunits.values_list('measurement_unit__pk',
-                                                       flat=True)
-
-                    return queryset.filter(pk__in=subunit_ids)
+                return get_related_units(subunit, queryset)
             else:
                 return queryset
         else:

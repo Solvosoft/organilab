@@ -51,3 +51,18 @@ def get_conversion_from_two_units(unit, unit2, amount):
         return result
     else:
         return None
+
+def get_related_units(unit, queryset):
+    base_unit = BaseUnitValues.objects.filter(
+        measurement_unit=unit)
+
+    if base_unit.exists():
+        base_unit = base_unit.first()
+
+        subunits = BaseUnitValues.objects.filter(
+            measurement_unit_base=base_unit.measurement_unit_base)
+
+        subunit_ids = subunits.values_list('measurement_unit__pk',
+                                           flat=True)
+
+        return queryset.filter(pk__in=subunit_ids)

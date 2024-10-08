@@ -29,6 +29,15 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
 class IncreaseShelfObjectForm(GTForm):
     amount = forms.FloatField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'), label=_('Amount'))
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
+                                      widget=AutocompleteSelect("catalogunit", attrs={
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
+                                   })
+                                      )
+
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
                                       widget=AutocompleteSelect("provider", attrs={
                                           'data-s2filter-laboratory': '#id_laboratory',
@@ -36,6 +45,7 @@ class IncreaseShelfObjectForm(GTForm):
                                    })
                                       )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
@@ -56,6 +66,15 @@ class TransferOutShelfObjectForm(GTForm):
 class DecreaseShelfObjectForm(GTForm):
     amount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                                 label=_('Amount'))
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
+                                      widget=AutocompleteSelect("catalogunit", attrs={
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization'
+                                   })
+                                      )
+
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
