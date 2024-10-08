@@ -23,17 +23,25 @@ def save_increase_decrease_shelf_object(user, validated_data, laboratory, organi
     if 'provider' in validated_data:
         provider = validated_data['provider']
 
+    measurement_unit = None
+    if 'measurement_unit' in validated_data:
+        measurement_unit = validated_data['measurement_unit']
+
     bill = validated_data.get('bill', '')
     description = validated_data.get('description', '')
     shelfobject = validated_data['shelf_object']
     amount = validated_data['amount']
 
     old = shelfobject.quantity
-    new = old - amount
+    converted_amount = get_conversion_from_two_units(
+            measurement_unit,
+            shelfobject.shelf.measurement_unit, amount)
+    new = old - converted_amount
     action_taken = _("Object was decreased")
 
     if is_increase_process:
-        new = old + amount
+
+        new = old + converted_amount
         action_taken = _("Object was increased")
         log_object_add_change(user, laboratory.pk, shelfobject, old, new, "Add",
                               provider, bill, create=False, organization=organization)

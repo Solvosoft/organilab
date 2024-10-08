@@ -18,6 +18,6 @@ def get_conversion_result(unit, amount):
     result = get_conversion_units(unit, amount)
 
     if result:
-        return result
+        return round(result, 2)
 
     return 0

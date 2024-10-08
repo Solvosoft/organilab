@@ -26,6 +26,7 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectMaintenance, OrganizationStructure, ShelfObjectLog, ShelfObjectCalibrate, \
     ShelfObjectGuarantee, ShelfObjectTraining, ShelfObjectEquipmentCharacteristics
 from laboratory.utils import get_actions_by_perms
+from laboratory.utils_base_unit import get_related_units
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
@@ -142,6 +143,8 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         required=False, allow_null=True)
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
@@ -171,14 +174,23 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         shelf_object = data['shelf_object']
         shelf = shelf_object.shelf
         amount = data['amount']
+        increase_unit = data['measurement_unit']
+        query_unit = Catalog.objects.filter(key="units")
+        updated_errors = {}
+
         measurement_unit = shelf_object.measurement_unit if shelf_object.object.type == Object.REACTIVE else None
         errors = validate_measurement_unit_and_quantity(shelf,
                                                         shelf_object.object,
                                                         amount,
                                                         measurement_unit=measurement_unit)
 
-        if errors:
-            updated_errors = {}
+        if increase_unit:
+            related_units = get_related_units(shelf.measurement_unit, query_unit)
+
+            if not increase_unit in related_units:
+               updated_errors['measurement_unit'] = _('Measurement unit is not valid')
+
+        if errors or updated_errors:
             shelfobject_errors = []
             amount_errors = []
             for key, error in errors.items():
@@ -201,6 +213,8 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
     description = serializers.CharField(required=False, allow_blank=True)
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE))
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE))
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
@@ -216,7 +230,15 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
     def validate(self, data):
         amount = data['amount']
         shelf_object = data['shelf_object']
+        decreased_unit = data['measurement_unit']
+        query_unit = Catalog.objects.filter(key="units")
         decrease_errors = {}
+
+        if decreased_unit:
+            related_units = get_related_units(shelf_object.shelf.measurement_unit, query_unit)
+
+            if not decreased_unit in related_units:
+               decrease_errors['measurement_unit'] = _('Measurement unit is not valid')
 
         if shelf_object.quantity < amount:
             logger.debug(
