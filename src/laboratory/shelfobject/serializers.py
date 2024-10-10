@@ -187,6 +187,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         if increase_unit:
             related_units = get_related_units(shelf.measurement_unit, query_unit)
 
+            if related_units == None:
+                related_units = get_related_units(measurement_unit.pk, query_unit)
+
             if not increase_unit in related_units:
                updated_errors['measurement_unit'] = _('Measurement unit is not valid')
 
@@ -234,8 +237,13 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         query_unit = Catalog.objects.filter(key="units")
         decrease_errors = {}
 
+        measurement_unit = shelf_object.measurement_unit if shelf_object.object.type == Object.REACTIVE else None
+
         if decreased_unit:
             related_units = get_related_units(shelf_object.shelf.measurement_unit, query_unit)
+
+            if related_units == None:
+                related_units = get_related_units(measurement_unit.pk, query_unit)
 
             if not decreased_unit in related_units:
                decrease_errors['measurement_unit'] = _('Measurement unit is not valid')

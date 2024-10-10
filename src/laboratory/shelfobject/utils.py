@@ -36,6 +36,12 @@ def save_increase_decrease_shelf_object(user, validated_data, laboratory, organi
     converted_amount = get_conversion_from_two_units(
             measurement_unit,
             shelfobject.shelf.measurement_unit, amount)
+
+    if shelfobject.shelf.measurement_unit == None:
+        converted_amount = get_conversion_from_two_units(
+            measurement_unit,
+            shelfobject.measurement_unit, amount)
+
     new = old - converted_amount
     action_taken = _("Object was decreased")
 
@@ -299,6 +305,9 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
 
     shelfbaseunit = BaseUnitValues.objects.filter(measurement_unit=shelf.measurement_unit).first()
     baseunit = BaseUnitValues.objects.filter(measurement_unit=measurement_unit).first()
+
+    if shelfbaseunit == None:
+        shelfbaseunit = baseunit
 
     if (baseunit.measurement_unit_base and shelfbaseunit.measurement_unit_base and
         baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base):
