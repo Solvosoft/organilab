@@ -125,6 +125,9 @@ class CatalogUnitLookup(BaseSelect2View):
                 subunit = self.shelf.measurement_unit
                 return get_related_units(subunit, queryset)
             else:
+                print('------------')
+                print(self.shelf.measurement_unit)
+                print('------------')
                 return queryset
         else:
             return queryset.none()
