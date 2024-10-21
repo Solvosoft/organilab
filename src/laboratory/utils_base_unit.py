@@ -41,8 +41,8 @@ def get_conversion_from_two_units(unit, unit2, amount):
         unit2 = query2.first()
         value2 = unit2.si_value
 
-        print(unit1)
-        print(unit2)
+        if unit1.measurement_unit.description == 'Unidades':
+            return amount
 
         if value1 > value2:
             result = amount / (value1 / value2)
