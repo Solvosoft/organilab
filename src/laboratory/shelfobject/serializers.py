@@ -26,7 +26,7 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectMaintenance, OrganizationStructure, ShelfObjectLog, ShelfObjectCalibrate, \
     ShelfObjectGuarantee, ShelfObjectTraining, ShelfObjectEquipmentCharacteristics
 from laboratory.utils import get_actions_by_perms
-from laboratory.utils_base_unit import get_related_units
+from laboratory.utils_base_unit import get_related_units, get_conversion_from_two_units
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
@@ -187,7 +187,9 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         if increase_unit:
             related_units = get_related_units(shelf.measurement_unit, query_unit)
 
-            if related_units == None:
+            if measurement_unit is None:
+                related_units = get_related_units(64, query_unit)
+            elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
 
             if not increase_unit in related_units:
@@ -242,7 +244,9 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         if decreased_unit:
             related_units = get_related_units(shelf_object.shelf.measurement_unit, query_unit)
 
-            if related_units == None:
+            if measurement_unit is None:
+                related_units = get_related_units(64, query_unit)
+            elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
 
             if not decreased_unit in related_units:

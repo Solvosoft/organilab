@@ -306,17 +306,17 @@ def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_
     shelfbaseunit = BaseUnitValues.objects.filter(measurement_unit=shelf.measurement_unit).first()
     baseunit = BaseUnitValues.objects.filter(measurement_unit=measurement_unit).first()
 
-    if shelfbaseunit == None:
-        shelfbaseunit = baseunit
+    if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
 
-    if (baseunit.measurement_unit_base and shelfbaseunit.measurement_unit_base and
-        baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base):
-        # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
-        logger.debug(
-            f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
-            f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({measurement_unit})')
-        errors.update({'measurement_unit': _(
-            "Measurement unit cannot be different than the shelf's measurement unit.")})
+        if (baseunit.measurement_unit_base and shelfbaseunit.measurement_unit_base and
+            baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base):
+
+            # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
+            logger.debug(
+                f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
+                f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({measurement_unit})')
+            errors.update({'measurement_unit': _(
+                "Measurement unit cannot be different than the shelf's measurement unit.")})
     if total > shelf.quantity and not shelf.infinity_quantity:
         logger.debug(
             f'validate_measurement_unit_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')

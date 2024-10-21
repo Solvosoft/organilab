@@ -532,6 +532,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 if shelfobject:
 
                     if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+
                         shelfobject.quantity = get_conversion_from_two_units(
                             shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
                             , shelfobject.quantity)
