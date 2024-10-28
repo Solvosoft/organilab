@@ -241,18 +241,24 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
 
         measurement_unit = shelf_object.measurement_unit if shelf_object.object.type == Object.REACTIVE else None
 
+        converted_amount = get_conversion_from_two_units(decreased_unit,
+                                                         measurement_unit, amount)
+
         if decreased_unit:
             related_units = get_related_units(shelf_object.shelf.measurement_unit, query_unit)
 
             if measurement_unit is None:
                 related_units = get_related_units(64, query_unit)
+                converted_amount = amount
+
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
 
             if not decreased_unit in related_units:
                decrease_errors['measurement_unit'] = _('Measurement unit is not valid')
 
-        if shelf_object.quantity < amount:
+
+        if shelf_object.quantity < converted_amount:
             logger.debug(
                 f'DecreaseShelfObjectSerializer --> shelf_object.quantity'
                 f' ({shelf_object.quantity}) < amount ({amount})')

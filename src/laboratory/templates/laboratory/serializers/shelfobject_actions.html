@@ -10,11 +10,19 @@
 
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="reservesomodal" title="{% trans 'Reservation' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
 {% if shelfobject.object.type != shelfobject.object.EQUIPMENT %}
-<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="increasesomodal" title="{% trans 'Add' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-plus text-success" aria-hidden="true"></i></a>
+				{% if shelfobject.object.type == shelfobject.object.MATERIAL %}
+					<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="increasemamodal" title="{% trans 'Add' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-plus text-success" aria-hidden="true"></i></a>
+				{% else %}
+					<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="increasesomodal" title="{% trans 'Add' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-plus text-success" aria-hidden="true"></i></a>
+				{% endif %}
 {% endif %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="transfer_out_obj_id_modal" title="{% trans 'Transfer Out' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-window-restore" aria-hidden="true"></i></a>
 {% if shelfobject.object.type != shelfobject.object.EQUIPMENT %}
-<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="decreasesomodal" title="{% trans 'Substract' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
+				{% if shelfobject.object.type == shelfobject.object.MATERIAL %}
+					<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="decreasemamodal" title="{% trans 'Substract' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
+				{% else %}
+					<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="decreasesomodal" title="{% trans 'Substract' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-minus text-danger" aria-hidden="true"></i></a>
+				{% endif %}
 {% endif %}
 <a class="ms-2" href="{% url 'laboratory:get_shelfobject_log' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
 {% if shelfobject.object.type == shelfobject.object.REACTIVE %}
