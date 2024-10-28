@@ -47,6 +47,12 @@ class IncreaseShelfObjectForm(GTForm):
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
 
 
+class IncreaseShelfObjectByMeasurementUnitForm(IncreaseShelfObjectForm):
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(pk=64), label=_("Measurement Unit"),
+                                      widget=genwidgets.Select)
+
+
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
                                           help_text=_('Use dot like 0.344 on decimal'), required=True)
@@ -78,6 +84,13 @@ class DecreaseShelfObjectForm(GTForm):
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+
+
+class DecreaseShelfObjectByMeasurementUnitForm(DecreaseShelfObjectForm):
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(pk=64), label=_("Measurement Unit"),
+                                      widget=genwidgets.Select)
+
 
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
