@@ -9,17 +9,13 @@
 {% trans 'Add' as increase_so_tittle %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=increase_object_form id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
 
-{% url "laboratory:api-shelfobject-fill-increase-shelfobject" lab_pk=laboratory org_pk=org_pk as increase_ma_url %}
-{% trans 'Add' as increase_ma_tittle %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=increase_material_object_form id="increasemamodal" title=increase_ma_tittle form_id="increasemaform" url=increase_ma_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=increase_material_object_form id="increasemamodal" title=increase_so_tittle form_id="increasemaform" url=increase_so_url %}
 
 {% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_so_url %}
 {% trans 'Substract' as decrease_so_tittle %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=decrease_object_form id="decreasesomodal" title=decrease_so_tittle form_id="decreasesoform" url=decrease_so_url %}
 
-{% url "laboratory:api-shelfobject-fill-decrease-shelfobject" lab_pk=laboratory org_pk=org_pk as decrease_ma_url %}
-{% trans 'Substract' as decrease_ma_tittle %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=decrease_material_object_form id="decreasemamodal" title=decrease_ma_tittle form_id="decreasemaform" url=decrease_ma_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position="top" form=decrease_material_object_form id="decreasemamodal" title=decrease_so_tittle form_id="decreasemaform" url=decrease_so_url %}
 
 {% url "laboratory:api-shelfobject-move-shelfobject-to-shelf" lab_pk=laboratory org_pk=org_pk as move_so_url %}
 {% trans 'Move to other shelf' as move_so_tittle %}

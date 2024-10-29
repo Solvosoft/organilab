@@ -153,9 +153,9 @@ class LaboratoryRoomsList(ListView):
         context['transfer_out_object_form'] = TransferOutShelfObjectForm(
             users=self.request.user, lab_send=self.lab, org=self.org)
         context['increase_object_form'] = IncreaseShelfObjectForm(prefix="increase")
-        context['increase_material_object_form'] = IncreaseShelfObjectByMeasurementUnitForm(prefix="increase")
+        context['increase_material_object_form'] = IncreaseShelfObjectByMeasurementUnitForm(prefix="increasema")
         context['decrease_object_form'] = DecreaseShelfObjectForm(prefix="decrease")
-        context['decrease_material_object_form'] = DecreaseShelfObjectByMeasurementUnitForm(prefix="decrease")
+        context['decrease_material_object_form'] = DecreaseShelfObjectByMeasurementUnitForm(prefix="decreasema")
         context['move_object_form'] = MoveShelfObjectForm(group_name="groupmoveso",
                                                           prefix="move")
         context['move_object_container_form'] = MoveShelfobjectWithContainerForm(
