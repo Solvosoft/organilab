@@ -143,6 +143,40 @@ class CatalogUnitLookup(BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@register_lookups(prefix="catalogunitIncDec", basename="catalogunitIncDec")
+class CatalogUnitIncreaseDecrease(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer = None
+    shelf = None
+    shelfobject = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(key="units")
+        if self.shelf:
+            if self.shelfobject:
+                return get_related_units(self.shelfobject.measurement_unit, queryset)
+            else:
+                return queryset
+        else:
+            return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+
+        self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
+        if self.serializer.is_valid():
+            self.shelf = self.serializer.validated_data['shelf']
+            self.shelfobject = self.serializer.validated_data['shelfobject']
+
+            return super().list(request, *args, **kwargs)
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
 @register_lookups(prefix="available-container-search", basename="available-container-search")
 class AvailableContainerLookup(BaseSelect2View):
     model = ShelfObject

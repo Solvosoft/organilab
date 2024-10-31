@@ -31,11 +31,13 @@ class IncreaseShelfObjectForm(GTForm):
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
 
     measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
-                                      widget=AutocompleteSelect("catalogunit", attrs={
+                                      widget=AutocompleteSelect("catalogunitIncDec", attrs={
                                           'data-s2filter-shelf': '#id_shelf',
                                           'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization'
-                                   })
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-shelfobject': '#id_shelfobject',
+
+                                      })
                                       )
 
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
@@ -45,12 +47,6 @@ class IncreaseShelfObjectForm(GTForm):
                                    })
                                       )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
-
-
-class IncreaseShelfObjectByMeasurementUnitForm(IncreaseShelfObjectForm):
-
-    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(pk=64), label=_("Measurement Unit"),
-                                      widget=genwidgets.Select)
 
 
 class TransferOutShelfObjectForm(GTForm):
@@ -74,22 +70,17 @@ class DecreaseShelfObjectForm(GTForm):
                                 label=_('Amount'))
 
     measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
-                                      widget=AutocompleteSelect("catalogunit", attrs={
+                                      widget=AutocompleteSelect("catalogunitIncDec", attrs={
                                           'data-s2filter-shelf': '#id_shelf',
                                           'data-s2filter-laboratory': '#id_laboratory',
-                                          'data-s2filter-organization': '#id_organization'
-                                   })
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-shelfobject': '#id_shelfobject'
+                                      })
                                       )
 
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
-
-
-class DecreaseShelfObjectByMeasurementUnitForm(DecreaseShelfObjectForm):
-
-    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(pk=64), label=_("Measurement Unit"),
-                                      widget=genwidgets.Select)
 
 
 class MoveShelfObjectForm(GTForm):
