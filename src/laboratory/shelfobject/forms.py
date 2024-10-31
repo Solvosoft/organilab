@@ -10,7 +10,7 @@ from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
     LaboratoryRoom, Furniture, ShelfObjectMaintenance, ShelfObjectLog, \
     ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining, \
-    ShelfObjectEquipmentCharacteristics, OrganizationStructure
+    ShelfObjectEquipmentCharacteristics, OrganizationStructure, BaseUnitValues
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
@@ -29,6 +29,17 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
 class IncreaseShelfObjectForm(GTForm):
     amount = forms.FloatField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'), label=_('Amount'))
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
+                                      widget=AutocompleteSelect("catalogunitIncDec", attrs={
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-shelfobject': '#id_shelfobject',
+
+                                      })
+                                      )
+
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
                                       widget=AutocompleteSelect("provider", attrs={
                                           'data-s2filter-laboratory': '#id_laboratory',
@@ -36,6 +47,7 @@ class IncreaseShelfObjectForm(GTForm):
                                    })
                                       )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
@@ -56,9 +68,20 @@ class TransferOutShelfObjectForm(GTForm):
 class DecreaseShelfObjectForm(GTForm):
     amount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                                 label=_('Amount'))
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
+                                      widget=AutocompleteSelect("catalogunitIncDec", attrs={
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-shelfobject': '#id_shelfobject'
+                                      })
+                                      )
+
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+
 
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)

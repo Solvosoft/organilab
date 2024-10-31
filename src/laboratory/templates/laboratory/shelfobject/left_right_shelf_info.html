@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load unit_base_values %}
 <div class="row m-0">
 	<div class="col-sm-6"><label><strong>{% trans "Name" %}:</strong></label></div>
 	<div class="col-sm-6"><p>{{shelf.obj.name}}</p></div>
@@ -12,12 +13,22 @@
 	<div class="col-sm-6"><p>{{shelf.measurement_unit}}</p></div>
 </div>
 <div class="row m-0">
+	<div class="col-sm-6"><label><strong>{% trans "Measurement Unit Base" %}:</strong></label></div>
+	{% get_unit_base shelf.obj.measurement_unit as unit_base %}
+	<div class="col-sm-6"><p>{{unit_base}}</p></div>
+</div>
+<div class="row m-0">
 	<div class="col-sm-6"><label><strong>{% trans "Quantity" %}:</strong></label></div>
 	<div class="col-sm-6"><p>{{shelf.quantity}}</p></div>
 </div>
 <div class="row m-0">
 	<div class="col"><label><strong>{% trans "Used Quantity" %}:</strong></label></div>
 	<div class="col"><p>{{shelf.quantity_storage_status|safe}}</p></div>
+</div>
+<div class="row m-0">
+	<div class="col-sm-6"><label><strong>{% trans "Unit to Base Unit" %}:</strong></label></div>
+	{% get_conversion_result shelf.obj.measurement_unit shelf.total as result %}
+	<div class="col-sm-6"><p>{{result}} ({{unit_base}})</p></div>
 </div>
 <div class="row m-0">
 	<div class="col-sm-6"><label><strong>{% trans "Used Percentage" %}:</strong></label></div>
