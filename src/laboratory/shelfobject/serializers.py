@@ -248,7 +248,7 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
             related_units = get_related_units(shelf_object.shelf.measurement_unit, query_unit)
 
             if measurement_unit is None:
-                related_units = get_related_units(64, query_unit)
+                related_units = get_related_units(shelf_object.measurement_unit, query_unit)
                 converted_amount = amount
 
             elif related_units is None:
