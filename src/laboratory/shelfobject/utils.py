@@ -12,7 +12,7 @@ from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.utils_base_unit import get_conversion_units, \
-    get_conversion_from_two_units
+    get_conversion_from_two_units, get_base_unit
 
 logger = logging.getLogger('organilab')
 
@@ -249,36 +249,38 @@ def get_available_objs_by_shelfobject(queryset, shelfobject, key, filters):
     return obj_pk
 
 
-def get_lab_room_queryset_by_filters(queryset, shelfobject, key, filters):
+def get_lab_room_queryset_by_filters(queryset, shelfobject, key, filters, units):
     available_labrooms = get_available_objs_by_shelfobject(queryset, shelfobject, key,
                                                            filters)
     filters_lab_room = Q(furniture__shelf__measurement_unit__isnull=True,
                 furniture__shelf__infinity_quantity=True) | \
-              Q(furniture__shelf__measurement_unit=shelfobject.measurement_unit,
+              Q(furniture__shelf__measurement_unit__in=units,
                 furniture__shelf__infinity_quantity=True) | \
               Q(pk__in=available_labrooms)
     return queryset.filter(filters_lab_room).distinct()
 
 
-def get_furniture_queryset_by_filters(queryset, shelfobject, key, filters):
+def get_furniture_queryset_by_filters(queryset, shelfobject, key, filters, units):
     available_furnitures = get_available_objs_by_shelfobject(queryset,
                                                              shelfobject,
                                                              key, filters)
     filters_furniture = Q(shelf__measurement_unit__isnull=True,
                 shelf__infinity_quantity=True) | \
-              Q(shelf__measurement_unit=shelfobject.measurement_unit,
+              Q(shelf__measurement_unit__in=units,
                 shelf__infinity_quantity=True) | \
               Q(pk__in=available_furnitures)
 
     return queryset.filter(filters_furniture).distinct()
 
 
-def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
+def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters, units):
     available_shelves = get_available_objs_by_shelfobject(queryset,
                                                              shelfobject,
                                                              key, filters)
+    base = get_base_unit(shelfobject.measurement_unit)
+
     filters_shelves = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
-              Q(measurement_unit=shelfobject.measurement_unit,
+              Q(measurement_unit__in=units,
                 infinity_quantity=True) | \
               Q(pk__in=available_shelves)
 

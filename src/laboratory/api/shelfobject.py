@@ -1047,6 +1047,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         serializer_container.validated_data.get('available_container',
                                                                 None),
                         shelf_object)
+
+                    amount_converted = get_conversion_from_two_units(shelf_object.measurement_unit,
+                                                                     shelf_object.shelf.measurement_unit,
+                                                                     shelf_object.quantity)
+
+                    shelf_object.quantity = amount_converted
+                    shelf_object.measurement_unit = shelf_object.shelf.measurement_unit
+
                     save_object_by_action(user, shelf_object, relobj, changed_data,
                                           CHANGE, object_repr)
                 else:
