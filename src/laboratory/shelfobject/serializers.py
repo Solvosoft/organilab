@@ -26,7 +26,8 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectMaintenance, OrganizationStructure, ShelfObjectLog, ShelfObjectCalibrate, \
     ShelfObjectGuarantee, ShelfObjectTraining, ShelfObjectEquipmentCharacteristics
 from laboratory.utils import get_actions_by_perms
-from laboratory.utils_base_unit import get_related_units, get_conversion_from_two_units
+from laboratory.utils_base_unit import get_related_units, get_conversion_from_two_units, \
+    get_related_units_from_laboratory
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
@@ -871,9 +872,10 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
     def validate_lab_room_errors(self, laboratory, lab_room, shelf_object):
         lab_room_errors = []
         queryset = LaboratoryRoom.objects.filter(laboratory=laboratory)
+        units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_lab_rooms = get_lab_room_queryset_by_filters(queryset, shelf_object, "furniture__shelf",
                                                         {"furniture__shelf__measurement_unit":
-                                                             shelf_object.measurement_unit})
+                                                             shelf_object.measurement_unit}, units)
         if lab_room not in allowed_lab_rooms:
             logger.debug(
                 f'MoveShelfObjectSerializer --> laboratory room ({lab_room.pk}) is not in available laboratory rooms list')
@@ -883,9 +885,10 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
     def validate_furniture_errors(self, lab_room, furniture, shelf_object):
         furniture_errors = []
         queryset = Furniture.objects.filter(labroom=lab_room)
+        units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_furnitures = get_furniture_queryset_by_filters(queryset, shelf_object, "shelf",
                                                         {"shelf__measurement_unit":
-                                                             shelf_object.measurement_unit})
+                                                             shelf_object.measurement_unit}, units)
         if furniture not in allowed_furnitures:
             logger.debug(
                 f'MoveShelfObjectSerializer --> furniture ({furniture.pk}) is not in available furnitures list')
@@ -895,9 +898,10 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
     def validate_shelf_errors(self, furniture, shelf, shelf_object):
         shelf_errors = []
         queryset = Shelf.objects.filter(furniture=furniture)
+        units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_shelves = get_shelf_queryset_by_filters(queryset, shelf_object, "pk",
                                                         {"measurement_unit":
-                                                             shelf_object.measurement_unit})
+                                                             shelf_object.measurement_unit}, units)
         if shelf not in allowed_shelves:
             logger.debug(
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) is not in available shelves list')
