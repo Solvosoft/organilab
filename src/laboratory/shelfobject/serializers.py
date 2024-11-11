@@ -874,8 +874,8 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
         queryset = LaboratoryRoom.objects.filter(laboratory=laboratory)
         units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_lab_rooms = get_lab_room_queryset_by_filters(queryset, shelf_object, "furniture__shelf",
-                                                        {"furniture__shelf__measurement_unit":
-                                                             shelf_object.measurement_unit}, units)
+                                                        {"furniture__shelf__measurement_unit__in":
+                                                             units})
         if lab_room not in allowed_lab_rooms:
             logger.debug(
                 f'MoveShelfObjectSerializer --> laboratory room ({lab_room.pk}) is not in available laboratory rooms list')
@@ -887,8 +887,8 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
         queryset = Furniture.objects.filter(labroom=lab_room)
         units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_furnitures = get_furniture_queryset_by_filters(queryset, shelf_object, "shelf",
-                                                        {"shelf__measurement_unit":
-                                                             shelf_object.measurement_unit}, units)
+                                                        {"shelf__measurement_unit__in":
+                                                             units})
         if furniture not in allowed_furnitures:
             logger.debug(
                 f'MoveShelfObjectSerializer --> furniture ({furniture.pk}) is not in available furnitures list')
@@ -900,8 +900,8 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
         queryset = Shelf.objects.filter(furniture=furniture)
         units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_shelves = get_shelf_queryset_by_filters(queryset, shelf_object, "pk",
-                                                        {"measurement_unit":
-                                                             shelf_object.measurement_unit}, units)
+                                                        {"measurement_unit__in":
+                                                             units})
         if shelf not in allowed_shelves:
             logger.debug(
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) is not in available shelves list')
@@ -928,9 +928,13 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
             logger.debug(f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
             raise serializers.ValidationError({'shelf': _("Object cannot be moved to same shelf.")})
 
+        converted_quantity = get_conversion_from_two_units(shelf_object.measurement_unit,
+                                                           shelf.measurement_unit,
+                                                           shelf_object.quantity)
+
         errors = validate_measurement_unit_and_quantity(shelf,
                                                         shelf_object.object,
-                                                        shelf_object.quantity,
+                                                        converted_quantity,
                                                         measurement_unit=measurement_unit,
                                                         container=container)
         if errors or shelf_errors or lab_room_errors or furniture_errors:

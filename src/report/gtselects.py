@@ -48,7 +48,7 @@ class LabRoomLookup(BaseSelect2View):
                     queryset = get_lab_room_queryset_by_filters(queryset,
                                                                 self.shelfobject,
                                                                 "furniture__shelf",
-                                                                filters, units)
+                                                                filters)
 
         if self.lab_room:
             id_list = [lab_room.pk for lab_room in self.lab_room]
@@ -91,7 +91,7 @@ class FurnitureLookup(BaseSelect2View):
             units = get_related_units_from_laboratory(self.shelfobject.measurement_unit)
             filters = {"shelf__measurement_unit__in": units}
             queryset = get_furniture_queryset_by_filters(queryset, self.shelfobject,
-                                                         "shelf", filters, units)
+                                                         "shelf", filters)
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -126,7 +126,7 @@ class ShelfLookup(BaseSelect2View):
             units = get_related_units_from_laboratory(self.shelfobject.measurement_unit)
             filters = {"measurement_unit__in": units}
             queryset = get_shelf_queryset_by_filters(queryset, self.shelfobject, "pk",
-                                                     filters, units)
+                                                     filters)
         return queryset
 
     def list(self, request, *args, **kwargs):
