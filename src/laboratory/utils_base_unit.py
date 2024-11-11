@@ -68,6 +68,7 @@ def get_related_units(unit, queryset):
         return queryset.filter(pk__in=subunit_ids)
 
 def get_related_units_from_laboratory(unit):
+        subunit_ids = []
         base_unit = BaseUnitValues.objects.filter(
             measurement_unit=unit)
 
@@ -80,4 +81,4 @@ def get_related_units_from_laboratory(unit):
             subunit_ids = subunits.values_list('measurement_unit__pk',
                                                flat=True)
 
-            return subunit_ids
+        return subunit_ids
