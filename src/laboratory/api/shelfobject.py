@@ -66,7 +66,7 @@ from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     save_shelfobject_characteristics, delete_shelfobjects
 
 from laboratory.utils import save_object_by_action,PermissionByLaboratoryInOrganization
-from laboratory.utils_base_unit import get_conversion_from_two_units
+from laboratory.utils_base_unit import get_conversion_from_two_units, get_base_unit
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -780,6 +780,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.queryset = TranferObject.objects.filter(laboratory_received=lab_pk,
                                                      status=REQUESTED)
         queryset = self.filter_queryset(self.queryset)
+
         data = self.paginate_queryset(queryset)
         response_data = {'data': data, 'recordsTotal': self.queryset.count(),
                          'recordsFiltered': self.queryset.count(),
@@ -829,12 +830,33 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             # once we get here everything is validated and ready for the transfer in to happen
-
             transfer_object = serializer.validated_data['transfer_object']
-            if transfer_object.quantity == transfer_object.object.quantity:
+
+            previous_quantity = transfer_object.quantity
+
+            if not transfer_object.object.measurement_unit.description == 'Unidades':
+                if serializer.validated_data['shelf'].measurement_unit:
+                    previous_quantity = get_conversion_from_two_units(
+                        serializer.validated_data['shelf'].measurement_unit, transfer_object.object.measurement_unit,
+                        transfer_object.quantity)
+
+            if previous_quantity == transfer_object.object.quantity:
+                if not transfer_object.object.measurement_unit.description == 'Unidades':
+                    if serializer.validated_data['shelf'].measurement_unit:
+                        transfer_object.object.measurement_unit = serializer.validated_data['shelf'].measurement_unit
+                        converted_quantity = get_conversion_from_two_units(
+                            transfer_object.object.measurement_unit,
+                            serializer.validated_data['shelf'].measurement_unit,
+                            transfer_object.quantity)
+
+                        transfer_object.object.quantity = converted_quantity
                 # move the entire shelfobject instead of copy it, so history is not lost
                 new_shelf_object = move_shelfobject_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], request)
             else:
+                print('EEEEEE')
+                if not transfer_object.object.measurement_unit.description == 'Unidades':
+                    if serializer.validated_data['shelf'].measurement_unit:
+                        transfer_object.object.measurement_unit = serializer.validated_data['shelf'].measurement_unit
                 # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
                 new_shelf_object = move_shelfobject_partial_quantity_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'],
                                                                         request, transfer_object.quantity)

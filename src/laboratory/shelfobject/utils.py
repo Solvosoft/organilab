@@ -172,7 +172,9 @@ def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_i
 
     shelfobject = clone_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity)
 
-    update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - quantity, request.user, organization=destination_organization_id)
+    previous_quantity = get_conversion_from_two_units(shelfobject.measurement_unit, original_shelfobject.measurement_unit, quantity)
+
+    update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - previous_quantity, request.user, organization=destination_organization_id)
 
     return shelfobject
 
@@ -222,7 +224,9 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
 def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
     if new_quantity > 0:
         old_quantity = shelfobject.quantity
+        print(shelfobject.quantity)
         shelfobject.quantity = new_quantity
+        print(shelfobject.quantity)
         shelfobject.save()
         log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, old_quantity, new_quantity, '', CHANGE, _("Change quantity"), organization=organization)
         organilab_logentry(user, shelfobject, CHANGE, changed_data=['quantity'])
