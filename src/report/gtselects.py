@@ -11,6 +11,7 @@ from laboratory.shelfobject.utils import get_available_objs_by_shelfobject, \
     get_lab_room_queryset_by_filters, get_furniture_queryset_by_filters, \
     get_shelf_queryset_by_filters
 from laboratory.utils import get_laboratories_from_organization
+from laboratory.utils_base_unit import get_base_unit, get_related_units_from_laboratory
 from report.api.serializers import ValidateUserAccessLabRoomSerializer
 from django.db.models import Q, Sum
 
@@ -41,8 +42,9 @@ class LabRoomLookup(BaseSelect2View):
                 queryset = queryset.filter(laboratory=self.laboratory)
 
                 if self.shelfobject:
-                    filters = {"furniture__shelf__measurement_unit":
-                                   self.shelfobject.measurement_unit}
+                    units = get_related_units_from_laboratory(self.shelfobject.measurement_unit)
+                    filters = {"furniture__shelf__measurement_unit__in":
+                                   units}
                     queryset = get_lab_room_queryset_by_filters(queryset,
                                                                 self.shelfobject,
                                                                 "furniture__shelf",
@@ -86,7 +88,8 @@ class FurnitureLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.shelfobject:
-            filters = {"shelf__measurement_unit": self.shelfobject.measurement_unit}
+            units = get_related_units_from_laboratory(self.shelfobject.measurement_unit)
+            filters = {"shelf__measurement_unit__in": units}
             queryset = get_furniture_queryset_by_filters(queryset, self.shelfobject,
                                                          "shelf", filters)
         return queryset
@@ -120,7 +123,8 @@ class ShelfLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.shelfobject:
-            filters = {"measurement_unit": self.shelfobject.measurement_unit}
+            units = get_related_units_from_laboratory(self.shelfobject.measurement_unit)
+            filters = {"measurement_unit__in": units}
             queryset = get_shelf_queryset_by_filters(queryset, self.shelfobject, "pk",
                                                      filters)
         return queryset
