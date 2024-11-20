@@ -27,7 +27,7 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectGuarantee, ShelfObjectTraining, ShelfObjectEquipmentCharacteristics
 from laboratory.utils import get_actions_by_perms
 from laboratory.utils_base_unit import get_related_units, get_conversion_from_two_units, \
-    get_related_units_from_laboratory
+    get_related_units_from_laboratory, get_base_unit, get_conversion_units
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
@@ -1182,6 +1182,11 @@ class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectS
         data = super().validate(data)
         container_select_option = data['container_select_option']
         transfer_object = data['transfer_object']
+        shelf = data['shelf']
+
+        converted_quantity = transfer_object.quantity
+        converted_quantity_object = transfer_object.object.quantity
+
         if container_select_option in (
         "use_source", "new_based_source") and not transfer_object.object.container:
             logger.debug(
@@ -1189,12 +1194,32 @@ class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectS
                 f'and not transfer_object.object.container')
             raise serializers.ValidationError({'container_select_option':
                                                    _("The selected option cannot be used since the source object does not have a container assigned.")})
-        if container_select_option == "use_source" and transfer_object.quantity < transfer_object.object.quantity:
+
+        if get_base_unit(transfer_object.object.measurement_unit) == get_base_unit(
+            shelf.measurement_unit):
+
+            converted_quantity = get_conversion_from_two_units(
+                transfer_object.object.measurement_unit,
+                shelf.measurement_unit,
+                transfer_object.quantity)
+
+            converted_quantity_object = get_conversion_from_two_units(
+                transfer_object.object.measurement_unit,
+                shelf.measurement_unit,
+                transfer_object.object.quantity)
+
+            data['transfer_object'].quantity = converted_quantity
+            #data['transfer_object'].object.measurement_unit = shelf.measurement_unit
+
+        if container_select_option == "use_source" and converted_quantity_object <= converted_quantity:
             logger.debug(
                 f'TransferInShelfObjectApproveWithContainerSerializer --> container_select_option == "use_source" and '
                 f'transfer_object.quantity ({transfer_object.quantity}) < transfer_object.object.quantity ({transfer_object.object.quantity})')
             raise serializers.ValidationError({"container_select_option":
                                                    _("The source container cannot be moved since the entire quantity available for the source object was not transferred in.")})
+
+
+
         return data
 
 
