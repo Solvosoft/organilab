@@ -1,5 +1,5 @@
-Ingreso de Sustancias - Códigos de Riesgo y Administración de Inventario
-==========================================================================
+Artículo 2: Ingreso de Sustancias - Códigos de Riesgo y Administración de Inventario
+=================================================================================================================
 
 El módulo de Administración de Sustancias de Organilab ofrece una plataforma integral para la gestión de reactantes y sus códigos de inventario y riesgo asociados.
 
