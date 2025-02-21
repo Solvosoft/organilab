@@ -46,14 +46,18 @@ class Command(BaseCommand):
             return catalog
         return None
 
-    def transfer_objects_from_una_to_default(self):
+    def transfer_objects_from_una_to_default(self, is_una, db_send, db_receive) :
 
-        una_objects = Object.objects.using('unadb')
-        orgs = OrganizationStructure.objects.using('default').get(pk=104)
+        objects_data = Object.objects.using(db_send)
+        orgs = None
+        if is_una:
+            orgs = OrganizationStructure.objects.using(db_receive).get(pk=1)
+        else:
+            orgs = OrganizationStructure.objects.using(db_receive).get(pk=104)
         count = 0
-        for obj in una_objects:
+        for obj in objects_data:
 
-            if not Object.objects.filter(code=obj.code, name=obj.name).using('default').exists():
+            if not Object.objects.filter(code=obj.code, name=obj.name).using(db_receive).exists():
 
                 new_obj = Object.objects.create(
                     name=obj.name,
@@ -65,51 +69,54 @@ class Command(BaseCommand):
                     place=obj.place,
                     serie=obj.serie,
                     description=obj.description,
-                organization=orgs).using('default')
+                organization=orgs).using(db_receive)
 
                 #Clona caracteristicas de objetos
                 for feature in obj.features.all():
                     obj_fea= None
-                    if ObjectFeatures.objects.filter(name=feature.name).using('default').exists():
-                        obj_fea = ObjectFeatures.objects.get(name=feature.name).using('default')
+                    if ObjectFeatures.objects.filter(name=feature.name).using(db_receive).exists():
+                        obj_fea = ObjectFeatures.objects.get(name=feature.name).using(db_receive)
                     else:
-                        obj_fea = ObjectFeatures.objects.create(name=feature.name, description=feature.description).using('default')
+                        obj_fea = ObjectFeatures.objects.create(name=feature.name, description=feature.description).using(db_receive)
                     new_obj.features.add(obj_fea)
 
                 #Clona sustancia caracteristicas
                 if obj.type == "reactive":
-                    sus_cara = SustanceCharacteristics.objects.filter(object=obj).using('unadb').first()
-                    new_reactive_sus = SustanceCharacteristics.objects.create(object=new_obj).using('default')
+                    sus_cara = SustanceCharacteristics.objects.filter(object=obj).using(db_send).first()
+                    new_reactive_sus = SustanceCharacteristics.objects.create(object=new_obj).using(db_receive)
                     if sus_cara:
                         for indication in sus_cara.danger_indication.all():
-                            danger_indication = self.create_danger_indication(indication, "default")
+                            danger_indication = self.create_danger_indication(indication, db_receive)
                             new_reactive_sus.danger_indication.add(danger_indication)
                         for prudence in sus_cara.danger_prudence:
-                            danger_prudence = self.create_danger_prudence(prudence, "default")
+                            danger_prudence = self.create_danger_prudence(prudence, db_receive)
                             new_reactive_sus.danger_prudence.add(danger_prudence)
                         if sus_cara.iarc:
-                            iarc = self.create_catalog(sus_cara.iarc, "IARC", "default")
+                            iarc = self.create_catalog(sus_cara.iarc, "IARC", db_receive)
                             new_reactive_sus.iarc= iarc
                         if sus_cara.imdg:
-                            imdg = self.create_catalog(sus_cara.imdg, "IDMG", "default")
+                            imdg = self.create_catalog(sus_cara.imdg, "IDMG", db_receive)
                             new_reactive_sus.imdg= imdg
 
                         for storage in sus_cara.storage_class.all():
-                            storage_class = self.create_catalog(sus_cara.imdg, "storage_class", "default")
+                            storage_class = self.create_catalog(storage, "storage_class", db_receive)
                             new_reactive_sus.storage_class.add(storage_class)
 
                         for nfpa in sus_cara.nfpa.all():
-                            nfpa_data = self.create_catalog(nfpa, "nfpa", "default")
+                            nfpa_data = self.create_catalog(nfpa, "nfpa", db_receive)
                             new_reactive_sus.nfpa.add(nfpa_data)
+
                         for white in sus_cara.white_organ.all():
-                            white_organ = self.create_catalog(white, "nfpa", "default")
+                            white_organ = self.create_catalog(white, "nfpa", db_receive)
                             new_reactive_sus.white_organ.add(white_organ)
 
                         if sus_cara.precursor_type:
-                            precursor_type = self.create_catalog(sus_cara.precursor_type, "precursor_type", "default")
+                            precursor_type = self.create_catalog(sus_cara.precursor_type, "precursor_type", db_receive)
                             new_reactive_sus.precursor_type=(precursor_type)
+                        new_reactive_sus.save()
+
                     else:
-                       SustanceCharacteristics.objects.create(object=new_obj).using('default')
+                       SustanceCharacteristics.objects.create(object=new_obj).using(db_receive)
 
                 new_obj.save()
                 count+=1
@@ -117,4 +124,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.transfer_users()
-        self.transfer_objects_from_una_to_default()
+        self.transfer_objects_from_una_to_default(False, "unadb", "default")
+        self.transfer_objects_from_una_to_default(True, "default", "unadb")
