@@ -35,6 +35,7 @@ from presentation.templatetags.organilab_tags import get_organilab_version
 from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from risk_management import urls as risk_urls
+from presentation.urls import root_urls as presentation_root_urls
 from sga import urls as sga_urls
 from derb import urls as derb_urls
 from report import urls as report_urls
@@ -46,7 +47,7 @@ def check_ok(request):
         division_by_zero = 1 / 0
     return HttpResponse("ok")
 
-urlpatterns = urls_djgentelela + auth_urls + [
+urlpatterns = urls_djgentelela + auth_urls + presentation_root_urls + [
     path('check_ok/', check_ok),
     path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
     path('index/', include('presentation.urls')),
