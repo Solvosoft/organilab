@@ -112,3 +112,7 @@ def index_organilab(request):
     if request.user.is_authenticated:
         return redirect(reverse('auth_and_perms:select_organization_by_user'))
     return render(request, 'index.html')
+
+
+def general_information(request):
+    return render(request, 'general_information.html')

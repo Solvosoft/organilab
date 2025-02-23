@@ -3,6 +3,10 @@ from django.urls import path
 from . import views
 from .check_system import do_checks
 
+root_urls = [
+    path('general_info', views.general_information, name='general_info')
+]
+
 urlpatterns = [
     path('', views.index_organilab, name='index'),
     path('tutorial/<int:org_pk>', views.index_tutorial, name='tutorials'),
