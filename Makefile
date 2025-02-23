@@ -59,9 +59,9 @@ dist:
 	git push origin "refs/tags/v$(setup_version)"
 
 start:
-	cd src && python manage.py migrate && python manage.py createcachetable
-	python manage.py load_urlname_permissions
-	python manage.py loadgroup
+	cd src && python manage.py migrate && python manage.py createcachetable && \
+	python manage.py load_urlname_permissions && \
+	python manage.py loadgroup && \
 	python manage.py loaddata sga_components.json
 
 
@@ -82,3 +82,6 @@ run_docker_selenium:
 
 database_config:
 	cd src && python manage.py migrate && python manage.py createcachetable && python manage.py load_urlname_permissions && python manage.py loadgroup && python manage.py loaddata sga_components.json
+
+rundata: start
+	cd src && python manage.py transferir_datos

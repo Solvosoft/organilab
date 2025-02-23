@@ -141,12 +141,20 @@ DATABASES = {
     },
     'unadb': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DBNAME', 'UNA_Vieja'),
+        'NAME': os.getenv('DBNAME', 'organilab_una'),
         'USER': os.getenv('DBUSER', 'organilab_user'),
         'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
         'HOST': os.getenv('DBHOST', '127.0.0.1'),
         'PORT': os.getenv('DBPORT', '5432')
-    }
+    },
+    'organilabprod': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DBNAME', 'organilab_prod'),
+        'USER': os.getenv('DBUSER', 'organilab_user'),
+        'PASSWORD': os.getenv('DBPASSWORD', '0rg4n1l4b'),
+        'HOST': os.getenv('DBHOST', '127.0.0.1'),
+        'PORT': os.getenv('DBPORT', '5432')
+    },
 }
 
 READONLY_DATABASE = os.getenv('READONLY_DATABASE', 'default')
@@ -209,8 +217,7 @@ MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
 MEDIA_ROOT = os.getenv('MEDIA_ROOT',  str(BASE_DIR.parent/ 'media/'))
 TINYMCE_UPLOAD_PATH=Path(MEDIA_ROOT) / 'editorupload/'
 
-MEDIA_UNA_URL = os.getenv('MEDIA_URL', '/media_una/')
-MEDIA_ORGANILAB_URL = os.getenv('MEDIA_URL', '/media_organilab/')
+
 FIXTURE_DIRS = os.getenv('FIXTURE_DIRS',  str(BASE_DIR.parent/ 'fixtures/') ).split(',')
 
 DOCS_SOURCE_DIR = os.getenv('DOCS_STATIC_DIR',  str(BASE_DIR.parent / 'docs/source/'))
@@ -406,3 +413,9 @@ if not DEBUG:
 
 DEFAULT_SHELF_ULIMIT=0
 DEFAULT_MIN_QUANTITY = 0.0000001
+
+
+MEDIA_UNA_ROOT = os.getenv('MEDIA_UNA_ROOT',  str(BASE_DIR.parent/ 'media_una/'))
+MEDIA_PROD_ROOT = os.getenv('MEDIA_PROD_ROOT',  str(BASE_DIR.parent/ 'media_prod/'))
+
+DEFAULT_MIGRATION_USER='usuario'
