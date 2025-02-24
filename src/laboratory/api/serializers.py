@@ -376,7 +376,7 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
             logger.debug(
                 f'ValidateEquipmentSerializer --> type ({obj_type}) != Object.EQUIPMENT ({Object.EQUIPMENT})')
             raise serializers.ValidationError(
-                {'type': _("Type reactive object is not valid.")})
+                {'type': _("Type equipment object is not valid.")})
 
         if organization.pk != org_pk_view:
             logger.debug(
