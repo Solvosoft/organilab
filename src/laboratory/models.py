@@ -347,11 +347,16 @@ class ShelfObjectGuarantee(AbstractOrganizationRef):
 
 
 class BaseUnitValues(models.Model):
-    measurement_unit = catalog.GTOneToOneField(Catalog, related_name="baseunit",
+    measurement_unit_base = catalog.GTForeignKey(Catalog, related_name="baseunit",
+                                                 on_delete=models.CASCADE,
+                                                 verbose_name=_('Base unit'),
+                                                 key_name="key", key_value='units',
+                                                 null=True)
+
+    measurement_unit = catalog.GTOneToOneField(Catalog, related_name="unit",
                                                on_delete=models.CASCADE,
-                                               verbose_name=_('Base unit'),
-                                               key_name="key", key_value='units',
-                                               unique=True)
+                                               verbose_name=_('Unit'),
+                                               key_name="key", key_value='units')
     si_value = models.FloatField(default=1)
 
 

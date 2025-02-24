@@ -9,6 +9,8 @@ from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
 from decimal import Decimal
 
+from laboratory.utils_base_unit import get_conversion_units
+
 
 @receiver(post_save, sender=ShelfObject)
 def notify_shelf_object_reach_limit(sender, **kwargs):
@@ -24,13 +26,7 @@ def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
     if hasattr(instance, "measurement_unit") and hasattr(instance,"quantity"):
         try:
-            base_unit = BaseUnitValues.objects.get(
-                measurement_unit=instance.measurement_unit
-            )
-            quantity = Decimal(str(instance.quantity))
-            base_unit_value = Decimal(str(base_unit.si_value))
-            result = float(quantity / base_unit_value)
-            instance.quantity_base_unit = result
+            instance.quantity_base_unit = get_conversion_units(instance.measurement_unit, instance.quantity)
         except BaseUnitValues.DoesNotExist as e:
             None
 

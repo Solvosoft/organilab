@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
     ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
+from laboratory.utils_base_unit import get_base_unit
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -100,11 +101,3 @@ def build_precursor_report_from_reports(first_report, second_report):
 
 
 
-def get_base_unit(unit):
-    if unit.description in ["Gramos","Miligramos"]:
-        return BaseUnitValues.objects.filter(pk=8).first().measurement_unit
-    if unit.description in ["Milímetros", "Centímetros"]:
-        return BaseUnitValues.objects.filter(pk=1).first().measurement_unit
-    if unit.description in ["Mililitros"]:
-        return BaseUnitValues.objects.filter(pk=4).first().measurement_unit
-    return unit
