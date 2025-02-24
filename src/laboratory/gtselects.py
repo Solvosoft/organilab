@@ -1,3 +1,5 @@
+from traceback import print_tb
+
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
@@ -12,10 +14,12 @@ from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
     ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer, \
     UserAccessOrgLabValidateSerializer
 from auth_and_perms.models import Rol, Profile
-from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType
+from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType, \
+    BaseUnitValues
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
 from laboratory.utils import get_pk_org_ancestors
 from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
+from laboratory.utils_base_unit import get_related_units
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -120,7 +124,8 @@ class CatalogUnitLookup(BaseSelect2View):
         queryset = super().get_queryset().filter(key="units")
         if self.shelf:
             if self.shelf.measurement_unit:
-                return queryset.filter(pk=self.shelf.measurement_unit.pk)
+                subunit = self.shelf.measurement_unit
+                return get_related_units(subunit, queryset)
             else:
                 return queryset
         else:
@@ -131,6 +136,40 @@ class CatalogUnitLookup(BaseSelect2View):
         self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
         if self.serializer.is_valid():
             self.shelf = self.serializer.validated_data['shelf']
+            return super().list(request, *args, **kwargs)
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@register_lookups(prefix="catalogunitIncDec", basename="catalogunitIncDec")
+class CatalogUnitIncreaseDecrease(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer = None
+    shelf = None
+    shelfobject = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(key="units")
+        if self.shelf:
+            if self.shelfobject:
+                return get_related_units(self.shelfobject.measurement_unit, queryset)
+            else:
+                return queryset
+        else:
+            return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+
+        self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
+        if self.serializer.is_valid():
+            self.shelf = self.serializer.validated_data['shelf']
+            self.shelfobject = self.serializer.validated_data['shelfobject']
+
             return super().list(request, *args, **kwargs)
         return Response({
             'status': 'Bad request',

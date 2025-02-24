@@ -1,5 +1,6 @@
 from django.db.models import Sum
 from django.utils import timezone
+from laboratory.utils_base_unit import get_base_unit
 
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
     ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
@@ -97,7 +98,3 @@ def build_precursor_report_from_reports(first_report, second_report):
                 obj.stock = old_obj.final_balance+obj.new_income
                 obj.final_balance = obj.stock-obj.month_expense
                 obj.save()
-
-
-
-

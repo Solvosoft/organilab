@@ -8,6 +8,7 @@ from async_notifications.utils import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
 from decimal import Decimal
+from laboratory.utils_base_unit import get_conversion_units
 
 from laboratory.utils_base_unit import get_conversion_units
 
@@ -26,7 +27,14 @@ def shelf_object_base_quantity(sender, **kwargs):
     instance = kwargs.get('instance')
     if hasattr(instance, "measurement_unit") and hasattr(instance,"quantity"):
         try:
-            instance.quantity_base_unit = get_conversion_units(instance.measurement_unit, instance.quantity)
+
+            if instance:
+                instance.quantity_base_unit = get_conversion_units(
+                    instance.measurement_unit, instance.quantity)
+            else:
+                instance.quantity_base_unit = instance.quantity
+
+
         except BaseUnitValues.DoesNotExist as e:
             None
 
