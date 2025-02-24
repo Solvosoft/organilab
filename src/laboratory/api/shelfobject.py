@@ -66,6 +66,7 @@ from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     save_shelfobject_characteristics, delete_shelfobjects
 
 from laboratory.utils import save_object_by_action,PermissionByLaboratoryInOrganization
+from laboratory.utils_base_unit import get_conversion_from_two_units
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -513,6 +514,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                              "create_shelfobject")
         self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk,
                                                                         lab_pk)
+
         serializer = self.serializer_class['serializer'](data=request.data,
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
@@ -528,6 +530,18 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 error,shelfobject = self.serializer_class['method'](serializer,
                                                                   limit_serializer)
                 if shelfobject:
+
+                    if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+
+                        shelfobject.quantity = get_conversion_from_two_units(
+                            shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
+                            , shelfobject.quantity)
+                        shelfobject.save()
+
+                        if not shelfobject.measurement_unit.description == 'Unidades':
+                            shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
+                            shelfobject.save()
+
                     create_shelfobject_observation(shelfobject, shelfobject.description,
                                                         _("Created Object"), request.user,
                                                            lab_pk)
