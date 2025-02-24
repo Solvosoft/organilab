@@ -16,11 +16,12 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
 from laboratory.models import CommentInform, Inform, ShelfObject, OrganizationStructure, \
     Shelf, Laboratory, \
     ShelfObjectObservation, Object, ObjectFeatures, Provider, Catalog, EquipmentType, \
-    EquipmentCharacteristics
+    EquipmentCharacteristics, SustanceCharacteristics
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
+from sga.models import DangerIndication
 
 logger = logging.getLogger('organilab')
 
@@ -375,7 +376,7 @@ class ValidateEquipmentSerializer(serializers.ModelSerializer):
             logger.debug(
                 f'ValidateEquipmentSerializer --> type ({obj_type}) != Object.EQUIPMENT ({Object.EQUIPMENT})')
             raise serializers.ValidationError(
-                {'type': _("Type equipment object is not valid.")})
+                {'type': _("Type reactive object is not valid.")})
 
         if organization.pk != org_pk_view:
             logger.debug(
@@ -598,3 +599,264 @@ class InstrumentalFamilyDataTableSerializer(serializers.Serializer):
 
 class PrecursorSerializer(serializers.Serializer):
     pk = serializers.IntegerField()
+
+class ValidateReactiveSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=255)
+    code = serializers.CharField(max_length=255)
+    synonym = serializers.CharField(max_length=255, allow_null=True, allow_blank=True,
+                                    required=False)
+    description = serializers.CharField(allow_null=True, allow_blank=True,
+                                        required=False)
+    type = serializers.CharField(max_length=2)
+    is_public = serializers.BooleanField(required=False)
+    features = serializers.PrimaryKeyRelatedField(many=True,
+                                                  queryset=ObjectFeatures.objects.using(
+                                                      settings.READONLY_DATABASE),
+                                                  required=True, allow_empty=False)
+    created_by = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.using(settings.READONLY_DATABASE), allow_empty=True,
+        allow_null=True)
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE))
+    model = serializers.CharField(max_length=50, required=True)
+    serie = serializers.CharField(max_length=50)
+    plaque = serializers.CharField(max_length=50)
+
+    def validate(self, data):
+        data = super().validate(data)
+        org_pk_view = self.context['view'].org_pk
+        obj_type = data['type']
+        organization = data['organization']
+
+        if obj_type != Object.REACTIVE:
+            logger.debug(
+                f'ValidateReactiveSerializer --> type ({obj_type}) != Object.Reactive ({Object.REACTIVE})')
+            raise serializers.ValidationError(
+                {'type': _("Type equipment object is not valid.")})
+
+        if organization.pk != org_pk_view:
+            logger.debug(
+                f'ValidateReactiveSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})')
+            raise serializers.ValidationError(
+                {'organization': _("Organization is not valid.")})
+
+        return data
+
+    class Meta:
+        model = Object
+        fields = "__all__"
+
+
+class ValidateReactiveCharacteristicsSerializer(serializers.ModelSerializer):
+    obj = serializers.PrimaryKeyRelatedField(queryset=Object.objects.using(settings.READONLY_DATABASE), allow_empty=True, allow_null=True, required=False)
+
+    iarc = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key='IARC').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True, required=False)
+
+    imdg = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key='IDMG').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True, required=False)
+
+    white_organ = serializers.PrimaryKeyRelatedField(many=True,
+                                                   queryset=Catalog.objects.filter(key='white_organ').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True)
+
+    bioaccumulable = serializers.BooleanField(required=False)
+
+    molecular_formula = serializers.CharField(max_length=80, allow_null=True,
+                                              allow_blank=True)
+
+    cas_id_number = serializers.CharField(max_length=80, allow_null=True,
+                                              allow_blank=True, required=False)
+
+    security_sheet = ChunkedFileField(allow_null=True, required=False,
+                                  allow_empty_file=True)
+
+    is_precursor = serializers.BooleanField(required=False)
+
+    precursor_type = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.filter(key='Precursor').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True)
+
+    h_code = serializers.PrimaryKeyRelatedField(many=True,
+                                                   queryset=DangerIndication.objects.using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True, required=False)
+
+    ue_code = serializers.PrimaryKeyRelatedField(many=True,
+                                                   queryset=Catalog.objects.filter(key='ue_code').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True)
+
+    nfpa = serializers.PrimaryKeyRelatedField(many=True,
+                                                   queryset=Catalog.objects.filter(key='nfpa').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True, required=False)
+
+    storage_class = serializers.PrimaryKeyRelatedField(many=True,
+                                                   queryset=Catalog.objects.filter(key='storage_class').using(settings.READONLY_DATABASE),
+                                                   allow_empty=True, allow_null=True)
+
+    seveso_list = serializers.BooleanField(required=False)
+
+    img_representation = ChunkedFileField(allow_null=True, required=False,
+                                  allow_empty_file=True)
+
+
+    class Meta:
+        model = SustanceCharacteristics
+        fields = "__all__"
+
+class ReactiveSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    features = ObjDisplayNameSerializer(many=True)
+    iarc = serializers.SerializerMethodField()
+    imdg = serializers.SerializerMethodField()
+    white_organ = serializers.SerializerMethodField()
+    bioaccumulable = serializers.SerializerMethodField()
+    molecular_formula = serializers.SerializerMethodField()
+    cas_id_number = serializers.SerializerMethodField()
+    security_sheet = serializers.SerializerMethodField()
+    is_precursor = serializers.SerializerMethodField()
+    precursor_type = serializers.SerializerMethodField()
+    h_code = serializers.SerializerMethodField()
+    ue_code = serializers.SerializerMethodField()
+    nfpa = serializers.SerializerMethodField()
+    storage_class = serializers.SerializerMethodField()
+    seveso_list = serializers.SerializerMethodField()
+    img_representation = serializers.SerializerMethodField()
+
+    combined_booleans = serializers.SerializerMethodField()
+
+    def get_iarc(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            iarc = obj.sustancecharacteristics.iarc
+            if iarc:
+                return {'id': iarc.pk, 'text': iarc.description,
+                        'disabled': False, 'selected': True}
+        return None
+
+    def get_imdg(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            imdg = obj.sustancecharacteristics.imdg
+            if imdg:
+                return {'id': imdg.pk, 'text': imdg.description,
+                        'disabled': False, 'selected': True}
+        return None
+
+    def get_white_organ(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            white_organs = obj.sustancecharacteristics.white_organ.all()
+            if white_organs:
+                return [{'id': white_organ.pk, 'text': white_organ.description, 'disabled': False,
+                         'selected': True} for white_organ in white_organs]
+        return None
+
+    def get_bioaccumulable(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.bioaccumulable
+        return False
+
+    def get_molecular_formula(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.molecular_formula
+        return ""
+
+    def get_cas_id_number(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.cas_id_number
+        return ""
+
+    def get_security_sheet(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            file_value = obj.sustancecharacteristics.security_sheet
+            if file_value:
+                return ChunkedFileField().to_representation(file_value)
+            return None
+
+    def get_is_precursor(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.is_precursor
+        return False
+
+    def get_precursor_type(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            precursor_type = obj.sustancecharacteristics.precursor_type
+            if precursor_type:
+                return {'id': precursor_type.pk, 'text': precursor_type.description,
+                        'disabled': False, 'selected': True}
+        return None
+
+    def get_h_code(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            h_codes = obj.sustancecharacteristics.h_code.all()
+            if h_codes:
+                return [{'id': h_code.pk, 'text': h_code.description, 'disabled': False,
+                         'selected': True} for h_code in h_codes]
+        return None
+
+    def get_ue_code(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            ue_codes = obj.sustancecharacteristics.ue_code.all()
+            if ue_codes:
+                return [{'id': ue_code.pk, 'text': ue_code.description, 'disabled': False,
+                         'selected': True} for ue_code in ue_codes]
+        return None
+
+    def get_nfpa(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            nfpas = obj.sustancecharacteristics.nfpa.all()
+            if nfpas:
+                return [{'id': nfpa.pk, 'text': nfpa.description, 'disabled': False,
+                         'selected': True} for nfpa in nfpas]
+        return None
+
+    def get_storage_class(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            storage_classes = obj.sustancecharacteristics.storage_class.all()
+            if storage_classes:
+                return [{'id': storage_class.pk, 'text': storage_class.description, 'disabled': False,
+                         'selected': True} for storage_class in storage_classes]
+        return None
+
+    def get_seveso_list(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.seveso_list
+        return False
+
+    def get_img_representation(self, obj):
+        if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+            file_value = obj.sustancecharacteristics.img_representation
+            if file_value:
+                return ChunkedFileField().to_representation(file_value)
+            return None
+
+    def get_combined_booleans(self, obj):
+        is_public = '<i class="fa fa-users fa-fw text-success"></i>' if obj.is_public else '<i class="fa fa-user-times fa-fw text-warning"></i>'
+        precursor = '<i class="fa fa-check-circle fa-fw text-success"></i>' if obj.sustancecharacteristics.is_precursor else '<i class="fa fa-times-circle fa-fw text-warning"></i>'
+        bioaccumulable = '<i class="fa fa-leaf fa-fw text-success"></i>' if obj.sustancecharacteristics.bioaccumulable else '<i class="fa fa-flask fa-fw text-warning"></i>'
+
+        return f"{is_public} {precursor} {bioaccumulable}"
+
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_object", "laboratory.view_object"],
+            "update": ["laboratory.change_object", "laboratory.view_object"],
+            "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+            "detail": ["laboratory.view_object"]
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = Object
+        fields = ['id', 'code', 'name', 'synonym', 'is_public', 'description',
+                  'features', 'type', 'organization', 'created_by', 'model', 'serie',
+                  'plaque', 'iarc', 'imdg', 'white_organ', 'bioaccumulable',
+                  'molecular_formula', 'cas_id_number', 'security_sheet', 'is_precursor',
+                  'precursor_type', 'h_code', 'ue_code', 'nfpa',
+                  'storage_class', 'seveso_list','img_representation', 'combined_booleans','actions']
+
+class ReactiveDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ReactiveSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
