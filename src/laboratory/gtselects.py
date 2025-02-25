@@ -116,7 +116,7 @@ class CatalogUnitLookup(BaseSelect2View):
     model = Catalog
     fields = ['description']
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated] #(PermissionByLaboratoryInOrganization, )
     serializer = None
     shelf = None
 
