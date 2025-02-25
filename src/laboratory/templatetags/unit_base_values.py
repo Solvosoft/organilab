@@ -1,6 +1,7 @@
 from django import template
 
 from laboratory.utils_base_unit import get_base_unit, get_conversion_units
+import organilab.settings as settings
 
 register = template.Library()
 
@@ -18,6 +19,6 @@ def get_conversion_result(unit, amount):
     result = get_conversion_units(unit, amount)
 
     if result:
-        return round(result, 2)
+        return round(result, settings.DEFAULT_CONVERSION_DECIMAL_ROUND)
 
     return 0

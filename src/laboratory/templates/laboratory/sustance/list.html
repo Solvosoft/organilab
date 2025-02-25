@@ -51,11 +51,11 @@ var object_urls = {
 datatable_inits = {
     columns: [
                 {data: "id", name: "id", title: "ID", type: "string", visible: false},
-                {data: "combined_booleans", name: "combined_booleans", type: "boolean"},
-                {data: "code", name: "code", title: "Code", type: "string", visible: true},
-                {data: "name", name: "name", title: "Name", type: "string", visible: true},
-                {data: "synonym", name: "synonym", title: "Synonym", type: "string", visible: true},
-                {data: "actions", name: "actions", title: "Actions", type: "string", visible: true}
+                {data: "combined_booleans", name: "combined_booleans", title: gettext("Status") , type: "boolean"},
+                {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
+                {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+                {data: "synonym", name: "synonym", title: gettext("Synonym"), type: "string", visible: true},
+                {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 
 ],
 addfilter: true
