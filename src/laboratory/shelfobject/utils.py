@@ -224,9 +224,7 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
 def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
     if new_quantity > 0:
         old_quantity = shelfobject.quantity
-        print(shelfobject.quantity)
         shelfobject.quantity = new_quantity
-        print(shelfobject.quantity)
         shelfobject.save()
         log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, old_quantity, new_quantity, '', CHANGE, _("Change quantity"), organization=organization)
         organilab_logentry(user, shelfobject, CHANGE, changed_data=['quantity'])

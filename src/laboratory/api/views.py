@@ -416,6 +416,7 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
+        print(queryset.query)
         filters = (Q(organization__in=get_pk_org_ancestors_decendants(self.request.user,
                                                                       self.org_pk),
                      is_public=True)
@@ -724,7 +725,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
     queryset = Object.objects.filter(type=Object.REACTIVE)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['code', 'name']  # for the global search
+    search_fields = ['code', 'name', 'synonym']  # for the global search
     filterset_class = filterset.ReactiveFilter
     ordering_fields = ['code']
     ordering = ('code',)  # default order
