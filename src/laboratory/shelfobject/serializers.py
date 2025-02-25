@@ -26,7 +26,8 @@ from laboratory.models import ShelfObject, Shelf, Catalog, Object, Laboratory, \
     ShelfObjectMaintenance, OrganizationStructure, ShelfObjectLog, ShelfObjectCalibrate, \
     ShelfObjectGuarantee, ShelfObjectTraining, ShelfObjectEquipmentCharacteristics
 from laboratory.utils import get_actions_by_perms
-from laboratory.utils_base_unit import get_related_units, get_conversion_from_two_units
+from laboratory.utils_base_unit import get_related_units, get_conversion_from_two_units, \
+    get_related_units_from_laboratory, get_base_unit, get_conversion_units
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning, get_shelf_queryset_by_filters, \
@@ -871,9 +872,10 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
     def validate_lab_room_errors(self, laboratory, lab_room, shelf_object):
         lab_room_errors = []
         queryset = LaboratoryRoom.objects.filter(laboratory=laboratory)
+        units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_lab_rooms = get_lab_room_queryset_by_filters(queryset, shelf_object, "furniture__shelf",
-                                                        {"furniture__shelf__measurement_unit":
-                                                             shelf_object.measurement_unit})
+                                                        {"furniture__shelf__measurement_unit__in":
+                                                             units})
         if lab_room not in allowed_lab_rooms:
             logger.debug(
                 f'MoveShelfObjectSerializer --> laboratory room ({lab_room.pk}) is not in available laboratory rooms list')
@@ -883,9 +885,10 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
     def validate_furniture_errors(self, lab_room, furniture, shelf_object):
         furniture_errors = []
         queryset = Furniture.objects.filter(labroom=lab_room)
+        units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_furnitures = get_furniture_queryset_by_filters(queryset, shelf_object, "shelf",
-                                                        {"shelf__measurement_unit":
-                                                             shelf_object.measurement_unit})
+                                                        {"shelf__measurement_unit__in":
+                                                             units})
         if furniture not in allowed_furnitures:
             logger.debug(
                 f'MoveShelfObjectSerializer --> furniture ({furniture.pk}) is not in available furnitures list')
@@ -895,9 +898,10 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
     def validate_shelf_errors(self, furniture, shelf, shelf_object):
         shelf_errors = []
         queryset = Shelf.objects.filter(furniture=furniture)
+        units = get_related_units_from_laboratory(shelf_object.measurement_unit)
         allowed_shelves = get_shelf_queryset_by_filters(queryset, shelf_object, "pk",
-                                                        {"measurement_unit":
-                                                             shelf_object.measurement_unit})
+                                                        {"measurement_unit__in":
+                                                             units})
         if shelf not in allowed_shelves:
             logger.debug(
                 f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) is not in available shelves list')
@@ -924,9 +928,13 @@ class MoveShelfObjectSerializer(ValidateShelfSerializer):
             logger.debug(f'MoveShelfObjectSerializer --> shelf ({shelf.pk}) == shelf_object.shelf.pk ({shelf_object.shelf.pk})')
             raise serializers.ValidationError({'shelf': _("Object cannot be moved to same shelf.")})
 
+        converted_quantity = get_conversion_from_two_units(shelf_object.measurement_unit,
+                                                           shelf.measurement_unit,
+                                                           shelf_object.quantity)
+
         errors = validate_measurement_unit_and_quantity(shelf,
                                                         shelf_object.object,
-                                                        shelf_object.quantity,
+                                                        converted_quantity,
                                                         measurement_unit=measurement_unit,
                                                         container=container)
         if errors or shelf_errors or lab_room_errors or furniture_errors:
@@ -1174,6 +1182,11 @@ class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectS
         data = super().validate(data)
         container_select_option = data['container_select_option']
         transfer_object = data['transfer_object']
+        shelf = data['shelf']
+
+        converted_quantity = transfer_object.quantity
+        converted_quantity_object = transfer_object.object.quantity
+
         if container_select_option in (
         "use_source", "new_based_source") and not transfer_object.object.container:
             logger.debug(
@@ -1181,12 +1194,32 @@ class TransferInShelfObjectApproveWithContainerSerializer(TransferInShelfObjectS
                 f'and not transfer_object.object.container')
             raise serializers.ValidationError({'container_select_option':
                                                    _("The selected option cannot be used since the source object does not have a container assigned.")})
-        if container_select_option == "use_source" and transfer_object.quantity < transfer_object.object.quantity:
+
+        if get_base_unit(transfer_object.object.measurement_unit) == get_base_unit(
+            shelf.measurement_unit):
+
+            converted_quantity = get_conversion_from_two_units(
+                transfer_object.object.measurement_unit,
+                shelf.measurement_unit,
+                transfer_object.quantity)
+
+            converted_quantity_object = get_conversion_from_two_units(
+                transfer_object.object.measurement_unit,
+                shelf.measurement_unit,
+                transfer_object.object.quantity)
+
+            data['transfer_object'].quantity = converted_quantity
+            #data['transfer_object'].object.measurement_unit = shelf.measurement_unit
+
+        if container_select_option == "use_source" and converted_quantity_object <= converted_quantity:
             logger.debug(
                 f'TransferInShelfObjectApproveWithContainerSerializer --> container_select_option == "use_source" and '
                 f'transfer_object.quantity ({transfer_object.quantity}) < transfer_object.object.quantity ({transfer_object.object.quantity})')
             raise serializers.ValidationError({"container_select_option":
                                                    _("The source container cannot be moved since the entire quantity available for the source object was not transferred in.")})
+
+
+
         return data
 
 

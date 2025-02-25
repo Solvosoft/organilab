@@ -12,7 +12,7 @@ from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.utils_base_unit import get_conversion_units, \
-    get_conversion_from_two_units
+    get_conversion_from_two_units, get_base_unit
 
 logger = logging.getLogger('organilab')
 
@@ -172,7 +172,9 @@ def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_i
 
     shelfobject = clone_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity)
 
-    update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - quantity, request.user, organization=destination_organization_id)
+    previous_quantity = get_conversion_from_two_units(shelfobject.measurement_unit, original_shelfobject.measurement_unit, quantity)
+
+    update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - previous_quantity, request.user, organization=destination_organization_id)
 
     return shelfobject
 
@@ -222,7 +224,9 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
 def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
     if new_quantity > 0:
         old_quantity = shelfobject.quantity
+        print(shelfobject.quantity)
         shelfobject.quantity = new_quantity
+        print(shelfobject.quantity)
         shelfobject.save()
         log_object_change(user, shelfobject.in_where_laboratory.pk, shelfobject, old_quantity, new_quantity, '', CHANGE, _("Change quantity"), organization=organization)
         organilab_logentry(user, shelfobject, CHANGE, changed_data=['quantity'])
@@ -242,9 +246,15 @@ def get_available_objs_by_shelfobject(queryset, shelfobject, key, filters):
             shelf = Shelf.objects.get(pk=lab[key])
             items_object_shelf = shelf.get_total_refuse(
                 include_containers=False, measurement_unit=shelf.measurement_unit)
-            items_with_shelfobject = items_object_shelf + shelfobject.quantity
 
-            if items_with_shelfobject <= shelf.quantity:
+            converted_quantity = get_conversion_from_two_units(shelfobject.measurement_unit,
+                                                           shelf.measurement_unit,
+                                                           shelfobject.quantity)
+
+
+            items_with_shelfobject = items_object_shelf + converted_quantity
+
+            if shelf.infinity_quantity or items_with_shelfobject <= shelf.quantity:
                 obj_pk.append(lab['pk'])
     return obj_pk
 
@@ -277,6 +287,7 @@ def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
     available_shelves = get_available_objs_by_shelfobject(queryset,
                                                              shelfobject,
                                                              key, filters)
+
     filters_shelves = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
               Q(measurement_unit=shelfobject.measurement_unit,
                 infinity_quantity=True) | \
