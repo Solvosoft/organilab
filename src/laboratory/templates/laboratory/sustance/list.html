@@ -23,12 +23,12 @@
 </div>
 
 {% url "laboratory:api-reactive-list" org_pk lab_pk as list_obj_url %}
-	{% trans 'Create reactive' as create_obj_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url %}
+	{% trans 'Create Reactive' as create_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class='modal-xl' %}
 
 {% url "laboratory:api-reactive-detail" org_pk lab_pk 0 as detail_obj_url %}
-	{% trans 'Update reactive' as update_obj_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url %}
+	{% trans 'Update Reactive' as update_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class='modal-xl' %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
 
@@ -70,7 +70,8 @@ var reactive_modalids = {
 
 var reactive_actions = {
     table_actions: [], // table_actions
-    object_actions: [],
+    object_actions: [
+				],
         title: gettext('Actions'),
         className: "no-export-col"
 }
