@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-11 18:18-0600\n"
+"POT-Creation-Date: 2025-02-24 09:08-0600\n"
 "PO-Revision-Date: 2024-04-12 23:50-0600\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,166 +18,328 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
+#: academic/static/js/complete_my_procedure.js:1
 msgid "Do you want to send the report for review?"
 msgstr "¿Desea enviar el informe a revisión?"
 
+#: academic/static/js/complete_my_procedure.js:1
 msgid "Do you want to finish the report?"
 msgstr "¿Desea finalizar el informe?"
 
+#: academic/static/js/complete_my_procedure.js:22
+#: sga/static/sga/js/prudence_advice.js:4
+#: sga/static/sga/js/prudence_advice.js:53
+#: sga/static/sga/js/recipient_size.js:4 sga/static/sga/js/recipient_size.js:58
+#: sga/static/sga/js/warning_words.js:4 sga/static/sga/js/warning_words.js:54
 msgid "Added"
 msgstr "Agregado"
 
+#: academic/static/js/complete_my_procedure.js:23
+#: academic/static/js/complete_my_procedure.js:73
+#: sga/static/sga/js/prudence_advice.js:27
+#: sga/static/sga/js/recipient_size.js:24 sga/static/sga/js/warning_words.js:27
 msgid "Saved successfully"
 msgstr "Guardado satisfactoriamente"
 
+#: academic/static/js/complete_my_procedure.js:40
 msgid "No step selected"
 msgstr "Ningún paso seleccionado"
 
+#: academic/static/js/complete_my_procedure.js:41
 msgid "You must select a step to add comments."
 msgstr "Debes seleccionar un paso para agregar comentarios."
 
+#: academic/static/js/complete_my_procedure.js:51
 msgid "Discarding cannot be undone."
 msgstr "El descarte no se puede deshacer."
 
+#: academic/static/js/complete_my_procedure.js:53
 msgid "Save"
 msgstr "Guardar"
 
+#: academic/static/js/complete_my_procedure.js:54
+#: laboratory/static/laboratory/js/laboratory.js:120
+#: laboratory/static/laboratory/js/shelfobject_utils.js:6
+#: sga/static/sga/js/displaylables.js:16 sga/static/sga/js/list_substance.js:16
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: academic/static/js/complete_my_procedure.js:98
 msgid "Update the observation"
 msgstr "Actualizar Observación"
 
+#: academic/static/js/complete_my_procedure.js:100
+#: academic/static/js/complete_my_procedure.js:144
+#: academic/static/js/my_procedures_list.js:40
+#: academic/static/js/procedures.js:204
+#: laboratory/static/laboratory/js/detail_modal_creation.js:118
+#: sga/static/sga/js/danger_indication.js:7
+#: sga/static/sga/js/prudence_advice.js:84
+#: sga/static/sga/js/recipient_size.js:113
+#: sga/static/sga/js/warning_words.js:93
 msgid "Yes"
 msgstr "Sí"
 
+#: academic/static/js/complete_my_procedure.js:101
+#: academic/static/js/complete_my_procedure.js:145
+#: academic/static/js/my_procedures_list.js:41
+#: laboratory/static/laboratory/js/detail_modal_creation.js:119
+#: sga/static/sga/js/danger_indication.js:8
+#: sga/static/sga/js/prudence_advice.js:85
+#: sga/static/sga/js/recipient_size.js:114
+#: sga/static/sga/js/warning_words.js:94
 msgid "No"
 msgstr "No"
 
+#: academic/static/js/complete_my_procedure.js:129
 msgid "Successfully updated"
 msgstr "Se actualizo correctamente"
 
+#: academic/static/js/complete_my_procedure.js:141
 msgid "Delete the observation"
 msgstr "Eliminar Observación"
 
+#: academic/static/js/complete_my_procedure.js:142
 msgid "Do you want to remove the observation?"
 msgstr "¿Desea eliminar la observación?"
 
+#: academic/static/js/complete_my_procedure.js:160
+#: academic/static/js/my_procedures_list.js:56
+#: sga/static/sga/js/danger_indication.js:22
+#: sga/static/sga/js/prudence_advice.js:99
+#: sga/static/sga/js/recipient_size.js:131
+#: sga/static/sga/js/warning_words.js:108
 msgid "Successfully deleted"
 msgstr "Se elimino correctamente"
 
+#: academic/static/js/complete_my_procedure.js:177
+#: academic/static/js/my_procedures_list.js:6
+#: laboratory/static/laboratory/js/shelfobject_management.js:7
+#: sga/static/sga/js/review_flow_substance.js:32
 msgid "Creator"
 msgstr "Creador"
 
+#: academic/static/js/complete_my_procedure.js:178
+#: laboratory/static/laboratory/js/shelfobject_management.js:6
+#: sga/static/sga/js/displaylables.js:59 sga/static/sga/js/list_substance.js:59
+#: sga/static/sga/js/review_flow_substance.js:30
 msgid "Creation Date"
 msgstr "Fecha de creación"
 
+#: academic/static/js/complete_my_procedure.js:179
 msgid "Comment"
 msgstr "Comentario"
 
+#: academic/static/js/my_procedures_list.js:4
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:5
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:26
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:83
+#: laboratory/static/laboratory/js/detail_modal_creation.js:21
+#: laboratory/static/laboratory/js/laboratory.js:226
+#: sga/static/sga/js/prudence_advice.js:121
+#: sga/static/sga/js/recipient_size.js:156
+#: sga/static/sga/js/warning_words.js:129
 msgid "Name"
 msgstr "Nombre"
 
+#: academic/static/js/my_procedures_list.js:5
 msgid "Template"
 msgstr "Plantilla"
 
+#: academic/static/js/my_procedures_list.js:7
+#: laboratory/static/laboratory/js/base_modal_management.js:82
 msgid "Status"
 msgstr "Estado"
 
+#: academic/static/js/my_procedures_list.js:8
+#: academic/static/js/procedure_list.js:6
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:8
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:29
+#: laboratory/static/laboratory/js/laboratory.js:230
+#: laboratory/static/laboratory/js/laboratory.js:300
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:27
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:41
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:57
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:76
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:92
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:130
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:137
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:143
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:150
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:166
+#: sga/static/sga/js/danger_indication.js:45
+#: sga/static/sga/js/displaylables.js:64 sga/static/sga/js/list_substance.js:64
+#: sga/static/sga/js/prudence_advice.js:123
+#: sga/static/sga/js/recipient_size.js:161
+#: sga/static/sga/js/review_flow_substance.js:34
+#: sga/static/sga/js/warning_words.js:131
 msgid "Actions"
 msgstr "Acciones"
 
+#: academic/static/js/my_procedures_list.js:18
 msgid "Create procedure"
 msgstr "Crear Procedimiento"
 
+#: academic/static/js/my_procedures_list.js:37
 msgid "Delete procedure"
 msgstr "Eliminar procedimiento"
 
+#: academic/static/js/my_procedures_list.js:38
 msgid "Do you want to remove the procedure?"
 msgstr "¿Desea eliminar el procedimiento?"
 
+#: academic/static/js/procedure_list.js:4
 msgid "Title"
 msgstr "Título"
 
+#: academic/static/js/procedure_list.js:5
+#: laboratory/static/laboratory/js/detail_modal_creation.js:23
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:40
+#: laboratory/static/laboratory/js/shelfobject_management.js:9
+#: sga/static/sga/js/danger_indication.js:43
 msgid "Description"
 msgstr "Descripción"
 
+#: academic/static/js/procedure_list.js:16
 msgid "Create procedure template"
 msgstr "Crear Plantilla de Procedimiento"
 
+#: academic/static/js/procedures.js:33 academic/static/js/procedures.js:286
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:174
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:183
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:229
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:248
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:772
+#: laboratory/static/js/shelfobjectedit.js:66
+#: laboratory/static/js/shelfobjectedit.js:85
+#: laboratory/static/laboratory/js/base_modal_management.js:182
+#: laboratory/static/laboratory/js/base_modal_management.js:206
+#: laboratory/static/laboratory/js/laboratory.js:153
+#: laboratory/static/laboratory/js/laboratory.js:196
+#: laboratory/static/laboratory/js/shelfobject_utils.js:34
+#: sga/static/sga/js/danger_indication.js:30
+#: sga/static/sga/js/displaylables.js:47 sga/static/sga/js/list_substance.js:47
+#: sga/static/sga/js/prudence_advice.js:35
+#: sga/static/sga/js/prudence_advice.js:107
+#: sga/static/sga/js/recipient_size.js:41
+#: sga/static/sga/js/recipient_size.js:98
+#: sga/static/sga/js/recipient_size.js:142
+#: sga/static/sga/js/warning_words.js:35 sga/static/sga/js/warning_words.js:78
+#: sga/static/sga/js/warning_words.js:116
 msgid "Error"
 msgstr "Error"
 
+#: academic/static/js/procedures.js:85 academic/static/js/procedures.js:125
 msgid "Delete"
 msgstr "Eliminar"
 
+#: academic/static/js/procedures.js:132
 msgid "Are you sure to delete the procedure"
 msgstr "¿Está seguro de que quiere eliminar este procedimiento"
 
+#: academic/static/js/procedures.js:133 academic/static/js/procedures.js:139
+#: academic/static/js/procedures.js:151
 msgid "has been deleted"
 msgstr "ha sido eliminado"
 
+#: academic/static/js/procedures.js:134
 msgid "The procedure was not removed"
 msgstr "El procedimiento no fue eliminado"
 
+#: academic/static/js/procedures.js:138
 msgid "Are you sure to delete the step"
 msgstr "Estas seguro de eliminar el paso"
 
+#: academic/static/js/procedures.js:139
 msgid "Step"
 msgstr "Paso"
 
+#: academic/static/js/procedures.js:140
 msgid "The procedure step was not removed"
 msgstr "El paso del procedimiento no fue eliminado"
 
+#: academic/static/js/procedures.js:144
 msgid "Are you sure to delete this observation?"
 msgstr "¿Está seguro de que quiere eliminar esta observación?"
 
+#: academic/static/js/procedures.js:145
 msgid "Observation has been deleted"
 msgstr "La observación ha sido eliminada"
 
+#: academic/static/js/procedures.js:146
 msgid "The observation was not removed"
 msgstr "La observación no fue eliminada"
 
+#: academic/static/js/procedures.js:150
 msgid "Are you sure to delete this object"
 msgstr "Estas seguro de eliminar el objeto"
 
+#: academic/static/js/procedures.js:151
+#: laboratory/static/laboratory/js/laboratory.js:295
 msgid "Object"
 msgstr "Objeto"
 
+#: academic/static/js/procedures.js:152
 msgid "The object was not removed"
 msgstr "El objeto no fue eliminado"
 
+#: academic/static/js/procedures.js:164 sga/static/sga/js/recipient_size.js:130
 msgid "Deleted!"
 msgstr "¡Eliminado!"
 
+#: academic/static/js/procedures.js:181 academic/static/js/procedures.js:271
 msgid "Don't have permissions"
 msgstr "No tiene permisos"
 
+#: academic/static/js/procedures.js:201
 msgid "You are in time to reverse this action!"
 msgstr "¡Está todavía a tiempo de revertir esta acción!"
 
+#: academic/static/js/procedures.js:214
 msgid "Cancelled"
 msgstr "Cancelado"
 
+#: academic/static/js/procedures.js:255
 msgid "Reserved"
 msgstr "Reservar"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:6
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:27
 msgid "Email"
 msgstr "Correo electrónico"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:7
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:28
 msgid "Rols"
 msgstr "Roles"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:76
 msgid "Your rol was set successfully"
 msgstr "Rol fue asignado correctamente"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:77
 msgid "Now you can set this rol in laboratory user table"
 msgstr ""
 "Ahora se puede establecer este rol en la tabla de usuarios del laboratorio"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:136
 msgid "User registered successfully"
 msgstr "Usuario guardado satisfactoriamente"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:144
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:180
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:245
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:766
+#: laboratory/static/js/shelfobjectedit.js:56
+#: laboratory/static/laboratory/js/base_modal_management.js:176
+#: laboratory/static/laboratory/js/base_modal_management.js:207
+#: laboratory/static/laboratory/js/laboratory.js:143
+#: laboratory/static/laboratory/js/laboratory.js:190
+#: laboratory/static/laboratory/js/shelfobject_utils.js:24
+#: sga/static/sga/js/displaylables.js:39 sga/static/sga/js/list_substance.js:39
+#: sga/static/sga/js/recipient_size.js:35
+#: sga/static/sga/js/recipient_size.js:92
+#: sga/static/sga/js/recipient_size.js:146
 msgid ""
 "There was a problem performing your request. Please try again later or "
 "contact the administrator."
@@ -185,6 +347,7 @@ msgstr ""
 "Hubo un problema realizando su solicitud. Por favor intente más tarde o "
 "contacte al administrador."
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:161
 msgid ""
 "User successfully added, now you can search for it in the adjacent tab to "
 "add it in the organization."
@@ -192,104 +355,154 @@ msgstr ""
 "Usuario agregado con éxito, ahora puedes buscarlo en el tab contiguo para "
 "agregarlo en la organización."
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:164
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:754
+#: laboratory/static/js/shelfobjectedit.js:48
+#: laboratory/static/laboratory/js/base_modal_management.js:164
+#: laboratory/static/laboratory/js/laboratory.js:135
+#: laboratory/static/laboratory/js/laboratory.js:185
+#: sga/static/sga/js/displaylables.js:31 sga/static/sga/js/list_substance.js:31
 msgid "Success"
 msgstr "Éxito"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:171
 msgid "Failed to add user. Please try again"
 msgstr "Falló al agregar organización, por favor trate más tarde"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:193
+#: laboratory/static/laboratory/js/laboratory.js:116
+#: sga/static/sga/js/displaylables.js:12 sga/static/sga/js/list_substance.js:12
 msgid "Are you sure?"
 msgstr "¿Está seguro?"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:194
 msgid "will be part of your organization!"
 msgstr "será parte de su organización!"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:199
 msgid "Yes, add it!"
 msgstr "Si, agréguelo!"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:270
 msgid "Relate user to organization"
 msgstr "Relacionar usuario a la organización"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:281
 msgid "Current laboratory"
 msgstr "Laboratorio actual"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:283
 msgid "Relate user to laboratory"
 msgstr "Relacionar usuario a laboratorio"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:288
 msgid "Laboratory needs to be selected"
 msgstr "Un laboratorio necesita ser seleccionado"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:289
 msgid "Sorry you need to select laboratory before relate user to it"
 msgstr ""
 "Lo lamentamos necesita seleccionar un laboratorio antes de relacionar un "
 "usuario con un laboratorio"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:319
 msgid "Are you sure you want to delete?"
 msgstr "¿Está seguro/a de que desea eliminar?"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:321
 msgid " from "
 msgstr " desde "
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:322
 msgid "Yes, delete it"
 msgstr "Si, eliminarlo"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:325
 msgid "Also disable user login on platform"
 msgstr "También deshabilitar el usuario para autenticarse en la plataforma"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:786
 msgid "No organization selected"
 msgstr "Sin organización seleccionada"
 
+#: auth_and_perms/static/js/auth_and_perms/organization_manager.js:787
 msgid "You need to select a organization before using this tab."
 msgstr "Necesita seleccionar una organización para realizar esta acción."
 
+#: auth_and_perms/static/js/auth_and_perms/select_organization.js:12
 msgid "Shelf Object"
 msgstr "Objeto en estante"
 
+#: auth_and_perms/static/js/auth_and_perms/select_organization.js:13
 msgid "Shelf"
 msgstr "Estante"
 
+#: auth_and_perms/static/js/auth_and_perms/select_organization.js:14
+#: laboratory/static/laboratory/js/base_modal_management.js:85
+#: laboratory/static/laboratory/js/laboratory.js:227
+#: laboratory/static/laboratory/js/laboratory.js:296
 msgid "Quantity"
 msgstr "Cantidad"
 
+#: auth_and_perms/static/js/auth_and_perms/select_organization.js:15
 msgid "Laboratory"
 msgstr "Laboratorio"
 
+#: derb/static/formio/CustomSelect.js:168
 msgid "Select an option from the available APIs in Organilab"
 msgstr "Seleccione una API de las disponibles en Organilab"
 
+#: derb/static/formio/CustomSelect.js:171
 msgid "Inform"
 msgstr "Informes"
 
+#: derb/static/formio/CustomSelect.js:172
 msgid "Incident Report"
 msgstr "Reporte de incidentes"
 
+#: derb/static/formio/CustomSelect.js:173
 msgid "Laboratory by User"
 msgstr "Laboratorio por usuario"
 
+#: derb/static/formio/CustomSelect.js:174
 msgid "Laboratory by Organization"
 msgstr "Laboratorio por organizacion"
 
+#: derb/static/formio/CustomSelect.js:175
 msgid "Users in Lab/Organization"
 msgstr "Usuarios en un Laboratorio/Organizacion"
 
+#: derb/static/formio/CustomSelect.js:176
 msgid "Objects"
 msgstr "Objetos"
 
+#: derb/static/formio/CustomSelect.js:200
 msgid "Laboratory identifier"
 msgstr "Identificador del laboratorio"
 
+#: laboratory/static/js/shelfobjectedit.js:10
+#: sga/static/sga/js/displaylables.js:7 sga/static/sga/js/list_substance.js:7
 msgid "Are you sure you want to delete"
 msgstr "¿Está seguro/a de que desea eliminar"
 
+#: laboratory/static/js/shelfobjectedit.js:15
 msgid "Would you like to delete the container"
 msgstr "Le gustaría eliminar el contenedor"
 
+#: laboratory/static/js/shelfobjectedit.js:16
 msgid "as well?"
 msgstr "también?"
 
+#: laboratory/static/js/shelfobjectedit.js:86
+#: sga/static/sga/js/danger_indication.js:31
+#: sga/static/sga/js/prudence_advice.js:36
+#: sga/static/sga/js/prudence_advice.js:108
+#: sga/static/sga/js/warning_words.js:36 sga/static/sga/js/warning_words.js:79
+#: sga/static/sga/js/warning_words.js:117
 msgid "An error has occurred"
 msgstr "Ha ocurrido un error"
 
+#: laboratory/static/laboratory/js/base_modal_management.js:82
 msgid ""
 "It is a feature related to the physical properties of this element, some "
 "examples could be volatile, fragile, poor state, good condition."
@@ -298,12 +511,15 @@ msgstr ""
 "elemento, algunos ejemplos pueden ser volátil, frágil, mal estado, buena "
 "condición."
 
+#: laboratory/static/laboratory/js/base_modal_management.js:84
 msgid "Measurement Unit"
 msgstr "Unidad de Medida"
 
+#: laboratory/static/laboratory/js/base_modal_management.js:84
 msgid "It is filtered by the shelf's measurement unit."
 msgstr "Es filtrada por la unidad de medida del estante."
 
+#: laboratory/static/laboratory/js/base_modal_management.js:85
 msgid ""
 "There is no limit if the shelf has infinite quantity setup, in any other "
 "case the capacity is restricted."
@@ -311,12 +527,16 @@ msgstr ""
 "No existe un límite si el estante tiene cantidad infinita establecida,  en "
 "cualquier otro caso la capacidad es restringida."
 
+#: laboratory/static/laboratory/js/base_modal_management.js:94
 msgid "General Information"
 msgstr "Información General"
 
+#: laboratory/static/laboratory/js/base_modal_management.js:113
+#: laboratory/static/laboratory/js/laboratory.js:229
 msgid "Container"
 msgstr "Contenedor"
 
+#: laboratory/static/laboratory/js/base_modal_management.js:114
 msgid ""
 "This field represents a material object like a box, a bottle, a tank, or a "
 "tin that will be responsible for containing a substance.  As a requirement, "
@@ -327,293 +547,424 @@ msgstr ""
 "requerimiento el objeto contenedor necesita ser registrado en este "
 "laboratorio como material."
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:20
+#: sga/static/sga/js/danger_indication.js:42
+#: sga/static/sga/js/prudence_advice.js:120
 msgid "Code"
 msgstr "Código"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:22
 msgid "Synonym"
 msgstr "Sinónimo"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:24
 msgid "Model"
 msgstr "Modelo"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:25
 msgid "Serie"
 msgstr "Serie"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:26
 msgid "Plaque"
 msgstr "Placa"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:29
+#: laboratory/static/laboratory/js/laboratory.js:228
 msgid "Unit"
 msgstr "Unidad"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:32
 msgid "Features"
 msgstr "Características"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:49
+#: laboratory/static/laboratory/js/detail_modal_creation.js:55
 msgid "Download QR"
 msgstr "Descargar QR"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:69
 msgid "White Organs"
 msgstr "Órganos Blancos"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:70
 msgid "H Codes"
 msgstr "Códigos H"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:71
 msgid "UE Codes"
 msgstr "Códigos UE"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:72
 msgid "NFPA Codes"
 msgstr "Códigos NFPA"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:78
 msgid "Security Sheet"
 msgstr "Hoja de Seguridad"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:79
+#: laboratory/static/laboratory/js/detail_modal_creation.js:214
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:5
 msgid "Download"
 msgstr "Descargar"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:83
 msgid "Sustance Representation"
 msgstr "Representación de la sustancia"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:96
 msgid "Cas Number"
 msgstr "Número CAS"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:97
 msgid "Is Precursor"
 msgstr "Es precursor"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:101
 msgid "Precursor Type"
 msgstr "Tipo de Precursor"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:103
 msgid "IARC"
 msgstr "IARC"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:104
 msgid "IMDG"
 msgstr "IMDG"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:105
 msgid "Bio Accumulable"
 msgstr "Bio acumulable"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:106
 msgid "Is Seveso list III?"
 msgstr "¿Es Lista de Seveso III?"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:107
 msgid "Molecular Formula"
 msgstr "Formula Molecular"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:186
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:22
 msgid "Provider"
 msgstr "Proveedor"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:187
 msgid "Has guarantee?"
 msgstr "¿Tiene Garantía?"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:188
 msgid "Is available to use?"
 msgstr "¿Esta disponible de usar?"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:189
 msgid "Price"
 msgstr "Precio"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:190
 msgid "Note"
 msgstr "Nota"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:191
 msgid "Purchase Date"
 msgstr "Fecha de compra"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:192
 msgid "Delivery Date"
 msgstr "Fecha de entrega"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:193
 msgid "First date use"
 msgstr "Primer día de uso"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:197
 msgid "Contract of maintenance"
 msgstr "Contrato de mantenimiento"
 
+#: laboratory/static/laboratory/js/detail_modal_creation.js:198
 msgid "Authorized roles to use equipment"
 msgstr "Roles autorizados para el uso del equipo"
 
+#: laboratory/static/laboratory/js/laboratory.js:92
 msgid "No shelf selected"
 msgstr "No se ha seleccionado un estante"
 
+#: laboratory/static/laboratory/js/laboratory.js:93
 msgid "You need to select a shelf before performing this action."
 msgstr "Necesita seleccionar un estante antes de realizar esta acción."
 
+#: laboratory/static/laboratory/js/laboratory.js:112
 msgid "Are you sure you want to deny the transfer of"
 msgstr "¿Está seguro/a de que desea denegar la transferencia de"
 
+#: laboratory/static/laboratory/js/laboratory.js:118
+#: sga/static/sga/js/displaylables.js:14 sga/static/sga/js/list_substance.js:14
 msgid "Confirm"
 msgstr "Confirmar"
 
+#: laboratory/static/laboratory/js/laboratory.js:224
+#: laboratory/static/laboratory/js/laboratory.js:294
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:19
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:35
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:50
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:65
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:84
+#: laboratory/static/laboratory/js/shelfobject_management.js:5
+#: sga/static/sga/js/displaylables.js:58 sga/static/sga/js/list_substance.js:58
 msgid "Id"
 msgstr "Id"
 
+#: laboratory/static/laboratory/js/laboratory.js:225
 msgid "Type"
 msgstr "Tipo"
 
+#: laboratory/static/laboratory/js/laboratory.js:236
 msgid "Create Equipment"
 msgstr "Crear Equipo"
 
+#: laboratory/static/laboratory/js/laboratory.js:246
 msgid "Create Material"
 msgstr "Crear Material"
 
+#: laboratory/static/laboratory/js/laboratory.js:255
+#: sga/static/sga/js/displaylables.js:69 sga/static/sga/js/displaylables.js:70
+#: sga/static/sga/js/list_substance.js:69
+#: sga/static/sga/js/list_substance.js:70
 msgid "Create Substance"
 msgstr "Crear Sustancia"
 
+#: laboratory/static/laboratory/js/laboratory.js:265
 msgid "Containers"
 msgstr "Contenedores"
 
+#: laboratory/static/laboratory/js/laboratory.js:271
 msgid "Transfer In"
 msgstr "Transferir aquí"
 
+#: laboratory/static/laboratory/js/laboratory.js:297
 msgid "Laboratory Send"
 msgstr "Laboratorio que Envía"
 
+#: laboratory/static/laboratory/js/laboratory.js:298
 msgid "Mark as Discard"
 msgstr "Marcar como Desecho"
 
+#: laboratory/static/laboratory/js/laboratory.js:299
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:20
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:51
 msgid "Date"
 msgstr "Fecha"
 
+#: laboratory/static/laboratory/js/laboratory.js:301
 msgid "Approve"
 msgstr "Aprobar"
 
+#: laboratory/static/laboratory/js/laboratory.js:302
 msgid "Deny"
 msgstr "Denegar"
 
+#: laboratory/static/laboratory/js/laboratory.js:369
 msgid "Search"
 msgstr "Buscar"
 
+#: laboratory/static/laboratory/js/laboratory.js:522
 msgid "Showing first result from "
 msgstr "Muestra el primer resultado de "
 
+#: laboratory/static/laboratory/js/laboratory.js:522
 msgid " matched shelves"
 msgstr " estanterías que combinan"
 
+#: laboratory/static/laboratory/js/reports.js:55
 msgid "Loading the report may take a few minutes..."
 msgstr "Cargando reporte esto puede tardar pocos minutos..."
 
+#: laboratory/static/laboratory/js/reports.js:93
+#: laboratory/static/laboratory/js/shelfobject_utils.js:7
 msgid "Send"
 msgstr "Enviar"
 
+#: laboratory/static/laboratory/js/reports.js:198
+#: sga/static/sga/js/displaylables.js:60 sga/static/sga/js/list_substance.js:60
 msgid "User"
 msgstr "Usuario"
 
+#: laboratory/static/laboratory/js/reports.js:199
 msgid "Day"
 msgstr "Día"
 
+#: laboratory/static/laboratory/js/reports.js:200
 msgid "Old"
 msgstr "Antiguo"
 
+#: laboratory/static/laboratory/js/reports.js:201
 msgid "New"
 msgstr "Nuevo"
 
+#: laboratory/static/laboratory/js/reports.js:202
+#: laboratory/static/laboratory/js/reports.js:206
 msgid "Difference"
 msgstr "Diferencia"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:8
 msgid "You do not have permissions to see or download contract."
 msgstr "No tienes permisos para ver o descargar el contrato."
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:24
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:54
 msgid "Validator"
 msgstr "Validador"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:26
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:56
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:75
 msgid "Observation"
 msgstr "Observación"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:36
 msgid "Last Update"
 msgstr "Última Actualización"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:38
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:89
 msgid "Created by"
 msgstr "Creado por"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:53
 msgid "Calibrator"
 msgstr "Calibrador"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:66
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:85
 msgid "Initial date"
 msgstr "Fecha inicial"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:68
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:87
 msgid "Final date"
 msgstr "Fecha final"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:70
 msgid "Hours"
 msgstr "Horas"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:71
 msgid "Place"
 msgstr "Lugar"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:72
 msgid "Internal participants"
 msgstr "Participantes internos"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:91
 msgid "Contract"
 msgstr "Contrato"
 
+#: laboratory/static/laboratory/js/shelfobject_equipment_tables.js:161
 msgid "Providers"
 msgstr "Proveedores"
 
+#: laboratory/static/laboratory/js/shelfobject_management.js:8
 msgid "Action Taken"
 msgstr "Acción Tomada"
 
+#: laboratory/static/laboratory/js/shelfobject_utils.js:3
 msgid "New status"
 msgstr "Nuevo estado"
 
+#: laboratory/static/laboratory/js/shelfobject_utils.js:19
 msgid "Saved the new shelfobject status"
 msgstr "Estado de nuevos objetos de estante guardados"
 
+#: sga/static/sga/js/danger_indication.js:4
 msgid "Delete danger indication"
 msgstr "Eliminar indicacion de peligro"
 
+#: sga/static/sga/js/danger_indication.js:5
 msgid "Do you want to remove the danger indication?"
 msgstr "¿Desea eliminar esta indicación de peligro?"
 
+#: sga/static/sga/js/danger_indication.js:44
 msgid "Warning Words"
 msgstr "Palabras de advertencia"
 
+#: sga/static/sga/js/danger_indication.js:49
+#: sga/static/sga/js/prudence_advice.js:127
+#: sga/static/sga/js/recipient_size.js:165
+#: sga/static/sga/js/warning_words.js:135
 msgid "Add"
 msgstr "Agregar"
 
+#: sga/static/sga/js/displaylables.js:61 sga/static/sga/js/list_substance.js:61
 msgid "Comercial Name"
 msgstr "Nombre comercial"
 
+#: sga/static/sga/js/displaylables.js:62 sga/static/sga/js/list_substance.js:62
 msgid "Agrochemical"
 msgstr "Agroquímico"
 
+#: sga/static/sga/js/displaylables.js:63 sga/static/sga/js/list_substance.js:63
 msgid "UIPA Name"
 msgstr "Nombre UIPA"
 
+#: sga/static/sga/js/prudence_advice.js:73
+#: sga/static/sga/js/recipient_size.js:82 sga/static/sga/js/warning_words.js:73
 msgid "Updated"
 msgstr "Actualizado"
 
+#: sga/static/sga/js/prudence_advice.js:81
 msgid "Delete prudence advice"
 msgstr "Eliminar consejo de prudencia"
 
+#: sga/static/sga/js/prudence_advice.js:82
 msgid "Do you want to remove the prudence advice?"
 msgstr "¿Desea eliminar este consejo de prudencia?"
 
+#: sga/static/sga/js/prudence_advice.js:122
 msgid "Help message"
 msgstr "Mensaje de ayuda"
 
+#: sga/static/sga/js/prudence_advice.js:122
 msgid "Unknown"
 msgstr "Desconocido"
 
+#: sga/static/sga/js/recipient_size.js:110
 msgid "Delete recipient size"
 msgstr "Eliminar tamaño de recipiente"
 
+#: sga/static/sga/js/recipient_size.js:111
 msgid "Do you want to remove the recipient?"
 msgstr "¿Deseas eliminar el recipiente?"
 
+#: sga/static/sga/js/recipient_size.js:157
 msgid "Height"
 msgstr "Altura"
 
+#: sga/static/sga/js/recipient_size.js:158
 msgid "Height Unit"
 msgstr "Unidad de Medida de Altura"
 
+#: sga/static/sga/js/recipient_size.js:159
 msgid "Width"
 msgstr "Ancho"
 
+#: sga/static/sga/js/recipient_size.js:160
 msgid "Width Unit"
 msgstr "Unidad de Medida de Ancho"
 
+#: sga/static/sga/js/review_flow_substance.js:33
 msgid "Substance"
 msgstr "Sustancia"
 
+#: sga/static/sga/js/warning_words.js:90
 msgid "Delete warning word"
 msgstr "Eliminar palabra de advertencia"
 
+#: sga/static/sga/js/warning_words.js:91
 msgid "Do you want to remove the warning word?"
 msgstr "¿Desea eliminar esta palabra de advertencia?"
 
+#: sga/static/sga/js/warning_words.js:130
 msgid "Weight"
 msgstr "Peso"

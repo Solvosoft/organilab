@@ -31,8 +31,6 @@ from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchDisposalObject
-from laboratory.sustance.views import create_edit_sustance, sustance_list, \
-    SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import inform_period
 from laboratory.views import labroom, shelfobject, laboratory, organizations
@@ -139,10 +137,6 @@ reports_all_lab = [
 
 sustance_urls = [
     path('', view_reactive_list, name='sustance_list'),
-    #path('add/', create_edit_sustance, name='sustance_add'),
-    #path('edit/<int:pk>/', create_edit_sustance, name='sustance_manage'),
-    #path('delete/<int:pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
-    #path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
 ]
 
 equipment_urls = [

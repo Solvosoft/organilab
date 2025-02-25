@@ -853,7 +853,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 # move the entire shelfobject instead of copy it, so history is not lost
                 new_shelf_object = move_shelfobject_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], request)
             else:
-                print('EEEEEE')
                 if not transfer_object.object.measurement_unit.description == 'Unidades':
                     if serializer.validated_data['shelf'].measurement_unit:
                         transfer_object.object.measurement_unit = serializer.validated_data['shelf'].measurement_unit
