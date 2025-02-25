@@ -866,6 +866,21 @@ class EquipmentTypeForm(GTForm, forms.ModelForm):
 
 
 class ReactiveForm(GTForm, forms.ModelForm):
+    """"""
+    default_render_type = "as_grid"
+    grid_representation = [
+        [["name"],["cas_id_number"],["security_sheet"]],
+        [["code"],["bioaccumulable"],["iarc"]],
+        [["synonym"], ["is_precursor"], ["imdg"]],
+        [["is_public"], ["precursor_type"], ["white_organ"]],
+        [["description"], ["h_code"], ["nfpa"]],
+        [["model"], ["molecular_formula"], ["ue_code"]],
+        [["plaque"], ["img_representation"], ["storage_class"]],
+        [["serie"], ["laboratory"], ["seveso_list"]],
+        [["type"], ["organization"], ["created_by"]],
+        [["features"], [""], [""]],
+    ]
+
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
 
     iarc = forms.ModelChoiceField(widget=genwidgets.Select,
@@ -884,6 +899,9 @@ class ReactiveForm(GTForm, forms.ModelForm):
                                             blank=True, required=False,
                                             label=_("White Organ"))
 
+    is_public = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                        required=False,
+                                        label=_("Share with others"))
 
     bioaccumulable = forms.BooleanField(widget=genwidgets.YesNoInput,
                                               required=False,
@@ -900,17 +918,17 @@ class ReactiveForm(GTForm, forms.ModelForm):
 
     is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput,
                                               required=False,
-                                        label=_("Is Precursor?"))
+                                        label=_("Is precursor?"))
 
     precursor_type = forms.ModelChoiceField(widget=genwidgets.Select,
                                             queryset=Catalog.objects.filter(key='Precursor'),
                                             blank=True, required=False,
-                                            label=_("Precursor type"))
+                                            label=_("Precursor Type"))
 
     h_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
                                             queryset=DangerIndication.objects.all(),
                                             blank=True, required=False,
-                                            label=_("Danger indication  "))
+                                            label=_("Danger indication"))
 
     ue_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
                                             queryset=Catalog.objects.filter(key='ue_code'),
@@ -929,10 +947,10 @@ class ReactiveForm(GTForm, forms.ModelForm):
 
     seveso_list = forms.BooleanField(widget=genwidgets.YesNoInput,
                                               required=False,
-                                        label=_("Is Seveso?"))
+                                        label=_("Is Seveso list III?"))
 
     img_representation = forms.FileField(widget=FileChunkedUpload, required=False,
-                                 label=_("Susstance representation"))
+                                 label=_("Sustance representation"))
 
 
     def __init__(self, *args, **kwargs):
