@@ -71,6 +71,13 @@ var reactive_modalids = {
 var reactive_actions = {
     table_actions: [], // table_actions
     object_actions: [
+					{
+						'name' : 'download',
+						'action' : 'download',
+						'title' : gettext('Download'),
+						'in_action_column' : true,
+						'i_class' : 'fa fa-download',
+					}
 				],
         title: gettext('Actions'),
         className: "no-export-col"
@@ -99,6 +106,18 @@ let objconfig={
 }
 
 let crud=ObjectCRUD("reactivecrudobj", objconfig)
+crud.download = function(obj, action){
+	if (obj.security_sheet && obj.security_sheet.url){
+		const link = document.createElement('a');
+		link.href = obj.security_sheet.url;
+		link.download = obj.security_sheet.name
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}else{
+		console.error("No security sheet available")
+	}
+}
 crud.init();
 
 </script>
