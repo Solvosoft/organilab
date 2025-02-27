@@ -20,6 +20,7 @@ from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry,
     UserOrganization, RegisterUserQR, OrganizationStructureRelations
 
 
+
 def check_group_has_perm(group,codename):
     if codename:
         _, perm = (codename.split("."))
