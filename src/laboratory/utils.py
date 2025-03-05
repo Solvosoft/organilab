@@ -305,6 +305,7 @@ def get_exclude_org_register_user(lab_pk, query_org, org_register_pk=None):
         content_type=content_type,
         object_id=lab_pk
     )
+    print(exclude_org.values_list('organization_creator__pk', flat=True))
 
     if org_register_pk:
         exclude_org = exclude_org.exclude(organization_register=org_register_pk)
