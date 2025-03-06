@@ -4721,3 +4721,12 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Added the user %(user)r in the organization %(org)r"
+msgstr "Se agrego el usuario %(user)r en la organización %(org)r"
+
+msgid "Added the groups %(groups)r to the profile %(profile)r"
+msgstr "Se agregaron los grupos %(groups)r al perfil %(profile)r"
+
+msgid "Removed the groups %(groups)r from the profile %(profile)r"
+msgstr "Se eliminaron los grupos %(groups)r del perfil %(profile)r"
