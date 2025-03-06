@@ -394,7 +394,7 @@ class RegisterUserQRList(ListView):
         org_base_list = list(organization.descendants(include_self=True))
 
         if self.org and self.lab:
-            queryset = queryset.filter(organization_creator__in=org_base_list,
+            queryset = queryset.filter(organization_register__in=org_base_list,
                                        content_type=content_type,
                                        object_id=self.lab
                                        ).order_by('creation_date', 'last_update', 'organization_register__name')
