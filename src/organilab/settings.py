@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'location_field',
     'rest_framework',
     'rest_framework.authtoken',
-    'captcha',
     'msds',
     'sga',
     'async_notifications',
@@ -312,10 +311,6 @@ MY_PAYPAL_HOST="http://localhost:8000/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
-RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
-SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
-
 GT_GROUP_MODEL='auth_and_perms.models.Rol'
 DEFAULT_BUSSINESS = int(os.getenv('DEFAULT_BUSSINESS', 1))
 DEFAULT_ENTITY = int(os.getenv('DEFAULT_ENTITY', 1))
@@ -396,4 +391,4 @@ if not DEBUG:
 
 DEFAULT_SHELF_ULIMIT=0
 DEFAULT_MIN_QUANTITY = 0.0000001
-DEFAULT_CONVERSION_DECIMAL_ROUND = 2
+DEFAULT_CONVERSION_DECIMAL_ROUND = 4
