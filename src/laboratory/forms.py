@@ -863,3 +863,118 @@ class EquipmentTypeForm(GTForm, forms.ModelForm):
             'name': genwidgets.TextInput,
             'description': genwidgets.Textarea
         }
+
+
+class ReactiveForm(GTForm, forms.ModelForm):
+    """"""
+    default_render_type = "as_grid"
+    grid_representation = [
+        [["name"],["cas_id_number"],["security_sheet"]],
+        [["code"],["bioaccumulable"],["iarc"]],
+        [["synonym"], ["is_precursor"], ["imdg"]],
+        [["is_public"], ["precursor_type"], ["white_organ"]],
+        [["description"], ["h_code"], ["nfpa"]],
+        [["model"], ["molecular_formula"], ["ue_code"]],
+        [["plaque"], ["img_representation"], ["storage_class"]],
+        [["serie"], ["laboratory"], ["seveso_list"]],
+        [["type"], ["organization"], ["created_by"]],
+        [["features"], [""], [""]],
+    ]
+
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
+
+    iarc = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=Catalog.objects.filter(key='IARC'),
+                                            blank=True, required=False,
+                                            label=_("Iarc"))
+
+
+    imdg = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=Catalog.objects.filter(key='IDMG'),
+                                            blank=True, required=False,
+                                            label=_("Imdg"))
+
+    white_organ = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='white_organ'),
+                                            blank=True, required=False,
+                                            label=_("White Organ"))
+
+    is_public = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                        required=False,
+                                        label=_("Share with others"))
+
+    bioaccumulable = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False,
+                                        label=_("Bioaccumulable?"))
+
+    molecular_formula = forms.CharField(widget=genwidgets.TextInput, required=False,
+                                        label=_("Molecular formula"))
+
+    cas_id_number = forms.CharField(widget=genwidgets.TextInput, required=False,
+                                         label=_("Cas ID Number"))
+
+    security_sheet = forms.FileField(widget=FileChunkedUpload, required=False,
+                                 label=_("Security sheet"))
+
+    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False,
+                                        label=_("Is precursor?"))
+
+    precursor_type = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=Catalog.objects.filter(key='Precursor'),
+                                            blank=True, required=False,
+                                            label=_("Precursor Type"))
+
+    h_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=DangerIndication.objects.all(),
+                                            blank=True, required=False,
+                                            label=_("Danger indication"))
+
+    ue_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='ue_code'),
+                                            blank=True, required=False,
+                                            label=_("UE Codes"))
+
+    nfpa = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='nfpa'),
+                                            blank=True, required=False,
+                                            label=_("NFPA codes"))
+
+    storage_class = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='storage_class'),
+                                            blank=True, required=False,
+                                            label=_("Storage class"))
+
+    seveso_list = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False,
+                                        label=_("Is Seveso list III?"))
+
+    img_representation = forms.FileField(widget=FileChunkedUpload, required=False,
+                                 label=_("Sustance representation"))
+
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('modal_id')
+        kwargs.pop('laboratory_pk')
+        super(ReactiveForm, self).__init__(*args, **kwargs)
+        self.fields["model"].required = True
+
+
+
+    class Meta:
+        model = Object
+        exclude = ['is_container']
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym':  genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput
+        }

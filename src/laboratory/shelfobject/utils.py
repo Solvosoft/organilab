@@ -6,11 +6,13 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
-    Shelf
+    Shelf, BaseUnitValues
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
     save_object_by_action
 from django.utils.translation import gettext_lazy as _
 from laboratory.qr_utils import get_or_create_qr_shelf_object
+from laboratory.utils_base_unit import get_conversion_units, \
+    get_conversion_from_two_units, get_base_unit
 
 logger = logging.getLogger('organilab')
 
@@ -21,17 +23,31 @@ def save_increase_decrease_shelf_object(user, validated_data, laboratory, organi
     if 'provider' in validated_data:
         provider = validated_data['provider']
 
+    measurement_unit = None
+    if 'measurement_unit' in validated_data:
+        measurement_unit = validated_data['measurement_unit']
+
     bill = validated_data.get('bill', '')
     description = validated_data.get('description', '')
     shelfobject = validated_data['shelf_object']
     amount = validated_data['amount']
 
     old = shelfobject.quantity
-    new = old - amount
+    converted_amount = get_conversion_from_two_units(
+            measurement_unit,
+            shelfobject.shelf.measurement_unit, amount)
+
+    if shelfobject.shelf.measurement_unit == None:
+        converted_amount = get_conversion_from_two_units(
+            measurement_unit,
+            shelfobject.measurement_unit, amount)
+
+    new = old - converted_amount
     action_taken = _("Object was decreased")
 
     if is_increase_process:
-        new = old + amount
+
+        new = old + converted_amount
         action_taken = _("Object was increased")
         log_object_add_change(user, laboratory.pk, shelfobject, old, new, "Add",
                               provider, bill, create=False, organization=organization)
@@ -156,7 +172,9 @@ def move_shelfobject_partial_quantity_to(shelfobject, destination_organization_i
 
     shelfobject = clone_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, quantity)
 
-    update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - quantity, request.user, organization=destination_organization_id)
+    previous_quantity = get_conversion_from_two_units(shelfobject.measurement_unit, original_shelfobject.measurement_unit, quantity)
+
+    update_shelfobject_quantity(original_shelfobject, original_shelfobject.quantity - previous_quantity, request.user, organization=destination_organization_id)
 
     return shelfobject
 
@@ -226,9 +244,15 @@ def get_available_objs_by_shelfobject(queryset, shelfobject, key, filters):
             shelf = Shelf.objects.get(pk=lab[key])
             items_object_shelf = shelf.get_total_refuse(
                 include_containers=False, measurement_unit=shelf.measurement_unit)
-            items_with_shelfobject = items_object_shelf + shelfobject.quantity
 
-            if items_with_shelfobject <= shelf.quantity:
+            converted_quantity = get_conversion_from_two_units(shelfobject.measurement_unit,
+                                                           shelf.measurement_unit,
+                                                           shelfobject.quantity)
+
+
+            items_with_shelfobject = items_object_shelf + converted_quantity
+
+            if shelf.infinity_quantity or items_with_shelfobject <= shelf.quantity:
                 obj_pk.append(lab['pk'])
     return obj_pk
 
@@ -261,6 +285,7 @@ def get_shelf_queryset_by_filters(queryset, shelfobject, key, filters):
     available_shelves = get_available_objs_by_shelfobject(queryset,
                                                              shelfobject,
                                                              key, filters)
+
     filters_shelves = Q(measurement_unit__isnull=True, infinity_quantity=True) | \
               Q(measurement_unit=shelfobject.measurement_unit,
                 infinity_quantity=True) | \
@@ -284,15 +309,23 @@ def limit_objects_by_shelf(shelf, object):
 
 def validate_measurement_unit_and_quantity(shelf, object, quantity, measurement_unit=None, container=None):
     errors = {}
+
     total = shelf.get_total_refuse(include_containers=False, measurement_unit=shelf.measurement_unit) + quantity
 
+    shelfbaseunit = BaseUnitValues.objects.filter(measurement_unit=shelf.measurement_unit).first()
+    baseunit = BaseUnitValues.objects.filter(measurement_unit=measurement_unit).first()
+
     if measurement_unit and shelf.measurement_unit and measurement_unit != shelf.measurement_unit:
-        # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
-        logger.debug(
-            f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
-            f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({shelf.measurement_unit})')
-        errors.update({'measurement_unit': _(
-            "Measurement unit cannot be different than the shelf's measurement unit.")})
+
+        if (baseunit.measurement_unit_base and shelfbaseunit.measurement_unit_base and
+            baseunit.measurement_unit_base != shelfbaseunit.measurement_unit_base):
+
+            # if measurement unit is not provided (None) then this validation is not applied, for material and equipment it is not required
+            logger.debug(
+                f'validate_measurement_unit_and_quantity --> shelf.measurement_unit and measurement_unit '
+                f'and measurement_unit ({measurement_unit}) != shelf.measurement_unit ({measurement_unit})')
+            errors.update({'measurement_unit': _(
+                "Measurement unit cannot be different than the shelf's measurement unit.")})
     if total > shelf.quantity and not shelf.infinity_quantity:
         logger.debug(
             f'validate_measurement_unit_and_quantity --> total ({total}) > shelf.quantity ({shelf.quantity}) and not shelf.infinity_quantity')
