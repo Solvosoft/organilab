@@ -1,4 +1,3 @@
-from captcha.fields import ReCaptchaField
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.files import FileChunkedUpload
 
