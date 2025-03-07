@@ -18,7 +18,7 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm
+from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm, ReactiveForm
 from laboratory.models import Laboratory, BlockedListNotification, \
     OrganizationStructure, MaterialCapacity
 from laboratory.models import Object, SustanceCharacteristics
@@ -238,8 +238,28 @@ def view_equipment_list(request, org_pk, lab_pk):
                                                                "created_by": request.user.pk},
                                      modal_id="#create_obj_form",
                                      laboratory_pk=lab_pk),
-        "update_form": EquipmentForm(prefix="update", initial={"laboratory": lab_pk},
-                                     modal_id="#update_obj_form", laboratory_pk=lab_pk)
+        "update_form": EquipmentForm(prefix="update",modal_id="#update_obj_form",
+                                     laboratory_pk=lab_pk)
     }
     return render(request, "laboratory/equipment/list.html", context=context)
+
+
+@permission_required('laboratory.view_object')
+def view_reactive_list(request, org_pk, lab_pk):
+    context = {
+        "org_pk": org_pk,
+        "lab_pk": lab_pk,
+        "laboratory": lab_pk,
+        "create_form": ReactiveForm(prefix="create", initial={"type": Object.REACTIVE,
+                                                               "organization": org_pk,
+                                                               "laboratory": lab_pk,
+                                                               "created_by": request.user.pk},
+                                     modal_id="#create_obj_form",
+                                     laboratory_pk=lab_pk),
+        "update_form": ReactiveForm(prefix="update", initial={"laboratory": lab_pk},
+                                     modal_id="#update_obj_form", laboratory_pk=lab_pk)
+
+
+    }
+    return render(request, "laboratory/sustance/list.html", context=context)
 
