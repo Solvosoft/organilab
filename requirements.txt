@@ -7,7 +7,7 @@ django-json-rpc==0.7.2
 django-location-field==2.1.0
 django-recaptcha==3.0.0
 django-reservation==0.2.10
-djangorestframework==3.14.0
+djangorestframework==3.15.2
 openpyxl==3.0.3
 Pillow>=7.1.2
 psycopg2-binary==2.9.5
@@ -27,9 +27,9 @@ Markdown==3.2.2
 future==0.18.3
 django-fontawesome==1.0
 django-tagging==0.5.0
-django-celery-beat==2.4.0
-django-celery-results==2.4.0
-celery==5.2.3
+django-celery-beat==2.7.0
+django-celery-results==2.5.1
+celery==5.4.0
 django-paypal==2.0
 weasyprint==56.1
 CairoSVG==2.7.0
@@ -38,4 +38,4 @@ django-otp==1.1.4
 python-barcode==0.14.0
 qrcode==7.3.1
 json-log-formatter==0.5.2
-sentry-sdk==2.1.1
+sentry-sdk==2.22.0
