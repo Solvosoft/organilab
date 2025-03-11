@@ -165,6 +165,13 @@ ORDER BY id ASC
                     cat = self.get_or_create_catalog(data[0], 'white_organ')
 
                 obj.white_organ.add(cat)
+    def process_objectfeatures(self):
+        ob = ObjectFeatures.objects.using('unadb').all()
+        for o in ob:
+            ObjectFeatures.objects.create(
+                name=o.name,
+                description=o.description
+            )
 
     def process_danger_indication(self, sus_id, obj):
         di=DangerIndication.objects.using('unadb').filter(sustancecharacteristics=sus_id)
@@ -251,6 +258,15 @@ ORDER BY id ASC
 
             sc.save()
 
+    def transfer_features(self, old,new):
+        sql = """SELECT f.name, lof.object_id FROM public.laboratory_objectfeatures as f
+join public.laboratory_object_features as lof on f.id = objectfeatures_id
+where lof.object_id = %s"""%old['id']
+        with connections["unadb"].cursor() as cursor:
+            cursor.execute(sql)
+            for data in cursor.fetchall():
+                of = ObjectFeatures.objects.get(name=data[0])
+                new.features.add(of)
     def transfer_una_object(self):
         objs = Object.objects.using('unadb').values(
             'id', 'type', 'code', 'description', 'name', 'model',
@@ -273,6 +289,7 @@ ORDER BY id ASC
             )
             self.transfer_sustancecharacteristics(o, obj['id'])
             self.objects[obj['id']] = o
+            self.transfer_features(obj, o)
     def migrate_shelfobject(self):
         su=ShelfObject.objects.using('unadb').all().values(
             'quantity', 'measurement_unit_id', 'object_id', 'shelf_id', 'limit_quantity')
@@ -303,6 +320,7 @@ ORDER BY id ASC
     def init_data(self):
         OrganizationStructure.objects.all().delete() # remove test organization
         Object.objects.all().delete()
+        self.process_objectfeatures()
         self.transfer_users()
         self.transfer_organizations()
         self.create_roles()
@@ -320,5 +338,5 @@ ORDER BY id ASC
         self.shelfs={}
         self.objects = {}
 
-        #self.init_data()
+        self.init_data()
         self.create_risk_zone()
