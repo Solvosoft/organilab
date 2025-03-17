@@ -1027,7 +1027,8 @@ class Protocol(BaseCreationObj):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(upload_to=upload_files, verbose_name=_("Protocol PDF File"),
                             validators=[
-                                FileExtensionValidator(allowed_extensions=['pdf'])])
+                                FileExtensionValidator(allowed_extensions=['pdf'])],
+                            help_text=_("Only PDF files are allowed"))
 
     short_description = models.CharField(_("short description"), max_length=300)
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
