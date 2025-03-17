@@ -2,16 +2,12 @@ from __future__ import absolute_import, unicode_literals
 
 import importlib
 import re
+from datetime import date
 
-from click.core import F
 from django.conf import settings
-
 
 from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, \
     Furniture
-
-from datetime import date
-
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import create_informsperiods, save_object_report_precursor, \
     build_precursor_report_from_reports
