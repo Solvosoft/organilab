@@ -1,5 +1,6 @@
 djgentelella==0.3.27
 async-notifications==0.2
+django==5.1
 django-excel==0.0.10
 django-location-field==2.1.0
 django-reservation==0.2.10
