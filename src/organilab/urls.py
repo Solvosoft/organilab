@@ -68,11 +68,6 @@ urlpatterns = urls_djgentelela + auth_urls + presentation_root_urls + [
     path('report/', include((report_urls, 'report'), namespace='report')),
 ]
 
-paypal_urls = [
-    re_path(r'^paypal/', include('paypal.standard.ipn.urls')),
-]
-
-urlpatterns += paypal_urls
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += reservations_management_api_urlpatterns
 urlpatterns += regulation_urlpath

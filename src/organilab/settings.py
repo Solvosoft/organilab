@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'reservations_management',
     'django_celery_beat',
-    'paypal.standard.ipn',
+    #'paypal.standard.ipn',
     'derb',
     'django_otp',
     'django_otp.plugins.otp_totp',
