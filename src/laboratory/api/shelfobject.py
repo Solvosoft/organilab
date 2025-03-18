@@ -1331,7 +1331,7 @@ the second tag will modify laboratory room result as a first tag.
         result = {}
         if object_param:
             object_param_name = [obj.name for obj in object_param]
-            object_list = Object.objects.filter(name__in=object_param_name).using(
+            object_list = Object.objects.filter(name__unaccent__in=object_param_name).using(
                 settings.READONLY_DATABASE)
             shelf = Shelf.objects.filter(shelfobject__object__in=object_list,
                                          furniture__labroom__laboratory=lab_pk).using(
