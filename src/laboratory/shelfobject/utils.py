@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import ShelfObjectObservation, ShelfObject, Object, Catalog, \
-    Shelf, BaseUnitValues
+    Shelf, BaseUnitValues, OrganizationStructure
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors, \
     save_object_by_action
 from django.utils.translation import gettext_lazy as _
@@ -202,8 +202,8 @@ def create_new_shelfobject_from_object_in(object, destination_organization_id, d
 
 
 def move_shelfobject_to(shelfobject, destination_organization_id, destination_laboratory_id, destination_shelf, request, observation_text="Moved Object"):
-    log_object_change(request.user, shelfobject.in_where_laboratory.pk, shelfobject, shelfobject.quantity, 0, '', CHANGE, _("Move out"))
-
+    log_object_change(request.user, shelfobject.in_where_laboratory.pk, shelfobject, shelfobject.quantity, 0, '', CHANGE, _("Move out"),
+                      organization=destination_organization_id)
     shelfobject.shelf = destination_shelf
     shelfobject.in_where_laboratory_id = destination_laboratory_id
     shelfobject.created_by = request.user
@@ -212,7 +212,8 @@ def move_shelfobject_to(shelfobject, destination_organization_id, destination_la
     shelfobject.save()
     build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
 
-    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', CHANGE, _("Move in"))
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', CHANGE, _("Move in"),
+                      organization=destination_organization_id)
     organilab_logentry(request.user, shelfobject, CHANGE,
                        changed_data=['shelf', 'in_where_laboratory', 'created_by', 'shelf_object_qr', 'shelf_object_url'],
                        relobj=destination_laboratory_id)
