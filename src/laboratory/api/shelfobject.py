@@ -161,13 +161,20 @@ class ShelfObjectCreateMethods:
             limits=limits,
             container = container
         )
-
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            shelfobject.quantity = get_conversion_from_two_units(
+                shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
+                , shelfobject.quantity)
+            if not shelfobject.measurement_unit.description == 'Unidades':
+                shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
+            shelfobject.save()
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
-                          shelfobject.quantity, '', ADDITION, "Create", create=True)
+                          shelfobject.quantity, '', ADDITION, "Create", create=True,
+                          organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'limit_quantity',
@@ -208,7 +215,13 @@ class ShelfObjectCreateMethods:
             limits=limits,
             container = container
         )
-
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            shelfobject.quantity = get_conversion_from_two_units(
+                shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
+                , shelfobject.quantity)
+            if not shelfobject.measurement_unit.description == 'Unidades':
+                shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
+            shelfobject.save()
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
@@ -530,17 +543,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 error,shelfobject = self.serializer_class['method'](serializer,
                                                                   limit_serializer)
                 if shelfobject:
-
-                    if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
-
-                        shelfobject.quantity = get_conversion_from_two_units(
-                            shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
-                            , shelfobject.quantity)
+                    if not shelfobject.measurement_unit.description == 'Unidades'and shelfobject.object.type != '0':
+                        shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
                         shelfobject.save()
-
-                        if not shelfobject.measurement_unit.description == 'Unidades':
-                            shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
-                            shelfobject.save()
 
                     create_shelfobject_observation(shelfobject, shelfobject.description,
                                                         _("Created Object"), request.user,
