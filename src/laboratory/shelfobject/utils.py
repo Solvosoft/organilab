@@ -155,7 +155,8 @@ def clone_shelfobject_to(shelfobject, destination_organization_id, destination_l
     shelfobject.save()
     build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
 
-    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True)
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True,
+                      organization=destination_organization_id)
     organilab_logentry(request.user, shelfobject, ADDITION,
                        changed_data=['shelf', 'object', 'batch', 'status', 'quantity', 'limit_quantity', 'limits',
                                      'measurement_unit', 'in_where_laboratory', 'marked_as_discard', 'laboratory_name',
