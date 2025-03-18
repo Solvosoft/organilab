@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'reservations_management',
     'django_celery_beat',
-    #'paypal.standard.ipn',
     'derb',
     'django_otp',
     'django_otp.plugins.otp_totp',
@@ -304,10 +303,7 @@ DATETIME_INPUT_FORMATS = [
     '%d/%m/%y %H:%M'
 ]
 
-#Paypal configurations
-PAYPAL_TEST = True
-PAYPAL_RECEIVER_EMAIL = 'paypal@solvosoft.com'
-MY_PAYPAL_HOST="http://localhost:8000/"
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
