@@ -268,6 +268,7 @@ class InformForm(forms.ModelForm, GTForm):
         else:
             self.fields['custom_form'].queryset = DerbCustomForm.objects.none()
 
+        self.fields['custom_form'].required = True
     class Meta:
         model = Inform
         fields = ['name', 'custom_form']
