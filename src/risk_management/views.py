@@ -138,7 +138,9 @@ def add_zone_type_view(request, org_pk):
                                         'tipo': quote(tipo),
                                         'viewid': viewid,
                                         'request': request
-                                    })})
+                                    }),
+                             'script': 'gt_find_initialize($("#modal_zone_type_id"));'
+                             })
 
     data = {
         'ok':  True,
@@ -148,7 +150,8 @@ def add_zone_type_view(request, org_pk):
                                         'form': ZoneTypeForm(),
                                         'tipo': quote(tipo),
                                         'viewid': viewid,
-                                        'request':request
-                                    })
+                                        'request':request,
+                                    }),
+        'script': 'gt_find_initialize($("#modal_zone_type_id"));'
     }
     return JsonResponse(data)
