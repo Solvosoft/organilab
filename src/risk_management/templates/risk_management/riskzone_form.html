@@ -39,18 +39,3 @@
 </div>
 
 {% endblock %}
-
-{% block js %}
-<script>
-
-	$("#add_zone_type_id").on('click', function(event){
-	      setTimeout(function () {
-	      $('#id_priority_validator select[name="parent"]').select2(
-                        {templateResult: decore_select2,  width: '100%%'})
-
-		gt_find_initialize($("#modal_zone_type_id"));
-		},1000);
-	});
-
-</script>
-{% endblock %}
