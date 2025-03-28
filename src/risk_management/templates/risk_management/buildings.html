@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load laboratory static i18n  %}
+{% load urlname_tags %}
+{% block pre_head %}
+
+{% endblock %}
+{% block title %}{% trans 'Buildings' %}{% endblock %}
+{% block content %}
+<div class="offset-md-2 col-md-8">
+        <div class="page-header" align="center">
+          <h3 class="heading-1" center=""><span>{% trans 'Creacion de Edificios' %}</span></h3>
+        </div>
+</div>
+
+<div class="offset-md-2 col-md-8">
+    {{ form.errors }}
+    <form class="form" action="" method="post">
+      {% csrf_token %}
+					{{form}}
+				<button type="submit" class="btn btn-sm btn-outline-success float-end me-0">{% trans 'Save' %}</button>
+    </form>
+</div>
+
+{% endblock %}
+{% block js %}
+   {{ form.media }}
+{% endblock %}
