@@ -246,7 +246,8 @@ class AddUser(CreateView):
                                         type_in_organization=form.cleaned_data['user_type'])
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
-                                         job_position=form.cleaned_data['job_position'])
+                                         job_position=form.cleaned_data['job_position'],
+                                         location=form.cleaned_data['address'])
 
         send_email(self.request, user)
         organilab_logentry(user, user, ADDITION, 'user', changed_data=['username', 'first_name', 'last_name', 'email', 'password'],
