@@ -2,15 +2,17 @@ from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from rest_framework import status
 
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
-from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm
-from risk_management.models import RiskZone, ZoneType
+from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
+    RegentForm
+from risk_management.models import RiskZone, ZoneType, Buildings
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 from urllib.parse import quote
 import uuid
@@ -155,3 +157,42 @@ def add_zone_type_view(request, org_pk):
         'script': 'gt_find_initialize($("#modal_zone_type_id"));'
     }
     return JsonResponse(data)
+
+def buildings_view(request, org_pk):
+
+    context = {
+        'org_pk': org_pk
+    }
+    return render(request, 'risk_management/building_list.html', context=context)
+
+
+def buildings_actions(request, org_pk, pk=None):
+    form = BuildingsForm(org_pk=org_pk,render_type="as_grid")
+    building = None
+    if pk:
+        building = get_object_or_404(Buildings, pk=pk)
+        form = BuildingsForm(instance=building, org_pk=org_pk,render_type="as_grid")
+    if request.method == 'POST':
+        if building:
+            form = BuildingsForm(request.POST, instance=building, org_pk=org_pk)
+        else:
+            form = BuildingsForm(request.POST, org_pk=org_pk)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('riskmanagement:buildings_list', kwargs={'org_pk': org_pk}))
+
+    context = {
+        'form':  form,
+        'org_pk': org_pk
+    }
+    return render(request, 'risk_management/buildings.html', context=context)
+
+
+def regent_view(request, org_pk):
+    context = {
+        'form_create':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
+        'form_update':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
+        'org_pk': org_pk
+    }
+    return render(request, 'risk_management/regents.html', context=context)
+
