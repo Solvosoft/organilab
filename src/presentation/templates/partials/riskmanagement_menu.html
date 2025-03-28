@@ -17,6 +17,10 @@
            title="{% trans 'Report View' %}">
         {% trans 'H code Reports' %}</a>
     </li>
+	    <li><a href="{% url 'riskmanagement:buildings_list' org_pk %}"
+           title="{% trans 'Manage buildings' %}">
+        {% trans 'Manage buildings' %}</a>
+    </li>
 </ul>
 </li>
 {% endif %}
