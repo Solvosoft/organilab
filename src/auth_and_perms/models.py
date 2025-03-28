@@ -11,6 +11,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
+from presentation.models import AbstractOrganizationRef
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -20,6 +22,8 @@ class Profile(models.Model):
     job_position = models.CharField(_('Job Position'), max_length=100)
     language = models.CharField(max_length=4, default=settings.LANGUAGE_CODE,
                                 choices=settings.LANGUAGES, verbose_name=_("Language"))
+    address = models.TextField(verbose_name=_("Address"), null=True, blank=True,
+                               default='')
 
     def __str__(self):
         name = self.user.get_full_name()

@@ -37,6 +37,8 @@ class ChangeUser(UpdateView):
     def get_initial(self):
         dev = super().get_initial()
         dev['language']=self.request.user.profile.language
+        dev['phone_number']=self.request.user.profile.phone_number
+        dev['address']=self.request.user.profile.address
         return dev
 
     def get_success_url(self):
@@ -51,6 +53,8 @@ class ChangeUser(UpdateView):
         instance = form.save()
         profile=instance.profile
         profile.language=form.cleaned_data['language']
+        profile.address=form.cleaned_data['address']
+        profile.phone_number=form.cleaned_data['phone_number']
         profile.save()
         return super(ChangeUser, self).form_valid(form)
 
