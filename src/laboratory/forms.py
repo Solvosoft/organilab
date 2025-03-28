@@ -163,7 +163,7 @@ class ProfileForm(GTForm, forms.Form):
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
     job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
     profile_id = forms.CharField(widget=forms.HiddenInput())
-
+    location = forms.CharField(widget=genwidgets.TextInput, label=_("Location"))
 
 class AddTransferObjectForm(GTForm):
     shelf = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"),
