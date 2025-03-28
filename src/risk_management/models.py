@@ -1,9 +1,13 @@
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-
+from location_field.models.plain import PlainLocationField
+from laboratory.models import Laboratory
+from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
 from risk_management.models_utils import PriorityCalculator
 
@@ -53,6 +57,7 @@ class ZoneType(models.Model):
 class RiskZone(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_('Name'))
     laboratories = models.ManyToManyField('laboratory.Laboratory', verbose_name=_('Laboratories'))
+    buildings = models.ManyToManyField('risk_management.Buildings', verbose_name=_('Buildings'))
     num_workers = models.SmallIntegerField(verbose_name=_('Number of workers (aprox)'))
     zone_type = models.ForeignKey(ZoneType, on_delete=models.CASCADE, verbose_name=_('Zone Type'))
     priority = models.SmallIntegerField(verbose_name=_('Priority'))
@@ -111,3 +116,54 @@ class IncidentReport(AbstractOrganizationRef):
 
     def __str__(self):
         return self.short_description
+
+class Regent(AbstractOrganizationRef):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="regent_user")
+
+    def __str__(self):
+        return self.user.username
+
+class Buildings(AbstractOrganizationRef):
+    name = models.CharField(verbose_name=_("Name"),
+                            max_length=255, null=False,
+                            blank=False)
+    laboratories = models.ManyToManyField(Laboratory,
+                                          verbose_name=_("Laboratories"),
+                                          related_name="buildings",
+                                          blank=True)
+    is_asociaty_buildings = models.BooleanField(
+        verbose_name=_("It is Associated with Buildings?"),
+                                                default=False)
+    nearby_buildings = models.ManyToManyField("self",
+                                              symmetrical=False,
+                                              verbose_name=_("Nearby Buildings"),
+                                              related_name="near_buildings_as",
+                                              blank=True)
+    phone = models.CharField(verbose_name=_("Phone"),
+                             max_length=25, null=False, blank=False)
+    manager = models.ForeignKey(User, verbose_name=_("Manager"),
+                                related_name="manager", on_delete=models.DO_NOTHING)
+    geolocation = PlainLocationField(
+        default='9.895804362670006,-84.1552734375', zoom=15)
+    regents = models.ManyToManyField("risk_management.Regent",
+                                               verbose_name=_("Regents Associated"),
+                                               related_name="regents",
+                                     blank=True)
+    has_water_resources = models.BooleanField(verbose_name=_("Has nearby water resources?"), default=False)
+    has_nearby_sites = models.FileField(verbose_name=_("Has Nearby Sites?"),
+                                        upload_to=upload_files,
+                                        null=True,
+                                        blank=True)
+    area = models.FloatField(verbose_name=_("Area"), default=0.0)
+    plans = models.FileField(verbose_name=_("Plans"),
+                             upload_to=upload_files,
+                             null=True, blank=True)
+    security_plan = models.FileField(verbose_name=_("Security Plan"),
+                                     upload_to=upload_files,
+                                     null=True, blank=True)
+    regulatory_plans = models.FileField(verbose_name=_("Regulatory Plans"),
+                                     upload_to=upload_files,
+                                     null=True, blank=True)
+
+    def __str__(self):
+        return self.name
