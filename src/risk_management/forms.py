@@ -167,7 +167,10 @@ class BuildingsForm(GTForm, forms.ModelForm):
 
 
 class RegentForm(GTForm, forms.ModelForm):
-
+    buildings = forms.ModelMultipleChoiceField(queryset=Buildings.objects.none(),
+                                               required=False,
+                                               label=_('Buildings'),
+                                               widget=djgentelella.SelectMultiple)
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(RegentForm, self).__init__(*args, **kwargs)
@@ -175,10 +178,10 @@ class RegentForm(GTForm, forms.ModelForm):
             pk__in=get_users_from_organization(org_pk)).
                                         exclude(
             pk__in=get_regents_from_organization(org_pk)).order_by('username'))
-
+        self.fields["buildings"].queryset = Buildings.objects.filter(organization__pk=org_pk)
     class Meta:
         model = Regent
-        fields = ["user"]
+        fields = ["user", "buildings"]
         widgets = {
-            'user': djgentelella.Select
+            'user': djgentelella.Select,
         }
