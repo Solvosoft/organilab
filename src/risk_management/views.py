@@ -158,6 +158,7 @@ def add_zone_type_view(request, org_pk):
     }
     return JsonResponse(data)
 
+@permission_required('risk_management.add_buildings')
 def buildings_view(request, org_pk):
 
     context = {
@@ -165,7 +166,7 @@ def buildings_view(request, org_pk):
     }
     return render(request, 'risk_management/building_list.html', context=context)
 
-
+@permission_required('risk_management.add_buildings')
 def buildings_actions(request, org_pk, pk=None):
     form = BuildingsForm(org_pk=org_pk,render_type="as_grid")
     building = None
@@ -178,7 +179,10 @@ def buildings_actions(request, org_pk, pk=None):
         else:
             form = BuildingsForm(request.POST, org_pk=org_pk)
         if form.is_valid():
-            form.save()
+            building=form.save(commit=False)
+            building.created_by=request.user
+            building.organization=OrganizationStructure.objects.filter(pk=org_pk).first()
+            building.save()
             return redirect(reverse('riskmanagement:buildings_list', kwargs={'org_pk': org_pk}))
 
     context = {
@@ -187,11 +191,11 @@ def buildings_actions(request, org_pk, pk=None):
     }
     return render(request, 'risk_management/buildings.html', context=context)
 
-
+@permission_required('risk_management.view_regent')
 def regent_view(request, org_pk):
     context = {
         'form_create':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
-        'form_update':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
+        'form_update':  RegentForm(org_pk=org_pk, prefix="update",render_type="as_grid"),
         'org_pk': org_pk
     }
     return render(request, 'risk_management/regents.html', context=context)
