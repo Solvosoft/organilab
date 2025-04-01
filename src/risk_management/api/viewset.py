@@ -5,6 +5,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 from laboratory.models import OrganizationStructure
+from risk_management.api.filterseet import BuildingFilter
 from risk_management.api.serializer import RegentDataTableSerializer, \
     AddRegentSerializer, BuildingDataTableSerializer
 from risk_management.models import Buildings, Regent
@@ -20,8 +21,8 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": None,
     }
     perms = {
-        "list": [],
-        "create": [],
+        "list": ["risk_management.view_regent"],
+        "create": ["risk_management.add_regent"],
         "update": [],
         "retrieve": [],
         "get_values_for_update": [],
@@ -33,7 +34,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
     queryset = Regent.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["id"]
+    search_fields = ["name"]
     filterset_class = None
     ordering_fields = ["id"]
     ordering = ("id",)
@@ -74,8 +75,8 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         "detail_template": None,
     }
     perms = {
-        "list": [],
-        "create": [],
+        "list": ["risk_management.view_building"],
+        "create": ["risk_management.add_buildings"],
         "update": [],
         "retrieve": [],
         "get_values_for_update": [],
@@ -87,8 +88,9 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
     queryset = Buildings.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["id"]
-    filterset_class = None
+    search_fields = ["id", "name", "manager__username", "regents__username",
+                     "laboratories__name", "nearby_buildings__name"]
+    filterset_class = BuildingFilter
     ordering_fields = ["id"]
     ordering = ("id",)
     organization = None
