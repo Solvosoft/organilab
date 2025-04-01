@@ -14,13 +14,15 @@ from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
     ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer, \
     UserAccessOrgLabValidateSerializer
 from auth_and_perms.models import Rol, Profile
-from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType
+from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType, \
+    Laboratory
 from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, \
     ValidateUserAccessShelfTypeSerializer
 from laboratory.shelfobject.utils import get_available_containers_for_selection, \
     get_containers_for_cloning
-from laboratory.utils import get_pk_org_ancestors
+from laboratory.utils import get_pk_org_ancestors, get_users_from_organization
 from laboratory.utils_base_unit import get_related_units
+from risk_management.models import Regent, Buildings
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -591,3 +593,110 @@ class EquipmentTypeLookup(BaseSelect2View):
             'status': 'Bad request',
             'errors': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@register_lookups(prefix="risk_users", basename="risk_users")
+class UserseslLookup(BaseSelect2View):
+    model = User
+    fields = ['first_name', 'last_name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': [],
+    }
+    permission_classes = ()
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= User.objects.filter(pk__in=get_users_from_organization(self.organization))
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+@register_lookups(prefix="risk_regents", basename="risk_regents")
+class RegentslLookup(BaseSelect2View):
+    model = Regent
+    fields = ['user']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': [],
+    }
+    permission_classes = ()
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= Regent.objects.filter(user__pk__in=get_users_from_organization(self.organization))
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+@register_lookups(prefix="risk_building", basename="risk_building")
+class BuildinglLookup(BaseSelect2View):
+    model = Buildings
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': [],
+    }
+    permission_classes = ()
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= Buildings.objects.filter(organization__pk=self.organization)
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="risk_laboratory", basename="risk_laboratory")
+class RiskLaboratorylLookup(BaseSelect2View):
+    model = Buildings
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': [],
+    }
+    permission_classes = ()
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= Laboratory.objects.filter(organization__pk=self.organization)
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
