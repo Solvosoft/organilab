@@ -3,22 +3,35 @@ datatable_inits = {
     columns: [
         {data: "id", name: "id", title: "ID", type: "string", visible: false},
         {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
-        {data: "phone", name: "phone", title: gettext("Phone"), type: "string", visible: true},
-        {data: "geolocation", name: "geolocation", title: gettext("Geolocation"), type: "readonly", visible: true},
-        {data: "manager", name: "manager", title: gettext("Manager"),render: selectobjprint({display_name: "text"}), visible: true},
+        {data: "phone", name: "phone", title: gettext("Phone"), type: "readonly", visible: true},
+        {data: "manager",
+         name: "manager",
+         title: gettext("Manager"),
+         render: selectobjprint({display_name: "text"}),
+         url: selects2_url['manager_url'],
+         type: "select2",
+         visible: true},
         {data: "regents",
         name: "regents",
         title: gettext("Regent Associated"),
+        url: selects2_url['regents_url'],
+        type: "select2",
+         type: "select2",
         visible: true,
         render:gt_print_list_object("text")},
         {data: "nearby_buildings", name: "nearby_buildings", title: gettext("Nearby buildings"),
-        render:gt_print_list_object("text"), visible: true},
-        {data: "laboratories", name: "laboratories", title: "Laboratories",visible: true, render:gt_print_list_object("text")},
+        render:gt_print_list_object("text"),
+         url: selects2_url['buildings_url'],
+         type: "select2",
+         visible: true},
+        {data: "laboratories", name: "laboratories", title: gettext("Laboratories"),visible: true,
+                    type: "select2",
+            url: selects2_url['laboratory_url'],
+        render:gt_print_list_object("text")},
         {
             data: "actions",
             name: "actions",
             title: gettext("Actions"),
-            type: "string",
             visible: true,
             filterable: false,
             sortable: false
@@ -28,7 +41,6 @@ datatable_inits = {
 }
 
 const modalids = {
-
     destroy: "#delete_obj_modal",
 }
 
