@@ -19,6 +19,8 @@ class AddRegentSerializer(serializers.ModelSerializer):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
         fields['user'].queryset = User.objects.filter(pk__in=get_users_from_organization(organization))
+
+
         return fields
 
     class Meta:
@@ -64,11 +66,19 @@ class AddRegentSerializer(serializers.ModelSerializer):
         allow_null=False,
         allow_empty=False,
     )
+    buildings = serializers.PrimaryKeyRelatedField(
+        many=True,
+        required=True,
+        queryset=Buildings.objects.none(),
+        allow_null=False,
+        allow_empty=False,
+    )
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
         fields['user'].queryset = User.objects.filter(pk__in=get_users_from_organization(organization))
+        fields['buildings'].queryset = Buildings.objects.filter(organization__pk=organization)
         return fields
 
     class Meta:
