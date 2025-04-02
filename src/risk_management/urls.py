@@ -1,9 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from laboratory.views.furniture import add_catalog
 from risk_management import views as zoneviews
 from risk_management import incidents
-from risk_management.api.viewset import RegentViewSet, BuildingViewSet
+from risk_management.api.viewset import RegentViewSet, BuildingViewSet, StructureViewSet
 
 risk_router = DefaultRouter()
 risk_router.register(
@@ -12,6 +13,10 @@ risk_router.register(
 building_router = DefaultRouter()
 building_router.register(
     "api_building", BuildingViewSet, basename="api-building"
+)
+structure_router = DefaultRouter()
+structure_router.register(
+    "api_structure", StructureViewSet, basename="api-structure"
 )
 urlpatterns = [
     path('riskzone/list/', zoneviews.ListZone.as_view(), name='riskzone_list'),
@@ -31,7 +36,11 @@ urlpatterns = [
     path('buildings/create/', zoneviews.buildings_actions, name='buildings_create'),
     path('buildings/update/<int:pk>/', zoneviews.buildings_actions, name='buildings_update'),
     path('regents/', zoneviews.regent_view, name='regents'),
+    path('structures/', zoneviews.structure_view, name='structures_list'),
+    path('structures/create/', zoneviews.structure_actions, name='structures_create'),
+    path('structures/update/<int:pk>/', zoneviews.structure_actions, name='structures_update'),
     path('api/risk/', include(risk_router.urls)),
     path('api/building/', include(building_router.urls)),
+    path('api/structure/', include(structure_router.urls)),
 
 ]
