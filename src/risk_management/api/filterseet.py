@@ -1,6 +1,6 @@
 from django_filters import FilterSet
 
-from risk_management.models import Buildings
+from risk_management.models import Buildings, Structure
 
 
 class BuildingFilter(FilterSet):
@@ -14,4 +14,16 @@ class BuildingFilter(FilterSet):
                     'nearby_buildings': ['exact'],
                     'manager': ['exact'],
                     'regents': ['exact'],
+                  }
+
+class StructureFilter(FilterSet):
+
+
+    class Meta:
+        model = Structure
+        fields = {
+                    'name': ['icontains'],
+                    'buildings': ['exact'],
+                    'manager': ['exact'],
+                    'type_building': ['exact'],
                   }

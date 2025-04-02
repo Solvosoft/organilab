@@ -5,10 +5,10 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 from laboratory.models import OrganizationStructure
-from risk_management.api.filterseet import BuildingFilter
+from risk_management.api.filterseet import BuildingFilter, StructureFilter
 from risk_management.api.serializer import RegentDataTableSerializer, \
-    AddRegentSerializer, BuildingDataTableSerializer
-from risk_management.models import Buildings, Regent
+    AddRegentSerializer, BuildingDataTableSerializer, StructureDataTableSerializer
+from risk_management.models import Buildings, Regent, Structure
 
 
 class RegentViewSet(AuthAllPermBaseObjectManagement):
@@ -118,3 +118,41 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
         serializer.save(
             created_by=self.request.user, organization=self.get_organization()
         )
+
+class StructureViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": StructureDataTableSerializer,
+        "create": None,
+        "update": None,
+        "retrieve": None,
+        "get_values_for_update": None,
+        "detail_template": None,
+    }
+    perms = {
+        "list": ["risk_management.view_structure"],
+        "create": ["risk_management.add_structure"],
+        "destroy": ["risk_management.delete_structure"],
+        "update": [],
+        "retrieve": [],
+        "get_values_for_update": [],
+        "detail_template": [],
+    }
+
+    permission_classes = ()
+
+    queryset = Structure.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["id", "name", "manager__username", "buildings__name",
+                     "type_building__description"]
+    filterset_class = StructureFilter
+    ordering_fields = ["id"]
+    ordering = ("id",)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if "org_pk" in self.kwargs:
+            org_pk = self.kwargs["org_pk"]
+            queryset = queryset.filter(organization__pk=org_pk)
+
+        return queryset

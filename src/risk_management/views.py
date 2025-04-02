@@ -11,7 +11,7 @@ from rest_framework import status
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
-    RegentForm
+    RegentForm, StructureForm
 from risk_management.models import RiskZone, ZoneType, Buildings
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 from urllib.parse import quote
@@ -158,7 +158,7 @@ def add_zone_type_view(request, org_pk):
     }
     return JsonResponse(data)
 
-@permission_required('risk_management.add_buildings')
+@permission_required('riskmanagement.add_buildings')
 def buildings_view(request, org_pk):
 
     context = {
@@ -166,23 +166,28 @@ def buildings_view(request, org_pk):
     }
     return render(request, 'risk_management/building_list.html', context=context)
 
-@permission_required('risk_management.add_buildings')
+@permission_required('riskmanagement.add_buildings')
 def buildings_actions(request, org_pk, pk=None):
-    form = BuildingsForm(org_pk=org_pk,render_type="as_grid")
+    form = BuildingsForm(org_pk=org_pk)
     building = None
     if pk:
         building = get_object_or_404(Buildings, pk=pk)
-        form = BuildingsForm(instance=building, org_pk=org_pk,render_type="as_grid")
+        form = BuildingsForm(instance=building, org_pk=org_pk)
     if request.method == 'POST':
         if building:
             form = BuildingsForm(request.POST, instance=building, org_pk=org_pk)
         else:
             form = BuildingsForm(request.POST, org_pk=org_pk)
+
         if form.is_valid():
             building=form.save(commit=False)
             building.created_by=request.user
             building.organization=OrganizationStructure.objects.filter(pk=org_pk).first()
             building.save()
+            form.save_m2m()
+
+
+
             return redirect(reverse('riskmanagement:buildings_list', kwargs={'org_pk': org_pk}))
 
     context = {
@@ -191,7 +196,7 @@ def buildings_actions(request, org_pk, pk=None):
     }
     return render(request, 'risk_management/buildings.html', context=context)
 
-@permission_required('risk_management.view_regent')
+@permission_required('riskmanagement.view_regent')
 def regent_view(request, org_pk):
     context = {
         'form_create':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
@@ -200,3 +205,42 @@ def regent_view(request, org_pk):
     }
     return render(request, 'risk_management/regents.html', context=context)
 
+
+
+@permission_required('risk_management.view_structure')
+def structure_view(request, org_pk):
+
+    context = {
+        'org_pk': org_pk
+    }
+    return render(request, 'risk_management/structure_list.html', context=context)
+
+@permission_required('riskmanagement.add_structure')
+def structure_actions(request, org_pk, pk=None):
+    form = StructureForm(org_pk=org_pk)
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    structure = None
+    if pk:
+        structure = get_object_or_404(Buildings, pk=pk)
+        form = StructureForm(instance=structure, org_pk=org_pk)
+    if request.method == 'POST':
+        if structure:
+            form = StructureForm(request.POST, instance=structure, org_pk=org_pk)
+        else:
+            form = StructureForm(request.POST, org_pk=org_pk)
+
+        if form.is_valid():
+            structure = form.save(commit=False)
+            structure.created_by = request.user
+            structure.organization = organization
+            structure.save()
+            form.save_m2m()
+
+
+            return redirect(reverse('riskmanagement:structures_list', kwargs={'org_pk': org_pk}))
+
+    context = {
+        'form':  form,
+        'org_pk': org_pk
+    }
+    return render(request, 'risk_management/structure_form.html', context=context)
