@@ -242,6 +242,9 @@ def add_catalog(request, key):
     if key == 'shelfobject_status':
         title= _("New Shelfobject status")
         url =reverse('laboratory:add_shelfobject_status')
+    if key == 'structure_type':
+        title = _("New Structure type")
+        url = reverse('laboratory:add_structure_type_catalog')
     data = {
         'ok': True,
         'title': title,
