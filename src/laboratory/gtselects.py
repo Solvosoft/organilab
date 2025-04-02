@@ -670,6 +670,7 @@ class BuildinglLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
+        print(request.GET)
 
         return super().list(request, *args, **kwargs)
 
