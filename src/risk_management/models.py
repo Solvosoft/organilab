@@ -6,7 +6,9 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
-from laboratory.models import Laboratory
+
+from laboratory import catalog
+from laboratory.models import Laboratory, Catalog
 from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
 from risk_management.models_utils import PriorityCalculator
@@ -57,7 +59,8 @@ class ZoneType(models.Model):
 class RiskZone(AbstractOrganizationRef):
     name = models.CharField(max_length=150, verbose_name=_('Name'))
     laboratories = models.ManyToManyField('laboratory.Laboratory', verbose_name=_('Laboratories'))
-    buildings = models.ManyToManyField('risk_management.Buildings', verbose_name=_('Buildings'))
+    buildings = models.ManyToManyField('risk_management.Buildings',
+                                 verbose_name=_('Buildings'))
     num_workers = models.SmallIntegerField(verbose_name=_('Number of workers (aprox)'))
     zone_type = models.ForeignKey(ZoneType, on_delete=models.CASCADE, verbose_name=_('Zone Type'))
     priority = models.SmallIntegerField(verbose_name=_('Priority'))
@@ -118,7 +121,8 @@ class IncidentReport(AbstractOrganizationRef):
         return self.short_description
 
 class Regent(AbstractOrganizationRef):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="regent_user")
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
+                             related_name="regent_user")
 
     def __str__(self):
         return self.user.username
@@ -149,7 +153,8 @@ class Buildings(AbstractOrganizationRef):
                                                verbose_name=_("Regents Associated"),
                                                related_name="regents",
                                      blank=True)
-    has_water_resources = models.BooleanField(verbose_name=_("Has nearby water resources?"), default=False)
+    has_water_resources = models.BooleanField(verbose_name=_("Has nearby water resources?"),
+                                              default=False)
     has_nearby_sites = models.FileField(verbose_name=_("Has Nearby Sites?"),
                                         upload_to=upload_files,
                                         null=True,
@@ -164,6 +169,28 @@ class Buildings(AbstractOrganizationRef):
     regulatory_plans = models.FileField(verbose_name=_("Regulatory Plans"),
                                      upload_to=upload_files,
                                      null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+class Structure(AbstractOrganizationRef):
+    name = models.CharField(max_length=150, verbose_name=_('Name'), null=False,
+                            blank=False)
+    buildings = models.ManyToManyField('risk_management.Buildings',
+                                       verbose_name=_('Buildings'),
+                                       related_name="structura_buildings")
+    type_building = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
+                                verbose_name=_('Type'),
+                                key_name="key", key_value='structure_type')
+    area = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Area'))
+    measuerement_unit = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
+                                verbose_name=_('Measurement Unit'),
+                                key_name="key", key_value='structure_unit',
+                                             related_name="structure_measurement_unit")
+    geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',
+                                     zoom=15)
+    manager = models.ForeignKey(User, verbose_name=_('Manager'),
+                                on_delete=models.DO_NOTHING, related_name="structure_manager")
 
     def __str__(self):
         return self.name
