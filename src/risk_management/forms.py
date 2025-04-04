@@ -26,7 +26,9 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
         org_pk = kwargs.pop('org_pk', None)
         super().__init__(*args, **kwargs)
         queryset = get_user_laboratories(user)
-
+        if org_pk:
+            self.fields['buildings'].queryset = (
+                Buildings.objects.filter(organization__pk=org_pk))
         if queryset.exists() and org_pk:
             extra_labs = OrganizationStructureRelations.objects.filter(organization__pk=org_pk,
                                                                  content_type=ContentType.objects.filter(
@@ -37,9 +39,9 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
 
             queryset = queryset.filter(Q(organization__pk=org_pk) | Q(pk__in=extra_labs)).distinct()
 
-        self.fields['laboratories'].queryset = queryset
         self.fields['zone_type'].widget.attrs['add_url'] = reverse(
             'riskmanagement:zone_type_add', args=(org_pk,))+ '?tipo=' +quote('zone_type')
+
     def save(self, commit=True):
         priority = self.instance.zone_type.get_priority(self.instance.num_workers)
         self.instance.priority = priority
@@ -47,10 +49,10 @@ class RiskZoneCreateForm(forms.ModelForm,GTForm):
 
     class Meta:
         model = RiskZone
-        exclude = ['priority', 'organization','created_by']
+        exclude = ['priority', 'organization','created_by', "laboratories"]
         widgets = {
             'name': djgentelella.TextInput,
-            "laboratories": djgentelella.SelectMultiple,
+            "buildings": djgentelella.SelectMultiple,
             'num_workers': djgentelella.NumberInput,
             'zone_type': djgentelella.SelectWithAdd(attrs={'add_url': "#", 'data-otrono': 1}),
         }
@@ -62,11 +64,18 @@ class IncidentReportForm(GTForm,forms.ModelForm):
         queryset = get_user_laboratories(user)
         if org_pk:
             queryset = queryset.filter(organization__pk=org_pk)
+            self.fields["buildings"].queryset = (Buildings.objects.
+                                        filter(organization__pk=org_pk))
         self.fields['laboratories'].queryset = queryset
 
     class Meta:
         model = IncidentReport
         exclude = ('organization', 'created_by')
+        order_fields = ('short_description', 'incident_date',
+                        'buildings', 'laboratories', 'causes',
+                        'people_impact', 'infraestructure_impact',
+                        'environment_impact', 'result_of_plans',
+                        'mitigation_actions', 'recomendations')
         widgets = {
             'short_description':djgentelella.TextInput,
             'causes': TextareaWysiwyg,
@@ -78,6 +87,7 @@ class IncidentReportForm(GTForm,forms.ModelForm):
             'result_of_plans': TextareaWysiwyg,
             'mitigation_actions': TextareaWysiwyg,
             'recomendations': TextareaWysiwyg,
+            "buildings": djgentelella.SelectMultiple(),
         }
 
 class ZoneTypeForm(GTForm, forms.ModelForm):

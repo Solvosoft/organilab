@@ -34,7 +34,7 @@ datatable_inits = {
         {
             data: "buildings",
             name: "buildings",
-            title: gettext("buildings"),
+            title: gettext("Buildings"),
             render:gt_print_list_object("text"),
             url: selects2_url['buildings_url'],
             type: "select2",

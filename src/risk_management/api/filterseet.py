@@ -25,5 +25,5 @@ class StructureFilter(FilterSet):
                     'name': ['icontains'],
                     'buildings': ['exact'],
                     'manager': ['exact'],
-                    'type_building': ['exact'],
+                    'type_structure': ['exact'],
                   }
