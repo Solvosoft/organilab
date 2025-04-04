@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 
 {% load gtsettings %}
 {% load i18n %}
@@ -13,7 +14,7 @@
 	<div class="card mt-2">
 		<div class="card-body">
 			<div class="card-title titles">
-				<h1 class="text-center"> {% trans 'List of Regent' %} </h1>
+				<h1 class="text-center"> {% trans 'List of Regents' %} </h1>
 			</div>
 
 			<div class="row mt-3 ">
@@ -48,7 +49,7 @@
 			update_url: "{% url "riskmanagement:api-regent-detail" org_pk 0 %}",
 		}
 	</script>
-	<script src="{% static 'js/regents.js' %}"></script>
+	<script src="{% static 'js/regents.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}

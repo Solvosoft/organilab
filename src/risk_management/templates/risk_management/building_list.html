@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 
 {% load gtsettings %}
 {% load i18n %}
@@ -49,7 +50,7 @@
 			laboratory_url: "{% url 'risk_laboratory-list' %}"+"?org_pk="+"{{org_pk}}",
 		}
 	</script>
-	<script src="{% static 'js/buildings.js' %}"></script>
+	<script src="{% static 'js/buildings.js' %}?v={% get_organilab_version %}"></script>
 
 
 {% endblock %}

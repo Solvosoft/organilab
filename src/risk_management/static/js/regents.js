@@ -19,7 +19,7 @@ datatable_inits = {
             sortable: false
         },
     ],
-    addfilter: true,
+    addfilter: false,
 }
 
 const modalids = {
