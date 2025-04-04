@@ -4778,3 +4778,26 @@ msgstr "Geolocalización"
 msgid "It is Associated with Buildings?"
 msgstr "¿Esta asociado a edificios?"
 
+msgid "Buildings"
+msgstr "Edificios"
+
+msgid "Create structure"
+msgstr "Crear estructura"
+
+msgid "Create building"
+msgstr "Crear edificio"
+
+msgid "List of Structures"
+msgstr "Lista de estructuras"
+
+msgid "List of Buildings"
+msgstr "Lista de edificios"
+
+msgid "List of Regents"
+msgstr "Lista de Regentes"
+
+msgid "Structures"
+msgstr "Estructuras"
+
+msgid "Regents"
+msgstr "Regentes"

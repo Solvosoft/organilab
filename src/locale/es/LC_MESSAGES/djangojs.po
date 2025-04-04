@@ -968,3 +968,38 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 #: sga/static/sga/js/warning_words.js:130
 msgid "Weight"
 msgstr "Peso"
+
+
+
+msgid "Manager"
+msgstr "Encargado"
+
+msgid "Regents Associated"
+msgstr "Regentes Asociados"
+
+msgid "Nearby Buildings"
+msgstr "Edificios Cercanos"
+
+msgid "Security Plan"
+msgstr "Plan de Seguridad"
+
+msgid "Plans"
+msgstr "Planos"
+
+msgid "Has nearby water resources?"
+msgstr "¿Tiene recursos hidricos cercanos?"
+
+msgid "Has Nearby Sites?"
+msgstr "¿Hay sitios cercanos?"
+
+msgid "Regulatory Plans"
+msgstr "Planes de Regulación"
+
+msgid "Geolocation"
+msgstr "Geolocalización"
+
+msgid "It is Associated with Buildings?"
+msgstr "¿Esta asociado a edificios?"
+
+msgid "Buildings"
+msgstr "Edificios"
