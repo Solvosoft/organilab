@@ -170,7 +170,9 @@ def buildings_view(request, org_pk):
 def buildings_actions(request, org_pk, pk=None):
     form = BuildingsForm(org_pk=org_pk)
     building = None
+    title = _('Create Building')
     if pk:
+        title = _('Update Building')
         building = get_object_or_404(Buildings, pk=pk)
         form = BuildingsForm(instance=building, org_pk=org_pk)
     if request.method == 'POST':
@@ -192,7 +194,9 @@ def buildings_actions(request, org_pk, pk=None):
 
     context = {
         'form':  form,
-        'org_pk': org_pk
+        'org_pk': org_pk,
+        'title': title
+
     }
     return render(request, 'risk_management/buildings.html', context=context)
 
@@ -220,7 +224,9 @@ def structure_actions(request, org_pk, pk=None):
     form = StructureForm(org_pk=org_pk)
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     structure = None
+    title = _('Create Structure')
     if pk:
+        title = _('Update Structure')
         structure = get_object_or_404(Buildings, pk=pk)
         form = StructureForm(instance=structure, org_pk=org_pk)
     if request.method == 'POST':
@@ -241,6 +247,7 @@ def structure_actions(request, org_pk, pk=None):
 
     context = {
         'form':  form,
-        'org_pk': org_pk
+        'org_pk': org_pk,
+        'title': title
     }
     return render(request, 'risk_management/structure_form.html', context=context)

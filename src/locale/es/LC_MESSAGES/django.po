@@ -4784,7 +4784,7 @@ msgstr "Edificios"
 msgid "Create structure"
 msgstr "Crear estructura"
 
-msgid "Create building"
+msgid "Create Building"
 msgstr "Crear edificio"
 
 msgid "List of Structures"
@@ -4801,3 +4801,15 @@ msgstr "Estructuras"
 
 msgid "Regents"
 msgstr "Regentes"
+
+msgid "Create Structure"
+msgstr "Crear Estructura"
+
+msgid "Update Structure"
+msgstr "Actualizar Estructura"
+
+msgid "Create Building"
+msgstr "Crear Edificio"
+
+msgid "Update Building"
+msgstr "Actualizar Edificio"

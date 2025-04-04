@@ -969,8 +969,6 @@ msgstr "¿Desea eliminar esta palabra de advertencia?"
 msgid "Weight"
 msgstr "Peso"
 
-
-
 msgid "Manager"
 msgstr "Encargado"
 
@@ -1003,3 +1001,12 @@ msgstr "¿Esta asociado a edificios?"
 
 msgid "Buildings"
 msgstr "Edificios"
+
+msgid "Regent Associated"
+msgstr "Regentes Asociados"
+
+msgid "Laboratories"
+msgstr "Laboratorios"
+
+msgid "Phone"
+msgstr "Teléfono"

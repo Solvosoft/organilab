@@ -19,7 +19,7 @@ datatable_inits = {
          type: "select2",
         visible: true,
         render:gt_print_list_object("text")},
-        {data: "nearby_buildings", name: "nearby_buildings", title: gettext("Nearby buildings"),
+        {data: "nearby_buildings", name: "nearby_buildings", title: gettext("Nearby Buildings"),
         render:gt_print_list_object("text"),
          url: selects2_url['buildings_url'],
          type: "select2",
