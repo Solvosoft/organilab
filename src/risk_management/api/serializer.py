@@ -188,7 +188,7 @@ class StructureSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     buildings = GTS2SerializerBase(many=True)
     manager = GTS2SerializerBase(many=False)
-    type_building = GTS2SerializerBase(many=False)
+    type_structure = GTS2SerializerBase(many=False)
     geolocation = serializers.SerializerMethodField()
 
     def get_geolocation(self, obj):
