@@ -116,6 +116,10 @@ class IncidentReport(AbstractOrganizationRef):
     notification_copy = models.FileField(upload_to=upload_notification_copy,
                 verbose_name=_('En caso de intoxicación adjuntar copia de la notificación realizada al Centro Nacional de Control de Intoxicaciones (CNCI)'),
                 null=True, blank=True)
+    buildings = models.ManyToManyField('risk_management.Buildings',
+                                       verbose_name=_('Buildings'),
+                                       related_name="incident_buildings",
+                                       blank=True)
 
     def __str__(self):
         return self.short_description
@@ -179,16 +183,16 @@ class Structure(AbstractOrganizationRef):
     buildings = models.ManyToManyField('risk_management.Buildings',
                                        verbose_name=_('Buildings'),
                                        related_name="structura_buildings")
-    type_building = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
+    type_structure = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
                                 verbose_name=_('Type'),
                                 key_name="key", key_value='structure_type')
     area = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Area'))
     measuerement_unit = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
                                 verbose_name=_('Measurement Unit'),
-                                key_name="key", key_value='structure_unit',
+                                key_name="key", key_value='units',
                                              related_name="structure_measurement_unit")
     geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',
-                                     zoom=15)
+                                     zoom=15, verbose_name=_('Geolocation'))
     manager = models.ForeignKey(User, verbose_name=_('Manager'),
                                 on_delete=models.DO_NOTHING, related_name="structure_manager")
 
