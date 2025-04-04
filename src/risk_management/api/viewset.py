@@ -144,7 +144,7 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["id", "name", "manager__username", "buildings__name",
-                     "type_building__description"]
+                     "type_structure__description"]
     filterset_class = StructureFilter
     ordering_fields = ["id"]
     ordering = ("id",)
