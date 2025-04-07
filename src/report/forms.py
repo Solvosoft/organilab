@@ -71,9 +71,16 @@ class ReportObjectForm(ReportObjectsBaseForm):
         return list(laboratory.values_list('pk',flat=True))
 
 class LaboratoryRoomReportForm(ReportBase):
+    objects_type = list(Object.TYPE_CHOICES)
+    objects_type.insert(0, (None, _("General")))
     all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
         widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
+    object_type = forms.ChoiceField(choices=tuple(objects_type), label=_("Object type"),
+                                    required=False,
+                                    widget=genwidgets.Select(attrs={'class': 'form-control'}))
+    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,
+                                      label=_("Is precursor?"))
     lab_room = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select laboratory rooms (Optional)"),
         widget=AutocompleteSelectMultiple("lab_room", attrs={
         'data-related': 'true',
@@ -100,7 +107,13 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
     laboratory = forms.ModelMultipleChoiceField(widget=forms.SelectMultiple, queryset=Laboratory.objects.all())
     lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.all(), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.all(), required=False)
-
+    objects_type = list(Object.TYPE_CHOICES)
+    objects_type.insert(0, (None, _("All")))
+    object_type = forms.ChoiceField(choices=tuple(objects_type),
+                                    required=False,
+                                    widget=genwidgets.Select(
+                                        attrs={'class': 'form-control'}))
+    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
     def clean_laboratory(self):
         organization = self.cleaned_data['organization']
         all_labs_org = self.cleaned_data['all_labs_org']

@@ -1,6 +1,7 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
+from laboratory.models import Object
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import set_format_table_columns, get_report_name, load_dataset_by_column
 from report.utils import get_furniture_queryset_by_filters
@@ -8,8 +9,15 @@ from report.utils import get_furniture_queryset_by_filters
 def get_dataset(report, column_list=None):
     dataset = []
     furniture_list = get_furniture_queryset_by_filters(report)
+    attrs = {}
+    if "object_type" in report.data:
+        attrs['object__type'] = report.data["object_type"]
+        if "is_precursor" in report.data and report.data["object_type"] == '0':
+            attrs['object__sustancecharacteristics__is_precursor'] = (
+                report.data)["is_precursor"]
     for furniture in furniture_list:
-        for shelfobject in furniture.get_objects():
+        objects = furniture.get_objects().filter(**attrs)
+        for shelfobject in objects:
             shelf_unit = shelfobject.get_measurement_unit_display()
             furniture = shelfobject.shelf.furniture
             data_column = {
@@ -54,6 +62,8 @@ def lab_room_doc(report):
     file = builder.save_ods(content, format_type=report.file_type)
 
     file_name = f'{report_name}.{report.file_type}'
+    if "object_type" in report.data:
+        file_name = f'{report_name}_{dict(Object.TYPE_CHOICES)[report["object_type"]]}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
