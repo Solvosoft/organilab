@@ -1,13 +1,15 @@
 from django.conf import settings
 from django.db.models import Sum
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from laboratory.models import Object, ObjectLogChange, Laboratory, Catalog
+from laboratory.models import Object, ObjectLogChange, Laboratory, Catalog, Shelf, \
+    ShelfObject
 from laboratory.utils import get_user_laboratories
 from report.models import ObjectChangeLogReport, ObjectChangeLogReportBuilder
 from report.utils import filter_period
 
 
-def resume_queryset(report,queryset):
+def resume_queryset(report,queryset, objs=None,log_filters=None):
 
     laboratories = set(queryset.values_list('laboratory__pk', flat=True))
     builder = []
@@ -56,6 +58,7 @@ def resume_queryset(report,queryset):
                     builder
                 )
             builder.clear()
+
     return total
 
 def resume_queryset_doc(report,queryset):
@@ -109,28 +112,37 @@ def resume_queryset_doc(report,queryset):
 
 def get_queryset(report):
     query = ObjectLogChange.objects.all().using(settings.READONLY_DATABASE).order_by('update_time')
+    labs = Laboratory.objects.all().using(settings.READONLY_DATABASE)
+    filters = {}
+    object_log_filters = {}
     if 'period' in report.data:
         if report.data['period']:
             query = filter_period(report.data['period'], query)
     if 'precursor' in report.data:
         if report.data['precursor']:
             query = query.filter(precursor=True)
+            object_log_filters['precursor'] = True
     if 'all_labs_org' in report.data:
         if report.data['all_labs_org']:
-            query = query.filter(laboratory__in=get_user_laboratories(report.creator))
+            labs = get_user_laboratories(report.creator)
+            query = query.filter(laboratory__in=labs)
+            filters['in_where_laboratory__in'] = labs
         else:
             query = query.filter(laboratory__pk=report.data['lab_pk'])
+            filters['in_where_laboratory__pk'] = report.data['lab_pk']
     else:
         query = query.filter(laboratory__pk=report.data['lab_pk'])
+        filters['in_where_laboratory__pk__in'] = report.data['lab_pk']
+    obj = ShelfObject.objects.filter(**filters).using(settings.READONLY_DATABASE)
 
-    return query
+    return query,obj, object_log_filters
 
 
 def get_dataset_objectlogchanges(report,is_doc=False,column_list=None):
-    queryset = get_queryset(report)
+    queryset, objs, log_filters = get_queryset(report)
     object_list = None
     if is_doc:
         object_list = resume_queryset_doc(report,queryset)
     else:
-        object_list = resume_queryset(report,queryset)
+        object_list = resume_queryset(report,queryset, objs, log_filters)
     return object_list
