@@ -47,6 +47,7 @@
 			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
 			buildings_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
 			laboratory_url: "{% url 'risk_laboratory-list' %}"+"?org_pk="+"{{org_pk}}",
+			structure_url: "{% url 'risk_structure-list' %}"+"?org_pk="+"{{org_pk}}",
 		}
 	</script>
 	<script src="{% static 'js/structure.js' %}?v={% get_organilab_version %}"></script>

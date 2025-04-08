@@ -16,10 +16,12 @@ datatable_inits = {
             visible: true
          },
          {
-            data: "type_building",
-            name: "type_building",
+            data: "type_structure",
+            name: "type_structure",
             title: gettext("Type"),
-            type: "string",
+            render: selectobjprint({display_name: "text"}),
+            type: "select2",
+            url: selects2_url['structure_url'],
             visible: true
             },
         {

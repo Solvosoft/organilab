@@ -208,7 +208,7 @@ class StructureForm(GTForm, forms.ModelForm):
     grid_representation = [
         [
             ["name",
-             "type_building",
+             "type_structure",
              "buildings",
              "manager",
              ],
@@ -228,7 +228,7 @@ class StructureForm(GTForm, forms.ModelForm):
         super(StructureForm, self).__init__(*args, **kwargs)
         self.fields['geolocation'].widget.attrs['class'] = 'form-control'
         self.fields['geolocation'].label = _('Geolocation')
-        self.fields['type_building'].widget.attrs['add_url'] = reverse_lazy('laboratory:add_structure_type_catalog')
+        self.fields['type_structure'].widget.attrs['add_url'] = reverse_lazy('laboratory:add_structure_type_catalog')
 
 
         if org_pk:
@@ -254,6 +254,6 @@ class StructureForm(GTForm, forms.ModelForm):
             'area': djgentelella.FloatInput,
             'measuerement_unit': djgentelella.Select,
             'area': djgentelella.FloatInput,
-            'type_building': djgentelella.SelectWithAdd(attrs={'add_url': "#", 'data-otrono': 1}),
+            'type_structure': djgentelella.SelectWithAdd(attrs={'add_url': "#", 'data-otrono': 1}),
 
         }
