@@ -1,4 +1,4 @@
-from async_notifications.lookups import User
+from django.contrib.auth.models import User
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 
