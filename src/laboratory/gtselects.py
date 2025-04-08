@@ -628,9 +628,9 @@ class RegentslLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     perms = {
-        'list': [],
+        'list': ["risk_management.view_regent"],
     }
-    permission_classes = ()
+    permission_classes = (AnyPermissionByAction, )
     organization = None
     def get_queryset(self):
         queryset = super().get_queryset()
