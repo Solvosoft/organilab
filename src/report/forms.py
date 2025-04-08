@@ -72,7 +72,7 @@ class ReportObjectForm(ReportObjectsBaseForm):
 
 class LaboratoryRoomReportForm(ReportBase):
     objects_type = list(Object.TYPE_CHOICES)
-    objects_type.insert(0, (None, _("General")))
+    objects_type.insert(0, (None, _("All")))
     all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
         widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())

@@ -62,8 +62,6 @@ def lab_room_doc(report):
     file = builder.save_ods(content, format_type=report.file_type)
 
     file_name = f'{report_name}.{report.file_type}'
-    if "object_type" in report.data:
-        file_name = f'{report_name}_{dict(Object.TYPE_CHOICES)[report["object_type"]]}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
     report.file = content
