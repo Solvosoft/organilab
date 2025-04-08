@@ -4785,7 +4785,7 @@ msgid "Create structure"
 msgstr "Crear estructura"
 
 msgid "Create Building"
-msgstr "Crear edificio"
+msgstr "Crear Edificio"
 
 msgid "List of Structures"
 msgstr "Lista de estructuras"
@@ -4808,8 +4808,8 @@ msgstr "Crear Estructura"
 msgid "Update Structure"
 msgstr "Actualizar Estructura"
 
-msgid "Create Building"
-msgstr "Crear Edificio"
-
 msgid "Update Building"
 msgstr "Actualizar Edificio"
+
+msgid "Object type"
+msgstr "Tipo de objecto"
