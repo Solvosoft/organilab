@@ -654,9 +654,9 @@ class BuildinglLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     perms = {
-        'list': [],
+        'list': ["risk_management.view_buildings"],
     }
-    permission_classes = ()
+    permission_classes = (AnyPermissionByAction,)
     organization = None
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -670,8 +670,6 @@ class BuildinglLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
-        print(request.GET)
-
         return super().list(request, *args, **kwargs)
 
 
@@ -682,9 +680,9 @@ class RiskLaboratorylLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     perms = {
-        'list': [],
+        'list': ["laboratory.view_laboratory"],
     }
-    permission_classes = ()
+    permission_classes = (AnyPermissionByAction,)
     organization = None
     def get_queryset(self):
         queryset = super().get_queryset()

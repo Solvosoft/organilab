@@ -128,6 +128,10 @@ class Regent(AbstractOrganizationRef):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
                              related_name="regent_user")
 
+    class Meta:
+        ordering = ['pk']
+
+
     def __str__(self):
         return self.user.username
 
@@ -174,6 +178,10 @@ class Buildings(AbstractOrganizationRef):
                                      upload_to=upload_files,
                                      null=True, blank=True)
 
+    class Meta:
+        ordering = ['pk']
+
+
     def __str__(self):
         return self.name
 
@@ -195,6 +203,8 @@ class Structure(AbstractOrganizationRef):
                                      zoom=15, verbose_name=_('Geolocation'))
     manager = models.ForeignKey(User, verbose_name=_('Manager'),
                                 on_delete=models.DO_NOTHING, related_name="structure_manager")
+    class Meta:
+        ordering = ['pk']
 
     def __str__(self):
         return self.name
