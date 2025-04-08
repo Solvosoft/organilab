@@ -701,3 +701,30 @@ class RiskLaboratorylLookup(BaseSelect2View):
 
         return super().list(request, *args, **kwargs)
 
+
+@register_lookups(prefix="risk_structure", basename="risk_structure")
+class RiskStructurelLookup(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': ["risk_management.view_structure"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= queryset.filter(key="structure_type")
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
