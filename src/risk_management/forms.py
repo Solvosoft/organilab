@@ -62,11 +62,16 @@ class IncidentReportForm(GTForm,forms.ModelForm):
         org_pk = kwargs.pop('org_pk', None)
         super().__init__(*args, **kwargs)
         queryset = get_user_laboratories(user)
-        if org_pk:
-            queryset = queryset.filter(organization__pk=org_pk)
-            self.fields["buildings"].queryset = (Buildings.objects.
-                                        filter(organization__pk=org_pk))
         self.fields['laboratories'].queryset = queryset
+
+        if org_pk:
+            buildings = Buildings.objects.filter(organization__pk=org_pk)
+            self.fields["buildings"].queryset = buildings
+
+            self.fields["laboratories"].queryset = (Laboratory.objects.
+                                                    filter(buildings__in=buildings).
+                                                    distinct())
+
 
     class Meta:
         model = IncidentReport
