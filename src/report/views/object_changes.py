@@ -58,10 +58,33 @@ def resume_queryset(report,queryset, objs=None,log_filters=None):
                     builder
                 )
             builder.clear()
+        shelf_obj = set(objs.filter(in_where_laboratory=lab).
+                        values_list('object',
+                                    'measurement_unit'))
+
+        for obj in shelf_obj:
+            log_now = queryset.filter(laboratory=lab, object__pk=obj[0],
+                                      measurement_unit__pk=obj[1])
+            if not log_now.exists():
+                old_log= (ObjectLogChange.objects.filter(laboratory=lab,
+                                                        object__pk=obj[0],
+                                                        measurement_unit__pk=obj[1]).
+                          distinct())
+                if old_log.exists():
+
+                    ObjectChangeLogReport.objects.create(
+                        task_report=report,
+                        laboratory=lab,
+                        object=Object.objects.filter(pk=obj[0]).first(),
+                        unit=Catalog.objects.filter(pk=obj[1]).first(),
+                        diff_value=0)
+
+                    total += 1
+
 
     return total
 
-def resume_queryset_doc(report,queryset):
+def resume_queryset_doc(report,queryset, objs, log_filters):
 
     laboratories = set(queryset.values_list('laboratory__pk', flat=True))
     builder = []
@@ -107,6 +130,26 @@ def resume_queryset_doc(report,queryset):
                 doc_list.append([])
                 doc_list.append([])
             builder = []
+        shelf_obj = set(objs.filter(in_where_laboratory=lab).
+                        values_list('object',
+                                    'measurement_unit'))
+
+        for obj in shelf_obj:
+            log_now = queryset.filter(laboratory=lab, object__pk=obj[0],
+                                      measurement_unit__pk=obj[1])
+            if not log_now.exists():
+                old_log= (ObjectLogChange.objects.filter(laboratory=lab,
+                                                        object__pk=obj[0],
+                                                        measurement_unit__pk=obj[1]).
+                          distinct())
+
+                if old_log.exists():
+                    old_log = old_log.last()
+                    doc_list.append([f'{lab.name} | {old_log.object.name}'])
+                    doc_list.append([_('Difference') + f': {0} {old_log.measurement_unit.description}'])
+                    doc_list.append([])
+                    doc_list.append([])
+                total += 1
 
     return {'record': total, 'content': doc_list}
 
@@ -142,7 +185,7 @@ def get_dataset_objectlogchanges(report,is_doc=False,column_list=None):
     queryset, objs, log_filters = get_queryset(report)
     object_list = None
     if is_doc:
-        object_list = resume_queryset_doc(report,queryset)
+        object_list = resume_queryset_doc(report,queryset, objs, log_filters)
     else:
         object_list = resume_queryset(report,queryset, objs, log_filters)
     return object_list
