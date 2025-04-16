@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-bullseye
+FROM python:3.11-bookworm
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV REQUESTS_CA_PATH=/certs/ca_nacional_de_CR.pem

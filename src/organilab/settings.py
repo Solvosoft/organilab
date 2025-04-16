@@ -388,3 +388,26 @@ if not DEBUG:
 DEFAULT_SHELF_ULIMIT=0
 DEFAULT_MIN_QUANTITY = 0.0000001
 DEFAULT_CONVERSION_DECIMAL_ROUND = 4
+
+DJANGO_ASETTINGS_MODULE = "organilab.asettings"
+
+GUNICORN_ASGI_APP = "organilab.asgi:application"
+GUNICORN_WSGI_APP = "organilab.wsgi:application"
+GUNICORN_WORKERS = 1 if DEBUG else 2
+GUNICORN_WORKER_CLASS = "sync"
+GUNICORN_USER = os.getenv("GUNICORN_USER", "organilab")
+GUNICORN_GROUP = os.getenv("GUNICORN_GROUP", "organilab")
+
+UVICORN_BIND = os.getenv("UVICORN_BIND", "127.0.0.1:9922")
+UVICORN_WORKER = 1 if DEBUG else 2
+UVICORN_WORKER_CLASS = "djgentelella.firmador_digital.config.asgi_worker.DjgentelellaUvicornWorker"
+
+
+FIRMADOR_WS = os.getenv("FIRMADOR_WS", "ws://%s/async/" % UVICORN_BIND)
+FIRMADOR_WS_URL = FIRMADOR_WS + "sign_document"
+FIRMADOR_DOMAIN = os.getenv("FIRMADOR_DOMAIN", "http://localhost:9001")
+FIRMADOR_VALIDA_URL = FIRMADOR_DOMAIN + "/valida/"
+FIRMADOR_SIGN_URL = FIRMADOR_DOMAIN + "/firma/firme"
+FIRMADOR_SIGN_COMPLETE = FIRMADOR_DOMAIN + "/firma/completa"
+FIRMADOR_DELETE_FILE_URL = FIRMADOR_DOMAIN + "/firma/delete"
+REGISTER_DEFAULT_USER_API=False
