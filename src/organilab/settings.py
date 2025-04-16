@@ -3,7 +3,7 @@ import os
 import sys
 
 from pathlib import Path
-
+from . import get_version
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
@@ -24,16 +24,19 @@ if not DEBUG and GLITCHTIP_DSN:
         dsn=GLITCHTIP_DSN,
         integrations=[DjangoIntegration()],
         auto_session_tracking=False,
-        traces_sample_rate=0
+        traces_sample_rate=0,
+        release=get_version(),
+        environment="production",
     )
 
-CSRF_TRUSTED_SCHEME=os.getenv('CSRF_TRUSTED_SCHEME', 'https')
+GUNICORN_BIND = os.getenv("GUNICORN_BIND", "127.0.0.1:8000")
+CSRF_TRUSTED_SCHEME = os.getenv("CSRF_TRUSTED_SCHEME", "http")
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
     CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
 else:
     ALLOWED_HOSTS = []
-
+    CORS_ALLOW_ALL_ORIGINS = True
 ADMINS = [('Solvo', 'sitio@solvosoft.com'),]
 # Application definition
 
