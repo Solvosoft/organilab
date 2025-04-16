@@ -1,9 +1,14 @@
 #!/bin/bash
 
 cd /organilab
+mkdir -p ~/.local/share/fonts
+fc-cache --really-force
 
 mkdir -p /run/logs/
+mkdir -p /run/supervisor/
 chown -R organilab:organilab /organilab
+chown -R organilab:organilab /run/supervisor/
+
 runuser -p  -c "python manage.py migrate" organilab
 runuser -p  -c "python manage.py load_urlname_permissions"  organilab
 runuser -p  -c "python manage.py createcachetable" organilab
