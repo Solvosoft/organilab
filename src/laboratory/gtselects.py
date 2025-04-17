@@ -110,12 +110,6 @@ class ObjectGModelLookup(BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-@register_lookups(prefix="userbase", basename="userbase")
-class UserLookup(BaseSelect2View):
-    model = User
-    fields = ['username']
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
 
 
 @register_lookups(prefix="catalogunit", basename="catalogunit")

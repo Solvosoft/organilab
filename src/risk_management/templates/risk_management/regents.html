@@ -7,6 +7,11 @@
 {% load static %}
 
 {% block pre_head %}
+    {% define_urlname_action 'regent_list' %}
+    {% define_urlname_action 'regent_create' %}
+    {% define_urlname_action 'regent_delete' %}
+    {% define_urlname_action 'regent_detail' %}
+    {% define_urlname_action 'regent_update' %}
 {% endblock %}
 
 {% block title %} {% trans 'Regents' %} {% endblock %}

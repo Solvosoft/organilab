@@ -2,7 +2,8 @@
 {% load laboratory static i18n  %}
 {% load urlname_tags %}
 {% block pre_head %}
-
+    {% define_urlname_action 'structure_create' %}
+    {% define_urlname_action 'structure_update' %}
 {% endblock %}
 {% block title %}{% trans 'Structures' %}{% endblock %}
 {% block content %}

@@ -61,8 +61,7 @@ dist:
 start:
 	cd src && python manage.py migrate && python manage.py createcachetable
 	python manage.py load_urlname_permissions
-	python manage.py loadgroup
-	python manage.py loaddata sga_components.json
+	python manage.py init_checks
 
 
 docs_full:
@@ -81,4 +80,4 @@ run_docker_selenium:
 
 
 database_config:
-	cd src && python manage.py migrate && python manage.py createcachetable && python manage.py load_urlname_permissions && python manage.py loadgroup && python manage.py loaddata sga_components.json
+	cd src && python manage.py migrate && python manage.py init_checks && python manage.py load_urlname_permissions

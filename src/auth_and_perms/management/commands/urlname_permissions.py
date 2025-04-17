@@ -665,6 +665,165 @@ URLNAME_PERMISSIONS = {
             'permission': 'laboratory.view_laboratory'
         }
     ],
+    'buildings_list': [
+        {
+            'name': 'Add Building',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_buildings'
+        },
+        {
+            'name': 'Change Building',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_buildings'
+        },
+        {
+            'name': 'Delete Building',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_buildings'
+        },
+        {
+            'name': 'View Building',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_buildings'
+        }
+    ],
+    'buildings_create': [
+        {
+            'name': 'Add Buildings',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_buildings'
+        },
+        {
+            'name': 'View Buildings',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_buildings'
+        },
+    ],
+    'buildings_delete': [
+        {
+            'name': 'Delete Buildings',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_buildings'
+        },
+        {
+            'name': 'View Buildings',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_buildings'
+        }
+    ],
+    'buildings_detail': [
+        {
+            'name': 'View Buildings',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_buildings'
+        }
+    ],
+    'structure_list': [
+        {
+            'name': 'Add structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_structure'
+        },
+        {
+            'name': 'Change structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_structure'
+        },
+        {
+            'name': 'Delete structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_structure'
+        },
+        {
+            'name': 'View structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_structure'
+        }
+    ],
+    'structure_create': [
+        {
+            'name': 'Add structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_structure'
+        },
+        {
+            'name': 'View structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_structure'
+        },
+    ],
+    'structure_delete': [
+        {
+            'name': 'Delete structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_structure'
+        },
+        {
+            'name': 'View structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_structure'
+        }
+    ],
+    'structure_detail': [
+        {
+            'name': 'View structure',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_structure'
+        }
+    ],
+    'regent_list': [
+        {
+            'name': 'Add regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_regent'
+        },
+        {
+            'name': 'Change regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.change_regent'
+        },
+        {
+            'name': 'Delete regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_regent'
+        },
+        {
+            'name': 'View regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_regent'
+        }
+    ],
+    'regent_create': [
+        {
+            'name': 'Add regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.add_regent'
+        },
+        {
+            'name': 'View regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_regent'
+        },
+    ],
+    'regent_delete': [
+        {
+            'name': 'Delete regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.delete_regent'
+        },
+        {
+            'name': 'View regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_regent'
+        }
+    ],
+    'regent_detail': [
+        {
+            'name': 'View regent',
+            'category': 'Risk Zone',
+            'permission': 'risk_management.view_regent'
+        }
+    ],
     'incident_list': [
         {
             'name': 'Add Incident Report',

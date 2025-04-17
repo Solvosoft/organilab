@@ -6,7 +6,13 @@
 {% load i18n %}
 {% load static %}
 
+
 {% block pre_head %}
+    {% define_urlname_action 'buildings_list' %}
+    {% define_urlname_action 'buildings_create' %}
+    {% define_urlname_action 'buildings_delete' %}
+    {% define_urlname_action 'buildings_detail' %}
+    {% define_urlname_action 'buildings_update' %}
 {% endblock %}
 
 {% block title %} {% trans 'Buildings' %} {% endblock %}

@@ -158,7 +158,7 @@ def add_zone_type_view(request, org_pk):
     }
     return JsonResponse(data)
 
-@permission_required('riskmanagement.add_buildings')
+@permission_required('risk_management.add_buildings')
 def buildings_view(request, org_pk):
 
     context = {
@@ -166,7 +166,7 @@ def buildings_view(request, org_pk):
     }
     return render(request, 'risk_management/building_list.html', context=context)
 
-@permission_required('riskmanagement.add_buildings')
+@permission_required('risk_management.add_buildings')
 def buildings_actions(request, org_pk, pk=None):
     form = BuildingsForm(org_pk=org_pk)
     building = None
@@ -200,7 +200,7 @@ def buildings_actions(request, org_pk, pk=None):
     }
     return render(request, 'risk_management/buildings.html', context=context)
 
-@permission_required('riskmanagement.view_regent')
+@permission_required('risk_management.view_regent')
 def regent_view(request, org_pk):
     context = {
         'form_create':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
@@ -219,7 +219,7 @@ def structure_view(request, org_pk):
     }
     return render(request, 'risk_management/structure_list.html', context=context)
 
-@permission_required('riskmanagement.add_structure')
+@permission_required('risk_management.add_structure')
 def structure_actions(request, org_pk, pk=None):
     form = StructureForm(org_pk=org_pk)
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
