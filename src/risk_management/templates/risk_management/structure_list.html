@@ -7,6 +7,11 @@
 {% load static %}
 
 {% block pre_head %}
+    {% define_urlname_action 'structure_list' %}
+    {% define_urlname_action 'structure_create' %}
+    {% define_urlname_action 'structure_delete' %}
+    {% define_urlname_action 'structure_detail' %}
+    {% define_urlname_action 'structure_update' %}
 {% endblock %}
 
 {% block title %} {% trans 'Structures' %} {% endblock %}
@@ -45,7 +50,7 @@
 		const update_url = "{% url 'riskmanagement:structures_update' org_pk 0 %}"
 		const selects2_url = {
 			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
-			buildings_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
+			structure_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
 			laboratory_url: "{% url 'risk_laboratory-list' %}"+"?org_pk="+"{{org_pk}}",
 			structure_url: "{% url 'risk_structure-list' %}"+"?org_pk="+"{{org_pk}}",
 		}

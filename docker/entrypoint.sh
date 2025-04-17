@@ -10,8 +10,9 @@ chown -R organilab:organilab /organilab
 chown -R organilab:organilab /run/supervisor/
 
 runuser -p  -c "python manage.py migrate" organilab
+runuser -p  -c "python manage.py init_checks" organilab
 runuser -p  -c "python manage.py load_urlname_permissions"  organilab
-runuser -p  -c "python manage.py createcachetable" organilab
+
 
 
 if [ -z "$DEVELOPMENT" ]; then
