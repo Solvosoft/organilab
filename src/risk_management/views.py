@@ -8,6 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from rest_framework import status
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
@@ -117,7 +118,7 @@ class ZoneDetail(DetailView):
 
 @permission_required('risk_management.add_zonetype')
 def add_zone_type_view(request, org_pk):
-
+    user_is_allowed_on_organization(request.user, org_pk)
     if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
         return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
@@ -160,7 +161,7 @@ def add_zone_type_view(request, org_pk):
 
 @permission_required('risk_management.add_buildings')
 def buildings_view(request, org_pk):
-
+    user_is_allowed_on_organization(request.user, org_pk)
     context = {
         'org_pk': org_pk
     }
@@ -168,6 +169,7 @@ def buildings_view(request, org_pk):
 
 @permission_required('risk_management.add_buildings')
 def buildings_actions(request, org_pk, pk=None):
+    user_is_allowed_on_organization(request.user, org_pk)
     form = BuildingsForm(org_pk=org_pk)
     building = None
     title = _('Create Building')
@@ -202,9 +204,10 @@ def buildings_actions(request, org_pk, pk=None):
 
 @permission_required('risk_management.view_regent')
 def regent_view(request, org_pk):
+    user_is_allowed_on_organization(request.user, org_pk)
     context = {
-        'form_create':  RegentForm(org_pk=org_pk, prefix="create",render_type="as_grid"),
-        'form_update':  RegentForm(org_pk=org_pk, prefix="update",render_type="as_grid"),
+        'form_create':  RegentForm(org_pk=org_pk, prefix="create"),
+        'form_update':  RegentForm(org_pk=org_pk, prefix="update"),
         'org_pk': org_pk
     }
     return render(request, 'risk_management/regents.html', context=context)
@@ -213,7 +216,7 @@ def regent_view(request, org_pk):
 
 @permission_required('risk_management.view_structure')
 def structure_view(request, org_pk):
-
+    user_is_allowed_on_organization(request.user, org_pk)
     context = {
         'org_pk': org_pk
     }
@@ -221,6 +224,7 @@ def structure_view(request, org_pk):
 
 @permission_required('risk_management.add_structure')
 def structure_actions(request, org_pk, pk=None):
+    user_is_allowed_on_organization(request.user, org_pk)
     form = StructureForm(org_pk=org_pk)
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     structure = None
