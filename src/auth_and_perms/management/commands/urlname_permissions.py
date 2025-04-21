@@ -2829,6 +2829,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'risk_management.view_regent'
         },
         {
+            'name': 'View Users',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        },
+        {
             'name': 'Add Regent',
             'category': 'Regent',
             'permission': 'risk_management.add_regent'
@@ -2897,6 +2902,18 @@ URLNAME_PERMISSIONS = {
     'buildings_update': [
         {
             'name': 'Change Building',
+            'category': 'Building',
+            'permission': 'risk_management.change_buildings'
+        },
+    ],
+    'building_form_view': [
+        {
+            'name': 'Add Building',
+            'category': 'Building',
+            'permission': 'risk_management.add_buildings'
+        },
+        {
+            'name': 'Update Building',
             'category': 'Building',
             'permission': 'risk_management.change_buildings'
         },
