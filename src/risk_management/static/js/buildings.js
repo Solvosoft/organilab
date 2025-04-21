@@ -6,7 +6,7 @@ datatable_inits = {
         {data: "phone", name: "phone", title: gettext("Phone"), type: "readonly", visible: true},
         {data: "manager",
          name: "manager",
-         title: gettext("Manager"),
+         title: gettext("Responsible"),
          render: selectobjprint({display_name: "text"}),
          url: selects2_url['manager_url'],
          type: "select2",
@@ -52,7 +52,7 @@ const actions = {
             },
             text: '<i class="fa fa-plus" aria-hidden="true"></i>',
             className: "btn btn-sm btn-outline-success",
-            titleAttr: gettext("Create Building"),
+            titleAttr: gettext("Create building"),
     }],
     object_actions: [
             {

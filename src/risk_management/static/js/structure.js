@@ -27,7 +27,7 @@ datatable_inits = {
         {
             data: "manager",
             name: "manager",
-            title: gettext("Manager"),
+            title: gettext("Responsible"),
             render: selectobjprint({display_name: "text"}),
             url: selects2_url['manager_url'],
             type: "select2",
@@ -65,7 +65,7 @@ const actions = {
             },
             text: '<i class="fa fa-plus" aria-hidden="true"></i>',
             className: "btn btn-sm btn-outline-success",
-            titleAttr: gettext("Add Structure"),
+            titleAttr: gettext("Create structure"),
     }],
     object_actions: [
             {
