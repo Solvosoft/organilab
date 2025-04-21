@@ -196,7 +196,7 @@ class RegentForm(GTForm, forms.ModelForm):
         model = Regent
         fields = ["user"]
         widgets = {
-            'user': AutocompleteSelectMultiple(
+            'user': AutocompleteSelect(
                'user_organization',
                 attrs={
                     'data-s2filter-org_pk': '#org'}
