@@ -7,11 +7,7 @@
 {% load static %}
 
 {% block pre_head %}
-    {% define_urlname_action 'structure_list' %}
-    {% define_urlname_action 'structure_create' %}
-    {% define_urlname_action 'structure_delete' %}
-    {% define_urlname_action 'structure_detail' %}
-    {% define_urlname_action 'structure_update' %}
+    {% define_urlname_action 'structure_crud' %}
 {% endblock %}
 
 {% block title %} {% trans 'Structures' %} {% endblock %}
@@ -21,12 +17,6 @@
 			<div class="card-title titles">
 				<h1 class="text-center"> {% trans 'List of Structures' %} </h1>
 			</div>
-			<div class="clearfix">
-			<div class="float-end">
-				<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:structures_create' org_pk %}"> <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Create Structure'%}  </a>
-			</div>
-			</div>
-
 			<div class="row ">
 				<div class="col-12">
 					<table class="table table-hover table-striped w-100 table-responsive" id="table-structure">
@@ -47,7 +37,8 @@
 			list_url: "{% url 'riskmanagement:api-structure-list' org_pk %}",
 			destroy_url: "{% url "riskmanagement:api-structure-detail" org_pk 0 %}",
 		}
-		const update_url = "{% url 'riskmanagement:structures_update' org_pk 0 %}"
+		const update_url = "{% url 'riskmanagement:structures_update' org_pk 0 %}";
+		const add_structure_url = "{% url 'riskmanagement:structures_create' org_pk %}";
 		const selects2_url = {
 			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
 			structure_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
