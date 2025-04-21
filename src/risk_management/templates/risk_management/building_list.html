@@ -11,7 +11,6 @@
     {% define_urlname_action 'buildings_list' %}
     {% define_urlname_action 'buildings_create' %}
     {% define_urlname_action 'buildings_delete' %}
-    {% define_urlname_action 'buildings_detail' %}
     {% define_urlname_action 'buildings_update' %}
 {% endblock %}
 
@@ -21,11 +20,6 @@
 		<div class="card-body">
 			<div class="card-title titles">
 				<h1 class="text-center"> {% trans 'List of Buildings' %} </h1>
-			</div>
-			<div class="clearfix">
-			<div class="float-end">
-				<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:buildings_create' org_pk %}"> <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Create Building'%}  </a>
-			</div>
 			</div>
 
 			<div class="row ">
@@ -49,6 +43,7 @@
 			destroy_url: "{% url "riskmanagement:api-building-detail" org_pk 0 %}",
 		}
 		const update_url = "{% url 'riskmanagement:buildings_update' org_pk 0 %}"
+		const add_building_url = "{% url 'riskmanagement:buildings_create' org_pk %}"
 		const selects2_url = {
 			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
 			regents_url: "{% url 'risk_regents-list' %}"+"?org_pk="+"{{org_pk}}",

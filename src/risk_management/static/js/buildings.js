@@ -45,7 +45,15 @@ const modalids = {
 }
 
 const actions = {
-    table_actions: [],
+    table_actions: [
+            {
+            action: function (data) {
+               window.location.href = add_building_url;
+            },
+            text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+            className: "btn btn-sm btn-outline-success",
+            titleAttr: gettext("Create Building"),
+    }],
     object_actions: [
             {
             name: "update_building",
