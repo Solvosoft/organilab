@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n laboratory %}
 {% load gtsettings %}
-
-
-{% load urlname_tags %}
+{% load urlname_tags risk_tags %}
 {% block pre_head %}
  {% define_true  "use_chartjs" %}
     {% define_urlname_action 'riskzone_detail' %}
@@ -44,6 +42,9 @@
     <div class="offset-md-1 col-md-10">
         <ul class="list-group">
             {% for building in object.buildings.all %}
+
+									   {% get_incidents building.pk as incidents %}
+
                 <li class="list-group-item">
                     <div class="float-start p-2 m-0">
                         <a href="{% url 'riskmanagement:buildings_update' org_pk building.pk %}" title="{{ building.name }}">
@@ -52,7 +53,7 @@
                     </div>
                     <div class="float-end p-2 m-0">
                         <a class="btn btn-sm btn-secondary btn-md" href="{% url 'riskmanagement:incident_list' org_pk building.pk %}" title="{% trans 'Incident Reports' %}">
-                          <!--  <span class="badge">{{lab.incidentreport_set.all.count }}</span> -->
+                           <span class="badge">{{ incidents }}</span>
                         </a>
                         <a class="btn btn-sm btn-outline-success btn-md btn-rounded" href="{% url 'riskmanagement:incident_create' org_pk building.pk %}" title="{% trans 'Incident Reports Create' %}">
                             <i class="fa fa-plus" aria-hidden="true"></i>
