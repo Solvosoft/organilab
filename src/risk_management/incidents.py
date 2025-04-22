@@ -13,12 +13,12 @@ from rest_framework import status
 from weasyprint import HTML
 from django.conf import settings
 
-
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
-from risk_management.models import IncidentReport
+from risk_management.models import IncidentReport, Buildings
 
 
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
@@ -29,7 +29,7 @@ class IncidentReportList(djgeneric.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(laboratories__pk=self.lab)
+        queryset = super().get_queryset().filter(buildings=self.building)
         filter_search = self.request.GET.get('q', None)
         if filter_search:
             queryset = queryset.filter(Q(short_description__icontains=filter_search)|Q(
@@ -162,13 +162,11 @@ _('Laboratories'),
 
 
 @permission_required('laboratory.do_report')
-def report_incidentreport(request, org_pk, lab_pk, pk):
+def report_incidentreport(request, org_pk, building_pk, pk):
+    user_is_allowed_on_organization(request.user, org_pk)
 
-    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
-        return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
-
-    lab = get_object_or_404(Laboratory, pk=lab_pk)
-    filters = {'laboratories__in': [lab]}
+    building = get_object_or_404(Buildings, pk=building_pk)
+    filters = {'buildings__in': [building]}
 
     if pk:
         filters = {'pk': pk}
