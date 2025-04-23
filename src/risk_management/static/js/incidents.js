@@ -56,7 +56,18 @@ const modalids = {
 
 const actions = {
     table_actions: [],
-    object_actions: [],
+    object_actions: [
+                {
+            name: "download_pdf",
+            action: 'download_pdf',
+            in_action_column: true,
+            i_class: 'fa fa-file-pdf-o',
+            method: 'GET',
+            title: gettext("Download PDF"),
+            data_fn: function (data) {
+                return data;
+            }
+    }],
     title: 'Actions',
     className: "no-export-col"
 }

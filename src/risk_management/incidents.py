@@ -18,7 +18,7 @@ from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
-from risk_management.models import IncidentReport, Buildings
+from risk_management.models import IncidentReport, Buildings, RiskZone
 
 
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
@@ -162,11 +162,11 @@ _('Laboratories'),
 
 
 @permission_required('laboratory.do_report')
-def report_incidentreport(request, org_pk, building_pk, pk):
+def report_incidentreport(request, org_pk, risk_pk, pk):
     user_is_allowed_on_organization(request.user, org_pk)
 
-    building = get_object_or_404(Buildings, pk=building_pk)
-    filters = {'buildings__in': [building]}
+    risks = get_object_or_404(RiskZone, pk=risk_pk)
+    filters = {'risk_zone__in': [risks]}
 
     if pk:
         filters = {'pk': pk}
