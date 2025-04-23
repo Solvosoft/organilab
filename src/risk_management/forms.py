@@ -60,14 +60,17 @@ class IncidentReportForm(GTForm,forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         org_pk = kwargs.pop('org_pk', None)
+        risk = kwargs.pop('risk', None)
         super().__init__(*args, **kwargs)
         queryset = get_user_laboratories(user)
         self.fields['laboratories'].queryset = queryset
 
         if org_pk:
             buildings = Buildings.objects.filter(organization__pk=org_pk)
-            self.fields["buildings"].queryset = buildings
+            if risk:
 
+                buildings = risk.buildings.all()
+            self.fields["buildings"].queryset = buildings
             self.fields["laboratories"].queryset = (Laboratory.objects.
                                                     filter(buildings__in=buildings).
                                                     distinct())
@@ -75,12 +78,14 @@ class IncidentReportForm(GTForm,forms.ModelForm):
 
     class Meta:
         model = IncidentReport
-        exclude = ('organization', 'created_by')
+        exclude = ('organization', 'created_by', "risk_zone")
         order_fields = ('short_description', 'incident_date',
                         'buildings', 'laboratories', 'causes',
                         'people_impact', 'infraestructure_impact',
                         'environment_impact', 'result_of_plans',
-                        'mitigation_actions', 'recomendations')
+                        'mitigation_actions', 'recomendations',
+                        'notification_copy')
+
         widgets = {
             'short_description':djgentelella.TextInput,
             'causes': TextareaWysiwyg,
@@ -92,7 +97,8 @@ class IncidentReportForm(GTForm,forms.ModelForm):
             'result_of_plans': TextareaWysiwyg,
             'mitigation_actions': TextareaWysiwyg,
             'recomendations': TextareaWysiwyg,
-            "buildings": djgentelella.SelectMultiple(),
+            'buildings': djgentelella.SelectMultiple(),
+            'notification_copy': FileChunkedUpload,
         }
 
 class ZoneTypeForm(GTForm, forms.ModelForm):
