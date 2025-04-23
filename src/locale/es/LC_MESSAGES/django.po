@@ -4813,3 +4813,18 @@ msgstr "Actualizar Edificio"
 
 msgid "Object type"
 msgstr "Tipo de objecto"
+
+msgid "Manage structure"
+msgstr "Gestionar Estructura"
+
+msgid "Manage buildings"
+msgstr "Gestionar Edificios"
+
+msgid "Manage regents"
+msgstr "Gestionar Regentes"
+
+msgid "Register Regent"
+msgstr "Registrar Regente"
+
+msgid "Responsible"
+msgstr "Responsable"

@@ -6,7 +6,7 @@ datatable_inits = {
         {data: "phone", name: "phone", title: gettext("Phone"), type: "readonly", visible: true},
         {data: "manager",
          name: "manager",
-         title: gettext("Manager"),
+         title: gettext("Responsible"),
          render: selectobjprint({display_name: "text"}),
          url: selects2_url['manager_url'],
          type: "select2",
@@ -45,7 +45,15 @@ const modalids = {
 }
 
 const actions = {
-    table_actions: [],
+    table_actions: [
+            {
+            action: function (data) {
+               window.location.href = add_building_url;
+            },
+            text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+            className: "btn btn-sm btn-outline-success",
+            titleAttr: gettext("Create building"),
+    }],
     object_actions: [
             {
             name: "update_building",

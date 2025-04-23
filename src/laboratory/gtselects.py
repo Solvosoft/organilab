@@ -720,3 +720,42 @@ class RiskStructurelLookup(BaseSelect2View):
 
         return super().list(request, *args, **kwargs)
 
+
+@register_lookups(prefix="user_organization", basename="user_organization")
+class RiskUsersOrganizations(BaseSelect2View):
+    model = User
+    fields = ['first_name', 'last_name']
+    org= None
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    perms = {
+        'list': ["auth.view_user"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    org= None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(organizationstructure__pk=self.org).distinct()
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        if self.request.GET.get("org_pk", None):
+            self.org = self.request.GET.get("org_pk", None)
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': _("Organization not found"),
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        name = obj.get_full_name()
+        if not name:
+            name = obj.username
+        return name

@@ -7,15 +7,12 @@
 {% load static %}
 
 {% block pre_head %}
-    {% define_urlname_action 'regent_list' %}
-    {% define_urlname_action 'regent_create' %}
-    {% define_urlname_action 'regent_delete' %}
-    {% define_urlname_action 'regent_detail' %}
-    {% define_urlname_action 'regent_update' %}
+    {% define_urlname_action 'regent_crud' %}
 {% endblock %}
 
 {% block title %} {% trans 'Regents' %} {% endblock %}
 {% block content %}
+<input type="hidden" value="{{org_pk}}" id="org">
 	<div class="card mt-2">
 		<div class="card-body">
 			<div class="card-title titles">

@@ -2821,5 +2821,101 @@ URLNAME_PERMISSIONS = {
             'category': 'Equipment Type',
             'permission': 'laboratory.delete_equipmenttype'
         }
+    ],
+    'regent_crud' : [
+        {
+            'name': 'View Regent',
+            'category': 'Regent',
+            'permission': 'risk_management.view_regent'
+        },
+        {
+            'name': 'View Users',
+            'category': 'User',
+            'permission': 'auth.view_user'
+        },
+        {
+            'name': 'Add Regent',
+            'category': 'Regent',
+            'permission': 'risk_management.add_regent'
+        },
+        {
+            'name': 'Delete Regent',
+            'category': 'Regent',
+            'permission': 'risk_management.delete_regent'
+        }
+    ],
+    'structure_crud' : [
+        {
+            'name': 'Add Structure',
+            'category': 'Structure',
+            'permission': 'risk_management.add_structure'
+        },
+        {
+            'name': 'View Structure',
+            'category': 'Structure',
+            'permission': 'risk_management.view_structure'
+        },
+        {
+            'name': 'Change Structure',
+            'category': 'Structure',
+            'permission': 'risk_management.change_structure'
+        },
+        {
+            'name': 'Delete Structure',
+            'category': 'Structure',
+            'permission': 'risk_management.delete_structure'
+        }
+    ],
+    'structure_form_view': [
+        {
+            'name': 'Add Structure',
+            'category': 'Structure',
+            'permission': 'risk_management.add_structure'
+        },
+        {
+            'name': 'Change Structure',
+            'category': 'Structure',
+            'permission': 'risk_management.change_structure'
+        }
+    ],
+    'buildings_list': [
+        {
+            'name': 'Viwe Structure',
+            'category': 'Building',
+            'permission': 'risk_management.view_buildings'
+        },
+    ],
+    'buildings_create': [
+        {
+            'name': 'Add Building',
+            'category': 'Building',
+            'permission': 'risk_management.add_buildings'
+        },
+    ],
+    'buildings_delete': [
+        {
+            'name': 'Delete Building',
+            'category': 'Building',
+            'permission': 'risk_management.delete_buildings'
+        },
+    ],
+    'buildings_update': [
+        {
+            'name': 'Change Building',
+            'category': 'Building',
+            'permission': 'risk_management.change_buildings'
+        },
+    ],
+    'building_form_view': [
+        {
+            'name': 'Add Building',
+            'category': 'Building',
+            'permission': 'risk_management.add_buildings'
+        },
+        {
+            'name': 'Update Building',
+            'category': 'Building',
+            'permission': 'risk_management.change_buildings'
+        },
     ]
 }
