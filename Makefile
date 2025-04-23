@@ -59,9 +59,10 @@ dist:
 	git push origin "refs/tags/v$(setup_version)"
 
 start:
-	cd src && python manage.py migrate && python manage.py createcachetable
-	python manage.py load_urlname_permissions
+	cd src && python manage.py migrate
 	python manage.py init_checks
+	python manage.py load_urlname_permissions
+
 
 
 docs_full:
