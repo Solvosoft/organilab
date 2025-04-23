@@ -120,6 +120,10 @@ class IncidentReport(AbstractOrganizationRef):
                                        verbose_name=_('Buildings'),
                                        related_name="incident_buildings",
                                        blank=True)
+    risk_zone = models.ForeignKey('risk_management.RiskZone',
+                                       verbose_name=_('Risk Zone'),
+                                       null=True, blank=True,
+                                 on_delete=models.CASCADE)
 
     def __str__(self):
         return self.short_description
