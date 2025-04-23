@@ -37,7 +37,7 @@
                 {% if perm_add_riskzone %}
                 <div class="form-group row justify-content-end">
                     <div class="col-md-9">
-                        <a id="btn_manage_obj" class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}">
+                        <a id="btn_manage_obj" class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:incident_create' org_pk building.pk %}">
                     <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'New' %} </a>
                     </div>
                 </div>

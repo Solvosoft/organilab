@@ -153,7 +153,7 @@ class Buildings(AbstractOrganizationRef):
                                               blank=True)
     phone = models.CharField(verbose_name=_("Phone"),
                              max_length=25, null=False, blank=False)
-    manager = models.ForeignKey(User, verbose_name=_("Manager"),
+    manager = models.ForeignKey(User, verbose_name=_("Responsible"),
                                 related_name="manager", on_delete=models.DO_NOTHING)
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
@@ -201,7 +201,7 @@ class Structure(AbstractOrganizationRef):
                                              related_name="structure_measurement_unit")
     geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',
                                      zoom=15, verbose_name=_('Geolocation'))
-    manager = models.ForeignKey(User, verbose_name=_('Manager'),
+    manager = models.ForeignKey(User, verbose_name=_('Responsible'),
                                 on_delete=models.DO_NOTHING, related_name="structure_manager")
     class Meta:
         ordering = ['pk']

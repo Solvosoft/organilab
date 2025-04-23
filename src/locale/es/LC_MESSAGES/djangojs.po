@@ -1010,3 +1010,15 @@ msgstr "Laboratorios"
 
 msgid "Phone"
 msgstr "Teléfono"
+
+msgid "Create structure"
+msgstr "Crear Estructura"
+
+msgid "Create building"
+msgstr "Crear Edificio"
+
+msgid "Regent"
+msgstr "Regente"
+
+msgid "Responsible"
+msgstr "Responsable"

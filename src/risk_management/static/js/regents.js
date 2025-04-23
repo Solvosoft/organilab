@@ -5,7 +5,7 @@ datatable_inits = {
         {
             data: "user",
             name: "user",
-            title: gettext("Manager"),
+            title: gettext("Regent"),
             render: selectobjprint({display_name: "text"}),
             visible: true
         },
@@ -25,7 +25,6 @@ datatable_inits = {
 const modalids = {
     create: "#create_obj_modal",
     destroy: "#delete_obj_modal",
-    update: "#update_obj_modal",
 }
 
 const actions = {
@@ -39,7 +38,6 @@ icons = {
     create: '<i class="fa fa-plus" aria-hidden="true"></i>',
     clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
     detail: 'fa fa-eye fa-lg',
-    update: 'fa fa-edit fa-lg',
     destroy: 'fa fa-trash fa-lg',
 }
 

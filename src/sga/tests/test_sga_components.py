@@ -12,7 +12,7 @@ from sga.models import WarningWord, DangerIndication, PrudenceAdvice
 
 
 class WarningWordAPITests(TestCase):
-    fixtures = ["sga_components.json"]
+    fixtures = ["sga_components_data.json"]
 
     def setUp(self):
         self.client = Client()

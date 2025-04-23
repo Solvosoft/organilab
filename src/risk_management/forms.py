@@ -167,12 +167,6 @@ class BuildingsForm(GTForm, forms.ModelForm):
                 },
             ),
             'nearby_buildings': djgentelella.SelectMultiple,
-            #AutocompleteSelectMultiple(
-            #   'risk_building',
-            #   attrs={
-            #    'data-s2filter-org_pk': '#org',
-
-        #}),
             'geolocation': djgentelella.TextInput,
             'phone': djgentelella.TextInput,
             'manager': djgentelella.Select,
@@ -188,10 +182,7 @@ class BuildingsForm(GTForm, forms.ModelForm):
 
 
 class RegentForm(GTForm, forms.ModelForm):
-    buildings = forms.ModelMultipleChoiceField(queryset=Buildings.objects.none(),
-                                               required=False,
-                                               label=_('Buildings'),
-                                               widget=djgentelella.SelectMultiple)
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(RegentForm, self).__init__(*args, **kwargs)
@@ -199,12 +190,17 @@ class RegentForm(GTForm, forms.ModelForm):
             pk__in=get_users_from_organization(org_pk)).
                                         exclude(
             pk__in=get_regents_from_organization(org_pk)).order_by('username'))
-        self.fields["buildings"].queryset = Buildings.objects.filter(organization__pk=org_pk)
+        self.fields["user"].label = _("User")
+
     class Meta:
         model = Regent
-        fields = ["user", "buildings"]
+        fields = ["user"]
         widgets = {
-            'user': djgentelella.Select,
+            'user': AutocompleteSelect(
+               'user_organization',
+                attrs={
+                    'data-s2filter-org_pk': '#org'}
+            )
         }
 
 
