@@ -4,7 +4,8 @@ from rest_framework.routers import DefaultRouter
 from laboratory.views.furniture import add_catalog
 from risk_management import views as zoneviews
 from risk_management import incidents
-from risk_management.api.viewset import RegentViewSet, BuildingViewSet, StructureViewSet
+from risk_management.api.viewset import RegentViewSet, BuildingViewSet, \
+    StructureViewSet, IncidentViewSet
 
 risk_router = DefaultRouter()
 risk_router.register(
@@ -17,6 +18,10 @@ building_router.register(
 structure_router = DefaultRouter()
 structure_router.register(
     "api_structure", StructureViewSet, basename="api-structure"
+)
+incident_router = DefaultRouter()
+incident_router.register(
+    "api_incident", IncidentViewSet, basename="api-incident"
 )
 urlpatterns = [
     path('riskzone/list/', zoneviews.ListZone.as_view(), name='riskzone_list'),
@@ -42,5 +47,6 @@ urlpatterns = [
     path('api/risk/', include(risk_router.urls)),
     path('api/building/', include(building_router.urls)),
     path('api/structure/', include(structure_router.urls)),
+    path('api/incident/<int:risk>/', include(incident_router.urls)),
 
 ]

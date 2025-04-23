@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-{% load i18n laboratory %}
+{% load i18n laboratory static %}
 {% load gtsettings %}
 {% load urlname_tags risk_tags %}
+{% load organilab_tags %}
+
 {% block pre_head %}
  {% define_true  "use_chartjs" %}
     {% define_urlname_action 'riskzone_detail' %}
@@ -20,7 +22,7 @@
         <div class="page-header" align="center">
             <h3 class="heading-1" center="">
                 <span>
-                    {{object}}
+                    {% trans 'List of incidents in the risk zone' %} {{object}}
                 </span>
             </h3>
         </div>
@@ -28,44 +30,16 @@
 </div>
 <div class="row">
     <div class="offset-md-1 col-md-10">
-        <div class="float-end">
-            {% if perms.add_riskzone %}
-                <a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:riskzone_create' org_pk %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
-            {% endif %}
-            <a href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}" class="btn btn-sm btn-outline-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+					<div class="float-end">
+						{% if perms.change_riskzone %}
+								<a href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}" class="btn btn-sm btn-outline-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+						{% endif %}
         </div>
         <div class="clearfix"></div>
     </div>
 </div>
-
-<div class="row">
-    <div class="offset-md-1 col-md-10">
-        <ul class="list-group">
-            {% for building in object.buildings.all %}
-
-									   {% get_incidents building.pk as incidents %}
-
-                <li class="list-group-item">
-                    <div class="float-start p-2 m-0">
-                        <a href="{% url 'riskmanagement:buildings_update' org_pk building.pk %}" title="{{ building.name }}">
-                            {{ building.name }}
-                        </a>
-                    </div>
-                    <div class="float-end p-2 m-0">
-                        <a class="btn btn-sm btn-secondary btn-md" href="{% url 'riskmanagement:incident_list' org_pk building.pk %}" title="{% trans 'Incident Reports' %}">
-                           <span class="badge">{{ incidents }}</span>
-                        </a>
-                        <a class="btn btn-sm btn-outline-success btn-md btn-rounded" href="{% url 'riskmanagement:incident_create' org_pk building.pk %}" title="{% trans 'Incident Reports Create' %}">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                    <div class="clearfix"></div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-<div class="row">
+	<table id="table-incidents" class="table table-hover table-striped w-100 table-responsive" ></table>
+<!--<div class="row">
     <h1 class="text-center">{% trans 'Stats' %}</h1>
 </div>
 <div class="row">
@@ -140,5 +114,33 @@
             {% endfor %}
         </ul>
     </div>
-</div>
+</div>-->
+    {% url "riskmanagement:api-incident-list" org_pk object.pk as list_obj_url %}
+    {% trans 'Register Incident' as create_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle  principal_class='modal-lg' modal_class=create_obj_tittle url=list_obj_url %}
+
+    {% url "riskmanagement:api-incident-detail" org_pk object.pk 0 as detail_obj_url %}
+    {% trans 'Update Incident' as update_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle principal_class='modal-lg' modal_class=update_obj_tittle url=detail_obj_url %}
+
+    {% trans 'Delete Incident' as delete_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+				const selects2_url = {
+			laboratory_url: "{% url 'risk_laboratories-list' %}"+"?org_pk="+"{{org_pk}}"+"&risk="+"{{object.pk}}",
+			buildings_url: "{% url 'risk_buildings-list' %}"+"?org_pk="+"{{org_pk}}"+"&risk="+"{{object.pk}}",
+		}
+		const object_urls = {
+			list_url: "{% url 'riskmanagement:api-incident-list' org_pk object.pk%}",
+			create_url: "{% url 'riskmanagement:api-incident-list' org_pk object.pk %}",
+			destroy_url: "{% url "riskmanagement:api-incident-detail" org_pk object.pk 0 %}",
+			update_url: "{% url "riskmanagement:api-incident-detail" org_pk object.pk 0 %}",
+		}
+	</script>
+	<script src="{% static 'js/incidents.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
