@@ -1022,3 +1022,9 @@ msgstr "Regente"
 
 msgid "Responsible"
 msgstr "Responsable"
+
+msgid "Incident Date"
+msgstr "Fecha del incidente"
+
+msgid "Short Description"
+msgstr "Descripción corta"

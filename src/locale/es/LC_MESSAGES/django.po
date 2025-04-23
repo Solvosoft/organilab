@@ -4828,3 +4828,6 @@ msgstr "Registrar Regente"
 
 msgid "Responsible"
 msgstr "Responsable"
+
+msgid "List of incidents in the risk zone"
+msgstr "Lista de incidentes en el zona de riesgo"
