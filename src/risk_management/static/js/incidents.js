@@ -1,3 +1,4 @@
+const myModal = new bootstrap.Modal(document.getElementById('personal_doc'));
 
 datatable_inits = {
     columns: [
@@ -100,8 +101,20 @@ const objconfig = {
 }
 
 const ocrud = ObjectCRUD("inicident_crud", objconfig);
-
+ocrud.download_pdf = function (data) {
+    myModal.show();
+    document.getElementById("single_incident_form").action = report_urls["report_single_url"].replace("/0/", "/" + data.id + "/");
+}
 ocrud.init();
+
+$(document).ready(function() {
+
+    $(document).on('click', '#btn_single_download', function(e) {
+      document.getElementById("single_incident_form").submit();
+    });
+    });
+
+
 
 
 
