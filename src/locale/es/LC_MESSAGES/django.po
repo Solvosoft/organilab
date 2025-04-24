@@ -4831,3 +4831,9 @@ msgstr "Responsable"
 
 msgid "List of incidents in the risk zone"
 msgstr "Lista de incidentes en el zona de riesgo"
+
+msgid "Download all incidents"
+msgstr "Descargar todos los incidentes"
+
+msgid "Download Incident Information"
+msgstr "Descargar información del incidente"
