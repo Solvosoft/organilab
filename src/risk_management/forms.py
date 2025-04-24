@@ -264,3 +264,14 @@ class StructureForm(GTForm, forms.ModelForm):
             'type_structure': djgentelella.SelectWithAdd(attrs={'add_url': "#", 'data-otrono': 1}),
 
         }
+
+class DocFormatForm(GTForm, forms.Form):
+    format = forms.ChoiceField(choices=(
+        ('pdf', 'pdf'),
+        ('xls', 'xls'),
+        ('xlsx', 'xlsx'),
+        ('ods', 'ods'),
+    ),
+    widget=genwidgets.Select(attrs={'class': 'form-control'}),
+    label=_('Format')
+    )

@@ -29,16 +29,44 @@
     </div>
 </div>
 <div class="row">
-    <div class="offset-md-1 col-md-10">
-					<div class="float-end">
-						{% if perms.change_riskzone %}
-								<a href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}" class="btn btn-sm btn-outline-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
-						{% endif %}
-        </div>
-        <div class="clearfix"></div>
-    </div>
+	<div class="offset-md-1 col-md-10">
+		<div class="float-end">
+			<div class="btn-group dropup">
+				{% if perms.change_riskzone %}
+					<a href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}" class="btn btn-sm btn-outline-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
+				{% endif %}
+				<button type="button" class="btn btn-sm btn-outline-danger">
+					<i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download all incidents' %}
+				</button>
+				<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="caret"></span>
+					<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
+				</button>
+				<ul class="dropdown-menu">
+					<li>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.pk pk=0 %}?format=pdf">{% trans "PDF" %} </a>
+					</li>
+					<li>
+							<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk  risk_pk=object.pk  pk=0 %}?format=ods">{% trans "Ods" %} </a>
+					</li>
+					<li>
+							<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.pk  pk=0%}?format=xls">{% trans "Xls" %} </a>
+					</li>
+					<li>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.pk pk=0 %}?format=xlsx">{% trans "Xlsx" %} </a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="clearfix"></div>
 </div>
-	<table id="table-incidents" class="table table-hover table-striped w-100 table-responsive" ></table>
+<table id="table-incidents" class="table table-hover table-striped w-100 table-responsive" ></table>
+{% trans 'Download Incident Information' as modal_title %}
+{% trans 'Download all incidents' as modal_button %}
+{% trans 'Download' as modal_button_title %}
+{% include 'risk_management/util_modal.html' with id_modal="personal_doc" form_id="single_incident_form" form=form_dco_format title_modal=modal_title button_title=modal_button_title id_button="btn_single_download" modal_class="modal-md" modal_id="doc_format_modal" %}
+
 <!--<div class="row">
     <h1 class="text-center">{% trans 'Stats' %}</h1>
 </div>
@@ -134,6 +162,9 @@
 				const selects2_url = {
 			laboratory_url: "{% url 'risk_laboratories-list' %}"+"?org_pk="+"{{org_pk}}"+"&risk="+"{{object.pk}}",
 			buildings_url: "{% url 'risk_buildings-list' %}"+"?org_pk="+"{{org_pk}}"+"&risk="+"{{object.pk}}",
+		}
+		const report_urls = {
+			report_single_url : "{% url 'riskmanagement:incident_report' org_pk object.pk 0 %}",
 		}
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-incident-list' org_pk object.pk%}",
