@@ -12,7 +12,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
-    RegentForm, StructureForm, IncidentReportForm
+    RegentForm, StructureForm, IncidentReportForm, DocFormatForm
 from risk_management.models import RiskZone, ZoneType, Buildings
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 from urllib.parse import quote
@@ -126,6 +126,7 @@ class ZoneDetail(DetailView):
                                                     prefix="update",
                                                     user=self.request.user,
                                                     risk=self.object)
+        context['form_dco_format'] = DocFormatForm()
         return context
 
 @permission_required('risk_management.add_zonetype')
