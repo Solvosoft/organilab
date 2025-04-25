@@ -165,9 +165,14 @@ class Buildings(AbstractOrganizationRef):
                                                verbose_name=_("Regents Associated"),
                                                related_name="regents",
                                      blank=True)
-    has_water_resources = models.BooleanField(verbose_name=_("Has nearby water resources?"),
+    has_water_resources = models.BooleanField(verbose_name=_("Presence of rivers, "
+                                                             "streams, springs and "
+                                                             "aquifers"),
                                               default=False)
-    has_nearby_sites = models.FileField(verbose_name=_("Has Nearby Sites?"),
+    has_nearby_sites = models.FileField(verbose_name=_("Are there establishments with a "
+                                                       "large concentration of people "
+                                                       "that could be exposed to the "
+                                                       "risk of an accident?"),
                                         upload_to=upload_files,
                                         null=True,
                                         blank=True)
@@ -179,6 +184,9 @@ class Buildings(AbstractOrganizationRef):
                                      upload_to=upload_files,
                                      null=True, blank=True)
     regulatory_plans = models.FileField(verbose_name=_("Regulatory Plans"),
+                                     upload_to=upload_files,
+                                     null=True, blank=True)
+    emergency_plan = models.FileField(verbose_name=_("Emergency Plan"),
                                      upload_to=upload_files,
                                      null=True, blank=True)
 
