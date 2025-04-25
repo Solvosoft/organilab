@@ -129,6 +129,7 @@ class BuildingsForm(GTForm, forms.ModelForm):
              "manager",
              "area",
              "regulatory_plans",
+             "emergency_plan",
              "geolocation"
              ]
 
@@ -183,6 +184,7 @@ class BuildingsForm(GTForm, forms.ModelForm):
             'plans': FileChunkedUpload,
             'security_plan': FileChunkedUpload,
             'regulatory_plans': FileChunkedUpload,
+            'emergency_plan': FileChunkedUpload,
 
         }
 
