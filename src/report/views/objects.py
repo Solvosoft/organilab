@@ -237,7 +237,7 @@ def get_object_elements(obj):
     return [features, danger]
 
 def get_objects(report):
-    filters = {'object__is_public': True}
+    filters = {}
 
     if 'organization' in report.data:
         org = report.data['organization']
