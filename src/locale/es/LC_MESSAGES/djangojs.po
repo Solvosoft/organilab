@@ -1028,3 +1028,6 @@ msgstr "Fecha del incidente"
 
 msgid "Short Description"
 msgstr "Descripción corta"
+
+msgid "Download PDF"
+msgstr "Descargar PDF"
