@@ -4837,3 +4837,6 @@ msgstr "Descargar todos los incidentes"
 
 msgid "Download Incident Information"
 msgstr "Descargar información del incidente"
+
+msgid "Incident report in the risk zone %s"
+msgstr "Informe de incidentes en la zona de riesgo %s"
