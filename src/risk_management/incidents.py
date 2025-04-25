@@ -1,3 +1,5 @@
+import re
+
 import django_excel
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
@@ -139,6 +141,7 @@ _('Result of plans'),
 _('Mitigation actions'),
 _('Recomendations'),
 _('Laboratories'),
+ _('Buildings'),
          ]
     ]
     for obj in incidents:
@@ -147,14 +150,14 @@ _('Laboratories'),
            str(obj.creation_date),
            obj.short_description,
            obj.incident_date,
-           obj.causes,
-           obj.infraestructure_impact,
-           obj.people_impact,
-           obj.environment_impact,
-           obj.result_of_plans,
-           obj.mitigation_actions,
-           obj.recomendations,
-           ",".join([x.name for x in obj.laboratories.all()]),
+           re.sub(r'<.*?>', '', obj.causes),
+           re.sub(r'<.*?>', '', obj.infraestructure_impact),
+           re.sub(r'<.*?>', '', obj.people_impact),
+           re.sub(r'<.*?>', '', obj.result_of_plans),
+           re.sub(r'<.*?>', '', obj.mitigation_actions),
+           re.sub(r'<.*?>', '', obj.recomendations),
+           ", ".join([x.name for x in obj.laboratories.all()]),
+           ", ".join([x.name for x in obj.buildings.all()]),
             ])
     content[_('Incidents')] = funobjs
 
@@ -184,7 +187,7 @@ def report_incidentreport(request, org_pk, risk_pk, pk):
         'object_list': incidentreport,
         'datetime': timezone.now(),
         'user': request.user,
-        'title': _("Incident Report"),
+        'title': _("Incident report in the risk zone %s")% risks.name,
     }
 
     html = template.render(context=context)
