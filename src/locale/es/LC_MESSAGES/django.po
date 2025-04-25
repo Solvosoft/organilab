@@ -4828,3 +4828,24 @@ msgstr "Registrar Regente"
 
 msgid "Responsible"
 msgstr "Responsable"
+
+msgid "List of incidents in the risk zone"
+msgstr "Lista de incidentes en el zona de riesgo"
+
+msgid "Download all incidents"
+msgstr "Descargar todos los incidentes"
+
+msgid "Download Incident Information"
+msgstr "Descargar información del incidente"
+
+msgid "Incident report in the risk zone %s"
+msgstr "Informe de incidentes en la zona de riesgo %s"
+
+msgid "Presence of rivers, streams, springs and aquifers"
+msgstr "Presencia de ríos, quebradas, nacientes y mantos acuíferos"
+
+msgid "Emergency Plan"
+msgstr "Plan de Emergencia"
+
+msgid "Are there establishments with a large concentration of people that could be exposed to the risk of an accident?"
+msgstr "¿Existen establecimientos con concentración de personas que puedan verse expuestos al riesgo de un accidente?"
