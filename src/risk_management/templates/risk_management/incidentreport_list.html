@@ -50,15 +50,15 @@
                  <div class="row">
                     <div class="col-md-9">
                     <span class="prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
-                    <a href="{% url 'riskmanagement:incident_detail' org_pk laboratory object.pk %}">{{ object }}</a></div>
+                    <a href="{% url 'riskmanagement:incident_detail' org_pk building.pk object.pk %}">{{ object }}</a></div>
                     <div class="col-md-3">
                     <div class="btn-group btn-group-sm float-end" role="group">
                         {% if perm_change_riskzone %}
-                        <a class="btn btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk laboratory object.pk %}">
+                        <a class="btn btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk building.pk object.pk %}">
                             <i class="fa fa-edit"></i> {% trans 'Update' %}</a>
                         {% endif %}
                         {% if perm_change_riskzone %}
-                        <a class="btn btn-outline-danger" href="{% url 'riskmanagement:incident_delete' org_pk laboratory object.pk %}">
+                        <a class="btn btn-outline-danger" href="{% url 'riskmanagement:incident_delete' org_pk building.pk object.pk %}">
                             <i class="fa fa-trash"></i> {% trans 'Delete' %}</a>
                         {% endif %}
                     </div>

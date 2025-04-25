@@ -12,12 +12,12 @@
  {%  has_perms "laboratory.do_report" as perm_do_report %}
 <div class="clearfix">
 	<div class="float-start">
-		<a class="btn btn-sm btn-outline-danger" href="{% url 'riskmanagement:incident_list' org_pk laboratory %}"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Laboratory incidents list' %}</a>
+		<a class="btn btn-sm btn-outline-danger" href="{% url 'riskmanagement:incident_list' org_pk building.pk %}"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Laboratory incidents list' %}</a>
     </div>
     <div class="float-end">
-        <a class="btn btn-sm btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk laboratory object.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>   {% trans 'Edit' %}</a>
+        <a class="btn btn-sm btn-outline-warning" href="{% url 'riskmanagement:incident_update' org_pk building.pk object.pk %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>   {% trans 'Edit' %}</a>
     				{% if perms.add_riskzone %}
-					<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:incident_create' org_pk laboratory %}"> <i class="fa fa-plus" aria-hidden="true"></i>  </a>
+					<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:incident_create' org_pk building.pk %}"> <i class="fa fa-plus" aria-hidden="true"></i>  </a>
 					{% endif %}
 				</div>
 </div>
@@ -46,16 +46,16 @@
 				</button>
 				<ul class="dropdown-menu">
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk  %}?format=ods">{% trans "Ods" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk  %}?format=ods">{% trans "Ods" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk  %}?format=xls">{% trans "Xls" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk pk=object.pk  %}?format=xls">{% trans "Xls" %} </a>
 					</li>
 					<li>
-						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
 			</div>
@@ -89,16 +89,16 @@
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=pdf">{% trans "PDF" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=ods">{% trans "Ods" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=ods">{% trans "Ods" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=xls">{% trans "Xls" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=xls">{% trans "Xls" %} </a>
 							</li>
 							<li>
-								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk lab_pk=laboratory  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
+								<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk building_pk=building.pk  pk=object.pk %}?format=xlsx">{% trans "Xlsx" %} </a>
 							</li>
 						</ul>
 					</div>
