@@ -140,14 +140,26 @@ class IncidentReportSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         user = self.context["request"].user
-
-
-        return {
-            "list": True,
-            "create": True,
-            "update": True,
-            "destroy": True,
+        perms = {
+            "list":False,
+            "create":False,
+            "update":False,
+            "destroy":False,
+            "download_pdf":False
         }
+        if user.has_perm('risk_management.view_incidentreport'):
+            perms["list"] = True
+
+        if user.has_perm('risk_management.add_incidentreport'):
+            perms["create"] = True
+        if user.has_perm('risk_management.change_incidentreport'):
+            perms["update"] = True
+        if user.has_perm('risk_management.delete_incidentreport'):
+            perms["destroy"] = True
+        if user.has_perm('laboratory.do_report'):
+            perms["download_pdf"] = True
+
+        return perms
 
 
     class Meta:

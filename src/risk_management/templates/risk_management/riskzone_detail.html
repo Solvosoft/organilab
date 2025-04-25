@@ -8,9 +8,15 @@
  {% define_true  "use_chartjs" %}
     {% define_urlname_action 'riskzone_detail' %}
     {% define_urlname_action 'riskzone_update' %}
+    {% define_urlname_action 'incident_list' %}
+    {% define_urlname_action 'incident_update' %}
+    {% define_urlname_action 'incident_create' %}
+    {% define_urlname_action 'incident_report' %}
 {% endblock %}
 
 {% block content %}
+ {%  has_perms "laboratory.do_report" as perm_do_report %}
+
 <div class="clearfix">
 		<div class="float-start">
 						<a href="{% url 'riskmanagement:riskzone_list' org_pk %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-caret-left" aria-hidden="true"></i> {% trans 'Zone list' %}</a>
@@ -35,6 +41,7 @@
 				{% if perms.change_riskzone %}
 					<a href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}" class="btn btn-sm btn-outline-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> {% trans 'Edit' %}</a>
 				{% endif %}
+				{% if perm_do_report %}
 				<button type="button" class="btn btn-sm btn-outline-danger">
 					<i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download all incidents' %}
 				</button>
@@ -56,6 +63,7 @@
 						<a class="dropdown-item" href="{% url 'riskmanagement:incident_report' org_pk=org_pk risk_pk=object.pk pk=0 %}?format=xlsx">{% trans "Xlsx" %} </a>
 					</li>
 				</ul>
+				{% endif %}
 			</div>
 		</div>
 	</div>
