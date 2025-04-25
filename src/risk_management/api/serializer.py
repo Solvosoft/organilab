@@ -40,13 +40,21 @@ class RegentSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         user = self.context["request"].user
-
+        add_perm = False
+        delele_perm = False
+        view_perm = False
+        if user.has_perm('risk_management.delete_regent'):
+            delele_perm = True
+        if user.has_perm('risk_management.view_regent'):
+            view_perm = True
+        if user.has_perm('risk_management.add_regent'):
+            add_perm = True
 
         return {
-            "list": True,
-            "create": True,
+            "list": view_perm,
+            "create": add_perm,
             "update": False,
-            "destroy": True,
+            "destroy": delele_perm
         }
 
 
@@ -75,14 +83,20 @@ class BuildingSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         user = self.context["request"].user
-
+        delele_perm = False
+        view_perm = False
+        if user.has_perm('risk_management.delete_buildings'):
+            delele_perm = True
+        if user.has_perm('risk_management.view_buildings'):
+            view_perm = True
 
         return {
-            "list": True,
+            "list": view_perm,
             "create": False,
             "update": False,
-            "destroy": True,
+            "destroy": delele_perm
         }
+
 
 
     class Meta:
@@ -109,13 +123,17 @@ class StructureSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         user = self.context["request"].user
-
-
+        delele_perm = False
+        view_perm = False
+        if user.has_perm('risk_management.delete_structure'):
+            delele_perm = True
+        if user.has_perm('risk_management.view_structure'):
+            view_perm = True
         return {
-            "list": True,
+            "list": view_perm,
             "create": False,
             "update": False,
-            "destroy": True,
+            "destroy": delele_perm,
         }
 
 
