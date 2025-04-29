@@ -194,18 +194,34 @@ class RegentForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop('org_pk', None)
         super(RegentForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = (User.objects.filter(
-            pk__in=get_users_from_organization(org_pk)).
-                                        exclude(
-            pk__in=get_regents_from_organization(org_pk)).order_by('username'))
         self.fields["user"].label = _("User")
 
     class Meta:
         model = Regent
-        fields = ["user"]
+        fields = ["user", "laboratories"]
         widgets = {
             'user': AutocompleteSelect(
                'user_organization',
+                attrs={
+                    'data-s2filter-org_pk': '#org'}
+            ),
+            'laboratories': AutocompleteSelectMultiple(
+               'regent_laboratories',
+                attrs={
+                    'data-s2filter-org_pk': '#org'}
+            )
+        }
+
+
+class UpdateRegentForm(GTForm, forms.ModelForm):
+
+
+    class Meta:
+        model = Regent
+        fields = ["laboratories"]
+        widgets = {
+            'laboratories': AutocompleteSelectMultiple(
+               'regent_laboratories',
                 attrs={
                     'data-s2filter-org_pk': '#org'}
             )

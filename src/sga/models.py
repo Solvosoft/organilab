@@ -617,3 +617,18 @@ class SubstanceObservation(models.Model):
 
     def __str__(self):
         return f'{self.substance} {self.created_by}'
+
+
+class HCodeCategory(models.Model):
+    HCATEGORY = (
+        ('physical', _('Physical')),
+        ('health', _('Health')),
+        ('environment', _('Environment')),
+    )
+    damger_category = models.CharField(max_length=30, choices=HCATEGORY, null=False,
+                                       blank=False, verbose_name=_('Danger Category'))
+    h_code = models.ManyToManyField(DangerIndication, related_name='category_h_code',
+                                    verbose_name=_('H Code'))
+
+    def __str__(self):
+        return self.damger_category

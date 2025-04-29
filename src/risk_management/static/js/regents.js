@@ -7,6 +7,17 @@ datatable_inits = {
             name: "user",
             title: gettext("Regent"),
             render: selectobjprint({display_name: "text"}),
+            url: selects2_url['user_url'],
+            type: "select2",
+            visible: true
+        },
+        {
+            data: "laboratories",
+            name: "laboratories",
+            title: gettext("Laboratories"),
+            render: gt_print_list_object( "text"),
+             url: selects2_url['laboratory_url'],
+             type: "select2",
             visible: true
         },
         {
@@ -19,12 +30,13 @@ datatable_inits = {
             sortable: false
         },
     ],
-    addfilter: false,
+    addfilter: true,
 }
 
 const modalids = {
     create: "#create_obj_modal",
     destroy: "#delete_obj_modal",
+    update: "#update_obj_modal",
 }
 
 const actions = {
@@ -36,6 +48,7 @@ const actions = {
 
 icons = {
     create: '<i class="fa fa-plus" aria-hidden="true"></i>',
+    update: 'fa fa-edit me-1 fa-lg',
     clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
     detail: 'fa fa-eye fa-lg',
     destroy: 'fa fa-trash fa-lg',
