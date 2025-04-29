@@ -12,7 +12,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
-    RegentForm, StructureForm, IncidentReportForm, DocFormatForm
+    RegentForm, StructureForm, IncidentReportForm, DocFormatForm, UpdateRegentForm
 from risk_management.models import RiskZone, ZoneType, Buildings
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 from urllib.parse import quote
@@ -220,7 +220,7 @@ def regent_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     context = {
         'form_create':  RegentForm(org_pk=org_pk, prefix="create"),
-        'form_update':  RegentForm(org_pk=org_pk, prefix="update"),
+        'form_update':  UpdateRegentForm(prefix="update"),
         'org_pk': org_pk
     }
     return render(request, 'risk_management/regents.html', context=context)
