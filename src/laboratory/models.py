@@ -173,6 +173,7 @@ class SustanceCharacteristics(models.Model):
     img_representation = models.ImageField(upload_to=upload_files,
                                            verbose_name=_('Sustance representation'),
                                            null=True, blank=True)
+    concentration = models.FloatField(default=0.0, verbose_name=_('Concentration'))
 
     class Meta:
         verbose_name = _('Sustance characteristic')
@@ -832,6 +833,9 @@ class Laboratory(BaseCreationObj):
     organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE,
         null=True)
+    description = models.TextField(_('Description'), null=True, blank=True)
+    area = models.FloatField(verbose_name = _('Area'), default = 0.0)
+
 
     class Meta:
         verbose_name = _('Laboratory')
