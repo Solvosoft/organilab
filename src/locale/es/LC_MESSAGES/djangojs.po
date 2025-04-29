@@ -1031,3 +1031,15 @@ msgstr "Descripción corta"
 
 msgid "Download PDF"
 msgstr "Descargar PDF"
+
+msgid "Danger Category"
+msgstr "Categoría de peligro"
+
+msgid "Physical"
+msgstr "Físico"
+
+msgid "Environment"
+msgstr "Ambiente"
+
+msgid "Health"
+msgstr "Salud"
