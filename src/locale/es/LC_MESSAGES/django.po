@@ -4849,3 +4849,28 @@ msgstr "Plan de Emergencia"
 
 msgid "Are there establishments with a large concentration of people that could be exposed to the risk of an accident?"
 msgstr "¿Existen establecimientos con concentración de personas que puedan verse expuestos al riesgo de un accidente?"
+
+msgid "H Code Categories"
+msgstr "Categorías de codigo H"
+
+msgid "List of Code H Categories"
+msgstr "Listado de categorías de codigo H"
+
+msgid "Register H Code Category"
+msgstr "Registrar categoría de codigo H"
+
+msgid "Update H Code Category"
+msgstr "Actualizar categoría de codigo H"
+
+msgid "Delete H Code Category"
+msgstr "Eliminar categoría de codigo H"
+
+msgid "Physical"
+msgstr "Físico"
+
+msgid "Environment"
+msgstr "Ambiente"
+
+msgid "Health"
+msgstr "Salud"
+
