@@ -7,8 +7,9 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import TaggingInput
 
-from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, DangerPrudence, DisplayLabel, \
-    BuilderInformation, Label, SGAComplement, Provider
+from sga.models import Substance, RecipientSize, TemplateSGA, DangerIndication, \
+    DangerPrudence, DisplayLabel, \
+    BuilderInformation, Label, SGAComplement, Provider, HCodeCategory
 
 
 class PersonalTemplateForm(GTForm):
@@ -319,3 +320,16 @@ class CompanyForm(forms.ModelForm, GTForm):
 
 class ValidateReviewSubstanceForm(forms.Form):
     showapprove = forms.BooleanField(required=False)
+
+class HCategoryForm(GTForm,forms.ModelForm):
+    class Meta:
+        model = HCodeCategory
+        fields = ['danger_category', 'h_code']
+        widgets = {
+            'danger_category': genwidgets.Select,
+            'h_code': AutocompleteSelectMultiple(
+                'dangersearch',
+                attrs={
+                    }
+            )
+        }
