@@ -625,10 +625,10 @@ class HCodeCategory(models.Model):
         ('health', _('Health')),
         ('environment', _('Environment')),
     )
-    damger_category = models.CharField(max_length=30, choices=HCATEGORY, null=False,
+    danger_category = models.CharField(max_length=30, choices=HCATEGORY, null=False,
                                        blank=False, verbose_name=_('Danger Category'))
     h_code = models.ManyToManyField(DangerIndication, related_name='category_h_code',
-                                    verbose_name=_('H Code'))
+                                    verbose_name=_('H Codes'))
 
     def __str__(self):
-        return self.damger_category
+        return self.danger_category
