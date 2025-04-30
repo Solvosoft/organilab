@@ -1,7 +1,7 @@
 from django_filters import FilterSet, DateFromToRangeFilter
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
-from risk_management.models import Buildings, Structure, IncidentReport
+from risk_management.models import Buildings, Structure, IncidentReport, Regent
 
 
 class BuildingFilter(FilterSet):
@@ -39,5 +39,14 @@ class IncidentReportFilter(FilterSet):
         fields = {
                     'short_description': ['icontains'],
                     'buildings': ['exact'],
+                    'laboratories': ['exact'],
+                  }
+
+class RegentFilter(FilterSet):
+
+    class Meta:
+        model = Regent
+        fields = {
+                    'user': ['exact'],
                     'laboratories': ['exact'],
                   }

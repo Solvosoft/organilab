@@ -81,3 +81,35 @@ class RiskBuildings(BaseSelect2View):
             'errors': _("Organization not found"),
         }, status=status.HTTP_400_BAD_REQUEST)
 
+
+@register_lookups(prefix="regent_laboratories", basename="regent_laboratories")
+class RegentLaboraratory(BaseSelect2View):
+    model = Laboratory
+    fields = ['name']
+    org= None
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    perms = {
+        'list': ["laboratory.view_laboratory"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(organization__pk=self.org).distinct()
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        if self.request.GET.get("org_pk", None):
+            self.org = self.request.GET.get("org_pk", None)
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': _("Organization not found"),
+        }, status=status.HTTP_400_BAD_REQUEST)
+

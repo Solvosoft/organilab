@@ -131,6 +131,7 @@ class IncidentReport(AbstractOrganizationRef):
 class Regent(AbstractOrganizationRef):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
                              related_name="regent_user")
+    laboratories = models.ManyToManyField(Laboratory, related_name="regent_laboratories")
 
     class Meta:
         ordering = ['pk']

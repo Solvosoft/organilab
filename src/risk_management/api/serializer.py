@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from djgentelella.fields.files import ChunkedFileField
 from djgentelella.serializers import GTDateField, GTDateTimeField
@@ -6,7 +7,8 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from laboratory.models import Laboratory
-from laboratory.utils import get_users_from_organization
+from laboratory.utils import get_users_from_organization, \
+    get_laboratories_from_organization
 from risk_management.models import Regent, Buildings, Structure, RiskZone, \
     IncidentReport
 
@@ -15,7 +17,14 @@ class AddRegentSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
-        queryset=User.objects.none(),
+        queryset=User.objects.using(settings.READONLY_DATABASE),
+        allow_null=False,
+        allow_empty=False,
+    )
+    laboratories = serializers.PrimaryKeyRelatedField(
+        many=True,
+        required=False,
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
         allow_null=False,
         allow_empty=False,
     )
@@ -24,6 +33,9 @@ class AddRegentSerializer(serializers.ModelSerializer):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
         fields['user'].queryset = User.objects.filter(pk__in=get_users_from_organization(organization))
+        fields['laboratories'].queryset = Laboratory.objects.filter(
+            organization__pk=organization
+        )
 
 
         return fields
@@ -32,28 +44,47 @@ class AddRegentSerializer(serializers.ModelSerializer):
         model = Regent
         fields = (
             "user",
+            "laboratories"
         )
+class UpdateRegentSerializer(serializers.ModelSerializer):
+    laboratories = serializers.PrimaryKeyRelatedField(
+        many=True,
+        required=True,
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
+        allow_null=False,
+        allow_empty=False,
+    )
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+        organization = self.context.get("org_pk", None)
+        fields['laboratories'].queryset = Laboratory.objects.filter(organization__pk=organization)
+
+
+        return fields
+
+    class Meta:
+        model = Regent
+        fields = [
+            "laboratories",
+        ]
 
 class RegentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     user = GTS2SerializerBase(many=False)
+    laboratories = GTS2SerializerBase(many=True)
 
     def get_actions(self, obj):
         user = self.context["request"].user
-        add_perm = False
-        delele_perm = False
-        view_perm = False
-        if user.has_perm('risk_management.delete_regent'):
-            delele_perm = True
-        if user.has_perm('risk_management.view_regent'):
-            view_perm = True
-        if user.has_perm('risk_management.add_regent'):
-            add_perm = True
+        add_perm = True if user.has_perm('risk_management.add_regent') else False
+        delele_perm = True if user.has_perm('risk_management.delete_regent') else False
+        view_perm = True if user.has_perm('risk_management.view_regent') else False
+        update_perm = True if user.has_perm('risk_management.change_regent') else False
 
         return {
             "list": view_perm,
             "create": add_perm,
-            "update": False,
+            "update": update_perm,
             "destroy": delele_perm
         }
 

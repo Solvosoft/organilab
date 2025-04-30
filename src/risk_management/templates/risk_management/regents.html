@@ -50,6 +50,11 @@
 			destroy_url: "{% url "riskmanagement:api-regent-detail" org_pk 0 %}",
 			update_url: "{% url "riskmanagement:api-regent-detail" org_pk 0 %}",
 		}
+
+		const selects2_url = {
+			user_url: "{% url 'user_organization-list' %}"+"?org_pk="+"{{org_pk}}",
+			laboratory_url: "{% url 'regent_laboratories-list' %}"+"?org_pk="+"{{org_pk}}",
+		}
 	</script>
 	<script src="{% static 'js/regents.js' %}?v={% get_organilab_version %}"></script>
 
