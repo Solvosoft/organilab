@@ -4,12 +4,13 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 
 from sga.models import SGAComplement, PrudenceAdvice, DangerIndication, \
     BuilderInformation, \
     RecipientSize, Substance, SubstanceObservation, SecurityLeaf, ReviewSubstance, \
-    DisplayLabel, WarningWord
+    DisplayLabel, WarningWord, HCodeCategory
 
 logger = logging.getLogger('organilab')
 
@@ -417,3 +418,54 @@ class RecipientSizeSerializer(serializers.ModelSerializer):
 
 class RecipientSizeDeleteSerializer(serializers.Serializer):
     pk = serializers.PrimaryKeyRelatedField(queryset=RecipientSize.objects.using(settings.READONLY_DATABASE))
+
+
+class DangerCategoryActionsSerializer(serializers.ModelSerializer):
+    h_code = serializers.PrimaryKeyRelatedField(
+        many=True,
+        required=True,
+        queryset=DangerIndication.objects.using(settings.READONLY_DATABASE),
+        allow_null=False,
+        allow_empty=False,
+    )
+    danger_category = serializers.CharField(max_length=50, required=True)
+
+
+    class Meta:
+        model = HCodeCategory
+        fields = '__all__'
+
+class DangerCategorySerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    h_code = GTS2SerializerBase(many=True)
+    danger_category = serializers.SerializerMethodField()
+
+    def get_danger_category(self, obj):
+        return obj.get_danger_category_display()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        add_perm = True if user.has_perm('risk_management.add_hcodecategory') else False
+        delele_perm = True if user.has_perm('risk_management.delete_hcodecategory') else False
+        view_perm = True if user.has_perm('risk_management.view_hcodecategory') else False
+        update_perm = True if user.has_perm('risk_management.change_hcodecategory') else False
+
+        return {
+            "list": view_perm,
+            "create": add_perm,
+            "update": update_perm,
+            "destroy": delele_perm
+        }
+
+
+    class Meta:
+        model = HCodeCategory
+        fields = "__all__"
+
+
+class DangerCategoryDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DangerCategorySerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+

@@ -6,10 +6,11 @@ from rest_framework.pagination import LimitOffsetPagination
 
 from laboratory.models import OrganizationStructure
 from risk_management.api.filterseet import BuildingFilter, StructureFilter, \
-    IncidentReportFilter
+    IncidentReportFilter, RegentFilter
 from risk_management.api.serializer import RegentDataTableSerializer, \
     AddRegentSerializer, BuildingDataTableSerializer, StructureDataTableSerializer, \
-    IncidentReportDataTableSerializer, ActionIncidentReportSerializer
+    IncidentReportDataTableSerializer, ActionIncidentReportSerializer, \
+    UpdateRegentSerializer
 from risk_management.models import Buildings, Regent, Structure, RiskZone, \
     IncidentReport
 
@@ -18,7 +19,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": RegentDataTableSerializer,
         "create": AddRegentSerializer,
-        "update": None,
+        "update": UpdateRegentSerializer,
         "retrieve": None,
         "get_values_for_update": None,
         "detail_template": None,
@@ -26,7 +27,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
     perms = {
         "list": ["risk_management.view_regent"],
         "create": ["risk_management.add_regent"],
-        "update": [],
+        "update": ["risk_management.change_regent"],
         "retrieve": [],
         "get_values_for_update": [],
         "detail_template": [],
@@ -37,8 +38,8 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
     queryset = Regent.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["name"]
-    filterset_class = None
+    search_fields = ["name", "laboratories__name"]
+    filterset_class = RegentFilter
     ordering_fields = ["id"]
     ordering = ("id",)
     organization = None

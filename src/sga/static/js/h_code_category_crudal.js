@@ -1,22 +1,26 @@
+var choices = [
+    ["physical", gettext("Physical")],
+    ["health",gettext("Health")],
+    ["environment",gettext("Environment")],
+    ]
 
 datatable_inits = {
     columns: [
         {data: "id", name: "id", title: "ID", type: "string", visible: false},
         {
-            data: "user",
-            name: "user",
-            title: gettext("Regent"),
-            render: selectobjprint({display_name: "text"}),
-            url: selects2_url['user_url'],
-            type: "select2",
+            data: "danger_category",
+            name: "danger_category",
+            title: gettext("Danger Category"),
+            type: "select",
+            choices: choices,
             visible: true
-        },
+         },
         {
-            data: "laboratories",
-            name: "laboratories",
-            title: gettext("Laboratories"),
+            data: "h_code",
+            name: "h_code",
+            title: gettext("H Codes"),
             render: gt_print_list_object( "text"),
-             url: selects2_url['laboratory_url'],
+            url: selects2_url['h_code_url'],
              type: "select2",
             visible: true
         },
@@ -55,13 +59,13 @@ icons = {
 }
 
 const objconfig = {
-    datatable_element: "#table-regent",
+    datatable_element: "#table-category",
     modal_ids: modalids,
     actions: actions,
     datatable_inits: datatable_inits,
     add_filter: true,
     relation_render: {'field_autocomplete': 'text'},
-    delete_display: data => data['username'],
+    delete_display: data => data['id'],
     create: "btn-success",
     icons: icons,
     urls: object_urls,
@@ -73,7 +77,7 @@ const objconfig = {
     }
 }
 
-const ocrud = ObjectCRUD("buildings_crud", objconfig);
+const ocrud = ObjectCRUD("category_crud", objconfig);
 
 ocrud.init();
 
