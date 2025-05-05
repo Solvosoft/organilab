@@ -501,19 +501,22 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
             label=_("Status")
         )
 
+        self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit",
-                  "container_select_option","container_for_cloning","available_container",
-                  "description","marked_as_discard","batch","objecttype"]
+        fields = ["object","shelf","status","physical_status","quantity","concentration",
+                  "measurement_unit", "container_select_option","container_for_cloning",
+                  "available_container", "description","marked_as_discard","batch",
+                  "objecttype","concentration"]
         exclude =['laboratory_name','created_by', 'limit_quantity',"container", 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'description': genwidgets.Textarea,
             'quantity': genwidgets.TextInput,
-
             'batch': genwidgets.TextInput,
             'marked_as_discard': genwidgets.CheckboxInput,
+            'concentration': genwidgets.FloatInput,
+            'physical_status': genwidgets.Select,
         }
 
 
@@ -556,11 +559,12 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
         label=_("Status"))
 
         self.fields['marked_as_discard'].initial=True
+        self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
 
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit",
+        fields = ["object","shelf","status","physical_status","quantity","concentration",
                   "container_select_option","container_for_cloning","available_container",
                   "description","marked_as_discard","batch","objecttype"]
         exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits',"container"]
@@ -570,8 +574,9 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
             'quantity': genwidgets.TextInput,
             'description': genwidgets.Textarea,
             'marked_as_discard': genwidgets.HiddenInput,
-            'batch': genwidgets.TextInput
-
+            'batch': genwidgets.TextInput,
+            'concentration': genwidgets.FloatInput,
+            'physical_status': genwidgets.Select,
         }
 
 class ContainerManagementForm(ContainerForm):

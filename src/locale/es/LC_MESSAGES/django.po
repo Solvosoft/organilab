@@ -4882,3 +4882,18 @@ msgstr "Ingeniero Químico"
 
 msgid "Veterinarian"
 msgstr "Veterinario"
+
+msgid "Physical Status"
+msgstr "Estado físico"
+
+msgid "Liquid"
+msgstr "Líquido"
+
+msgid "Solid powder"
+msgstr "Sólido en polvo"
+
+msgid "Solid granular or crystalline"
+msgstr "Sólido granulares o cristalinos"
+
+msgid "Gaseous"
+msgstr "Gaseoso"
