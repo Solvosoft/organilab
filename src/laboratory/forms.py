@@ -28,6 +28,7 @@ from risk_management.models import Regent
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, \
     LaboratoryRoom, Furniture
+from .utils import get_users_from_organization
 
 
 class UserAccessForm(forms.Form):
@@ -41,13 +42,14 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
     grid_representation = [
         [
             ["name",
+             "coordinator",
              "unit",
              "email",
              "location",
              "description",
              ],
             [
-            "coordinator",
+            "responsible",
             "email",
              "phone_number",
              "area",
@@ -59,12 +61,16 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
         self.fields['geolocation'].widget.attrs['class'] = 'form-control'
-
+        org = kwargs.get('organization', None)
+        if org:
+            self.fields['responsible'].queryset = (User.objects.
+                                                   filter(pk__in=get_users_from_organization(org)))
     class Meta:
         model = Laboratory
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization','area',
-                  'description', 'coordinator', 'email', 'unit']
+                  'description', 'coordinator', 'email', 'unit',
+                  'responsible']
         widgets = {
             'name': genwidgets.TextInput,
             'phone_number': genwidgets.TextInput,
@@ -76,6 +82,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             'coordinator': genwidgets.TextInput,
             'email': genwidgets.EmailInput,
             'unit': genwidgets.TextInput,
+            'responsible': genwidgets.Select,
         }
 
 
@@ -88,6 +95,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
     grid_representation = [
         [
             ["name",
+             "coordinator",
              "unit",
              "email",
              "location",
@@ -95,7 +103,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
              "description",
              ],
             [
-            "coordinator",
+            "responsible",
             "email",
              "phone_number",
              "area",
@@ -111,12 +119,12 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         super(LaboratoryEdit, self).__init__(*args, **kwargs)
         self.fields['geolocation'].widget.attrs['class'] = 'form-control'
         self.fields['regent'].initial = list(Regent.objects.filter(laboratories=self.instance).values_list('pk', flat=True))
-        print(self.fields['regent'].queryset)
-
+        self.fields['responsible'].queryset = self.instance.organization.users.all()
     class Meta:
         model = Laboratory
         fields = ['name', 'coordinator', 'unit', 'phone_number', 'email', 'location',
-                  'geolocation', 'organization', 'area', 'description', 'regent']
+                  'geolocation', 'organization', 'area', 'description', 'regent',
+                  'responsible']
         widgets = {
             'name': genwidgets.TextInput,
             'coordinator': genwidgets.TextInput,
@@ -128,6 +136,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             'organization': genwidgets.HiddenInput,
             'description': genwidgets.Textarea,
             'area': genwidgets.FloatInput,
+            'responsible': genwidgets.Select,
 
         }
 
