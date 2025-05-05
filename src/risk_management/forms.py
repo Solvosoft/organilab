@@ -198,7 +198,7 @@ class RegentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Regent
-        fields = ["user", "laboratories"]
+        fields = ["user", "laboratories","type_regent"]
         widgets = {
             'user': AutocompleteSelect(
                'user_organization',
@@ -209,7 +209,8 @@ class RegentForm(GTForm, forms.ModelForm):
                'regent_laboratories',
                 attrs={
                     'data-s2filter-org_pk': '#org'}
-            )
+            ),
+            'type_regent': genwidgets.Select(attrs={'data-otrono': 1}),
         }
 
 
@@ -218,13 +219,16 @@ class UpdateRegentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Regent
-        fields = ["laboratories"]
+        fields = ["laboratories","type_regent"]
         widgets = {
             'laboratories': AutocompleteSelectMultiple(
                'regent_laboratories',
                 attrs={
                     'data-s2filter-org_pk': '#org'}
-            )
+            ),
+            'type_regent': genwidgets.Select(
+                attrs={'data-otrono': 1}),
+
         }
 
 

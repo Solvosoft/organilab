@@ -6,7 +6,7 @@ from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory, Catalog
 from laboratory.utils import get_users_from_organization, \
     get_laboratories_from_organization
 from risk_management.models import Regent, Buildings, Structure, RiskZone, \
@@ -28,6 +28,10 @@ class AddRegentSerializer(serializers.ModelSerializer):
         allow_null=False,
         allow_empty=False,
     )
+    type_regent = serializers.ChoiceField(
+        choices=Regent.TYPEREGENTS,
+        required=True,
+    )
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
@@ -44,7 +48,8 @@ class AddRegentSerializer(serializers.ModelSerializer):
         model = Regent
         fields = (
             "user",
-            "laboratories"
+            "laboratories",
+            "type_regent"
         )
 class UpdateRegentSerializer(serializers.ModelSerializer):
     laboratories = serializers.PrimaryKeyRelatedField(
@@ -53,6 +58,10 @@ class UpdateRegentSerializer(serializers.ModelSerializer):
         queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
         allow_null=False,
         allow_empty=False,
+    )
+    type_regent = serializers.ChoiceField(
+        choices=Regent.TYPEREGENTS,
+        required=True,
     )
 
     def get_fields(self, *args, **kwargs):
@@ -67,12 +76,17 @@ class UpdateRegentSerializer(serializers.ModelSerializer):
         model = Regent
         fields = [
             "laboratories",
+            "type_regent"
         ]
 
 class RegentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     user = GTS2SerializerBase(many=False)
     laboratories = GTS2SerializerBase(many=True)
+    type_regent = serializers.SerializerMethodField()
+
+    def get_type_regent(self, obj):
+        return obj.get_type_regent_display()
 
     def get_actions(self, obj):
         user = self.context["request"].user

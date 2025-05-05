@@ -4874,3 +4874,11 @@ msgstr "Ambiente"
 msgid "Health"
 msgstr "Salud"
 
+msgid "Chemical"
+msgstr "Químico"
+
+msgid "Chemical Engineer"
+msgstr "Ingeniero Químico"
+
+msgid "Veterinarian"
+msgstr "Veterinario"
