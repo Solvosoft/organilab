@@ -4897,3 +4897,9 @@ msgstr "Sólido granulares o cristalinos"
 
 msgid "Gaseous"
 msgstr "Gaseoso"
+
+msgid "Final amount"
+msgstr "Cantidad final"
+
+msgid "Initial amount"
+msgstr "Cantidad inicial"

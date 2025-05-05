@@ -1043,3 +1043,12 @@ msgstr "Ambiente"
 
 msgid "Health"
 msgstr "Salud"
+
+msgid "No code"
+msgstr "Sin código"
+
+msgid "Final amount"
+msgstr "Cantidad final"
+
+msgid "Initial amount"
+msgstr "Cantidad inicial"
