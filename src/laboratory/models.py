@@ -847,7 +847,9 @@ class Laboratory(BaseCreationObj):
         null=True)
     description = models.TextField(_('Description'), null=True, blank=True)
     area = models.FloatField(verbose_name = _('Area'), default = 0.0)
-
+    responsible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                                    blank=True, verbose_name=_("Responsible"),
+                                    related_name="responsible_laboratory")
 
     class Meta:
         verbose_name = _('Laboratory')
