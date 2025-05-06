@@ -115,6 +115,7 @@ lab_reports_urls = [
     path('objectchanges/', reports.LogObjectView.as_view(), name='object_change_logs'),
     path('precursors/', reports.PrecursorsView.as_view(), name='precursor_report'),
     path('list/waste/report', reports.DiscardShelfReportView.as_view(), name='waste_report'),
+    path('list/reactive/report', reports.ReactiveReport.as_view(), name='reactive_report'),
 
 ]
 
