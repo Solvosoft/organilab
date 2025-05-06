@@ -73,4 +73,14 @@ REPORT_FORMS ={
         'ods': 'report.views.discard_objects.report_discard_object_doc'
 
     },
+    'reactive_report':{
+        'task': 'report.tasks.task_report',
+        'form': 'report.forms.ReactiveReportForm',
+        'html': 'report.views.reactive.report_reactive_html',
+        'pdf': 'report.views.base.base_pdf',
+        'xls': 'report.views.reactive.report_reactive_list_doc',
+        'xlsx': 'report.views.reactive.report_reactive_list_doc',
+        'ods': 'report.views.reactive.report_reactive_list_doc'
+
+    }
 }
