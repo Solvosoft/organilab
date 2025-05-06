@@ -4903,3 +4903,12 @@ msgstr "Cantidad final"
 
 msgid "Initial amount"
 msgstr "Cantidad inicial"
+
+msgid "Physical Hazard Category (Code H)"
+msgstr "Categoría de peligro físico (Código H)"
+
+msgid "Health Hazard Category (Code H)"
+msgstr "Categoría de peligro de la salud (Código H)"
+
+msgid "Environmental Hazard Category (Code H)"
+msgstr "Categoría de peligro ambiental (Código H)"
