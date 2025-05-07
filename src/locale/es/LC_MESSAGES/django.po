@@ -4912,3 +4912,9 @@ msgstr "Categoría de peligro de la salud (Código H)"
 
 msgid "Environmental Hazard Category (Code H)"
 msgstr "Categoría de peligro ambiental (Código H)"
+
+msgid "Study centers, hospitals, transportation terminals, gas stations, or others that might be affected in the event of an emergency."
+msgstr "Centros de estudios, hospitales, terminales de transporte, gasolineras o otros lugares que pueden ser afectados en caso de una emergencia."
+
+msgid "Rivers, streams, springs and aquifers that are affected in an emergency"
+msgstr "Ríos, quebradas, nacientes y mantos acuíferos que pueden ser afectados en una emergencia"

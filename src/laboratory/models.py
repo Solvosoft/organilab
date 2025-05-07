@@ -850,6 +850,20 @@ class Laboratory(BaseCreationObj):
     responsible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
                                     blank=True, verbose_name=_("Responsible"),
                                     related_name="responsible_laboratory")
+    nearby_sites = models.FileField(verbose_name = _('Study centers, hospitals, '
+                                                     'transportation terminals, gas '
+                                                     'stations, or others that might be '
+                                                     'affected in the event of an '
+                                                     'emergency.'),
+                                    upload_to=upload_files,
+                                    null=True, blank=True
+                                    )
+    water_resources_affected = models.FileField(verbose_name =_('Rivers, streams, springs '
+                                                             'and aquifers that are '
+                                                             'affected in an emergency'),
+                                            upload_to=upload_files,
+                                            null=True, blank=True
+                                            )
 
     class Meta:
         verbose_name = _('Laboratory')

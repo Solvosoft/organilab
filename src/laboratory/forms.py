@@ -44,8 +44,8 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             ["name",
              "coordinator",
              "unit",
-             "email",
              "location",
+             "nearby_sites",
              "description",
              ],
             [
@@ -53,6 +53,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "email",
              "phone_number",
              "area",
+             "water_resources_affected",
              "geolocation",
              ]
         ],
@@ -70,7 +71,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
         fields = ['name', 'phone_number', 'location',
                   'geolocation', 'organization','area',
                   'description', 'coordinator', 'email', 'unit',
-                  'responsible']
+                  'responsible', 'nearby_sites', 'water_resources_affected']
         widgets = {
             'name': genwidgets.TextInput,
             'phone_number': genwidgets.TextInput,
@@ -83,6 +84,8 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             'email': genwidgets.EmailInput,
             'unit': genwidgets.TextInput,
             'responsible': genwidgets.Select,
+            'nearby_sites': FileChunkedUpload,
+            'water_resources_affected': FileChunkedUpload
         }
 
 
@@ -97,17 +100,18 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             ["name",
              "coordinator",
              "unit",
-             "email",
              "location",
              "regent",
+             "nearby_sites",
              "description",
              ],
             [
             "responsible",
             "email",
-             "phone_number",
-             "area",
-             "geolocation",
+            "phone_number",
+            "area",
+            "water_resources_affected",
+            "geolocation",
              ]
 
         ],
@@ -124,7 +128,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         model = Laboratory
         fields = ['name', 'coordinator', 'unit', 'phone_number', 'email', 'location',
                   'geolocation', 'organization', 'area', 'description', 'regent',
-                  'responsible']
+                  'responsible', "nearby_sites", "water_resources_affected"]
         widgets = {
             'name': genwidgets.TextInput,
             'coordinator': genwidgets.TextInput,
@@ -137,6 +141,8 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             'description': genwidgets.Textarea,
             'area': genwidgets.FloatInput,
             'responsible': genwidgets.Select,
+            'nearby_sites': FileChunkedUpload,
+            'water_resources_affected': FileChunkedUpload,
 
         }
 
