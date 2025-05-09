@@ -4918,3 +4918,6 @@ msgstr "Centros de estudios, hospitales, terminales de transporte, gasolineras o
 
 msgid "Rivers, streams, springs and aquifers that are affected in an emergency"
 msgstr "Ríos, quebradas, nacientes y mantos acuíferos que pueden ser afectados en una emergencia"
+
+msgid "Type Regent"
+msgstr "Tipo de Regente"
