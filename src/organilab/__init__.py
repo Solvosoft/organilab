@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-__version__ = '1.4.5'
+__version__ = '1.4.6'
 
 if __name__ == '__main__':
     print(__version__)
