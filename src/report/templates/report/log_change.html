@@ -33,7 +33,7 @@
 	 id= "table_{{lab.laboratory.pk}}_{{lab.object.pk}}_{{lab.unit.pk}}";
 	 url = '{% url "report:api-report-log-detail" obj_task.pk %}'+"?laboratory={{lab.laboratory.pk}}&object={{lab.object.pk}}&unit={{lab.unit.pk}}";
 	add_log_change_datatables(id,"{{lab.laboratory.name}}","{{lab.object.name}}","{{lab.diff_value}}",
-	"{{lab.unit.description}}", url);
+	"{{lab.unit.description}}","{{lab.object.cas_code | default_if_none:""}}", url);
 	$("#"+id+"_filter").parent().addClass('mt-0 p-0')
   $("#"+id+"_length").parent().addClass('mt-0 p-0')
 {% endfor %}

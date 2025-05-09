@@ -193,17 +193,23 @@ function update_selects(form_element){
     });
 }
 
-function add_log_change_datatables(id, lab, obj, diff,unit, url){
+function add_log_change_datatables(id, lab, obj, diff,unit,cas_code, url){
+    if(cas_code==""){
+        cas_code= gettext("No code");
+    }
+    if(cas_code=="False"){
+        cas_code= "";
+    }
     columns= [
             {data: "user", name: "user", title: gettext("User"), type: "string", visible: true},
             {data: "update_time", name: "update_time", title: gettext("Day"), type: "date", visible: true},
-            {data: "old_value", name: "old_value", title: gettext("Old"), type: "number", visible: true },
-            {data: "new_value", name: "new_value", title: gettext("New"), type: "number", visible: true},
+            {data: "old_value", name: "old_value", title: gettext("Initial amount"), type: "number", visible: true },
+            {data: "new_value", name: "new_value", title: gettext("Final amount"), type: "number", visible: true},
             {data: "diff_value", name: "diff_value", title: gettext("Difference"), type: "number", visible: true},
         ],
     html_card=`<div class="card mt-5">
 	<div class="card-title text-center fw-bold">
-	<p>${lab} | ${obj}  <br><p>${gettext("Difference")}: ${diff} ${unit}</p></p>
+	<p>${lab} | ${obj} ${cas_code}  <br><p>${diff} ${unit}</p></p>
 	<hr>
 	</div>
 	<div class="card-body"><table id=${id} class="log_changes_table mt-0 p-0 display table table-striped table-bordered text-center dt-responsive"></table>

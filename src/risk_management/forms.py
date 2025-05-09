@@ -148,15 +148,23 @@ class BuildingsForm(GTForm, forms.ModelForm):
         if org_pk:
             self.fields['regents'].queryset = (
                 Regent.objects.filter(organization__pk=org_pk))
-            self.fields['laboratories'].queryset = (
-                Laboratory.objects.filter(organization__pk=org_pk))
             if instance:
+                labs = Buildings.objects.filter(organization__pk=org_pk).values_list(
+                    'laboratories', flat=True)
                 self.fields['nearby_buildings'].queryset = (
                     Buildings.objects.filter(organization__pk=org_pk).
                     exclude(pk=instance.pk))
+                self.fields['laboratories'].queryset = Laboratory.objects.filter(
+                    organization__pk=org_pk).exclude(pk__in=labs)
             else:
+                labs = Buildings.objects.filter(organization__pk=org_pk).values_list(
+                    'laboratories', flat=True)
                 self.fields['nearby_buildings'].queryset = (
                 Buildings.objects.filter(organization__pk=org_pk))
+                self.fields['laboratories'].queryset = \
+                    (Laboratory.objects.filter(organization__pk=org_pk).
+                     exclude(pk__in=labs))
+
             self.fields['manager'].queryset = (
                 User.objects.filter(pk__in=get_users_from_organization(org_pk)))
 
@@ -198,7 +206,7 @@ class RegentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Regent
-        fields = ["user", "laboratories"]
+        fields = ["user", "laboratories","type_regent"]
         widgets = {
             'user': AutocompleteSelect(
                'user_organization',
@@ -209,7 +217,8 @@ class RegentForm(GTForm, forms.ModelForm):
                'regent_laboratories',
                 attrs={
                     'data-s2filter-org_pk': '#org'}
-            )
+            ),
+            'type_regent': genwidgets.Select(attrs={'data-otrono': 1}),
         }
 
 
@@ -218,13 +227,16 @@ class UpdateRegentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Regent
-        fields = ["laboratories"]
+        fields = ["laboratories","type_regent"]
         widgets = {
             'laboratories': AutocompleteSelectMultiple(
                'regent_laboratories',
                 attrs={
                     'data-s2filter-org_pk': '#org'}
-            )
+            ),
+            'type_regent': genwidgets.Select(
+                attrs={'data-otrono': 1}),
+
         }
 
 

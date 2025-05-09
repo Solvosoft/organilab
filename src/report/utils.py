@@ -152,13 +152,14 @@ def get_pdf_log_change_table_content(report):
     pdf_table = ""
 
     for table in table_content:
-        pdf_table += "<p style='padding:0px; font-size:12px;'>%s</p>" %(f'{table.laboratory.name} | {table.object.name}')
+        cas = table.object.object.cas_code if table.object.object.cas_code else ""
+        pdf_table += "<p style='padding:0px; font-size:12px;'>%s</p>" %(f'{table.laboratory.name} | {table.object.name} {cas}')
         pdf_table += "<p style='padding:0px; font-size:12px;' >%s</p>" \
-                     %(_("Difference") + f' :{table.diff_value} {table.unit.description}')
+                     %(f' :{table.diff_value} {table.unit.description}')
 
         pdf_table += "<table id='pdf_table_report'><thead>"
         pdf_table += '<tr>'
-        for col in [_("User"), _("Day"), _('Old'), _('New'), _("Difference")]:
+        for col in [_("User"), _("Day"), _('Initial amount'), _('Final amount'), _("Difference")]:
             pdf_table += "<th>%s</th>" % (col)
         pdf_table += '</tr></thead><tbody>'
         table =ObjectChangeLogReportBuilder.objects.filter(report=table)

@@ -129,9 +129,17 @@ class IncidentReport(AbstractOrganizationRef):
         return self.short_description
 
 class Regent(AbstractOrganizationRef):
+    TYPEREGENTS = (
+        ("chemical", _("Chemical")),
+        ("chemical_engineer", _("Chemical Engineer")),
+        ("veterinarian", _("Veterinarian")),
+    )
+
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,
                              related_name="regent_user")
     laboratories = models.ManyToManyField(Laboratory, related_name="regent_laboratories")
+    type_regent =  models.CharField(max_length=100, choices=TYPEREGENTS,
+                                    default="chemical", verbose_name=_("Type Regent"))
 
     class Meta:
         ordering = ['pk']

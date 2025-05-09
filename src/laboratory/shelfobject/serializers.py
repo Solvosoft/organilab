@@ -367,14 +367,17 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
-
+    concentration = serializers.FloatField(required=False, default=0.0)
+    physical_status = serializers.ChoiceField(choices=ShelfObject.PHYSICAL_STATUS[1::],
+                                             required=True)
 
     class Meta:
         model = ShelfObject
         fields = ['object', 'shelf', "status", 'quantity', 'measurement_unit',
                   "container_for_cloning", "container_select_option",
                   "available_container", 'limit_quantity', "description",
-                  'marked_as_discard', 'batch']
+                  'marked_as_discard', 'batch', "concentration",
+                  "physical_status"]
 
     def validate(self, data):
         data = super().validate(data)
@@ -404,11 +407,16 @@ class ReactiveRefuseShelfObjectSerializer(ContainerSerializer, serializers.Model
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
     batch = serializers.CharField(required=True)
+    concentration = serializers.FloatField(required=False, default=0.0)
+    physical_status = serializers.ChoiceField(choices=ShelfObject.PHYSICAL_STATUS[1::],
+                                             required=True)
+
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity","container_for_cloning","container_select_option",
-                  "available_container","measurement_unit", "marked_as_discard", "description", 'batch']
+                  "available_container","measurement_unit", "marked_as_discard", "description", 'batch',
+                  "concentration", "physical_status"]
 
     def validate(self, data):
         data = super().validate(data)

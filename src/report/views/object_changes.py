@@ -122,10 +122,11 @@ def resume_queryset_doc(report,queryset, objs, log_filters):
                 total += 1
 
             if object_log:
-                doc_list.append([f'{lab.name} | {obj_using.name}'])
-                doc_list.append([_('Difference')+f': {object_diff} {catalog.description}'])
+                cas = obj_using.object.cas_code if obj_using.object.cas_code else ""
+                doc_list.append([f'{lab.name} | {obj_using.name} {cas}'])
+                doc_list.append([f': {object_diff} {catalog.description}'])
                 doc_list.append(
-                        [_("User"), _("Day"), _('Old'), _('New'), _("Difference")])
+                        [_("User"), _("Day"), _('Initial amount'), _('Final amount'), _("Difference")])
                 doc_list.extend(builder)
                 doc_list.append([])
                 doc_list.append([])
@@ -145,8 +146,9 @@ def resume_queryset_doc(report,queryset, objs, log_filters):
 
                 if old_log.exists():
                     old_log = old_log.last()
-                    doc_list.append([f'{lab.name} | {old_log.object.name}'])
-                    doc_list.append([_('Difference') + f': {0} {old_log.measurement_unit.description}'])
+                    cas = old_log.object.cas_code if old_log.object.cas_code else ""
+                    doc_list.append([f'{lab.name} | {old_log.object.name} {cas}'])
+                    doc_list.append([f': {0} {old_log.measurement_unit.description}'])
                     doc_list.append([])
                     doc_list.append([])
                 total += 1

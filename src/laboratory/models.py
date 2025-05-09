@@ -173,7 +173,6 @@ class SustanceCharacteristics(models.Model):
     img_representation = models.ImageField(upload_to=upload_files,
                                            verbose_name=_('Sustance representation'),
                                            null=True, blank=True)
-    concentration = models.FloatField(default=0.0, verbose_name=_('Concentration'))
 
     class Meta:
         verbose_name = _('Sustance characteristic')
@@ -217,6 +216,13 @@ class EquipmentCharacteristics(models.Model):
                                        verbose_name=_("Equipment type"))
 
 class ShelfObject(models.Model):
+    PHYSICAL_STATUS = (
+        ('no_reactive', _('')),
+        ('liquid', _('Liquid')),
+        ('solid powder', _('Solid powder')),
+        ('solid granular or crystalline', _('Solid granular or crystalline')),
+        ('Gaseous', _('Gaseous')),
+    )
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"),
                               on_delete=models.CASCADE)
     object = models.ForeignKey('Object',
@@ -264,6 +270,12 @@ class ShelfObject(models.Model):
                                   on_delete=models.SET_NULL,
                                   verbose_name=_("Container"),
                                   related_name="containershelfobject")
+    physical_status = models.CharField(max_length=100,
+                                       choices=PHYSICAL_STATUS,
+                                       null=True,
+                                       blank=True,
+                                       verbose_name=_("Physical Status"))
+    concentration = models.FloatField(default=0.0, verbose_name=_('Concentration'))
 
     @staticmethod
     def get_units(unit):
@@ -835,7 +847,23 @@ class Laboratory(BaseCreationObj):
         null=True)
     description = models.TextField(_('Description'), null=True, blank=True)
     area = models.FloatField(verbose_name = _('Area'), default = 0.0)
-
+    responsible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                                    blank=True, verbose_name=_("Responsible"),
+                                    related_name="responsible_laboratory")
+    nearby_sites = models.FileField(verbose_name = _('Study centers, hospitals, '
+                                                     'transportation terminals, gas '
+                                                     'stations, or others that might be '
+                                                     'affected in the event of an '
+                                                     'emergency.'),
+                                    upload_to=upload_files,
+                                    null=True, blank=True
+                                    )
+    water_resources_affected = models.FileField(verbose_name =_('Rivers, streams, springs '
+                                                             'and aquifers that are '
+                                                             'affected in an emergency'),
+                                            upload_to=upload_files,
+                                            null=True, blank=True
+                                            )
 
     class Meta:
         verbose_name = _('Laboratory')
