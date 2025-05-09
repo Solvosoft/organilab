@@ -1052,3 +1052,17 @@ msgstr "Cantidad final"
 
 msgid "Initial amount"
 msgstr "Cantidad inicial"
+
+
+msgid "Chemical"
+msgstr "Químico"
+
+msgid "Chemical Engineer"
+msgstr "Ingeniero Químico"
+
+msgid "Veterinarian"
+msgstr "Veterinario"
+
+msgid "Type Regent"
+msgstr "Tipo de Regente"
+
