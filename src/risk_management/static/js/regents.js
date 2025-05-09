@@ -1,3 +1,8 @@
+const type_regent_choices = [
+        ["chemical", gettext("Chemical")],
+        ["chemical_engineer", gettext("Chemical Engineer")],
+        ["veterinarian", gettext("Veterinarian")]
+    ]
 
 datatable_inits = {
     columns: [
@@ -15,7 +20,9 @@ datatable_inits = {
             data: "type_regent",
             name: "type_regent",
             title: gettext("Type Regent"),
-            type: "string",
+            type: "select",
+            choices: type_regent_choices,
+            render: gt_print_list_object( "text"),
             visible: true
         },
         {

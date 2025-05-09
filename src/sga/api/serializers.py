@@ -435,13 +435,23 @@ class DangerCategoryActionsSerializer(serializers.ModelSerializer):
         model = HCodeCategory
         fields = '__all__'
 
+class ChoicesGTS2Serializer(GTS2SerializerBase):
+    def __init__(self, *args, choices=None, **kwargs):
+        self.choices = dict(choices)
+        super().__init__(*args, **kwargs)
+
+    def get_id(self, obj):
+        return obj
+
+    def get_text(self, obj):
+        if obj in self.choices:
+            return self.choices[obj]
+        return obj
+
 class DangerCategorySerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     h_code = GTS2SerializerBase(many=True)
-    danger_category = serializers.SerializerMethodField()
-
-    def get_danger_category(self, obj):
-        return obj.get_danger_category_display()
+    danger_category = ChoicesGTS2Serializer(choices=HCodeCategory.HCATEGORY, many=False)
 
     def get_actions(self, obj):
         user = self.context["request"].user

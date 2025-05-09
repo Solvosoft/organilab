@@ -13,6 +13,7 @@ datatable_inits = {
             title: gettext("Danger Category"),
             type: "select",
             choices: choices,
+            render: gt_print_list_object( "text"),
             visible: true
          },
         {
