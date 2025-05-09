@@ -184,7 +184,8 @@ def report_reactive_precursor_html(report):
 def report_reactive_precursor_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
-        _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units'), _("Molecular formula"),
+        _("Laboratory"), _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units'),
+        _("Molecular formula"),
         _("CAS id number"), _("Is precursor?"), _("IMDG type")
     ]]
     if 'laboratory' in report.data:
