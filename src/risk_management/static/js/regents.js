@@ -12,6 +12,13 @@ datatable_inits = {
             visible: true
         },
         {
+            data: "type_regent",
+            name: "type_regent",
+            title: gettext("Type Regent"),
+            type: "string",
+            visible: true
+        },
+        {
             data: "laboratories",
             name: "laboratories",
             title: gettext("Laboratories"),

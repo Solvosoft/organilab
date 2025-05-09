@@ -38,7 +38,7 @@ from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, \
     OrganizationReactiveForm, \
-    ValidateObjectTypeForm, DiscardShelfForm
+    ValidateObjectTypeForm, DiscardShelfForm, ReactiveReportForm
 from sga.forms import SearchDangerIndicationForm
 
 @permission_required('laboratory.do_report')
@@ -372,3 +372,27 @@ class DiscardShelfReportView(ListView):
             'form': DiscardShelfForm(initial=initial_data, org_pk=self.org)
         })
         return context
+
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class ReactiveReport(ListView):
+    model = ShelfObject
+    template_name = 'report/base_report_form_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReactiveReport,
+                        self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        title = _("Reactive Objects Report")
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['reactive_report'],
+            'form': ReactiveReportForm(initial={
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'reactive_report',
+                'laboratory': lab_obj,
+            })
+        })
+        return context
+

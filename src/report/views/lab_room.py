@@ -10,12 +10,14 @@ def get_dataset(report, column_list=None):
     dataset = []
     furniture_list = get_furniture_queryset_by_filters(report)
     attrs = {}
+
     if "object_type" in report.data:
         if report.data["object_type"]:
             attrs['object__type'] = report.data["object_type"]
-            if "is_precursor" in report.data and report.data["object_type"] == '0':
+            if report.data["is_precursor"] and report.data["object_type"] == '0':
                 attrs['object__sustancecharacteristics__is_precursor'] = (
-                    report.data)["is_precursor"]
+                        report.data)["is_precursor"]
+
     for furniture in furniture_list:
         objects = furniture.get_objects().filter(**attrs)
         for shelfobject in objects:
