@@ -79,14 +79,24 @@ class UpdateRegentSerializer(serializers.ModelSerializer):
             "type_regent"
         ]
 
+class ChoicesGTS2Serializer(GTS2SerializerBase):
+    def __init__(self, *args, choices=None, **kwargs):
+        self.choices = dict(choices)
+        super().__init__(*args, **kwargs)
+
+    def get_id(self, obj):
+        return obj
+
+    def get_text(self, obj):
+        if obj in self.choices:
+            return self.choices[obj]
+        return obj
+
 class RegentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     user = GTS2SerializerBase(many=False)
     laboratories = GTS2SerializerBase(many=True)
-    type_regent = serializers.SerializerMethodField()
-
-    def get_type_regent(self, obj):
-        return obj.get_type_regent_display()
+    type_regent = ChoicesGTS2Serializer(choices=Regent.TYPEREGENTS, many=False)
 
     def get_actions(self, obj):
         user = self.context["request"].user

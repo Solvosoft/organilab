@@ -13,7 +13,7 @@ from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
     RegentForm, StructureForm, IncidentReportForm, DocFormatForm, UpdateRegentForm
-from risk_management.models import RiskZone, ZoneType, Buildings
+from risk_management.models import RiskZone, ZoneType, Buildings, Regent
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 from urllib.parse import quote
 import uuid
@@ -221,7 +221,8 @@ def regent_view(request, org_pk):
     context = {
         'form_create':  RegentForm(org_pk=org_pk, prefix="create"),
         'form_update':  UpdateRegentForm(prefix="update"),
-        'org_pk': org_pk
+        'org_pk': org_pk,
+        'type_regent': Regent.TYPEREGENTS
     }
     return render(request, 'risk_management/regents.html', context=context)
 
