@@ -4921,3 +4921,12 @@ msgstr "Ríos, quebradas, nacientes y mantos acuíferos que pueden ser afectados
 
 msgid "Type Regent"
 msgstr "Tipo de Regente"
+
+msgid "Adjustment quantities in logs"
+msgstr "Ajuste de cantidades en bitacoras"
+
+msgid "Deleting shelf"
+msgstr "Eliminación de estante"
+
+msgid "Deleting ShelfObject by shelf"
+msgstr "Eliminación de objeto de estante"
