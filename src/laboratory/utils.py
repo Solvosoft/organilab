@@ -16,9 +16,10 @@ from rest_framework.permissions import BasePermission
 
 from auth_and_perms.models import Profile, User
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
+from laboratory.logsustances import log_object_change
 from laboratory.models import Laboratory, OrganizationStructure, LabOrgLogEntry, \
-    UserOrganization, RegisterUserQR, OrganizationStructureRelations
-
+    UserOrganization, RegisterUserQR, OrganizationStructureRelations, ShelfObject
+from django.utils.translation import gettext_lazy as _
 
 
 def check_group_has_perm(group,codename):
@@ -479,3 +480,11 @@ def get_actions_by_perms(user, actions_list):
     for action, perms in actions_list.items() :
         actions[action] = all_permission(user, perms)
     return actions
+
+def remove_shelfobject_from_shelf(laboratory,shelf, user, organization):
+    shelfobjects = ShelfObject.objects.filter(shelf=shelf).distinct()
+    for shelfobject in shelfobjects:
+        log_object_change(user, laboratory, shelfobject, shelfobject.quantity, 0,
+                          _('Delete shelf'), DELETION,
+                          _("Delete ShelfObject by shelf"), organization=organization)
+        shelfobject.delete()
