@@ -122,7 +122,10 @@ def resume_queryset_doc(report,queryset, objs, log_filters):
                 total += 1
 
             if object_log:
-                cas = obj_using.object.cas_code if obj_using.object.cas_code else ""
+                cas = ""
+                if hasattr(obj_using, 'sustancecharacteristics'):
+                    cas = obj_using.cas_code if (
+                        obj_using.cas_code) else ""
                 doc_list.append([f'{lab.name} | {obj_using.name} {cas}'])
                 doc_list.append([f': {object_diff} {catalog.description}'])
                 doc_list.append(
@@ -169,7 +172,7 @@ def get_queryset(report):
             object_log_filters['precursor'] = True
     if 'all_labs_org' in report.data:
         if report.data['all_labs_org']:
-            labs = get_user_laboratories(report.creator)
+            labs = get_user_laboratories(report.created_by)
             query = query.filter(laboratory__in=labs)
             filters['in_where_laboratory__in'] = labs
         else:

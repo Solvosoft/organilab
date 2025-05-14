@@ -33,15 +33,17 @@ class Command(BaseCommand):
                                                in_where_laboratory=laboratory).aggregate(
                         total=Sum('quantity', default=0))['total']
                     is_precuror = obj.is_precursor
-                    obj_total = objects.aggregate(total=Sum('diff_value', default=0))['total']
                     objects = objects.last()
+                    new_value = 0
+                    if objects:
+                        new_value = objects.new_value
                     attrw= dict(
                         object=obj,
                         laboratory=laboratory,
                         user=user,
-                        old_value=objects.new_value,
-                        new_value=objects.new_value - shelfobject_total,
-                        diff_value=shelfobject_total,
+                        old_value=new_value,
+                        new_value= shelfobject_total,
+                        diff_value=shelfobject_total-new_value,
                         update_time=now(),
                         measurement_unit=unit,
                         precursor=is_precuror,
@@ -51,14 +53,10 @@ class Command(BaseCommand):
                         organization_where_action_taken=laboratory.organization
                     )
 
-                    if objects.new_value < shelfobject_total:
-                        attrw['new_value'] = shelfobject_total
-                        attrw['diff_value'] = shelfobject_total - objects.new_value
+                    if new_value < shelfobject_total:
                         attrw['type_action'] = ADDITION
-                    if objects.new_value > shelfobject_total or objects.new_value < shelfobject_total:
+                    if new_value > shelfobject_total or new_value < shelfobject_total:
                         ObjectLogChange.objects.create(**attrw)
-                    if obj.name == "Hexano":
-                        print(shelfobject_total, obj_total)
 
     def handle(self, *args, **options):
         self.set_objects()
