@@ -58,5 +58,11 @@ class Command(BaseCommand):
                     if new_value > shelfobject_total or new_value < shelfobject_total:
                         ObjectLogChange.objects.create(**attrw)
 
+    def update_precursor(self):
+        ObjectLogChange.objects.filter(
+            object__sustancecharacteristics__is_precursor=True, precursor=False,
+            object__type=0).update(precursor=True)
+
     def handle(self, *args, **options):
+        self.update_precursor()
         self.set_objects()
