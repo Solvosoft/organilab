@@ -19,9 +19,9 @@ class Command(BaseCommand):
         PrecursorReport.objects.all().delete()
 
         actual_date = now()
-        ObjectLogChange.objects.filter(subject="Update", diff_value__lte=0).update(type_action=CHANGE)
-        ObjectLogChange.objects.filter(subject="Update", diff_value__gte=0).update(type_action=ADDITION)
-        labs = Laboratory.objects.annotate(changelog_count=Count('objectlogchange'),
+        #ObjectLogChange.objects.filter(subject="Update", diff_value__lte=0).update(type_action=CHANGE)
+        #ObjectLogChange.objects.filter(subject="Update", diff_value__gte=0).update(type_action=ADDITION)
+        labs = Laboratory.objects.all.annotate(changelog_count=Count('objectlogchange'),
                                            update_time_min=Min('objectlogchange__update_time'),
                                            ).filter(
             changelog_count__gt=0)
