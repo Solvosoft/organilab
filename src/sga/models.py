@@ -632,3 +632,10 @@ class HCodeCategory(models.Model):
 
     def __str__(self):
         return self.danger_category
+
+class Pictogram(models.Model):
+    name = models.CharField(max_length=255)
+    pictogram = models.FileField(upload_to=upload_files, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
