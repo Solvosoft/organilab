@@ -22,14 +22,17 @@
                 <tr>
                     <th class="text-center">{% trans 'Consecutive' %}</th>
                     <th class="text-center">{% trans 'Month' %}</th>
+                    <th class="text-center">{% trans 'Date Range' %}</th>
                     <th class="text-center">{% trans 'Export' %}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for report in datalist %}
+
                 <tr>
                     <td class="text-center">{{report.consecutive}}</td>
                     <td class="text-center">{{report.get_month_display}} {{report.year}}</td>
+																				<td class="text-center">{{ report.get_date_range }}</td>
                     <td class="text-center"><a class="btn btn-outline-success" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=xlsx&pk={{report.pk}}"><i class="fa fa-download" ></i> {% trans 'Download'%}</a></td>
                 </tr>
                 {% endfor %}

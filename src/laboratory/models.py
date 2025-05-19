@@ -20,7 +20,7 @@ from tree_queries.query import TreeQuerySet
 from presentation.models import AbstractOrganizationRef
 from . import catalog
 from .models_utils import upload_files
-
+import calendar
 
 class BaseCreationObj(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -1004,7 +1004,11 @@ class PrecursorReport(models.Model):
     consecutive = models.IntegerField(default=1)
     report_values = models.ManyToManyField(Object,through=PrecursorReportValues)
 
-
+    def get_date_range(self):
+        last_day = calendar.monthrange(self.year, self.month)[1]
+        return "1 of %s of %d - %d of %s of %d" % (self.get_month_display(), self.year,
+                                                   last_day, self.get_month_display(),
+                                                   self.year)
 
 STATUS_CHOICES = (
     (_('Eraser'), _('Eraser')),
