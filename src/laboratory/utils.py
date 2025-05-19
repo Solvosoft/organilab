@@ -487,4 +487,4 @@ def remove_shelfobject_from_shelf(laboratory,shelf, user, organization):
         log_object_change(user, laboratory, shelfobject, shelfobject.quantity, 0,
                           _('Delete shelf'), DELETION,
                           _("Delete ShelfObject by shelf"), organization=organization)
-        shelfobject.delete()
+    shelfobjects.delete()
