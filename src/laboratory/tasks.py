@@ -45,12 +45,15 @@ def create_precursor_reports():
             previos_report = previos_report.last()
         else:
             previos_report = None
-
+        month_belong = day.month - 1
+        if day.month == 1:
+            month_belong = 12
         report = PrecursorReport.objects.create(
                 month=day.month,
                 year=day.year,
                 laboratory=lab,
-                consecutive=add_consecutive(lab)
+                consecutive=add_consecutive(lab),
+            month_belong=month_belong
             )
         save_object_report_precursor(report)
         build_precursor_report_from_reports(report, previos_report)
