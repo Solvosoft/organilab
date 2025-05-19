@@ -261,18 +261,22 @@ class PrecursorsView(ReportListView):
                 "signature": "",
                 "position": ""
             }]
+            range_data =[_("Period range of the data: %(date_range)s") % {
+                "date_range": report.get_date_range()
+            }]
 
-            book = [first_line, second_line, third_line, fourth_line,[], [str(_('Name of the substance or product')),
-                                                                 str(_('Unit')),
-                                                                 str(_('Final balance of the previous report')),
-                                                                 str(_('Income during the month')),
-                                                                 str(_('Import or local purchase invoice number that covers the entry')),
-                                                                 str(_('Supplier that supplied the purchased product (in case of local purchase)')),
-                                                                 str(_('Total Stock')),
-                                                                 str(_('Dispatch or expense during this month')),
-                                                                 str(_('Balance at the end of the month reported in this report')),
-                                                                 str(_('Reason for dispatch or expense')),
-                                                                 ]]
+            book = [first_line, second_line, third_line,range_data,
+                    fourth_line,[], [str(_('Name of the substance or product')),
+                                     str(_('Unit')),
+                                     str(_('Final balance of the previous report')),
+                                     str(_('Income during the month')),
+                                     str(_('Import or local purchase invoice number that covers the entry')),
+                                     str(_('Supplier that supplied the purchased product (in case of local purchase)')),
+                                     str(_('Total Stock')),
+                                     str(_('Dispatch or expense during this month')),
+                                     str(_('Balance at the end of the month reported in this report')),
+                                     str(_('Reason for dispatch or expense')),
+                                     ]]
             objects = PrecursorReportValues.objects.filter(precursor_report=report)
             for obj in objects.distinct().order_by("object__name"):
 

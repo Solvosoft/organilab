@@ -1003,12 +1003,19 @@ class PrecursorReport(models.Model):
                                    verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
     report_values = models.ManyToManyField(Object,through=PrecursorReportValues)
+    month_belong = models.IntegerField(default=0)
 
     def get_date_range(self):
-        last_day = calendar.monthrange(self.year, self.month)[1]
-        return "1 of %s of %d - %d of %s of %d" % (self.get_month_display(), self.year,
-                                                   last_day, self.get_month_display(),
-                                                   self.year)
+        last_day = calendar.monthrange(self.year, self.month_belong)[1]
+        month = dict(MONTHS)[self.month_belong]
+        year = self.year
+        if self.month_belong==1 and self.month==12:
+            year=self.year-1
+            last_day = calendar.monthrange(year, self.month_belong)[1]
+
+        return _("1 of %s of %d - %d of %s of %d") % (month, year,
+                                                   last_day, month,
+                                                   year)
 
 STATUS_CHOICES = (
     (_('Eraser'), _('Eraser')),

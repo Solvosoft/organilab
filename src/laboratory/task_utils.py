@@ -59,12 +59,15 @@ def save_object_report_precursor(report):
                     obj.previous_balance += add_quantity
             obj.save()
         else:
+            year = report.year
+            if report.month_belong==1 and report.month==12:
+                year=report.year-1
 
             object_list = ObjectLogChange.objects.filter(laboratory=lab, precursor=True,
                                                          object=precursor.object,
                                                          measurement_unit=unit,
-                                                         update_time__month=report.month,
-                                                         update_time__year=report.year)
+                                                         update_time__month=report.month_belong,
+                                                         update_time__year=year)
 
             providers = [ol.provider for ol in object_list.filter(provider__isnull=False)]
             subject = [ol.subject for ol in object_list.filter(subject__isnull=False)]
