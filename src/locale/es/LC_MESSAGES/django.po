@@ -4930,3 +4930,9 @@ msgstr "Eliminación de estante"
 
 msgid "Deleting ShelfObject by shelf"
 msgstr "Eliminación de objeto de estante"
+
+msgid "1 of %s of %d - %d of %s of %d"
+msgstr "1 de %s del %d - %d de %s del %d"
+
+msgid "Date Range"
+msgstr "Rango de fechas"
