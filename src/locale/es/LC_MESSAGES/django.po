@@ -4936,3 +4936,6 @@ msgstr "1 de %s del %d - %d de %s del %d"
 
 msgid "Date Range"
 msgstr "Rango de fechas"
+
+msgid "Period range of the data: %(date_range)s"
+msgstr "Rango de periodo de los datos: %(date_range)s"
