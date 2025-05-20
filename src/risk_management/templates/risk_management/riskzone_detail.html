@@ -177,8 +177,8 @@
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-incident-list' org_pk object.pk%}",
 			create_url: "{% url 'riskmanagement:api-incident-list' org_pk object.pk %}",
-			destroy_url: "{% url "riskmanagement:api-incident-detail" org_pk object.pk 0 %}",
-			update_url: "{% url "riskmanagement:api-incident-detail" org_pk object.pk 0 %}",
+			destroy_url: "{% url 'riskmanagement:api-incident-detail' org_pk object.pk 0 %}",
+			update_url: "{% url 'riskmanagement:api-incident-detail' org_pk object.pk 0 %}",
 		}
 	</script>
 	<script src="{% static 'js/incidents.js' %}?v={% get_organilab_version %}"></script>
