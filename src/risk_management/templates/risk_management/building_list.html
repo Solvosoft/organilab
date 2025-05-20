@@ -40,7 +40,7 @@
 	<script>
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-building-list' org_pk %}",
-			destroy_url: "{% url "riskmanagement:api-building-detail" org_pk 0 %}",
+			destroy_url: "{% url 'riskmanagement:api-building-detail' org_pk 0 %}",
 		}
 		const update_url = "{% url 'riskmanagement:buildings_update' org_pk 0 %}"
 		const add_building_url = "{% url 'riskmanagement:buildings_create' org_pk %}"

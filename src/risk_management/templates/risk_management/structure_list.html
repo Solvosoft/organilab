@@ -35,7 +35,7 @@
 	<script>
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-structure-list' org_pk %}",
-			destroy_url: "{% url "riskmanagement:api-structure-detail" org_pk 0 %}",
+			destroy_url: "{% url 'riskmanagement:api-structure-detail' org_pk 0 %}",
 		}
 		const update_url = "{% url 'riskmanagement:structures_update' org_pk 0 %}";
 		const add_structure_url = "{% url 'riskmanagement:structures_create' org_pk %}";
