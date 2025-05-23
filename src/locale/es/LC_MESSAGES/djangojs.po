@@ -1066,3 +1066,5 @@ msgstr "Veterinario"
 msgid "Type Regent"
 msgstr "Tipo de Regente"
 
+msgid "Pictograms"
+msgstr "Pictogramas"

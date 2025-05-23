@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from tree_queries.models import TreeNode
 
 from laboratory import catalog
-from laboratory.models import Catalog
 from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
 
