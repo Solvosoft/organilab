@@ -18,6 +18,7 @@ from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
 
 from presentation.models import AbstractOrganizationRef
+from sga.models import Pictogram
 from . import catalog
 from .models_utils import upload_files
 import calendar
@@ -276,6 +277,9 @@ class ShelfObject(models.Model):
                                        blank=True,
                                        verbose_name=_("Physical Status"))
     concentration = models.FloatField(default=0.0, verbose_name=_('Concentration'))
+    pictograms = models.ManyToManyField(Pictogram, blank=True,
+                                        related_name="sga_pictograms",
+                                        verbose_name=_("Pictograms"))
 
     @staticmethod
     def get_units(unit):

@@ -4,7 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.groute import register_lookups
 from djgentelella.permission_management import AnyPermissionByAction, \
     AllPermissionByAction
-from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
+from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator, \
+    BaseSelectImg2View
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -23,6 +24,7 @@ from laboratory.shelfobject.utils import get_available_containers_for_selection,
 from laboratory.utils import get_pk_org_ancestors, get_users_from_organization
 from laboratory.utils_base_unit import get_related_units
 from risk_management.models import Regent, Buildings
+from sga.models import Pictogram
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -759,3 +761,13 @@ class RiskUsersOrganizations(BaseSelect2View):
         if not name:
             name = obj.username
         return name
+
+
+
+@register_lookups(prefix="selectimg", basename="imagebasename")
+class ImageSelect2Lookup(BaseSelectImg2View):
+    model = Pictogram
+    fields = ['name']
+
+    def get_url(self, obj):
+        return obj.pictogram.url
