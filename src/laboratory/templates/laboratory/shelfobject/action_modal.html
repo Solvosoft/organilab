@@ -50,12 +50,12 @@
 {% trans "Create Equipment" as equipment_title %}
 {% trans "Create Material" as material_title %}
 
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_modal' form_id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_refuse_modal' form_id='reactive_refuse_form' title=reactive_title form=reactive_refuse_form url=create_shelfobject_url %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_modal' form_id='equipment_form' title=equipment_title form=equipment_form url=create_shelfobject_url %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_refuse_modal' form_id='equipment_refuse_form' title=equipment_title  form=equipment_refuse_form url=create_shelfobject_url %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_modal' form_id='material_form' title=material_title form=material_form url=create_shelfobject_url %}
-{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_refuse_modal' form_id='material_refuse_form' title=material_title form=material_refuse_form url=create_shelfobject_url %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_modal' form_id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url modal_class="modal-xl" %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_refuse_modal' form_id='reactive_refuse_form' title=reactive_title form=reactive_refuse_form url=create_shelfobject_url modal_class="modal-xl"%}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_modal' form_id='equipment_form' title=equipment_title form=equipment_form url=create_shelfobject_url modal_class="modal-xl" %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='equipment_refuse_modal' form_id='equipment_refuse_form' title=equipment_title  form=equipment_refuse_form url=create_shelfobject_url modal_class="modal-xl" %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_modal' form_id='material_form' title=material_title form=material_form url=create_shelfobject_url modal_class="modal-xl" %}
+{% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='material_refuse_modal' form_id='material_refuse_form' title=material_title form=material_refuse_form url=create_shelfobject_url modal_class="modal-xl" %}
 
 {% url "laboratory:api-shelfobject-transfer-in-approve" lab_pk=laboratory org_pk=org_pk as transfer_in_approve_url %}
 {% trans "Approve Transfer In - Container" as transfer_in_approve_with_container_title %}
