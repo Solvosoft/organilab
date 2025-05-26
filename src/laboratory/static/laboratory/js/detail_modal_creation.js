@@ -31,16 +31,25 @@ function configure_modal(data){
     if(data.object['object_features']){
         append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance);
     }
+    if (data.object["object_type"] == '0'){
+       if (data.object['pictograms']){
+        insert_image(data.object['pictograms'], tbody_instance);
+        }
+       if (data.object['physical_status']){
+           insert_substance_data(data.object, tbody_instance, {'physical_status': gettext('Physical Status')});
+        }
+       if (data.object['concentration']){
+            insert_substance_data(data.object, tbody_instance, {'concentration': gettext('Concentration')});
+        }
+      }
     if (data.object['substance_characteristics']){
         manage_substance_characteristics(data.object['substance_characteristics'], tbody_instance);
     }
     if (data.object['equipment_characteristics']){
         manage_equipment_characteristics(data.object['equipment_characteristics'], tbody_instance);
     }
-    if (data.object['pictograms'] && data.object['object_type'] == '0'){
-        insert_image(data.object['pictograms'], tbody_instance})
-    }
-    }
+
+ }
 
 
 /*
