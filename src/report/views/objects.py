@@ -306,7 +306,7 @@ def report_objects_html(report):
 
 def report_objects_doc(report):
     builder = ExcelGraphBuilder()
-    content = [[
+    content = [[_("Laboratory"),
         _("Code"), _("Name"), _("Type"), _("Features"), _('Danger indication'),
         _("Molecular formula"), _("CAS id number")
     ]]
