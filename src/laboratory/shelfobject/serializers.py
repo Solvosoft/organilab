@@ -636,6 +636,8 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
                                                                   allow_null=True)
     pictograms = PictogramSerializer(many=True)
     object_type = serializers.SerializerMethodField()
+    physical_status = serializers.SerializerMethodField()
+    concentration = serializers.FloatField(required=False, default=0.0)
 
     class Meta:
         model = ShelfObject
@@ -666,6 +668,9 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
             return characteristics.data
     def get_object_type(self, obj):
         return obj.object.type
+
+    def get_physical_status(self, obj):
+        return obj.get_physical_status_display()
 
 class ShelfSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
