@@ -4939,3 +4939,15 @@ msgstr "Rango de fechas"
 
 msgid "Period range of the data: %(date_range)s"
 msgstr "Rango de periodo de los datos: %(date_range)s"
+
+msgid "Type of movement"
+msgstr "Tipo de movimiento"
+
+msgid "Spend"
+msgstr "Gasto"
+
+msgid "Income"
+msgstr "Ingreso"
+
+msgid "Created"
+msgstr "Creado"

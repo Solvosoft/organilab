@@ -5,6 +5,7 @@ from laboratory.utils_base_unit import get_base_unit
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
     ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
 from laboratory.utils_base_unit import get_base_unit
+from django.utils.translation import gettext_lazy as _
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -75,6 +76,9 @@ def save_object_report_precursor(report):
             income = object_list.filter(type_action__in=[0,1,2], diff_value__gte=0).aggregate(amount=Sum('diff_value', default=0))["amount"]
             expenses = abs(object_list.filter(type_action__in=[2,3], diff_value__lte=0).aggregate(amount=Sum('diff_value', default=0))["amount"])
 
+            reason = "N/A"
+            if len(subject)>0:
+                reason = ", ".join(subject)
             PrecursorReportValues.objects.create(precursor_report = report,
                                                  object = precursor.object,
                                                  measurement_unit = unit,
@@ -85,7 +89,7 @@ def save_object_report_precursor(report):
                                                  stock = income+0,
                                                  month_expense = expenses,
                                                  final_balance = income-expenses,
-                                                 reason_to_spend = ", ".join(subject)
+                                                 reason_to_spend = reason
                                                  )
 
 
