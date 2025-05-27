@@ -173,7 +173,7 @@ class ShelfObjectCreateMethods:
                              laboratory_id)
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
-                          shelfobject.quantity, '', ADDITION, "Create", create=True,
+                          shelfobject.quantity, '', ADDITION, _("Income"), create=True,
                           organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
@@ -228,7 +228,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'marked_as_discard',
@@ -265,7 +265,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -302,7 +302,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -349,7 +349,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -393,7 +393,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
