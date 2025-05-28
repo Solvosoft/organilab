@@ -117,7 +117,10 @@ class Object(AbstractOrganizationRef):
     @property
     def cas_code(self):
         if hasattr(self, 'sustancecharacteristics') and self.sustancecharacteristics:
-            return self.sustancecharacteristics.cas_id_number
+            if self.sustancecharacteristics.cas_id_number:
+                return self.sustancecharacteristics.cas_id_number
+            else:
+                return ""
         return False
 
     class Meta:

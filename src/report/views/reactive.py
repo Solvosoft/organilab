@@ -25,7 +25,7 @@ def get_dataset_report_reactive(report, column_list=None):
             physical = " ".join(reactive.object.sustancecharacteristics.h_code.filter(category_h_code__danger_category="physical").values_list("description", flat=True))
             health = " ".join(reactive.object.sustancecharacteristics.h_code.filter(category_h_code__danger_category="health").values_list("description", flat=True))
             enviroment = " ".join(reactive.object.sustancecharacteristics.h_code.filter(category_h_code__danger_category="environment").values_list("description", flat=True))
-            cas_id = reactive.object.sustancecharacteristics.cas_id_number
+            cas_id = reactive.object.cas_code
 
         location = reactive.in_where_laboratory.location if hasattr(reactive.in_where_laboratory, 'location') else ""
         physical_status = reactive.get_physical_status_display() if reactive.physical_status else ""
@@ -84,6 +84,7 @@ def report_reactive_list_doc(report):
     report_name = get_report_name(report)
     content.insert(0, [report_name])
     file = builder.save_ods(content, format_type=report.file_type)
+
     file_name = f'{report_name}.{report.file_type}'
     file.seek(0)
     content = ContentFile(file.getvalue(), name=file_name)
