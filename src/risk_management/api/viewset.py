@@ -38,7 +38,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
     queryset = Regent.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["name", "laboratories__name"]
+    search_fields = ["user__username", "laboratories__name"]
     filterset_class = RegentFilter
     ordering_fields = ["id"]
     ordering = ("id",)

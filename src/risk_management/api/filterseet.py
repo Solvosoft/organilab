@@ -49,4 +49,5 @@ class RegentFilter(FilterSet):
         fields = {
                     'user': ['exact'],
                     'laboratories': ['exact'],
+                    'type_regent': ['exact'],
                   }
