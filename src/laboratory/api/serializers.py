@@ -786,7 +786,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
         if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
             h_codes = obj.sustancecharacteristics.h_code.all()
             if h_codes:
-                return [{'id': h_code.pk, 'text': h_code.description, 'disabled': False,
+                return [{'id': h_code.pk, 'text': f'({h_code.pk}) {h_code.description}', 'disabled': False,
                          'selected': True} for h_code in h_codes]
         return None
 
