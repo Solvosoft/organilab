@@ -10,10 +10,6 @@ def get_dataset_report_reactive(report, column_list=None):
     filters = {"object__type":0}
     if 'laboratory' in report.data:
         filters['in_where_laboratory__pk'] = report.data['laboratory']
-    if "precursor" and report.data:
-        if report.data["precursor"]:
-            filters['object__sustancecharacteristics__is_precursor'] = (
-                report.data)["precursor"]
 
     objs = ShelfObject.objects.filter(**filters).distinct('pk').order_by('pk')
     for reactive in objs:
