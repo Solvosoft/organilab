@@ -4951,3 +4951,6 @@ msgstr "Ingreso"
 
 msgid "Created"
 msgstr "Creado"
+
+msgid "Reactive Report"
+msgstr "Reporte de reactivos"
