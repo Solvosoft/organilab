@@ -39,16 +39,11 @@ if not DEBUG and GLITCHTIP_DSN:
 
 GUNICORN_BIND = os.getenv("GUNICORN_BIND", "127.0.0.1:8000")
 CSRF_TRUSTED_SCHEME = os.getenv("CSRF_TRUSTED_SCHEME", "http")
-FIRMADOR_CORS = os.getenv("FIRMADOR_CORS", f"{CSRF_TRUSTED_SCHEME}://{GUNICORN_BIND}")
 
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
     CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
-    if "," in FIRMADOR_CORS:
-        FD_CORS = FIRMADOR_CORS.split(",")
-        CORS_ALLOWED_ORIGINS = ["http://localhost:3516"] + FD_CORS
-    else:
-        CORS_ALLOWED_ORIGINS = ["http://localhost:3516", FIRMADOR_CORS]
+    CORS_ALLOWED_ORIGINS = ["http://localhost:3516"] + [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
 else:
     ALLOWED_HOSTS = ['*']
     CORS_ALLOW_ALL_ORIGINS = True
