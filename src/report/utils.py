@@ -57,12 +57,15 @@ def get_pdf_table_content(table_content):
     pdf_table = "<table id='pdf_table_report'><thead>"
     if 'columns' and 'dataset' in table_content:
         pdf_table += '<tr>'
+        table_content['columns'].insert(0, {'title': 'Item'})
         for col in table_content['columns']:
             if 'title' in col:
                 pdf_table += "<th>%s</th>" % (col['title'])
         pdf_table += '</tr></thead><tbody>'
-
+        i=1
         for row in table_content['dataset']:
+            row.insert(0, i)
+            i+=1
             pdf_table += '<tr>'
             for item in row:
                 pdf_table += '<td>%s</td>' % (item)

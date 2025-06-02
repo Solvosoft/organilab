@@ -49,12 +49,12 @@ def save_increase_decrease_shelf_object(user, validated_data, laboratory, organi
 
         new = old + converted_amount
         action_taken = _("Object was increased")
-        log_object_add_change(user, laboratory.pk, shelfobject, old, new, "Add",
+        log_object_add_change(user, laboratory.pk, shelfobject, old, new, _("Income"),
                               provider, bill, create=False, organization=organization)
 
     else:
         log_object_change(user, laboratory.pk, shelfobject, old, new, description, 2,
-                          "Substract", create=False, organization=organization)
+                          _("Spend"), create=False, organization=organization)
 
     shelfobject.quantity = new
 
@@ -155,7 +155,7 @@ def clone_shelfobject_to(shelfobject, destination_organization_id, destination_l
     shelfobject.save()
     build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
 
-    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True,
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Income"), create=True,
                       organization=destination_organization_id)
     organilab_logentry(request.user, shelfobject, ADDITION,
                        changed_data=['shelf', 'object', 'batch', 'status', 'quantity', 'limit_quantity', 'limits',
@@ -192,7 +192,7 @@ def create_new_shelfobject_from_object_in(object, destination_organization_id, d
     )
     build_shelfobject_qr(request, shelfobject, destination_organization_id, destination_laboratory_id)
 
-    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Create"), create=True)
+    log_object_change(request.user, destination_laboratory_id, shelfobject, 0, shelfobject.quantity, '', ADDITION, _("Income"), create=True)
     organilab_logentry(request.user, shelfobject, ADDITION,
                        changed_data=['shelf', 'object', 'quantity', 'measurement_unit', 'in_where_laboratory',
                                      'created_by', 'shelf_object_url', 'shelf_object_qr'],

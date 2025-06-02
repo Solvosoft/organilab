@@ -4,7 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
-from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple, \
+    AutocompleteSelectMultipleImage
 from auth_and_perms.models import Profile, Rol
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
@@ -504,7 +505,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
         self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","physical_status","quantity","concentration",
+        fields = ["object","shelf","status","physical_status","pictograms","quantity","concentration",
                   "measurement_unit", "container_select_option","container_for_cloning",
                   "available_container", "description","marked_as_discard","batch",
                   "objecttype","concentration"]
@@ -517,6 +518,7 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
             'marked_as_discard': genwidgets.CheckboxInput,
             'concentration': genwidgets.FloatInput,
             'physical_status': genwidgets.Select,
+            'pictograms': AutocompleteSelectMultipleImage("imagebasename")
         }
 
 
@@ -564,7 +566,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","physical_status","quantity","concentration",
+        fields = ["object","shelf","status","physical_status","pictograms","quantity","concentration",
                   "container_select_option","container_for_cloning","available_container",
                   "description","marked_as_discard","batch","objecttype"]
         exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits',"container"]
@@ -577,6 +579,7 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
             'batch': genwidgets.TextInput,
             'concentration': genwidgets.FloatInput,
             'physical_status': genwidgets.Select,
+            'pictograms': AutocompleteSelectMultipleImage("imagebasename")
         }
 
 class ContainerManagementForm(ContainerForm):

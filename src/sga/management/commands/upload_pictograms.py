@@ -16,5 +16,6 @@ class Command(BaseCommand):
             for filename in os.listdir(path=file):
                 with open(file / filename, 'r', encoding='utf-8') as open_file:
                     f  = File(open_file)
+                    filename = filename.replace(".svg","")
                     Pictogram.objects.create(name=filename, pictogram=f)
 

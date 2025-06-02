@@ -218,7 +218,7 @@ class Structure(AbstractOrganizationRef):
     area = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_('Area'))
     measuerement_unit = catalog.GTForeignKey(Catalog, on_delete=models.DO_NOTHING,
                                 verbose_name=_('Measurement Unit'),
-                                key_name="key", key_value='units',
+                                key_name="key", key_value='distance_unit',
                                              related_name="structure_measurement_unit")
     geolocation = PlainLocationField(default='9.895804362670006,-84.1552734375',
                                      zoom=15, verbose_name=_('Geolocation'))

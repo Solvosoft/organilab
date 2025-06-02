@@ -15,6 +15,7 @@ from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget, DateRangeTe
 from djgentelella.fields.files import ChunkedFileField
 from djgentelella.serializers import GTDateField, GTDateTimeField
 from djgentelella.serializers.selects import GTS2SerializerBase
+from djgentelella.views.select2autocomplete import GSerializerImgBase
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Profile,Rol
@@ -34,6 +35,7 @@ from laboratory.shelfobject.utils import get_available_containers_for_selection,
     get_furniture_queryset_by_filters, get_lab_room_queryset_by_filters, \
     limit_objects_by_shelf, validate_measurement_unit_and_quantity, \
     get_selected_container, group_object_errors_for_serializer
+from sga.models import Pictogram
 
 logger = logging.getLogger('organilab')
 
@@ -370,6 +372,9 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
     concentration = serializers.FloatField(required=False, default=0.0)
     physical_status = serializers.ChoiceField(choices=ShelfObject.PHYSICAL_STATUS[1::],
                                              required=True)
+    pictograms = serializers.PrimaryKeyRelatedField(many=True, queryset=Pictogram.objects.using(
+                                                              settings.READONLY_DATABASE),
+                                                          required=True)
 
     class Meta:
         model = ShelfObject
@@ -377,7 +382,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
                   "container_for_cloning", "container_select_option",
                   "available_container", 'limit_quantity', "description",
                   'marked_as_discard', 'batch', "concentration",
-                  "physical_status"]
+                  "physical_status", "pictograms"]
 
     def validate(self, data):
         data = super().validate(data)
@@ -410,13 +415,16 @@ class ReactiveRefuseShelfObjectSerializer(ContainerSerializer, serializers.Model
     concentration = serializers.FloatField(required=False, default=0.0)
     physical_status = serializers.ChoiceField(choices=ShelfObject.PHYSICAL_STATUS[1::],
                                              required=True)
+    pictograms = serializers.PrimaryKeyRelatedField(many=True, queryset=Pictogram.objects.using(
+                                                              settings.READONLY_DATABASE),
+                                                          required=True)
 
 
     class Meta:
         model = ShelfObject
         fields = ["object", "shelf", "status", "quantity","container_for_cloning","container_select_option",
                   "available_container","measurement_unit", "marked_as_discard", "description", 'batch',
-                  "concentration", "physical_status"]
+                  "concentration", "physical_status", "pictograms"]
 
     def validate(self, data):
         data = super().validate(data)
@@ -610,6 +618,10 @@ class SubstanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
         model = SustanceCharacteristics
         fields = '__all__'
 
+class PictogramSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pictogram
+        fields = '__all__'
 
 class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
                                   serializers.ModelSerializer):
@@ -622,6 +634,10 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
                                                                   allow_null=True)
     equipment_characteristics = serializers.SerializerMethodField(required=False,
                                                                   allow_null=True)
+    pictograms = PictogramSerializer(many=True)
+    object_type = serializers.SerializerMethodField()
+    physical_status = serializers.SerializerMethodField()
+    concentration = serializers.FloatField(required=False, default=0.0)
 
     class Meta:
         model = ShelfObject
@@ -650,6 +666,11 @@ class ShelfObjectDetailSerializer(BaseShelfObjectSerializer,
             characteristics = EquipmentShelfObjectCharacteristicsDetailSerializer(
                 charac, context={"request":self.context.get("request")})
             return characteristics.data
+    def get_object_type(self, obj):
+        return obj.object.type
+
+    def get_physical_status(self, obj):
+        return obj.get_physical_status_display()
 
 class ShelfSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
