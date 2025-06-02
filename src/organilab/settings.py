@@ -18,24 +18,39 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 GLITCHTIP_DSN=os.getenv("GLITCHTIP_DSN", None)
 if not DEBUG and GLITCHTIP_DSN:
     import sentry_sdk
+    from sentry_sdk import HttpTransport
     from sentry_sdk.integrations.django import DjangoIntegration
 
+    class MyHttpTransport(HttpTransport):
+        def _get_pool_options(self):
+            # Ignore SSL Errors
+            options = super()._get_pool_options()
+            options['cert_reqs'] = "CERT_NONE"
+            return options
     sentry_sdk.init(
         dsn=GLITCHTIP_DSN,
         integrations=[DjangoIntegration()],
         auto_session_tracking=False,
         traces_sample_rate=0,
+        transport=MyHttpTransport,
         release=get_version(),
         environment="production",
     )
 
 GUNICORN_BIND = os.getenv("GUNICORN_BIND", "127.0.0.1:8000")
 CSRF_TRUSTED_SCHEME = os.getenv("CSRF_TRUSTED_SCHEME", "http")
+FIRMADOR_CORS = os.getenv("FIRMADOR_CORS", f"{CSRF_TRUSTED_SCHEME}://{GUNICORN_BIND}")
+
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
     CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    if "," in FIRMADOR_CORS:
+        FD_CORS = FIRMADOR_CORS.split(",")
+        CORS_ALLOWED_ORIGINS = ["http://localhost:3516"] + FD_CORS
+    else:
+        CORS_ALLOWED_ORIGINS = ["http://localhost:3516", FIRMADOR_CORS]
 else:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['*']
     CORS_ALLOW_ALL_ORIGINS = True
 ADMINS = [('Solvo', 'sitio@solvosoft.com'),]
 # Application definition
@@ -49,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    "corsheaders",
     'auth_and_perms',  # needs to start after gentelella
     'presentation',
     'django_ajax',
@@ -86,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'auth_and_perms.middleware.ProfileLanguageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
