@@ -49,6 +49,7 @@ trans:
 	cd src && django-admin compilemessages --locale es
 
 build_docker: clean trans
+	docker pull python:3.11-bookworm
 	docker build  -t organilab:$(setup_version)  .
 
 release: clean trans builddocker

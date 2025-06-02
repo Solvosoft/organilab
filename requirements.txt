@@ -1,4 +1,4 @@
-djgentelella[firmador]>=0.4.8
+djgentelella[firmador]>=0.4.9
 async-notifications==0.2
 django==5.1
 django-excel==0.0.10
@@ -26,4 +26,4 @@ pyfva==0.0.43
 django-otp==1.5.4
 python-barcode==0.15.1
 qrcode==8.0
-sentry-sdk==2.22.0
+sentry-sdk==2.29.1

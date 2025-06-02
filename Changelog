@@ -18,4 +18,4 @@ Command to update the quantity of the shelf objects that the amouont in the logs
 19/05/2024
 Update the precursor reports
 
-    - python manage.py python manage.py precursor_report
+    - python manage.py precursor_report
