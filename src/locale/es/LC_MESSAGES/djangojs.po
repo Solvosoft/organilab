@@ -1066,3 +1066,11 @@ msgstr "Veterinario"
 msgid "Type Regent"
 msgstr "Tipo de Regente"
 
+msgid "Pictograms"
+msgstr "Pictogramas"
+
+msgid "Physical Status"
+msgstr "Estado físico"
+
+msgid "Concentration"
+msgstr "Concentración"

@@ -16,8 +16,6 @@ from urllib.parse import quote
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-from .utils import get_regents_from_organization
-
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 class RiskZoneCreateForm(forms.ModelForm,GTForm):

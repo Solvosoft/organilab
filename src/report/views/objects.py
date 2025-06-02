@@ -306,14 +306,10 @@ def report_objects_html(report):
 
 def report_objects_doc(report):
     builder = ExcelGraphBuilder()
-    content = [[
+    content = [[_("Laboratory"),
         _("Code"), _("Name"), _("Type"), _("Features"), _('Danger indication'),
         _("Molecular formula"), _("CAS id number")
     ]]
-    if 'laboratory' in report.data:
-        labs = report.data['laboratory']
-        if len(labs) > 1:
-            content[0].insert(0,_('Laboratory'))
 
     content = content + get_dataset_objects(report, None)
     record_total = len(content)-1

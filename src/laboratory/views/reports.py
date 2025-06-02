@@ -275,11 +275,11 @@ class PrecursorsView(ReportListView):
                                      str(_('Total Stock')),
                                      str(_('Dispatch or expense during this month')),
                                      str(_('Balance at the end of the month reported in this report')),
-                                     str(_('Reason for dispatch or expense')),
+                                     str(_('Type of movement')),
                                      ]]
             objects = PrecursorReportValues.objects.filter(precursor_report=report)
             for obj in objects.distinct().order_by("object__name"):
-
+                resaon = obj.reason_to_spend if len(obj.reason_to_spend)>0 else 'N/A'
                 book.append([obj.object.name,
                                  obj.measurement_unit.description,
                                  obj.previous_balance,
@@ -289,7 +289,7 @@ class PrecursorsView(ReportListView):
                                  obj.stock,
                                  obj.month_expense,
                                  obj.final_balance,
-                                 obj.reason_to_spend
+                                 resaon
                                      ])
             self.file_name = _('Report_of_precursors_%(month)s_%(consecutive)d') % {
                 "consecutive": report.consecutive,

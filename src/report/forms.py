@@ -279,4 +279,4 @@ class DiscardShelfForm(ReportBase):
         return lab
 
 class ReactiveReportForm(ReportBase):
-    precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,label=_('Is precursor?'))
+    pass
