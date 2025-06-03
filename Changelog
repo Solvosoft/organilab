@@ -24,8 +24,3 @@ Update the precursor reports
 Add the new pictograms
 
     - python manage.py upload_pictograms
-
-03/06/2025
-Update the subject of the log changes
-
-    - python manage.py fix_object_log_amounts
