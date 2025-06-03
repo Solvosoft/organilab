@@ -55,6 +55,7 @@ class Command(BaseCommand):
 
                     if new_value < shelfobject_total:
                         attrw['type_action'] = ADDITION
+                        attrw['subject'] = _("Income")
                     if new_value > shelfobject_total or new_value < shelfobject_total:
                         ObjectLogChange.objects.create(**attrw)
 
@@ -63,6 +64,9 @@ class Command(BaseCommand):
             object__sustancecharacteristics__is_precursor=True, precursor=False,
             object__type=0).update(precursor=True)
 
+    def set_subject(self):
+        ObjectLogChange.objects.filter(subject="Ajuste de cantidades en bitacoras", type_action=ADDITION).update(description=_("Income"))
+        ObjectLogChange.objects.filter(subject="Ajuste de cantidades en bitacoras", type_action=CHANGE).update(description=_("Spend"))
+
     def handle(self, *args, **options):
-        self.update_precursor()
-        self.set_objects()
+        self.set_subject()
