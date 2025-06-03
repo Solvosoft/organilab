@@ -65,8 +65,8 @@ class Command(BaseCommand):
             object__type=0).update(precursor=True)
 
     def set_subject(self):
-        ObjectLogChange.objects.filter(subject="Ajuste de cantidades en bitacoras", type_action=ADDITION).update(description=_("Income"))
-        ObjectLogChange.objects.filter(subject="Ajuste de cantidades en bitacoras", type_action=CHANGE).update(description=_("Spend"))
+        ObjectLogChange.objects.filter(subject="Ajuste de cantidades en bitacoras", type_action=ADDITION).update(subject=_("Income"))
+        ObjectLogChange.objects.filter(subject="Ajuste de cantidades en bitacoras", type_action=CHANGE).update(subject=_("Spend"))
 
     def handle(self, *args, **options):
         self.set_subject()
