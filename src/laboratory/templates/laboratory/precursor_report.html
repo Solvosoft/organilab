@@ -33,7 +33,29 @@
                     <td class="text-center">{{report.consecutive}}</td>
                     <td class="text-center">{{report.get_month_display}} {{report.year}}</td>
 																				<td class="text-center">{{ report.get_date_range }}</td>
-                    <td class="text-center"><a class="btn btn-outline-success" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=xlsx&pk={{report.pk}}"><i class="fa fa-download" ></i> {% trans 'Download'%}</a></td>
+                    <td class="text-center">
+																								<div class="btn-group dropup">
+																									<button type="button" class="btn btn-sm btn-outline-success">
+																										<i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download' %}
+																									</button>
+																									<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																										<span class="caret"></span>
+																										<span class="sr-only">{% trans 'Toggle Dropdown'%}</span>
+																									</button>
+																									<ul class="dropdown-menu">
+																										<li>
+																												<a class="dropdown-item" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=pdf&pk={{report.pk}}">{% trans "PDF" %} </a>
+																										</li>
+																										<li>
+																												<a class="dropdown-item" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=ods&pk={{report.pk}}">{% trans "Ods" %} </a>
+																										</li>
+																										<li>
+																												<a class="dropdown-item" href="{% url 'laboratory:precursor_report' lab_pk=laboratory org_pk=org_pk %}?format=xls&pk={{report.pk}}">{% trans "Xls" %} </a>
+																										</li>
+																										<li>
+																									</ul>
+																									</div>
+																					</td>
                 </tr>
                 {% endfor %}
                 </tbody>
