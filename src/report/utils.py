@@ -155,7 +155,7 @@ def get_pdf_log_change_table_content(report):
     pdf_table = ""
 
     for table in table_content:
-        cas = table.object.object.cas_code if table.object.object.cas_code else ""
+        cas = table.object.cas_code if table.object.cas_code else ""
         pdf_table += "<p style='padding:0px; font-size:12px;'>%s</p>" %(f'{table.laboratory.name} | {table.object.name} {cas}')
         pdf_table += "<p style='padding:0px; font-size:12px;' >%s</p>" \
                      %(f' :{table.diff_value} {table.unit.description}')
