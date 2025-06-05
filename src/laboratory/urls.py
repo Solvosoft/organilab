@@ -102,8 +102,7 @@ lab_reports_urls = [
     # PDF reports
     path('shelf_objects/<int:pk>', reports.report_shelf_objects, name='reports_shelf_objects'),
     # HTML reports
-    path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(),
-         name='reports_laboratory'),
+    #path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(), name='reports_laboratory'),
     path('list/furniture/', furniture.FurnitureReportView.as_view(),
          name='reports_furniture_detail'),
     path('list/objects/', reports.ObjectList.as_view(),
