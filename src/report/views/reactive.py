@@ -8,8 +8,9 @@ from report.utils import filter_period, set_format_table_columns, get_report_nam
 def get_dataset_report_reactive(report, column_list=None):
     dataset = []
     filters = {"object__type":0}
-    if 'laboratory' in report.data:
-        filters['in_where_laboratory__pk'] = report.data['laboratory']
+    if 'lab_pk' in report.data:
+        filters['in_where_laboratory__pk'] = report.data['lab_pk']
+
 
     objs = ShelfObject.objects.filter(**filters).distinct('pk').order_by('pk')
     for reactive in objs:
