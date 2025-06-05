@@ -6,18 +6,7 @@
         {% trans 'Reports' %}<span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
-        {% if perms.laboratory.do_report %}
-        <li class="dropdown-submenu">
-            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Laboratory' %}<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="{% url 'laboratory:reports_laboratory' lab_pk=laboratory org_pk=org_pk %}">
-                    {% trans 'Objects' %}</a></li>
-            </ul>
-        </li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        {% endif %}
+
         <li>
             <a href="{% url 'laboratory:reports_furniture_detail' lab_pk=laboratory org_pk=org_pk %}">
                 {% trans 'Furnitures' %}
