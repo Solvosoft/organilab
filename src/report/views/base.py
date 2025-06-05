@@ -69,6 +69,7 @@ def base_pdf(report, uri):
     title = ''
     datalist = ""
     total = 0
+    columns = 0
     if 'title' in report.data and report.data['title']:
         title = report.data['title']
     report_name = get_report_name(report)
@@ -80,12 +81,14 @@ def base_pdf(report, uri):
     else:
         datalist = get_pdf_table_content(report.table_content)
         total=len(report.table_content['dataset'])
+        if total > 0:
+            columns = len(report.table_content['dataset'][0])
     context = {
         'datalist': datalist,
         'user': report.created_by,
         'title': title if title else report_name,
         'datetime': timezone.now(),
-        'size_sheet': 'landscape'
+        'size_sheet': 'b4 landscape' if columns > 8 else 'landscape'
     }
 
     html = render_to_string('report/base_report_pdf.html', context=context)
