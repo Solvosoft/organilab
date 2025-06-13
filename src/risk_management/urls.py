@@ -44,9 +44,9 @@ urlpatterns = [
     path('structures/', zoneviews.structure_view, name='structures_list'),
     path('structures/create/', zoneviews.structure_actions, name='structures_create'),
     path('structures/update/<int:pk>/', zoneviews.structure_actions, name='structures_update'),
+    path('dashboard/', zoneviews.ZoneDashboard.as_view(), name='zone_dashboard'),
     path('api/risk/', include(risk_router.urls)),
     path('api/building/', include(building_router.urls)),
     path('api/structure/', include(structure_router.urls)),
     path('api/incident/<int:risk>/', include(incident_router.urls)),
-
 ]

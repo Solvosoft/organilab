@@ -1,18 +1,22 @@
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, ShelfObject
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
-    RegentForm, StructureForm, IncidentReportForm, DocFormatForm, UpdateRegentForm
+    RegentForm, StructureForm, IncidentReportForm, DocFormatForm, UpdateRegentForm, \
+    RiskZoneListForm
 from risk_management.models import RiskZone, ZoneType, Buildings, Regent
 from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
 from urllib.parse import quote
@@ -269,3 +273,33 @@ def structure_actions(request, org_pk, pk=None):
         'title': title
     }
     return render(request, 'risk_management/structure_form.html', context=context)
+
+class ZoneDashboard(TemplateView):
+    template_name = 'risk_management/risk_graphics.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ZoneDashboard, self).get_context_data()
+        context['org_pk'] = self.kwargs['org_pk']
+        x=""
+        i=0
+        for key in self.request.GET:
+            for data in self.request.GET.getlist(key):
+                if i>0:
+                    x += f"&{key}={data}"
+                else:
+                    x += f"?{key}={data}"
+                i+=1
+        urls ={
+            'dangerindicationchart': reverse('dangerindicationchart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+            'whiteorganchart': reverse('whiteorganchart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+            'precursortypechart': reverse('precursortypechart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+            'storageclasschart': reverse('storageclasschart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+            'uecodechart': reverse('uecodechart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+            'nfpachart': reverse('nfpachart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+        }
+        context.update(urls)
+        print(self.kwargs['org_pk'])
+        context['form'] = RiskZoneListForm(self.request.GET, organization=self.kwargs['org_pk'])
+
+        return context
+

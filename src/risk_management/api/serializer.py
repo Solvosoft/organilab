@@ -303,3 +303,19 @@ class ActionIncidentReportSerializer(serializers.ModelSerializer):
             "notification_copy",
             'incident_date'
         )
+
+class RiskZoneSerializer(serializers.Serializer):
+    risk_zone = serializers.PrimaryKeyRelatedField(
+        many=True,
+        required=False,
+        queryset=RiskZone.objects.all(),
+        allow_null=True,
+        allow_empty=True,
+    )
+    buildings = serializers.PrimaryKeyRelatedField(
+        many=True,
+        required=False,
+        queryset=Buildings.objects.all(),
+        allow_null=True,
+        allow_empty=True,
+    )
