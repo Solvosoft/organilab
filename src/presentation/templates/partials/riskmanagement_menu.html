@@ -26,10 +26,10 @@
 	{% endif %}
 
 	{% if perms.risk_management.view_structure %}
-	    <li><a href="{% url 'riskmanagement:structures_list' org_pk %}"
+	<li><a href="{% url 'riskmanagement:structures_list' org_pk %}"
            title="{% trans 'Manage structure' %}">
         {% trans 'Manage structure' %}</a>
-    </li>
+</li>
 	{% endif %}
 
 	{% if perms.risk_management.view_regent %}
@@ -38,6 +38,11 @@
         {% trans 'Manage regents' %}</a>
     </li>
 	{% endif %}
+	<li><a href="{% url 'riskmanagement:zone_dashboard' org_pk %}"
+								title="{% trans 'Dashboard' %}">
+		{% trans 'Dashboard' %}</a>
+	</li>
 </ul>
+
 </li>
 {% endif %}
