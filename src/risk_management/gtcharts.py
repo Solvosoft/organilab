@@ -10,8 +10,11 @@ from djgentelella.chartjs import VerticalBarChart, HorizontalBarChart, \
 from djgentelella.groute import register_lookups
 from rest_framework.response import Response
 
-from laboratory.models import Laboratory, SustanceCharacteristics, ShelfObject, Catalog
-from risk_management.models import RiskZone
+from laboratory.models import Laboratory, SustanceCharacteristics, ShelfObject, Catalog, \
+    Object, OrganizationStructure
+from laboratory.utils_base_unit import get_conversion_units
+from risk_management.api.serializer import RiskZoneSerializer
+from risk_management.models import RiskZone, Buildings
 from sga.models import DangerIndication
 
 default_colors = ["229, 158, 64", "240, 180, 150", "0, 168, 150", "207, 130, 182",
@@ -37,6 +40,27 @@ class BaseChart:
         color = 'rgb(' + color_list + ')'
         return color
 
+    def get_extra_filters(self):
+        serializer = RiskZoneSerializer(data=self.request.query_params)
+        self.filters = {
+            'in_where_laboratory__organization__pk': self.organization.pk,
+            'object__type': '0'
+        }
+        laboratories=[]
+        if serializer.is_valid():
+            if 'risk_zone' in serializer.validated_data:
+                risk_zones = [risk.pk for risk in serializer.validated_data['risk_zone']]
+                risk_zone = RiskZone.objects.filter(pk__in=risk_zones, buildings__laboratories__isnull=False).values_list('buildings__laboratories__pk', flat=True)
+                laboratories+= risk_zone
+
+            if 'buildings' in serializer.validated_data:
+                buildings = [building.pk for building in serializer.validated_data['buildings']]
+                buildings = Buildings.objects.filter(pk__in=buildings, laboratories__isnull=False).values_list('laboratories__pk', flat=True)
+                laboratories+= buildings
+
+            self.filters['in_where_laboratory__pk__in'] = set(laboratories)
+
+
 class LaboratoryPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
@@ -59,7 +83,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -68,16 +92,16 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
     def get_labels(self):
         labels=[]
         self.data=[]
-        sc=SustanceCharacteristics.objects.filter(obj__shelfobject__in_where_laboratory=self.laboratory)
-        queryset = DangerIndication.objects.annotate(sc_count=Count('sustancecharacteristics')).filter(sustancecharacteristics__in=sc)
-#        queryset = DangerIndication.objects.annotate(sc_count=Sum('sustancecharacteristics__obj__shelfobject')).filter(sustancecharacteristics__in=sc)
+        self.get_extra_filters()
+        queryset=ShelfObject.objects.filter(**self.filters).distinct()
 
-
-#        self.unidad = set(DangerIndication.objects.filter(sustancecharacteristics__in=sc).values_list(
-#            'sustancecharacteristics__obj__shelfobject__measurement_unit__description', flat=True))
-        for dangerindication in queryset:
-            labels.append(dangerindication.code)
-            self.data.append(dangerindication.sc_count)
+        for dangerindication in DangerIndication.objects.all():
+            amount=0
+            for obj in queryset.filter(object__sustancecharacteristics__h_code=dangerindication):
+                amount+= get_conversion_units(obj.measurement_unit,obj.quantity)
+            if amount>0:
+                labels.append(dangerindication.code)
+                self.data.append(amount)
 
         if not labels:
             labels.append(_("No data registered"))
@@ -116,7 +140,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -124,30 +148,32 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "white_organ").values('pk', 'description')
-        self.aggrateparams = {}
         labels = []
+        self.data = []
+        self.get_extra_filters()
+        queryset=ShelfObject.objects.filter(**self.filters).distinct()
+
         for catalog in self.catalogs:
-            labels.append(catalog['description'])
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__white_organ= catalog['pk']
-            ))
+            amount = 0
+            for obj in queryset.filter(
+                object__sustancecharacteristics__white_organ__pk=catalog['pk']):
+                amount += get_conversion_units(obj.measurement_unit, obj.quantity)
+            if amount>0:
+                labels.append(catalog['description'])
+                self.data.append(amount)
+
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
         return [
 
             {'label': _('Count elements by White Organ'),
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -168,7 +194,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -176,30 +202,30 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "Precursor").values('pk', 'description')
-        self.aggrateparams = {}
+        self.get_extra_filters()
+        queryset=ShelfObject.objects.filter(**self.filters).distinct()
         labels = []
+        self.data=[]
+
         for catalog in self.catalogs:
+            amount=0
+            for obj in queryset.filter(object__sustancecharacteristics__precursor_type__pk=catalog['pk']):
+                amount+= get_conversion_units(obj.measurement_unit,obj.quantity)
             labels.append(catalog['description'])
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__precursor_type= catalog['pk']
-            ))
+            self.data.append(amount)
+
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
         return [
 
             {'label': _('Count elements by Precursor Type'),
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -219,7 +245,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -227,30 +253,29 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "nfpa").values('pk', 'description')
-        self.aggrateparams = {}
+        self.data = []
         labels = []
+        self.get_extra_filters()
+        queryset=ShelfObject.objects.filter(**self.filters).distinct()
+
         for catalog in self.catalogs:
+            amount=0
+            for obj in queryset.filter(object__sustancecharacteristics__nfpa__pk=catalog['pk']):
+                amount+= get_conversion_units(obj.measurement_unit,obj.quantity)
             labels.append(catalog['description'])
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__precursor_type= catalog['pk']
-            ))
+            self.data.append(amount)
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
         return [
 
             {'label': _('Count elements by NFPA'),
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -272,7 +297,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -282,28 +307,29 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
         self.catalogs = Catalog.objects.filter(key = "ue_code").values('pk', 'description')
         self.aggrateparams = {}
         labels = []
+        self.data=[]
+        self.get_extra_filters()
+        queryset=ShelfObject.objects.filter(**self.filters).distinct()
+
         for catalog in self.catalogs:
+            amount=0
+            for obj in queryset.filter(object__sustancecharacteristics__ue_code__pk=catalog['pk']):
+                amount+= get_conversion_units(obj.measurement_unit,obj.quantity)
             labels.append(catalog['description'])
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__ue_code= catalog['pk']
-            ))
+            self.data.append(amount)
+
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
         return [
 
             {'label': _('Count elements by UE Code'),
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]
 
@@ -325,7 +351,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def retrieve(self, request, pk):
         self.request = request
-        self.laboratory = get_object_or_404(Laboratory, pk=pk)
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
@@ -333,29 +359,28 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def get_labels(self):
         self.catalogs = Catalog.objects.filter(key = "storage_class").values('pk', 'description')
-        self.aggrateparams = {}
+        self.data=[]
         labels = []
+        self.get_extra_filters()
+        queryset=ShelfObject.objects.filter(**self.filters).distinct()
         for catalog in self.catalogs:
+            amount=0
+            for obj in queryset.filter(object__sustancecharacteristics__storage_class__pk=catalog['pk']):
+                amount+= get_conversion_units(obj.measurement_unit,obj.quantity)
             labels.append(catalog['description'])
-            self.aggrateparams["c%d"%catalog['pk']]  = Count('object__sustancecharacteristics', filter=Q(
-                object__sustancecharacteristics__storage_class= catalog['pk']
-            ))
+            self.data.append(amount)
+
         return labels
 
 
     def get_datasets(self):
         self.index = randint(0, len(self.colors))
-        data = []
-        dataset = ShelfObject.objects.filter(in_where_laboratory=self.laboratory).aggregate(**self.aggrateparams)
-        for catalog in self.catalogs:
-            data.append(dataset['c%d'%catalog['pk']])
-        #
         return [
 
             {'label': _('Count elements by Storage Class'),
              'backgroundColor': self.get_color(),
              'borderColor': self.get_color(),
              'borderWidth': 1,
-             'data': data
+             'data': self.data
              }
                 ]

@@ -303,3 +303,34 @@ class DocFormatForm(GTForm, forms.Form):
     widget=genwidgets.Select(attrs={'class': 'form-control'}),
     label=_('Format')
     )
+
+class RiskZoneListForm(GTForm, forms.Form):
+    risk_zone = forms.ModelMultipleChoiceField(queryset=RiskZone.objects.none(),
+                                               required=False,
+                                               widget=genwidgets.SelectMultiple(attrs={'class': 'form-control'}),
+                                               label=_('Risk zones'))
+    buildings = forms.ModelMultipleChoiceField(queryset=Buildings.objects.none(),
+                                               required=False,
+                                               widget=genwidgets.SelectMultiple(attrs={'class': 'form-control'}),
+                                               label=_('Buildings'))
+
+    default_render_type = "as_grid"
+
+    grid_representation = [
+        [
+            ["risk_zone",
+             ],
+            [
+                "buildings",
+            ]
+        ],
+    ]
+
+    def __init__(self, *args, **kwargs):
+        organization = None
+        if 'organization' in kwargs:
+            organization = kwargs.pop('organization')
+        super().__init__(*args, **kwargs)
+        if organization:
+            self.fields['risk_zone'].queryset = RiskZone.objects.filter(organization__pk=organization)
+            self.fields['buildings'].queryset = Buildings.objects.filter(organization__pk=organization)
