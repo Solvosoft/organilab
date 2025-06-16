@@ -153,7 +153,8 @@ class BuildingsForm(GTForm, forms.ModelForm):
                     Buildings.objects.filter(organization__pk=org_pk).
                     exclude(pk=instance.pk))
                 self.fields['laboratories'].queryset = Laboratory.objects.filter(
-                    organization__pk=org_pk).exclude(pk__in=labs)
+                    organization__pk=org_pk)
+
             else:
                 labs = Buildings.objects.filter(organization__pk=org_pk).values_list(
                     'laboratories', flat=True)
