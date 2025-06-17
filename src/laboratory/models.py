@@ -102,7 +102,9 @@ class Object(AbstractOrganizationRef):
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
     is_container = models.BooleanField(default=False, verbose_name=_("Is Container?"))
-
+    is_dangerous = models.BooleanField(default=False, verbose_name=_("Is Dangerous?"))
+    has_threshold = models.BooleanField(default=False, verbose_name=_("Has threshold?"))
+    threshold = models.FloatField(default=0.0, verbose_name=_("Threshold"))
 
     @property
     def is_reactive(self):
