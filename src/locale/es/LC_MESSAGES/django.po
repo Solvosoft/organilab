@@ -4954,3 +4954,12 @@ msgstr "Creado"
 
 msgid "Reactive Report"
 msgstr "Reporte de reactivos"
+
+msgid "Is dangerous?"
+msgstr "¿Es peligroso?"
+
+msgid "Has threshold?"
+msgstr "Tiene umbral?"
+
+msgid "Threshold"
+msgstr "Umbral"

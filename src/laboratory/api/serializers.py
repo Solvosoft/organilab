@@ -621,6 +621,9 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
     model = serializers.CharField(max_length=50, required=True)
     serie = serializers.CharField(max_length=50)
     plaque = serializers.CharField(max_length=50)
+    is_dangerous = serializers.BooleanField(required=False)
+    has_threshold = serializers.BooleanField(required=False)
+    threshold = serializers.FloatField(default=0.0, required=False)
 
     def validate(self, data):
         data = super().validate(data)
@@ -639,7 +642,6 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
                 f'ValidateReactiveSerializer --> organization.pk ({organization.pk}) != org_pk_view ({org_pk_view})')
             raise serializers.ValidationError(
                 {'organization': _("Organization is not valid.")})
-
         return data
 
     class Meta:
@@ -828,8 +830,14 @@ class ReactiveSerializer(serializers.ModelSerializer):
 
     def get_combined_booleans(self, obj):
         is_public = '<i class="fa fa-users fa-fw text-success"></i>' if obj.is_public else '<i class="fa fa-user-times fa-fw text-warning"></i>'
-        precursor = '<i class="fa fa-check-circle fa-fw text-success"></i>' if obj.sustancecharacteristics.is_precursor else '<i class="fa fa-times-circle fa-fw text-warning"></i>'
-        bioaccumulable = '<i class="fa fa-leaf fa-fw text-success"></i>' if obj.sustancecharacteristics.bioaccumulable else '<i class="fa fa-flask fa-fw text-warning"></i>'
+        precursor = '<i class="fa fa-times-circle fa-fw text-warning"></i>'
+        bioaccumulable ='<i class="fa fa-flask fa-fw text-warning"></i>'
+
+        if obj.is_public:
+            precursor = '<i class="fa fa-check-circle fa-fw text-success"></i>'
+        if hasattr(obj,  'sustancecharacteristics'):
+         if hasattr(obj.sustancecharacteristics, 'bioaccumulable'):
+            bioaccumulable = '<i class="fa fa-leaf fa-fw text-success"></i>'
 
         return f"{is_public} {precursor} {bioaccumulable}"
 
@@ -851,7 +859,8 @@ class ReactiveSerializer(serializers.ModelSerializer):
                   'plaque', 'iarc', 'imdg', 'white_organ', 'bioaccumulable',
                   'molecular_formula', 'cas_id_number', 'security_sheet', 'is_precursor',
                   'precursor_type', 'h_code', 'ue_code', 'nfpa',
-                  'storage_class', 'seveso_list','img_representation', 'combined_booleans','actions']
+                  'storage_class', 'seveso_list','img_representation', 'combined_booleans',
+                  "is_dangerous", "has_threshold", "threshold", 'actions']
 
 class ReactiveDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ReactiveSerializer(), required=True)
