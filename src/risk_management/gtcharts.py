@@ -46,20 +46,27 @@ class BaseChart:
             'in_where_laboratory__organization__pk': self.organization.pk,
             'object__type': '0'
         }
+        self.no_labs = False
         laboratories=[]
         if serializer.is_valid():
+            has_filter = False
             if 'risk_zone' in serializer.validated_data:
                 risk_zones = [risk.pk for risk in serializer.validated_data['risk_zone']]
                 risk_zone = RiskZone.objects.filter(pk__in=risk_zones, buildings__laboratories__isnull=False).values_list('buildings__laboratories__pk', flat=True)
                 laboratories+= risk_zone
+                has_filter = True
 
             if 'buildings' in serializer.validated_data:
                 buildings = [building.pk for building in serializer.validated_data['buildings']]
                 buildings = Buildings.objects.filter(pk__in=buildings, laboratories__isnull=False).values_list('laboratories__pk', flat=True)
                 laboratories+= buildings
-
-            self.filters['in_where_laboratory__pk__in'] = set(laboratories)
-
+                has_filter = True
+            if has_filter:
+                if len(laboratories)>0:
+                    self.filters['in_where_laboratory__pk__in'] = list(set(laboratories))
+                else:
+                    del self.filters['in_where_laboratory__organization__pk']
+                    self.no_labs = True
 
 class LaboratoryPermission(permissions.BasePermission):
 
@@ -93,7 +100,10 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
         labels=[]
         self.data=[]
         self.get_extra_filters()
+
         queryset=ShelfObject.objects.filter(**self.filters).distinct()
+        if self.no_labs:
+            queryset = queryset.none()
 
         for dangerindication in DangerIndication.objects.all():
             amount=0
@@ -152,6 +162,8 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
         self.data = []
         self.get_extra_filters()
         queryset=ShelfObject.objects.filter(**self.filters).distinct()
+        if self.no_labs:
+            queryset = queryset.none()
 
         for catalog in self.catalogs:
             amount = 0
@@ -204,6 +216,8 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
         self.catalogs = Catalog.objects.filter(key = "Precursor").values('pk', 'description')
         self.get_extra_filters()
         queryset=ShelfObject.objects.filter(**self.filters).distinct()
+        if self.no_labs:
+            queryset = queryset.none()
         labels = []
         self.data=[]
 
@@ -257,6 +271,8 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
         labels = []
         self.get_extra_filters()
         queryset=ShelfObject.objects.filter(**self.filters).distinct()
+        if self.no_labs:
+            queryset = queryset.none()
 
         for catalog in self.catalogs:
             amount=0
@@ -310,6 +326,8 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
         self.data=[]
         self.get_extra_filters()
         queryset=ShelfObject.objects.filter(**self.filters).distinct()
+        if self.no_labs:
+            queryset = queryset.none()
 
         for catalog in self.catalogs:
             amount=0
@@ -363,6 +381,8 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
         labels = []
         self.get_extra_filters()
         queryset=ShelfObject.objects.filter(**self.filters).distinct()
+        if self.no_labs:
+            queryset = queryset.none()
         for catalog in self.catalogs:
             amount=0
             for obj in queryset.filter(object__sustancecharacteristics__storage_class__pk=catalog['pk']):
