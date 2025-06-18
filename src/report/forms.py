@@ -10,6 +10,7 @@ from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
 from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
 from report.models import TaskReport, DocumentReportStatus
+from risk_management.models import RiskZone, Buildings
 
 
 class ReportBase(GTForm):
@@ -280,3 +281,19 @@ class DiscardShelfForm(ReportBase):
 
 class ReactiveReportForm(ReportBase):
     pass
+
+class RiskZoneReportForm(ReportBase):
+    risk_zone = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                               queryset=RiskZone.objects.none(),
+                                               label=_("Risk Zones"))
+    building = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                              queryset=Buildings.objects.none(),
+                                              label=_("Buildings"))
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(RiskZoneReportForm, self).__init__(*args, **kwargs)
+
+
+        if org_pk:
+            self.fields['risk_zone'].queryset = RiskZone.objects.filter(organization=org_pk)
+            self.fields['building'].queryset = Buildings.objects.filter(organization=org_pk)
