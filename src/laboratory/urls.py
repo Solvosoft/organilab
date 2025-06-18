@@ -115,6 +115,7 @@ lab_reports_urls = [
     path('precursors/', reports.PrecursorsView.as_view(), name='precursor_report'),
     path('list/waste/report', reports.DiscardShelfReportView.as_view(), name='waste_report'),
     path('list/reactive/report', reports.ReactiveReport.as_view(), name='reactive_report'),
+    path('risk_zone/', reports.RiskZoneReport.as_view(), name='risk_zone_report'),
 
 ]
 
