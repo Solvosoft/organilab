@@ -624,10 +624,14 @@ class HCodeCategory(models.Model):
         ('health', _('Health')),
         ('environment', _('Environment')),
     )
+    name = models.CharField(max_length=50,  null=True, blank=True,
+                            verbose_name=_('Name'))
     danger_category = models.CharField(max_length=30, choices=HCATEGORY, null=False,
                                        blank=False, verbose_name=_('Danger Category'))
     h_code = models.ManyToManyField(DangerIndication, related_name='category_h_code',
                                     verbose_name=_('H Codes'))
+    threshold = models.FloatField(null=True, blank=True, default=0.0,
+                                  verbose_name=_('Threshold'))
 
     def __str__(self):
         return self.danger_category
