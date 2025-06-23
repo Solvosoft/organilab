@@ -324,8 +324,10 @@ class ValidateReviewSubstanceForm(forms.Form):
 class HCategoryForm(GTForm,forms.ModelForm):
     class Meta:
         model = HCodeCategory
-        fields = ['danger_category', 'h_code']
+        fields = ['name', 'threshold', 'danger_category', 'h_code']
         widgets = {
+            'name': genwidgets.TextInput,
+            'threshold': genwidgets.TextInput,
             'danger_category': genwidgets.Select,
             'h_code': AutocompleteSelectMultiple(
                 'dangersearch',

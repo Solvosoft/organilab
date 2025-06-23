@@ -33,7 +33,7 @@ class HCodeCategoryViewSet(AuthAllPermBaseObjectManagement):
     queryset = HCodeCategory.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["danger_category", "h_code__code", "h_code__description"]
+    search_fields = ['name',"threshold","danger_category", "h_code__code", "h_code__description"]
     filterset_class = HCategoryFilterSet
     ordering_fields = ["id"]
     ordering = ("id",)
