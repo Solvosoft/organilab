@@ -309,7 +309,7 @@ class ZoneDashboard(TemplateView):
 @method_decorator(permission_required('laboratory.view_report'), name='dispatch')
 class RiskZoneReport(ListView):
     model = RiskZone
-    template_name = 'report/base_report_form_view.html'
+    template_name = 'report/base_report_organizations.html'
 
     def get_context_data(self, **kwargs):
         context = super(RiskZoneReport,
@@ -317,12 +317,13 @@ class RiskZoneReport(ListView):
         title = _("Reactive Objects Report")
         context.update({
             'title_view': title,
-            'report_urlnames': ['risk_report'],
+            'report_urlnames': ['risk_zone_report'],
             'form': RiskZoneReportForm(initial={
                 'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
                 'title': title,
                 'organization': self.org,
-                'report_name': 'risk_report',
-            })
+                'report_name': 'risk_zone_report',
+            },
+                org_pk=self.org)
         })
         return context
