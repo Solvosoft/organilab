@@ -20,12 +20,15 @@ from weasyprint import HTML
 from auth_and_perms.organization_utils import user_is_allowed_on_organization, organization_can_change_laboratory
 from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import check_user_access_kwargs_org_lab
+from risk_management.models import Buildings
 
 
 class CreateView(djCreateView):
     def get(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
+
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -36,8 +39,13 @@ class CreateView(djCreateView):
             self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
                                                 pk=self.lab)
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if "building_pk" not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
+
         return djCreateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -53,15 +61,19 @@ class CreateView(djCreateView):
             self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
                                                 pk=self.lab)
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
-
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if "building_pk" not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
         return djCreateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djCreateView.get_context_data(self, **kwargs)
         context['org_pk'] = self.org
         context['laboratory'] = self.lab
+        context['building'] = self.building
         return context
 
 
@@ -70,6 +82,7 @@ class UpdateView(djUpdateView):
     def get(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),                                pk=self.org)
@@ -79,29 +92,40 @@ class UpdateView(djUpdateView):
             self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
                                                 pk=self.lab)
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if "building_pk" not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
+
         return djUpdateView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),                                         pk=self.org)
             user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
-            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),                                 pk=self.lab)
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=self.lab)
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if "building_pk" not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
         return djUpdateView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djUpdateView.get_context_data(self, **kwargs)
         context['laboratory'] = self.lab
         context['org_pk'] = self.org
+        context['building'] = self.building
         return context
 
 
@@ -109,6 +133,8 @@ class DeleteView(djDeleteView):
     def get(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
+
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
@@ -118,29 +144,40 @@ class DeleteView(djDeleteView):
             self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
                                             pk=self.lab)
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if 'building_pk' not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
+
         return djDeleteView.get(self, request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure, pk=self.org)
             user_is_allowed_on_organization(request.user, self.organization)
         if 'lab_pk' in kwargs:
             self.lab = int(kwargs['lab_pk'])
-            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),                                    pk=self.lab)
+            self.laboratory = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE), pk=self.lab)
             organization_can_change_laboratory(self.laboratory, self.organization, raise_exec=True)
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if 'building_pk' not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
         return djDeleteView.post(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = djDeleteView.get_context_data(self, **kwargs)
         context['org_pk'] = self.org
         context['laboratory'] = self.lab
+        context['building'] = self.building
         return context
 
 
@@ -148,12 +185,17 @@ class ListView(djListView):
     def get(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
         if 'lab_pk' in kwargs:
             self.lab= int(kwargs['lab_pk'])
-        if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
-            raise Http404()
+        if "building_pk" not in kwargs:
+            if not check_user_access_kwargs_org_lab(self.org, self.lab, request.user):
+                raise Http404()
+        else:
+            self.building = get_object_or_404(Buildings.objects.using(settings.READONLY_DATABASE),
+                                                pk=kwargs['building_pk'])
         return djListView.get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -161,12 +203,14 @@ class ListView(djListView):
         context['laboratory'] = self.lab
         context['org_pk'] = self.org
         context['datetime'] = timezone.now()
+        context['building'] = self.building
         return context
 
 class DetailView(djDetailView):
     def get(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -185,6 +229,7 @@ class DetailView(djDetailView):
         context['laboratory'] = self.lab
         context['org_pk'] = self.org
         context['datetime'] = timezone.now()
+        context['building'] = self.building
         return context
 
 class ReportListView(djListView):

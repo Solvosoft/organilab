@@ -7,7 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from tree_queries.models import TreeNode
 
 from laboratory import catalog
-from laboratory.models import Catalog
 from laboratory.models_utils import upload_files
 from presentation.models import AbstractOrganizationRef
 
@@ -617,3 +616,29 @@ class SubstanceObservation(models.Model):
 
     def __str__(self):
         return f'{self.substance} {self.created_by}'
+
+
+class HCodeCategory(models.Model):
+    HCATEGORY = (
+        ('physical', _('Physical')),
+        ('health', _('Health')),
+        ('environment', _('Environment')),
+    )
+    name = models.CharField(max_length=50,  null=True, blank=True,
+                            verbose_name=_('Name'))
+    danger_category = models.CharField(max_length=30, choices=HCATEGORY, null=False,
+                                       blank=False, verbose_name=_('Danger Category'))
+    h_code = models.ManyToManyField(DangerIndication, related_name='category_h_code',
+                                    verbose_name=_('H Codes'))
+    threshold = models.FloatField(null=True, blank=True, default=0.0,
+                                  verbose_name=_('Threshold'))
+
+    def __str__(self):
+        return self.danger_category
+
+class Pictogram(models.Model):
+    name = models.CharField(max_length=255)
+    pictogram = models.FileField(upload_to=upload_files, null=True, blank=True)
+
+    def __str__(self):
+        return self.name

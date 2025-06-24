@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.core.management import BaseCommand
 
 from auth_and_perms.management.commands.urlname_permissions import URLNAME_PERMISSIONS
@@ -30,18 +30,20 @@ class Command(BaseCommand):
         return URLNAME_PERMISSIONS
 
     def load_urlname_permissions(self):
+        group, _ = Group.objects.get_or_create(name='RegisterOrganization')
         urlnames=self.get_urlname_permission()
         for url_name, item_list in urlnames.items():
             for obj in item_list:
                 perm = self.get_permission(obj['permission'])
-
                 if perm:
+                    perm=perm.first()
+                    group.permissions.add(perm)
                     permcat = PermissionsCategoryManagement.objects.filter(name=obj['name'], category=obj['category'],
-                                                                         permission=perm.first(), url_name=url_name)
+                                                                         permission=perm, url_name=url_name)
 
                     if not permcat.exists():
                         new_permcat = PermissionsCategoryManagement(
-                            name=obj['name'], category=obj['category'], permission=perm.first(), url_name=url_name
+                            name=obj['name'], category=obj['category'], permission=perm, url_name=url_name
                         )
                         new_permcat.save()
                     else:

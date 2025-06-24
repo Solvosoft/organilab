@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.db.models import Q, Case, When
 from django.http import Http404
 from djgentelella.groute import register_lookups
+from djgentelella.permission_management import AllPermission
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication
@@ -195,11 +196,10 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         return str(obj.pk)
 
 @register_lookups(prefix="groupbase", basename="groupbase")
-class GroupS2(BaseSelect2View):
+class GroupS2(BaseSelect2View, AllPermission):
     model = Rol
     fields = ['pk','name']
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = ['auth.change_group']
 
     def get_queryset(self):
         user = self.request.user
@@ -217,6 +217,11 @@ class GroupS2(BaseSelect2View):
             return self.text_separator.join(fields) + " ("+org_str+")"
         return str(obj)
 
+@register_lookups(prefix="userbase", basename="userbase")
+class UserApi(BaseSelect2View, AllPermission):
+    model = User
+    fields = ['username']
+    perms = ['auth.change_user']
 
 @register_lookups(prefix="relorgbase", basename="relorgbase")
 class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):

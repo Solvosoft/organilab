@@ -3036,14 +3036,18 @@ msgid ""
 "laboratories in an automated manner.  It includes data security, inventory "
 "management, traceability of chemicals and analysis equipment, and management "
 "of safety and health in the laboratory."
-msgstr "Es un software que ofrece una solución integral para la gestión de laboratorios "
-"de manera automatizada. Incluye seguridad de los datos, manejo de inventarios, trazabilidad "
-"de las sustancias químicas y los equipos de análisis, gestión de seguridad y salud en el laboratorio."
+msgstr ""
+"Es un software que ofrece una solución integral para la gestión de "
+"laboratorios de manera automatizada. Incluye seguridad de los datos, manejo "
+"de inventarios, trazabilidad de las sustancias químicas y los equipos de "
+"análisis, gestión de seguridad y salud en el laboratorio."
 
 msgid ""
 "It is designed to comply with the standards of INTE/ISO/IEC 17025:2017 and "
 "ISO 14001."
-msgstr "Está diseñado para cumplir con los estándares de las normas INTE/ISO/IEC 17025:2017 e ISO 14001."
+msgstr ""
+"Está diseñado para cumplir con los estándares de las normas INTE/ISO/IEC "
+"17025:2017 e ISO 14001."
 
 msgid "Main Features"
 msgstr "Principales Funcionalidades"
@@ -3075,7 +3079,9 @@ msgstr "Patrocinio"
 
 msgid ""
 "Join the sponsor program and build a better software accessible to everyone."
-msgstr "Únete al programa de patrocinadores y has un mejor software accesible para todos."
+msgstr ""
+"Únete al programa de patrocinadores y has un mejor software accesible para "
+"todos."
 
 msgid "Get More Information"
 msgstr "Obtener Más Información"
@@ -3083,7 +3089,9 @@ msgstr "Obtener Más Información"
 msgid ""
 "Use the following survey to subscribe and receive more personalized "
 "information about our software."
-msgstr "Usa el siguiente formulario para subscribirte y recibir información personalidada sobre nuestro software."
+msgstr ""
+"Usa el siguiente formulario para subscribirte y recibir información "
+"personalidada sobre nuestro software."
 
 msgid "Information of the person interested in Organilab"
 msgstr "Información de la persona interesada en Organilab"
@@ -3094,13 +3102,16 @@ msgstr "Webinar: Introducción al manejo de Inventario con Organilab"
 msgid ""
 "For people or institutions who contribute through Open Collective, we offer "
 "a 2-hour webinar during the week of July 31 to August 3."
-msgstr "Para las personas o instituciones que contribuyan a través de Open Collective,  "
-"les ofrecemos un  webinar de 2 horas la semana del 31 julio al 3 de agosto."
+msgstr ""
+"Para las personas o instituciones que contribuyan a través de Open "
+"Collective,  les ofrecemos un  webinar de 2 horas la semana del 31 julio al "
+"3 de agosto."
 
 msgid ""
 "If you want to participate, please use the following survey to enter your "
 "information and choose your preferred schedule."
-msgstr "Si deseas participar, por favor usa el siguiente formulario para ingresar tu "
+msgstr ""
+"Si deseas participar, por favor usa el siguiente formulario para ingresar tu "
 "información y elegir el horario de tu preferencia."
 
 msgid "Webinar participation"
@@ -4721,3 +4732,252 @@ msgstr "Actualizar consejo de prudencia"
 
 msgid "Update the Danger indication"
 msgstr "Actualizar indicacion de peligro"
+
+msgid "Unit to Base Unit"
+msgstr "Unidad a Unidad Base"
+
+msgid "Measurement Unit Base"
+msgstr "Unidad de Medida Base"
+
+msgid "Added the user %(user)r in the organization %(org)r"
+msgstr "Se agrego el usuario %(user)r en la organización %(org)r"
+
+msgid "Added the groups %(groups)r to the profile %(profile)r"
+msgstr "Se agregaron los grupos %(groups)r al perfil %(profile)r"
+
+msgid "Removed the groups %(groups)r from the profile %(profile)r"
+msgstr "Se eliminaron los grupos %(groups)r del perfil %(profile)r"
+
+msgid "Manager"
+msgstr "Encargado"
+
+msgid "Regents Associated"
+msgstr "Regentes Asociados"
+
+msgid "Nearby Buildings"
+msgstr "Edificios Cercanos"
+
+msgid "Security Plan"
+msgstr "Plan de Seguridad"
+
+msgid "Plans"
+msgstr "Planos"
+
+msgid "Has nearby water resources?"
+msgstr "¿Tiene recursos hidricos cercanos?"
+
+msgid "Has Nearby Sites?"
+msgstr "¿Hay sitios cercanos?"
+
+msgid "Regulatory Plans"
+msgstr "Planes de Regulación"
+
+msgid "Geolocation"
+msgstr "Geolocalización"
+
+msgid "It is Associated with Buildings?"
+msgstr "¿Esta asociado a edificios?"
+
+msgid "Buildings"
+msgstr "Edificios"
+
+msgid "Create structure"
+msgstr "Crear estructura"
+
+msgid "Create Building"
+msgstr "Crear Edificio"
+
+msgid "List of Structures"
+msgstr "Lista de estructuras"
+
+msgid "List of Buildings"
+msgstr "Lista de edificios"
+
+msgid "List of Regents"
+msgstr "Lista de Regentes"
+
+msgid "Structures"
+msgstr "Estructuras"
+
+msgid "Regents"
+msgstr "Regentes"
+
+msgid "Create Structure"
+msgstr "Crear Estructura"
+
+msgid "Update Structure"
+msgstr "Actualizar Estructura"
+
+msgid "Update Building"
+msgstr "Actualizar Edificio"
+
+msgid "Object type"
+msgstr "Tipo de objecto"
+
+msgid "Manage structure"
+msgstr "Gestionar Estructura"
+
+msgid "Manage buildings"
+msgstr "Gestionar Edificios"
+
+msgid "Manage regents"
+msgstr "Gestionar Regentes"
+
+msgid "Register Regent"
+msgstr "Registrar Regente"
+
+msgid "Responsible"
+msgstr "Responsable"
+
+msgid "List of incidents in the risk zone"
+msgstr "Lista de incidentes en el zona de riesgo"
+
+msgid "Download all incidents"
+msgstr "Descargar todos los incidentes"
+
+msgid "Download Incident Information"
+msgstr "Descargar información del incidente"
+
+msgid "Incident report in the risk zone %s"
+msgstr "Informe de incidentes en la zona de riesgo %s"
+
+msgid "Presence of rivers, streams, springs and aquifers"
+msgstr "Presencia de ríos, quebradas, nacientes y mantos acuíferos"
+
+msgid "Emergency Plan"
+msgstr "Plan de Emergencia"
+
+msgid "Are there establishments with a large concentration of people that could be exposed to the risk of an accident?"
+msgstr "¿Existen establecimientos con concentración de personas que puedan verse expuestos al riesgo de un accidente?"
+
+msgid "H Code Categories"
+msgstr "Categorías de codigo H"
+
+msgid "List of Code H Categories"
+msgstr "Listado de categorías de codigo H"
+
+msgid "Register H Code Category"
+msgstr "Registrar categoría de codigo H"
+
+msgid "Update H Code Category"
+msgstr "Actualizar categoría de codigo H"
+
+msgid "Delete H Code Category"
+msgstr "Eliminar categoría de codigo H"
+
+msgid "Physical"
+msgstr "Físico"
+
+msgid "Environment"
+msgstr "Ambiente"
+
+msgid "Health"
+msgstr "Salud"
+
+msgid "Chemical"
+msgstr "Químico"
+
+msgid "Chemical Engineer"
+msgstr "Ingeniero Químico"
+
+msgid "Veterinarian"
+msgstr "Veterinario"
+
+msgid "Physical Status"
+msgstr "Estado físico"
+
+msgid "Liquid"
+msgstr "Líquido"
+
+msgid "Solid powder"
+msgstr "Sólido en polvo"
+
+msgid "Solid granular or crystalline"
+msgstr "Sólido granulares o cristalinos"
+
+msgid "Gaseous"
+msgstr "Gaseoso"
+
+msgid "Final amount"
+msgstr "Cantidad final"
+
+msgid "Initial amount"
+msgstr "Cantidad inicial"
+
+msgid "Physical Hazard Category (Code H)"
+msgstr "Categoría de peligro físico (Código H)"
+
+msgid "Health Hazard Category (Code H)"
+msgstr "Categoría de peligro de la salud (Código H)"
+
+msgid "Environmental Hazard Category (Code H)"
+msgstr "Categoría de peligro ambiental (Código H)"
+
+msgid "Study centers, hospitals, transportation terminals, gas stations, or others that might be affected in the event of an emergency."
+msgstr "Centros de estudios, hospitales, terminales de transporte, gasolineras o otros lugares que pueden ser afectados en caso de una emergencia."
+
+msgid "Rivers, streams, springs and aquifers that are affected in an emergency"
+msgstr "Ríos, quebradas, nacientes y mantos acuíferos que pueden ser afectados en una emergencia"
+
+msgid "Type Regent"
+msgstr "Tipo de Regente"
+
+msgid "Adjustment quantities in logs"
+msgstr "Ajuste de cantidades en bitacoras"
+
+msgid "Deleting shelf"
+msgstr "Eliminación de estante"
+
+msgid "Deleting ShelfObject by shelf"
+msgstr "Eliminación de objeto de estante"
+
+msgid "1 of %s of %d - %d of %s of %d"
+msgstr "1 de %s del %d - %d de %s del %d"
+
+msgid "Date Range"
+msgstr "Rango de fechas"
+
+msgid "Period range of the data: %(date_range)s"
+msgstr "Rango de periodo de los datos: %(date_range)s"
+
+msgid "Type of movement"
+msgstr "Tipo de movimiento"
+
+msgid "Spend"
+msgstr "Gasto"
+
+msgid "Income"
+msgstr "Ingreso"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Reactive Report"
+msgstr "Reporte de reactivos"
+
+msgid "Is dangerous?"
+msgstr "¿Es peligroso?"
+
+msgid "Has threshold?"
+msgstr "Tiene umbral?"
+
+msgid "Threshold"
+msgstr "Umbral"
+
+msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
+msgstr "Supera UMBRAL O NA, si el anterior(columna) es ninguno"
+
+msgid "Table 4, 3 or none"
+msgstr "Cuadro 4, 3 o ninguna"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Risk zone report"
+msgstr "Informe de zonas de riesgo"
+
+msgid "View search filters"
+msgstr "Ver filtros de búsqueda"
+
+msgid "Filter"
+msgstr "Filtrar"

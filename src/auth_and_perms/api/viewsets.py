@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.admin.models import CHANGE, DELETION, ADDITION
 from django.contrib.auth.models import Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -31,7 +32,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, o
 from laboratory.models import OrganizationStructure, Laboratory, UserOrganization, \
     ShelfObject
 from laboratory.utils import get_profile_by_organization, get_organizations_by_user, \
-    get_laboratories_from_organization
+    get_laboratories_from_organization, organilab_logentry
 
 
 class RolAPI(mixins.ListModelMixin,
@@ -79,6 +80,7 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
         user_is_allowed_on_organization(self.request.user, organization)
         type_user=UserOrganization.LABORATORY_USER
         user = get_object_or_404(User.objects.using(settings.READONLY_DATABASE), pk=serializer.data['user'])
+
         if serializer.data['typeofcontenttype'] == 'laboratory':
             contenttypeobj = get_object_or_404(Laboratory.objects.using(settings.READONLY_DATABASE),
                                                pk=serializer.data['laboratory'])
@@ -315,6 +317,14 @@ class ExternalUserToOrganizationViewSet(mixins.UpdateModelMixin,
             user = serializer.validated_data['email']
             user_is_allowed_on_organization(request.user, organization)
             organization.users.add(user)
+            organilab_logentry(request.user, user, ADDITION, 'user',
+                               changed_data=[],
+                               change_message=_("Added the user %(user)r in the organization %(org)r")%{
+                                   'user': user.username,
+                                   'org': organization.name
+
+                               },
+                               relobj=organization)
             response={"success": True}
         headers = self.get_success_headers(serializer.data)
         return Response(response, status=status.HTTP_201_CREATED, headers=headers)
@@ -352,8 +362,15 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
             content_type__model='laboratory',
             object_id__in=labs.values_list('pk', flat=True)
         )
+        for pp in pps:
+            organilab_logentry(user, pp, DELETION, 'profilepermission',
+                           changed_data=[],
+                           relobj=organization)
         pps.delete()
         organization.users.remove(user)  # only remove relation
+        organilab_logentry(user, user, DELETION, 'user',
+                           changed_data=[],
+                           relobj=organization)
 
     def delete(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -367,14 +384,21 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
             if user and  serializer.data['disable_user']:
                     user.is_active = False
                     user.save()
+                    organilab_logentry(user, user, CHANGE, 'user',
+                               changed_data=['is_active'],
+                               relobj=org)
 
-            ProfilePermission.objects.filter(
+            pps = ProfilePermission.objects.filter(
                 profile_id=serializer.data['profile'],
                 content_type__app_label=serializer.data['app_label'],
                 content_type__model=serializer.data['model'],
                 object_id=serializer.data['object_id'],
-            ).delete()
-
+            )
+            for pp in pps:
+                organilab_logentry(user, pp, DELETION, 'profilepermission',
+                               changed_data=[],
+                               relobj=org)
+            pps.delete()
         return Response({'result': 'ok'})
 
     def list(self, request, *args, **kwargs):
@@ -394,9 +418,22 @@ class UpdateGroupsByProfile(APIView):
             profile = serializer.validated_data["profile"]
             groups = serializer.validated_data.get("groups")
             profile.groups.remove(*profile.groups.all())
-
+            organilab_logentry(request.user, profile, DELETION, 'profile',
+                               changed_data=['groups'],
+                               change_message=_("Removed the groups %(groups)r from the profile %(profile)r")%{
+                                   'groups': ", ".join(list(groups.values_list('name', flat=True))),
+                                   'profile': str(profile.user)
+                               },
+                               relobj=organization)
             if groups:
                 profile.groups.add(*groups)
+                organilab_logentry(request.user, profile, ADDITION, 'profile',
+                                   changed_data=['groups'],
+                                   change_message=_("Added the groups %(groups)r to the profile %(profile)r")%{
+                                       'groups': ", ".join(list(groups.values_list('name', flat=True))),
+                                       'profile': str(profile.user)
+                                   },
+                                   relobj=organization)
 
         else:
             errors = serializer.errors

@@ -184,7 +184,8 @@ def report_reactive_precursor_html(report):
 def report_reactive_precursor_doc(report):
     builder = ExcelGraphBuilder()
     content = [[
-        _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units'), _("Molecular formula"),
+        _("Laboratory"), _("Code"), _("Name"), _("Type"), _("Quantity total"), _('Measurement units'),
+        _("Molecular formula"),
         _("CAS id number"), _("Is precursor?"), _("IMDG type")
     ]]
     if 'laboratory' in report.data:
@@ -237,7 +238,7 @@ def get_object_elements(obj):
     return [features, danger]
 
 def get_objects(report):
-    filters = {'object__is_public': True}
+    filters = {}
 
     if 'organization' in report.data:
         org = report.data['organization']
@@ -305,14 +306,10 @@ def report_objects_html(report):
 
 def report_objects_doc(report):
     builder = ExcelGraphBuilder()
-    content = [[
+    content = [[_("Laboratory"),
         _("Code"), _("Name"), _("Type"), _("Features"), _('Danger indication'),
         _("Molecular formula"), _("CAS id number")
     ]]
-    if 'laboratory' in report.data:
-        labs = report.data['laboratory']
-        if len(labs) > 1:
-            content[0].insert(0,_('Laboratory'))
 
     content = content + get_dataset_objects(report, None)
     record_total = len(content)-1

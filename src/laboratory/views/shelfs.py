@@ -29,7 +29,7 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
 from laboratory.models import Shelf, Object, Laboratory, OrganizationStructure
 from presentation.utils import build_qr_instance
 from .djgeneric import CreateView, UpdateView
-from ..utils import organilab_logentry
+from ..utils import organilab_logentry, remove_shelfobject_from_shelf
 
 
 @ajax
@@ -45,7 +45,10 @@ def delete_shelf(request, org_pk, lab_pk, pk, row, col):
         shelf = get_object_or_404(Shelf, pk=pk)
         furniture = shelf.furniture
         furniture.remove_shelf_dataconfig(pk)
+        remove_shelfobject_from_shelf(lab_pk,shelf, request.user, org_pk)
+
         shelf.delete()
+
         organilab_logentry(request.user, shelf, DELETION, relobj=lab_pk)
         return JsonResponse({"result": "OK"}, status=status.HTTP_200_OK)
 

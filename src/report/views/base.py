@@ -7,6 +7,9 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
+
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
+from laboratory.models import OrganizationStructure
 from laboratory.utils import check_user_access_kwargs_org_lab
 from report.forms import TasksForm
 from report.models import TaskReport, ObjectChangeLogReport, \
@@ -69,6 +72,7 @@ def base_pdf(report, uri):
     title = ''
     datalist = ""
     total = 0
+    columns = 0
     if 'title' in report.data and report.data['title']:
         title = report.data['title']
     report_name = get_report_name(report)
@@ -80,12 +84,14 @@ def base_pdf(report, uri):
     else:
         datalist = get_pdf_table_content(report.table_content)
         total=len(report.table_content['dataset'])
+        if total > 0:
+            columns = len(report.table_content['dataset'][0])
     context = {
         'datalist': datalist,
         'user': report.created_by,
         'title': title if title else report_name,
         'datetime': timezone.now(),
-        'size_sheet': 'landscape'
+        'size_sheet': 'b4 landscape' if columns > 8 else 'landscape'
     }
 
     html = render_to_string('report/base_report_pdf.html', context=context)
@@ -242,3 +248,137 @@ def report_status(request, org_pk, lab_pk):
                 for text in status:
                     description += "<li>%s %s </li>"%(text.report_time.strftime("%m/%d/%Y, %H:%M:%S"), text.description)
     return JsonResponse({'end': end, 'text': description})
+
+@login_required
+@permission_required('laboratory.do_report')
+def create_organization_request_by_report(request, org_pk):
+    response = {'result': False}
+    data = {'org_pk': org_pk}
+    report_name_list = register.REPORT_FORMS.keys()
+    status_code = 401
+    reason = None
+    organization = OrganizationStructure.objects.filter(pk=org_pk).first()
+
+    if organization:
+        if 'report_name' in request.GET and request.GET['report_name'] in report_name_list:
+            type_report = register.REPORT_FORMS[request.GET['report_name']]
+
+            if 'form' in type_report:
+                import_form = check_import_obj(type_report['form'])
+
+                if import_form:
+                    form = import_form(request.GET, org_pk=org_pk)
+                    status_code = 200
+
+                    if form.is_valid():
+                        data.update(form.cleaned_data)
+
+                        task = TaskReport.objects.create(
+                            created_by=request.user,
+                            type_report=form.cleaned_data['report_name'],
+                            status=_("On hold"),
+                            file_type=form.cleaned_data['format'],
+                            data=data,
+                            language=get_language()
+                        )
+
+                        import_task = check_import_obj(type_report['task'])
+
+                        if import_task:
+                            task_celery=import_task.delay(task.pk, request.build_absolute_uri())
+                            task_celery=task_celery.task_id
+
+                            response['result'] = True
+                            response.update({
+                                'report': task.pk,
+                                'celery_id': task_celery
+                            })
+                        else:
+                            status_code = 401
+                    else:
+                        response.update({'form_errors': form.errors})
+
+    if status_code != 200 or status_code != 201:
+        reason = _("Report can't be processed, try again or contact administrator")
+    response = JsonResponse(response, status=status_code, reason=reason)
+    return response
+
+@login_required
+@permission_required('laboratory.do_report')
+def download__organization_report(request, org_pk):
+    response = {'result': False}
+    status_code = 200
+    reason = None
+    organization = OrganizationStructure.objects.filter(pk=org_pk).first()
+
+    if organization:
+
+        if request.method == "GET":
+            form = TasksForm(request.GET)
+
+            if form.is_valid():
+                task = TaskReport.objects.filter(pk=form.cleaned_data['taskreport']).first()
+                result = TaskResult.objects.filter(task_id=form.cleaned_data['task']).first()
+
+                if result:
+                    if task.status==_('Generated') and result.status=='SUCCESS':
+                        task.status=_('Delivered')
+                        task.save()
+                        response['result'] = True
+                        if task.file_type=='html':
+                            response.update({
+                                'url_file':reverse('report:report_organization_table', kwargs={
+                                    'org_pk': org_pk,
+                                    'pk':task.pk
+                                }),
+                                'type_report':task.file_type
+                            })
+                            create_notification(request.user, f"{task.data['name']} {_('On screen')}".capitalize() , reverse('report:report_organization_table',kwargs={"org_pk":org_pk,"pk":task.pk}))
+                        else:
+                            file_name = f"{task.data['name']}.{task.file_type}"
+                            create_notification(request.user, file_name , task.file.url)
+                            response.update({'url_file': task.file.url})
+            else:
+                status_code = 401
+    else:
+        status_code = 401
+
+    if status_code != 200 or status_code != 201:
+        reason = _("Report can't be processed, try again or contact administrator")
+    response = JsonResponse(response, status=status_code, reason=reason)
+    return response
+
+@login_required
+@permission_required('laboratory.do_report')
+def report_organization_table(request, org_pk,pk):
+    task = get_object_or_404(TaskReport.objects.using(settings.READONLY_DATABASE),pk=pk)
+    template_name = 'report/general_reports.html'
+    content = {
+        'table': task.table_content,
+        'org_pk': org_pk,
+        'obj_task': task,
+        'changelogreport': None
+    }
+    if task.type_report == "report_objectschanges":
+        template_name= "report/log_change.html"
+        content['changelogreport'] = ObjectChangeLogReport.objects.\
+            filter(task_report=task)
+    return render(request, template_name=template_name, context=content)
+
+@login_required
+@permission_required('laboratory.do_report')
+def report_organization_table(request, org_pk, pk):
+    user_is_allowed_on_organization(request.user, org_pk)
+    task = get_object_or_404(TaskReport.objects.using(settings.READONLY_DATABASE),pk=pk)
+    template_name = 'report/general_reports.html'
+    content = {
+        'table': task.table_content,
+        'org_pk': org_pk,
+        'obj_task': task,
+        'changelogreport': None
+    }
+    if task.type_report == "report_objectschanges":
+        template_name= "report/log_change.html"
+        content['changelogreport'] = ObjectChangeLogReport.objects.\
+            filter(task_report=task)
+    return render(request, template_name=template_name, context=content)

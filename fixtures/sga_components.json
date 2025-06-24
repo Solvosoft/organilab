@@ -1,239 +1,4795 @@
 [
-  {
-    "model": "auth.user",
-    "pk": 1,
-    "fields": {
-      "password": "pbkdf2_sha256$390000$DA6hKp10GrfiBkQgSiFvMr$jPnkP9C9rq93aN9Pw4j6fqRfDkth8VnJrPK+wSFW1io=",
-      "last_login": "2023-05-28T22:49:30.603Z",
-      "is_superuser": true,
-      "username": "first_user",
-      "first_name": "First",
-      "last_name": "User",
-      "email": "",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2023-04-10T19:45:29Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "auth.user",
-    "pk": 2,
-    "fields": {
-      "password": "pbkdf2_sha256$390000$DA6hKp10GrfiBkQgSiFvMr$jPnkP9C9rq93aN9Pw4j6fqRfDkth8DnJrPK+wSFW1io=",
-      "last_login": "2023-05-28T22:49:30.603Z",
-      "is_superuser": true,
-      "username": "second_user",
-      "first_name": "Second",
-      "last_name": "User",
-      "email": "",
-      "is_staff": true,
-      "is_active": true,
-      "date_joined": "2023-04-10T19:45:29Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "laboratory.organizationstructure",
-    "pk": 1,
-    "fields": {
-      "parent": null,
-      "name": "Test organization",
-      "position": 1,
-      "level": 1,
-      "rol": [],
-      "users": [1]
-    }
-  },
-  {
-    "model": "laboratory.organizationstructurerelations",
-    "pk": 1,
-     "fields": {
-        "organization": 1,
-        "content_type": [
-          "laboratory",
-          "laboratory"
-        ],
-       "object_id": 1
-     }
-  },
-  {
-    "model": "laboratory.userorganization",
-    "pk": 1,
-    "fields": {
-      "organization": 1,
-      "user": 1,
-      "type_in_organization": 1
-    }
-  },
-  {
-    "model": "auth_and_perms.profile",
-    "pk": 1,
-    "fields": {
-      "user": 1,
-      "phone_number": "8888-8888",
-      "id_card": "0-0000-0000",
-      "job_position": "Administrator",
-      "laboratories": []
-    }
-  },
-  {
-    "model": "auth_and_perms.profile",
-    "pk": 2,
-    "fields": {
-      "user": 2,
-      "phone_number": "8888-8888",
-      "id_card": "0-0000-0000",
-      "job_position": "Administrator",
-      "laboratories": []
-    }
-  },
-  {
-    "model": "sga.warningword",
-    "pk": 15,
-    "fields": {
-      "name": "Warning",
-      "weigth": "0"
-    }
-  },
-  {
-    "model": "sga.warningword",
-    "pk": 16,
-    "fields": {
-      "name": "Carefully",
-      "weigth": "10"
-    }
-  },
-  {
-    "model": "sga.warningword",
-    "pk": 17,
-    "fields": {
-      "name": "Don't touch",
-      "weigth": "30"
-    }
-  },
-  {
-    "model": "sga.warningword",
-    "pk": 18,
-    "fields": {
-      "name": "Hazard",
-      "weigth": "10"
-    }
-  },
-  {
-    "model": "sga.warningclass",
-    "pk": 1,
-    "fields": {
-      "name": "Warning class name",
-      "danger_type": "class",
-      "position": 3
-    }
-  },
-  {
-    "model": "sga.warningclass",
-    "pk": 2,
-    "fields": {
-      "name": "Test warning class",
-      "danger_type": "typeofdanger",
-      "position": 1
-    }
-  },
-  {
-    "model": "sga.warningclass",
-    "pk": 3,
-    "fields": {
-      "name": "Third warning class",
-      "danger_type": "typeofdanger",
-      "position": 2
-    }
-  },
-  {
-    "model": "sga.prudenceadvice",
-    "pk": 1,
-    "fields": {
-      "code": "P616",
-      "name": "First advice",
-      "prudence_advice_help": "Set a good prudence advice message"
-    }
-  },
-  {
-    "model": "sga.prudenceadvice",
-    "pk": 2,
-    "fields": {
-      "code": "P000",
-      "name": "Another advice",
-      "prudence_advice_help": "Test help message"
-    }
-  },
-  {
-    "model": "sga.prudenceadvice",
-    "pk": 3,
-    "fields": {
-      "code": "P800",
-      "name": "A prudence advice",
-      "prudence_advice_help": "Short help message"
-    }
-  },
-  {
-    "model": "sga.prudenceadvice",
-    "pk": 4,
-    "fields": {
-      "code": "P161",
-      "name": "Last One",
-      "prudence_advice_help": "Always read the prudence advices"
-    }
-  },
-  {
-    "model": "sga.dangerindication",
-    "pk": "H131",
-    "fields": {
-      "description": "This is a danger indication description",
-      "warning_words": 15,
-      "warning_class": [
-        1
-      ],
-      "warning_category": [
-        1
-      ],
-      "prudence_advice": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "sga.dangerindication",
-    "pk": "H313",
-    "fields": {
-      "description": "This could be a long description",
-      "warning_words": 18,
-      "warning_class": [
-        2
-      ],
-      "warning_category": [
-        3
-      ],
-      "prudence_advice": [
-        2
-      ]
-    }
-  },
-  {
-    "model": "sga.dangerindication",
-    "pk": "H333",
-    "fields": {
-      "description": "Short test description",
-      "warning_words": 16,
-      "warning_class": [
-        2
-      ],
-      "warning_category": [
-        2
-      ],
-      "prudence_advice": [
-        1
-      ]
-    }
+{
+  "model": "sga.warningclass",
+  "pk": 2,
+  "fields": {
+    "parent": 65,
+    "name": "División1.1",
+    "danger_type": "category",
+    "position": 100005
   }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 3,
+  "fields": {
+    "parent": 65,
+    "name": "División1.2",
+    "danger_type": "category",
+    "position": 100007
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 4,
+  "fields": {
+    "parent": 65,
+    "name": "División1.3",
+    "danger_type": "category",
+    "position": 100009
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 5,
+  "fields": {
+    "parent": 65,
+    "name": "División1.4",
+    "danger_type": "category",
+    "position": 100011
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 6,
+  "fields": {
+    "parent": 65,
+    "name": "División1.5",
+    "danger_type": "category",
+    "position": 100013
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 7,
+  "fields": {
+    "parent": 65,
+    "name": "División1.6",
+    "danger_type": "category",
+    "position": 100015
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 8,
+  "fields": {
+    "parent": 66,
+    "name": "Gas inflamable",
+    "danger_type": "class",
+    "position": 100018
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 9,
+  "fields": {
+    "parent": 8,
+    "name": "Gas pirofórico",
+    "danger_type": "category",
+    "position": 100023
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 10,
+  "fields": {
+    "parent": 8,
+    "name": "A (Gas químicamente inestable)",
+    "danger_type": "category",
+    "position": 100025
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 11,
+  "fields": {
+    "parent": 66,
+    "name": "Aerosoles",
+    "danger_type": "class",
+    "position": 100030
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 12,
+  "fields": {
+    "parent": 66,
+    "name": "Líquidos inflamables",
+    "danger_type": "class",
+    "position": 100052
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 13,
+  "fields": {
+    "parent": 66,
+    "name": "Sólidos inflamables",
+    "danger_type": "class",
+    "position": 100062
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 14,
+  "fields": {
+    "parent": 66,
+    "name": "Gases comburentes",
+    "danger_type": "class",
+    "position": 100038
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 15,
+  "fields": {
+    "parent": 66,
+    "name": "Gases a presión",
+    "danger_type": "class",
+    "position": 100042
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 16,
+  "fields": {
+    "parent": 15,
+    "name": "Gas comprimido",
+    "danger_type": "category",
+    "position": 100043
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 17,
+  "fields": {
+    "parent": 15,
+    "name": "Gas licuado",
+    "danger_type": "category",
+    "position": 100045
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 18,
+  "fields": {
+    "parent": 15,
+    "name": "Gas licuado  refrigerado",
+    "danger_type": "category",
+    "position": 100047
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 19,
+  "fields": {
+    "parent": 15,
+    "name": "Gas disuelto",
+    "danger_type": "category",
+    "position": 100049
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 26,
+  "fields": {
+    "parent": 66,
+    "name": "Sustancias y mezclas que reaccionan espontáneamente (autorreactivas)",
+    "danger_type": "class",
+    "position": 100068
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 27,
+  "fields": {
+    "parent": 66,
+    "name": "Líquido pirofórico",
+    "danger_type": "class",
+    "position": 100080
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 28,
+  "fields": {
+    "parent": 66,
+    "name": "Sólido pirofórico",
+    "danger_type": "class",
+    "position": 100084
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 29,
+  "fields": {
+    "parent": 66,
+    "name": "Sustancia o mezcla que experimenta calentamiento espontáneo",
+    "danger_type": "class",
+    "position": 100088
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 30,
+  "fields": {
+    "parent": 66,
+    "name": "Sustancias y mezclas que, en contacto con el agua, desprenden gases inflamables",
+    "danger_type": "class",
+    "position": 100094
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 31,
+  "fields": {
+    "parent": 66,
+    "name": "Líquido comburente",
+    "danger_type": "class",
+    "position": 100102
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 32,
+  "fields": {
+    "parent": 66,
+    "name": "Sólido comburente",
+    "danger_type": "class",
+    "position": 100110
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 33,
+  "fields": {
+    "parent": 66,
+    "name": "Peróxidos orgánicos",
+    "danger_type": "class",
+    "position": 100118
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 34,
+  "fields": {
+    "parent": 66,
+    "name": "Sustancias y mezclas es corrosiva para los metales",
+    "danger_type": "class",
+    "position": 100130
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 35,
+  "fields": {
+    "parent": 66,
+    "name": "Explosivo insensibilizado",
+    "danger_type": "class",
+    "position": 100134
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 38,
+  "fields": {
+    "parent": 67,
+    "name": "Toxicidad aguda",
+    "danger_type": "class",
+    "position": 400002
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 39,
+  "fields": {
+    "parent": 67,
+    "name": "Corrosión cutánea",
+    "danger_type": "class",
+    "position": 400014
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 40,
+  "fields": {
+    "parent": 67,
+    "name": "Irritación cutánea",
+    "danger_type": "class",
+    "position": 400022
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 44,
+  "fields": {
+    "parent": 67,
+    "name": "Lesiones oculares",
+    "danger_type": "class",
+    "position": 400030
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 45,
+  "fields": {
+    "parent": 67,
+    "name": "Irritación ocular",
+    "danger_type": "class",
+    "position": 400038
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 48,
+  "fields": {
+    "parent": 67,
+    "name": "Sensibilizante respiratorio",
+    "danger_type": "class",
+    "position": 400046
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 49,
+  "fields": {
+    "parent": 67,
+    "name": "Sensibilizante cutáneo",
+    "danger_type": "class",
+    "position": 400054
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 50,
+  "fields": {
+    "parent": 67,
+    "name": "Mutagenicidad en células germinales",
+    "danger_type": "class",
+    "position": 400062
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 51,
+  "fields": {
+    "parent": 67,
+    "name": "Carcinógeno",
+    "danger_type": "class",
+    "position": 400070
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 52,
+  "fields": {
+    "parent": 67,
+    "name": "Toxicidad para la reproducción",
+    "danger_type": "class",
+    "position": 400076
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 55,
+  "fields": {
+    "parent": 67,
+    "name": "Toxicidad específica de órganos diana (exposición única)",
+    "danger_type": "class",
+    "position": 400084
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 56,
+  "fields": {
+    "parent": 67,
+    "name": "Toxicidad específica de órganos diana (exposiciones repetidas)",
+    "danger_type": "class",
+    "position": 400092
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 57,
+  "fields": {
+    "parent": 67,
+    "name": "Peligro por aspiración",
+    "danger_type": "class",
+    "position": 400098
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 64,
+  "fields": {
+    "parent": 65,
+    "name": "Explosivos inestables",
+    "danger_type": "category",
+    "position": 100003
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 65,
+  "fields": {
+    "parent": 66,
+    "name": "Explosivo",
+    "danger_type": "class",
+    "position": 100002
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 66,
+  "fields": {
+    "parent": null,
+    "name": "Peligro Físico",
+    "danger_type": "typeofdanger",
+    "position": 100001
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 67,
+  "fields": {
+    "parent": null,
+    "name": "Peligro para la salud",
+    "danger_type": "typeofdanger",
+    "position": 400001
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 68,
+  "fields": {
+    "parent": null,
+    "name": "Peligro para el medio ambiente",
+    "danger_type": "typeofdanger",
+    "position": 500001
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 69,
+  "fields": {
+    "parent": 8,
+    "name": "B (Gas químicamente inestable)",
+    "danger_type": "category",
+    "position": 100027
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 70,
+  "fields": {
+    "parent": 8,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100019
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 71,
+  "fields": {
+    "parent": 8,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100021
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 72,
+  "fields": {
+    "parent": 11,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100031
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 73,
+  "fields": {
+    "parent": 11,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100033
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 74,
+  "fields": {
+    "parent": 11,
+    "name": "3",
+    "danger_type": "category",
+    "position": 100035
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 75,
+  "fields": {
+    "parent": 14,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100039
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 77,
+  "fields": {
+    "parent": 35,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100135
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 78,
+  "fields": {
+    "parent": 35,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100137
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 79,
+  "fields": {
+    "parent": 35,
+    "name": "3",
+    "danger_type": "category",
+    "position": 100139
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 80,
+  "fields": {
+    "parent": 35,
+    "name": "4",
+    "danger_type": "category",
+    "position": 100141
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 81,
+  "fields": {
+    "parent": 12,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100053
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 82,
+  "fields": {
+    "parent": 12,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100055
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 83,
+  "fields": {
+    "parent": 12,
+    "name": "3",
+    "danger_type": "category",
+    "position": 100057
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 84,
+  "fields": {
+    "parent": 12,
+    "name": "4",
+    "danger_type": "category",
+    "position": 100059
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 86,
+  "fields": {
+    "parent": 13,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100063
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 87,
+  "fields": {
+    "parent": 13,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100065
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 88,
+  "fields": {
+    "parent": 26,
+    "name": "Tipo A",
+    "danger_type": "category",
+    "position": 100069
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 89,
+  "fields": {
+    "parent": 26,
+    "name": "Tipo B",
+    "danger_type": "category",
+    "position": 100071
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 90,
+  "fields": {
+    "parent": 26,
+    "name": "Tipos C y D",
+    "danger_type": "category",
+    "position": 100073
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 91,
+  "fields": {
+    "parent": 26,
+    "name": "Tipos D y F",
+    "danger_type": "category",
+    "position": 100075
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 92,
+  "fields": {
+    "parent": 26,
+    "name": "Tipo G",
+    "danger_type": "category",
+    "position": 100077
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 93,
+  "fields": {
+    "parent": 27,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100081
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 94,
+  "fields": {
+    "parent": 28,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100085
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 95,
+  "fields": {
+    "parent": 29,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100089
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 96,
+  "fields": {
+    "parent": 29,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100091
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 97,
+  "fields": {
+    "parent": 30,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100095
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 98,
+  "fields": {
+    "parent": 30,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100097
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 99,
+  "fields": {
+    "parent": 30,
+    "name": "3",
+    "danger_type": "category",
+    "position": 100099
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 100,
+  "fields": {
+    "parent": 31,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100103
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 101,
+  "fields": {
+    "parent": 31,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100105
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 102,
+  "fields": {
+    "parent": 31,
+    "name": "3",
+    "danger_type": "category",
+    "position": 100107
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 103,
+  "fields": {
+    "parent": 32,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100111
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 104,
+  "fields": {
+    "parent": 32,
+    "name": "2",
+    "danger_type": "category",
+    "position": 100113
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 105,
+  "fields": {
+    "parent": 32,
+    "name": "3",
+    "danger_type": "category",
+    "position": 100115
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 106,
+  "fields": {
+    "parent": 33,
+    "name": "Tipo A",
+    "danger_type": "category",
+    "position": 100119
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 107,
+  "fields": {
+    "parent": 33,
+    "name": "Tipo B",
+    "danger_type": "category",
+    "position": 100121
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 109,
+  "fields": {
+    "parent": 33,
+    "name": "Tipos C y D",
+    "danger_type": "category",
+    "position": 100123
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 110,
+  "fields": {
+    "parent": 33,
+    "name": "Tipos D y F",
+    "danger_type": "category",
+    "position": 100125
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 112,
+  "fields": {
+    "parent": 33,
+    "name": "Tipo G",
+    "danger_type": "category",
+    "position": 100127
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 113,
+  "fields": {
+    "parent": 34,
+    "name": "1",
+    "danger_type": "category",
+    "position": 100131
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 114,
+  "fields": {
+    "parent": 39,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400015
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 115,
+  "fields": {
+    "parent": 39,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400017
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 116,
+  "fields": {
+    "parent": 39,
+    "name": "3",
+    "danger_type": "category",
+    "position": 400019
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 117,
+  "fields": {
+    "parent": 40,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400023
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 118,
+  "fields": {
+    "parent": 40,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400025
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 119,
+  "fields": {
+    "parent": 40,
+    "name": "3",
+    "danger_type": "category",
+    "position": 400027
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 120,
+  "fields": {
+    "parent": 44,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400031
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 121,
+  "fields": {
+    "parent": 44,
+    "name": "2/2A",
+    "danger_type": "category",
+    "position": 400033
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 122,
+  "fields": {
+    "parent": 44,
+    "name": "2B",
+    "danger_type": "category",
+    "position": 400035
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 123,
+  "fields": {
+    "parent": 45,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400039
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 124,
+  "fields": {
+    "parent": 45,
+    "name": "2/2A",
+    "danger_type": "category",
+    "position": 400041
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 125,
+  "fields": {
+    "parent": 45,
+    "name": "2B",
+    "danger_type": "category",
+    "position": 400043
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 126,
+  "fields": {
+    "parent": 48,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400047
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 127,
+  "fields": {
+    "parent": 48,
+    "name": "1A",
+    "danger_type": "category",
+    "position": 400049
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 128,
+  "fields": {
+    "parent": 48,
+    "name": "2B",
+    "danger_type": "category",
+    "position": 400051
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 129,
+  "fields": {
+    "parent": 49,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400055
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 130,
+  "fields": {
+    "parent": 49,
+    "name": "1A",
+    "danger_type": "category",
+    "position": 400057
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 131,
+  "fields": {
+    "parent": 49,
+    "name": "2B",
+    "danger_type": "category",
+    "position": 400059
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 132,
+  "fields": {
+    "parent": 50,
+    "name": "1 (tanto 1A  como 1B)",
+    "danger_type": "category",
+    "position": 400063
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 133,
+  "fields": {
+    "parent": 50,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400065
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 134,
+  "fields": {
+    "parent": 51,
+    "name": "1 (tanto 1A  como 1B)",
+    "danger_type": "category",
+    "position": 400071
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 135,
+  "fields": {
+    "parent": 51,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400073
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 136,
+  "fields": {
+    "parent": 52,
+    "name": "1 (tanto 1A  como 1B)",
+    "danger_type": "category",
+    "position": 400077
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 137,
+  "fields": {
+    "parent": 50,
+    "name": "3",
+    "danger_type": "category",
+    "position": 400067
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 138,
+  "fields": {
+    "parent": 52,
+    "name": "Con efectos sobre o a través de la lactancia (categoría adicional)",
+    "danger_type": "category",
+    "position": 400079
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 139,
+  "fields": {
+    "parent": 55,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400085
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 140,
+  "fields": {
+    "parent": 55,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400087
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 141,
+  "fields": {
+    "parent": 55,
+    "name": "3",
+    "danger_type": "category",
+    "position": 400089
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 142,
+  "fields": {
+    "parent": 56,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400093
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 143,
+  "fields": {
+    "parent": 56,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400095
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 144,
+  "fields": {
+    "parent": 57,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400099
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 145,
+  "fields": {
+    "parent": 57,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400101
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 146,
+  "fields": {
+    "parent": 68,
+    "name": "Peligro a corto plazo (agudo) para el medio ambiente acuático",
+    "danger_type": "class",
+    "position": 500002
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 147,
+  "fields": {
+    "parent": 146,
+    "name": "Agudo 1",
+    "danger_type": "category",
+    "position": 500003
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 148,
+  "fields": {
+    "parent": 146,
+    "name": "Agudo 2",
+    "danger_type": "category",
+    "position": 500005
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 149,
+  "fields": {
+    "parent": 146,
+    "name": "Agudo 3",
+    "danger_type": "category",
+    "position": 500007
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 150,
+  "fields": {
+    "parent": 68,
+    "name": "Peligro a largo  plazo (crónico)  para el medio ambiente acuático",
+    "danger_type": "class",
+    "position": 500010
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 151,
+  "fields": {
+    "parent": 150,
+    "name": "Crónico 1",
+    "danger_type": "category",
+    "position": 500011
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 152,
+  "fields": {
+    "parent": 150,
+    "name": "Crónico 2",
+    "danger_type": "category",
+    "position": 500013
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 153,
+  "fields": {
+    "parent": 150,
+    "name": "Crónico 3",
+    "danger_type": "category",
+    "position": 500015
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 154,
+  "fields": {
+    "parent": 150,
+    "name": "Crónico 4",
+    "danger_type": "category",
+    "position": 500017
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 155,
+  "fields": {
+    "parent": 38,
+    "name": "1",
+    "danger_type": "category",
+    "position": 400003
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 156,
+  "fields": {
+    "parent": 38,
+    "name": "2",
+    "danger_type": "category",
+    "position": 400005
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 157,
+  "fields": {
+    "parent": 38,
+    "name": "3",
+    "danger_type": "category",
+    "position": 400007
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 158,
+  "fields": {
+    "parent": 38,
+    "name": "4",
+    "danger_type": "category",
+    "position": 400009
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 159,
+  "fields": {
+    "parent": 38,
+    "name": "5",
+    "danger_type": "category",
+    "position": 400011
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 160,
+  "fields": {
+    "parent": 68,
+    "name": "Peligro para la capa de ozono",
+    "danger_type": "class",
+    "position": 500020
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 161,
+  "fields": {
+    "parent": 160,
+    "name": "1",
+    "danger_type": "category",
+    "position": 500021
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 162,
+  "fields": {
+    "parent": 161,
+    "name": "Causa daños a la salud pública y el medio ambiente al destruir el ozono en la atmósfera superior",
+    "danger_type": "class",
+    "position": 500022
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 163,
+  "fields": {
+    "parent": null,
+    "name": "Peligro a largo  plazo (crónico)  para el medio ambiente  acuático",
+    "danger_type": "class",
+    "position": 600001
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 164,
+  "fields": {
+    "parent": null,
+    "name": "Peligro a corto plazo (agudo)  para el medio  ambiente  acuático",
+    "danger_type": "class",
+    "position": 700001
+  }
+},
+{
+  "model": "sga.warningclass",
+  "pk": 165,
+  "fields": {
+    "parent": 52,
+    "name": "Toxicidad para la reproducción > 2",
+    "danger_type": "category",
+    "position": 400081
+  }
+},
+{
+  "model": "sga.warningword",
+  "pk": 1,
+  "fields": {
+    "name": "Peligro",
+    "weigth": 0
+  }
+},
+{
+  "model": "sga.warningword",
+  "pk": 2,
+  "fields": {
+    "name": "Atención",
+    "weigth": 0
+  }
+},
+{
+  "model": "sga.warningword",
+  "pk": 3,
+  "fields": {
+    "name": "Sin Palabra De Advertencia",
+    "weigth": 0
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 1,
+  "fields": {
+    "code": "P101 ",
+    "name": "Si se necesita consultar a un médico, tener a mano el recipiente o la etiqueta del producto. según corresponda",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 2,
+  "fields": {
+    "code": "P102",
+    "name": "Mantener fuera del alcance de los niños. según corresponda ",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 3,
+  "fields": {
+    "code": "P103",
+    "name": "Leer la etiqueta antes del uso. según corresponda ",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 4,
+  "fields": {
+    "code": "P201",
+    "name": "Procurarse las instrucciones antes del uso.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 5,
+  "fields": {
+    "code": "P202",
+    "name": "No manipular antes de haber leído y comprendido todas las precauciones de seguridad.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 6,
+  "fields": {
+    "code": "P210",
+    "name": "Mantener alejado del calor, superficies calientes, chispas llamas al descubierto y otras fuentes de ignición. No fumar.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 7,
+  "fields": {
+    "code": "P211",
+    "name": "No vaporizar sobre una llama al descubierto o cualquier otra fuente de ignición. ",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 8,
+  "fields": {
+    "code": "P212 ",
+    "name": "Evitar el calentamiento en condiciones de aislamiento o la reducción del agente insensibilizante.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 9,
+  "fields": {
+    "code": "P220",
+    "name": "Mantener alejado de la ropa y otros materiales combustibles. ",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 10,
+  "fields": {
+    "code": "P222",
+    "name": "No dejar en contacto con el aire.",
+    "prudence_advice_help": "– si se considera necesario hacer hincapié en la indicación de peligro."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 11,
+  "fields": {
+    "code": "P223",
+    "name": "Evitar el contacto con el agua.",
+    "prudence_advice_help": "– si se considera necesario hacer hincapié en la indicación de peligro."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 12,
+  "fields": {
+    "code": "P230",
+    "name": "Mantener humidificado con ...",
+    "prudence_advice_help": "– para las sustancias y mezclas que se humedezcan, diluyan, disuelvan o suspendan en un flemador a fin de neutralizar sus propiedades explosivas.\r\n... el fabricante/proveedor o la autoridad competente especificarán el material apropiado."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 13,
+  "fields": {
+    "code": "P231",
+    "name": "Manipular y almacenar el contenido en un medio de gas inerte/...",
+    "prudence_advice_help": "– si la sustancia o mezcla reacciona rápidamente con la humedad del aire.\r\n… el fabricante/proveedor o la autoridad especificarán el líquido o gas apropiado si el \"gas inerte\" no fuese apropiado."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 14,
+  "fields": {
+    "code": "P232",
+    "name": "Proteger de la humedad. Sustancias y mezclas que, en contacto con el agua, desprenden gases inflamables (capítulo 2.12) ",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 15,
+  "fields": {
+    "code": "P233",
+    "name": "Mantener el recipiente herméticamente cerrado.",
+    "prudence_advice_help": "– si el producto químico es volátil y puede dar lugar a la formación de una atmósfera peligrosa."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 16,
+  "fields": {
+    "code": "P234",
+    "name": "Conservar únicamente en el embalaje original.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 17,
+  "fields": {
+    "code": "P235",
+    "name": "Mantener fresco.",
+    "prudence_advice_help": "– para los líquidos inflamables de categoría 1 y otros líquidos inflamables que sean volátiles y puedan dar lugar a la formación de una atmósfera explosiva.\r\n– puede omitirse cuando el consejo P411 aparece en la etiqueta.\r\n– puede omitirse cuando el consejo P413 aparece en la etiqueta."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 18,
+  "fields": {
+    "code": "P240",
+    "name": "Toma de tierra y enlace equipotencial del recipiente y del equipo receptor.",
+    "prudence_advice_help": "- si el explosivo es sensible a la electricidad estática.\r\n- si el líquido es volátil y puede dar lugar a la formación de una atmósfera explosiva.\r\n- si el sólido es sensible a la electricidad estática.\r\n– si son sensibles a la electricidad estática y pueden dar lugar a"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 19,
+  "fields": {
+    "code": "P241",
+    "name": "Utilizar material [eléctrico/ de ventilación/iluminación/...]antideflagrante.",
+    "prudence_advice_help": "– si el líquido es volátil y puede dar lugar a la formación de una atmósfera explosiva.\r\n– el texto entre corchetes puede utilizarse para especificar material eléctrico, de ventilación, de iluminación o de otro tipo cuando sea necesario y según proceda.\r\n– el consejo puede omitirse cuando en la legislación nacional o local se contemplen disposiciones más específicas.\r\n– si pueden formarse nubes de polvo.\r\n– el texto entre corchetes puede utilizarse para especificar material eléctrico, de ventilación, de iluminación o de otro tipo cuando sea necesario y según proceda.\r\n– puede omitirse cuando en la legislación nacional o local se contemplen disposiciones más específicas."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 20,
+  "fields": {
+    "code": "P242",
+    "name": "No utilizar herramientas que produzcan chispas.",
+    "prudence_advice_help": "– si el líquido es volátil y puede dar lugar a la formación de una atmósfera explosiva y si la energía mínima de ignición es muy baja. (Eso se aplica a las sustancias y mezclas con una energía mínima de ignición <0,1mJ, por ejemplo el disulfuro de carbono)"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 21,
+  "fields": {
+    "code": "P243",
+    "name": "Tomar medidas de precaución contra las descargas electrostáticas.",
+    "prudence_advice_help": "– si el líquido es volátil y puede dar lugar a la formación de una atmósfera explosiva.\r\n– puede omitirse cuando en la legislación nacional o local se contemplen disposiciones más específicas."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 22,
+  "fields": {
+    "code": "P244",
+    "name": "Mantener las válvulas y conexiones libres de aceite y grasa.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 23,
+  "fields": {
+    "code": "P250",
+    "name": "Evitar abrasiones/choques/fricciones/...",
+    "prudence_advice_help": "– si el explosivo es sensible a la acción mecánica.\r\n... el fabricante/proveedor o la autoridad competente especificarán otros tipos de manipulación brusca aplicables."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 24,
+  "fields": {
+    "code": "P251",
+    "name": "No perforar ni quemar, incluso después de su uso.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 25,
+  "fields": {
+    "code": "P260",
+    "name": "No respirar polvos/humos/gases/ nieblas/vapores/aerosoles.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente especificarán las condiciones aplicables.\r\n– especificar que no se respiren polvos o nieblas – si durante la utilización pueden producirse partículas inhalables."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 26,
+  "fields": {
+    "code": "P261",
+    "name": "Evitar respirar polvos/humos/gases/ nieblas/vapores/aerosoles.",
+    "prudence_advice_help": "– puede omitirse cuando el consejo P260 aparece en la etiqueta.\r\nEl fabricante/proveedor o la autoridad competente especificarán las condiciones aplicables."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 27,
+  "fields": {
+    "code": "P262",
+    "name": "Evitar todo contacto con los ojos, la piel o la ropa.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 28,
+  "fields": {
+    "code": "P263",
+    "name": "Evitar todo contacto con la sustancia durante el embarazo y la lactancia.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 29,
+  "fields": {
+    "code": "P264",
+    "name": "Lavarse... cuidadosamente después de la manipulación.",
+    "prudence_advice_help": "... el fabricante/proveedor o la autoridad competente especificarán las partes del cuerpo que hayan de lavarse después de la manipulación."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 30,
+  "fields": {
+    "code": "P270 ",
+    "name": "No comer, beber o fumar mientras se manipula este producto.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 31,
+  "fields": {
+    "code": "P271 ",
+    "name": "Utilizar sólo al aire libre o en un lugar bien ventilado.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 32,
+  "fields": {
+    "code": "P272 ",
+    "name": "La ropa de trabajo contaminada no debe salir del lugar de trabajo.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 33,
+  "fields": {
+    "code": "P273",
+    "name": "No dispersar en el medio ambiente.",
+    "prudence_advice_help": "– si no es el uso al que está destinado"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 35,
+  "fields": {
+    "code": "P282 ",
+    "name": "Usar guantes aislantes contra el frío y equipo de protección para la cara o los ojos.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 36,
+  "fields": {
+    "code": "P283 ",
+    "name": "Llevar ropa resistente al fuego o retardante de las llamas.",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 37,
+  "fields": {
+    "code": "P284",
+    "name": "[En caso de ventilación insuficiente,] llevar equipo de protección respiratoria.",
+    "prudence_advice_help": "– el texto entre corchetes podrá usarse en los casos en que el producto químico en el punto de uso venga acompañado de información adicional en que se explique el tipo de ventilación adecuado para poder usarlo de forma segura.\r\nEl fabricante/proveedor o la autoridad competente especificarán el equipo."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 38,
+  "fields": {
+    "code": "P231 + P232",
+    "name": "Manipular y almacenar el contenido en un medio de gas inerte/... Proteger de la humedad.",
+    "prudence_advice_help": "… el fabricante/proveedor o la autoridad especificarán el líquido o gas apropiado si el \"gas inerte\" no fuese apropiado.\r\n– si la sustancia o mezcla reacciona rápidamente con la humedad del aire."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 39,
+  "fields": {
+    "code": "P301 ",
+    "name": "EN CASO DE INGESTIÓN:",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 40,
+  "fields": {
+    "code": "P302 ",
+    "name": "EN CASO DE CONTACTO CON LA PIEL:",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 41,
+  "fields": {
+    "code": "P303 ",
+    "name": "EN CASO DE CONTACTO CON LA PIEL (o el pelo):",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 42,
+  "fields": {
+    "code": "P304",
+    "name": "EN CASO DE INHALACIÓN:",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 43,
+  "fields": {
+    "code": "P305 ",
+    "name": "EN CASO DE CONTACTO CON LOS OJOS:",
+    "prudence_advice_help": null
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 44,
+  "fields": {
+    "code": "P306",
+    "name": "EN CASO DE CONTACTO CON LA ROPA:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 45,
+  "fields": {
+    "code": "P308",
+    "name": "EN CASO DE exposición demostrada o supuesta:",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la  atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 46,
+  "fields": {
+    "code": "P310",
+    "name": "Llamar inmediatamente a un CENTRO DE TOXICOLOGÍA/médico…",
+    "prudence_advice_help": "…El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 47,
+  "fields": {
+    "code": "P311",
+    "name": "Llamar a un CENTRO DE TOXICOLOGÍA/médico…",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia  médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 50,
+  "fields": {
+    "code": "P280",
+    "name": "Usar guantes/ropa de protección/equipo de protección para los ojos/la cara.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente especificarán el tipo de equipo apropiado.\r\n– especificar guantes/ropa de protección.\r\n– especificar guantes/ropa de protección y equipo de protección para los ojos/la cara."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 55,
+  "fields": {
+    "code": "P230",
+    "name": "Mantener humidificado con ...",
+    "prudence_advice_help": "– para las sustancias y mezclas que se humedezcan, diluyan, disuelvan o suspendan en un flemador a fin de neutralizar supropiedades explosivas.\r\n... el fabricante/proveedor o la autoridad competente especificarán el material apropiado."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 56,
+  "fields": {
+    "code": "P234",
+    "name": "Conservar únicamente en el embalaje original.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 60,
+  "fields": {
+    "code": "P370 + P372 + P380 + P373",
+    "name": "En caso de incendio: Riesgo de explosión. Evacuar la zona. NO apagar el fuego cuando éste afecta a la carga.",
+    "prudence_advice_help": "– excepto si se trata de explosivos de la división 1.4 (grupo de compatibilidad S) en el embalaje para el transporte."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 61,
+  "fields": {
+    "code": "P401",
+    "name": "Almacenar conforme a...",
+    "prudence_advice_help": "... ...el fabricante/proveedor o la autoridad competente especificarán la reglamentación local/regional nacional/internacionalaplicable."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 62,
+  "fields": {
+    "code": "P501",
+    "name": "Eliminar el contenido/recipiente...",
+    "prudence_advice_help": "... conforme a la reglamentación local/regional/nacional/ internacional (especifíquese).\r\nEl fabricante/proveedor o la autoridad competente especificarán si los requisitos relativos a la eliminación se aplican al contenido, al recipiente o a ambos."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 63,
+  "fields": {
+    "code": "P370 + P380 + P375",
+    "name": "En caso de incendio: evacuar la zona. Combatir el incendio a distancia debido al riesgo de explosión.",
+    "prudence_advice_help": "– para los explosivos de la división 1.4 (grupo de compatibilidad S) en el embalaje para el transporte."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 65,
+  "fields": {
+    "code": "P381",
+    "name": "En caso de fuga, eliminar todas las fuentes de ignición.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 66,
+  "fields": {
+    "code": "P403",
+    "name": "Almacenar en un lugar bien ventilado.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 67,
+  "fields": {
+    "code": "P410 + P412",
+    "name": "Proteger de la luz solar. No exponer a una temperatura superior a 50 °C/122 °F.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente utilizarán la unidad de temperatura aplicable."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 68,
+  "fields": {
+    "code": "P370 + P376",
+    "name": "En caso de incendio: detener la fuga si  puede hacerse sin riesgo.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 69,
+  "fields": {
+    "code": "P410 + P403",
+    "name": "Proteger de la luz solar. Almacenar en un ugar bien ventilado.",
+    "prudence_advice_help": "– el código P410 puede omitirse en el caso de gases contenidos en botellas de gas transportables  conformes a las prescripciones de la instrucción de embalaje P200 de las Recomendaciones relativas al transporte de mercancías peligrosas, Reglamentación Modelo, a menos que dichos gases puedan experimentar una (lenta) descomposición o polimerización, o que la autoridad competente disponga otra cosa."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 70,
+  "fields": {
+    "code": "P336 + P315",
+    "name": "Descongelar las partes congeladas con agua tibia. No frotar la parte afectada. Buscar asistencia médica inmediata.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 71,
+  "fields": {
+    "code": "P303 + P361 + P353",
+    "name": "EN CASO DE CONTACTO CON LA  PIEL (o el pelo): Quitar inmediatamente toda la ropa contaminada. Enjuagar la piel con agua [o ducharse].",
+    "prudence_advice_help": "– se incluirá el texto que figura entre corchetes cuando el fabricante/proveedor o la autoridad competente lo estimen  apropiado para el producto químico de  que se trate."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 73,
+  "fields": {
+    "code": "P403 + P235",
+    "name": "Almacenar en un lugar bien ventilado. Mantener fresco.",
+    "prudence_advice_help": "– para los líquidos inflamables de categoría 1 y otros líquidos inflamables que sean volátiles y puedan\r\ndar lugar a la formación de una atmósfera explosiva."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 74,
+  "fields": {
+    "code": "P370 + P372 + P373 + P380",
+    "name": "En caso de incendio:",
+    "prudence_advice_help": "Riesgo de explosión. Evacuar la zona. NO apagar el fuego cuando éste afecta a la carga."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 75,
+  "fields": {
+    "code": "P411",
+    "name": "Almacenar a una temperatura que no exceda de...°C/...°F.",
+    "prudence_advice_help": "– si se requiere el control de temperatura (con arreglo a los párrafos 2.8.2.3 o 2.15.2.3 del SGA) o si se considera necesario por otro motivo.\r\n... El fabricante/proveedor o la autoridad competente especificarán la temperatura en la unidad aplicable."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 76,
+  "fields": {
+    "code": "P370 + P380 + P375 [+ P378]",
+    "name": "En caso de incendio: Evacuar la zona. Combatir el incendio a distancia debido al riesgo de explosión. [Utilizar...en la extinción].",
+    "prudence_advice_help": "– el texto entre corchetes se utilizará si el agua aumenta el riesgo.\r\n... El fabricante/proveedor o la autoridad competente especificarán los medios apropiados."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 77,
+  "fields": {
+    "code": "P420",
+    "name": "Almacenar separadamente.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 79,
+  "fields": {
+    "code": "P302 + P334",
+    "name": "EN CASO DE CONTACTO CON LA PIEL:",
+    "prudence_advice_help": "sumergir en agua fría o envolver en vendas húmedas."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 80,
+  "fields": {
+    "code": "P302 + P335 + P334",
+    "name": "EN CASO DE CONTACTO CON LA PIEL:",
+    "prudence_advice_help": "Cepillar las partículas sueltas depositadas en la piel. Sumergir en agua fría o envolver en vendas húmedas."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 81,
+  "fields": {
+    "code": "P407",
+    "name": "Dejar un espacio de aire entre las pilas o bandejas.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 82,
+  "fields": {
+    "code": "P413",
+    "name": "Almacenar las cantidades a granel de más de... kg/...lb a una temperatura que no exceda de...°C/...°F.",
+    "prudence_advice_help": "... el fabricante /proveedor o la autoridad competente especificarán la masa y la temperatura en la unidad aplicable."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 83,
+  "fields": {
+    "code": "P302 + P334 + P335",
+    "name": "EN CASO DE CONTACTO CON LA PIEL:",
+    "prudence_advice_help": "Cepillar las partículas sueltas depositadas en la piel y sumergir en agua  fría."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 84,
+  "fields": {
+    "code": "P370 + P378",
+    "name": "En caso de incendio: utilizar... para la  extinción",
+    "prudence_advice_help": "- si el agua aumenta el riesgo.\r\n ... el fabricante/proveedor o la autoridad  competente especificarán los medios  apropiados."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 85,
+  "fields": {
+    "code": "P402 + P404",
+    "name": "Almacenar en un lugar seco y en un  recipiente cerrado.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 86,
+  "fields": {
+    "code": "P306 + P360",
+    "name": "EN CASO DE CONTACTO CON LA ROPA:",
+    "prudence_advice_help": "Enjuagar inmediatamente con agua abundante la ropa y la piel contaminadas antes de quitarse la ropa."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 87,
+  "fields": {
+    "code": "P371 + P380 + P375",
+    "name": "En caso de un incendio de grandes proporciones y si se trata de grandes cantidades:",
+    "prudence_advice_help": "evacuar la zona. Combatir el incendio a distancia debido al riesgo de explosión."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 88,
+  "fields": {
+    "code": "P410",
+    "name": "Proteger de la luz solar",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 89,
+  "fields": {
+    "code": "P370 + P380 + P375 [+ P378]",
+    "name": "En caso de incendio: Evacuar la zona. Combatir el incendio a distancia debido al riesgo de explosión. [Utilizar...en la extinción].",
+    "prudence_advice_help": "– el texto entre corchetes se utilizará si el agua aumenta el riesgo.\r\n... el fabricante/proveedor o la autoridad competente especificarán los medios apropiados."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 90,
+  "fields": {
+    "code": "P390",
+    "name": "Absorber el vertido para prevenir daños materiales",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 91,
+  "fields": {
+    "code": "P406",
+    "name": "Almacenar en un recipiente resistente a la corrosión/en un recipiente... con revestimiento interior resistente a la corrosión.",
+    "prudence_advice_help": "– puede omitirse cuando el código P234 aparece en la etiqueta.\r\n... el fabricante/proveedor o la autoridad competente especificarán otros materiales\r\ncompatibles."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 92,
+  "fields": {
+    "code": "P371+P380+P375",
+    "name": "En caso de un incendio de grandes  proporciones y si se trata de grandes  cantidades:",
+    "prudence_advice_help": "Evacuar la zona. Combatir el  incendio a distancia debido al riesgo de  explosión."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 93,
+  "fields": {
+    "code": "P301 + P310",
+    "name": "EN CASO DE INGESTIÓN: Llamar inmediatamente a un CENTRO DE TOXICOLOGÍA/médico/...",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 94,
+  "fields": {
+    "code": "P321",
+    "name": "Tratamiento específico (véase ... en esta etiqueta)",
+    "prudence_advice_help": "– si se requiere la administración inmediata de un antídoto.\r\n... referencia a instrucciones adicionales de primeros auxilios"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 95,
+  "fields": {
+    "code": "P330",
+    "name": "Enjuagarse la boca.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 96,
+  "fields": {
+    "code": "P405",
+    "name": "Guardar bajo llave.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 97,
+  "fields": {
+    "code": "P301 + P312",
+    "name": "EN CASO DE INGESTIÓN: Llamar a un CENTRO DE TOXICOLOGÍA/médico/...si la persona se encuentra mal.",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 99,
+  "fields": {
+    "code": "P312",
+    "name": "Llamar a un CENTRO DE TOXICOLOGÍA/médico/...si la persona se encuentra mal.",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 101,
+  "fields": {
+    "code": "P302 + P352",
+    "name": "EN CASO DE CONTACTO CON LA PIEL: Lavar con abundante agua/...",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente podrán especificar un producto de limpieza, cuando proceda, o recomendar otro producto en los casos excepcionales en que claramente no sea adecuado utilizar agua."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 102,
+  "fields": {
+    "code": "P361 + P364",
+    "name": "Quitar inmediatamente toda la ropa contaminada y lavarla antes de volverla a usar.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 103,
+  "fields": {
+    "code": "P260",
+    "name": "No respirar  polvos/humos/gases/nieblas/vapores/aerosoles.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente especificarán las condiciones aplicables."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 104,
+  "fields": {
+    "code": "P271",
+    "name": "Utilizar sólo al aire libre o en un lugar bien  ventilado",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 106,
+  "fields": {
+    "code": "P304 + P340",
+    "name": "EN CASO DE INHALACIÓN:",
+    "prudence_advice_help": "Transportar a la  persona al aire libre y mantenerla en una posición que le facilite la respiración."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 107,
+  "fields": {
+    "code": "P310",
+    "name": "Llamar inmediatamente a un CENTRO DE  TOXICOLOGÍA/ médico/...",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente   especificarán la fuente apropiada de asistencia\r\n  médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 108,
+  "fields": {
+    "code": "P320",
+    "name": "Es necesario un tratamiento específico urgente (véase... en esta etiqueta).",
+    "prudence_advice_help": "- si se requiere la administración inmediata de un antídoto.\r\n... referencia a instrucciones adicionales de primeros auxilios."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 109,
+  "fields": {
+    "code": "P403 + P233",
+    "name": "Almacenar en un lugar bien   ventilado. Mantener el recipiente  herméticamente cerrado.",
+    "prudence_advice_help": "– si el producto quimico es volátil  y puede dar lugar a la formación  de una atmósfera peligrosa."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 110,
+  "fields": {
+    "code": "P304 + P312",
+    "name": "EN CASO DE INHALACIÓN: Llamar a un CENTRO DE TOXICOLOGÍA/médico/...si la persona se encuentra mal.",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 111,
+  "fields": {
+    "code": "P301 + P330 + P331",
+    "name": "EN CASO DE INGESTIÓN:",
+    "prudence_advice_help": "Enjuagar la boca. NO provocar el vómito"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 112,
+  "fields": {
+    "code": "P363",
+    "name": "Lavar la ropa contaminada antes de volverla a usar.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 113,
+  "fields": {
+    "code": "P305 + P351 + P338",
+    "name": "EN CASO DE CONTACTO CON LOS OJOS:",
+    "prudence_advice_help": "Enjuagar con agua cuidadosamente durante varios minutos. Quitar las lentes de contacto cuando\r\nestén presentes y pueda hacerse con facilidad. Proseguir con el lavado."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 114,
+  "fields": {
+    "code": "P332 + P313",
+    "name": "En caso de irritación cutánea: consultar a un médico.",
+    "prudence_advice_help": "– puede omitirse cuando el consejo P333+P313 aparece en la etiqueta.\r\nEl fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 115,
+  "fields": {
+    "code": "P362 + P364",
+    "name": "Quitar la ropa contaminada y lavarla antes de volverla a usar.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 116,
+  "fields": {
+    "code": "P337 + P313",
+    "name": "Si la irritación ocular persiste, consultar a un médico.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 117,
+  "fields": {
+    "code": "P342 + P311",
+    "name": "En caso de síntomas respiratorios: llamar a un CENTRO DE TOXICOLOGÍA/médico/...",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 118,
+  "fields": {
+    "code": "P333 + P313",
+    "name": "En caso de irritación cutánea o sarpullido: consultar a un médico.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la\r\natención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 119,
+  "fields": {
+    "code": "P308 + P313",
+    "name": "EN CASO DE exposición demostrada o supuesta:  consultar a un médico.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente  seleccionarán, según proceda, el asesoramiento o la\r\n atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 120,
+  "fields": {
+    "code": "P314",
+    "name": "Consultar a un médico si la persona se   encuentra mal.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad  competente seleccionarán, según proceda, el  asesoramiento o la atención médica que hayan  de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 121,
+  "fields": {
+    "code": "P331",
+    "name": "NO provocar el vómito.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 122,
+  "fields": {
+    "code": "P391",
+    "name": "Recoger los vertidos.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 123,
+  "fields": {
+    "code": "P502",
+    "name": "Pedir información al fabricante o proveedor sobre la recuperación o el reciclado",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 124,
+  "fields": {
+    "code": "P304 + P312",
+    "name": "EN CASO DE INHALACIÓN: Llamar a un CENTRO DE TOXICOLOGÍA/médico/...si la persona se encuentra mal.",
+    "prudence_advice_help": "...El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 129,
+  "fields": {
+    "code": "P313",
+    "name": "Consultar a un médico.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 130,
+  "fields": {
+    "code": "P315",
+    "name": "Buscar asistencia médica inmediata.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente seleccionarán, según proceda, el asesoramiento o la atención médica que hayan de prestarse."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 131,
+  "fields": {
+    "code": "P332",
+    "name": "En caso de irritación cutánea:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 132,
+  "fields": {
+    "code": "P333",
+    "name": "En caso de irritación cutánea o sarpullido:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 133,
+  "fields": {
+    "code": "P334",
+    "name": "Sumergir en agua fría [o envolver en vendas húmedas].",
+    "prudence_advice_help": "- se usará el texto entre corchetes para los líquidos y sólidos pirofóricos\r\n- utilícese solo \"lavar con agua fría\". El texto entre corchetes no debe utilizarse"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 134,
+  "fields": {
+    "code": "P335",
+    "name": "Cepillar las partículas sueltas depositadas en la piel.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 135,
+  "fields": {
+    "code": "P336",
+    "name": "Descongelar las partes congeladas con agua tibia. No frotar la parte afectada.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 136,
+  "fields": {
+    "code": "P337",
+    "name": "Si la irritación ocular persiste:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 137,
+  "fields": {
+    "code": "P338",
+    "name": "Quitar las lentes de contacto, cuando estén presentes y pueda hacerse con facilidad. Proseguir con el lavado.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 138,
+  "fields": {
+    "code": "P340",
+    "name": "Transportar a la persona al aire libre y mantenerla en una posición que le facilite la respiración.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 139,
+  "fields": {
+    "code": "P342",
+    "name": "En caso de síntomas respiratorios:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 140,
+  "fields": {
+    "code": "P351",
+    "name": "Enjuagar con agua cuidadosamente durante varios minutos.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 141,
+  "fields": {
+    "code": "P352",
+    "name": "Lavar con abundante agua/…",
+    "prudence_advice_help": "…El fabricante/proveedor o la autoridad competente podrán especificar un producto de limpieza, cuando proceda, o recomendar otro producto en los casos excepcionales en que claramente no sea adecuado utilizar agua."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 142,
+  "fields": {
+    "code": "P353",
+    "name": "Enjuagar la piel con agua [ o ducharse].",
+    "prudence_advice_help": "– se incluirá el texto que figura entre corchetes cuando el fabricante/proveedor o la autoridad competente lo estimen apropiado para el producto químico de que se trate."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 143,
+  "fields": {
+    "code": "P360",
+    "name": "Enjuagar inmediatamente con agua abundante la ropa y la piel contaminadas antes de quitarse la ropa.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 144,
+  "fields": {
+    "code": "P361",
+    "name": "Quitar inmediatamente toda la ropa contaminada.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 145,
+  "fields": {
+    "code": "P362",
+    "name": "Quitar la ropa contaminada.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 146,
+  "fields": {
+    "code": "P364",
+    "name": "Y lavarla antes de volverla a usar.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 147,
+  "fields": {
+    "code": "P370",
+    "name": "En caso de incendio:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 148,
+  "fields": {
+    "code": "P371",
+    "name": "En caso de un incendio de grandes proporciones:",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 149,
+  "fields": {
+    "code": "P372",
+    "name": "Riesgo de explosión.",
+    "prudence_advice_help": "– excepto si se trata de explosivos de la división 1.4 (grupo de compatibilidad S) en el embalaje para el transporte."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 150,
+  "fields": {
+    "code": "P373",
+    "name": "NO apagar el fuego cuando éste afecta a la carga.",
+    "prudence_advice_help": "– excepto si se trata de explosivos de la división 1.4 (grupo de compatibilidad S) en el embalaje para el transporte"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 151,
+  "fields": {
+    "code": "P375",
+    "name": "Combatir el incendio a distancia debido al riesgo de explosión.",
+    "prudence_advice_help": "– para los explosivos de la división 1.4 (grupo de compatibilidad S) en el embalaje para el transporte."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 152,
+  "fields": {
+    "code": "P376",
+    "name": "Detener la fuga si puede hacerse sin riesgo.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 153,
+  "fields": {
+    "code": "P377",
+    "name": "Fuga de gas inflamado: No apagar las llamas del gas inflamado si no puede hacerse sin riesgo.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 154,
+  "fields": {
+    "code": "P378",
+    "name": "Utilizar... para la extinción.",
+    "prudence_advice_help": "– si el agua aumenta el riesgo.\r\n... el fabricante/proveedor o la autoridad competente especificarán los medios apropiados."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 155,
+  "fields": {
+    "code": "P380",
+    "name": "Evacuar la zona.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 156,
+  "fields": {
+    "code": "P381",
+    "name": "En caso de fuga, eliminar todas las fuentes de ignición",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 157,
+  "fields": {
+    "code": "P302 + P334",
+    "name": "EN CASO DE CONTACTO CON LA PIEL: Sumergir en agua fría [o envolver en vendas húmedas.",
+    "prudence_advice_help": "– el texto entre corchetes debe utilizarse para los líquidos pirofóricos"
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 158,
+  "fields": {
+    "code": "P308 + P311",
+    "name": "EN CASO DE exposición demostrada o supuesta: Llamar a un CENTRO DE TOXICOLOGÍA/médico/...",
+    "prudence_advice_help": "…El fabricante/proveedor o la autoridad competente especificarán la fuente apropiada de asistencia médica de urgencia."
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 159,
+  "fields": {
+    "code": "P402",
+    "name": "Almacenar en un lugar seco.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 160,
+  "fields": {
+    "code": "P404",
+    "name": "Almacenar en un recipiente cerrado.",
+    "prudence_advice_help": ""
+  }
+},
+{
+  "model": "sga.prudenceadvice",
+  "pk": 162,
+  "fields": {
+    "code": "P412",
+    "name": "No exponer a una temperatura superior a 50 ºC/122 ºF.",
+    "prudence_advice_help": "El fabricante/proveedor o la autoridad competente utilizarán la unidad aplicable."
+  }
+},
+  {
+  "model": "sga.dangerindication",
+  "pk": "H200",
+  "fields": {
+    "description": "Explosivo inestable",
+    "warning_words": 1,
+    "warning_class": [
+      65
+    ],
+    "warning_category": [
+      64
+    ],
+    "prudence_advice": [
+      50,
+      4,
+      23,
+      60,
+      61,
+      62,
+      6,
+      18,
+      56,
+      151,
+      55
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H201",
+  "fields": {
+    "description": "Explosivo; peligro explosión en masa",
+    "warning_words": 1,
+    "warning_class": [
+      65
+    ],
+    "warning_category": [
+      2
+    ],
+    "prudence_advice": [
+      6,
+      74,
+      12,
+      16,
+      18,
+      50,
+      23,
+      61,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H202",
+  "fields": {
+    "description": "Explosivo; grave peligro de proyección",
+    "warning_words": 1,
+    "warning_class": [
+      65
+    ],
+    "warning_category": [
+      3
+    ],
+    "prudence_advice": [
+      6,
+      74,
+      18,
+      50,
+      23,
+      61,
+      62,
+      56,
+      55
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H203",
+  "fields": {
+    "description": "Explosivo; peligro de incendio, de onda expansiva o de proyección",
+    "warning_words": 1,
+    "warning_class": [
+      65
+    ],
+    "warning_category": [
+      4
+    ],
+    "prudence_advice": [
+      6,
+      74,
+      16,
+      18,
+      50,
+      23,
+      61,
+      62,
+      55
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H204",
+  "fields": {
+    "description": "Peligro de incendio o de proyección",
+    "warning_words": 2,
+    "warning_class": [
+      65
+    ],
+    "warning_category": [
+      5
+    ],
+    "prudence_advice": [
+      18,
+      50,
+      6,
+      23,
+      61,
+      62,
+      16
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H205",
+  "fields": {
+    "description": "Peligro de expasión en masa en caso de incendio",
+    "warning_words": 1,
+    "warning_class": [
+      65
+    ],
+    "warning_category": [
+      6
+    ],
+    "prudence_advice": [
+      6,
+      74,
+      12,
+      16,
+      18,
+      50,
+      23,
+      61,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H206",
+  "fields": {
+    "description": "Peligro de incendio, onda expansiva o proyección; mayor riesgo de explosión si se reduce el agente insensibilizante",
+    "warning_words": 1,
+    "warning_class": [
+      35
+    ],
+    "warning_category": [
+      77
+    ],
+    "prudence_advice": [
+      6,
+      8,
+      12,
+      15,
+      50,
+      61,
+      62,
+      63,
+      16,
+      18,
+      23,
+      60,
+      87
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H207",
+  "fields": {
+    "description": "Peligro de incendio o proyección, mayor riesgo de explosión si se reduce el agente insensibilizante",
+    "warning_words": 1,
+    "warning_class": [
+      35
+    ],
+    "warning_category": [
+      78,
+      79
+    ],
+    "prudence_advice": [
+      6,
+      8,
+      12,
+      15,
+      50,
+      61,
+      62,
+      63,
+      87
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H208",
+  "fields": {
+    "description": "Peligro de incendio , mayor riesgo de explosión si se reduce el agente insensibilizante",
+    "warning_words": 2,
+    "warning_class": [
+      35
+    ],
+    "warning_category": [
+      80
+    ],
+    "prudence_advice": [
+      6,
+      8,
+      15,
+      50,
+      87,
+      61,
+      62,
+      55
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H220",
+  "fields": {
+    "description": "Gas extremadamente inflamable",
+    "warning_words": 1,
+    "warning_class": [
+      8
+    ],
+    "warning_category": [
+      70
+    ],
+    "prudence_advice": [
+      65,
+      66,
+      6,
+      5,
+      10,
+      50,
+      153,
+      156,
+      160
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H221",
+  "fields": {
+    "description": "Gas inflamable",
+    "warning_words": 2,
+    "warning_class": [
+      8
+    ],
+    "warning_category": [
+      71
+    ],
+    "prudence_advice": [
+      65,
+      66,
+      6,
+      5,
+      10,
+      50,
+      153,
+      156
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H222",
+  "fields": {
+    "description": "Aerosol extremadamente inflamable",
+    "warning_words": 1,
+    "warning_class": [
+      11
+    ],
+    "warning_category": [
+      72
+    ],
+    "prudence_advice": [
+      24,
+      67,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H223",
+  "fields": {
+    "description": "Aerosol inflamable",
+    "warning_words": 2,
+    "warning_class": [
+      11
+    ],
+    "warning_category": [
+      73
+    ],
+    "prudence_advice": [
+      24,
+      67,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H224",
+  "fields": {
+    "description": "Liquido y vapores extremadamente inflamables",
+    "warning_words": 1,
+    "warning_class": [
+      12
+    ],
+    "warning_category": [
+      81
+    ],
+    "prudence_advice": [
+      6,
+      71,
+      73,
+      15,
+      18,
+      19,
+      20,
+      21,
+      50,
+      62,
+      84
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H225",
+  "fields": {
+    "description": "Liquido y vapores muy inflamables",
+    "warning_words": 1,
+    "warning_class": [
+      12
+    ],
+    "warning_category": [
+      82
+    ],
+    "prudence_advice": [
+      6,
+      71,
+      73,
+      15,
+      18,
+      19,
+      20,
+      21,
+      50,
+      62,
+      84
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H226",
+  "fields": {
+    "description": "Liquido y vapores inflamables",
+    "warning_words": 2,
+    "warning_class": [
+      12
+    ],
+    "warning_category": [
+      83
+    ],
+    "prudence_advice": [
+      6,
+      73,
+      15,
+      18,
+      19,
+      62,
+      71,
+      50,
+      20,
+      21,
+      84
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H227",
+  "fields": {
+    "description": "Liquido combustible",
+    "warning_words": 2,
+    "warning_class": [
+      12
+    ],
+    "warning_category": [
+      84
+    ],
+    "prudence_advice": [
+      66,
+      69,
+      6,
+      73,
+      109,
+      50,
+      62,
+      84
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H228",
+  "fields": {
+    "description": "Sólido inflamable",
+    "warning_words": 1,
+    "warning_class": [
+      13
+    ],
+    "warning_category": [
+      86,
+      87
+    ],
+    "prudence_advice": [
+      18,
+      19,
+      50,
+      6,
+      84,
+      24,
+      67,
+      7
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H229",
+  "fields": {
+    "description": "Contiene gas a presión, puede reventar si se calienta",
+    "warning_words": 1,
+    "warning_class": [
+      11
+    ],
+    "warning_category": [
+      72,
+      73,
+      74
+    ],
+    "prudence_advice": [
+      24,
+      67,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H230",
+  "fields": {
+    "description": "Indicación de peligro adicional: Puede explotar incluso en ausencia de aire",
+    "warning_words": 3,
+    "warning_class": [
+      8
+    ],
+    "warning_category": [
+      10
+    ],
+    "prudence_advice": [
+      5,
+      65,
+      66,
+      6,
+      10,
+      50,
+      153
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H231",
+  "fields": {
+    "description": "Indicación de peligro adicional: Puede explotar incluso en ausencia de aire, a presión y/o temperatura elevadas",
+    "warning_words": 3,
+    "warning_class": [
+      8
+    ],
+    "warning_category": [
+      69
+    ],
+    "prudence_advice": [
+      5
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H232",
+  "fields": {
+    "description": "Puede inflamarse espontáneamente en contacto con el aire",
+    "warning_words": 1,
+    "warning_class": [
+      8
+    ],
+    "warning_category": [
+      9
+    ],
+    "prudence_advice": [
+      10,
+      50,
+      66,
+      5,
+      6,
+      153,
+      156
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H240",
+  "fields": {
+    "description": "Puede explotar al calentarse",
+    "warning_words": 1,
+    "warning_class": [
+      26
+    ],
+    "warning_category": [
+      88
+    ],
+    "prudence_advice": [
+      66,
+      6,
+      75,
+      77,
+      16,
+      17,
+      18,
+      50,
+      88,
+      60,
+      62,
+      76,
+      84
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H241",
+  "fields": {
+    "description": "Puede  incendiarse o explotar al calentarse",
+    "warning_words": 1,
+    "warning_class": [
+      26
+    ],
+    "warning_category": [
+      89
+    ],
+    "prudence_advice": [
+      66,
+      6,
+      75,
+      77,
+      16,
+      17,
+      18,
+      50,
+      89,
+      62,
+      60
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H242",
+  "fields": {
+    "description": "Puede incendiarse al calentarse",
+    "warning_words": 1,
+    "warning_class": [
+      26
+    ],
+    "warning_category": [
+      90,
+      91
+    ],
+    "prudence_advice": [
+      66,
+      6,
+      75,
+      77,
+      16,
+      17,
+      18,
+      50,
+      88,
+      62,
+      74,
+      76
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H250",
+  "fields": {
+    "description": "Se inflama espontanea en contacto de el aire",
+    "warning_words": 1,
+    "warning_class": [
+      27
+    ],
+    "warning_category": [
+      9
+    ],
+    "prudence_advice": [
+      15,
+      50,
+      84,
+      38,
+      6,
+      10,
+      79
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H251",
+  "fields": {
+    "description": "Se calienta espontáneamente al contacto con e aire",
+    "warning_words": 1,
+    "warning_class": [
+      29
+    ],
+    "warning_category": [
+      95
+    ],
+    "prudence_advice": [
+      17,
+      50,
+      81,
+      82,
+      77,
+      88
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H252",
+  "fields": {
+    "description": "Se calienta espontáneamente en grandes cantidades; puede inflamarse",
+    "warning_words": 2,
+    "warning_class": [
+      29
+    ],
+    "warning_category": [
+      96
+    ],
+    "prudence_advice": [
+      17,
+      50,
+      81,
+      82,
+      77,
+      88
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H260",
+  "fields": {
+    "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
+    "warning_words": 1,
+    "warning_class": [
+      30
+    ],
+    "warning_category": [
+      97
+    ],
+    "prudence_advice": [
+      50,
+      83,
+      85,
+      38,
+      11,
+      62,
+      77,
+      81,
+      82,
+      17,
+      88
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H261",
+  "fields": {
+    "description": "En contacto con el agua desprende gases inflamables que pueden inflamarse espontaneamente",
+    "warning_words": 1,
+    "warning_class": [
+      30
+    ],
+    "warning_category": [
+      98
+    ],
+    "prudence_advice": [
+      50,
+      77,
+      81,
+      82,
+      17,
+      88
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H270",
+  "fields": {
+    "description": "Puede provocar o agravar un incendio",
+    "warning_words": 1,
+    "warning_class": [
+      14
+    ],
+    "warning_category": [
+      75
+    ],
+    "prudence_advice": [
+      9,
+      66,
+      68,
+      22
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H271",
+  "fields": {
+    "description": "Puede provocar un incendio o una explosión; muy comburente",
+    "warning_words": 1,
+    "warning_class": [
+      31
+    ],
+    "warning_category": [
+      100
+    ],
+    "prudence_advice": [
+      36,
+      6,
+      9,
+      76,
+      77,
+      50,
+      148,
+      86,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H272",
+  "fields": {
+    "description": "Puede agravar un incendio; comburente",
+    "warning_words": 1,
+    "warning_class": [
+      31
+    ],
+    "warning_category": [
+      101,
+      102
+    ],
+    "prudence_advice": [
+      36,
+      6,
+      9,
+      76,
+      50,
+      86,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H280",
+  "fields": {
+    "description": "Contiene gas a presión; puede explotar si se calienta",
+    "warning_words": 2,
+    "warning_class": [
+      15
+    ],
+    "warning_category": [
+      16,
+      17,
+      19
+    ],
+    "prudence_advice": [
+      69
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H281",
+  "fields": {
+    "description": "Contiene gas refrigerado, puede provocar quemaduras o lesiones criogénicas",
+    "warning_words": 2,
+    "warning_class": [
+      15
+    ],
+    "warning_category": [
+      18
+    ],
+    "prudence_advice": [
+      66,
+      35,
+      70
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H290",
+  "fields": {
+    "description": "Puede ser corrosiva para los metales",
+    "warning_words": 2,
+    "warning_class": [
+      34
+    ],
+    "warning_category": [
+      113
+    ],
+    "prudence_advice": [
+      16,
+      90,
+      91
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H300",
+  "fields": {
+    "description": "Mortal en caso de ingestión",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H300 + H310",
+  "fields": {
+    "description": "Mortal en caso de ingestión\r\nMortal en contacto con la piel",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H300 + H310 + H330",
+  "fields": {
+    "description": "Mortal en caso de ingestión\r\nMortal en contacto con la piel\r\nMortal si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H300 +H330",
+  "fields": {
+    "description": "Mortal en caso de ingestión\r\nMortal si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      155
+    ],
+    "prudence_advice": [
+      96,
+      93,
+      94,
+      95,
+      29,
+      30,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H301",
+  "fields": {
+    "description": "Tóxico en caso de ingestión",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      157
+    ],
+    "prudence_advice": [
+      96,
+      93,
+      94,
+      95,
+      29,
+      30,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H301 + H311",
+  "fields": {
+    "description": "Tóxico en caso de ingestión o en contacto con la piel",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      157
+    ],
+    "prudence_advice": [
+      95,
+      96,
+      93,
+      94,
+      29,
+      101,
+      102,
+      50,
+      30,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H301 + H311 +H331",
+  "fields": {
+    "description": "Tóxico en caso de ingestión\r\nTóxico en contacto con la piel\r\nTóxico si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      157
+    ],
+    "prudence_advice": [
+      96,
+      93,
+      94,
+      95,
+      29,
+      30,
+      62,
+      50,
+      99,
+      101,
+      102
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H302",
+  "fields": {
+    "description": "Nocivo en caso de ingestión",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      158
+    ],
+    "prudence_advice": [
+      62,
+      97,
+      29,
+      30,
+      95,
+      101,
+      40,
+      104,
+      106,
+      141,
+      110,
+      145,
+      50,
+      115,
+      26,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H302 + H312",
+  "fields": {
+    "description": "Nocivo en caso de ingestión\r\nNocivo en contacto con la piel",
+    "warning_words": 3,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      158
+    ],
+    "prudence_advice": [
+      50,
+      115,
+      101,
+      62,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H302 + H312+ H332",
+  "fields": {
+    "description": "Nocivo en caso de ingestión\r\nNocivo en contacto con la piel\r\nNocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      158
+    ],
+    "prudence_advice": [
+      50,
+      99,
+      101,
+      106,
+      26,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H302 + H332",
+  "fields": {
+    "description": "Nocivo en caso de ingestión\r\nNocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      158
+    ],
+    "prudence_advice": [
+      62,
+      97,
+      29,
+      30,
+      95,
+      26,
+      99,
+      106,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H303",
+  "fields": {
+    "description": "Puede ser nocivo en caso de ingestión",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      159
+    ],
+    "prudence_advice": [
+      110
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H303 + H313",
+  "fields": {
+    "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo en contacto con la piel",
+    "warning_words": 3,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H303 + H313 + H333",
+  "fields": {
+    "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H303 + H333",
+  "fields": {
+    "description": "Puede ser nocivo en caso de ingestión\r\nPuede ser nocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      159
+    ],
+    "prudence_advice": [
+      99,
+      110
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H304",
+  "fields": {
+    "description": "Puede ser mortal en caso de ingestión y de penetración en las vías respiratorias",
+    "warning_words": 1,
+    "warning_class": [
+      57
+    ],
+    "warning_category": [
+      144
+    ],
+    "prudence_advice": [
+      96,
+      121,
+      93,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H305",
+  "fields": {
+    "description": "Puede ser mortal en caso de ingestión y de penetración en las vías respiratorias",
+    "warning_words": 2,
+    "warning_class": [
+      57
+    ],
+    "warning_category": [
+      145
+    ],
+    "prudence_advice": [
+      96,
+      121,
+      93,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H310",
+  "fields": {
+    "description": "Mortal en contacto con la piel",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      155
+    ],
+    "prudence_advice": [
+      96,
+      30,
+      101,
+      102,
+      46,
+      50,
+      27,
+      29,
+      94,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H310 + H330",
+  "fields": {
+    "description": "Mortal en contacto con la piel\r\nMortal si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      155
+    ],
+    "prudence_advice": [
+      96,
+      30,
+      101,
+      102,
+      107,
+      50,
+      27,
+      29,
+      62,
+      94,
+      37,
+      25,
+      106,
+      108,
+      109,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H311",
+  "fields": {
+    "description": "Tóxico en contacto con la piel",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      157
+    ],
+    "prudence_advice": [
+      96,
+      99,
+      101,
+      102,
+      50,
+      62,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H311+ H331",
+  "fields": {
+    "description": "Tóxico en contacto con la piel\r\nTóxico si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      157
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      99,
+      101,
+      62,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H312",
+  "fields": {
+    "description": "Nocivo en contacto con la piel",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      158
+    ],
+    "prudence_advice": [
+      99,
+      101,
+      50,
+      115,
+      62,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H312 + H332",
+  "fields": {
+    "description": "Nocivo en contacto con la piel\r\nNocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H313",
+  "fields": {
+    "description": "Puede ser nocivo en contacto con la piel",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      159
+    ],
+    "prudence_advice": [
+      99
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H313 + H333",
+  "fields": {
+    "description": "Puede ser nocivo en contacto con la piel\r\nPuede ser nocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      159
+    ],
+    "prudence_advice": [
+      99
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H314",
+  "fields": {
+    "description": "Provoca graves quemaduras en la piel y lesiones oculares",
+    "warning_words": 1,
+    "warning_class": [
+      39,
+      40
+    ],
+    "warning_category": [
+      114,
+      117
+    ],
+    "prudence_advice": [
+      96,
+      71,
+      106,
+      46,
+      111,
+      112,
+      113,
+      50,
+      25,
+      29,
+      62,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H315",
+  "fields": {
+    "description": "Provoca irritación cutánea",
+    "warning_words": 2,
+    "warning_class": [
+      39,
+      40
+    ],
+    "warning_category": [
+      115,
+      118
+    ],
+    "prudence_advice": [
+      50,
+      114,
+      115,
+      101,
+      29,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H315 + H320",
+  "fields": {
+    "description": "Provoca irritación cutánea\r\nProvoca irritación ocular",
+    "warning_words": 2,
+    "warning_class": [
+      40,
+      45
+    ],
+    "warning_category": [
+      115,
+      118,
+      122,
+      125
+    ],
+    "prudence_advice": [
+      101,
+      113,
+      50,
+      114,
+      115,
+      116,
+      29,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H316",
+  "fields": {
+    "description": "Provoca leve irritación cutánea",
+    "warning_words": 2,
+    "warning_class": [
+      39,
+      40
+    ],
+    "warning_category": [
+      116,
+      119
+    ],
+    "prudence_advice": [
+      114
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H317",
+  "fields": {
+    "description": "Puede provocar una reacción cutánea alérgica",
+    "warning_words": 2,
+    "warning_class": [
+      49
+    ],
+    "warning_category": [
+      129
+    ],
+    "prudence_advice": [
+      32,
+      101,
+      50,
+      115,
+      118,
+      26,
+      62,
+      94
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H318",
+  "fields": {
+    "description": "Provoca lesiones oculares graves",
+    "warning_words": 1,
+    "warning_class": [
+      44,
+      45
+    ],
+    "warning_category": [
+      120,
+      123
+    ],
+    "prudence_advice": [
+      113,
+      50,
+      46,
+      116,
+      29
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H319",
+  "fields": {
+    "description": "Provoca irritación ocular grave",
+    "warning_words": 2,
+    "warning_class": [
+      44,
+      45
+    ],
+    "warning_category": [
+      121,
+      124
+    ],
+    "prudence_advice": [
+      113,
+      50,
+      116,
+      29,
+      46
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H320",
+  "fields": {
+    "description": "Provoca irritación ocular",
+    "warning_words": 2,
+    "warning_class": [
+      44,
+      45
+    ],
+    "warning_category": [
+      122
+    ],
+    "prudence_advice": [
+      113,
+      116,
+      29
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H330",
+  "fields": {
+    "description": "Mortal si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      155
+    ],
+    "prudence_advice": [
+      96,
+      106,
+      109,
+      25,
+      62,
+      31,
+      26,
+      138,
+      94,
+      47
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H331",
+  "fields": {
+    "description": "Tóxico si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      157
+    ],
+    "prudence_advice": [
+      96,
+      62,
+      106,
+      109,
+      47,
+      26,
+      94,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H332",
+  "fields": {
+    "description": "Nocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      158
+    ],
+    "prudence_advice": [
+      26,
+      99,
+      106,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H333",
+  "fields": {
+    "description": "Puede ser nocivo si se inhala",
+    "warning_words": 2,
+    "warning_class": [
+      38
+    ],
+    "warning_category": [
+      159
+    ],
+    "prudence_advice": [
+      110
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H334",
+  "fields": {
+    "description": "Puede provocar sintomas de alergia o asma o dificultades respiratoria si se inhala",
+    "warning_words": 1,
+    "warning_class": [
+      48
+    ],
+    "warning_category": [
+      126
+    ],
+    "prudence_advice": [
+      26,
+      106,
+      37,
+      62,
+      117
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H335",
+  "fields": {
+    "description": "Puede irritar las vías respiratorias o provocar somnoliencia",
+    "warning_words": 1,
+    "warning_class": [
+      55
+    ],
+    "warning_category": [
+      141
+    ],
+    "prudence_advice": [
+      26,
+      99,
+      106,
+      109,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H336",
+  "fields": {
+    "description": "Puede irritar las vías respiratorias o provocar somnoliencia",
+    "warning_words": 1,
+    "warning_class": [
+      55
+    ],
+    "warning_category": [
+      141
+    ],
+    "prudence_advice": [
+      96,
+      99,
+      106,
+      26,
+      109,
+      62,
+      31
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H340",
+  "fields": {
+    "description": "Puede provocar efectos genéticos (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      50
+    ],
+    "warning_category": [
+      132
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      4,
+      5,
+      119,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H341",
+  "fields": {
+    "description": "Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
+    "warning_words": 2,
+    "warning_class": [
+      50
+    ],
+    "warning_category": [
+      133
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      4,
+      5,
+      119,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H350",
+  "fields": {
+    "description": "Puede provocar cáncer (indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 2,
+    "warning_class": [
+      51
+    ],
+    "warning_category": [
+      134
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      4,
+      5,
+      119,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H351",
+  "fields": {
+    "description": "Suscepctible a provocar cancer (Indíquese la vías de exósición si se ha demostrado concluyendtemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      51
+    ],
+    "warning_category": [
+      135
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      4,
+      5,
+      119,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H360",
+  "fields": {
+    "description": "Puede perjudicar la fertilidad o dañar al feto (Indíquese el efecto especiífico si se conoce) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      52
+    ],
+    "warning_category": [
+      136
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      4,
+      5,
+      119,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H361",
+  "fields": {
+    "description": "Susceptible de perjudicar la fertilidad o dañar al feto (Indíquese el efecto especiífico si se conoce) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 2,
+    "warning_class": [
+      52
+    ],
+    "warning_category": [
+      165
+    ],
+    "prudence_advice": [
+      96,
+      50,
+      4,
+      5,
+      119,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H362",
+  "fields": {
+    "description": "Sin palabra de advertencia",
+    "warning_words": 2,
+    "warning_class": [
+      52
+    ],
+    "warning_category": [
+      138
+    ],
+    "prudence_advice": [
+      4,
+      119,
+      25,
+      28,
+      29,
+      30
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H370",
+  "fields": {
+    "description": "Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      55
+    ],
+    "warning_category": [
+      139
+    ],
+    "prudence_advice": [
+      96,
+      30,
+      45,
+      47,
+      25,
+      29,
+      94,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H371",
+  "fields": {
+    "description": "Puede provocar daños en los órganos (o indíquese todos los órganos afectados, si se conocen) (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      55
+    ],
+    "warning_category": [
+      140
+    ],
+    "prudence_advice": [
+      47,
+      25,
+      45,
+      29,
+      30
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H372",
+  "fields": {
+    "description": "Provoca daños en los órganos (o indíquese todos los órganos afectados, si se conocen)tras exposiciones prolongadas o repetidas (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      56
+    ],
+    "warning_category": [
+      142
+    ],
+    "prudence_advice": [
+      120,
+      25,
+      29,
+      30,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H373",
+  "fields": {
+    "description": "Puede provocar daños en los órganos (o indíquese todos los órganos afectados, si se conocen) tras exposiciones prolongadas o repetidas (Indíquese la vía de exposición si se ha demostrado concluyentemente que ninguna otra vía es peligrosa)",
+    "warning_words": 1,
+    "warning_class": [
+      56
+    ],
+    "warning_category": [
+      143
+    ],
+    "prudence_advice": [
+      120,
+      25,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H400",
+  "fields": {
+    "description": "Muy tóxicos para los organismos acuáticos",
+    "warning_words": 2,
+    "warning_class": [
+      164
+    ],
+    "warning_category": [
+      147
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H401",
+  "fields": {
+    "description": "Tóxicos para los organismos acuáticos",
+    "warning_words": 3,
+    "warning_class": [
+      164
+    ],
+    "warning_category": [
+      148
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H402",
+  "fields": {
+    "description": "Nocivo para los organismos acuáticos",
+    "warning_words": 3,
+    "warning_class": [
+      164
+    ],
+    "warning_category": [
+      149
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H410",
+  "fields": {
+    "description": "Muy tóxicos para los organismos acuáticos, con efectos nocivos duraderos",
+    "warning_words": 2,
+    "warning_class": [
+      163
+    ],
+    "warning_category": [
+      151
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H411",
+  "fields": {
+    "description": "Tóxicos para los organismos acuáticos, con efectos nocivos duraderos",
+    "warning_words": 3,
+    "warning_class": [
+      163
+    ],
+    "warning_category": [
+      152
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H412",
+  "fields": {
+    "description": "Nocivos para los organismos acuáticos, con efectos nocivos duraderos",
+    "warning_words": 3,
+    "warning_class": [
+      163
+    ],
+    "warning_category": [
+      153
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H413",
+  "fields": {
+    "description": "Puede ser nocivo para los organismos acuáticos, con efectos nocivos duraderos",
+    "warning_words": 1,
+    "warning_class": [
+      163
+    ],
+    "warning_category": [
+      154
+    ],
+    "prudence_advice": [
+      33,
+      62
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "H420",
+  "fields": {
+    "description": "Causa daños a la salud pública y el medio ambiente al destruir el ozono en la atmosfera superior",
+    "warning_words": 2,
+    "warning_class": [
+      162
+    ],
+    "warning_category": [
+      68,
+      161
+    ],
+    "prudence_advice": [
+      123
+    ]
+  }
+},
+{
+  "model": "sga.dangerindication",
+  "pk": "Ninguno",
+  "fields": {
+    "description": "Sin indicación de peligro",
+    "warning_words": 3,
+    "warning_class": [
+      7
+    ],
+    "warning_category": [],
+    "prudence_advice": []
+  }
+}
 ]

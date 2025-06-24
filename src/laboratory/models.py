@@ -18,9 +18,10 @@ from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
 
 from presentation.models import AbstractOrganizationRef
+from sga.models import Pictogram
 from . import catalog
 from .models_utils import upload_files
-
+import calendar
 
 class BaseCreationObj(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -47,6 +48,9 @@ class CLInventory(models.Model):
 class Catalog(models.Model):
     key = models.CharField(max_length=150)
     description = models.CharField(max_length=500)
+
+    class Meta:
+        ordering = ['pk']
 
     def __str__(self):
         return self.description
@@ -98,7 +102,9 @@ class Object(AbstractOrganizationRef):
     plaque = models.CharField(
         _('Plaque'), max_length=50, null=True, blank=True)
     is_container = models.BooleanField(default=False, verbose_name=_("Is Container?"))
-
+    is_dangerous = models.BooleanField(default=False, verbose_name=_("Is Dangerous?"))
+    has_threshold = models.BooleanField(default=False, verbose_name=_("Has threshold?"))
+    threshold = models.FloatField(default=0.0, verbose_name=_("Threshold"))
 
     @property
     def is_reactive(self):
@@ -113,7 +119,10 @@ class Object(AbstractOrganizationRef):
     @property
     def cas_code(self):
         if hasattr(self, 'sustancecharacteristics') and self.sustancecharacteristics:
-            return self.sustancecharacteristics.cas_id_number
+            if self.sustancecharacteristics.cas_id_number:
+                return self.sustancecharacteristics.cas_id_number
+            else:
+                return ""
         return False
 
     class Meta:
@@ -213,6 +222,13 @@ class EquipmentCharacteristics(models.Model):
                                        verbose_name=_("Equipment type"))
 
 class ShelfObject(models.Model):
+    PHYSICAL_STATUS = (
+        ('no_reactive', _('')),
+        ('liquid', _('Liquid')),
+        ('solid powder', _('Solid powder')),
+        ('solid granular or crystalline', _('Solid granular or crystalline')),
+        ('Gaseous', _('Gaseous')),
+    )
     shelf = models.ForeignKey('Shelf', verbose_name=_("Shelf"),
                               on_delete=models.CASCADE)
     object = models.ForeignKey('Object',
@@ -260,6 +276,15 @@ class ShelfObject(models.Model):
                                   on_delete=models.SET_NULL,
                                   verbose_name=_("Container"),
                                   related_name="containershelfobject")
+    physical_status = models.CharField(max_length=100,
+                                       choices=PHYSICAL_STATUS,
+                                       null=True,
+                                       blank=True,
+                                       verbose_name=_("Physical Status"))
+    concentration = models.FloatField(default=0.0, verbose_name=_('Concentration'))
+    pictograms = models.ManyToManyField(Pictogram, blank=True,
+                                        related_name="sga_pictograms",
+                                        verbose_name=_("Pictograms"))
 
     @staticmethod
     def get_units(unit):
@@ -347,11 +372,16 @@ class ShelfObjectGuarantee(AbstractOrganizationRef):
 
 
 class BaseUnitValues(models.Model):
-    measurement_unit = catalog.GTOneToOneField(Catalog, related_name="baseunit",
+    measurement_unit_base = catalog.GTForeignKey(Catalog, related_name="baseunit",
+                                                 on_delete=models.CASCADE,
+                                                 verbose_name=_('Base unit'),
+                                                 key_name="key", key_value='units',
+                                                 null=True)
+
+    measurement_unit = catalog.GTOneToOneField(Catalog, related_name="unit",
                                                on_delete=models.CASCADE,
-                                               verbose_name=_('Base unit'),
-                                               key_name="key", key_value='units',
-                                               unique=True)
+                                               verbose_name=_('Unit'),
+                                               key_name="key", key_value='units')
     si_value = models.FloatField(default=1)
 
 
@@ -824,6 +854,25 @@ class Laboratory(BaseCreationObj):
     organization = TreeNodeForeignKey(
         OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE,
         null=True)
+    description = models.TextField(_('Description'), null=True, blank=True)
+    area = models.FloatField(verbose_name = _('Area'), default = 0.0)
+    responsible = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
+                                    blank=True, verbose_name=_("Responsible"),
+                                    related_name="responsible_laboratory")
+    nearby_sites = models.FileField(verbose_name = _('Study centers, hospitals, '
+                                                     'transportation terminals, gas '
+                                                     'stations, or others that might be '
+                                                     'affected in the event of an '
+                                                     'emergency.'),
+                                    upload_to=upload_files,
+                                    null=True, blank=True
+                                    )
+    water_resources_affected = models.FileField(verbose_name =_('Rivers, streams, springs '
+                                                             'and aquifers that are '
+                                                             'affected in an emergency'),
+                                            upload_to=upload_files,
+                                            null=True, blank=True
+                                            )
 
     class Meta:
         verbose_name = _('Laboratory')
@@ -963,8 +1012,19 @@ class PrecursorReport(models.Model):
                                    verbose_name=_('Laboratory'))
     consecutive = models.IntegerField(default=1)
     report_values = models.ManyToManyField(Object,through=PrecursorReportValues)
+    month_belong = models.IntegerField(default=0)
 
+    def get_date_range(self):
+        last_day = calendar.monthrange(self.year, self.month_belong)[1]
+        month = dict(MONTHS)[self.month_belong]
+        year = self.year
+        if self.month_belong==1 and self.month==12:
+            year=self.year-1
+            last_day = calendar.monthrange(year, self.month_belong)[1]
 
+        return _("1 of %s of %d - %d of %s of %d") % (month, year,
+                                                   last_day, month,
+                                                   year)
 
 STATUS_CHOICES = (
     (_('Eraser'), _('Eraser')),
@@ -1022,7 +1082,8 @@ class Protocol(BaseCreationObj):
     name = models.CharField(_("Name"), max_length=300)
     file = models.FileField(upload_to=upload_files, verbose_name=_("Protocol PDF File"),
                             validators=[
-                                FileExtensionValidator(allowed_extensions=['pdf'])])
+                                FileExtensionValidator(allowed_extensions=['pdf'])],
+                            help_text=_("Only PDF files are allowed"))
 
     short_description = models.CharField(_("short description"), max_length=300)
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)

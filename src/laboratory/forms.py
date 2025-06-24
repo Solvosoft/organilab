@@ -24,9 +24,11 @@ from laboratory.models import OrganizationStructure, CommentInform, Catalog, \
     InformScheduler, RegisterUserQR, \
     ShelfObject, ShelfObjectObservation, EquipmentType
 from reservations_management.models import ReservedProducts
+from risk_management.models import Regent
 from sga.models import DangerIndication
 from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, \
     LaboratoryRoom, Furniture
+from .utils import get_users_from_organization
 
 
 class UserAccessForm(forms.Form):
@@ -36,34 +38,97 @@ class UserAccessForm(forms.Form):
 
 
 class LaboratoryCreate(GTForm, forms.ModelForm):
+    default_render_type = "as_grid"
+    grid_representation = [
+        [
+            ["name",
+             "coordinator",
+             "unit",
+             "location",
+             "nearby_sites",
+             "description",
+             ],
+            [
+            "responsible",
+            "email",
+             "phone_number",
+             "area",
+             "water_resources_affected",
+             "geolocation",
+             ]
+        ],
+    ]
 
     def __init__(self, *args, **kwargs):
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
         self.fields['geolocation'].widget.attrs['class'] = 'form-control'
-
+        org = kwargs.get('organization', None)
+        if org:
+            self.fields['responsible'].queryset = (User.objects.
+                                                   filter(pk__in=get_users_from_organization(org)))
     class Meta:
         model = Laboratory
         fields = ['name', 'phone_number', 'location',
-                  'geolocation', 'organization']
+                  'geolocation', 'organization','area',
+                  'description', 'coordinator', 'email', 'unit',
+                  'responsible', 'nearby_sites', 'water_resources_affected']
         widgets = {
             'name': genwidgets.TextInput,
             'phone_number': genwidgets.TextInput,
             'location': genwidgets.TextInput,
             'geolocation': genwidgets.TextInput,
-            'organization': genwidgets.HiddenInput
+            'organization': genwidgets.HiddenInput,
+            'area': genwidgets.FloatInput,
+            'description': genwidgets.Textarea,
+            'coordinator': genwidgets.TextInput,
+            'email': genwidgets.EmailInput,
+            'unit': genwidgets.TextInput,
+            'responsible': genwidgets.Select,
+            'nearby_sites': FileChunkedUpload,
+            'water_resources_affected': FileChunkedUpload
         }
 
 
 class LaboratoryEdit(GTForm, forms.ModelForm):
+    regent = forms.ModelChoiceField(queryset=Regent.objects.all(),
+                                    required=False,
+                                    widget=genwidgets.SelectMultiple(attrs={'disabled': True}),
+                                    label=_("Regent"))
+    default_render_type = "as_grid"
+    grid_representation = [
+        [
+            ["name",
+             "coordinator",
+             "unit",
+             "location",
+             "regent",
+             "nearby_sites",
+             "description",
+             ],
+            [
+            "responsible",
+            "email",
+            "phone_number",
+            "area",
+            "water_resources_affected",
+            "geolocation",
+             ]
+
+        ],
+
+
+    ]
 
     def __init__(self, *args, **kwargs):
         super(LaboratoryEdit, self).__init__(*args, **kwargs)
         self.fields['geolocation'].widget.attrs['class'] = 'form-control'
-
+        self.fields['regent'].initial = list(Regent.objects.filter(laboratories=self.instance).values_list('pk', flat=True))
+        self.fields['responsible'].queryset = self.instance.organization.users.all()
     class Meta:
         model = Laboratory
         fields = ['name', 'coordinator', 'unit', 'phone_number', 'email', 'location',
-                  'geolocation', 'organization']
+                  'geolocation', 'organization', 'area', 'description', 'regent',
+                  'responsible', "nearby_sites", "water_resources_affected"]
         widgets = {
             'name': genwidgets.TextInput,
             'coordinator': genwidgets.TextInput,
@@ -72,7 +137,13 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             'email': genwidgets.EmailInput,
             'location': genwidgets.TextInput,
             'geolocation': genwidgets.TextInput,
-            'organization': genwidgets.HiddenInput
+            'organization': genwidgets.HiddenInput,
+            'description': genwidgets.Textarea,
+            'area': genwidgets.FloatInput,
+            'responsible': genwidgets.Select,
+            'nearby_sites': FileChunkedUpload,
+            'water_resources_affected': FileChunkedUpload,
+
         }
 
 
@@ -163,7 +234,7 @@ class ProfileForm(GTForm, forms.Form):
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
     job_position = forms.CharField(widget=genwidgets.TextInput, label=_("Job Position"))
     profile_id = forms.CharField(widget=forms.HiddenInput())
-
+    location = forms.CharField(widget=genwidgets.TextInput, label=_("Location"))
 
 class AddTransferObjectForm(GTForm):
     shelf = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"),
@@ -268,6 +339,7 @@ class InformForm(forms.ModelForm, GTForm):
         else:
             self.fields['custom_form'].queryset = DerbCustomForm.objects.none()
 
+        self.fields['custom_form'].required = True
     class Meta:
         model = Inform
         fields = ['name', 'custom_form']
@@ -862,4 +934,144 @@ class EquipmentTypeForm(GTForm, forms.ModelForm):
         widgets = {
             'name': genwidgets.TextInput,
             'description': genwidgets.Textarea
+        }
+
+
+class ReactiveForm(GTForm, forms.ModelForm):
+    """"""
+    default_render_type = "as_grid"
+    grid_representation = [
+        [["name"],["cas_id_number"],["security_sheet"]],
+        [["code"],["bioaccumulable"],["iarc"]],
+        [["synonym"], ["is_precursor"], ["imdg"]],
+        [["is_public"], ["precursor_type"], ["white_organ"]],
+        [["features"], ["h_code"], ["nfpa"]],
+        [["model"], ["molecular_formula"], ["ue_code"]],
+        [["plaque"], ["img_representation"], ["storage_class"]],
+        [["serie"], ["laboratory"], ["seveso_list"]],
+        [["type"], ["organization"], ["created_by"]],
+        [["is_dangerous"], ["has_threshold"],["threshold"]],
+        [["description"]],
+    ]
+
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
+
+    iarc = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=Catalog.objects.filter(key='IARC'),
+                                            blank=True, required=False,
+                                            label=_("Iarc"))
+
+
+    imdg = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=Catalog.objects.filter(key='IDMG'),
+                                            blank=True, required=False,
+                                            label=_("Imdg"))
+
+    white_organ = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='white_organ'),
+                                            blank=True, required=False,
+                                            label=_("White Organ"))
+
+    is_public = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                        required=False,
+                                        label=_("Share with others"))
+
+    bioaccumulable = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False,
+                                        label=_("Bioaccumulable?"))
+
+    molecular_formula = forms.CharField(widget=genwidgets.TextInput, required=False,
+                                        label=_("Molecular formula"))
+
+    cas_id_number = forms.CharField(widget=genwidgets.TextInput, required=False,
+                                         label=_("Cas ID Number"))
+
+    security_sheet = forms.FileField(widget=FileChunkedUpload, required=False,
+                                 label=_("Security sheet"))
+
+    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False,
+                                        label=_("Is precursor?"))
+
+    precursor_type = forms.ModelChoiceField(widget=genwidgets.Select,
+                                            queryset=Catalog.objects.filter(key='Precursor'),
+                                            blank=True, required=False,
+                                            label=_("Precursor Type"))
+
+    h_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=DangerIndication.objects.all(),
+                                            blank=True, required=False,
+                                            label=_("Danger indication"))
+
+    ue_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='ue_code'),
+                                            blank=True, required=False,
+                                            label=_("UE Codes"))
+
+    nfpa = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='nfpa'),
+                                            blank=True, required=False,
+                                            label=_("NFPA codes"))
+
+    storage_class = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                            queryset=Catalog.objects.filter(key='storage_class'),
+                                            blank=True, required=False,
+                                            label=_("Storage class"))
+
+    seveso_list = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                              required=False,
+                                        label=_("Is Seveso list III?"))
+
+    img_representation = forms.FileField(widget=FileChunkedUpload, required=False,
+                                 label=_("Sustance representation"))
+    is_dangerous = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                      required=False,
+                                        label=_("Is dangerous?"))
+    has_threshold = forms.BooleanField(widget=genwidgets.YesNoInput(
+        shparent='.mb-3',
+        attrs={
+            "rel": ["#id_create-threshold"]
+        },
+    ),
+                                      required=False,
+                                        label=_("Has threshold?"))
+    threshold = forms.FloatField(widget=genwidgets.TextInput,
+                                      required=False,
+                                        label=_("Threshold"))
+
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('modal_id')
+        kwargs.pop('laboratory_pk')
+        prefix = kwargs.get('prefix', "")
+        super(ReactiveForm, self).__init__(*args, **kwargs)
+        self.fields["model"].required = True
+        self.fields["is_threshold"] = forms.BooleanField(widget=genwidgets.YesNoInput(
+            shparent='.mb-3',
+            attrs={
+                "rel": [f"#id_{prefix}-threshold"]
+            }
+        ),
+            required=False,
+            label=_("Has threshold?"))
+
+
+
+
+    class Meta:
+        model = Object
+        exclude = ['is_container']
+        widgets = {
+            'features': genwidgets.SelectMultiple(),
+            'code': genwidgets.TextInput,
+            'name': genwidgets.TextInput,
+            'synonym':  genwidgets.TextInput,
+            'is_public': genwidgets.YesNoInput,
+            'description': genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput,
         }
