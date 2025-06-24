@@ -49,4 +49,5 @@ urlpatterns = [
     path('api/building/', include(building_router.urls)),
     path('api/structure/', include(structure_router.urls)),
     path('api/incident/<int:risk>/', include(incident_router.urls)),
+    path('reports/', zoneviews.RiskZoneReport.as_view(), name='risk_report'),
 ]

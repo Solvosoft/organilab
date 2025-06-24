@@ -421,6 +421,8 @@ class RecipientSizeDeleteSerializer(serializers.Serializer):
 
 
 class DangerCategoryActionsSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(max_length=50, required=True)
+    threshold = serializers.FloatField(required=False, default=0.0)
     h_code = serializers.PrimaryKeyRelatedField(
         many=True,
         required=True,

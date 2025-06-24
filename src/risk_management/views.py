@@ -6,6 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
+from django.utils.text import slugify
+from django.utils.timezone import now
 from django.views.generic import TemplateView
 from rest_framework import status
 from rest_framework.response import Response
@@ -14,6 +16,7 @@ from rest_framework.views import APIView
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure, ShelfObject
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
+from report.forms import RiskZoneReportForm
 from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
     RegentForm, StructureForm, IncidentReportForm, DocFormatForm, UpdateRegentForm, \
     RiskZoneListForm
@@ -298,8 +301,29 @@ class ZoneDashboard(TemplateView):
             'nfpachart': reverse('nfpachart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
         }
         context.update(urls)
-        print(self.kwargs['org_pk'])
         context['form'] = RiskZoneListForm(self.request.GET, organization=self.kwargs['org_pk'])
 
         return context
 
+
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class RiskZoneReport(ListView):
+    model = RiskZone
+    template_name = 'report/base_report_organizations.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RiskZoneReport,
+                        self).get_context_data(**kwargs)
+        title = _("Reactive Objects Report")
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['risk_zone_report'],
+            'form': RiskZoneReportForm(initial={
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'risk_zone_report',
+            },
+                org_pk=self.org)
+        })
+        return context

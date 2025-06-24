@@ -72,6 +72,8 @@ class HCategoryFilterSet(FilterSet):
     class Meta:
         model = HCodeCategory
         fields = {
+                    'name': ['icontains'],
+                    'threshold': ['exact'],
                     'danger_category': ['exact'],
                     'h_code': ['exact'],
                   }
