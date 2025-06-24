@@ -14,6 +14,8 @@ base_reports = [
 base_organization_reports = [
     path('create/organization/', base.create_organization_request_by_report, name='create_organization_report_request'),
     path('download/organization/', base.download__organization_report, name='generate_organization_report'),
+    path('table/organization/<int:pk>/', base.report_organization_table, name='report_organization_table'),
+
 ]
 
 router = DefaultRouter()
