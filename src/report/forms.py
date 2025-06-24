@@ -10,6 +10,7 @@ from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
 from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
 from report.models import TaskReport, DocumentReportStatus
+from risk_management.models import RiskZone, Buildings
 
 
 class ReportBase(GTForm):
@@ -280,3 +281,35 @@ class DiscardShelfForm(ReportBase):
 
 class ReactiveReportForm(ReportBase):
     pass
+
+class RiskZoneReportForm(ReportBase):
+    risk_zone = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                               queryset=RiskZone.objects.all(),
+                                               label=_("Risk Zones"), required=False)
+    building = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                              queryset=Buildings.objects.all(),
+                                              label=_("Buildings"), required=False)
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(RiskZoneReportForm, self).__init__(*args, **kwargs)
+
+
+        if org_pk:
+            self.fields['risk_zone'].queryset = RiskZone.objects.filter(organization=org_pk)
+            self.fields['building'].queryset = Buildings.objects.filter(organization=org_pk)
+        else:
+            self.fields['risk_zone'].queryset = RiskZone.objects.none()
+            self.fields['building'].queryset = Buildings.objects.none()
+
+    def clean_building(self):
+        building = self.cleaned_data['building']
+
+        if building.exists():
+            return list(building.values_list('pk',flat=True))
+        return []
+
+    def clean_risk_zone(self):
+        risk_zone = self.cleaned_data['risk_zone']
+        if risk_zone.exists():
+            return list(risk_zone.values_list('pk',flat=True))
+        return []

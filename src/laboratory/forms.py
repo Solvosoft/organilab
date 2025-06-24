@@ -945,12 +945,13 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["code"],["bioaccumulable"],["iarc"]],
         [["synonym"], ["is_precursor"], ["imdg"]],
         [["is_public"], ["precursor_type"], ["white_organ"]],
-        [["description"], ["h_code"], ["nfpa"]],
+        [["features"], ["h_code"], ["nfpa"]],
         [["model"], ["molecular_formula"], ["ue_code"]],
         [["plaque"], ["img_representation"], ["storage_class"]],
         [["serie"], ["laboratory"], ["seveso_list"]],
         [["type"], ["organization"], ["created_by"]],
-        [["features"], [""], [""]],
+        [["is_dangerous"], ["has_threshold"],["threshold"]],
+        [["description"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1023,13 +1024,37 @@ class ReactiveForm(GTForm, forms.ModelForm):
 
     img_representation = forms.FileField(widget=FileChunkedUpload, required=False,
                                  label=_("Sustance representation"))
+    is_dangerous = forms.BooleanField(widget=genwidgets.YesNoInput,
+                                      required=False,
+                                        label=_("Is dangerous?"))
+    has_threshold = forms.BooleanField(widget=genwidgets.YesNoInput(
+        shparent='.mb-3',
+        attrs={
+            "rel": ["#id_create-threshold"]
+        },
+    ),
+                                      required=False,
+                                        label=_("Has threshold?"))
+    threshold = forms.FloatField(widget=genwidgets.TextInput,
+                                      required=False,
+                                        label=_("Threshold"))
 
 
     def __init__(self, *args, **kwargs):
         kwargs.pop('modal_id')
         kwargs.pop('laboratory_pk')
+        prefix = kwargs.get('prefix', "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
+        self.fields["is_threshold"] = forms.BooleanField(widget=genwidgets.YesNoInput(
+            shparent='.mb-3',
+            attrs={
+                "rel": [f"#id_{prefix}-threshold"]
+            }
+        ),
+            required=False,
+            label=_("Has threshold?"))
+
 
 
 
@@ -1048,5 +1073,5 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "created_by": genwidgets.HiddenInput,
             "model": genwidgets.TextInput,
             "serie": genwidgets.TextInput,
-            "plaque": genwidgets.TextInput
+            "plaque": genwidgets.TextInput,
         }

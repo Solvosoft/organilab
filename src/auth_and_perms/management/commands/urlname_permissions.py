@@ -2945,4 +2945,11 @@ URLNAME_PERMISSIONS = {
             'permission': 'sga.view_hcodecategory'
         }
     ],
+    'risk_zone_report':[
+        {
+            'name': 'View Report',
+            'category': 'Report',
+            'permission': 'laboratory.view_report'
+        }
+    ]
 }

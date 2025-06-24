@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+    {% if report_urlnames %}
+        {% for urlname in report_urlnames %}
+            {% define_urlname_action urlname %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block title %}{{title_view}}{% endblock %}
+
+{% block content %}
+
+{% if perms.laboratory.do_report %}
+    <div class="row p-3 mt-1">
+        <div class='col-md-10 offset-md-1'>
+            <div class="container">
+                <div class="row" id="diverrormessage" style="display: none;">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div id="errormessagecontent"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-title text-center">
+                        <h2>{{title_view}}</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="form" onsubmit="return false;">
+                            {{form.as_horizontal}}
+                            <div class="form-group row justify-content-end">
+                                <div class="col-sm-9">
+                                    <button id="send" class="btn btn-outline-success float-end me-0" type="button">
+                                        <span id="button-text">{% trans 'Send' %}</span>
+                                        <span id="spiner" role="status" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="row statuspanel d-none">
+    <div class="col-md-10 offset-md-1">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">{% trans "Detail of the process please do not close this window" %}</h2>
+                </div>
+                <div class="card-body">
+                    {% trans 'Queuing report creation' %}
+                    <ul id="textstatus"></ul>
+                </div>
+                <div class="card-footer d-none">
+                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#" target="_blank" download="">{% trans 'Download' %}</a></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title">{% trans 'Download document' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>{% trans 'Do you want to download the report' %}</p>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-danger" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Cancel' %}</button>
+          <a id="download-report" target="_blank" class="btn btn-success" href="#" download=""><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download' %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block javascript %}
+{{ block.super }}
+<script>
+	const report_urls = {
+		create_request : "{% url 'report:create_organization_report_request' org_pk=org_pk %}",
+		generate_report : "{% url 'report:generate_organization_report' org_pk=org_pk %}",
+		report_status: "{% url 'report:report_status' org_pk=org_pk lab_pk=0 %}"
+
+	}
+
+	window.name = "reportbase";
+
+</script>
+<script src="{% static 'js/organization_report.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}
