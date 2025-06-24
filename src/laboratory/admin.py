@@ -76,7 +76,10 @@ class PrecursorReportValuesAdmin(admin.ModelAdmin):
     list_display = ["precursor_report","object","measurement_unit", "final_balance"]
 
 class BaseUnittAdmin(admin.ModelAdmin):
-    list_display = ["measurement_unit","si_value"]
+    list_display = ["measurement_unit_base","measurement_unit","si_value"]
+
+class ObjectLogAdmin(admin.ModelAdmin):
+    list_display = ["object","update_time"]
 
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
@@ -89,7 +92,7 @@ admin.site.register(models.ShelfObject, ShelfObject_Admin)
 admin.site.register(models.Catalog)
 admin.site.register(models.BlockedListNotification)
 admin.site.register(models.Provider)
-admin.site.register(models.ObjectLogChange)
+admin.site.register(models.ObjectLogChange, ObjectLogAdmin)
 admin.site.register(models.TranferObject)
 admin.site.register(models.PrecursorReport,PrecursorReportAdmin)
 admin.site.register(models.RegisterUserQR)

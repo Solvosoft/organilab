@@ -18,46 +18,109 @@
 </div>
 </div>
 
-<div class="row">
-<div class="col-md-12">
-    <div class="add-container float-end">
-        <a class="btn btn-outline-success" href="{% url 'laboratory:sustance_add' lab_pk=laboratory org_pk=org_pk %}"><i class="fa fa-plus" title="{% trans 'Add new Substance' %}"></i> {% trans 'Add' %}</a>
-    </div>
-    <br>
-  <table id="sustancetable" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th> </th>
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Cas code' %}</th>
-                <th>{% trans 'Actions' %}</th>
+	<div class="row">
+    <table class="table table-striped w-100 table-responsive" id="reactive_table"></table>
+</div>
 
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-  </table>
-</div>
-</div>
+{% url "laboratory:api-reactive-list" org_pk lab_pk as list_obj_url %}
+	{% trans 'Create Reactive' as create_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class='modal-xl' %}
+
+{% url "laboratory:api-reactive-detail" org_pk lab_pk 0 as detail_obj_url %}
+	{% trans 'Update Reactive' as update_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class='modal-xl' %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+
+
 {% endblock %}
 
 {% block js %}
 {{block.super}}
 
 <script>
+var object_urls = {
+    list_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
+    create_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
+    destroy_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}",
+    update_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}"
+}
 
-(function(){
-    $("#sustancetable").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": "{% url 'laboratory:sustance_list_json' org_pk laboratory %}",
-        "language": {
-            "url": "{% get_datatables_translation %}"
-        }
-    });
-})(jQuery);
+//laboratory:api-reactive-list
+
+datatable_inits = {
+    columns: [
+                {data: "id", name: "id", title: "ID", type: "string", visible: false},
+                {data: "combined_booleans", name: "combined_booleans", title: gettext("Status") , type: "boolean"},
+                {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
+                {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+                {data: "synonym", name: "synonym", title: gettext("Synonym"), type: "string", visible: true},
+                {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
+
+],
+addfilter: true
+
+}
+
+var reactive_modalids = {
+    create: "#create_obj_modal",
+    destroy: "#delete_obj_modal",
+    update: "#update_obj_modal",
+}
+
+var reactive_actions = {
+    table_actions: [], // table_actions
+    object_actions: [
+					{
+						'name' : 'download',
+						'action' : 'download',
+						'title' : gettext('Download'),
+						'in_action_column' : true,
+						'i_class' : 'fa fa-download',
+					}
+				],
+        title: gettext('Actions'),
+        className: "no-export-col"
+}
+
+icons = {
+    create: '<i class="fa fa-plus" aria-hidden="true"></i>',
+    clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+    detail: 'fa fa-eye',
+    update: 'fa fa-edit me-1 fa-lg',
+    destroy: 'fa fa-trash fa-lg',
+
+}
+
+let objconfig={
+    urls: object_urls,
+    datatable_element: "#reactive_table",
+    modal_ids: reactive_modalids,
+    actions: reactive_actions,
+    datatable_inits: datatable_inits,
+    add_filters: true,
+    relation_render: {'field_autocomplete': 'text'},
+    delete_display: data => data['name'],
+    create: "btn-success",
+    icons: icons
+}
+
+let crud=ObjectCRUD("reactivecrudobj", objconfig)
+crud.download = function(obj, action){
+	if (obj.security_sheet && obj.security_sheet.url){
+		const link = document.createElement('a');
+		link.href = obj.security_sheet.url;
+		link.download = obj.security_sheet.name
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}else{
+		console.error("No security sheet available")
+	}
+}
+crud.init();
+
 </script>
-
 
 
 {% endblock %}

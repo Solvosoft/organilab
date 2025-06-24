@@ -9,3 +9,18 @@
 
 29/04/2024
     - python manage.py precursor_report
+
+19/05/2025
+Command to update the quantity of the shelf objects that the amount in the logs is different of the shelf object quantity in the shelf.
+
+    - python manage.py fix_object_log_amounts
+
+19/05/2025
+Update the precursor reports
+
+    - python manage.py precursor_report
+
+23/05/2025
+Add the new pictograms
+
+    - python manage.py upload_pictograms

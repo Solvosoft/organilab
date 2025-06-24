@@ -6,7 +6,7 @@ from django_filters import FilterSet, CharFilter
 from django.db.models import Q
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
 
-from sga.models import ReviewSubstance, DisplayLabel, RecipientSize
+from sga.models import ReviewSubstance, DisplayLabel, RecipientSize, HCodeCategory
 from sga.models import Substance
 
 
@@ -67,3 +67,13 @@ class RecipientsFilterSet(FilterSet):
     class Meta:
         model = RecipientSize
         fields = ['name', 'width', 'height']
+
+class HCategoryFilterSet(FilterSet):
+    class Meta:
+        model = HCodeCategory
+        fields = {
+                    'name': ['icontains'],
+                    'threshold': ['exact'],
+                    'danger_category': ['exact'],
+                    'h_code': ['exact'],
+                  }

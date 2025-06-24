@@ -1,6 +1,7 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
+from laboratory.models import Object
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import set_format_table_columns, get_report_name, load_dataset_by_column
 from report.utils import get_furniture_queryset_by_filters
@@ -8,8 +9,18 @@ from report.utils import get_furniture_queryset_by_filters
 def get_dataset(report, column_list=None):
     dataset = []
     furniture_list = get_furniture_queryset_by_filters(report)
+    attrs = {}
+
+    if "object_type" in report.data:
+        if report.data["object_type"]:
+            attrs['object__type'] = report.data["object_type"]
+            if report.data["is_precursor"] and report.data["object_type"] == '0':
+                attrs['object__sustancecharacteristics__is_precursor'] = (
+                        report.data)["is_precursor"]
+
     for furniture in furniture_list:
-        for shelfobject in furniture.get_objects():
+        objects = furniture.get_objects().filter(**attrs)
+        for shelfobject in objects:
             shelf_unit = shelfobject.get_measurement_unit_display()
             furniture = shelfobject.shelf.furniture
             data_column = {

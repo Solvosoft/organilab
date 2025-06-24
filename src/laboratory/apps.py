@@ -3,6 +3,7 @@ from django.template.loader import render_to_string
 
 
 class LaboratoryConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
     name = 'laboratory'
 
     def ready(self):

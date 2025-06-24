@@ -1,5 +1,5 @@
 import os
-
+import re
 with open('/etc/nginx/sites-enabled/default', 'r') as arch:
     fva_conf = arch.read()
 
@@ -43,3 +43,16 @@ with open('/etc/nginx/sites-enabled/default', 'w') as arch:
      arch.write(fva_conf)
 
 
+# Update mimetypes
+filename = "/etc/nginx/mime.types"
+with open(filename, "r") as f:
+    data = f.read()
+
+data_new = re.sub(
+    r"(application/javascript\s+js;)",
+    r"application/javascript   js mjs;",
+    data
+)
+
+with open(filename, "w") as f:
+    f.write(data_new)

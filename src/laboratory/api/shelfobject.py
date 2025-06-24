@@ -66,6 +66,7 @@ from laboratory.shelfobject.utils import save_increase_decrease_shelf_object, \
     save_shelfobject_characteristics, delete_shelfobjects
 
 from laboratory.utils import save_object_by_action,PermissionByLaboratoryInOrganization
+from laboratory.utils_base_unit import get_conversion_from_two_units, get_base_unit
 
 
 class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -160,13 +161,20 @@ class ShelfObjectCreateMethods:
             limits=limits,
             container = container
         )
-
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            shelfobject.quantity = get_conversion_from_two_units(
+                shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
+                , shelfobject.quantity)
+            if not shelfobject.measurement_unit.description == 'Unidades':
+                shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
+            shelfobject.save()
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
-                          shelfobject.quantity, '', ADDITION, "Create", create=True)
+                          shelfobject.quantity, '', ADDITION, _("Income"), create=True,
+                          organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'limit_quantity',
@@ -207,14 +215,20 @@ class ShelfObjectCreateMethods:
             limits=limits,
             container = container
         )
-
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            shelfobject.quantity = get_conversion_from_two_units(
+                shelfobject.measurement_unit, shelfobject.shelf.measurement_unit
+                , shelfobject.quantity)
+            if not shelfobject.measurement_unit.description == 'Unidades':
+                shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
+            shelfobject.save()
 
         build_shelfobject_qr(self.context['request'], shelfobject, organization_id,
                              laboratory_id)
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'measurement_unit', 'marked_as_discard',
@@ -251,7 +265,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -288,7 +302,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -335,7 +349,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -379,7 +393,7 @@ class ShelfObjectCreateMethods:
 
         log_object_change(created_by, laboratory_id, shelfobject, 0,
                           shelfobject.quantity, '',
-                          ADDITION, "Create", create=True, organization=organization_id)
+                          ADDITION, _("Income"), create=True, organization=organization_id)
         utils.organilab_logentry(created_by, shelfobject, ADDITION,
                                  changed_data=['object', 'shelf', 'status', 'quantity',
                                                'limit_quantity', 'measurement_unit',
@@ -513,6 +527,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                              "create_shelfobject")
         self.serializer_class = self._get_create_shelfobject_serializer(request, org_pk,
                                                                         lab_pk)
+
         serializer = self.serializer_class['serializer'](data=request.data,
                                                          context={"organization_id": org_pk,
                                                                   "laboratory_id": lab_pk})
@@ -528,6 +543,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 error,shelfobject = self.serializer_class['method'](serializer,
                                                                   limit_serializer)
                 if shelfobject:
+                    if not shelfobject.measurement_unit.description == 'Unidades'and shelfobject.object.type != '0':
+                        shelfobject.measurement_unit = shelfobject.shelf.measurement_unit
+                        shelfobject.save()
+
                     create_shelfobject_observation(shelfobject, shelfobject.description,
                                                         _("Created Object"), request.user,
                                                            lab_pk)
@@ -766,6 +785,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self.queryset = TranferObject.objects.filter(laboratory_received=lab_pk,
                                                      status=REQUESTED)
         queryset = self.filter_queryset(self.queryset)
+
         data = self.paginate_queryset(queryset)
         response_data = {'data': data, 'recordsTotal': self.queryset.count(),
                          'recordsFiltered': self.queryset.count(),
@@ -815,12 +835,32 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid():
             # once we get here everything is validated and ready for the transfer in to happen
-
             transfer_object = serializer.validated_data['transfer_object']
-            if transfer_object.quantity == transfer_object.object.quantity:
+
+            previous_quantity = transfer_object.quantity
+
+            if not transfer_object.object.measurement_unit.description == 'Unidades':
+                if serializer.validated_data['shelf'].measurement_unit:
+                    previous_quantity = get_conversion_from_two_units(
+                        serializer.validated_data['shelf'].measurement_unit, transfer_object.object.measurement_unit,
+                        transfer_object.quantity)
+
+            if previous_quantity == transfer_object.object.quantity:
+                if not transfer_object.object.measurement_unit.description == 'Unidades':
+                    if serializer.validated_data['shelf'].measurement_unit:
+                        transfer_object.object.measurement_unit = serializer.validated_data['shelf'].measurement_unit
+                        converted_quantity = get_conversion_from_two_units(
+                            transfer_object.object.measurement_unit,
+                            serializer.validated_data['shelf'].measurement_unit,
+                            transfer_object.quantity)
+
+                        transfer_object.object.quantity = converted_quantity
                 # move the entire shelfobject instead of copy it, so history is not lost
                 new_shelf_object = move_shelfobject_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'], request)
             else:
+                if not transfer_object.object.measurement_unit.description == 'Unidades':
+                    if serializer.validated_data['shelf'].measurement_unit:
+                        transfer_object.object.measurement_unit = serializer.validated_data['shelf'].measurement_unit
                 # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
                 new_shelf_object = move_shelfobject_partial_quantity_to(transfer_object.object, org_pk, lab_pk, serializer.validated_data['shelf'],
                                                                         request, transfer_object.quantity)
@@ -1033,6 +1073,14 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         serializer_container.validated_data.get('available_container',
                                                                 None),
                         shelf_object)
+
+                    amount_converted = get_conversion_from_two_units(shelf_object.measurement_unit,
+                                                                     shelf_object.shelf.measurement_unit,
+                                                                     shelf_object.quantity)
+
+                    shelf_object.quantity = amount_converted
+                    shelf_object.measurement_unit = shelf_object.shelf.measurement_unit
+
                     save_object_by_action(user, shelf_object, relobj, changed_data,
                                           CHANGE, object_repr)
                 else:

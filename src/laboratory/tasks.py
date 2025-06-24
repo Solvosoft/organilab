@@ -2,16 +2,12 @@ from __future__ import absolute_import, unicode_literals
 
 import importlib
 import re
+from datetime import date
 
-from click.core import F
 from django.conf import settings
-
 
 from laboratory.models import ShelfObject, Laboratory, PrecursorReport, InformScheduler, \
     Furniture
-
-from datetime import date
-
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import create_informsperiods, save_object_report_precursor, \
     build_precursor_report_from_reports
@@ -49,12 +45,15 @@ def create_precursor_reports():
             previos_report = previos_report.last()
         else:
             previos_report = None
-
+        month_belong = day.month - 1
+        if day.month == 1:
+            month_belong = 12
         report = PrecursorReport.objects.create(
                 month=day.month,
                 year=day.year,
                 laboratory=lab,
-                consecutive=add_consecutive(lab)
+                consecutive=add_consecutive(lab),
+            month_belong=month_belong
             )
         save_object_report_precursor(report)
         build_precursor_report_from_reports(report, previos_report)

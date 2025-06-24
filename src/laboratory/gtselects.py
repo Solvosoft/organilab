@@ -1,9 +1,12 @@
+
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from djgentelella.groute import register_lookups
-from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
-from rest_framework import generics, status
+from djgentelella.permission_management import AnyPermissionByAction, \
+    AllPermissionByAction
+from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator, \
+    BaseSelectImg2View
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,10 +15,16 @@ from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer, \
     ValidateLabOrgObjectSerializer, ValidateOrganizationSerializer, \
     UserAccessOrgLabValidateSerializer
 from auth_and_perms.models import Rol, Profile
-from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType
-from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, ValidateUserAccessShelfTypeSerializer
-from laboratory.utils import get_pk_org_ancestors
-from laboratory.shelfobject.utils import get_available_containers_for_selection, get_containers_for_cloning
+from laboratory.models import Object, Catalog, Provider, ShelfObject, EquipmentType, \
+    Laboratory
+from laboratory.shelfobject.serializers import ValidateUserAccessShelfSerializer, \
+    ValidateUserAccessShelfTypeSerializer
+from laboratory.shelfobject.utils import get_available_containers_for_selection, \
+    get_containers_for_cloning
+from laboratory.utils import get_pk_org_ancestors, get_users_from_organization
+from laboratory.utils_base_unit import get_related_units
+from risk_management.models import Regent, Buildings
+from sga.models import Pictogram
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -70,7 +79,11 @@ class ObjectGModelLookup(BaseSelect2View):
     shelfobjet_type = None
     serializer = None
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms ={
+        'list': ["laboratory.view_object"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+
 
     def get_queryset(self):
         if self.shelf and self.shelf.limit_only_objects and self.shelfobjet_type:
@@ -99,12 +112,6 @@ class ObjectGModelLookup(BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-@register_lookups(prefix="userbase", basename="userbase")
-class UserLookup(BaseSelect2View):
-    model = User
-    fields = ['username']
-    authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
 
 
 @register_lookups(prefix="catalogunit", basename="catalogunit")
@@ -112,7 +119,10 @@ class CatalogUnitLookup(BaseSelect2View):
     model = Catalog
     fields = ['description']
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_catalog"],
+    }
+    permission_classes = (AnyPermissionByAction,)
     serializer = None
     shelf = None
 
@@ -120,7 +130,8 @@ class CatalogUnitLookup(BaseSelect2View):
         queryset = super().get_queryset().filter(key="units")
         if self.shelf:
             if self.shelf.measurement_unit:
-                return queryset.filter(pk=self.shelf.measurement_unit.pk)
+                subunit = self.shelf.measurement_unit
+                return get_related_units(subunit, queryset)
             else:
                 return queryset
         else:
@@ -138,6 +149,45 @@ class CatalogUnitLookup(BaseSelect2View):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@register_lookups(prefix="catalogunitIncDec", basename="catalogunitIncDec")
+class CatalogUnitIncreaseDecrease(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    authentication_classes = [SessionAuthentication]
+
+    perms = {
+        'list': ["laboratory.view_catalog"],
+    }
+
+    permission_classes = (AllPermissionByAction,)
+    serializer = None
+    shelf = None
+    shelfobject = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(key="units")
+        if self.shelf:
+            if self.shelfobject:
+                return get_related_units(self.shelfobject.measurement_unit, queryset)
+            else:
+                return queryset
+        else:
+            return self.model.objects.none()
+
+    def list(self, request, *args, **kwargs):
+
+        self.serializer = ValidateUserAccessShelfSerializer(data=request.GET, context={'user': request.user})
+        if self.serializer.is_valid():
+            self.shelf = self.serializer.validated_data['shelf']
+            self.shelfobject = self.serializer.validated_data['shelfobject']
+
+            return super().list(request, *args, **kwargs)
+        return Response({
+            'status': 'Bad request',
+            'errors': self.serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
 @register_lookups(prefix="available-container-search", basename="available-container-search")
 class AvailableContainerLookup(BaseSelect2View):
     model = ShelfObject
@@ -146,7 +196,8 @@ class AvailableContainerLookup(BaseSelect2View):
               'object__materialcapacity__capacity_measurement_unit__description']
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {"list": ["laboratory.view_shelfobject"]}
+    permission_classes = (AllPermissionByAction,)
     serializer = None
     laboratory = None
     shelf = None
@@ -183,7 +234,10 @@ class ContainersForCloningLookup(BaseSelect2View):
               'materialcapacity__capacity_measurement_unit__description']
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_object"],
+    }
+    permission_classes = (AnyPermissionByAction,)
     serializer = None
     org = None
     shelf = None
@@ -219,7 +273,11 @@ class ShelfObject_StatusModelLookup(BaseSelect2View):
     model = Catalog
     fields = ['description']
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_catalog"],
+    }
+
+    permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(key='shelfobject_status')
@@ -245,7 +303,10 @@ class ProviderLookup(BaseSelect2View):
     ordering = ['name']
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_provider"],
+    }
+    permission_classes = (AnyPermissionByAction,)
     laboratory, serializer = None, None
 
     def get_queryset(self):
@@ -274,7 +335,10 @@ class ObjectAvailableLookup(BaseSelect2View):
     org_pk = None
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_object",],
+    }
+    permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -305,7 +369,10 @@ class ObjectProvidersLookup(BaseSelect2View):
     obj = None
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_provider"]
+    }
+    permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -366,7 +433,11 @@ class InstrumentalFamilyLookup(BaseSelect2View):
     model = Catalog
     fields = ['description']
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_catalog"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+
     serializer = None
 
     def get_queryset(self):
@@ -389,7 +460,10 @@ class OrganizationProfileslLookup(BaseSelect2View):
     fields = ['user__first_name', 'user__last_name']
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_Profile"],
+    }
+    permission_classes = (AnyPermissionByAction,)
     def get_queryset(self):
         queryset = super().get_queryset()
 
@@ -425,7 +499,10 @@ class OrganizationProviderslLookup(BaseSelect2View):
     fields = ['name']
     authentication_classes = [SessionAuthentication]
     pagination_class = GPaginatorMoreElements
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_provider"],
+    }
+    permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -456,7 +533,10 @@ class UsersOrganizationsLookup(BaseSelect2View):
     org= None
     authentication_classes = [SessionAuthentication]
     pagination_class = GPaginatorMoreElements
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_user"],
+    }
+    permission_classes = (AnyPermissionByAction,)
     org= None
 
     def get_queryset(self):
@@ -494,7 +574,10 @@ class EquipmentTypeLookup(BaseSelect2View):
     fields = ['name']
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+    perms = {
+        'list': ["laboratory.view_equipmenttype"],
+    }
+    permission_classes = (AnyPermissionByAction,)
 
     def list(self, request, *args, **kwargs):
         serializer = UserAccessOrgLabValidateSerializer(data=request.GET, context={'user': request.user})
@@ -506,3 +589,185 @@ class EquipmentTypeLookup(BaseSelect2View):
             'status': 'Bad request',
             'errors': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@register_lookups(prefix="risk_users", basename="risk_users")
+class UserseslLookup(BaseSelect2View):
+    model = User
+    fields = ['first_name', 'last_name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': [],
+    }
+    permission_classes = ()
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= User.objects.filter(pk__in=get_users_from_organization(self.organization))
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+@register_lookups(prefix="risk_regents", basename="risk_regents")
+class RegentslLookup(BaseSelect2View):
+    model = Regent
+    fields = ['user']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': ["risk_management.view_regent"],
+    }
+    permission_classes = (AnyPermissionByAction, )
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= Regent.objects.filter(user__pk__in=get_users_from_organization(self.organization))
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+@register_lookups(prefix="risk_building", basename="risk_building")
+class BuildinglLookup(BaseSelect2View):
+    model = Buildings
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': ["risk_management.view_buildings"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= Buildings.objects.filter(organization__pk=self.organization)
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+        return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="risk_laboratory", basename="risk_laboratory")
+class RiskLaboratorylLookup(BaseSelect2View):
+    model = Buildings
+    fields = ['name']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': ["laboratory.view_laboratory"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= Laboratory.objects.filter(organization__pk=self.organization)
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="risk_structure", basename="risk_structure")
+class RiskStructurelLookup(BaseSelect2View):
+    model = Catalog
+    fields = ['description']
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        'list': ["risk_management.view_structure"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    organization = None
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            queryset= queryset.filter(key="structure_type")
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.organization = self.request.GET.get("org_pk", None)
+
+        return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="user_organization", basename="user_organization")
+class RiskUsersOrganizations(BaseSelect2View):
+    model = User
+    fields = ['first_name', 'last_name']
+    org= None
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    perms = {
+        'list': ["auth.view_user"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    org= None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            queryset= queryset.filter(organizationstructure__pk=self.org).distinct()
+        else:
+            queryset= queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        if self.request.GET.get("org_pk", None):
+            self.org = self.request.GET.get("org_pk", None)
+            return super().list(request, *args, **kwargs)
+
+        return Response({
+            'status': 'Bad request',
+            'errors': _("Organization not found"),
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_text_display(self, obj):
+        name = obj.get_full_name()
+        if not name:
+            name = obj.username
+        return name
+
+
+
+@register_lookups(prefix="selectimg", basename="imagebasename")
+class ImageSelect2Lookup(BaseSelectImg2View):
+    model = Pictogram
+    fields = ['name']
+
+    def get_url(self, obj):
+        return obj.pictogram.url

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% load gtsettings %}
+{% load i18n %}
+{% load static %}
+
+{% block pre_head %}
+    {% define_urlname_action 'structure_crud' %}
+{% endblock %}
+
+{% block title %} {% trans 'Structures' %} {% endblock %}
+{% block content %}
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h1 class="text-center"> {% trans 'List of Structures' %} </h1>
+			</div>
+			<div class="row ">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table-structure">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+    {% url "riskmanagement:api-structure-detail" org_pk 0 as detail_obj_url %}
+    {% trans 'Delete Structure' as delete_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		const object_urls = {
+			list_url: "{% url 'riskmanagement:api-structure-list' org_pk %}",
+			destroy_url: "{% url 'riskmanagement:api-structure-detail' org_pk 0 %}",
+		}
+		const update_url = "{% url 'riskmanagement:structures_update' org_pk 0 %}";
+		const add_structure_url = "{% url 'riskmanagement:structures_create' org_pk %}";
+		const selects2_url = {
+			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
+			structure_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
+			laboratory_url: "{% url 'risk_laboratory-list' %}"+"?org_pk="+"{{org_pk}}",
+			structure_url: "{% url 'risk_structure-list' %}"+"?org_pk="+"{{org_pk}}",
+		}
+	</script>
+	<script src="{% static 'js/structure.js' %}?v={% get_organilab_version %}"></script>
+
+
+{% endblock %}

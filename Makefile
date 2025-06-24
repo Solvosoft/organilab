@@ -49,6 +49,7 @@ trans:
 	cd src && django-admin compilemessages --locale es
 
 build_docker: clean trans
+	docker pull python:3.12-bookworm
 	docker build  -t organilab:$(setup_version)  .
 
 release: clean trans builddocker
@@ -59,10 +60,11 @@ dist:
 	git push origin "refs/tags/v$(setup_version)"
 
 start:
-	cd src && python manage.py migrate && python manage.py createcachetable && \
-	python manage.py load_urlname_permissions && \
-	python manage.py loadgroup && \
-	python manage.py loaddata sga_components.json
+	cd src && python manage.py migrate
+	python manage.py init_checks
+	python manage.py load_urlname_permissions
+
+
 
 
 docs_full:
@@ -81,7 +83,7 @@ run_docker_selenium:
 
 
 database_config:
-	cd src && python manage.py migrate && python manage.py createcachetable && python manage.py load_urlname_permissions && python manage.py loadgroup && python manage.py loaddata sga_components.json
+	cd src && python manage.py migrate && python manage.py init_checks && python manage.py load_urlname_permissions
 
 rundata: start
 	cd src && python manage.py transferir_datos

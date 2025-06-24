@@ -25,13 +25,12 @@ from laboratory.api.views import ApiReservedProductsCRUD, ApiReservationCRUD, \
     CommentAPI, ProtocolViewSet, \
     LogEntryViewSet, InformViewSet, ShelfObjectAPI, ShelfObjectGraphicAPI, ShelfList, \
     ShelfObjectObservationView, EquipmentManagementViewset, \
-    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset
+    InstrumentalFamilyManagementViewset, EquipmentTypeManagementViewset, \
+    ReactiveManagementViewset
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import protocol_list, ProtocolCreateView, ProtocolDeleteView, ProtocolUpdateView
 from laboratory.reservation import ShelfObjectReservation
 from laboratory.search import SearchDisposalObject
-from laboratory.sustance.views import create_edit_sustance, sustance_list, \
-    SustanceListJson, SubstanceDelete
 from laboratory.views import furniture, reports, shelfs, objectfeature
 from laboratory.views import inform_period
 from laboratory.views import labroom, shelfobject, laboratory, organizations
@@ -40,7 +39,7 @@ from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import ObjectView, block_notifications, \
-    view_equipment_list
+    view_equipment_list, view_reactive_list
 from laboratory.views.organizations import OrganizationDeleteView, \
     OrganizationCreateView, OrganizationUpdateView, OrganizationActionsFormview
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
@@ -103,8 +102,7 @@ lab_reports_urls = [
     # PDF reports
     path('shelf_objects/<int:pk>', reports.report_shelf_objects, name='reports_shelf_objects'),
     # HTML reports
-    path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(),
-         name='reports_laboratory'),
+    #path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(), name='reports_laboratory'),
     path('list/furniture/', furniture.FurnitureReportView.as_view(),
          name='reports_furniture_detail'),
     path('list/objects/', reports.ObjectList.as_view(),
@@ -116,6 +114,8 @@ lab_reports_urls = [
     path('objectchanges/', reports.LogObjectView.as_view(), name='object_change_logs'),
     path('precursors/', reports.PrecursorsView.as_view(), name='precursor_report'),
     path('list/waste/report', reports.DiscardShelfReportView.as_view(), name='waste_report'),
+    path('list/reactive/report', reports.ReactiveReport.as_view(), name='reactive_report'),
+    path('risk_zone/', reports.RiskZoneReport.as_view(), name='risk_zone_report'),
 
 ]
 
@@ -137,11 +137,7 @@ reports_all_lab = [
 ]
 
 sustance_urls = [
-    path('', sustance_list, name='sustance_list'),
-    path('add/', create_edit_sustance, name='sustance_add'),
-    path('edit/<int:pk>/', create_edit_sustance, name='sustance_manage'),
-    path('delete/<int:pk>/', SubstanceDelete.as_view(), name='sustance_delete'),
-    path('json/', SustanceListJson.as_view(), name='sustance_list_json'),
+    path('', view_reactive_list, name='sustance_list'),
 ]
 
 equipment_urls = [
@@ -189,7 +185,10 @@ lab_protocols_urls = [
 catalogs_urls = [
     path('furniture/furniture_type', furniture.add_catalog,kwargs={'key': "furniture_type"}, name='add_furniture_type_catalog'),
     path('shelf/container_type', furniture.add_catalog, kwargs={'key': 'container_type'}, name='add_shelf_type_catalog'),
-    path('shelf/shelfobject_status', furniture.add_catalog, kwargs={'key': 'shelfobject_status'}, name='add_shelfobject_status')
+    path('shelf/shelfobject_status', furniture.add_catalog, kwargs={'key': 'shelfobject_status'}, name='add_shelfobject_status'),
+    path('add/structure/type/', furniture.add_catalog, kwargs={'key': 'structure_type'},
+         name='add_structure_type_catalog'),
+
 ]
 
 informs_period_urls=[
@@ -263,6 +262,8 @@ objectrouter = DefaultRouter()
 objectrouter.register('api_equipment_list', EquipmentManagementViewset, basename='api-equipment')
 objectrouter.register('api_instrumentalfamily_list', InstrumentalFamilyManagementViewset, basename='api-instrumentalfamily')
 objectrouter.register('api_equipmenttype_list', EquipmentTypeManagementViewset, basename='api-equipmenttype')
+objectrouter.register("api_reactive_list", ReactiveManagementViewset, basename="api-reactive")
+
 
 
 

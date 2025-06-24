@@ -22,6 +22,7 @@ from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django.views.generic import TemplateView
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
@@ -38,7 +39,8 @@ from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, \
     OrganizationReactiveForm, \
-    ValidateObjectTypeForm, DiscardShelfForm
+    ValidateObjectTypeForm, DiscardShelfForm, ReactiveReportForm, RiskZoneReportForm
+from risk_management.models import RiskZone
 from sga.forms import SearchDangerIndicationForm
 
 @permission_required('laboratory.do_report')
@@ -261,21 +263,25 @@ class PrecursorsView(ReportListView):
                 "signature": "",
                 "position": ""
             }]
+            range_data =[_("Period range of the data: %(date_range)s") % {
+                "date_range": report.get_date_range()
+            }]
 
-            book = [first_line, second_line, third_line, fourth_line,[], [str(_('Name of the substance or product')),
-                                                                 str(_('Unit')),
-                                                                 str(_('Final balance of the previous report')),
-                                                                 str(_('Income during the month')),
-                                                                 str(_('Import or local purchase invoice number that covers the entry')),
-                                                                 str(_('Supplier that supplied the purchased product (in case of local purchase)')),
-                                                                 str(_('Total Stock')),
-                                                                 str(_('Dispatch or expense during this month')),
-                                                                 str(_('Balance at the end of the month reported in this report')),
-                                                                 str(_('Reason for dispatch or expense')),
-                                                                 ]]
+            book = [first_line, second_line, third_line,range_data,
+                    fourth_line,[], [str(_('Name of the substance or product')),
+                                     str(_('Unit')),
+                                     str(_('Final balance of the previous report')),
+                                     str(_('Income during the month')),
+                                     str(_('Import or local purchase invoice number that covers the entry')),
+                                     str(_('Supplier that supplied the purchased product (in case of local purchase)')),
+                                     str(_('Total Stock')),
+                                     str(_('Dispatch or expense during this month')),
+                                     str(_('Balance at the end of the month reported in this report')),
+                                     str(_('Type of movement')),
+                                     ]]
             objects = PrecursorReportValues.objects.filter(precursor_report=report)
             for obj in objects.distinct().order_by("object__name"):
-
+                resaon = obj.reason_to_spend if len(obj.reason_to_spend)>0 else 'N/A'
                 book.append([obj.object.name,
                                  obj.measurement_unit.description,
                                  obj.previous_balance,
@@ -285,7 +291,7 @@ class PrecursorsView(ReportListView):
                                  obj.stock,
                                  obj.month_expense,
                                  obj.final_balance,
-                                 obj.reason_to_spend
+                                 resaon
                                      ])
             self.file_name = _('Report_of_precursors_%(month)s_%(consecutive)d') % {
                 "consecutive": report.consecutive,
@@ -372,3 +378,49 @@ class DiscardShelfReportView(ListView):
             'form': DiscardShelfForm(initial=initial_data, org_pk=self.org)
         })
         return context
+
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class ReactiveReport(ListView):
+    model = ShelfObject
+    template_name = 'report/base_report_form_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ReactiveReport,
+                        self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        title = _("Reactive Objects Report")
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['reactive_report'],
+            'form': ReactiveReportForm(initial={
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'reactive_report',
+                'laboratory': lab_obj,
+            })
+        })
+        return context
+
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class RiskZoneReport(ListView):
+    model = RiskZone
+    template_name = 'report/base_report_form_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RiskZoneReport,
+                        self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        title = _("Risk Zone Report")
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['risk_zone_report'],
+            'form': RiskZoneReportForm(initial={
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'risk_zone_report',
+            }, org_pk=self.org)
+        })
+        return context
+

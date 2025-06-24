@@ -1,3 +1,5 @@
+import re
+
 import django_excel
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
@@ -13,12 +15,12 @@ from rest_framework import status
 from weasyprint import HTML
 from django.conf import settings
 
-
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from laboratory.views import djgeneric
 from risk_management.forms import IncidentReportForm
-from risk_management.models import IncidentReport
+from risk_management.models import IncidentReport, Buildings, RiskZone
 
 
 @method_decorator(permission_required('risk_management.view_incidentreport'), name="dispatch")
@@ -29,13 +31,12 @@ class IncidentReportList(djgeneric.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(laboratories__pk=self.lab)
-
-        if 'q' in self.request.GET:
-            q = self.request.GET['q']
-            queryset = queryset.filter(Q(short_description__icontains=q)|Q(
-                laboratories__name__icontains=q
-            ), laboratories__pk=self.lab)
+        queryset = super().get_queryset().filter(buildings=self.building)
+        filter_search = self.request.GET.get('q', None)
+        if filter_search:
+            queryset = queryset.filter(Q(short_description__icontains=filter_search)|Q(
+                laboratories__name__icontains=filter_search
+            ), buildings__pk=self.building.pk)
 
 
         return queryset
@@ -62,7 +63,7 @@ class IncidentReportCreate(djgeneric.CreateView):
         kwargs['user'] = self.request.user
         kwargs['org_pk'] = self.org
         kwargs['initial']={
-            'laboratories':[self.lab]
+            'laboratories':[self.building.laboratories.all()]
         }
         return kwargs
 
@@ -140,6 +141,7 @@ _('Result of plans'),
 _('Mitigation actions'),
 _('Recomendations'),
 _('Laboratories'),
+ _('Buildings'),
          ]
     ]
     for obj in incidents:
@@ -148,14 +150,14 @@ _('Laboratories'),
            str(obj.creation_date),
            obj.short_description,
            obj.incident_date,
-           obj.causes,
-           obj.infraestructure_impact,
-           obj.people_impact,
-           obj.environment_impact,
-           obj.result_of_plans,
-           obj.mitigation_actions,
-           obj.recomendations,
-           ",".join([x.name for x in obj.laboratories.all()]),
+           re.sub(r'<.*?>', '', obj.causes),
+           re.sub(r'<.*?>', '', obj.infraestructure_impact),
+           re.sub(r'<.*?>', '', obj.people_impact),
+           re.sub(r'<.*?>', '', obj.result_of_plans),
+           re.sub(r'<.*?>', '', obj.mitigation_actions),
+           re.sub(r'<.*?>', '', obj.recomendations),
+           ", ".join([x.name for x in obj.laboratories.all()]),
+           ", ".join([x.name for x in obj.buildings.all()]),
             ])
     content[_('Incidents')] = funobjs
 
@@ -163,13 +165,11 @@ _('Laboratories'),
 
 
 @permission_required('laboratory.do_report')
-def report_incidentreport(request, org_pk, lab_pk, pk):
+def report_incidentreport(request, org_pk, risk_pk, pk):
+    user_is_allowed_on_organization(request.user, org_pk)
 
-    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
-        return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
-
-    lab = get_object_or_404(Laboratory, pk=lab_pk)
-    filters = {'laboratories__in': [lab]}
+    risks = get_object_or_404(RiskZone, pk=risk_pk)
+    filters = {'risk_zone__in': [risks]}
 
     if pk:
         filters = {'pk': pk}
@@ -187,7 +187,7 @@ def report_incidentreport(request, org_pk, lab_pk, pk):
         'object_list': incidentreport,
         'datetime': timezone.now(),
         'user': request.user,
-        'title': _("Incident Report"),
+        'title': _("Incident report in the risk zone %s")% risks.name,
     }
 
     html = template.render(context=context)

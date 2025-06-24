@@ -1,6 +1,6 @@
 function convertFormToJSON(form, prefix="") {
   const re = new RegExp("^"+prefix);
-  const widget_multiples = ["AutocompleteSelectMultiple","SelectMultiple"]
+  const widget_multiples = ["AutocompleteSelectMultiple","SelectMultiple","AutocompleteSelectMultipleImage"]
   return form
     .serializeArray()
     .reduce(function (json, { name, value }) {

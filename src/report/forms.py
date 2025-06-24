@@ -10,6 +10,7 @@ from auth_and_perms.models import Profile
 from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
 from laboratory.utils import get_laboratories_from_organization, get_users_from_organization
 from report.models import TaskReport, DocumentReportStatus
+from risk_management.models import RiskZone, Buildings
 
 
 class ReportBase(GTForm):
@@ -71,9 +72,16 @@ class ReportObjectForm(ReportObjectsBaseForm):
         return list(laboratory.values_list('pk',flat=True))
 
 class LaboratoryRoomReportForm(ReportBase):
+    objects_type = list(Object.TYPE_CHOICES)
+    objects_type.insert(0, (None, _("All")))
     all_labs_org = forms.BooleanField(help_text=_("This option allows to expand this query to all laboratories of current organization"),
         widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False)
     laboratory = forms.ModelMultipleChoiceField(widget=forms.HiddenInput, queryset=Laboratory.objects.all())
+    object_type = forms.ChoiceField(choices=tuple(objects_type), label=_("Object type"),
+                                    required=False,
+                                    widget=genwidgets.Select(attrs={'class': 'form-control'}))
+    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False,
+                                      label=_("Is precursor?"))
     lab_room = forms.ModelMultipleChoiceField(help_text=_("If you want to delimit this query select laboratory rooms (Optional)"),
         widget=AutocompleteSelectMultiple("lab_room", attrs={
         'data-related': 'true',
@@ -100,7 +108,13 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
     laboratory = forms.ModelMultipleChoiceField(widget=forms.SelectMultiple, queryset=Laboratory.objects.all())
     lab_room = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=LaboratoryRoom.objects.all(), required=False)
     furniture = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple, queryset=Furniture.objects.all(), required=False)
-
+    objects_type = list(Object.TYPE_CHOICES)
+    objects_type.insert(0, (None, _("All")))
+    object_type = forms.ChoiceField(choices=tuple(objects_type),
+                                    required=False,
+                                    widget=genwidgets.Select(
+                                        attrs={'class': 'form-control'}))
+    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
     def clean_laboratory(self):
         organization = self.cleaned_data['organization']
         all_labs_org = self.cleaned_data['all_labs_org']
@@ -264,3 +278,38 @@ class DiscardShelfForm(ReportBase):
         if lab:
             return lab.id
         return lab
+
+class ReactiveReportForm(ReportBase):
+    pass
+
+class RiskZoneReportForm(ReportBase):
+    risk_zone = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                               queryset=RiskZone.objects.all(),
+                                               label=_("Risk Zones"), required=False)
+    building = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
+                                              queryset=Buildings.objects.all(),
+                                              label=_("Buildings"), required=False)
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop('org_pk', None)
+        super(RiskZoneReportForm, self).__init__(*args, **kwargs)
+
+
+        if org_pk:
+            self.fields['risk_zone'].queryset = RiskZone.objects.filter(organization=org_pk)
+            self.fields['building'].queryset = Buildings.objects.filter(organization=org_pk)
+        else:
+            self.fields['risk_zone'].queryset = RiskZone.objects.none()
+            self.fields['building'].queryset = Buildings.objects.none()
+
+    def clean_building(self):
+        building = self.cleaned_data['building']
+
+        if building.exists():
+            return list(building.values_list('pk',flat=True))
+        return []
+
+    def clean_risk_zone(self):
+        risk_zone = self.cleaned_data['risk_zone']
+        if risk_zone.exists():
+            return list(risk_zone.values_list('pk',flat=True))
+        return []

@@ -1,8 +1,11 @@
 from django.db.models import Sum
 from django.utils import timezone
+from laboratory.utils_base_unit import get_base_unit
 
 from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
     ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
+from laboratory.utils_base_unit import get_base_unit
+from django.utils.translation import gettext_lazy as _
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -57,12 +60,15 @@ def save_object_report_precursor(report):
                     obj.previous_balance += add_quantity
             obj.save()
         else:
+            year = report.year
+            if report.month_belong==1 and report.month==12:
+                year=report.year-1
 
             object_list = ObjectLogChange.objects.filter(laboratory=lab, precursor=True,
                                                          object=precursor.object,
                                                          measurement_unit=unit,
-                                                         update_time__month=report.month,
-                                                         update_time__year=report.year)
+                                                         update_time__month=report.month_belong,
+                                                         update_time__year=year)
 
             providers = [ol.provider for ol in object_list.filter(provider__isnull=False)]
             subject = [ol.subject for ol in object_list.filter(subject__isnull=False)]
@@ -70,6 +76,9 @@ def save_object_report_precursor(report):
             income = object_list.filter(type_action__in=[0,1,2], diff_value__gte=0).aggregate(amount=Sum('diff_value', default=0))["amount"]
             expenses = abs(object_list.filter(type_action__in=[2,3], diff_value__lte=0).aggregate(amount=Sum('diff_value', default=0))["amount"])
 
+            reason = "N/A"
+            if len(subject)>0:
+                reason = ", ".join(subject)
             PrecursorReportValues.objects.create(precursor_report = report,
                                                  object = precursor.object,
                                                  measurement_unit = unit,
@@ -80,7 +89,7 @@ def save_object_report_precursor(report):
                                                  stock = income+0,
                                                  month_expense = expenses,
                                                  final_balance = income-expenses,
-                                                 reason_to_spend = ", ".join(subject)
+                                                 reason_to_spend = reason
                                                  )
 
 
@@ -96,15 +105,3 @@ def build_precursor_report_from_reports(first_report, second_report):
                 obj.stock = old_obj.final_balance+obj.new_income
                 obj.final_balance = obj.stock-obj.month_expense
                 obj.save()
-
-
-
-
-def get_base_unit(unit):
-    if unit.description in ["Gramos","Miligramos"]:
-        return BaseUnitValues.objects.filter(pk=8).first().measurement_unit
-    if unit.description in ["Milímetros", "Centímetros"]:
-        return BaseUnitValues.objects.filter(pk=1).first().measurement_unit
-    if unit.description in ["Mililitros"]:
-        return BaseUnitValues.objects.filter(pk=4).first().measurement_unit
-    return unit

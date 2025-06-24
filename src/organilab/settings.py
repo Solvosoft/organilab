@@ -3,7 +3,7 @@ import os
 import sys
 
 from pathlib import Path
-
+from . import get_version
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
@@ -18,22 +18,35 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 GLITCHTIP_DSN=os.getenv("GLITCHTIP_DSN", None)
 if not DEBUG and GLITCHTIP_DSN:
     import sentry_sdk
+    from sentry_sdk import HttpTransport
     from sentry_sdk.integrations.django import DjangoIntegration
 
+    class MyHttpTransport(HttpTransport):
+        def _get_pool_options(self):
+            # Ignore SSL Errors
+            options = super()._get_pool_options()
+            options['cert_reqs'] = "CERT_NONE"
+            return options
     sentry_sdk.init(
         dsn=GLITCHTIP_DSN,
         integrations=[DjangoIntegration()],
         auto_session_tracking=False,
-        traces_sample_rate=0
+        traces_sample_rate=0,
+        transport=MyHttpTransport,
+        release=get_version(),
+        environment="production",
     )
 
-CSRF_TRUSTED_SCHEME=os.getenv('CSRF_TRUSTED_SCHEME', 'https')
+GUNICORN_BIND = os.getenv("GUNICORN_BIND", "127.0.0.1:8000")
+CSRF_TRUSTED_SCHEME = os.getenv("CSRF_TRUSTED_SCHEME", "http")
+
 if os.getenv('ALLOWED_HOSTS', ''):
     ALLOWED_HOSTS = [c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
     CSRF_TRUSTED_ORIGINS = [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    CORS_ALLOWED_ORIGINS = ["http://localhost:3516"] + [CSRF_TRUSTED_SCHEME+"://"+c for c in os.getenv('ALLOWED_HOSTS', '').split(',')]
 else:
-    ALLOWED_HOSTS = []
-
+    ALLOWED_HOSTS = ['*']
+    CORS_ALLOW_ALL_ORIGINS = True
 ADMINS = [('Solvo', 'sitio@solvosoft.com'),]
 # Application definition
 
@@ -46,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    "corsheaders",
     'auth_and_perms',  # needs to start after gentelella
     'presentation',
     'django_ajax',
@@ -57,7 +71,6 @@ INSTALLED_APPS = [
     'location_field',
     'rest_framework',
     'rest_framework.authtoken',
-    'captcha',
     'msds',
     'sga',
     'async_notifications',
@@ -70,7 +83,6 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'reservations_management',
     'django_celery_beat',
-    'paypal.standard.ipn',
     'derb',
     'django_otp',
     'django_otp.plugins.otp_totp',
@@ -85,6 +97,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'auth_and_perms.middleware.ProfileLanguageMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -322,16 +335,9 @@ DATETIME_INPUT_FORMATS = [
     '%d/%m/%y %H:%M'
 ]
 
-#Paypal configurations
-PAYPAL_TEST = True
-PAYPAL_RECEIVER_EMAIL = 'paypal@solvosoft.com'
-MY_PAYPAL_HOST="http://localhost:8000/"
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-
-RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', 'MyRecaptchaKey123')
-RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', 'MyRecaptchaPrivateKey456')
-SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 GT_GROUP_MODEL='auth_and_perms.models.Rol'
 DEFAULT_BUSSINESS = int(os.getenv('DEFAULT_BUSSINESS', 1))
@@ -414,8 +420,33 @@ if not DEBUG:
 DEFAULT_SHELF_ULIMIT=0
 DEFAULT_MIN_QUANTITY = 0.0000001
 
-
 MEDIA_UNA_ROOT = os.getenv('MEDIA_UNA_ROOT',  str(BASE_DIR.parent/ 'media_una/'))
 MEDIA_PROD_ROOT = os.getenv('MEDIA_PROD_ROOT',  str(BASE_DIR.parent/ 'media_prod/'))
 
 DEFAULT_MIGRATION_USER='usuario'
+
+DEFAULT_CONVERSION_DECIMAL_ROUND = 4
+
+DJANGO_ASETTINGS_MODULE = "organilab.asettings"
+
+GUNICORN_ASGI_APP = "organilab.asgi:application"
+GUNICORN_WSGI_APP = "organilab.wsgi:application"
+GUNICORN_WORKERS = 1 if DEBUG else 2
+GUNICORN_WORKER_CLASS = "sync"
+GUNICORN_USER = os.getenv("GUNICORN_USER", "organilab")
+GUNICORN_GROUP = os.getenv("GUNICORN_GROUP", "organilab")
+
+UVICORN_BIND = os.getenv("UVICORN_BIND", "127.0.0.1:9922")
+UVICORN_WORKER = 1 if DEBUG else 2
+UVICORN_WORKER_CLASS = "djgentelella.firmador_digital.config.asgi_worker.DjgentelellaUvicornWorker"
+
+
+FIRMADOR_WS = os.getenv("FIRMADOR_WS", "ws://%s/async/" % UVICORN_BIND)
+FIRMADOR_WS_URL = FIRMADOR_WS + "sign_document"
+FIRMADOR_DOMAIN = os.getenv("FIRMADOR_DOMAIN", "http://localhost:9001")
+FIRMADOR_VALIDA_URL = FIRMADOR_DOMAIN + "/valida/"
+FIRMADOR_SIGN_URL = FIRMADOR_DOMAIN + "/firma/firme"
+FIRMADOR_SIGN_COMPLETE = FIRMADOR_DOMAIN + "/firma/completa"
+FIRMADOR_DELETE_FILE_URL = FIRMADOR_DOMAIN + "/firma/delete"
+REGISTER_DEFAULT_USER_API=False
+

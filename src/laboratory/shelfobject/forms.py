@@ -4,13 +4,14 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
-from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple, \
+    AutocompleteSelectMultipleImage
 from auth_and_perms.models import Profile, Rol
 from laboratory import utils
 from laboratory.models import Laboratory, Provider, Shelf, Catalog, ShelfObject, Object, \
     LaboratoryRoom, Furniture, ShelfObjectMaintenance, ShelfObjectLog, \
     ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining, \
-    ShelfObjectEquipmentCharacteristics, OrganizationStructure
+    ShelfObjectEquipmentCharacteristics, OrganizationStructure, BaseUnitValues
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import \
     TransferInShelfObjectApproveWithContainerSerializer, ContainerSerializer
@@ -29,6 +30,17 @@ class ReserveShelfObjectForm(ModelForm, GTForm):
 class IncreaseShelfObjectForm(GTForm):
     amount = forms.FloatField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'), label=_('Amount'))
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
+                                      widget=AutocompleteSelect("catalogunitIncDec", attrs={
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-shelfobject': '#id_shelfobject',
+
+                                      })
+                                      )
+
     provider = forms.ModelChoiceField(queryset=Provider.objects.all(), label=_("Provider"), required=False,
                                       widget=AutocompleteSelect("provider", attrs={
                                           'data-s2filter-laboratory': '#id_laboratory',
@@ -36,6 +48,7 @@ class IncreaseShelfObjectForm(GTForm):
                                    })
                                       )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(widget=genwidgets.NumberInput, label=_('Amount'),
@@ -56,9 +69,20 @@ class TransferOutShelfObjectForm(GTForm):
 class DecreaseShelfObjectForm(GTForm):
     amount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
                                 label=_('Amount'))
+
+    measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.all(), label=_("Measurement Unit"),
+                                      widget=AutocompleteSelect("catalogunitIncDec", attrs={
+                                          'data-s2filter-shelf': '#id_shelf',
+                                          'data-s2filter-laboratory': '#id_laboratory',
+                                          'data-s2filter-organization': '#id_organization',
+                                          'data-s2filter-shelfobject': '#id_shelfobject'
+                                      })
+                                      )
+
     description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text='Describe the action',
                                   label=_('Description'), required=False)
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+
 
 class MoveShelfObjectForm(GTForm):
     organization = forms.IntegerField(widget=forms.HiddenInput)
@@ -478,19 +502,23 @@ class ShelfObjectReactiveForm(ShelfObjectExtraFields,ContainerForm,forms.ModelFo
             label=_("Status")
         )
 
+        self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit",
-                  "container_select_option","container_for_cloning","available_container",
-                  "description","marked_as_discard","batch","objecttype"]
+        fields = ["object","shelf","status","physical_status","pictograms","quantity","concentration",
+                  "measurement_unit", "container_select_option","container_for_cloning",
+                  "available_container", "description","marked_as_discard","batch",
+                  "objecttype","concentration"]
         exclude =['laboratory_name','created_by', 'limit_quantity',"container", 'in_where_laboratory', 'shelf_object_url', 'shelf_object_qr','limits']
         widgets = {
             'shelf': forms.HiddenInput,
             'description': genwidgets.Textarea,
             'quantity': genwidgets.TextInput,
-
             'batch': genwidgets.TextInput,
             'marked_as_discard': genwidgets.CheckboxInput,
+            'concentration': genwidgets.FloatInput,
+            'physical_status': genwidgets.Select,
+            'pictograms': AutocompleteSelectMultipleImage("imagebasename")
         }
 
 
@@ -533,11 +561,12 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
         label=_("Status"))
 
         self.fields['marked_as_discard'].initial=True
+        self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
 
 
     class Meta:
         model = ShelfObject
-        fields = ["object","shelf","status","quantity", "measurement_unit",
+        fields = ["object","shelf","status","physical_status","pictograms","quantity","concentration",
                   "container_select_option","container_for_cloning","available_container",
                   "description","marked_as_discard","batch","objecttype"]
         exclude = ['created_by',"laboratory_name", "limit_quantity", 'limits',"container"]
@@ -547,8 +576,10 @@ class ShelfObjectRefuseReactiveForm(ShelfObjectExtraFields,ContainerForm,GTForm,
             'quantity': genwidgets.TextInput,
             'description': genwidgets.Textarea,
             'marked_as_discard': genwidgets.HiddenInput,
-            'batch': genwidgets.TextInput
-
+            'batch': genwidgets.TextInput,
+            'concentration': genwidgets.FloatInput,
+            'physical_status': genwidgets.Select,
+            'pictograms': AutocompleteSelectMultipleImage("imagebasename")
         }
 
 class ContainerManagementForm(ContainerForm):

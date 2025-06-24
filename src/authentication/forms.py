@@ -20,6 +20,8 @@ class CreateUserForm(forms.ModelForm, GTForm):
         initial=UserOrganization.LABORATORY_USER,
                                  label=_("Profile in organization")
     )
+    address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"),
+                               required=False)
     def clean_email(self):
         value = self.cleaned_data['email']
         if User.objects.using(settings.READONLY_DATABASE).filter(username=value):
@@ -38,7 +40,10 @@ class CreateUserForm(forms.ModelForm, GTForm):
 
 
 class EditUserForm(forms.ModelForm, GTForm):
+    phone_number = forms.CharField(max_length=25, label=_('Phone'),
+                                   widget=djgenwidgets.TextInput)
     language = forms.ChoiceField(choices=settings.LANGUAGES, widget=djgenwidgets.Select)
+    address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"))
 
     class Meta:
         model = User

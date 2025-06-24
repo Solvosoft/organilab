@@ -57,12 +57,15 @@ def get_pdf_table_content(table_content):
     pdf_table = "<table id='pdf_table_report'><thead>"
     if 'columns' and 'dataset' in table_content:
         pdf_table += '<tr>'
+        table_content['columns'].insert(0, {'title': 'Item'})
         for col in table_content['columns']:
             if 'title' in col:
                 pdf_table += "<th>%s</th>" % (col['title'])
         pdf_table += '</tr></thead><tbody>'
-
+        i=1
         for row in table_content['dataset']:
+            row.insert(0, i)
+            i+=1
             pdf_table += '<tr>'
             for item in row:
                 pdf_table += '<td>%s</td>' % (item)
@@ -152,13 +155,14 @@ def get_pdf_log_change_table_content(report):
     pdf_table = ""
 
     for table in table_content:
-        pdf_table += "<p style='padding:0px; font-size:12px;'>%s</p>" %(f'{table.laboratory.name} | {table.object.name}')
+        cas = table.object.cas_code if table.object.cas_code else ""
+        pdf_table += "<p style='padding:0px; font-size:12px;'>%s</p>" %(f'{table.laboratory.name} | {table.object.name} {cas}')
         pdf_table += "<p style='padding:0px; font-size:12px;' >%s</p>" \
-                     %(_("Difference") + f' :{table.diff_value} {table.unit.description}')
+                     %(f' :{table.diff_value} {table.unit.description}')
 
         pdf_table += "<table id='pdf_table_report'><thead>"
         pdf_table += '<tr>'
-        for col in [_("User"), _("Day"), _('Old'), _('New'), _("Difference")]:
+        for col in [_("User"), _("Day"), _('Initial amount'), _('Final amount'), _("Difference")]:
             pdf_table += "<th>%s</th>" % (col)
         pdf_table += '</tr></thead><tbody>'
         table =ObjectChangeLogReportBuilder.objects.filter(report=table)
