@@ -10,7 +10,7 @@ def get_hcode_threshold(hcodes_quantity, quantity):
     result = False
     if isinstance(hcodes_quantity, list):
         for hcode in hcodes_quantity:
-            if hcode.threshold > quantity:
+            if (hcode.threshold*1000 )< quantity:
                 return True
     return result
 
@@ -64,7 +64,7 @@ def get_dataset_report(report, column_list=None):
                 third_column += _("Square 4")
 
 
-        if total_shelfobjects>reactive.threshold*1000 and reactive.is_dangerous and reactive.has_threshold:
+        if total_shelfobjects>(reactive.threshold*1000) and reactive.is_dangerous and reactive.has_threshold:
             threshold = _("Yes Exceeds Threshold")
         elif not dangerous and not third_square:
             third_column = _("None")
