@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
 from laboratory.utils import check_user_access_kwargs_org_lab
 from report.forms import TasksForm
@@ -350,6 +351,24 @@ def download__organization_report(request, org_pk):
 @login_required
 @permission_required('laboratory.do_report')
 def report_organization_table(request, org_pk,pk):
+    task = get_object_or_404(TaskReport.objects.using(settings.READONLY_DATABASE),pk=pk)
+    template_name = 'report/general_reports.html'
+    content = {
+        'table': task.table_content,
+        'org_pk': org_pk,
+        'obj_task': task,
+        'changelogreport': None
+    }
+    if task.type_report == "report_objectschanges":
+        template_name= "report/log_change.html"
+        content['changelogreport'] = ObjectChangeLogReport.objects.\
+            filter(task_report=task)
+    return render(request, template_name=template_name, context=content)
+
+@login_required
+@permission_required('laboratory.do_report')
+def report_organization_table(request, org_pk, pk):
+    user_is_allowed_on_organization(request.user, org_pk)
     task = get_object_or_404(TaskReport.objects.using(settings.READONLY_DATABASE),pk=pk)
     template_name = 'report/general_reports.html'
     content = {
