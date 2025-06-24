@@ -4963,3 +4963,21 @@ msgstr "Tiene umbral?"
 
 msgid "Threshold"
 msgstr "Umbral"
+
+msgid "Exceeds THRESHOLD OR NA, if the previous (column) is none"
+msgstr "Supera UMBRAL O NA, si el anterior(columna) es ninguno"
+
+msgid "Table 4, 3 or none"
+msgstr "Cuadro 4, 3 o ninguna"
+
+msgid "Statistics"
+msgstr "Estadísticas"
+
+msgid "Risk zone report"
+msgstr "Informe de zonas de riesgo"
+
+msgid "View search filters"
+msgstr "Ver filtros de búsqueda"
+
+msgid "Filter"
+msgstr "Filtrar"

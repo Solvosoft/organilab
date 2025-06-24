@@ -17,7 +17,7 @@
 	<div class="col-md-12">
 		<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filtrocoll"
         aria-expanded="false" aria-controls="collapseExample" style="margin-left:2%;margin-bottom:5%;">
-    Ver filtros de búsqueda
+			{% trans 'View search filters' %}
 		</button>
 		<div class="collapse" id="filtrocoll">
 			<form id="form-risk" method="GET">
@@ -25,7 +25,7 @@
 				<div class="clearfix"></div>
 				<div class="row">
 					<div class="">
-						<button form="form-risk" type="submit" class="btn btn-success float-end">Filtrar </button>
+						<button form="form-risk" type="submit" class="btn btn-success float-end">{% trans 'Filter' %}</button>
 					</div>
 				</div>
 			</form>
