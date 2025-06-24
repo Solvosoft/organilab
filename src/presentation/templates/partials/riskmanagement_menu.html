@@ -11,16 +11,19 @@
 <ul class="nav child_menu">
     <li>
         <a href="{% url 'riskmanagement:riskzone_list' org_pk %}">
+										<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
             {% trans 'Risk zones' %}</a>
     </li>
     <li><a id='reports' href="{% url 'laboratory:h_code_reports' org_pk %}"
            title="{% trans 'Report View' %}">
+					<i class="fa fa-calendar-check-o" aria-hidden="true"></i>
         {% trans 'H code Reports' %}</a>
     </li>
 	{% if perms.risk_management.view_buildings %}
 
 	    <li><a href="{% url 'riskmanagement:buildings_list' org_pk %}"
            title="{% trans 'Manage buildings' %}">
+						<i class="fa fa-building" aria-hidden="true"></i>
         {% trans 'Manage buildings' %}</a>
     </li>
 	{% endif %}
@@ -28,6 +31,7 @@
 	{% if perms.risk_management.view_structure %}
 	<li><a href="{% url 'riskmanagement:structures_list' org_pk %}"
            title="{% trans 'Manage structure' %}">
+		<i class="fa fa-building" aria-hidden="true"></i>
         {% trans 'Manage structure' %}</a>
 </li>
 	{% endif %}
@@ -35,17 +39,22 @@
 	{% if perms.risk_management.view_regent %}
 	    <li><a href="{% url 'riskmanagement:regents' org_pk %}"
            title="{% trans 'Manage regents' %}">
+						<i class="fa fa-address-book" aria-hidden="true"></i>
         {% trans 'Manage regents' %}</a>
     </li>
 	{% endif %}
 	<li><a href="{% url 'riskmanagement:zone_dashboard' org_pk %}"
-								title="{% trans 'Dashboard' %}">
-		{% trans 'Dashboard' %}</a>
+								title="{% trans 'Statistics' %}">
+		<i class="fa fa-line-chart" aria-hidden="true"></i>
+		{% trans 'Statistics' %}</a>
 	</li>
+	{% if perms.laboratory.do_report %}
 	<li><a href="{% url 'riskmanagement:risk_report' org_pk %}"
-								title="{% trans 'Risk Inform' %}">
-		{% trans 'Risk Inform' %}</a>
+								title="{% trans 'Risk zone report' %}">
+		<i class="fa fa-list" aria-hidden="true"></i>
+		{% trans 'Risk zone report' %}</a>
 	</li>
+	{% endif %}
 </ul>
 
 </li>
