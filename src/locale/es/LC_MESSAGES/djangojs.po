@@ -1074,3 +1074,6 @@ msgstr "Estado físico"
 
 msgid "Concentration"
 msgstr "Concentración"
+
+msgid "Threshold"
+msgstr "Umbral"

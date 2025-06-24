@@ -8,6 +8,13 @@ datatable_inits = {
     columns: [
         {data: "id", name: "id", title: "ID", type: "string", visible: false},
         {
+            data: "name",
+            name: "name",
+            title: gettext("Name"),
+            type: "string",
+            visible: true
+         },
+        {
             data: "danger_category",
             name: "danger_category",
             title: gettext("Danger Category"),
@@ -25,6 +32,14 @@ datatable_inits = {
              type: "select2",
             visible: true
         },
+                {
+            data: "threshold",
+            name: "threshold",
+            title: gettext("Threshold"),
+            type: "number",
+            visible: true
+         },
+
         {
             data: "actions",
             name: "actions",
