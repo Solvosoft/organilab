@@ -22,6 +22,7 @@ from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django.views.generic import TemplateView
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.core import DateRangeInput, YesNoInput, Select
 from weasyprint import HTML
@@ -38,7 +39,8 @@ from laboratory.views.djgeneric import ListView, ReportListView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from report.forms import ReportForm, ReportObjectsForm, ObjectLogChangeReportForm, \
     OrganizationReactiveForm, \
-    ValidateObjectTypeForm, DiscardShelfForm, ReactiveReportForm
+    ValidateObjectTypeForm, DiscardShelfForm, ReactiveReportForm, RiskZoneReportForm
+from risk_management.models import RiskZone
 from sga.forms import SearchDangerIndicationForm
 
 @permission_required('laboratory.do_report')
@@ -397,6 +399,28 @@ class ReactiveReport(ListView):
                 'report_name': 'reactive_report',
                 'laboratory': lab_obj,
             })
+        })
+        return context
+
+@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+class RiskZoneReport(ListView):
+    model = RiskZone
+    template_name = 'report/base_report_form_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RiskZoneReport,
+                        self).get_context_data(**kwargs)
+        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
+        title = _("Risk Zone Report")
+        context.update({
+            'title_view': title,
+            'report_urlnames': ['risk_zone_report'],
+            'form': RiskZoneReportForm(initial={
+                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
+                'title': title,
+                'organization': self.org,
+                'report_name': 'risk_zone_report',
+            }, org_pk=self.org)
         })
         return context
 
