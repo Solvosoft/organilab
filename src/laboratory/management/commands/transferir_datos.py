@@ -12,7 +12,7 @@ from auth_and_perms.models import Rol, Profile, ProfilePermission
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from laboratory.models import Object, OrganizationStructure, ObjectFeatures, \
     SustanceCharacteristics, Catalog, Laboratory, LaboratoryRoom, Furniture, Shelf, \
-    ShelfObject
+    ShelfObject, ObjectLogChange
 from laboratory.utils import register_laboratory_contenttype
 from risk_management.models import RiskZone, ZoneType
 from sga.models import DangerPrudence, DangerIndication
@@ -26,22 +26,24 @@ class Command(BaseCommand):
     def transfer_users(self):
         users_una = User.objects.all().using("unadb")
         for user in users_una:
-            u=User.objects.create_user(username=user.username, email=user.email,
-                                     password=user.password,first_name=user.first_name,
-                                     last_name=user.last_name,
-                                     is_active=user.is_active,
-                                     is_staff=user.is_staff,
-                                     is_superuser=user.is_superuser,
-                                       )
-            u.user_permissions.add(*list(user.user_permissions.all().values_list("pk",flat=True)))
-            u.save()
-            Profile.objects.create(
-                user=u,
-                phone_number='2277-3000',
-                id_card = '88888888',
-                job_position = 'Gestor de organilab'
-            )
+            if not User.objects.filter(username=user.username).exists():
+                u, created =User.objects.get_or_create(username=user.username, email=user.email,
+                                         password=user.password,first_name=user.first_name,
+                                         last_name=user.last_name,
+                                         is_active=user.is_active,
+                                         is_staff=user.is_staff,
+                                         is_superuser=user.is_superuser,
+                                           )
+                u.user_permissions.add(*list(user.user_permissions.all().values_list("pk",flat=True)))
+                u.save()
+                Profile.objects.get_or_create(
+                    user=u,
+                    phone_number='2277-3000',
+                    id_card = '88888888',
+                    job_position = 'Gestor de organilab'
+                )
         self.user = User.objects.filter(username=settings.DEFAULT_MIGRATION_USER).first()
+
 
     def transfer_organizations(self):
         names=list(OrganizationStructure.objects.using('unadb').all().order_by('id').values_list('name', flat=True))
@@ -80,6 +82,10 @@ class Command(BaseCommand):
             register_laboratory_contenttype(org, newlab)
             register_laboratory_contenttype(parent_org, newlab)
             for user in User.objects.all():
+                if not hasattr(user, 'profile'):
+                    Profile.objects.get_or_create(
+                        user=user,
+                            )
                 pp = ProfilePermission.objects.create(
                     profile=user.profile,
                     content_type=ContentType.objects.get_for_model(Laboratory),
@@ -168,7 +174,7 @@ ORDER BY id ASC
     def process_objectfeatures(self):
         ob = ObjectFeatures.objects.using('unadb').all()
         for o in ob:
-            ObjectFeatures.objects.create(
+            ObjectFeatures.objects.get_or_create(
                 name=o.name,
                 description=o.description
             )
@@ -317,6 +323,41 @@ where lof.object_id = %s"""%old['id']
         )
         for lab in Laboratory.objects.all():
             rz.laboratories.add(lab)
+    def create_objectlogs(self):
+        logs = ObjectLogChange.objects.using('unadb').all().values('pk', 'laboratory_id',
+                                                                   'user__username', 'old_value',
+                                                                   'new_value', 'diff_value',
+                                                                   'update_time', 'precursor',
+                                                                   'measurement_unit__description', 'subject',
+                                                                   'provider', 'bill',
+                                                                   'type_action', 'note',
+                                                                   'object__name').order_by('pk')
+        ObjectLogChange.objects.all().delete()
+
+        for log in logs:
+            lab=None
+            lab_name = None
+            if log["laboratory_id"]:
+                lab = Laboratory.objects.using('unadb').filter(pk=log["laboratory_id"]).values('organization_id', "name").first()
+                lab_name = lab["name"]
+                lab= Laboratory.objects.filter(name=lab_name).first()
+            ObjectLogChange.objects.create(
+                laboratory=lab,
+                user=User.objects.filter(username=log["user__username"]).first(),
+                old_value=log["old_value"],
+                new_value=log["new_value"],
+                diff_value=log["diff_value"],
+                update_time=log["update_time"],
+                precursor=log["precursor"],
+                measurement_unit=Catalog.objects.filter(description=log["measurement_unit__description"]).first(),
+                subject=log["subject"],
+                provider=log["provider"],
+                bill=log["bill"],
+                type_action=log["type_action"],
+                note=log["note"],
+                organization_where_action_taken=OrganizationStructure.objects.filter(name="UNA").first(),
+                object=Object.objects.filter(name=log["object__name"]).first()
+            )
     def init_data(self):
         OrganizationStructure.objects.all().delete() # remove test organization
         Object.objects.all().delete()
@@ -327,6 +368,7 @@ where lof.object_id = %s"""%old['id']
         self.create_laboratories()
         self.user.set_password('admin12345')
         self.user.save()
+
         self.create_laboratory_room()
         self.create_furniture()
         self.transfer_una_object()
@@ -340,3 +382,4 @@ where lof.object_id = %s"""%old['id']
 
         self.init_data()
         self.create_risk_zone()
+        self.create_objectlogs()
