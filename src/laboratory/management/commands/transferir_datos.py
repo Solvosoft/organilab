@@ -279,6 +279,7 @@ where lof.object_id = %s"""%old['id']
             'plaque', 'serie', 'is_public', 'synonym')
         for obj in objs:
             #features
+            threshold = True if obj['type']==0 else False
             o=Object.objects.create(
                 organization=OrganizationStructure.objects.filter(name='UNA').first(),
                 id=obj['id'],
@@ -291,11 +292,13 @@ where lof.object_id = %s"""%old['id']
                 model = obj['model'],
                 serie = obj['serie'],
                 plaque = obj['plaque'],
-                is_container = False
+                is_container = False,
+                has_threshold = threshold
             )
             self.transfer_sustancecharacteristics(o, obj['id'])
             self.objects[obj['id']] = o
             self.transfer_features(obj, o)
+
     def migrate_shelfobject(self):
         su=ShelfObject.objects.using('unadb').all().values(
             'quantity', 'measurement_unit_id', 'object_id', 'shelf_id', 'limit_quantity')
@@ -307,6 +310,7 @@ where lof.object_id = %s"""%old['id']
                 limit_quantity=s['limit_quantity'],
                 measurement_unit=self.get_or_create_catalog(s['measurement_unit_id'],
                                                             'units'),
+
                 in_where_laboratory=self.shelfs[s['shelf_id']].furniture.labroom.laboratory
             )
     def create_risk_zone(self):
@@ -323,6 +327,7 @@ where lof.object_id = %s"""%old['id']
         )
         for lab in Laboratory.objects.all():
             rz.laboratories.add(lab)
+
     def create_objectlogs(self):
         logs = ObjectLogChange.objects.using('unadb').all().values('pk', 'laboratory_id',
                                                                    'user__username', 'old_value',

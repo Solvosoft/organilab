@@ -167,7 +167,8 @@ class Buildings(AbstractOrganizationRef):
     phone = models.CharField(verbose_name=_("Phone"),
                              max_length=25, null=False, blank=False)
     manager = models.ForeignKey(User, verbose_name=_("Responsible"),
-                                related_name="manager", on_delete=models.DO_NOTHING)
+                                related_name="manager",null=True, blank=True,
+                                on_delete=models.DO_NOTHING)
     geolocation = PlainLocationField(
         default='9.895804362670006,-84.1552734375', zoom=15)
     regents = models.ManyToManyField("risk_management.Regent",
