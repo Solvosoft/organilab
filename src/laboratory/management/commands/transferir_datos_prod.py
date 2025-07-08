@@ -1,7 +1,10 @@
 import json
 from pathlib import Path
 
+from django.apps import apps
+from django.apps.registry import Apps
 from django.conf import settings
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.files import File
@@ -10,12 +13,15 @@ from django.db.models import F
 
 from auth_and_perms.models import Rol, Profile, ProfilePermission
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
+from derb.models import CustomForm
 from laboratory.models import Object, OrganizationStructure, ObjectFeatures, \
     SustanceCharacteristics, Catalog, Laboratory, LaboratoryRoom, Furniture, Shelf, \
     ShelfObject, ObjectLogChange, UserOrganization, MaterialCapacity, \
     EquipmentCharacteristics, ShelfObjectMaintenance, ShelfObjectLog, \
     ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining, \
-    ShelfObjectObservation, BaseUnitValues, TranferObject
+    ShelfObjectObservation, BaseUnitValues, TranferObject, ShelfObjectLimits, \
+    RegisterUserQR, LabOrgLogEntry, PrecursorReport, PrecursorReportValues, Inform, \
+    InformScheduler
 from laboratory.utils import register_laboratory_contenttype
 from risk_management.models import RiskZone, ZoneType, PriorityConstrain, Buildings, \
     Regent
@@ -232,11 +238,23 @@ class Command(BaseCommand):
                 creation_date = o.creation_date,
                 last_update = o.last_update,
             )
-    def migrate_shelfobject(self, old_organization):
-        su=ShelfObject.objects.using('organilabprod').filter(in_where_laboratory__organization=old_organization)
+
+    def create_shelfobject_limits(self, limit):
+        new_limit = None
+        if limit:
+            new_limit = ShelfObjectLimits.objects.create(
+            minimum_limit=limit.minimum_limit,
+            maximum_limit=limit.maximum_limit,
+            expiration_date=limit.expiration_date
+            )
+        return new_limit
+
+    def create_shelfobject_material(self, organization):
+        su=ShelfObject.objects.using('organilabprod').filter(in_where_laboratory__organization=organization, object__type=Object.MATERIAL)
         for s in su:
-            new_org = OrganizationStructure.objects.last()
-            lab = Laboratory.objects.filter(name= s.in_where_laboratory.name).first()
+            lab=None
+            if s.in_where_laboratory:
+                lab = Laboratory.objects.filter(name= s.in_where_laboratory.name).first()
             shelf_object = ShelfObject.objects.create(
                 shelf=self.shelfs[s.shelf.pk],
                 object=self.objects[s.object.pk],
@@ -251,11 +269,37 @@ class Command(BaseCommand):
                 description=s.description,
                 creation_date=s.creation_date,
                 last_update=s.last_update,
-                container=s.container,
+            )
+            self.create_shelfobject_observation(s,shelf_object)
+
+    def migrate_shelfobject(self, old_organization):
+        su=(ShelfObject.objects.using('organilabprod').filter(in_where_laboratory__organization=old_organization).
+            exclude(object__type=Object.MATERIAL))
+        for s in su:
+            lab = None
+            if s.in_where_laboratory:
+                lab = Laboratory.objects.filter(name= s.in_where_laboratory.name).first()
+            shelf_object = ShelfObject.objects.create(
+                shelf=self.shelfs[s.shelf.pk],
+                object=self.objects[s.object.pk],
+                quantity=s.quantity,
+                quantity_base_unit = s.quantity_base_unit,
+                measurement_unit=self.get_or_create_catalog(s.measurement_unit.description,
+                                                            'units'),
+                in_where_laboratory=lab,
+                batch=s.batch,
+                status=s.status,
+                mark_as_discard=s.mark_as_discard,
+                description=s.description,
+                creation_date=s.creation_date,
+                last_update=s.last_update,
                 physical_status=s.physical_status,
                 concentration=s.concentration
             )
             self.create_shelfobject_observation(s,shelf_object)
+            if s.object.type == Object.REACTIVE:
+                shelf_object.limits = self.create_shelfobject_limits(s.limits)
+                container = ShelfObject.objects.filter(shelf=shelf_object.shelf, object=s.object.container)
             if s.object.type == Object.EQUIPMENT:
                 self.shelfobject_equipment(s,shelf_object)
                 self.create_equipment_maintenance(s,shelf_object)
@@ -263,16 +307,24 @@ class Command(BaseCommand):
                 self.create_equipment_guarentee(s,shelf_object)
                 self.create_equipment_training(s,shelf_object)
 
+            shelf_object.save()
+
     def create_transfer_objects(self, old_organization):
         transfer=TranferObject.objects.using('organilabprod').filter(laboratory_send__organization=old_organization)
         for t in transfer:
             user = None
+            lab_send = None
+            lab_received = None
+            if t.laboratory_send:
+                lab_send = Laboratory.objects.filter(name=t.laboratory_send.name).first()
+            if t.laboratory_received:
+                lab_received = Laboratory.objects.filter(name=t.laboratory_received.name).first()
             if t.created_by:
                 user = User.objects.filter(username=t.created_by.username).first()
             TranferObject.objects.create(
                     object=self.objects[t.object.pk],
-                    laboratory_send=t.laboratory_send,
-                    laboratory_received=t.laboratory_received,
+                    laboratory_send=lab_send,
+                    laboratory_received=lab_received,
                     quantity=t.quantity,
                     update_time=t.update_time,
                     state=t.state,
@@ -285,8 +337,8 @@ class Command(BaseCommand):
 
 
     def transfer_users(self):
-        users_una = User.objects.using('organilabprod').all()
-        for user in users_una:
+        users_prod = User.objects.using('organilabprod').all()
+        for user in users_prod:
             if not User.objects.filter(username=user.username).exists():
                 u, created =User.objects.get_or_create(username=user.username, email=user.email,
                                          password=user.password,first_name=user.first_name,
@@ -297,19 +349,24 @@ class Command(BaseCommand):
                                            )
                 u.user_permissions.add(*list(user.user_permissions.all().values_list("pk",flat=True)))
                 u.save()
-                Profile.objects.get_or_create(
-                    user=u,
-                    phone_number='2277-3000',
-                    id_card = '88888888',
-                    job_position = 'Gestor de organilab'
-                )
+                if hasattr(user, 'profile'):
+                    profile = Profile.objects.using('organilabprod').filter(user=u).first()
+                    Profile.objects.create(
+                        user=u,
+                        phone_number=profile.phone_number,
+                        id_card = profile.id_card,
+                        job_position = profile.job_position,
+                        language = profile.language
+                    )
+                else:
+                    Profile.objects.get_or_create(
+                        user=u,
+                        phone_number='2277-3000',
+                        id_card = '88888888',
+                        job_position = 'Gestor de organilab'
+                    )
         self.user = User.objects.filter(username=settings.DEFAULT_MIGRATION_USER).first()
 
-    def validate_organizations(self, orgas):
-        names=list(OrganizationStructure.objects.all().order_by('id').values_list('name', flat=True))
-        for org in names:
-            if org in orgas:
-                print(org)
 
     def add_users_in_organizations(self,users, organization):
         for user in users:
@@ -317,6 +374,7 @@ class Command(BaseCommand):
                 UserOrganization.objects.create(user=user, organization=organization, status=True, type_in_organization=UserOrganization.LABORATORY_USER)
 
     def transfer_organizations(self, organization):
+        self.organizations = {}
         organization_una= OrganizationStructure.objects.get(name='UNA')
         level = organization.level
         orga = {"name": organization.name, "position": organization.position, "level": level}
@@ -328,7 +386,7 @@ class Command(BaseCommand):
             orga["parent"] = self.organization
             new_org = OrganizationStructure.objects.create(**orga)
         level += 1
-
+        self.organizations[organization.pk] = new_org
         set_rol_administrator_on_org(self.user.profile, new_org)
         users = [user for user in organization.users.all().values_list('username', flat=True)]
         self.add_users_in_organizations(User.objects.filter(username__in=users),organization_una)
@@ -359,6 +417,9 @@ class Command(BaseCommand):
                 for item in c:
                     unashelf = Shelf.objects.using('organilabprod').filter(pk=item)
                     shelf_type, created = Catalog.objects.get(description=unashelf.type.name,key="container_type" )
+                    container_shelf = None
+                    if unashelf.container_shelf:
+                        container_shelf = Shelf.objects.filter(pk=unashelf.container_shelf.name, funiture=furniture).first()
                     s = Shelf.objects.create(
                         created_by=self.user,
                         furniture=furniture,
@@ -370,7 +431,7 @@ class Command(BaseCommand):
                         measurement_unit=self.get_or_create_catalog(unashelf.measurement_unit.description,
                                                                     'units'),
                         discard=unashelf.discard,
-                        container_shelf=unashelf.container_shelf,
+                        container_shelf= container_shelf,
                         description=unashelf.description,
                         infinity_quantity=unashelf.infinity_quantity,
                         limit_only_objects=unashelf.limit_only_objects
@@ -406,6 +467,9 @@ class Command(BaseCommand):
 
         for lab in labs:
             if not Laboratory.objects.filter(name=lab.name, organization=parent_org).exists():
+                responsible = None
+                if lab.responsable:
+                    responsible = User.objects.filter(username=lab.responsible.username).first()
                 newlab, created=Laboratory.objects.create(
                     name=lab.name,
                     phone_number = lab.phone_number,
@@ -415,8 +479,16 @@ class Command(BaseCommand):
                     coordinator = lab.coordinator,
                     unit = lab.unit,
                     organization = parent_org,
-                    created_by=self.user
+                    created_by=self.user,
+                    responsible=responsible,
+                    description=lab.description,
+                    area=lab.area,
+                    nearby_sites=self.get_una_file(lab.nearby_sites),
+                    water_resources_affected=self.get_una_file(lab.water_resources_affected),
                 )
+                self.laboratories[lab.pk] = newlab
+            else:
+                self.laboratories[lab.pk] = lab
 
                 self.create_laboratory_rooms(lab.get_rooms().values('name', flat=True), newlab)
 
@@ -540,6 +612,143 @@ class Command(BaseCommand):
                 object=self.objects[log.object.pk]
             )
 
+    def create_register_user_qr(self, organization):
+        qr=RegisterUserQR.objects.using('organilabprod').filter(organization_creator=organization)
+        for q in qr:
+            rol = None
+            org_register = None
+            org_creator = None
+            if q.organization_register:
+                org_register = OrganizationStructure.objects.filter(name=q.organization_register.name).first()
+            if q.organization_creator:
+                org_creator = OrganizationStructure.objects.filter(name=q.organization_creator.name).first()
+            if q.role:
+                rol = Rol.objects.filter(name=q.role.name).first()
+            active_user = User.objects.filter(username=q.created_by.username).first()
+            created_by = User.objects.filter(username=q.created_by.username).first()
+            content_type = ContentType.objects.filter(app_label=q.content_type.app_label, model=q.content_type.model).first()
+            object_id = 0
+            if q.content_object.model == "laboratory":
+                object_id = Laboratory.objects.filter(name=q.content_object.name).first().pk
+            elif q.content_object.model == "organizationstructure":
+                object_id = OrganizationStructure.objects.filter(name=q.content_object.name).first().pk
+            RegisterUserQR.objects.create(
+                created_by = created_by,
+                activate_user = active_user,
+                url = q.url,
+                register_user_qr = self.get_una_file(q.register_user_qr),
+                role = rol,
+                organization_creator = org_creator,
+                organization_register = org_register,
+                code = q.code,
+                last_update = q.last_update,
+                creation_date = q.creation_date,
+                content_type = content_type,
+                object_id = object_id,
+            )
+
+    def lab_org_log_entry(self):
+        logs = LabOrgLogEntry.objects.using('organilabprod').all()
+        for log in logs:
+            object_id = 0
+            entry = self.entries[log.log_entry.pk]
+            if log.content_type.model == "laboratory":
+                object_id = Laboratory.objects.using('organilabprod').filter(pk=log.object_id).first()
+            elif log.content_type.model == "organizationstructure":
+                object_id = OrganizationStructure.objects.using('organilabprod').filter(pk=log.object_id).first()
+            LabOrgLogEntry.objects.create(
+                log_entry=entry,
+                content_type=ContentType.objects.filter(app_label=log.content_type.app_label, model=log.content_type.model).first(),
+                object_id=object_id,
+            )
+
+    def migrate_precursor_report_values(self, precursor_report):
+        reports = PrecursorReportValues.objects.using('organilabprod').filter(precursor_report=precursor_report)
+        for report in reports:
+            PrecursorReportValues.objects.create(
+                    precursor_report = precursor_report,
+                    object = self.objects[report.object.pk],
+                    measurement_unit = self.get_or_create_catalog(report.measurement_unit.description,
+                                                                'units'),
+                    quantity = report.quantity,
+                    previous_balance = report.previous_balance,
+                    new_income = report.new_income,
+                    bills = report.bills,
+                    providers = report.providers,
+                    stock = report.stock,
+                    month_expense = report.month_expense,
+                    final_balance = report.final_balance,
+                    reason_to_spend = report.reason_to_spend
+                )
+    def migrate_precursors_reports(self):
+        reports = PrecursorReport.objects.using('organilabprod').all()
+        for report in reports:
+            laboratory = None
+            if report.laboratory:
+                laboratory = Laboratory.objects.filter(name=report.laboratory.name).first()
+            if laboratory:
+                precursor_report = PrecursorReport.objects.create(
+                    month = report.month,
+                    year = report.year,
+                    laboratory = laboratory,
+                    consecutive = report.consecutive,
+                    report_values = report.report_values,
+                    month_belong = report.month_belong
+                )
+                self.migrate_precursor_report_values(precursor_report)
+
+    def migrate_custom_forms(self, organization):
+        self.forms = {}
+        custom_forms = CustomForm.objects.using("organilabprod").filter(organization=organization)
+        for form in custom_forms:
+            org = self.organizations[organization.pk]
+            forms = CustomForm.objects.create(
+                name=form.name,
+                status=form.status,
+                schema=form.schema,
+                organization=org
+            )
+            self.forms[form.pk] = forms
+
+    def migrate_informs(self, organization):
+        informs = Inform.objects.using("organilabprod").filter(organization=organization)
+        for inform in informs:
+            org = self.organizations[organization.pk]
+            content_type = ContentType.objects.filter(app_label=inform.content_type.app_label, model=inform.content_type.model).first()
+            user= None
+            if inform.created_by:
+                user = User.objects.filter(username=inform.created_by.username).first()
+            Inform.objects.create(
+                name=inform.name,
+                custom_form=self.forms[inform.custom_form.pk],
+                content_type=content_type,
+                object_id= self.laboratories[inform.object_id].pk,
+                context_object=inform.context_object,
+                status=inform.status,
+                creation_date=inform.creation_date,
+                last_update=inform.last_update,
+                organization=org,
+                created_by=user
+            )
+
+    def migrate_informs_scheduler(self, organization):
+        informs = InformScheduler.objects.using("organilabprod").filter(organization=organization)
+        for inform in informs:
+            org = self.organizations[organization.pk]
+            user= None
+            if inform.created_by:
+                user = User.objects.filter(username=inform.created_by.username).first()
+            InformScheduler.objects.create(
+                name=inform.name,
+                start_application_date=inform.start_application_date,
+                close_application_date=inform.close_application_date,
+                inform_template=self.forms[inform.inform_template.pk],
+                active=inform.active,
+                creation_date=inform.creation_date,
+                last_update=inform.last_update,
+                organization=org,
+                created_by=user
+            )
 
     def init_data(self):
         self.create_base_units()
@@ -553,17 +762,25 @@ class Command(BaseCommand):
         for orgs in organizations:
             for organization in (OrganizationStructure.objects.using('organilabprod').
                 filter(pk__in=orgs)):
-                self.transfer_organizations(organization)
-                self.create_laboratories(organization)
-                self.create_furniture(organization)
-                self.transfer_objects(organization)
-                self.migrate_shelfobject(organization)
+                #self.transfer_organizations(organization)
+                #self.migrate_custom_forms(organization)
+                #self.migrate_informs_scheduler(organization)
+                #self.migrate_informs(organization)
+                #self.create_register_user_qr(organization)
+                #self.create_laboratories(organization)
+                #self.create_furniture(organization)
+                #self.transfer_objects(organization)
+                #self.create_shelfobject_material(organization)
+                #self.migrate_shelfobject(organization)
+                print(organization.pk)
+            print("------")
 
     def handle(self, *args, **options):
         self.user=None
         self.labrooms = {}
         self.shelfs={}
         self.objects = {}
+        self.laboratories = {}
 
         self.init_data()
 
