@@ -11,6 +11,8 @@ from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.db.models import F
 
+from academic.models import Procedure, MyProcedure, ProcedureStep, CommentProcedureStep, \
+    ProcedureRequiredObject, ProcedureObservations
 from auth_and_perms.models import Rol, Profile, ProfilePermission
 from auth_and_perms.views.user_org_creation import set_rol_administrator_on_org
 from derb.models import CustomForm
@@ -21,8 +23,10 @@ from laboratory.models import Object, OrganizationStructure, ObjectFeatures, \
     ShelfObjectCalibrate, ShelfObjectGuarantee, ShelfObjectTraining, \
     ShelfObjectObservation, BaseUnitValues, TranferObject, ShelfObjectLimits, \
     RegisterUserQR, LabOrgLogEntry, PrecursorReport, PrecursorReportValues, Inform, \
-    InformScheduler
+    InformScheduler, InformsPeriod, CommentInform, Protocol
 from laboratory.utils import register_laboratory_contenttype
+from report.models import TaskReport, DocumentReportStatus, ObjectChangeLogReport, \
+    ObjectChangeLogReportBuilder
 from risk_management.models import RiskZone, ZoneType, PriorityConstrain, Buildings, \
     Regent
 from sga.models import DangerPrudence, DangerIndication
@@ -733,12 +737,14 @@ class Command(BaseCommand):
 
     def migrate_informs_scheduler(self, organization):
         informs = InformScheduler.objects.using("organilabprod").filter(organization=organization)
+        self.inform_schedulers = {}
+
         for inform in informs:
             org = self.organizations[organization.pk]
             user= None
             if inform.created_by:
                 user = User.objects.filter(username=inform.created_by.username).first()
-            InformScheduler.objects.create(
+            inform_scheduler = InformScheduler.objects.create(
                 name=inform.name,
                 start_application_date=inform.start_application_date,
                 close_application_date=inform.close_application_date,
@@ -749,31 +755,237 @@ class Command(BaseCommand):
                 organization=org,
                 created_by=user
             )
+            self.inform_schedulers[inform.pk] = inform_scheduler
 
+    def migrate_informs_period(self, organization):
+        informs = InformsPeriod.objects.using("organilabprod").filter(organization=organization)
+        self.informs_periods = {}
+        for inform in informs:
+            org = self.organizations[organization.pk]
+            user= None
+            if inform.created_by:
+                user = User.objects.filter(username=inform.created_by.username).first()
+            inform_period = InformsPeriod.objects.create(
+                scheduler=self.inform_schedulers[inform.scheduler.pk],
+                organization=org,
+                creation_date=inform.creation_date,
+                last_update=inform.last_update,
+                start_application_date=inform.start_application_date,
+                close_application_date=inform.close_application_date,
+                inform_template=self.forms[inform.inform_template.pk],
+            )
+
+    def migrate_comment_informs(self):
+        comments = CommentInform.objects.using('organilabprod').all()
+        for comment in comments:
+            user = None
+            if comment.created_by:
+                user = User.objects.filter(username=comment.created_by.username).first()
+            CommentInform.objects.create(
+                created_by=user,
+                create_at=comment.create_at,
+                comment=comment.comment,
+                inform=self.informs[comment.inform.pk]
+            )
+
+    def migrate_protocols(self):
+        protocols = Protocol.objects.using('organilabprod').all()
+        for protocol in protocols:
+            user = None
+            user_upload = None
+            if protocol.created_by:
+                user = User.objects.filter(username=protocol.created_by.username).first()
+            if protocol.upload_by:
+                user_upload = User.objects.filter(username=protocol.upload_by.username).first()
+            Protocol.objects.create(
+                name = protocol.name,
+                created_by = user,
+                file = self.get_una_file(protocol.file),
+                short_description = protocol.short_description,
+                laboratory = self.laboratories[protocol.laboratory.pk],
+                upload_by = user_upload
+            )
+
+
+    #Module academic data
+    def migrate_procedures(self):
+        self.procedures = {}
+        procedures = Procedure.objects.using('organilabprod').all()
+        for procedure in procedures:
+            object_id = None
+            if procedure.content_type.model == "laboratory":
+                object_id = Laboratory.objects.using('organilabprod').filter(pk=procedure.object_id).first()
+            elif procedure.content_type.model == "organizationstructure":
+                object_id = OrganizationStructure.objects.using('organilabprod').filter(pk=procedure.object_id).first()
+
+            self.procedures[procedure.pk] = Procedure.objects.create(
+                name=procedure.name,
+                description=procedure.description,
+                content_type=ContentType.objects.filter(app_label=procedure.content_type.app_label, model='procedure').first(),
+                object_id= object_id
+            )
+
+    def migrate_my_procedures(self, organization):
+        procedures = MyProcedure.objects.using('organilabprod').filter(
+            organization=organization)
+        self.my_procedures = {}
+        for procedure in procedures:
+            object_id = 0
+            if procedure.content_type.model == "laboratory":
+                object_id = Laboratory.objects.using('organilabprod').filter(
+                    pk=procedure.object_id).first()
+            elif procedure.content_type.model == "organizationstructure":
+                object_id = OrganizationStructure.objects.using('organilabprod').filter(
+                    pk=procedure.object_id).first()
+            user = None
+            if procedure.created_by:
+                user = User.objects.filter(
+                    username=procedure.created_by.username).first()
+            self.my_procedures[procedure.pk] = MyProcedure.objects.create(
+                name=procedure.name,
+                content_type=ContentType.objects.filter(
+                    app_label=procedure.content_type.app_label,
+                    model='procedure').first(),
+                object_id=object_id,
+                status=procedure.status,
+                schema=procedure.schema,
+                custom_procedure=self.procedures[procedure.procedure.pk],
+                created_by=user,
+                creation_date=procedure.creation_date,
+                last_update=procedure.last_update
+            )
+
+    def migrate_procedure_steps(self, organization):
+        procedure_steps = ProcedureStep.objects.using('organilabprod').filter(procedure__organization=organization)
+        self.procedure_steps = {}
+        for procedure_step in procedure_steps:
+           self.procedure_steps[procedure_step.pk] = ProcedureStep.objects.create(
+                procedure=self.procedures[procedure_step.procedure.pk],
+                title=procedure_step.title,
+                description=procedure_step.description
+            )
+
+    def migrate_procedure_objects(self):
+        procedure_objects = ProcedureRequiredObject.objects.using('organilabprod').all()
+        for procedure_object in procedure_objects:
+            user = None
+            if procedure_object.created_by:
+                user = User.objects.filter(username=procedure_object.created_by.username).first()
+
+            ProcedureRequiredObject.objects.create(
+                step=self.procedure_steps[procedure_object.step.pk],
+                object=self.objects[procedure_object.object.pk],
+                quantity=procedure_object.quantity,
+                measurement_unit=self.get_or_create_catalog(procedure_object.measurement_unit.description,
+                                                            'units'),
+                created_by=user
+            )
+
+    def migrate_procedure_observations(self):
+        procedure_observations = ProcedureObservations.objects.using('organilabprod').all()
+        for procedure_observation in procedure_observations:
+            ProcedureObservations.objects.create(
+                step=self.procedure_steps[procedure_observation.step.pk],
+                description=procedure_observation.description,
+            )
+    def migrate_procedure_steps_comments(self):
+        comments = CommentProcedureStep.objects.using('organilabprod').all()
+        for comment in comments:
+            user = None
+            if comment.created_by:
+                user = User.objects.filter(username=comment.created_by.username).first()
+            CommentProcedureStep.objects.create(
+                created_by=user,
+                create_at=comment.create_at,
+                comment=comment.comment,
+                procedure_step=self.procedure_steps[comment.procedure_step.pk],
+                my_procedure=self.my_procedures[comment.my_procedure.pk]
+            )
+
+    #reports module
+    def migrate_task_reports(self):
+        reports = TaskReport.objects.using('organilabprod').all()
+        self.task_reports = {}
+        for report in reports:
+            user = None
+            if report.created_by:
+                user = User.objects.filter(username=report.created_by.username).first()
+            self.task_reports[report.pk] = TaskReport.objects.create(
+                created_by=user,
+                type_report=report.type_report,
+                form_name=report.form_name,
+                table_content=report.table_content,
+                status=report.status,
+                file_type=report.file_type,
+                file=self.get_una_file(report.file),
+                data=report.data,
+                language=report.language
+            )
+
+    def migrate_object_change_log_report(self):
+        reports = ObjectChangeLogReport.objects.using('organilabprod').all()
+        self.object_change_log_reports = {}
+        for report in reports:
+            self.object_change_log_reports[report.pk] = ObjectChangeLogReport.objects.create(
+                task_report=self.task_reports[report.task_report.pk],
+                laboratory=self.laboratories[report.laboratory.pk],
+                unit=self.get_or_create_catalog(report.unit.description, 'units'),
+                object=self.objects[report.object.pk],
+                diff_value=report.diff_value,
+            )
+
+    def migrate_object_change_log_report_builder(self):
+        reports = ObjectChangeLogReportBuilder.objects.using('organilabprod').all()
+        self.object_change_log_report_builders = {}
+        for report in reports:
+            user = None
+            if report.user:
+                user = User.objects.filter(username=report.user.username).first()
+            ObjectChangeLogReportBuilder.objects.create(
+                report=self.object_change_log_reports[report.report.pk],
+                user=user,
+                update_time=report.update_time,
+                new_value=report.new_value,
+                old_value=report.old_value,
+                diff_value=report.diff_value
+            )
     def init_data(self):
         self.create_base_units()
         self.process_objectfeatures()
         self.transfer_users()
+        self.migrate_procedures()
+
         organizations =[
             [42,93, 110, 136,137,143, 164, 167],
             [104,26,45,106, 108],
             [95,97, 100,98, 99]
         ]
+
         for orgs in organizations:
             for organization in (OrganizationStructure.objects.using('organilabprod').
                 filter(pk__in=orgs)):
                 #self.transfer_organizations(organization)
                 #self.migrate_custom_forms(organization)
                 #self.migrate_informs_scheduler(organization)
+                #self.migrate_informs_period(organization)
                 #self.migrate_informs(organization)
                 #self.create_register_user_qr(organization)
                 #self.create_laboratories(organization)
                 #self.create_furniture(organization)
                 #self.transfer_objects(organization)
                 #self.create_shelfobject_material(organization)
+
                 #self.migrate_shelfobject(organization)
+                #self.migrate_my_procedures(organization)
+                #self.migrate_procedure_steps(organization)
+
                 print(organization.pk)
-            print("------")
+        self.migrate_procedure_objects()
+        self.migrate_procedure_observations()
+        self.migrate_procedure_steps_comments()
+        self.migrate_task_reports()
+        self.migrate_object_change_log_report()
+        self.migrate_object_change_log_report_builder()
 
     def handle(self, *args, **options):
         self.user=None
@@ -783,6 +995,7 @@ class Command(BaseCommand):
         self.laboratories = {}
 
         self.init_data()
+        self.migrate_comment_informs()
 
         #print(self.user)
         #self.transfer_organizations()
