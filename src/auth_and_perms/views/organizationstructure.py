@@ -237,7 +237,6 @@ class AddUser(CreateView):
 
     def form_valid(self, form):
         response =  HttpResponseRedirect(self.get_success_url())
-        #password = User.objects.make_random_password()
         password = get_random_string(length=10)
         user = form.save(commit=True)
         user.username=form.cleaned_data['email']
