@@ -683,6 +683,7 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             self.fields.pop('capacity')
             self.fields.pop('capacity_measurement_unit')
             self.fields.pop('is_container')
+
         else:
             self.fields['object'].required = False
             self.fields['is_container'].initial = True
@@ -700,6 +701,10 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             self.fields['plaque'] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
+        if data_type != Object.REACTIVE:
+            self.fields.pop('is_dangerous')
+            self.fields.pop('has_threshold')
+            self.fields.pop('threshold')
 
     def clean(self):
         cleaned_data = super().clean()
@@ -730,7 +735,10 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             'serie': genwidgets.TextInput,
             'plaque': genwidgets.TextInput,
             "type": genwidgets.HiddenInput,
-            "is_container": genwidgets.YesNoInput
+            "is_container": genwidgets.YesNoInput,
+            "is_dangerous": genwidgets.YesNoInput,
+            "threshold": genwidgets.TextInput,
+            "has_threshold": genwidgets.YesNoInput,
         }
 
 class EquipmentForm(GTForm, forms.ModelForm):
