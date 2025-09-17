@@ -799,7 +799,7 @@ class EquipmentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Object
-        exclude = ['is_container']
+        exclude = ['is_container', 'is_dangerous', 'has_threshold', 'threshold']
         widgets = {
             'features': genwidgets.SelectMultiple(),
             'code': genwidgets.TextInput,
