@@ -1,4 +1,4 @@
-djgentelella[firmador]>=0.4.9
+djgentelella[firmador]>=0.5.3
 async-notifications==0.2
 django==5.1
 django-excel==0.0.10
