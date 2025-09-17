@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_http_methods
@@ -236,7 +237,7 @@ class AddUser(CreateView):
 
     def form_valid(self, form):
         response =  HttpResponseRedirect(self.get_success_url())
-        password = User.objects.make_random_password()
+        password = get_random_string(length=10)
         user = form.save(commit=True)
         user.username=form.cleaned_data['email']
         user.password = password
@@ -247,7 +248,7 @@ class AddUser(CreateView):
         profile = Profile.objects.create(user=user, phone_number=form.cleaned_data['phone_number'],
                                          id_card=form.cleaned_data['id_card'],
                                          job_position=form.cleaned_data['job_position'],
-                                         location=form.cleaned_data['address'])
+                                         address=form.cleaned_data['address'])
 
         send_email(self.request, user)
         organilab_logentry(user, user, ADDITION, 'user', changed_data=['username', 'first_name', 'last_name', 'email', 'password'],

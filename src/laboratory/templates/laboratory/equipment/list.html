@@ -36,11 +36,11 @@
 
 {% url "laboratory:api-equipment-list" org_pk lab_pk as list_obj_url %}
 {% trans 'Create equipment' as create_obj_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class="modal-lg" %}
 
 {% url "laboratory:api-equipment-detail" org_pk lab_pk 0 as detail_obj_url %}
 {% trans 'Update equipment' as update_obj_tittle %}
-{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class="modal-lg" %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
 
