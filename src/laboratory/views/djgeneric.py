@@ -51,6 +51,8 @@ class CreateView(djCreateView):
     def post(self, request, *args, **kwargs):
         self.lab = None
         self.org = None
+        self.building = None
+
         if 'org_pk' in kwargs:
             self.org= int(kwargs['org_pk'])
             self.organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -74,6 +76,7 @@ class CreateView(djCreateView):
         context['org_pk'] = self.org
         context['laboratory'] = self.lab
         context['building'] = self.building
+
         return context
 
 
