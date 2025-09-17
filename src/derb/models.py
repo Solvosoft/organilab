@@ -9,7 +9,7 @@ class CustomForm(AbstractOrganizationRef):
         ('fill', 'Filling form'),
         ('result', 'Form results')
     )
-    name = models.CharField(max_length=40)
+    name = models.CharField()
     status = models.CharField(max_length=6, choices=STATUS_CHOICES)
     schema = models.JSONField(default=dict)
 
