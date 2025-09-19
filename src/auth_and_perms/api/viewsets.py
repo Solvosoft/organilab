@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, DELETION, ADDITION
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission, User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
@@ -500,28 +500,37 @@ class UpdateGroupsByProfile(APIView):
         )
         user_is_allowed_on_organization(request.user, organization)
         serializer = ValidateGroupsByProfileSerializer(data=request.data)
+        groups_exclude = []
 
         if serializer.is_valid():
             profile = serializer.validated_data["profile"]
             groups = serializer.validated_data.get("groups")
             profile.groups.remove(*profile.groups.all())
-            organilab_logentry(
-                request.user,
-                profile,
-                DELETION,
-                "profile",
-                changed_data=["groups"],
-                change_message=_(
-                    "Removed the groups %(groups)r from the profile %(profile)r"
+            if groups:
+                groups_pk = [x.pk for x in groups]
+                groups_exclude = profile.groups.all().exclude(pk__in=groups_pk)
+                profile.groups.remove(*profile.groups.all())
+
+            if groups_exclude:
+                organilab_logentry(
+                    request.user,
+                    profile,
+                    DELETION,
+                    "profile",
+                    changed_data=["groups"],
+                    change_message=_(
+                        "Removed the groups %(groups)r from the profile %(profile)r"
+                    )
+                    % {
+                        "groups": ", ".join(list(groups_exclude.values_list("name", flat=True))),
+                        "profile": str(profile),
+                    },
+                    relobj=organization,
                 )
-                % {
-                    "groups": ", ".join(list(groups.values_list("name", flat=True))),
-                    "profile": str(profile.user),
-                },
-                relobj=organization,
-            )
             if groups:
                 profile.groups.add(*groups)
+                groups_pk = [x.pk for x in groups]
+                groups_add = Group.objects.filter(pk__in=groups_pk)
                 organilab_logentry(
                     request.user,
                     profile,
@@ -533,9 +542,9 @@ class UpdateGroupsByProfile(APIView):
                     )
                     % {
                         "groups": ", ".join(
-                            list(groups.values_list("name", flat=True))
+                            list(groups_add.values_list("name", flat=True))
                         ),
-                        "profile": str(profile.user),
+                        "profile": str(profile),
                     },
                     relobj=organization,
                 )
