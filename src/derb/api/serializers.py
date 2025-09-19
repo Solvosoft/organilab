@@ -10,12 +10,13 @@ class ObjectsSerializer(serializers.ModelSerializer):
     Objects Model Serializer
     Serialize data into a key(id) and value(name)
     """
-    key = serializers.ReadOnlyField(source='id')
-    value = serializers.CharField(source='name')
+
+    key = serializers.ReadOnlyField(source="id")
+    value = serializers.CharField(source="name")
 
     class Meta:
         model = Object
-        fields = ['key', 'value']
+        fields = ["key", "value"]
 
 
 class InformSerializer(serializers.ModelSerializer):
@@ -23,12 +24,13 @@ class InformSerializer(serializers.ModelSerializer):
     Inform Model Serializer
     Serialize data into a key(id) and value(name)
     """
-    key = serializers.ReadOnlyField(source='id')
-    value = serializers.CharField(source='name')
+
+    key = serializers.ReadOnlyField(source="id")
+    value = serializers.CharField(source="name")
 
     class Meta:
         model = Inform
-        fields = ['key', 'value']
+        fields = ["key", "value"]
 
 
 class LaboratorySerializer(serializers.ModelSerializer):
@@ -36,12 +38,13 @@ class LaboratorySerializer(serializers.ModelSerializer):
     Laboratory Model Serializer
     Serialize data into a key(id) and value(name)
     """
-    key = serializers.ReadOnlyField(source='id')
-    value = serializers.CharField(source='name')
+
+    key = serializers.ReadOnlyField(source="id")
+    value = serializers.CharField(source="name")
 
     class Meta:
         model = Laboratory
-        fields = ['key', 'value']
+        fields = ["key", "value"]
 
 
 class IncidentReportSerializer(serializers.ModelSerializer):
@@ -49,12 +52,13 @@ class IncidentReportSerializer(serializers.ModelSerializer):
     Object Model Serializer
     Serialize data into a key(id) and value(short_description)
     """
-    key = serializers.ReadOnlyField(source='id')
-    value = serializers.CharField(source='short_description')
+
+    key = serializers.ReadOnlyField(source="id")
+    value = serializers.CharField(source="short_description")
 
     class Meta:
         model = IncidentReport
-        fields = ['key', 'value']
+        fields = ["key", "value"]
 
 
 class OrganizationUsersSerializer(serializers.ModelSerializer):
@@ -62,16 +66,19 @@ class OrganizationUsersSerializer(serializers.ModelSerializer):
     OrganizationStructure Model Serializer
     Serialize data into users from organization
     """
+
     class Meta:
         model = OrganizationStructure
-        fields = ['users']
+        fields = ["users"]
+
 
 class UsersSerializer(serializers.ModelSerializer):
-    key = serializers.IntegerField(source='id')
+    key = serializers.IntegerField(source="id")
     value = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['key', 'value']
+        fields = ["key", "value"]
 
     def get_value(self, obj):
         name = obj.get_full_name()

@@ -9,6 +9,6 @@ class ShelfFilterForm(forms.Form):
     def __init__(self, laboratory, *args, **kwargs):
         self.laboratory = laboratory
         super().__init__(*args, **kwargs)
-        self.fields['shelf'].queryset = Shelf.objects.using(settings.READONLY_DATABASE).filter(
-            furniture__labroom__laboratory=self.laboratory
-        )
+        self.fields["shelf"].queryset = Shelf.objects.using(
+            settings.READONLY_DATABASE
+        ).filter(furniture__labroom__laboratory=self.laboratory)

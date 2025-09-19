@@ -9,6 +9,6 @@ from auth_and_perms.models import AuthorizedApplication
 @receiver(post_save, sender=AuthorizedApplication)
 def create_authentication_for_project(sender, instance, created, **kwargs):
     if created:
-        user = User.objects.create_user("application/"+instance.name, is_active=True)
+        user = User.objects.create_user("application/" + instance.name, is_active=True)
         token = Token.objects.create(user=user)
         AuthorizedApplication.objects.filter(pk=instance.pk).update(user=user)

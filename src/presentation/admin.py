@@ -5,7 +5,7 @@ from presentation.models import FeedbackEntry
 
 
 class DonationAdmin(admin.ModelAdmin):
-    search_fields = ['details']
+    search_fields = ["details"]
 
 
 admin.site.register(FeedbackEntry)

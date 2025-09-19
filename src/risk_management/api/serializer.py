@@ -6,11 +6,15 @@ from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from laboratory.models import Laboratory, Catalog
-from laboratory.utils import get_users_from_organization, \
-    get_laboratories_from_organization
-from risk_management.models import Regent, Buildings, Structure, RiskZone, \
-    IncidentReport
+from laboratory.models import Laboratory
+from laboratory.utils import get_users_from_organization
+from risk_management.models import (
+    Regent,
+    Buildings,
+    Structure,
+    RiskZone,
+    IncidentReport,
+)
 
 
 class AddRegentSerializer(serializers.ModelSerializer):
@@ -36,21 +40,20 @@ class AddRegentSerializer(serializers.ModelSerializer):
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
-        fields['user'].queryset = User.objects.filter(pk__in=get_users_from_organization(organization))
-        fields['laboratories'].queryset = Laboratory.objects.filter(
+        fields["user"].queryset = User.objects.filter(
+            pk__in=get_users_from_organization(organization)
+        )
+        fields["laboratories"].queryset = Laboratory.objects.filter(
             organization__pk=organization
         )
-
 
         return fields
 
     class Meta:
         model = Regent
-        fields = (
-            "user",
-            "laboratories",
-            "type_regent"
-        )
+        fields = ("user", "laboratories", "type_regent")
+
+
 class UpdateRegentSerializer(serializers.ModelSerializer):
     laboratories = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -67,17 +70,16 @@ class UpdateRegentSerializer(serializers.ModelSerializer):
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
-        fields['laboratories'].queryset = Laboratory.objects.filter(organization__pk=organization)
-
+        fields["laboratories"].queryset = Laboratory.objects.filter(
+            organization__pk=organization
+        )
 
         return fields
 
     class Meta:
         model = Regent
-        fields = [
-            "laboratories",
-            "type_regent"
-        ]
+        fields = ["laboratories", "type_regent"]
+
 
 class ChoicesGTS2Serializer(GTS2SerializerBase):
     def __init__(self, *args, choices=None, **kwargs):
@@ -92,6 +94,7 @@ class ChoicesGTS2Serializer(GTS2SerializerBase):
             return self.choices[obj]
         return obj
 
+
 class RegentSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     user = GTS2SerializerBase(many=False)
@@ -100,18 +103,17 @@ class RegentSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         user = self.context["request"].user
-        add_perm = True if user.has_perm('risk_management.add_regent') else False
-        delele_perm = True if user.has_perm('risk_management.delete_regent') else False
-        view_perm = True if user.has_perm('risk_management.view_regent') else False
-        update_perm = True if user.has_perm('risk_management.change_regent') else False
+        add_perm = True if user.has_perm("risk_management.add_regent") else False
+        delele_perm = True if user.has_perm("risk_management.delete_regent") else False
+        view_perm = True if user.has_perm("risk_management.view_regent") else False
+        update_perm = True if user.has_perm("risk_management.change_regent") else False
 
         return {
             "list": view_perm,
             "create": add_perm,
             "update": update_perm,
-            "destroy": delele_perm
+            "destroy": delele_perm,
         }
-
 
     class Meta:
         model = Regent
@@ -140,19 +142,17 @@ class BuildingSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         delele_perm = False
         view_perm = False
-        if user.has_perm('risk_management.delete_buildings'):
+        if user.has_perm("risk_management.delete_buildings"):
             delele_perm = True
-        if user.has_perm('risk_management.view_buildings'):
+        if user.has_perm("risk_management.view_buildings"):
             view_perm = True
 
         return {
             "list": view_perm,
             "create": False,
             "update": False,
-            "destroy": delele_perm
+            "destroy": delele_perm,
         }
-
-
 
     class Meta:
         model = Buildings
@@ -180,9 +180,9 @@ class StructureSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         delele_perm = False
         view_perm = False
-        if user.has_perm('risk_management.delete_structure'):
+        if user.has_perm("risk_management.delete_structure"):
             delele_perm = True
-        if user.has_perm('risk_management.view_structure'):
+        if user.has_perm("risk_management.view_structure"):
             view_perm = True
         return {
             "list": view_perm,
@@ -190,7 +190,6 @@ class StructureSerializer(serializers.ModelSerializer):
             "update": False,
             "destroy": delele_perm,
         }
-
 
     class Meta:
         model = Structure
@@ -203,6 +202,7 @@ class StructureDataTableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
 class IncidentReportSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     laboratories = GTS2SerializerBase(many=True)
@@ -214,26 +214,25 @@ class IncidentReportSerializer(serializers.ModelSerializer):
     def get_actions(self, obj):
         user = self.context["request"].user
         perms = {
-            "list":False,
-            "create":False,
-            "update":False,
-            "destroy":False,
-            "download_pdf":False
+            "list": False,
+            "create": False,
+            "update": False,
+            "destroy": False,
+            "download_pdf": False,
         }
-        if user.has_perm('risk_management.view_incidentreport'):
+        if user.has_perm("risk_management.view_incidentreport"):
             perms["list"] = True
 
-        if user.has_perm('risk_management.add_incidentreport'):
+        if user.has_perm("risk_management.add_incidentreport"):
             perms["create"] = True
-        if user.has_perm('risk_management.change_incidentreport'):
+        if user.has_perm("risk_management.change_incidentreport"):
             perms["update"] = True
-        if user.has_perm('risk_management.delete_incidentreport'):
+        if user.has_perm("risk_management.delete_incidentreport"):
             perms["destroy"] = True
-        if user.has_perm('laboratory.do_report'):
+        if user.has_perm("laboratory.do_report"):
             perms["download_pdf"] = True
 
         return perms
-
 
     class Meta:
         model = IncidentReport
@@ -270,9 +269,9 @@ class ActionIncidentReportSerializer(serializers.ModelSerializer):
     result_of_plans = serializers.CharField(required=True)
     mitigation_actions = serializers.CharField(required=True)
     recomendations = serializers.CharField(required=True)
-    notification_copy = ChunkedFileField(allow_null=True, required=False,
-                                  allow_empty_file=True)
-
+    notification_copy = ChunkedFileField(
+        allow_null=True, required=False, allow_empty_file=True
+    )
 
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
@@ -280,10 +279,12 @@ class ActionIncidentReportSerializer(serializers.ModelSerializer):
         risk = self.context.get("risk_pk", None)
         if risk:
             risk = get_object_or_404(RiskZone, pk=risk)
-            fields['buildings'].queryset = (Buildings.objects.
-                                            filter(pk__in=risk.buildings.
-                                                   values_list("pk", flat=True)))
-        fields['laboratories'].queryset = Laboratory.objects.filter(pk__in=get_users_from_organization(organization))
+            fields["buildings"].queryset = Buildings.objects.filter(
+                pk__in=risk.buildings.values_list("pk", flat=True)
+            )
+        fields["laboratories"].queryset = Laboratory.objects.filter(
+            pk__in=get_users_from_organization(organization)
+        )
 
         return fields
 
@@ -301,8 +302,9 @@ class ActionIncidentReportSerializer(serializers.ModelSerializer):
             "mitigation_actions",
             "recomendations",
             "notification_copy",
-            'incident_date'
+            "incident_date",
         )
+
 
 class RiskZoneSerializer(serializers.Serializer):
     risk_zone = serializers.PrimaryKeyRelatedField(

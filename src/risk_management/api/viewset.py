@@ -5,14 +5,28 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
 from laboratory.models import OrganizationStructure
-from risk_management.api.filterseet import BuildingFilter, StructureFilter, \
-    IncidentReportFilter, RegentFilter
-from risk_management.api.serializer import RegentDataTableSerializer, \
-    AddRegentSerializer, BuildingDataTableSerializer, StructureDataTableSerializer, \
-    IncidentReportDataTableSerializer, ActionIncidentReportSerializer, \
-    UpdateRegentSerializer
-from risk_management.models import Buildings, Regent, Structure, RiskZone, \
-    IncidentReport
+from risk_management.api.filterseet import (
+    BuildingFilter,
+    StructureFilter,
+    IncidentReportFilter,
+    RegentFilter,
+)
+from risk_management.api.serializer import (
+    RegentDataTableSerializer,
+    AddRegentSerializer,
+    BuildingDataTableSerializer,
+    StructureDataTableSerializer,
+    IncidentReportDataTableSerializer,
+    ActionIncidentReportSerializer,
+    UpdateRegentSerializer,
+)
+from risk_management.models import (
+    Buildings,
+    Regent,
+    Structure,
+    RiskZone,
+    IncidentReport,
+)
 
 
 class RegentViewSet(AuthAllPermBaseObjectManagement):
@@ -43,6 +57,7 @@ class RegentViewSet(AuthAllPermBaseObjectManagement):
     ordering_fields = ["id"]
     ordering = ("id",)
     organization = None
+
     def get_queryset(self):
         queryset = super().get_queryset()
         if "org_pk" in self.kwargs:
@@ -92,12 +107,19 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
     queryset = Buildings.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["id", "name", "manager__username", "regents__username",
-                     "laboratories__name", "nearby_buildings__name"]
+    search_fields = [
+        "id",
+        "name",
+        "manager__username",
+        "regents__username",
+        "laboratories__name",
+        "nearby_buildings__name",
+    ]
     filterset_class = BuildingFilter
     ordering_fields = ["id"]
     ordering = ("id",)
     organization = None
+
     def get_queryset(self):
         queryset = super().get_queryset()
         if "org_pk" in self.kwargs:
@@ -123,6 +145,7 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
             created_by=self.request.user, organization=self.get_organization()
         )
 
+
 class StructureViewSet(AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": StructureDataTableSerializer,
@@ -147,8 +170,13 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
     queryset = Structure.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["id", "name", "manager__username", "buildings__name",
-                     "type_structure__description"]
+    search_fields = [
+        "id",
+        "name",
+        "manager__username",
+        "buildings__name",
+        "type_structure__description",
+    ]
     filterset_class = StructureFilter
     ordering_fields = ["id"]
     ordering = ("id",)
@@ -160,6 +188,7 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
             queryset = queryset.filter(organization__pk=org_pk)
 
         return queryset
+
 
 class IncidentViewSet(AuthAllPermBaseObjectManagement):
     serializer_class = {
@@ -184,8 +213,7 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
     queryset = IncidentReport.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["id", "short_description", "laboratories__name",
-                     "buildings__name"]
+    search_fields = ["id", "short_description", "laboratories__name", "buildings__name"]
     filterset_class = IncidentReportFilter
     ordering_fields = ["id"]
     ordering = ("id",)
@@ -223,6 +251,6 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
     def perform_create(self, serializer):
         serializer.save(
             risk_zone=self.get_risk_zone(),
-            created_by=self.request.user, organization=self.get_organization()
+            created_by=self.request.user,
+            organization=self.get_organization(),
         )
-
