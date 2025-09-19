@@ -4,8 +4,12 @@ import os
 from django.conf import settings
 from django.utils.text import slugify
 
-from laboratory.models import (ShelfObject, SustanceCharacteristics, Protocol,
-                               RegisterUserQR)
+from laboratory.models import (
+    ShelfObject,
+    SustanceCharacteristics,
+    Protocol,
+    RegisterUserQR,
+)
 from msds.models import MSDSObject, RegulationDocument
 from report.models import TaskReport
 from risk_management.models import IncidentReport
@@ -15,7 +19,7 @@ from pathlib import Path
 
 class Command(BaseCommand):
 
-    help = 'Set media files names'
+    help = "Set media files names"
 
     def set_media_name(self, media):
         initial_path = media.path
@@ -25,13 +29,12 @@ class Command(BaseCommand):
         extension = path.suffix
         name = slugify(path.stem)
 
-        if actual_name.find("/")>-1:
-            last_slash_index = actual_name.rindex('/')
-
-        new_name = actual_name[0:last_slash_index] + "/" + slugify(name)+extension
+        if actual_name.find("/") > -1:
+            last_slash_index = actual_name.rindex("/")
+        new_name = actual_name[0:last_slash_index] + "/" + slugify(name) + extension
         new_path = settings.MEDIA_ROOT + new_name
 
-        return [new_name,initial_path,new_path]
+        return [new_name, initial_path, new_path]
 
     def set_substance_img_representation(self):
         substances = SustanceCharacteristics.objects.all()
@@ -39,7 +42,9 @@ class Command(BaseCommand):
         for substance in substances:
             if substance.img_representation:
 
-                name, initial_path, new_path = self.set_media_name(substance.img_representation)
+                name, initial_path, new_path = self.set_media_name(
+                    substance.img_representation
+                )
                 substance.img_representation.name = name
 
                 if default_storage.exists(initial_path):
@@ -52,20 +57,25 @@ class Command(BaseCommand):
         for substance in substances:
 
             if substance.security_sheet:
-                name, initial_path, new_path = self.set_media_name(substance.security_sheet)
+                name, initial_path, new_path = self.set_media_name(
+                    substance.security_sheet
+                )
                 substance.security_sheet.name = name
 
                 if default_storage.exists(initial_path):
                     os.rename(initial_path, new_path)
                     substance.save()
                     print(substance.security_sheet.url)
+
     def set_shelf_object_qr(self):
         shelfobjects = ShelfObject.objects.all()
 
         for shelfobject in shelfobjects:
 
             if shelfobject.shelf_object_qr:
-                name, initial_path, new_path = self.set_media_name(shelfobject.shelf_object_qr)
+                name, initial_path, new_path = self.set_media_name(
+                    shelfobject.shelf_object_qr
+                )
                 shelfobject.shelf_object_qr.name = name
 
                 if default_storage.exists(initial_path):
@@ -94,7 +104,9 @@ class Command(BaseCommand):
         for register_user in register_users:
             if register_user.register_user_qr:
 
-                name, initial_path, new_path = self.set_media_name(register_user.register_user_qr)
+                name, initial_path, new_path = self.set_media_name(
+                    register_user.register_user_qr
+                )
                 register_user.register_user_qr.name = name
 
                 if default_storage.exists(initial_path):
@@ -146,7 +158,9 @@ class Command(BaseCommand):
 
         for incident_report in incident_reports:
             if incident_report.notification_copy:
-                name, initial_path, new_path = self.set_media_name(incident_report.notification_copy)
+                name, initial_path, new_path = self.set_media_name(
+                    incident_report.notification_copy
+                )
                 incident_report.notification_copy.name = name
 
                 if default_storage.exists(initial_path):

@@ -4,6 +4,7 @@ from laboratory.models import ShelfObject
 from laboratory.tests.utils import ShelfObjectSetUp
 from laboratory.utils import check_user_access_kwargs_org_lab
 
+
 class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
     """
     This test does decrease shelfobject request by post method and action 'fill_decrease_shelfobject'
@@ -21,9 +22,12 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
         self.data = {
             "amount": 2,
             "description": "Caso de estudio",
-            "shelf_object": self.shelf_object.pk
+            "shelf_object": self.shelf_object.pk,
         }
-        self.url = reverse("laboratory:api-shelfobject-fill-decrease-shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.url = reverse(
+            "laboratory:api-shelfobject-fill-decrease-shelfobject",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
 
     def test_shelfobject_decrease_case1(self):
         """
@@ -37,7 +41,9 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
         """
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
@@ -58,7 +64,9 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
         self.user = self.user2_org2
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity

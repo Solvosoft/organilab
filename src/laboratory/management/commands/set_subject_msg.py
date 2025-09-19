@@ -6,9 +6,9 @@ from django.utils.timezone import now
 from laboratory.models import ShelfObject, ObjectLogChange, Catalog, Laboratory, Object
 from django.utils.translation import gettext_lazy as _
 
-class Command(BaseCommand):
 
-    help = 'Update subect message in ObjectLogChange'
+class Command(BaseCommand):
+    help = "Update subect message in ObjectLogChange"
 
     def update_precursor(self):
         ObjectLogChange.objects.filter(subject="Add").update(subject=_("Income"))

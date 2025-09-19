@@ -32,7 +32,9 @@ from laboratory.reactive import ReactiveMolecularFormulaAPIView
 from msds.urls import urlpatterns as msds_urls
 from msds.urls import regulation_urlpath
 from presentation.templatetags.organilab_tags import get_organilab_version
-from reservations_management.api.urls import urlpatterns as reservations_management_api_urlpatterns
+from reservations_management.api.urls import (
+    urlpatterns as reservations_management_api_urlpatterns,
+)
 from reservations_management.urls import urlpatterns as reservation_management_urls
 from risk_management import urls as risk_urls
 from presentation.urls import root_urls as presentation_root_urls
@@ -41,32 +43,55 @@ from derb import urls as derb_urls
 from report import urls as report_urls
 from django.views.i18n import JavaScriptCatalog
 
+
 def check_ok(request):
-    fail=request.GET.get('fail', None)
+    fail = request.GET.get("fail", None)
     if fail:
         division_by_zero = 1 / 0
     return HttpResponse("ok")
 
-urlpatterns = urls_djgentelela + auth_urls + presentation_root_urls + [
-    path('check_ok/', check_ok),
-    path('', RedirectView.as_view(url=reverse_lazy('index')), name="home"),
-    path('index/', include('presentation.urls')),
-    path('perms/', include('auth_and_perms.urls', namespace='auth_and_perms')),
-    path('', include((laboratory_urls,'laboratory'), namespace='laboratory')),
-    path('', include((api_urls,'api'), namespace='api')),
-    path('msds/<int:org_pk>/', include((msds_urls, 'msds'), namespace='msds')),
-    path('weblog/', include('djgentelella.blog.urls')),
-    path('sga/<int:org_pk>/', include((sga_urls, 'sga'), namespace='sga')),
-    path('risk/<int:org_pk>/', include((risk_urls, 'riskmanagement'), namespace='riskmanagement')),
-    path('derb/<int:org_pk>/', include((derb_urls, 'derb'), namespace='derb')),
-    path('academic/<int:org_pk>/', include((academic_urls, 'academic'), namespace='academic')),
-    path('reservations_management/<int:org_pk>/', include((reservation_management_urls, 'reservations_management'), namespace='reservations_management')),
-    re_path(r'^api/reactive/name/', ReactiveMolecularFormulaAPIView.as_view(), name="api_molecularname"),
-    re_path(r'^markitup/', include('markitup.urls')),
-    path('admin/', admin.site.urls),
-    path('async_notifications/', include('async_notifications.urls')),
-    path('report/', include((report_urls, 'report'), namespace='report')),
-]
+
+urlpatterns = (
+    urls_djgentelela
+    + auth_urls
+    + presentation_root_urls
+    + [
+        path("check_ok/", check_ok),
+        path("", RedirectView.as_view(url=reverse_lazy("index")), name="home"),
+        path("index/", include("presentation.urls")),
+        path("perms/", include("auth_and_perms.urls", namespace="auth_and_perms")),
+        path("", include((laboratory_urls, "laboratory"), namespace="laboratory")),
+        path("", include((api_urls, "api"), namespace="api")),
+        path("msds/<int:org_pk>/", include((msds_urls, "msds"), namespace="msds")),
+        path("weblog/", include("djgentelella.blog.urls")),
+        path("sga/<int:org_pk>/", include((sga_urls, "sga"), namespace="sga")),
+        path(
+            "risk/<int:org_pk>/",
+            include((risk_urls, "riskmanagement"), namespace="riskmanagement"),
+        ),
+        path("derb/<int:org_pk>/", include((derb_urls, "derb"), namespace="derb")),
+        path(
+            "academic/<int:org_pk>/",
+            include((academic_urls, "academic"), namespace="academic"),
+        ),
+        path(
+            "reservations_management/<int:org_pk>/",
+            include(
+                (reservation_management_urls, "reservations_management"),
+                namespace="reservations_management",
+            ),
+        ),
+        re_path(
+            r"^api/reactive/name/",
+            ReactiveMolecularFormulaAPIView.as_view(),
+            name="api_molecularname",
+        ),
+        re_path(r"^markitup/", include("markitup.urls")),
+        path("admin/", admin.site.urls),
+        path("async_notifications/", include("async_notifications.urls")),
+        path("report/", include((report_urls, "report"), namespace="report")),
+    ]
+)
 
 urlpatterns += djreservation_urls.urlpatterns
 urlpatterns += reservations_management_api_urlpatterns
@@ -74,14 +99,19 @@ urlpatterns += regulation_urlpath
 
 if settings.DEBUG:
     from django.conf.urls.static import static
+
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [
         path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     ]
 else:
     urlpatterns += [
-        re_path('^media/(?P<path>.*)', media_access, name='media'),
-        path("jsi18n/", cache_page(86400, key_prefix='jsi18n-%s' % get_organilab_version())(JavaScriptCatalog.as_view()), name="javascript-catalog")
+        re_path("^media/(?P<path>.*)", media_access, name="media"),
+        path(
+            "jsi18n/",
+            cache_page(86400, key_prefix="jsi18n-%s" % get_organilab_version())(
+                JavaScriptCatalog.as_view()
+            ),
+            name="javascript-catalog",
+        ),
     ]
-
-
