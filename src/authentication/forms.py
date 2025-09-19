@@ -12,59 +12,77 @@ from laboratory.models import Laboratory, UserOrganization
 
 
 class CreateUserForm(forms.ModelForm, GTForm):
-    phone_number = forms.CharField(max_length=25, label=_('Phone'), widget=djgenwidgets.PhoneNumberMaskInput)
-    id_card = forms.CharField(label=_('ID Card'), max_length=100, widget=djgenwidgets.TextInput)
-    job_position = forms.CharField(label=_('Job Position'), max_length=100, widget=djgenwidgets.TextInput)
-    user_type = forms.ChoiceField(widget=djgenwidgets.Select,
+    phone_number = forms.CharField(
+        max_length=25, label=_("Phone"), widget=djgenwidgets.PhoneNumberMaskInput
+    )
+    id_card = forms.CharField(
+        label=_("ID Card"), max_length=100, widget=djgenwidgets.TextInput
+    )
+    job_position = forms.CharField(
+        label=_("Job Position"), max_length=100, widget=djgenwidgets.TextInput
+    )
+    user_type = forms.ChoiceField(
+        widget=djgenwidgets.Select,
         choices=UserOrganization.TYPE_IN_ORG,
         initial=UserOrganization.LABORATORY_USER,
-                                 label=_("Profile in organization")
+        label=_("Profile in organization"),
     )
-    address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"),
-                               required=False)
+    address = forms.CharField(
+        widget=djgenwidgets.Textarea, label=_("Address"), required=False
+    )
+
     def clean_email(self):
-        value = self.cleaned_data['email']
+        value = self.cleaned_data["email"]
         if User.objects.using(settings.READONLY_DATABASE).filter(username=value):
-            raise ValidationError(_("User email exist, please try to add user on organization modal"))
+            raise ValidationError(
+                _("User email exist, please try to add user on organization modal")
+            )
         return value
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ["first_name", "last_name", "email"]
         widgets = {
-            'first_name': djgenwidgets.TextInput,
-            'last_name': djgenwidgets.TextInput,
-            'email': djgenwidgets.EmailMaskInput
-
+            "first_name": djgenwidgets.TextInput,
+            "last_name": djgenwidgets.TextInput,
+            "email": djgenwidgets.EmailMaskInput,
         }
 
 
 class EditUserForm(forms.ModelForm, GTForm):
-    phone_number = forms.CharField(max_length=25, label=_('Phone'),
-                                   widget=djgenwidgets.TextInput)
+    phone_number = forms.CharField(
+        max_length=25, label=_("Phone"), widget=djgenwidgets.TextInput
+    )
     language = forms.ChoiceField(choices=settings.LANGUAGES, widget=djgenwidgets.Select)
     address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"))
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email']
+        fields = ["username", "first_name", "last_name", "email"]
         widgets = {
-            'username': djgenwidgets.TextInput,
-            'first_name': djgenwidgets.TextInput,
-            'last_name': djgenwidgets.TextInput,
-            'email': djgenwidgets.EmailMaskInput
+            "username": djgenwidgets.TextInput,
+            "first_name": djgenwidgets.TextInput,
+            "last_name": djgenwidgets.TextInput,
+            "email": djgenwidgets.EmailMaskInput,
         }
 
 
 class PasswordChangeForm(GTForm, forms.Form):
-    password = forms.CharField(widget=djgenwidgets.PasswordInput, max_length=128,
-                               required=True, label=_('Password'))
-    password_confirm = forms.CharField(widget=djgenwidgets.PasswordInput,
-                                       max_length=128, required=True,
-                                       label=_('Confirm Password'))
+    password = forms.CharField(
+        widget=djgenwidgets.PasswordInput,
+        max_length=128,
+        required=True,
+        label=_("Password"),
+    )
+    password_confirm = forms.CharField(
+        widget=djgenwidgets.PasswordInput,
+        max_length=128,
+        required=True,
+        label=_("Confirm Password"),
+    )
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
+        self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
     def clean_password_confirm(self):
@@ -72,10 +90,9 @@ class PasswordChangeForm(GTForm, forms.Form):
         password_confirm = self.cleaned_data.get("password_confirm")
         if password and password_confirm:
             if password != password_confirm:
-                raise ValidationError(_("The two password fields didn’t match."),
+                raise ValidationError(
+                    _("The two password fields didn’t match."),
                     code="password_mismatch",
                 )
         password_validation.validate_password(password_confirm, user=self.user)
         return password_confirm
-
-

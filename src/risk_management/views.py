@@ -17,244 +17,296 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure, ShelfObject
 from laboratory.utils import organilab_logentry, check_user_access_kwargs_org_lab
 from report.forms import RiskZoneReportForm
-from risk_management.forms import RiskZoneCreateForm, ZoneTypeForm, BuildingsForm, \
-    RegentForm, StructureForm, IncidentReportForm, DocFormatForm, UpdateRegentForm, \
-    RiskZoneListForm
+from risk_management.forms import (
+    RiskZoneCreateForm,
+    ZoneTypeForm,
+    BuildingsForm,
+    RegentForm,
+    StructureForm,
+    IncidentReportForm,
+    DocFormatForm,
+    UpdateRegentForm,
+    RiskZoneListForm,
+)
 from risk_management.models import RiskZone, ZoneType, Buildings, Regent
-from laboratory.views.djgeneric import ListView, CreateView, UpdateView, DeleteView, DetailView
+from laboratory.views.djgeneric import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+    DetailView,
+)
 from urllib.parse import quote
 import uuid
 from django.utils.translation import gettext_lazy as _
 
 
-@method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
+@method_decorator(permission_required("risk_management.view_riskzone"), name="dispatch")
 class ListZone(ListView):
     model = RiskZone
-    ordering = 'zone_type'
-    ordering = ['priority', 'pk']
+    ordering = "zone_type"
+    ordering = ["priority", "pk"]
     paginate_by = 20
 
     def get_queryset(self):
-        org = self.kwargs['org_pk']
+        org = self.kwargs["org_pk"]
 
         queryset = super().get_queryset().filter(organization__pk=org)
-        if 'q' in self.request.GET:
-            q = self.request.GET['q']
-            queryset = queryset.filter(Q(name__icontains=q)|Q(
-                                       laboratories__name__icontains=q)).distinct()
+        if "q" in self.request.GET:
+            q = self.request.GET["q"]
+            queryset = queryset.filter(
+                Q(name__icontains=q) | Q(laboratories__name__icontains=q)
+            ).distinct()
 
         return queryset
 
-
     def get_context_data(self, **kwargs):
         context = super(ListZone, self).get_context_data()
-        q = self.request.GET.get('q', '')
+        q = self.request.GET.get("q", "")
 
-        context['q'] = q
+        context["q"] = q
         if q:
-            context['pgparams'] = '?q=%s&'%(q,)
+            context["pgparams"] = "?q=%s&" % (q,)
         else:
-            context['pgparams'] = '?'
+            context["pgparams"] = "?"
         return context
 
-@method_decorator(permission_required('risk_management.add_riskzone'), name="dispatch")
+
+@method_decorator(permission_required("risk_management.add_riskzone"), name="dispatch")
 class ZoneCreate(CreateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        kwargs['org_pk'] = self.org
+        kwargs["user"] = self.request.user
+        kwargs["org_pk"] = self.org
         return kwargs
 
     def form_valid(self, form):
         dev = super().form_valid(form)
-        risk_zone= form.save(commit=False)
-        org = self.kwargs['org_pk']
+        risk_zone = form.save(commit=False)
+        org = self.kwargs["org_pk"]
         org = OrganizationStructure.objects.filter(pk=org).first()
-        risk_zone.organization=org
-        risk_zone.created_by=self.request.user
+        risk_zone.organization = org
+        risk_zone.created_by = self.request.user
         risk_zone.save()
-        organilab_logentry(self.request.user, self.object, ADDITION, relobj=list(self.object.laboratories.all()))
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            ADDITION,
+            relobj=list(self.object.laboratories.all()),
+        )
         return dev
+
     def get_success_url(self, **kwargs):
-        org_pk = self.kwargs['org_pk']
-        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        org_pk = self.kwargs["org_pk"]
+        success_url = reverse_lazy(
+            "riskmanagement:riskzone_list", kwargs={"org_pk": org_pk}
+        )
         return success_url
 
-@method_decorator(permission_required('risk_management.change_riskzone'), name="dispatch")
+
+@method_decorator(
+    permission_required("risk_management.change_riskzone"), name="dispatch"
+)
 class ZoneEdit(UpdateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        kwargs['org_pk'] = self.org
+        kwargs["user"] = self.request.user
+        kwargs["org_pk"] = self.org
         return kwargs
 
     def form_valid(self, form):
         dev = super().form_valid(form)
-        organilab_logentry(self.request.user, self.object, CHANGE, relobj=list(self.object.laboratories.all()))
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            CHANGE,
+            relobj=list(self.object.laboratories.all()),
+        )
         return dev
 
     def get_success_url(self, **kwargs):
         org_pk = self.org
-        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        success_url = reverse_lazy(
+            "riskmanagement:riskzone_list", kwargs={"org_pk": org_pk}
+        )
         return success_url
 
-@method_decorator(permission_required('risk_management.delete_riskzone'), name="dispatch")
+
+@method_decorator(
+    permission_required("risk_management.delete_riskzone"), name="dispatch"
+)
 class ZoneDelete(DeleteView):
     model = RiskZone
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, relobj=list(self.object.laboratories.all()))
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            DELETION,
+            relobj=list(self.object.laboratories.all()),
+        )
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self, **kwargs):
         org_pk = self.org
-        success_url = reverse_lazy('riskmanagement:riskzone_list', kwargs={'org_pk': org_pk})
+        success_url = reverse_lazy(
+            "riskmanagement:riskzone_list", kwargs={"org_pk": org_pk}
+        )
         return success_url
 
-@method_decorator(permission_required('risk_management.view_riskzone'), name="dispatch")
+
+@method_decorator(permission_required("risk_management.view_riskzone"), name="dispatch")
 class ZoneDetail(DetailView):
     model = RiskZone
 
     def get_context_data(self, **kwargs):
         context = super(ZoneDetail, self).get_context_data()
-        context['form_create'] = IncidentReportForm(org_pk=self.kwargs.get("org_pk",None),
-                                                    prefix="create",
-                                                    user=self.request.user,
-                                                    risk=self.object)
-        context['form_update'] = IncidentReportForm(org_pk=self.kwargs.get("org_pk",None),
-                                                    prefix="update",
-                                                    user=self.request.user,
-                                                    risk=self.object)
-        context['form_dco_format'] = DocFormatForm()
+        context["form_create"] = IncidentReportForm(
+            org_pk=self.kwargs.get("org_pk", None),
+            prefix="create",
+            user=self.request.user,
+            risk=self.object,
+        )
+        context["form_update"] = IncidentReportForm(
+            org_pk=self.kwargs.get("org_pk", None),
+            prefix="update",
+            user=self.request.user,
+            risk=self.object,
+        )
+        context["form_dco_format"] = DocFormatForm()
         return context
 
-@permission_required('risk_management.add_zonetype')
+
+@permission_required("risk_management.add_zonetype")
 def add_zone_type_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
         return JsonResponse({}, status=status.HTTP_404_NOT_FOUND)
 
-    tipo = request.GET.get('tipo', '')
+    tipo = request.GET.get("tipo", "")
     viewid = str(uuid.uuid4())[:4]
 
-    if request.method == 'POST':
-        data= request.POST.copy()
-        form =ZoneTypeForm(data)
+    if request.method == "POST":
+        data = request.POST.copy()
+        form = ZoneTypeForm(data)
 
         if form.is_valid():
             instance = form.save()
-            return JsonResponse({'ok': True, 'id': instance.pk, 'text': str(instance)})
+            return JsonResponse({"ok": True, "id": instance.pk, "text": str(instance)})
 
-        return JsonResponse({'ok': False,
-                             'title': _("There is an error in the form"),
-                             'message':  render_to_string('risk_management/zone_type_add.html',
-                                    context={
-                                        'form': form,
-                                        'tipo': quote(tipo),
-                                        'viewid': viewid,
-                                        'request': request
-                                    }),
-                             'script': 'gt_find_initialize($("#modal_zone_type_id"));'
-                             })
+        return JsonResponse(
+            {
+                "ok": False,
+                "title": _("There is an error in the form"),
+                "message": render_to_string(
+                    "risk_management/zone_type_add.html",
+                    context={
+                        "form": form,
+                        "tipo": quote(tipo),
+                        "viewid": viewid,
+                        "request": request,
+                    },
+                ),
+                "script": 'gt_find_initialize($("#modal_zone_type_id"));',
+            }
+        )
 
     data = {
-        'ok':  True,
-        'title': _('Add a new zonetype'),
-        'message': render_to_string('risk_management/zone_type_add.html',
-                                    context={
-                                        'form': ZoneTypeForm(),
-                                        'tipo': quote(tipo),
-                                        'viewid': viewid,
-                                        'request':request,
-                                    }),
-        'script': 'gt_find_initialize($("#modal_zone_type_id"));'
+        "ok": True,
+        "title": _("Add a new zonetype"),
+        "message": render_to_string(
+            "risk_management/zone_type_add.html",
+            context={
+                "form": ZoneTypeForm(),
+                "tipo": quote(tipo),
+                "viewid": viewid,
+                "request": request,
+            },
+        ),
+        "script": 'gt_find_initialize($("#modal_zone_type_id"));',
     }
     return JsonResponse(data)
 
-@permission_required('risk_management.add_buildings')
+
+@permission_required("risk_management.add_buildings")
 def buildings_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
-    context = {
-        'org_pk': org_pk
-    }
-    return render(request, 'risk_management/building_list.html', context=context)
+    context = {"org_pk": org_pk}
+    return render(request, "risk_management/building_list.html", context=context)
 
-@permission_required('risk_management.add_buildings')
+
+@permission_required("risk_management.add_buildings")
 def buildings_actions(request, org_pk, pk=None):
     user_is_allowed_on_organization(request.user, org_pk)
     form = BuildingsForm(org_pk=org_pk)
     building = None
-    title = _('Create Building')
+    title = _("Create Building")
     if pk:
-        title = _('Update Building')
+        title = _("Update Building")
         building = get_object_or_404(Buildings, pk=pk)
         form = BuildingsForm(instance=building, org_pk=org_pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         if building:
             form = BuildingsForm(request.POST, instance=building, org_pk=org_pk)
         else:
             form = BuildingsForm(request.POST, org_pk=org_pk)
 
         if form.is_valid():
-            building=form.save(commit=False)
-            building.created_by=request.user
-            building.organization=OrganizationStructure.objects.filter(pk=org_pk).first()
+            building = form.save(commit=False)
+            building.created_by = request.user
+            building.organization = OrganizationStructure.objects.filter(
+                pk=org_pk
+            ).first()
             building.save()
             form.save_m2m()
 
+            return redirect(
+                reverse("riskmanagement:buildings_list", kwargs={"org_pk": org_pk})
+            )
+
+    context = {"form": form, "org_pk": org_pk, "title": title}
+    return render(request, "risk_management/buildings.html", context=context)
 
 
-            return redirect(reverse('riskmanagement:buildings_list', kwargs={'org_pk': org_pk}))
-
-    context = {
-        'form':  form,
-        'org_pk': org_pk,
-        'title': title
-
-    }
-    return render(request, 'risk_management/buildings.html', context=context)
-
-@permission_required('risk_management.view_regent')
+@permission_required("risk_management.view_regent")
 def regent_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     context = {
-        'form_create':  RegentForm(org_pk=org_pk, prefix="create"),
-        'form_update':  UpdateRegentForm(prefix="update"),
-        'org_pk': org_pk,
-        'type_regent': Regent.TYPEREGENTS
+        "form_create": RegentForm(org_pk=org_pk, prefix="create"),
+        "form_update": UpdateRegentForm(prefix="update"),
+        "org_pk": org_pk,
+        "type_regent": Regent.TYPEREGENTS,
     }
-    return render(request, 'risk_management/regents.html', context=context)
+    return render(request, "risk_management/regents.html", context=context)
 
 
-
-@permission_required('risk_management.view_structure')
+@permission_required("risk_management.view_structure")
 def structure_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
-    context = {
-        'org_pk': org_pk
-    }
-    return render(request, 'risk_management/structure_list.html', context=context)
+    context = {"org_pk": org_pk}
+    return render(request, "risk_management/structure_list.html", context=context)
 
-@permission_required('risk_management.add_structure')
+
+@permission_required("risk_management.add_structure")
 def structure_actions(request, org_pk, pk=None):
     user_is_allowed_on_organization(request.user, org_pk)
     form = StructureForm(org_pk=org_pk)
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
     structure = None
-    title = _('Create Structure')
+    title = _("Create Structure")
     if pk:
-        title = _('Update Structure')
+        title = _("Update Structure")
         structure = get_object_or_404(Buildings, pk=pk)
         form = StructureForm(instance=structure, org_pk=org_pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         if structure:
             form = StructureForm(request.POST, instance=structure, org_pk=org_pk)
         else:
@@ -267,63 +319,86 @@ def structure_actions(request, org_pk, pk=None):
             structure.save()
             form.save_m2m()
 
+            return redirect(
+                reverse("riskmanagement:structures_list", kwargs={"org_pk": org_pk})
+            )
 
-            return redirect(reverse('riskmanagement:structures_list', kwargs={'org_pk': org_pk}))
+    context = {"form": form, "org_pk": org_pk, "title": title}
+    return render(request, "risk_management/structure_form.html", context=context)
 
-    context = {
-        'form':  form,
-        'org_pk': org_pk,
-        'title': title
-    }
-    return render(request, 'risk_management/structure_form.html', context=context)
 
 class ZoneDashboard(TemplateView):
-    template_name = 'risk_management/risk_graphics.html'
+    template_name = "risk_management/risk_graphics.html"
 
     def get_context_data(self, **kwargs):
         context = super(ZoneDashboard, self).get_context_data()
-        context['org_pk'] = self.kwargs['org_pk']
-        x=""
-        i=0
+        context["org_pk"] = self.kwargs["org_pk"]
+        x = ""
+        i = 0
         for key in self.request.GET:
             for data in self.request.GET.getlist(key):
-                if i>0:
+                if i > 0:
                     x += f"&{key}={data}"
                 else:
                     x += f"?{key}={data}"
-                i+=1
-        urls ={
-            'dangerindicationchart': reverse('dangerindicationchart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
-            'whiteorganchart': reverse('whiteorganchart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
-            'precursortypechart': reverse('precursortypechart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
-            'storageclasschart': reverse('storageclasschart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
-            'uecodechart': reverse('uecodechart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
-            'nfpachart': reverse('nfpachart-detail', kwargs={'pk': self.kwargs['org_pk']})+x,
+                i += 1
+        urls = {
+            "dangerindicationchart": reverse(
+                "dangerindicationchart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
+            "whiteorganchart": reverse(
+                "whiteorganchart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
+            "precursortypechart": reverse(
+                "precursortypechart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
+            "storageclasschart": reverse(
+                "storageclasschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
+            "uecodechart": reverse(
+                "uecodechart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
+            "nfpachart": reverse(
+                "nfpachart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
         }
         context.update(urls)
-        context['form'] = RiskZoneListForm(self.request.GET, organization=self.kwargs['org_pk'])
+        context["form"] = RiskZoneListForm(
+            self.request.GET, organization=self.kwargs["org_pk"]
+        )
 
         return context
 
 
-@method_decorator(permission_required('laboratory.view_report'), name='dispatch')
+@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
 class RiskZoneReport(ListView):
     model = RiskZone
-    template_name = 'report/base_report_organizations.html'
+    template_name = "report/base_report_organizations.html"
 
     def get_context_data(self, **kwargs):
-        context = super(RiskZoneReport,
-                        self).get_context_data(**kwargs)
+        context = super(RiskZoneReport, self).get_context_data(**kwargs)
         title = _("Reactive Objects Report")
-        context.update({
-            'title_view': title,
-            'report_urlnames': ['risk_zone_report'],
-            'form': RiskZoneReportForm(initial={
-                'name': slugify(title + ' ' + now().strftime("%x").replace('/', '-')),
-                'title': title,
-                'organization': self.org,
-                'report_name': 'risk_zone_report',
-            },
-                org_pk=self.org)
-        })
+        context.update(
+            {
+                "title_view": title,
+                "report_urlnames": ["risk_zone_report"],
+                "form": RiskZoneReportForm(
+                    initial={
+                        "name": slugify(
+                            title + " " + now().strftime("%x").replace("/", "-")
+                        ),
+                        "title": title,
+                        "organization": self.org,
+                        "report_name": "risk_zone_report",
+                    },
+                    org_pk=self.org,
+                ),
+            }
+        )
         return context

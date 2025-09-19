@@ -13,6 +13,7 @@ def get_base_unit(unit):
 
     return unitbase
 
+
 def get_conversion_units(unit, amount):
     query = BaseUnitValues.objects.filter(measurement_unit=unit)
     if query.exists():
@@ -41,7 +42,7 @@ def get_conversion_from_two_units(unit, unit2, amount):
         unit2 = query2.first()
         value2 = unit2.si_value
 
-        if unit1.measurement_unit.description == 'Unidades':
+        if unit1.measurement_unit.description == "Unidades":
             return amount
 
         if value1 > value2:
@@ -52,33 +53,33 @@ def get_conversion_from_two_units(unit, unit2, amount):
     else:
         return None
 
+
 def get_related_units(unit, queryset):
-    base_unit = BaseUnitValues.objects.filter(
-        measurement_unit=unit)
+    base_unit = BaseUnitValues.objects.filter(measurement_unit=unit)
 
     if base_unit.exists():
         base_unit = base_unit.first()
 
         subunits = BaseUnitValues.objects.filter(
-            measurement_unit_base=base_unit.measurement_unit_base)
+            measurement_unit_base=base_unit.measurement_unit_base
+        )
 
-        subunit_ids = subunits.values_list('measurement_unit__pk',
-                                           flat=True)
+        subunit_ids = subunits.values_list("measurement_unit__pk", flat=True)
 
         return queryset.filter(pk__in=subunit_ids)
 
+
 def get_related_units_from_laboratory(unit):
-        subunit_ids = []
-        base_unit = BaseUnitValues.objects.filter(
-            measurement_unit=unit)
+    subunit_ids = []
+    base_unit = BaseUnitValues.objects.filter(measurement_unit=unit)
 
-        if base_unit.exists():
-            base_unit = base_unit.first()
+    if base_unit.exists():
+        base_unit = base_unit.first()
 
-            subunits = BaseUnitValues.objects.filter(
-                measurement_unit_base=base_unit.measurement_unit_base)
+        subunits = BaseUnitValues.objects.filter(
+            measurement_unit_base=base_unit.measurement_unit_base
+        )
 
-            subunit_ids = subunits.values_list('measurement_unit__pk',
-                                               flat=True)
+        subunit_ids = subunits.values_list("measurement_unit__pk", flat=True)
 
-        return subunit_ids
+    return subunit_ids

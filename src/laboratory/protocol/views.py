@@ -14,29 +14,30 @@ from laboratory.protocol.forms import ProtocolForm
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView
 
-@permission_required('laboratory.view_protocol')
+
+@permission_required("laboratory.view_protocol")
 def protocol_list(request, *args, **kwargs):
-    organization = get_object_or_404(OrganizationStructure.objects.using(settings.READONLY_DATABASE),pk =kwargs['org_pk'])
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+        pk=kwargs["org_pk"],
+    )
     user_is_allowed_on_organization(request.user, organization)
+    context = {"laboratory": kwargs["lab_pk"], "org_pk": kwargs["org_pk"]}
+    return render(request, "laboratory/protocol/protocol_list.html", context=context)
 
-    context={
-        'laboratory': kwargs['lab_pk'],
-        'org_pk': kwargs['org_pk']
-    }
-    return render(request, 'laboratory/protocol/protocol_list.html', context=context)
 
-@method_decorator(permission_required('laboratory.add_protocol'), name='dispatch')
+@method_decorator(permission_required("laboratory.add_protocol"), name="dispatch")
 class ProtocolCreateView(CreateView):
     model = Protocol
-    template_name = 'laboratory/protocol/create.html'
+    template_name = "laboratory/protocol/create.html"
     form_class = ProtocolForm
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
+        return reverse_lazy("laboratory:protocol_list", args=(self.org, self.lab))
 
     def get_context_data(self, **kwargs):
         context = super(ProtocolCreateView, self).get_context_data(**kwargs)
-        context['lab_pk'] = self.lab
+        context["lab_pk"] = self.lab
         return context
 
     def form_valid(self, form):
@@ -46,39 +47,61 @@ class ProtocolCreateView(CreateView):
         protocol.laboratory = laboratory
         protocol.upload_by = self.request.user
         protocol.save()
-        organilab_logentry(self.request.user, self.object, ADDITION, 'protocol', changed_data=form.changed_data, relobj=laboratory)
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            ADDITION,
+            "protocol",
+            changed_data=form.changed_data,
+            relobj=laboratory,
+        )
         return HttpResponseRedirect(self.get_success_url())
+
     def form_invalid(self, form):
         print(form.errors)
 
-@method_decorator(permission_required('laboratory.change_protocol'), name='dispatch')
+
+@method_decorator(permission_required("laboratory.change_protocol"), name="dispatch")
 class ProtocolUpdateView(UpdateView):
     model = Protocol
-    success_url = '/'
+    success_url = "/"
     form_class = ProtocolForm
-    template_name = 'laboratory/protocol/update.html'
+    template_name = "laboratory/protocol/update.html"
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
+        return reverse_lazy("laboratory:protocol_list", args=(self.org, self.lab))
 
     def form_valid(self, form):
         form.save()
-        organilab_logentry(self.request.user, self.object, CHANGE, 'protocol', changed_data=form.changed_data, relobj=self.object.laboratory)
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            CHANGE,
+            "protocol",
+            changed_data=form.changed_data,
+            relobj=self.object.laboratory,
+        )
         return super(ProtocolUpdateView, self).form_valid(form)
 
     def form_invalid(self, form):
         print(form.errors)
 
-@method_decorator(permission_required('laboratory.delete_protocol'), name='dispatch')
+
+@method_decorator(permission_required("laboratory.delete_protocol"), name="dispatch")
 class ProtocolDeleteView(DeleteView):
     model = Protocol
-    template_name = 'laboratory/protocol/delete.html'
-    success_url = ''
+    template_name = "laboratory/protocol/delete.html"
+    success_url = ""
 
     def get_success_url(self):
-        return reverse_lazy('laboratory:protocol_list', args=(self.org, self.lab))
+        return reverse_lazy("laboratory:protocol_list", args=(self.org, self.lab))
 
     def form_valid(self, form):
-        organilab_logentry(self.request.user, self.object, DELETION, 'protocol', relobj=self.object.laboratory)
+        organilab_logentry(
+            self.request.user,
+            self.object,
+            DELETION,
+            "protocol",
+            relobj=self.object.laboratory,
+        )
         return super().form_valid(form)
-

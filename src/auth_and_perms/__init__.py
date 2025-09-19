@@ -1,1 +1,1 @@
-default_app_config = 'auth_and_perms.apps.AuthAndPermsConfig'
+default_app_config = "auth_and_perms.apps.AuthAndPermsConfig"

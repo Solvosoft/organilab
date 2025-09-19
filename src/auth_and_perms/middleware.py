@@ -25,20 +25,27 @@ class ProfileLanguageMiddleware:
         user = request.user
         if not user.is_authenticated or not user.is_active:
             return
-        if not hasattr(user, 'profile'):
+        if not hasattr(user, "profile"):
             reguser = RegistrationUser.objects.filter(user=user).first()
             if reguser:
                 auth_logout(request)
                 if reguser.registration_method == 1:
-                    return redirect(reverse('auth_and_perms:user_org_creation_totp', args=[user.pk]))
+                    return redirect(
+                        reverse("auth_and_perms:user_org_creation_totp", args=[user.pk])
+                    )
                 if reguser.registration_method == 2:
-                    return redirect(reverse('auth_and_perms:create_profile_by_digital_signature', args=[user.pk]))
+                    return redirect(
+                        reverse(
+                            "auth_and_perms:create_profile_by_digital_signature",
+                            args=[user.pk],
+                        )
+                    )
             raise Http404("User has not profile")
 
         profile = user.profile
-        default_profile_lang=profile.language
-        languages=list(dict(settings.LANGUAGES).keys())
-        if default_profile_lang in  languages:
+        default_profile_lang = profile.language
+        languages = list(dict(settings.LANGUAGES).keys())
+        if default_profile_lang in languages:
             translation.activate(default_profile_lang)
 
 
@@ -53,19 +60,19 @@ class ImpostorMiddleware(MiddlewareMixin):
                 "'django.contrib.sessions.middleware.SessionMiddleware' before "
                 "'django.contrib.auth.middleware.AuthenticationMiddleware'."
             )
-        impostor=request.session.get('impostor', None)
+        impostor = request.session.get("impostor", None)
         if impostor:
             User = get_user_model()
-            impostor_token = request.COOKIES.get('impostor_token') or None
-            ipaddress=get_ip_address(request)
+            impostor_token = request.COOKIES.get("impostor_token") or None
+            ipaddress = get_ip_address(request)
             imposted_as = User.objects.filter(pk=impostor).first()
             if imposted_as and impostor_token:
-                impostor_log=ImpostorLog.objects.filter(
+                impostor_log = ImpostorLog.objects.filter(
                     impostor=request.user,
                     imposted_as=imposted_as,
                     impostor_ip=ipaddress,
-                    token=impostor_token
+                    token=impostor_token,
                 ).first()
                 if impostor_log:
-                    request.impostor_info=impostor_log
+                    request.impostor_info = impostor_log
                     request.user = SimpleLazyObject(lambda: imposted_as)

@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from report.models import TaskReport
 
+
 def media_access(request, path):
     """
     When trying to access :
@@ -18,18 +19,26 @@ def media_access(request, path):
 
     if path.startswith("report"):
         if user.is_authenticated:
-            report = TaskReport.objects.filter(created_by=user, file_type__isnull=False,
-                                                   file__isnull=False,file__icontains=path).exclude(file_type="html").first()
+            report = (
+                TaskReport.objects.filter(
+                    created_by=user,
+                    file_type__isnull=False,
+                    file__isnull=False,
+                    file__icontains=path,
+                )
+                .exclude(file_type="html")
+                .first()
+            )
             if report:
-                del response['Content-Type']
-                response['X-Accel-Redirect'] = '/protected/' + path
+                del response["Content-Type"]
+                response["X-Accel-Redirect"] = "/protected/" + path
                 return response
             else:
-                return HttpResponseForbidden('Not authorized to access this media.')
+                return HttpResponseForbidden("Not authorized to access this media.")
 
         else:
-            return HttpResponseForbidden('Not authorized to access this media.')
+            return HttpResponseForbidden("Not authorized to access this media.")
 
-    del response['Content-Type']
-    response['X-Accel-Redirect'] = '/protected/' + path
+    del response["Content-Type"]
+    response["X-Accel-Redirect"] = "/protected/" + path
     return response

@@ -13,15 +13,18 @@ from pathlib import Path
 
 class MSDSObject(AbstractOrganizationRef):
     provider = models.CharField(_("Provider"), max_length=300)
-    file = models.FileField(upload_to=upload_files, verbose_name=_("MSDS File"),
-                            validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
+    file = models.FileField(
+        upload_to=upload_files,
+        verbose_name=_("MSDS File"),
+        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
+    )
 
     product = models.CharField(_("Product"), max_length=300)
 
     class Meta:
-        ordering = ('pk',)
-        verbose_name = _('MSDS Object')
-        verbose_name_plural = _('MSDS Object')
+        ordering = ("pk",)
+        verbose_name = _("MSDS Object")
+        verbose_name_plural = _("MSDS Object")
 
 
 class OrganilabNode(TreeNode):
@@ -40,14 +43,11 @@ class OrganilabNode(TreeNode):
     def is_not_root_node(self):
         return self.parent is not None
 
-
-
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ["position"]
-
 
 
 class RegulationDocument(models.Model):
@@ -60,6 +60,6 @@ class RegulationDocument(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order',)
-        verbose_name = _('Regulation document')
-        verbose_name_plural = _('Regulation documents')
+        ordering = ("order",)
+        verbose_name = _("Regulation document")
+        verbose_name_plural = _("Regulation documents")

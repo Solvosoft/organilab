@@ -3,11 +3,12 @@ from django.db import models
 from presentation.models import AbstractOrganizationRef
 from django.utils.translation import gettext_lazy as _
 
+
 class CustomForm(AbstractOrganizationRef):
     STATUS_CHOICES = (
-        ('admin', 'Creating form'),
-        ('fill', 'Filling form'),
-        ('result', 'Form results')
+        ("admin", "Creating form"),
+        ("fill", "Filling form"),
+        ("result", "Form results"),
     )
     name = models.CharField()
     status = models.CharField(max_length=6, choices=STATUS_CHOICES)
@@ -16,13 +17,18 @@ class CustomForm(AbstractOrganizationRef):
     def __str__(self):
         return self.name
 
+
 class Section(models.Model):
-    form = models.ForeignKey(CustomForm, related_name='sections', on_delete=models.CASCADE)
+    form = models.ForeignKey(
+        CustomForm, related_name="sections", on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=40)
 
 
 class Subsection(models.Model):
-    section = models.ForeignKey(Section, related_name='subsections', on_delete=models.CASCADE)
+    section = models.ForeignKey(
+        Section, related_name="subsections", on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=40)
 
 
@@ -45,7 +51,9 @@ class WidgetType(models.Model):
 
 class CustomFormField(models.Model):
 
-    subsection = models.ForeignKey(Subsection, related_name="fields", on_delete=models.CASCADE)
+    subsection = models.ForeignKey(
+        Subsection, related_name="fields", on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=40)
     label = models.CharField(max_length=40)
     label_suffix = models.CharField(max_length=10, blank=True, null=True)
@@ -66,13 +74,15 @@ class CustomFormField(models.Model):
 
 class Validator(models.Model):
 
-    field = models.ForeignKey(to=CustomFormField, on_delete=models.CASCADE, related_name="validators")
+    field = models.ForeignKey(
+        to=CustomFormField, on_delete=models.CASCADE, related_name="validators"
+    )
     name = models.CharField(max_length=40)
     parameters = models.JSONField()
 
 
 class Action(models.Model):
     condition = models.JSONField(blank=True, null=True)
-    conditional_field = models.ForeignKey(CustomFormField, on_delete=models.CASCADE, related_name="variable_fields")
-
-
+    conditional_field = models.ForeignKey(
+        CustomFormField, on_delete=models.CASCADE, related_name="variable_fields"
+    )

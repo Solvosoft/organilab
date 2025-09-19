@@ -24,8 +24,12 @@ class BaseSetUpTest(TestCase):
     def setUp(self):
         fbytes = get_file_bytes()
         self.chfile = ChunkedUpload.objects.create(
-            file=ContentFile(fbytes, name="A file"), filename="tests.pdf",
-            offset=len(fbytes), completed_on=now(), user=User.objects.first())
+            file=ContentFile(fbytes, name="A file"),
+            filename="tests.pdf",
+            offset=len(fbytes),
+            completed_on=now(),
+            user=User.objects.first(),
+        )
 
 
 class BaseLaboratorySetUpTest(BaseSetUpTest):
@@ -76,14 +80,26 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
         self.profile4_org2 = self.user4_org2.profile
 
         # ORGS BY USER
-        self.user1_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(
-            self.user1_org1).distinct()
-        self.user2_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(
-            self.user2_org2).distinct()
-        self.user3_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(
-            self.user3_org1).distinct()
-        self.user4_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(
-            self.user4_org2).distinct()
+        self.user1_org1_list = (
+            OrganizationStructure.os_manager.filter_organization_by_user(
+                self.user1_org1
+            ).distinct()
+        )
+        self.user2_org2_list = (
+            OrganizationStructure.os_manager.filter_organization_by_user(
+                self.user2_org2
+            ).distinct()
+        )
+        self.user3_org1_list = (
+            OrganizationStructure.os_manager.filter_organization_by_user(
+                self.user3_org1
+            ).distinct()
+        )
+        self.user4_org2_list = (
+            OrganizationStructure.os_manager.filter_organization_by_user(
+                self.user4_org2
+            ).distinct()
+        )
 
         # LABS
         self.lab1_org1 = Laboratory.objects.get(name="Lab 1")
@@ -93,10 +109,12 @@ class BaseOrganizatonManageSetUpTest(BaseSetUpTest):
 
         # INITIAL DATA
 
-        self.lab_contenttype = ContentType.objects.filter(app_label='laboratory',
-                                                          model='laboratory').first()
-        self.org_contenttype = ContentType.objects.filter(app_label='laboratory',
-                                                          model='organizationstructure').first()
+        self.lab_contenttype = ContentType.objects.filter(
+            app_label="laboratory", model="laboratory"
+        ).first()
+        self.org_contenttype = ContentType.objects.filter(
+            app_label="laboratory", model="organizationstructure"
+        ).first()
 
 
 class BaseSetUpAjaxRequest(BaseOrganizatonManageSetUpTest):
@@ -158,15 +176,16 @@ class BaseShelfobjectStatusSetUpTest(BaseSetUpTest):
             profile=self.user.profile,
             object_id=1,
             content_type=ContentType.objects.get(
-                app_label='laboratory',
-                model='organizationstructure'))
+                app_label="laboratory", model="organizationstructure"
+            ),
+        )
         profile_permission.rol.add(create_status_rol)
         org = OrganizationStructure.objects.get(pk=1)
-        user_org = UserOrganization.objects.create(organization=org, user=self.user,
-                                                   type_in_organization=1)
+        user_org = UserOrganization.objects.create(
+            organization=org, user=self.user, type_in_organization=1
+        )
         org.users.add(self.user)
         self.client.force_login(self.user)
-
 
 
 class ShelfSetUp(BaseOrganizatonManageSetUpTest):

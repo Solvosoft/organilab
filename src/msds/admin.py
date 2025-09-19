@@ -3,8 +3,8 @@ from msds.models import MSDSObject, OrganilabNode, RegulationDocument
 
 
 class msdsAdmin(admin.ModelAdmin):
-    search_fields = ['provider', 'product']
-    list_display = ['provider', 'product']
+    search_fields = ["provider", "product"]
+    list_display = ["provider", "product"]
 
 
 class OrganilabNodeMPTTAdmin(admin.ModelAdmin):

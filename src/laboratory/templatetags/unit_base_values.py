@@ -5,6 +5,7 @@ import organilab.settings as settings
 
 register = template.Library()
 
+
 @register.simple_tag()
 def get_unit_base(unit):
     unitbase = get_base_unit(unit)
@@ -13,6 +14,7 @@ def get_unit_base(unit):
         return unitbase.description
 
     return "--"
+
 
 @register.simple_tag(takes_context=False)
 def get_conversion_result(unit, amount):

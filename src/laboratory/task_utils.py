@@ -2,8 +2,16 @@ from django.db.models import Sum
 from django.utils import timezone
 from laboratory.utils_base_unit import get_base_unit
 
-from laboratory.models import Laboratory, InformsPeriod, Inform, PrecursorReportValues, \
-    ShelfObject, ObjectLogChange, PrecursorReport, BaseUnitValues
+from laboratory.models import (
+    Laboratory,
+    InformsPeriod,
+    Inform,
+    PrecursorReportValues,
+    ShelfObject,
+    ObjectLogChange,
+    PrecursorReport,
+    BaseUnitValues,
+)
 from laboratory.utils_base_unit import get_base_unit
 from django.utils.translation import gettext_lazy as _
 
@@ -13,28 +21,28 @@ def create_informsperiods(informscheduler, now=timezone.now()):
     if last_update is not None:
         last_close = last_update.close_application_date
         next_update = last_update.start_application_date + timezone.timedelta(
-            days=informscheduler.period_on_days)
+            days=informscheduler.period_on_days
+        )
     else:
         next_update = informscheduler.start_application_date
         last_close = informscheduler.close_application_date
 
-
-
     last_close = last_close + timezone.timedelta(days=informscheduler.period_on_days)
     if next_update == now.today().date():
-        labs = Laboratory.objects.filter(organization__pk=informscheduler.organization.pk)
-        ip=InformsPeriod.objects.create(
+        labs = Laboratory.objects.filter(
+            organization__pk=informscheduler.organization.pk
+        )
+        ip = InformsPeriod.objects.create(
             scheduler=informscheduler,
             organization=informscheduler.organization,
             inform_template=informscheduler.inform_template,
             start_application_date=next_update,
-            close_application_date=last_close
-
+            close_application_date=last_close,
         )
         for lab in labs:
             inform = Inform.objects.create(
                 organization=informscheduler.organization,
-                name="%s -- %s"%(informscheduler.name, lab.name),
+                name="%s -- %s" % (informscheduler.name, lab.name),
                 custom_form=informscheduler.inform_template,
                 context_object=lab,
                 schema=informscheduler.inform_template.schema,
@@ -45,63 +53,82 @@ def create_informsperiods(informscheduler, now=timezone.now()):
 def save_object_report_precursor(report):
     lab = report.laboratory
     reports = PrecursorReport.objects.filter(laboratory=lab).order_by("-pk")
-    for precursor in ShelfObject.objects.filter(in_where_laboratory=lab,
-                                                object__sustancecharacteristics__is_precursor=True):
+    for precursor in ShelfObject.objects.filter(
+        in_where_laboratory=lab, object__sustancecharacteristics__is_precursor=True
+    ):
         unit = get_base_unit(precursor.measurement_unit)
-        obj = PrecursorReportValues.objects.filter(precursor_report=report,
-                                                object=precursor.object,
-                                                measurement_unit= unit).first()
+        obj = PrecursorReportValues.objects.filter(
+            precursor_report=report, object=precursor.object, measurement_unit=unit
+        ).first()
 
         if obj:
             add_quantity = precursor.quantity_base_unit
             obj.quantity += add_quantity
-            if reports.count()>1:
+            if reports.count() > 1:
                 if reports[1].report_values.count() == 0:
                     obj.previous_balance += add_quantity
             obj.save()
         else:
             year = report.year
-            if report.month_belong==1 and report.month==12:
-                year=report.year-1
+            if report.month_belong == 1 and report.month == 12:
+                year = report.year - 1
 
-            object_list = ObjectLogChange.objects.filter(laboratory=lab, precursor=True,
-                                                         object=precursor.object,
-                                                         measurement_unit=unit,
-                                                         update_time__month=report.month_belong,
-                                                         update_time__year=year)
+            object_list = ObjectLogChange.objects.filter(
+                laboratory=lab,
+                precursor=True,
+                object=precursor.object,
+                measurement_unit=unit,
+                update_time__month=report.month_belong,
+                update_time__year=year,
+            )
 
-            providers = [ol.provider for ol in object_list.filter(provider__isnull=False)]
+            providers = [
+                ol.provider for ol in object_list.filter(provider__isnull=False)
+            ]
             subject = [ol.subject for ol in object_list.filter(subject__isnull=False)]
             bills = [ol.bill for ol in object_list.filter(bill__isnull=False)]
-            income = object_list.filter(type_action__in=[0,1,2], diff_value__gte=0).aggregate(amount=Sum('diff_value', default=0))["amount"]
-            expenses = abs(object_list.filter(type_action__in=[2,3], diff_value__lte=0).aggregate(amount=Sum('diff_value', default=0))["amount"])
+            income = object_list.filter(
+                type_action__in=[0, 1, 2], diff_value__gte=0
+            ).aggregate(amount=Sum("diff_value", default=0))["amount"]
+            expenses = abs(
+                object_list.filter(type_action__in=[2, 3], diff_value__lte=0).aggregate(
+                    amount=Sum("diff_value", default=0)
+                )["amount"]
+            )
 
             reason = "N/A"
-            if len(subject)>0:
+            if len(subject) > 0:
                 reason = ", ".join(subject)
-            PrecursorReportValues.objects.create(precursor_report = report,
-                                                 object = precursor.object,
-                                                 measurement_unit = unit,
-                                                 quantity = precursor.quantity_base_unit,
-                                                 new_income = income,
-                                                 bills = ", ".join(bills),
-                                                 providers=", ".join(providers),
-                                                 stock = income+0,
-                                                 month_expense = expenses,
-                                                 final_balance = income-expenses,
-                                                 reason_to_spend = reason
-                                                 )
+            PrecursorReportValues.objects.create(
+                precursor_report=report,
+                object=precursor.object,
+                measurement_unit=unit,
+                quantity=precursor.quantity_base_unit,
+                new_income=income,
+                bills=", ".join(bills),
+                providers=", ".join(providers),
+                stock=income + 0,
+                month_expense=expenses,
+                final_balance=income - expenses,
+                reason_to_spend=reason,
+            )
 
 
 def build_precursor_report_from_reports(first_report, second_report):
     if second_report:
-        first_report = PrecursorReportValues.objects.filter(precursor_report= first_report)
-        second_report = PrecursorReportValues.objects.filter(precursor_report= second_report)
+        first_report = PrecursorReportValues.objects.filter(
+            precursor_report=first_report
+        )
+        second_report = PrecursorReportValues.objects.filter(
+            precursor_report=second_report
+        )
         for obj in first_report:
 
-            old_obj = second_report.filter(object=obj.object, measurement_unit=obj.measurement_unit).first()
+            old_obj = second_report.filter(
+                object=obj.object, measurement_unit=obj.measurement_unit
+            ).first()
             if old_obj:
                 obj.previous_balance = old_obj.final_balance
-                obj.stock = old_obj.final_balance+obj.new_income
-                obj.final_balance = obj.stock-obj.month_expense
+                obj.stock = old_obj.final_balance + obj.new_income
+                obj.final_balance = obj.stock - obj.month_expense
                 obj.save()

@@ -39,7 +39,7 @@ class Command(BaseCommand):
             )
 
             # noinspection PyProtectedMember
-            for (codename, _) in _get_all_permissions(model._meta):
+            for codename, _ in _get_all_permissions(model._meta):
                 defined_perms.append((ctype.id, codename))
 
         # All permissions in current database (including stale ones)
@@ -52,16 +52,20 @@ class Command(BaseCommand):
                 if not options["dry"]:
                     self.stdout.write(f"Delete permission: {perm}")
 
-
         # Delete all stale permissions
         if options["dry"]:
-            print('[', ", ".join(
-                ["'%s.%s'"%(label, code) for code, label in Permission.objects.filter(pk__in=stale_perm_pks).values_list(
-                    'codename',
-                    'content_type__app_label'
-                )] ),
-                  "]")
-
+            print(
+                "[",
+                ", ".join(
+                    [
+                        "'%s.%s'" % (label, code)
+                        for code, label in Permission.objects.filter(
+                            pk__in=stale_perm_pks
+                        ).values_list("codename", "content_type__app_label")
+                    ]
+                ),
+                "]",
+            )
             result = f"DRY RUN: {len(stale_perm_pks)} stale permissions NOT deleted"
         else:
             if stale_perm_pks:
