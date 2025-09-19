@@ -27,15 +27,15 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	pycodestyle --max-line-length=88 src
+	pycodestyle --exclude=*/migrations/*  --max-line-length=200 src
 
 test:
 	cd src && python manage.py test  --no-input --exclude-tag=selenium
 
 docs:
+	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	pip install 'sphinx<7' sphinx-rtd-theme==1.2.2
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
 
@@ -49,7 +49,7 @@ trans:
 	cd src && django-admin compilemessages --locale es
 
 build_docker: clean trans
-	docker pull python:3.12-bookworm
+	docker pull python:3.13-trixie
 	docker build  -t organilab:$(setup_version)  .
 
 release: clean trans builddocker
@@ -60,9 +60,9 @@ dist:
 	git push origin "refs/tags/v$(setup_version)"
 
 start:
-	cd src && python manage.py migrate
-	python manage.py init_checks
-	python manage.py load_urlname_permissions
+	cd src && python manage.py migrate \
+	&& python manage.py init_checks \
+	&& python manage.py load_urlname_permissions
 
 
 
@@ -70,7 +70,7 @@ docs_full:
 	cd src && python manage.py test  --no-input --tag=selenium && cd ..
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	pip install 'sphinx<7' sphinx-rtd-theme==1.2.2
+	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
 

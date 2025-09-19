@@ -7,23 +7,29 @@ from laboratory.models import OrganizationStructureRelations, OrganizationStruct
 
 def user_is_allowed_on_organization(user, organization):
     if organization is None:
-        raise ObjectDoesNotExist('Organization not found')
-    if isinstance(organization, (str,int)):
+        raise ObjectDoesNotExist("Organization not found")
+    if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
     if not organization.users.filter(pk=user.pk).exists():
-        raise PermissionDenied(_("User %(user)s not allowed on organization %(organization)r ")%{
-            'user': user, 'organization': organization})
+        raise PermissionDenied(
+            _("User %(user)s not allowed on organization %(organization)r ")
+            % {"user": user, "organization": organization}
+        )
 
 
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
         return True
-    if OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE).filter(
-        content_type__app_label=laboratory._meta.app_label,
-        content_type__model=laboratory._meta.model_name,
-        object_id=laboratory.pk,
-        organization=organization
-    ).exists():
+    if (
+        OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
+        .filter(
+            content_type__app_label=laboratory._meta.app_label,
+            content_type__model=laboratory._meta.model_name,
+            object_id=laboratory.pk,
+            organization=organization,
+        )
+        .exists()
+    ):
         return True
 
     if raise_exec:

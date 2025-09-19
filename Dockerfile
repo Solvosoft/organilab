@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image
-FROM python:3.12-bookworm
-ENV PYTHONUNBUFFERED 1
+FROM python:3.13-trixie
+ENV PYTHONUNBUFFERED=1
 ENV DEBIAN_FRONTEND=noninteractive
 ENV REQUESTS_CA_PATH=/certs/ca_nacional_de_CR.pem
 ENV REQUESTS_CERT_PATH=/certs/bccr_agent.pem

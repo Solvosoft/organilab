@@ -1,1 +1,1 @@
-default_app_config = 'laboratory.apps.LaboratoryConfig'
+default_app_config = "laboratory.apps.LaboratoryConfig"

@@ -1,20 +1,28 @@
-from rest_framework import serializers
 from django.conf import settings
-from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
-from laboratory.models import LaboratoryRoom, Laboratory, Object, Catalog, \
-    ShelfObject
-from report.models import ObjectChangeLogReportBuilder
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+
+from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
+from laboratory.models import LaboratoryRoom, Laboratory, Object, Catalog
+from report.models import ObjectChangeLogReportBuilder
 
 
 class ReportDataTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=serializers.ListSerializer(child=serializers.CharField()), required=True)
+    data = serializers.ListField(
+        child=serializers.ListSerializer(child=serializers.CharField()), required=True
+    )
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
 class ValidateUserAccessLabRoomSerializer(ValidateUserAccessOrgLabSerializer):
-    lab_room = serializers.PrimaryKeyRelatedField(many=True, queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE), allow_null=True, required=False)
+    lab_room = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE),
+        allow_null=True,
+        required=False,
+    )
     all_labs_org = serializers.BooleanField(default=False)
 
 
@@ -37,12 +45,12 @@ class ObjectChangeLogSerializer(serializers.ModelSerializer):
     def get_update_time(self, obj):
         if obj.update_time:
             return obj.update_time.strftime("%m/%d/%Y, %H:%M:%S")
-        return ''
-
+        return ""
 
     class Meta:
         model = ObjectChangeLogReportBuilder
-        fields = '__all__'
+        fields = "__all__"
+
 
 class ObjectChangeDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ObjectChangeLogSerializer(), required=True)
@@ -50,10 +58,14 @@ class ObjectChangeDataTableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
 class ValidateObjectChangeFilters(serializers.Serializer):
     laboratory = serializers.PrimaryKeyRelatedField(
-        queryset=Laboratory.objects.all().using(settings.READONLY_DATABASE))
+        queryset=Laboratory.objects.all().using(settings.READONLY_DATABASE)
+    )
     object = serializers.PrimaryKeyRelatedField(
-        queryset=Object.objects.all().using(settings.READONLY_DATABASE))
+        queryset=Object.objects.all().using(settings.READONLY_DATABASE)
+    )
     unit = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.filter(key='units').using(settings.READONLY_DATABASE))
+        queryset=Catalog.objects.filter(key="units").using(settings.READONLY_DATABASE)
+    )

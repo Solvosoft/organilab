@@ -1,11 +1,12 @@
 from __future__ import absolute_import
 
-__version__ = '1.4.8'
+__version__ = "1.5.0"
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(__version__)
 else:
     from .celery import app as celery_app
+
 
 def get_version():
     return __version__

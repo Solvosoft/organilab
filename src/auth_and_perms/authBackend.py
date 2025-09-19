@@ -12,17 +12,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-'''
+"""
 @date: 7/8/2018
 @author: Luis Zarate Montero
 @contact: luis.zarate@solvosoft.com
 @license: GPLv3
-'''
+"""
 
 from django.contrib.auth.models import User
 from django.conf import settings
 
-#from corebase import logger
+# from corebase import logger
 from .models import AuthenticateDataRequest
 
 
@@ -35,21 +35,24 @@ class BCCRBackend(object):
     y está adecuadamente guardado en la base de datos.
     Si el usuario no existe se crea por defecto usando su número de identificación como username
     """
-    def authenticate(self, request, token=None):
-        Rauth = AuthenticateDataRequest.objects.filter(
-            id_transaction=token).first()
 
-       # logger.info({'message': "Authenticate user from Firma Digital", 'data': Rauth, 'location': __file__})
-        if Rauth and Rauth.received_notification and \
-                Rauth.status == settings.DEFAULT_SUCCESS_BCCR:
+    def authenticate(self, request, token=None):
+        Rauth = AuthenticateDataRequest.objects.filter(id_transaction=token).first()
+
+        # logger.info({'message': "Authenticate user from Firma Digital", 'data': Rauth, 'location': __file__})
+        if (
+            Rauth
+            and Rauth.received_notification
+            and Rauth.status == settings.DEFAULT_SUCCESS_BCCR
+        ):
             try:
                 user = User.objects.get(username=Rauth.identification)
             except User.DoesNotExist:
                 # Create a new user. There's no need to set a password
                 # because only the password from settings.py is checked.
-               # logger.info({'message':
-               #     "Creating user from Firma Digital ", 'data':Rauth.identification,
-               #              'location': __file__})
+                # logger.info({'message':
+                #     "Creating user from Firma Digital ", 'data':Rauth.identification,
+                #              'location': __file__})
                 user = User(username=Rauth.identification)
                 user.is_staff = False
                 user.is_superuser = False

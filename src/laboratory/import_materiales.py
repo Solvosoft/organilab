@@ -1,13 +1,13 @@
 # encoding: utf-8
 
-'''
+"""
 Free as freedom will be 10/10/2016
 
 @author: luisza
-'''
+"""
 
-from laboratory.models import LaboratoryRoom, Furniture, Shelf, Object,\
-    ShelfObject
+
+from laboratory.models import LaboratoryRoom, Furniture, Shelf, Object, ShelfObject
 import json
 import re
 
@@ -29,15 +29,15 @@ def build_dataconfig(furniture, col, row):
         if row2 < row:
             row_less = row - row2
             for x in range(row_less):
-                dataconfig.append([''] * (col2 + 1))
+                dataconfig.append([""] * (col2 + 1))
         # Work with columns
         if col2 < col:
             col_less = col - col2
             for i, x in enumerate(dataconfig):
-                dataconfig[i] = dataconfig[i] + [''] * col_less
+                dataconfig[i] = dataconfig[i] + [""] * col_less
     else:
         for x in range(row + 1):
-            dataconfig.append([''] * (col + 1))
+            dataconfig.append([""] * (col + 1))
     return dataconfig
 
 
@@ -62,15 +62,13 @@ def set_dataconfig(furniture, col, value):
 def set_in_position(furniture, code, tipo=None):
     _type = Shelf.CRATE
     if tipo is not None:
-        if 'estante simple' != tipo:
+        if "estante simple" != tipo:
             _type = Shelf.DRAWER
     shelf, _ = Shelf.objects.get_or_create(
-        name=code.upper(),
-        type=_type,
-        furniture=furniture
+        name=code.upper(), type=_type, furniture=furniture
     )
 
-    pos = int(re.findall('\d+', code)[0])
+    pos = int(re.findall(r"\d+", code)[0])
 
     set_dataconfig(furniture, pos, shelf.pk)
 
@@ -82,87 +80,94 @@ def get_furniture_name(code):
 
 
 def carge_inventario_materiales():
-    with open('data/inventario.csv') as arch:
-        for x in arch.read().split('\n'):
+    with open("data/inventario.csv") as arch:
+        for x in arch.read().split("\n"):
             if not x:
                 continue
-            data = dict(zip(['nombre', 'marca', 'modelo',
-                             'codigo',  'serie',
-                             'num_activo', 'ubicacion', 'posicion'],
-                            x.split('\t')))
-
-            lab, _ = LaboratoryRoom.objects.get_or_create(
-                name=data['ubicacion'])
-            furniture, _ = Furniture.objects.get_or_create(
-                labroom=lab,
-                name=get_furniture_name(data['posicion']),
-                type=Furniture.FURNITURE
+            data = dict(
+                zip(
+                    [
+                        "nombre",
+                        "marca",
+                        "modelo",
+                        "codigo",
+                        "serie",
+                        "num_activo",
+                        "ubicacion",
+                        "posicion",
+                    ],
+                    x.split("\t"),
+                )
             )
 
-            shelf = set_in_position(furniture, data['posicion'])
+            lab, _ = LaboratoryRoom.objects.get_or_create(name=data["ubicacion"])
+            furniture, _ = Furniture.objects.get_or_create(
+                labroom=lab,
+                name=get_furniture_name(data["posicion"]),
+                type=Furniture.FURNITURE,
+            )
+
+            shelf = set_in_position(furniture, data["posicion"])
             obj = Object.objects.create(
-                code=data['codigo'],
-                name=data['nombre'],
+                code=data["codigo"],
+                name=data["nombre"],
                 type=Object.EQUIPMENT,
                 description="""
         Marca: %s
         Modelo: %s
         Serie: %s
         Núm activo: %s
-        """ % (
-                    data['marca'],
-                    data['modelo'],
-                    data['serie'],
-                    data['num_activo']
-                )
-
+        """
+                % (data["marca"], data["modelo"], data["serie"], data["num_activo"]),
             )
 
             ShelfObject.objects.create(
-                shelf=shelf,
-                object=obj,
-                quantity=1,
-                measurement_unit=ShelfObject.U
+                shelf=shelf, object=obj, quantity=1, measurement_unit=ShelfObject.U
             )
 
 
 def carge_cristaleria():
-    with open('data/cristaleria.csv') as arch:
-        for x in arch.read().split('\n'):
+    with open("data/cristaleria.csv") as arch:
+        for x in arch.read().split("\n"):
             if not x:
                 continue
-            data = dict(zip(['codigo', 'nombre',
-                             'tipo', 'descripcion',
-                             'caracteristica', 'ubicacion', 'posicion'],
-                            x.split('\t')))
-
-            lab, _ = LaboratoryRoom.objects.get_or_create(
-                name=data['ubicacion'])
-            furniture, _ = Furniture.objects.get_or_create(
-                labroom=lab,
-                name=get_furniture_name(data['posicion']),
-                type=Furniture.FURNITURE
+            data = dict(
+                zip(
+                    [
+                        "codigo",
+                        "nombre",
+                        "tipo",
+                        "descripcion",
+                        "caracteristica",
+                        "ubicacion",
+                        "posicion",
+                    ],
+                    x.split("\t"),
+                )
             )
 
-            shelf = set_in_position(furniture, data['posicion'],
-                                    data['tipo'])
+            lab, _ = LaboratoryRoom.objects.get_or_create(name=data["ubicacion"])
+            furniture, _ = Furniture.objects.get_or_create(
+                labroom=lab,
+                name=get_furniture_name(data["posicion"]),
+                type=Furniture.FURNITURE,
+            )
+
+            shelf = set_in_position(furniture, data["posicion"], data["tipo"])
             obj = Object.objects.create(
-                code=data['codigo'],
-                name=data['nombre'],
+                code=data["codigo"],
+                name=data["nombre"],
                 type=Object.EQUIPMENT,
                 description="""
             Descripción: %s
             Características: %s
-            """ % (
-                    data['descripcion'],
-                    data['caracteristica'],
-                )
-
+            """
+                % (
+                    data["descripcion"],
+                    data["caracteristica"],
+                ),
             )
 
             ShelfObject.objects.create(
-                shelf=shelf,
-                object=obj,
-                quantity=1,
-                measurement_unit=ShelfObject.U
+                shelf=shelf, object=obj, quantity=1, measurement_unit=ShelfObject.U
             )

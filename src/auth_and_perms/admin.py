@@ -6,47 +6,53 @@ from django.http import HttpResponse
 import io
 from auth_and_perms import models
 
-@admin.action(description='Export Laboratory')
+
+@admin.action(description="Export Laboratory")
 def export_rol_perms(admin, request, queryset):
     buffer = io.BytesIO()
-    zip_file = zipfile.ZipFile(buffer, 'w')
-
+    zip_file = zipfile.ZipFile(buffer, "w")
 
     for rol in queryset:
-        rols=models.ProfilePermission.objects.filter(rol=rol)
-        zip_file.writestr(rol.name+".json", serializers.serialize('json', rols))
+        rols = models.ProfilePermission.objects.filter(rol=rol)
+        zip_file.writestr(rol.name + ".json", serializers.serialize("json", rols))
     zip_file.close()
     buffer.seek(0)
-    response = HttpResponse(buffer.getvalue(),
-        content_type='application/x-zip-compressed',
-        headers={'Content-Disposition': 'attachment; filename="permissionsrol.zip"'})
+    response = HttpResponse(
+        buffer.getvalue(),
+        content_type="application/x-zip-compressed",
+        headers={"Content-Disposition": 'attachment; filename="permissionsrol.zip"'},
+    )
     return response
 
 
 class RolAdmin(admin.ModelAdmin):
-    filter_horizontal = ['permissions']
+    filter_horizontal = ["permissions"]
     actions = [export_rol_perms]
 
 
 class AuthorizedApplicationAdmin(admin.ModelAdmin):
-    list_display = ['name', 'auth_token']
+    list_display = ["name", "auth_token"]
 
-    @admin.display(empty_value='unknown')
+    @admin.display(empty_value="unknown")
     def auth_token(self, obj):
         if obj.user:
             return obj.user.auth_token.key
-        return 'unknown'
+        return "unknown"
+
 
 class ProfileAdmin(admin.ModelAdmin):
-    search_fields = ['user__username', 'user__email']
+    search_fields = ["user__username", "user__email"]
+
 
 class ProfilePermissionAdmin(admin.ModelAdmin):
-    search_fields = ['profile__user__email']
+    search_fields = ["profile__user__email"]
+
 
 class ImpostorAdmin(admin.ModelAdmin):
-    search_fields = ['impostor__username','imposted_as__username']
-    list_display = ['__str__', 'impostor_ip', 'logged_in', 'logged_out']
-    date_hierarchy = 'logged_in'
+    search_fields = ["impostor__username", "imposted_as__username"]
+    list_display = ["__str__", "impostor_ip", "logged_in", "logged_out"]
+    date_hierarchy = "logged_in"
+
 
 admin.site.register(models.AuthorizedApplication, AuthorizedApplicationAdmin)
 admin.site.register(models.Profile, ProfileAdmin)

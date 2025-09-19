@@ -5,8 +5,11 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from laboratory.models import OrganizationStructure
 from sga.api.filterset import HCategoryFilterSet
-from sga.api.serializers import DangerCategorySerializer, \
-    DangerCategoryActionsSerializer, DangerCategoryDataTableSerializer
+from sga.api.serializers import (
+    DangerCategorySerializer,
+    DangerCategoryActionsSerializer,
+    DangerCategoryDataTableSerializer,
+)
 from sga.models import HCodeCategory
 
 
@@ -33,7 +36,13 @@ class HCodeCategoryViewSet(AuthAllPermBaseObjectManagement):
     queryset = HCodeCategory.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['name',"threshold","danger_category", "h_code__code", "h_code__description"]
+    search_fields = [
+        "name",
+        "threshold",
+        "danger_category",
+        "h_code__code",
+        "h_code__description",
+    ]
     filterset_class = HCategoryFilterSet
     ordering_fields = ["id"]
     ordering = ("id",)

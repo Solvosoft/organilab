@@ -20,20 +20,36 @@ from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
 from derb.models import CustomForm as DerbCustomForm
 from laboratory import utils
-from laboratory.models import OrganizationStructure, CommentInform, Catalog, \
-    InformScheduler, RegisterUserQR, \
-    ShelfObject, ShelfObjectObservation, EquipmentType
+from laboratory.models import (
+    OrganizationStructure,
+    CommentInform,
+    Catalog,
+    InformScheduler,
+    RegisterUserQR,
+    ShelfObject,
+    ShelfObjectObservation,
+    EquipmentType,
+)
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
 from sga.models import DangerIndication
-from .models import Laboratory, Object, Provider, Shelf, Inform, ObjectFeatures, \
-    LaboratoryRoom, Furniture
+from .models import (
+    Laboratory,
+    Object,
+    Provider,
+    Shelf,
+    Inform,
+    ObjectFeatures,
+    LaboratoryRoom,
+    Furniture,
+)
 from .utils import get_users_from_organization
 
 
 class UserAccessForm(forms.Form):
-    access = forms.BooleanField(widget=forms.CheckboxInput(
-        attrs={'id': 'user_cb_'}))  # User_checkbox_id
+    access = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={"id": "user_cb_"})
+    )  # User_checkbox_id
     # For delete users. Add a delete button.
 
 
@@ -41,191 +57,263 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
     default_render_type = "as_grid"
     grid_representation = [
         [
-            ["name",
-             "coordinator",
-             "unit",
-             "location",
-             "nearby_sites",
-             "description",
-             ],
             [
-            "responsible",
-            "email",
-             "phone_number",
-             "area",
-             "water_resources_affected",
-             "geolocation",
-             ]
+                "name",
+                "coordinator",
+                "unit",
+                "location",
+                "nearby_sites",
+                "description",
+            ],
+            [
+                "responsible",
+                "email",
+                "phone_number",
+                "area",
+                "water_resources_affected",
+                "geolocation",
+            ],
         ],
     ]
 
     def __init__(self, *args, **kwargs):
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
-        self.fields['geolocation'].widget.attrs['class'] = 'form-control'
-        org = kwargs.get('organization', None)
+        self.fields["geolocation"].widget.attrs["class"] = "form-control"
+        org = kwargs.get("organization", None)
         if org:
-            self.fields['responsible'].queryset = (User.objects.
-                                                   filter(pk__in=get_users_from_organization(org)))
+            self.fields["responsible"].queryset = User.objects.filter(
+                pk__in=get_users_from_organization(org)
+            )
+
     class Meta:
         model = Laboratory
-        fields = ['name', 'phone_number', 'location',
-                  'geolocation', 'organization','area',
-                  'description', 'coordinator', 'email', 'unit',
-                  'responsible', 'nearby_sites', 'water_resources_affected']
+        fields = [
+            "name",
+            "phone_number",
+            "location",
+            "geolocation",
+            "organization",
+            "area",
+            "description",
+            "coordinator",
+            "email",
+            "unit",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+        ]
         widgets = {
-            'name': genwidgets.TextInput,
-            'phone_number': genwidgets.TextInput,
-            'location': genwidgets.TextInput,
-            'geolocation': genwidgets.TextInput,
-            'organization': genwidgets.HiddenInput,
-            'area': genwidgets.FloatInput,
-            'description': genwidgets.Textarea,
-            'coordinator': genwidgets.TextInput,
-            'email': genwidgets.EmailInput,
-            'unit': genwidgets.TextInput,
-            'responsible': genwidgets.Select,
-            'nearby_sites': FileChunkedUpload,
-            'water_resources_affected': FileChunkedUpload
+            "name": genwidgets.TextInput,
+            "phone_number": genwidgets.TextInput,
+            "location": genwidgets.TextInput,
+            "geolocation": genwidgets.TextInput,
+            "organization": genwidgets.HiddenInput,
+            "area": genwidgets.FloatInput,
+            "description": genwidgets.Textarea,
+            "coordinator": genwidgets.TextInput,
+            "email": genwidgets.EmailInput,
+            "unit": genwidgets.TextInput,
+            "responsible": genwidgets.Select,
+            "nearby_sites": FileChunkedUpload,
+            "water_resources_affected": FileChunkedUpload,
         }
 
 
 class LaboratoryEdit(GTForm, forms.ModelForm):
-    regent = forms.ModelChoiceField(queryset=Regent.objects.all(),
-                                    required=False,
-                                    widget=genwidgets.SelectMultiple(attrs={'disabled': True}),
-                                    label=_("Regent"))
+    regent = forms.ModelChoiceField(
+        queryset=Regent.objects.all(),
+        required=False,
+        widget=genwidgets.SelectMultiple(attrs={"disabled": True}),
+        label=_("Regent"),
+    )
     default_render_type = "as_grid"
     grid_representation = [
         [
-            ["name",
-             "coordinator",
-             "unit",
-             "location",
-             "regent",
-             "nearby_sites",
-             "description",
-             ],
             [
-            "responsible",
-            "email",
-            "phone_number",
-            "area",
-            "water_resources_affected",
-            "geolocation",
-             ]
-
+                "name",
+                "coordinator",
+                "unit",
+                "location",
+                "regent",
+                "nearby_sites",
+                "description",
+            ],
+            [
+                "responsible",
+                "email",
+                "phone_number",
+                "area",
+                "water_resources_affected",
+                "geolocation",
+            ],
         ],
-
-
     ]
 
     def __init__(self, *args, **kwargs):
         super(LaboratoryEdit, self).__init__(*args, **kwargs)
-        self.fields['geolocation'].widget.attrs['class'] = 'form-control'
-        self.fields['regent'].initial = list(Regent.objects.filter(laboratories=self.instance).values_list('pk', flat=True))
-        self.fields['responsible'].queryset = self.instance.organization.users.all()
+        self.fields["geolocation"].widget.attrs["class"] = "form-control"
+        self.fields["regent"].initial = list(
+            Regent.objects.filter(laboratories=self.instance).values_list(
+                "pk", flat=True
+            )
+        )
+        self.fields["responsible"].queryset = self.instance.organization.users.all()
+
     class Meta:
         model = Laboratory
-        fields = ['name', 'coordinator', 'unit', 'phone_number', 'email', 'location',
-                  'geolocation', 'organization', 'area', 'description', 'regent',
-                  'responsible', "nearby_sites", "water_resources_affected"]
+        fields = [
+            "name",
+            "coordinator",
+            "unit",
+            "phone_number",
+            "email",
+            "location",
+            "geolocation",
+            "organization",
+            "area",
+            "description",
+            "regent",
+            "responsible",
+            "nearby_sites",
+            "water_resources_affected",
+        ]
         widgets = {
-            'name': genwidgets.TextInput,
-            'coordinator': genwidgets.TextInput,
-            'unit': genwidgets.TextInput,
-            'phone_number': genwidgets.TextInput,
-            'email': genwidgets.EmailInput,
-            'location': genwidgets.TextInput,
-            'geolocation': genwidgets.TextInput,
-            'organization': genwidgets.HiddenInput,
-            'description': genwidgets.Textarea,
-            'area': genwidgets.FloatInput,
-            'responsible': genwidgets.Select,
-            'nearby_sites': FileChunkedUpload,
-            'water_resources_affected': FileChunkedUpload,
-
+            "name": genwidgets.TextInput,
+            "coordinator": genwidgets.TextInput,
+            "unit": genwidgets.TextInput,
+            "phone_number": genwidgets.TextInput,
+            "email": genwidgets.EmailInput,
+            "location": genwidgets.TextInput,
+            "geolocation": genwidgets.TextInput,
+            "organization": genwidgets.HiddenInput,
+            "description": genwidgets.Textarea,
+            "area": genwidgets.FloatInput,
+            "responsible": genwidgets.Select,
+            "nearby_sites": FileChunkedUpload,
+            "water_resources_affected": FileChunkedUpload,
         }
 
 
 class H_CodeForm(GTForm, forms.Form):
-    hcode = forms.ModelMultipleChoiceField(queryset=DangerIndication.objects.all(), required=False,
-                                           widget=genwidgets.SelectMultiple,
-                                           label=_('Filter substances by H Code'))
+    hcode = forms.ModelMultipleChoiceField(
+        queryset=DangerIndication.objects.all(),
+        required=False,
+        widget=genwidgets.SelectMultiple,
+        label=_("Filter substances by H Code"),
+    )
 
 
 class OrganizationUserManagementForm(GTForm):
     name = forms.CharField(widget=genwidgets.TextInput, required=True, label=_("Name"))
-    group = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Group.objects.all(), required=True,
-                                   label=_("Group"))
-
+    group = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Group.objects.all(),
+        required=True,
+        label=_("Group"),
+    )
 
 
 class ReservationModalForm(GTForm, ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ReservationModalForm, self).__init__(*args, **kwargs)
-        self.fields['initial_date'].help_text = _('Entered date should be greater than current date and time')
-        self.fields['final_date'].help_text = _('Entered date should be greater than current date and time')
-
+        self.fields["initial_date"].help_text = _(
+            "Entered date should be greater than current date and time"
+        )
+        self.fields["final_date"].help_text = _(
+            "Entered date should be greater than current date and time"
+        )
 
     class Meta:
         model = ReservedProducts
-        fields = ['amount_required', 'initial_date', 'final_date']
+        fields = ["amount_required", "initial_date", "final_date"]
         widgets = {
-            'initial_date': genwidgets.DateTimeInput,
-            'final_date': genwidgets.DateTimeInput,
-            'amount_required': genwidgets.TextInput
+            "initial_date": genwidgets.DateTimeInput,
+            "final_date": genwidgets.DateTimeInput,
+            "amount_required": genwidgets.TextInput,
         }
+
 
 class ReservedModalForm(GTForm, ModelForm):
     options = forms.IntegerField(initial=1, widget=genwidgets.HiddenInput)
+
     class Meta:
         model = ReservedProducts
-        fields = ['amount_required', 'initial_date', 'final_date']
+        fields = ["amount_required", "initial_date", "final_date"]
         widgets = {
-            'initial_date': genwidgets.DateTimeInput,
-            'final_date': genwidgets.DateTimeInput,
-            'amount_required': genwidgets.TextInput,
+            "initial_date": genwidgets.DateTimeInput,
+            "final_date": genwidgets.DateTimeInput,
+            "amount_required": genwidgets.TextInput,
         }
 
 
 class TransferObjectForm(GTForm):
-    amount_send = forms.CharField(widget=genwidgets.TextInput, max_length=10, label=_('Amount'),
-                                  help_text=_('Use dot like 0.344 on decimal'), required=True)
-    laboratory = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Laboratory.objects.all(),
-                                        label=_("Laboratory"), required=True)
-    mark_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, label=_("Mark as discard"), required=False)
+    amount_send = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=10,
+        label=_("Amount"),
+        help_text=_("Use dot like 0.344 on decimal"),
+        required=True,
+    )
+    laboratory = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Laboratory.objects.all(),
+        label=_("Laboratory"),
+        required=True,
+    )
+    mark_as_discard = forms.BooleanField(
+        widget=genwidgets.YesNoInput, label=_("Mark as discard"), required=False
+    )
 
     def __init__(self, *args, **kwargs):
-        users = kwargs.pop('users')
-        lab = kwargs.pop('lab_send')
-        org = kwargs.pop('org')
+        users = kwargs.pop("users")
+        lab = kwargs.pop("lab_send")
+        org = kwargs.pop("org")
         super(TransferObjectForm, self).__init__(*args, **kwargs)
         profile = Profile.objects.filter(pk=users.profile.pk).first()
-        orgs= utils.get_pk_org_ancestors_decendants(users,org)
+        orgs = utils.get_pk_org_ancestors_decendants(users, org)
 
-        self.fields['laboratory'].queryset = profile.laboratories.filter(organization__in=orgs).exclude(pk=lab)
+        self.fields["laboratory"].queryset = profile.laboratories.filter(
+            organization__in=orgs
+        ).exclude(pk=lab)
 
 
 class AddObjectForm(GTForm, forms.Form):
-    amount = forms.FloatField(widget=genwidgets.TextInput,  help_text=_('Use dot like 0.344 on decimal'),
-                             label=_('Amount'), required=True)
+    amount = forms.FloatField(
+        widget=genwidgets.TextInput,
+        help_text=_("Use dot like 0.344 on decimal"),
+        label=_("Amount"),
+        required=True,
+    )
     bill = forms.CharField(widget=genwidgets.TextInput, label=_("Bill"), required=False)
-    provider = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Provider.objects.all(),
-                                      label=_("Provider"), required=False)
+    provider = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Provider.objects.all(),
+        label=_("Provider"),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
-        lab = kwargs.pop('lab')
+        lab = kwargs.pop("lab")
         super(AddObjectForm, self).__init__(*args, **kwargs)
         providers = Provider.objects.filter(laboratory__id=int(lab))
-        self.fields['provider'].queryset = providers
+        self.fields["provider"].queryset = providers
 
 
 class SubtractObjectForm(GTForm):
-    discount = forms.DecimalField(widget=genwidgets.TextInput, help_text=_('Use dot like 0.344 on decimal'),
-                               label=_('Amount'), required=True)
-    description = forms.CharField(widget=genwidgets.TextInput, max_length=255, help_text=_('Describe the action'),
-                                  label=_('Description'), required=False)
+    discount = forms.DecimalField(
+        widget=genwidgets.TextInput,
+        help_text=_("Use dot like 0.344 on decimal"),
+        label=_("Amount"),
+        required=True,
+    )
+    description = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        help_text=_("Describe the action"),
+        label=_("Description"),
+        required=False,
+    )
 
 
 class ProfileForm(GTForm, forms.Form):
@@ -236,45 +324,48 @@ class ProfileForm(GTForm, forms.Form):
     profile_id = forms.CharField(widget=forms.HiddenInput())
     location = forms.CharField(widget=genwidgets.TextInput, label=_("Location"))
 
+
 class AddTransferObjectForm(GTForm):
-    shelf = forms.ModelChoiceField(widget=genwidgets.Select, queryset=Shelf.objects.all(), label=_("Shelf"),
-                                   required=True)
+    shelf = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Shelf.objects.all(),
+        label=_("Shelf"),
+        required=True,
+    )
 
     def __init__(self, *args, **kwargs):
-        lab = kwargs.pop('lab')
+        lab = kwargs.pop("lab")
         super(AddTransferObjectForm, self).__init__(*args, **kwargs)
         shelf = Shelf.objects.filter(furniture__labroom__laboratory__id=int(lab))
-        self.fields['shelf'].queryset = shelf
+        self.fields["shelf"].queryset = shelf
 
 
 class ProviderForm(forms.ModelForm, GTForm):
     class Meta:
         model = Provider
-        fields = ['name', 'phone_number', 'email', 'legal_identity']
-        widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
-                   'phone_number': genwidgets.PhoneNumberMaskInput,
-                   'email': genwidgets.EmailMaskInput,
-                   'legal_identity': genwidgets.TextInput(attrs={'required': True}),
-                   }
+        fields = ["name", "phone_number", "email", "legal_identity"]
+        widgets = {
+            "name": genwidgets.TextInput(attrs={"required": True}),
+            "phone_number": genwidgets.PhoneNumberMaskInput,
+            "email": genwidgets.EmailMaskInput,
+            "legal_identity": genwidgets.TextInput(attrs={"required": True}),
+        }
 
 
 class ObjectFeaturesForm(forms.ModelForm, GTForm):
     class Meta:
         model = ObjectFeatures
-        fields = '__all__'
-        widgets = {
-            'name': genwidgets.TextInput(),
-            'description': genwidgets.Textarea()
-        }
+        fields = "__all__"
+        widgets = {"name": genwidgets.TextInput(), "description": genwidgets.Textarea()}
 
 
 class LaboratoryRoomForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        exclude = ['laboratory', 'created_by']
+        exclude = ["laboratory", "created_by"]
         widgets = {
-            'name': genwidgets.TextInput(),
-            'legal_identity': genwidgets.NumberInput,
+            "name": genwidgets.TextInput(),
+            "legal_identity": genwidgets.NumberInput,
         }
 
 
@@ -284,101 +375,116 @@ class FurnitureCreateForm(forms.ModelForm, GTForm):
         fields = ("name", "type")
         widgets = {
             "name": genwidgets.TextInput,
-            "type": genwidgets.Select(attrs={'data-dropdownparent': '#furnitureModal',
-                                             'data-placeholder': _('Select Furniture')})
+            "type": genwidgets.Select(
+                attrs={
+                    "data-dropdownparent": "#furnitureModal",
+                    "data-placeholder": _("Select Furniture"),
+                }
+            ),
         }
 
 
 class RoomCreateForm(forms.ModelForm, GTForm):
     class Meta:
         model = LaboratoryRoom
-        exclude = ['laboratory']
-        widgets = {
-            'name': genwidgets.TextInput,
-            'created_by': genwidgets.HiddenInput
-        }
+        exclude = ["laboratory"]
+        widgets = {"name": genwidgets.TextInput, "created_by": genwidgets.HiddenInput}
 
 
 class FurnitureForm(forms.ModelForm, GTForm):
     dataconfig = forms.CharField(
         widget=forms.HiddenInput,
-        validators=[RegexValidator(
-            r'^[\[\],\s"\d]*$',
-            message=_("Invalid format in shelf dataconfig "),
-            code='invalid_format')])
-    shelfs = forms.CharField(required=False,widget=forms.HiddenInput)
+        validators=[
+            RegexValidator(
+                r'^[\[\],\s"\d]*$',
+                message=_("Invalid format in shelf dataconfig "),
+                code="invalid_format",
+            )
+        ],
+    )
+    shelfs = forms.CharField(required=False, widget=forms.HiddenInput)
 
     def clean_shelfs(self):
-        value = self.cleaned_data['shelfs']
+        value = self.cleaned_data["shelfs"]
         shelfs = []
         if value:
-            shelfs = re.findall(r'\d+', self.cleaned_data['shelfs'])
+            shelfs = re.findall(r"\d+", self.cleaned_data["shelfs"])
         return shelfs
 
     class Meta:
         model = Furniture
-        fields = ("labroom", "name", "type", 'dataconfig', 'color')
-        widgets = {'labroom': genwidgets.Select,
-                   'name': genwidgets.TextInput,
-                   'type': genwidgets.SelectWithAdd(attrs={
-                       'add_url': reverse_lazy("laboratory:add_furniture_type_catalog")}),
-                   'phone_number': genwidgets.PhoneNumberMaskInput,
-                   'email': genwidgets.EmailMaskInput,
-                   'legal_identity': genwidgets.TextInput(attrs={'required': True}),
-                   'color': genwidgets.ColorInput
-                   }
+        fields = ("labroom", "name", "type", "dataconfig", "color")
+        widgets = {
+            "labroom": genwidgets.Select,
+            "name": genwidgets.TextInput,
+            "type": genwidgets.SelectWithAdd(
+                attrs={"add_url": reverse_lazy("laboratory:add_furniture_type_catalog")}
+            ),
+            "phone_number": genwidgets.PhoneNumberMaskInput,
+            "email": genwidgets.EmailMaskInput,
+            "legal_identity": genwidgets.TextInput(attrs={"required": True}),
+            "color": genwidgets.ColorInput,
+        }
+
 
 class InformForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop('org_pk', None)
+        org_pk = kwargs.pop("org_pk", None)
         super(InformForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            self.fields['custom_form'].queryset = DerbCustomForm.objects.filter(organization__pk=org_pk)
+            self.fields["custom_form"].queryset = DerbCustomForm.objects.filter(
+                organization__pk=org_pk
+            )
         else:
-            self.fields['custom_form'].queryset = DerbCustomForm.objects.none()
+            self.fields["custom_form"].queryset = DerbCustomForm.objects.none()
 
-        self.fields['custom_form'].required = True
+        self.fields["custom_form"].required = True
+
     class Meta:
         model = Inform
-        fields = ['name', 'custom_form']
-        widgets = {'name': genwidgets.TextInput(attrs={'required': True}),
-                   'custom_form': genwidgets.Select(),
-                   }
+        fields = ["name", "custom_form"]
+        widgets = {
+            "name": genwidgets.TextInput(attrs={"required": True}),
+            "custom_form": genwidgets.Select(),
+        }
+
+
 class CommentForm(forms.ModelForm, GTForm):
     class Meta:
         model = CommentInform
-        fields = ['created_by', 'comment']
-        widgets = {'created_by': genwidgets.HiddenInput,
-                   'comment': genwidgets.Textarea,
-                   }
+        fields = ["created_by", "comment"]
+        widgets = {
+            "created_by": genwidgets.HiddenInput,
+            "comment": genwidgets.Textarea,
+        }
 
 
 class AddOrganizationForm(GTForm, forms.ModelForm):
     class Meta:
         model = OrganizationStructure
-        fields = ['name', 'parent']
-        widgets={
-            'name': genwidgets.TextInput,
-            'parent': genwidgets.HiddenInput
-        }
+        fields = ["name", "parent"]
+        widgets = {"name": genwidgets.TextInput, "parent": genwidgets.HiddenInput}
 
     def clean(self):
         cleaned_data = super().clean()
-        parent = cleaned_data.get('parent')
+        parent = cleaned_data.get("parent")
 
         if parent and not parent.active:
             raise ValidationError(_("Organization parent cannot be inactive"))
 
+
 class RelOrganizationForm(GTForm):
     contentyperelobj = forms.ModelMultipleChoiceField(
         queryset=Laboratory.objects.all(),
-        widget=AutocompleteSelectMultiple(url='relorgbase', attrs={
-            'data-s2filter-organization': '#relorg_organization'
-        }),
-        label=_("Laboratories to be related to this organization")
+        widget=AutocompleteSelectMultiple(
+            url="relorgbase",
+            attrs={"data-s2filter-organization": "#relorg_organization"},
+        ),
+        label=_("Laboratories to be related to this organization"),
     )
+
 
 class RelOrganizationPKIntForm(GTForm):
     organization = forms.IntegerField(required=True)
@@ -387,10 +493,10 @@ class RelOrganizationPKIntForm(GTForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        org_pk = cleaned_data.get('organization')
+        org_pk = cleaned_data.get("organization")
         organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-            pk=org_pk)
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+        )
 
         if not organization.active:
             self.add_error("organization", _("Organization cannot be inactive"))
@@ -399,105 +505,129 @@ class RelOrganizationPKIntForm(GTForm):
 class CatalogForm(GTForm, forms.ModelForm):
     class Meta:
         model = Catalog
-        fields = '__all__'
-        widgets = {
-            'key': genwidgets.HiddenInput,
-            'description': genwidgets.TextInput
-        }
+        fields = "__all__"
+        widgets = {"key": genwidgets.HiddenInput, "description": genwidgets.TextInput}
 
 
 class InformSchedulerForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop('org_pk')
+        org_pk = kwargs.pop("org_pk")
         super().__init__(*args, **kwargs)
-        self.fields['inform_template'].widget.extra_url_kwargs['pk']=org_pk
+        self.fields["inform_template"].widget.extra_url_kwargs["pk"] = org_pk
 
     class Meta:
-        model =InformScheduler
-        fields = ['organization', 'name', 'start_application_date', 'close_application_date',
-                  'period_on_days', 'inform_template', 'active']
-        widgets ={
-            'organization': genwidgets.HiddenInput,
-            'name': genwidgets.TextInput,
-            'start_application_date': genwidgets.DateInput,
-            'close_application_date': genwidgets.DateInput,
-            'period_on_days': genwidgets.NumberInput,
-            'inform_template': AutocompleteSelect('informtemplate', url_suffix='-detail'),
-            'active': genwidgets.YesNoInput
+        model = InformScheduler
+        fields = [
+            "organization",
+            "name",
+            "start_application_date",
+            "close_application_date",
+            "period_on_days",
+            "inform_template",
+            "active",
+        ]
+        widgets = {
+            "organization": genwidgets.HiddenInput,
+            "name": genwidgets.TextInput,
+            "start_application_date": genwidgets.DateInput,
+            "close_application_date": genwidgets.DateInput,
+            "period_on_days": genwidgets.NumberInput,
+            "inform_template": AutocompleteSelect(
+                "informtemplate", url_suffix="-detail"
+            ),
+            "active": genwidgets.YesNoInput,
         }
 
 
 class InformSchedulerFormEdit(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop('org_pk')
+        org_pk = kwargs.pop("org_pk")
         super().__init__(*args, **kwargs)
-        self.fields['inform_template'].widget.extra_url_kwargs['pk']=org_pk
+        self.fields["inform_template"].widget.extra_url_kwargs["pk"] = org_pk
 
     class Meta:
-        model =InformScheduler
-        fields = ['organization', 'name', 'period_on_days', 'inform_template', 'active']
-        widgets ={
-            'organization': genwidgets.HiddenInput,
-            'name': genwidgets.TextInput,
-            'period_on_days': genwidgets.NumberInput,
-            'inform_template': AutocompleteSelect('informtemplate', url_suffix='-detail'),
-            'active': genwidgets.YesNoInput
+        model = InformScheduler
+        fields = ["organization", "name", "period_on_days", "inform_template", "active"]
+        widgets = {
+            "organization": genwidgets.HiddenInput,
+            "name": genwidgets.TextInput,
+            "period_on_days": genwidgets.NumberInput,
+            "inform_template": AutocompleteSelect(
+                "informtemplate", url_suffix="-detail"
+            ),
+            "active": genwidgets.YesNoInput,
         }
 
 
 class RegisterUserQRForm(GTForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        self.obj = kwargs.pop('obj', None)
-        org_pk = kwargs.pop('org_pk', None)
-        lab_pk = kwargs.pop('lab_pk', None)
-        new_obj = kwargs.pop('new_obj', False)
+        self.obj = kwargs.pop("obj", None)
+        org_pk = kwargs.pop("org_pk", None)
+        lab_pk = kwargs.pop("lab_pk", None)
+        new_obj = kwargs.pop("new_obj", False)
         super().__init__(*args, **kwargs)
 
-        self.fields['url'].required = False
-        self.fields['organization_register'].label = _("Organization")
+        self.fields["url"].required = False
+        self.fields["organization_register"].label = _("Organization")
         org_queryset = OrganizationStructure.objects.none()
         role_queryset = OrganizationStructure.objects.none()
 
         if org_pk and lab_pk:
             organization = OrganizationStructure.objects.get(pk=org_pk)
             if not new_obj:
-                org_queryset = utils.get_organizations_register_user(organization, lab_pk,
-                                                                     self.instance.organization_register.pk)
+                org_queryset = utils.get_organizations_register_user(
+                    organization, lab_pk, self.instance.organization_register.pk
+                )
             else:
-                org_queryset = utils.get_organizations_register_user(organization, lab_pk)
+                org_queryset = utils.get_organizations_register_user(
+                    organization, lab_pk
+                )
 
-            role_pk_list = utils.get_rols_from_organization(organization.pk, org=organization, rolfilters={'rol__isnull': False})
+            role_pk_list = utils.get_rols_from_organization(
+                organization.pk, org=organization, rolfilters={"rol__isnull": False}
+            )
             role_queryset = Rol.objects.filter(pk__in=set(role_pk_list))
 
-        self.fields['role'].queryset = role_queryset
-        self.fields['organization_register'].queryset = org_queryset
+        self.fields["role"].queryset = role_queryset
+        self.fields["organization_register"].queryset = org_queryset
 
         if new_obj:
-            self.fields['code'].help_text = _("Once registration process conclude this code won't be editable.")
+            self.fields["code"].help_text = _(
+                "Once registration process conclude this code won't be editable."
+            )
         else:
-            self.fields['code'].disabled = True
+            self.fields["code"].disabled = True
 
     class Meta:
         model = RegisterUserQR
-        fields = ['activate_user', 'role', 'url', 'organization_register', 'organization_creator', 'object_id',
-                  'content_type', 'created_by', 'code']
+        fields = [
+            "activate_user",
+            "role",
+            "url",
+            "organization_register",
+            "organization_creator",
+            "object_id",
+            "content_type",
+            "created_by",
+            "code",
+        ]
         widgets = {
-            'activate_user': genwidgets.YesNoInput,
-            'role': genwidgets.Select,
-            'organization_register': genwidgets.Select,
-            'organization_creator': genwidgets.HiddenInput,
-            'object_id': genwidgets.HiddenInput,
-            'content_type': genwidgets.HiddenInput,
-            'url': genwidgets.HiddenInput,
-            'created_by': genwidgets.HiddenInput,
-            'code': genwidgets.TextInput
+            "activate_user": genwidgets.YesNoInput,
+            "role": genwidgets.Select,
+            "organization_register": genwidgets.Select,
+            "organization_creator": genwidgets.HiddenInput,
+            "object_id": genwidgets.HiddenInput,
+            "content_type": genwidgets.HiddenInput,
+            "url": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
+            "code": genwidgets.TextInput,
         }
 
     def clean_code(self):
-        code = self.cleaned_data['code']
+        code = self.cleaned_data["code"]
 
         if code:
             qr_obj = RegisterUserQR.objects.filter(code=code)
@@ -512,28 +642,30 @@ class RegisterUserQRForm(GTForm, forms.ModelForm):
 
 class RegisterForm(forms.ModelForm, GTForm):
     id_card = forms.CharField(widget=genwidgets.TextInput, label=_("Id Card"))
-    phone_number = forms.CharField(widget=genwidgets.PhoneNumberMaskInput, label=_("Phone"))
+    phone_number = forms.CharField(
+        widget=genwidgets.PhoneNumberMaskInput, label=_("Phone")
+    )
 
     def __init__(self, *args, **kwargs):
-        self.obj = kwargs.pop('obj', None)
+        self.obj = kwargs.pop("obj", None)
         super().__init__(*args, **kwargs)
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['email'].required = True
+        self.fields["first_name"].required = True
+        self.fields["last_name"].required = True
+        self.fields["email"].required = True
 
-    field_order = ['first_name', 'last_name', 'email', 'phone_number', 'id_card']
+    field_order = ["first_name", "last_name", "email", "phone_number", "id_card"]
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'id_card', 'phone_number']
+        fields = ["first_name", "last_name", "email", "id_card", "phone_number"]
         widgets = {
-            'first_name': genwidgets.TextInput,
-            'last_name': genwidgets.TextInput,
-            'email': genwidgets.EmailMaskInput
+            "first_name": genwidgets.TextInput,
+            "last_name": genwidgets.TextInput,
+            "email": genwidgets.EmailMaskInput,
         }
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data["email"]
 
         if email:
             user_email = User.objects.filter(email=email)
@@ -546,8 +678,12 @@ class RegisterForm(forms.ModelForm, GTForm):
             else:
                 return email
 
+
 class LoginForm(GTForm, forms.Form):
-    username = UsernameField(widget=genwidgets.TextInput(attrs={"autofocus": True}), label=_("Username"),)
+    username = UsernameField(
+        widget=genwidgets.TextInput(attrs={"autofocus": True}),
+        label=_("Username"),
+    )
     password = forms.CharField(
         label=_("Password"),
         strip=False,
@@ -564,44 +700,46 @@ class LoginForm(GTForm, forms.Form):
 
 
 class PasswordCodeForm(PasswordChangeForm):
-    code = forms.CharField(widget=genwidgets.TextInput, required=True, max_length=4, label=_("Code"))
+    code = forms.CharField(
+        widget=genwidgets.TextInput, required=True, max_length=4, label=_("Code")
+    )
 
     def __init__(self, *args, **kwargs):
-        self.code = kwargs.pop('code', None)
-        self.user = kwargs.pop('user', None)
+        self.code = kwargs.pop("code", None)
+        self.user = kwargs.pop("user", None)
         super(PasswordChangeForm, self).__init__(*args, **kwargs)
 
     def clean_code(self):
-        code = self.cleaned_data['code']
+        code = self.cleaned_data["code"]
 
         if code != self.code:
             raise ValidationError(_("Code didn't match."))
         else:
             return code
 
+
 class ShelfObjectOptions(GTForm, forms.Form):
     lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
     options = forms.IntegerField(required=True)
     shelf_object = forms.IntegerField(required=True)
+
 
 class ShelfObjectListForm(GTForm, forms.Form):
     lab = forms.ModelChoiceField(queryset=Laboratory.objects.all(), required=True)
     id = forms.IntegerField(required=True)
 
 
-#VALIDATE DATA FORMS
+# VALIDATE DATA FORMS
 class FurnitureLabRoomForm(forms.Form):
     labroom = forms.IntegerField(required=True)
 
 
 class ValidateShelfForm(forms.Form):
     shelf = forms.ModelChoiceField(queryset=Shelf.objects.all(), required=True)
-    objecttype = forms.ChoiceField(choices=(
-        ("0", _('Reactive')),
-        ("1", _('Material')),
-        ("2", _('Equipment'))
+    objecttype = forms.ChoiceField(
+        choices=(("0", _("Reactive")), ("1", _("Material")), ("2", _("Equipment"))),
+        required=True,
     )
-, required=True)
 
 
 class ReservedProductsForm(forms.Form):
@@ -619,38 +757,51 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
     description = forms.CharField(widget=genwidgets.Textarea)
 
     def __init__(self, *args, **kwargs):
-        org_pk=kwargs.pop('org_pk')
+        org_pk = kwargs.pop("org_pk")
         super().__init__(*args, **kwargs)
-        self.fields['status'] = forms.ModelChoiceField(
+        self.fields["status"] = forms.ModelChoiceField(
             queryset=Catalog.objects.all(),
-            widget=AutocompleteSelect('shelfobject_status_search', url_suffix='-detail', url_kwargs={'pk': org_pk}),
-            help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'%(_("New status")))
+            widget=AutocompleteSelect(
+                "shelfobject_status_search",
+                url_suffix="-detail",
+                url_kwargs={"pk": org_pk},
+            ),
+            help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'
+            % (_("New status")),
+        )
 
     class Meta:
         model = ShelfObject
-        fields = ['status']
-
+        fields = ["status"]
 
 
 class ObservationShelfObjectForm(GTForm, forms.ModelForm):
 
     class Meta:
-        model=ShelfObjectObservation
-        exclude=['shelf_object', 'created_by']
-        widgets={
-            'action_taken': genwidgets.TextInput,
-            'description': genwidgets.Textarea
+        model = ShelfObjectObservation
+        exclude = ["shelf_object", "created_by"]
+        widgets = {
+            "action_taken": genwidgets.TextInput,
+            "description": genwidgets.Textarea,
         }
 
 
-class MaterialCapacityObjectForm(GTForm,forms.Form):
-    capacity = forms.FloatField(required=False, widget=genwidgets.TextInput, min_value=settings.DEFAULT_MIN_QUANTITY, label=_("Capacity"))
-    capacity_measurement_unit = forms.ModelChoiceField(queryset=Catalog.objects.filter(key='units'),
-                                                       required=False,
-                                                       widget=genwidgets.Select(),
-                                                       label=_("Capacity measurement unit"))
-    object = forms.ModelChoiceField(queryset=Object.objects.all(), required=False,
-                                    widget=genwidgets.HiddenInput)
+class MaterialCapacityObjectForm(GTForm, forms.Form):
+    capacity = forms.FloatField(
+        required=False,
+        widget=genwidgets.TextInput,
+        min_value=settings.DEFAULT_MIN_QUANTITY,
+        label=_("Capacity"),
+    )
+    capacity_measurement_unit = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key="units"),
+        required=False,
+        widget=genwidgets.Select(),
+        label=_("Capacity measurement unit"),
+    )
+    object = forms.ModelChoiceField(
+        queryset=Object.objects.all(), required=False, widget=genwidgets.HiddenInput
+    )
 
 
 class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
@@ -658,82 +809,87 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         self.request = None
-        if 'request' in kwargs:
-            self.request = kwargs.pop('request')
+        if "request" in kwargs:
+            self.request = kwargs.pop("request")
         instance = None
-        if 'instance' in kwargs:
-            instance = kwargs.get('instance')
+        if "instance" in kwargs:
+            instance = kwargs.get("instance")
         data_type = None
-        if 'data' in kwargs:
-            data_type = kwargs.get('data').get('type')
+        if "data" in kwargs:
+            data_type = kwargs.get("data").get("type")
 
         super(ObjectForm, self).__init__(*args, **kwargs)
 
         if self.request:
-            if 'type_id' in self.request.GET:
-                self.type_id = self.request.GET.get('type_id', '')
+            if "type_id" in self.request.GET:
+                self.type_id = self.request.GET.get("type_id", "")
                 if self.type_id:
-                    self.fields['type'] = forms.CharField(
-                        initial=self.type_id,
-                        widget=forms.HiddenInput()
+                    self.fields["type"] = forms.CharField(
+                        initial=self.type_id, widget=forms.HiddenInput()
                     )
                 data_type = self.type_id
         if data_type != Object.MATERIAL:
-            self.fields.pop('object')
-            self.fields.pop('capacity')
-            self.fields.pop('capacity_measurement_unit')
-            self.fields.pop('is_container')
+            self.fields.pop("object")
+            self.fields.pop("capacity")
+            self.fields.pop("capacity_measurement_unit")
+            self.fields.pop("is_container")
 
         else:
-            self.fields['object'].required = False
-            self.fields['is_container'].initial = True
+            self.fields["object"].required = False
+            self.fields["is_container"].initial = True
 
         if data_type == Object.EQUIPMENT:
-            self.fields['model'].required = True
+            self.fields["model"].required = True
 
         else:
-            self.fields['model'] = forms.CharField(
+            self.fields["model"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
-            self.fields['serie'] = forms.CharField(
+            self.fields["serie"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
-            self.fields['plaque'] = forms.CharField(
+            self.fields["plaque"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
         if data_type != Object.REACTIVE:
-            self.fields.pop('is_dangerous')
-            self.fields.pop('has_threshold')
-            self.fields.pop('threshold')
+            self.fields.pop("is_dangerous")
+            self.fields.pop("has_threshold")
+            self.fields.pop("threshold")
 
     def clean(self):
         cleaned_data = super().clean()
-        is_container = cleaned_data.get('is_container')
-        object_type = cleaned_data.get('type')
-        capacity = cleaned_data.get('capacity')
-        capacity_unit = cleaned_data.get('capacity_measurement_unit')
+        is_container = cleaned_data.get("is_container")
+        object_type = cleaned_data.get("type")
+        capacity = cleaned_data.get("capacity")
+        capacity_unit = cleaned_data.get("capacity_measurement_unit")
 
-        if object_type==Object.MATERIAL:
+        if object_type == Object.MATERIAL:
             if is_container:
-                if capacity == None:
-                    self.add_error('capacity',_("This field is required."))
-                elif capacity<0:
-                    self.add_error('capacity',_("Ensure this value is greater than or equal to 1e-07."))
-                if capacity_unit == None:
-                    self.add_error('capacity_measurement_unit',_('This field is required.'))
+                if capacity is None:
+                    self.add_error("capacity", _("This field is required."))
+                elif capacity < 0:
+                    self.add_error(
+                        "capacity",
+                        _("Ensure this value is greater than or equal to 1e-07."),
+                    )
+                if capacity_unit is None:
+                    self.add_error(
+                        "capacity_measurement_unit", _("This field is required.")
+                    )
+
     class Meta:
         model = Object
         exclude = ["organization", "created_by"]
         widgets = {
-            'features': genwidgets.SelectMultiple(),
-            'code': genwidgets.TextInput,
-            'name': genwidgets.TextInput,
-            'synonym':  genwidgets.TextInput,
-            'is_public': genwidgets.YesNoInput,
-            'description': genwidgets.Textarea,
-            'model': genwidgets.TextInput,
-            'serie': genwidgets.TextInput,
-            'plaque': genwidgets.TextInput,
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput,
             "type": genwidgets.HiddenInput,
             "is_container": genwidgets.YesNoInput,
             "is_dangerous": genwidgets.YesNoInput,
@@ -741,41 +897,61 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             "has_threshold": genwidgets.YesNoInput,
         }
 
+
 class EquipmentForm(GTForm, forms.ModelForm):
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
-    use_manual = forms.FileField(widget=FileChunkedUpload, required=False,
-                                 label=_("Use manual"))
-    calibration_required = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                              required=False, label=_(
-            "Is calibration required?"))
-    operation_voltage = forms.CharField(widget=genwidgets.TextInput, required=False,
-                                        label=_("Operation voltage"))
-    operation_amperage = forms.CharField(widget=genwidgets.TextInput, required=False,
-                                         label=_("Operation amperage"))
-    providers = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                               queryset=Provider.objects.none(),
-                                               required=False,
-                                               label=_("Providers"))
-    use_specials_conditions = forms.CharField(widget=genwidgets.Textarea,
-                                              required=False, label=_("Use specials conditions"))
-    generate_pathological_waste = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                                     required=False, label=_(
-            "Generate pathological waste?"))
+    use_manual = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Use manual")
+    )
+    calibration_required = forms.BooleanField(
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Is calibration required?"),
+    )
+    operation_voltage = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Operation voltage")
+    )
+    operation_amperage = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Operation amperage")
+    )
+    providers = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Provider.objects.none(),
+        required=False,
+        label=_("Providers"),
+    )
+    use_specials_conditions = forms.CharField(
+        widget=genwidgets.Textarea, required=False, label=_("Use specials conditions")
+    )
+    generate_pathological_waste = forms.BooleanField(
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Generate pathological waste?"),
+    )
     clean_period_according_to_provider = forms.IntegerField(
-        widget=genwidgets.NumberInput, required=False, initial=0,
-        label=_("Clean period according to provider"))
-    instrumental_family = forms.ModelChoiceField(widget=genwidgets.Select,
-                                                 queryset=Catalog.objects.none(),
-                                                 blank=True, required=False,
-                                                 label=_("Instrumental family"))
-    equipment_type = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=EquipmentType.objects.all(),
-                                            blank=True, required=False,
-                                            label=_("Equipment type"))
+        widget=genwidgets.NumberInput,
+        required=False,
+        initial=0,
+        label=_("Clean period according to provider"),
+    )
+    instrumental_family = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Catalog.objects.none(),
+        blank=True,
+        required=False,
+        label=_("Instrumental family"),
+    )
+    equipment_type = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=EquipmentType.objects.all(),
+        blank=True,
+        required=False,
+        label=_("Equipment type"),
+    )
 
     def __init__(self, *args, **kwargs):
-        modal_id = kwargs.pop('modal_id')
-        laboratory_pk = kwargs.pop('laboratory_pk')
+        modal_id = kwargs.pop("modal_id")
+        laboratory_pk = kwargs.pop("laboratory_pk")
         super(EquipmentForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
         laboratory_id = "#id_%s-laboratory" % self.prefix
@@ -783,36 +959,42 @@ class EquipmentForm(GTForm, forms.ModelForm):
 
         provider_not_available = Provider.objects.filter(laboratory__isnull=True)
         providers_by_lab = Provider.objects.filter(
-            laboratory__pk=laboratory_pk).distinct()
+            laboratory__pk=laboratory_pk
+        ).distinct()
         provider_list = provider_not_available.union(providers_by_lab).order_by("name")
-        self.fields['providers'].queryset = provider_list
+        self.fields["providers"].queryset = provider_list
 
-        self.fields['instrumental_family'] = forms.ModelChoiceField(widget=AutocompleteSelect(
-            'instrumentalfamily',
-            attrs={
-                'data-dropdownparent': modal_id,
-                'data-s2filter-laboratory': laboratory_id,
-                'data-s2filter-organization': organization_id
-            }),
-            queryset=Catalog.objects.none(), blank=True, required=False,
-            label=_("Instrumental family"))
+        self.fields["instrumental_family"] = forms.ModelChoiceField(
+            widget=AutocompleteSelect(
+                "instrumentalfamily",
+                attrs={
+                    "data-dropdownparent": modal_id,
+                    "data-s2filter-laboratory": laboratory_id,
+                    "data-s2filter-organization": organization_id,
+                },
+            ),
+            queryset=Catalog.objects.none(),
+            blank=True,
+            required=False,
+            label=_("Instrumental family"),
+        )
 
     class Meta:
         model = Object
-        exclude = ['is_container', 'is_dangerous', 'has_threshold', 'threshold']
+        exclude = ["is_container", "is_dangerous", "has_threshold", "threshold"]
         widgets = {
-            'features': genwidgets.SelectMultiple(),
-            'code': genwidgets.TextInput,
-            'name': genwidgets.TextInput,
-            'synonym':  genwidgets.TextInput,
-            'is_public': genwidgets.YesNoInput,
-            'description': genwidgets.Textarea,
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
             "type": genwidgets.HiddenInput,
             "organization": genwidgets.HiddenInput,
             "created_by": genwidgets.HiddenInput,
             "model": genwidgets.TextInput,
             "serie": genwidgets.TextInput,
-            "plaque": genwidgets.TextInput
+            "plaque": genwidgets.TextInput,
         }
 
 
@@ -820,100 +1002,106 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
         self.request = None
-        if 'request' in kwargs:
-            self.request = kwargs.pop('request')
+        if "request" in kwargs:
+            self.request = kwargs.pop("request")
         instance = None
-        if 'instance' in kwargs:
-            instance = kwargs.get('instance')
+        if "instance" in kwargs:
+            instance = kwargs.get("instance")
         data_type = None
-        if 'data' in kwargs:
-            data_type = kwargs.get('data').get('type')
+        if "data" in kwargs:
+            data_type = kwargs.get("data").get("type")
 
         super(ObjectUpdateForm, self).__init__(*args, **kwargs)
 
         if self.request:
-            if 'type_id' in self.request.GET:
-                self.type_id = self.request.GET.get('type_id', '')
+            if "type_id" in self.request.GET:
+                self.type_id = self.request.GET.get("type_id", "")
                 if self.type_id:
-                    self.fields['type'] = forms.CharField(
-                        initial=self.type_id,
-                        widget=forms.HiddenInput()
+                    self.fields["type"] = forms.CharField(
+                        initial=self.type_id, widget=forms.HiddenInput()
                     )
                 data_type = self.type_id
         if data_type != Object.MATERIAL:
-            self.fields.pop('object')
-            self.fields.pop('capacity')
-            self.fields.pop('capacity_measurement_unit')
-            self.fields.pop('is_container')
+            self.fields.pop("object")
+            self.fields.pop("capacity")
+            self.fields.pop("capacity_measurement_unit")
+            self.fields.pop("is_container")
         else:
-            self.fields['object'].required = False
+            self.fields["object"].required = False
 
             if instance:
-                if hasattr(instance,'materialcapacity'):
-                    self.fields['object'].initial = (instance.id)
-                    self.fields['capacity'].initial = instance.materialcapacity.capacity
-                    self.fields['capacity_measurement_unit'].initial = (
-                        instance.materialcapacity.capacity_measurement_unit.id)
+                if hasattr(instance, "materialcapacity"):
+                    self.fields["object"].initial = instance.id
+                    self.fields["capacity"].initial = instance.materialcapacity.capacity
+                    self.fields["capacity_measurement_unit"].initial = (
+                        instance.materialcapacity.capacity_measurement_unit.id
+                    )
 
         if data_type == Object.EQUIPMENT:
-            self.fields['model'].required = True
+            self.fields["model"].required = True
 
         else:
-            self.fields['model'] = forms.CharField(
+            self.fields["model"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
-            self.fields['serie'] = forms.CharField(
+            self.fields["serie"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
-            self.fields['plaque'] = forms.CharField(
+            self.fields["plaque"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
 
     def clean(self):
         cleaned_data = super().clean()
-        is_container = cleaned_data.get('is_container')
-        object_type = cleaned_data.get('type')
-        capacity = cleaned_data.get('capacity')
-        capacity_unit = cleaned_data.get('capacity_measurement_unit')
+        is_container = cleaned_data.get("is_container")
+        object_type = cleaned_data.get("type")
+        capacity = cleaned_data.get("capacity")
+        capacity_unit = cleaned_data.get("capacity_measurement_unit")
         get_instance_is_container = self.instance.is_container
-        shelfobjects = ShelfObject.objects.filter(
-            container__object=self.instance)
+        shelfobjects = ShelfObject.objects.filter(container__object=self.instance)
 
-        if object_type==Object.MATERIAL:
-            if get_instance_is_container and is_container==False and shelfobjects:
-                self.add_error('is_container','This field cannot be updated because the material is used as a container for at least one reactive.')
+        if object_type == Object.MATERIAL:
+            if get_instance_is_container and is_container is False and shelfobjects:
+                self.add_error(
+                    "is_container",
+                    "This field cannot be updated because the material is used as a container for at least one reactive.",
+                )
             if is_container:
-                if capacity == None:
-                    self.add_error('capacity',_("This field is required."))
-                elif capacity<0:
-                    self.add_error('capacity',_("Ensure this value is greater than or equal to 1e-07."))
-                if capacity_unit == None:
-                    self.add_error('capacity_measurement_unit',_('This field is required.'))
+                if capacity is None:
+                    self.add_error("capacity", _("This field is required."))
+                elif capacity < 0:
+                    self.add_error(
+                        "capacity",
+                        _("Ensure this value is greater than or equal to 1e-07."),
+                    )
+                if capacity_unit is None:
+                    self.add_error(
+                        "capacity_measurement_unit", _("This field is required.")
+                    )
+
     class Meta:
         model = Object
-        exclude = ['organization', 'created_by']
+        exclude = ["organization", "created_by"]
         widgets = {
-            'features': genwidgets.SelectMultiple(),
-            'code': genwidgets.TextInput,
-            'name': genwidgets.TextInput,
-            'synonym':  genwidgets.TextInput,
-            'is_public': genwidgets.YesNoInput,
-            'description': genwidgets.Textarea,
-            'model': genwidgets.TextInput,
-            'serie': genwidgets.TextInput,
-            'plaque': genwidgets.TextInput,
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput,
             "type": genwidgets.HiddenInput,
-            "is_container": genwidgets.YesNoInput
+            "is_container": genwidgets.YesNoInput,
         }
 
 
 class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
     class Meta:
         model = OrganizationStructure
-        fields = ['parent']
-        widgets={
-            'parent': genwidgets.HiddenInput
-        }
+        fields = ["parent"]
+        widgets = {"parent": genwidgets.HiddenInput}
 
     def clean(self):
         if not self.instance.active:
@@ -926,31 +1114,27 @@ class InstrumentalFamilyForm(GTForm, forms.ModelForm):
         super(InstrumentalFamilyForm, self).__init__(*args, **kwargs)
         self.fields["description"].label = _("Description")
 
-
     class Meta:
         model = Catalog
-        fields = ['description']
-        widgets = {
-            'description': genwidgets.Textarea
-        }
+        fields = ["description"]
+        widgets = {"description": genwidgets.Textarea}
+
 
 class EquipmentTypeForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = EquipmentType
-        fields = ['name', 'description']
-        widgets = {
-            'name': genwidgets.TextInput,
-            'description': genwidgets.Textarea
-        }
+        fields = ["name", "description"]
+        widgets = {"name": genwidgets.TextInput, "description": genwidgets.Textarea}
 
 
 class ReactiveForm(GTForm, forms.ModelForm):
     """"""
+
     default_render_type = "as_grid"
     grid_representation = [
-        [["name"],["cas_id_number"],["security_sheet"]],
-        [["code"],["bioaccumulable"],["iarc"]],
+        [["name"], ["cas_id_number"], ["security_sheet"]],
+        [["code"], ["bioaccumulable"], ["iarc"]],
         [["synonym"], ["is_precursor"], ["imdg"]],
         [["is_public"], ["precursor_type"], ["white_organ"]],
         [["features"], ["h_code"], ["nfpa"]],
@@ -958,124 +1142,146 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["plaque"], ["img_representation"], ["storage_class"]],
         [["serie"], ["laboratory"], ["seveso_list"]],
         [["type"], ["organization"], ["created_by"]],
-        [["is_dangerous"], ["has_threshold"],["threshold"]],
+        [["is_dangerous"], ["has_threshold"], ["threshold"]],
         [["description"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
 
-    iarc = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=Catalog.objects.filter(key='IARC'),
-                                            blank=True, required=False,
-                                            label=_("Iarc"))
+    iarc = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Catalog.objects.filter(key="IARC"),
+        blank=True,
+        required=False,
+        label=_("Iarc"),
+    )
 
+    imdg = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Catalog.objects.filter(key="IDMG"),
+        blank=True,
+        required=False,
+        label=_("Imdg"),
+    )
 
-    imdg = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=Catalog.objects.filter(key='IDMG'),
-                                            blank=True, required=False,
-                                            label=_("Imdg"))
+    white_organ = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Catalog.objects.filter(key="white_organ"),
+        blank=True,
+        required=False,
+        label=_("White Organ"),
+    )
 
-    white_organ = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='white_organ'),
-                                            blank=True, required=False,
-                                            label=_("White Organ"))
+    is_public = forms.BooleanField(
+        widget=genwidgets.YesNoInput, required=False, label=_("Share with others")
+    )
 
-    is_public = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                        required=False,
-                                        label=_("Share with others"))
+    bioaccumulable = forms.BooleanField(
+        widget=genwidgets.YesNoInput, required=False, label=_("Bioaccumulable?")
+    )
 
-    bioaccumulable = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                              required=False,
-                                        label=_("Bioaccumulable?"))
+    molecular_formula = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Molecular formula")
+    )
 
-    molecular_formula = forms.CharField(widget=genwidgets.TextInput, required=False,
-                                        label=_("Molecular formula"))
+    cas_id_number = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Cas ID Number")
+    )
 
-    cas_id_number = forms.CharField(widget=genwidgets.TextInput, required=False,
-                                         label=_("Cas ID Number"))
+    security_sheet = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Security sheet")
+    )
 
-    security_sheet = forms.FileField(widget=FileChunkedUpload, required=False,
-                                 label=_("Security sheet"))
+    is_precursor = forms.BooleanField(
+        widget=genwidgets.YesNoInput, required=False, label=_("Is precursor?")
+    )
 
-    is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                              required=False,
-                                        label=_("Is precursor?"))
+    precursor_type = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Catalog.objects.filter(key="Precursor"),
+        blank=True,
+        required=False,
+        label=_("Precursor Type"),
+    )
 
-    precursor_type = forms.ModelChoiceField(widget=genwidgets.Select,
-                                            queryset=Catalog.objects.filter(key='Precursor'),
-                                            blank=True, required=False,
-                                            label=_("Precursor Type"))
+    h_code = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=DangerIndication.objects.all(),
+        blank=True,
+        required=False,
+        label=_("Danger indication"),
+    )
 
-    h_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=DangerIndication.objects.all(),
-                                            blank=True, required=False,
-                                            label=_("Danger indication"))
+    ue_code = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Catalog.objects.filter(key="ue_code"),
+        blank=True,
+        required=False,
+        label=_("UE Codes"),
+    )
 
-    ue_code = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='ue_code'),
-                                            blank=True, required=False,
-                                            label=_("UE Codes"))
+    nfpa = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Catalog.objects.filter(key="nfpa"),
+        blank=True,
+        required=False,
+        label=_("NFPA codes"),
+    )
 
-    nfpa = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='nfpa'),
-                                            blank=True, required=False,
-                                            label=_("NFPA codes"))
+    storage_class = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Catalog.objects.filter(key="storage_class"),
+        blank=True,
+        required=False,
+        label=_("Storage class"),
+    )
 
-    storage_class = forms.ModelMultipleChoiceField(widget=genwidgets.SelectMultiple,
-                                            queryset=Catalog.objects.filter(key='storage_class'),
-                                            blank=True, required=False,
-                                            label=_("Storage class"))
+    seveso_list = forms.BooleanField(
+        widget=genwidgets.YesNoInput, required=False, label=_("Is Seveso list III?")
+    )
 
-    seveso_list = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                              required=False,
-                                        label=_("Is Seveso list III?"))
-
-    img_representation = forms.FileField(widget=FileChunkedUpload, required=False,
-                                 label=_("Sustance representation"))
-    is_dangerous = forms.BooleanField(widget=genwidgets.YesNoInput,
-                                      required=False,
-                                        label=_("Is dangerous?"))
-    has_threshold = forms.BooleanField(widget=genwidgets.YesNoInput(
-        shparent='.mb-3',
-        attrs={
-            "rel": ["#id_create-threshold"]
-        },
-    ),
-                                      required=False,
-                                        label=_("Has threshold?"))
-    threshold = forms.FloatField(widget=genwidgets.TextInput,
-                                      required=False,
-                                        label=_("Threshold"))
-
+    img_representation = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Sustance representation")
+    )
+    is_dangerous = forms.BooleanField(
+        widget=genwidgets.YesNoInput, required=False, label=_("Is dangerous?")
+    )
+    has_threshold = forms.BooleanField(
+        widget=genwidgets.YesNoInput(
+            shparent=".mb-3",
+            attrs={"rel": ["#id_create-threshold"]},
+        ),
+        required=False,
+        label=_("Has threshold?"),
+    )
+    threshold = forms.FloatField(
+        widget=genwidgets.TextInput, required=False, label=_("Threshold")
+    )
 
     def __init__(self, *args, **kwargs):
-        kwargs.pop('modal_id')
-        kwargs.pop('laboratory_pk')
-        prefix = kwargs.get('prefix', "")
+        kwargs.pop("modal_id")
+        kwargs.pop("laboratory_pk")
+        prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
-        self.fields["is_threshold"] = forms.BooleanField(widget=genwidgets.YesNoInput(
-            shparent='.mb-3',
-            attrs={
-                "rel": [f"#id_{prefix}-threshold"]
-            }
-        ),
+        self.fields["is_threshold"] = forms.BooleanField(
+            widget=genwidgets.YesNoInput(
+                shparent=".mb-3", attrs={"rel": [f"#id_{prefix}-threshold"]}
+            ),
             required=False,
-            label=_("Has threshold?"))
-
-
-
+            label=_("Has threshold?"),
+        )
 
     class Meta:
         model = Object
-        exclude = ['is_container']
+        exclude = ["is_container"]
         widgets = {
-            'features': genwidgets.SelectMultiple(),
-            'code': genwidgets.TextInput,
-            'name': genwidgets.TextInput,
-            'synonym':  genwidgets.TextInput,
-            'is_public': genwidgets.YesNoInput,
-            'description': genwidgets.Textarea,
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
             "type": genwidgets.HiddenInput,
             "organization": genwidgets.HiddenInput,
             "created_by": genwidgets.HiddenInput,

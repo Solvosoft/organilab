@@ -1,6 +1,6 @@
 # Use an official Python runtime as a parent image
-FROM python:3.8-bullseye
-ENV PYTHONUNBUFFERED 1
+FROM python:3.13-trixie
+ENV PYTHONUNBUFFERED=1
 
 ARG UID=1000
 ENV USER="organilab"

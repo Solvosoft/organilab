@@ -19,9 +19,11 @@ class ShelfObjectAPITest(TestCase):
         user2_role = Rol.objects.create(name="Test Role for User 2", color="#FFF")
         permission = Permission.objects.filter(codename__contains="shelfobject")
         user2_role.permissions.add(*permission)
-        profile_permission = ProfilePermission.objects.create(profile=self.user2.profile,
-                                                              object_id=2,
-                                                              content_type=ContentType.objects.get(app_label='laboratory',
-                                                                                                   model='organizationstructure')
-                                                              )
+        profile_permission = ProfilePermission.objects.create(
+            profile=self.user2.profile,
+            object_id=2,
+            content_type=ContentType.objects.get(
+                app_label="laboratory", model="organizationstructure"
+            ),
+        )
         profile_permission.rol.add(user2_role)
