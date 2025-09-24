@@ -111,6 +111,7 @@ class Object(AbstractOrganizationRef):
     is_dangerous = models.BooleanField(default=False, verbose_name=_("Is Dangerous?"))
     has_threshold = models.BooleanField(default=False, verbose_name=_("Has threshold?"))
     threshold = models.FloatField(default=0.0, verbose_name=_("Threshold"))
+    is_pure = models.BooleanField(default=False, verbose_name=_("Is pure?"))
 
     @property
     def is_reactive(self):
@@ -394,6 +395,8 @@ class ShelfObject(models.Model):
         related_name="sga_pictograms",
         verbose_name=_("Pictograms"),
     )
+    reactive_expiration_date = models.DateField(blank=True, null=True,
+                                       verbose_name=_("Expiration Date"))
 
     @staticmethod
     def get_units(unit):

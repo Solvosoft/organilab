@@ -855,6 +855,7 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
             self.fields.pop("is_dangerous")
             self.fields.pop("has_threshold")
             self.fields.pop("threshold")
+            self.fields.pop("is_pure")
 
     def clean(self):
         cleaned_data = super().clean()
@@ -1140,10 +1141,10 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["features"], ["h_code"], ["nfpa"]],
         [["model"], ["molecular_formula"], ["ue_code"]],
         [["plaque"], ["img_representation"], ["storage_class"]],
-        [["serie"], ["laboratory"], ["seveso_list"]],
+        [["serie"], ["is_pure"], ["seveso_list"]],
         [["type"], ["organization"], ["created_by"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
-        [["description"]],
+        [["description"]],  [["laboratory"]]
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1288,4 +1289,5 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "model": genwidgets.TextInput,
             "serie": genwidgets.TextInput,
             "plaque": genwidgets.TextInput,
+            "is_pure": genwidgets.YesNoInput,
         }
