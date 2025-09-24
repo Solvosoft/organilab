@@ -772,6 +772,7 @@ class ShelfObjectReactiveForm(
             "batch",
             "objecttype",
             "concentration",
+            "reactive_expiration_date",
         ]
         exclude = [
             "laboratory_name",
@@ -792,6 +793,7 @@ class ShelfObjectReactiveForm(
             "concentration": genwidgets.FloatInput,
             "physical_status": genwidgets.Select,
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
+            "reactive_expiration_date": genwidgets.DateInput,
         }
 
 
@@ -867,6 +869,7 @@ class ShelfObjectRefuseReactiveForm(
             "marked_as_discard",
             "batch",
             "objecttype",
+            "reactive_expiration_date",
         ]
         exclude = [
             "created_by",
@@ -885,6 +888,7 @@ class ShelfObjectRefuseReactiveForm(
             "concentration": genwidgets.FloatInput,
             "physical_status": genwidgets.Select,
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
+            "reactive_expiration_date": genwidgets.DateInput,
         }
 
 

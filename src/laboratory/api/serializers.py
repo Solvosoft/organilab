@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.fields.files import ChunkedFileField
+from djgentelella.serializers import GTDateField
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -747,6 +748,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
     is_dangerous = serializers.BooleanField(required=False)
     has_threshold = serializers.BooleanField(required=False)
     threshold = serializers.FloatField(default=0.0, required=False)
+    reactive_expiration_date = serializers.DateField(required=False)
 
     def validate(self, data):
         data = super().validate(data)
@@ -894,8 +896,8 @@ class ReactiveSerializer(serializers.ModelSerializer):
     storage_class = serializers.SerializerMethodField()
     seveso_list = serializers.SerializerMethodField()
     img_representation = serializers.SerializerMethodField()
-
     combined_booleans = serializers.SerializerMethodField()
+
 
     def get_iarc(self, obj):
         if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
@@ -1110,6 +1112,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "has_threshold",
             "threshold",
             "actions",
+            "is_pure",
         ]
 
 
