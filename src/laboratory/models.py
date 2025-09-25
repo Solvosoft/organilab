@@ -312,7 +312,7 @@ class ShelfObject(models.Model):
     )
     object = models.ForeignKey(
         "Object",
-        verbose_name=_("Equipment or reactive or sustance"),
+        verbose_name=_("Equipment or reactive or substance"),
         on_delete=models.CASCADE,
     )
     batch = models.CharField(
@@ -395,8 +395,9 @@ class ShelfObject(models.Model):
         related_name="sga_pictograms",
         verbose_name=_("Pictograms"),
     )
-    reactive_expiration_date = models.DateField(blank=True, null=True,
-                                       verbose_name=_("Expiration Date"))
+    reactive_expiration_date = models.DateField(
+        blank=True, null=True, verbose_name=_("Expiration Date")
+    )
 
     @staticmethod
     def get_units(unit):
