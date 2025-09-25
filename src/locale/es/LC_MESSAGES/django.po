@@ -4981,3 +4981,27 @@ msgstr "Ver filtros de búsqueda"
 
 msgid "Filter"
 msgstr "Filtrar"
+
+msgid "Is pure?"
+msgstr "¿Es pura?"
+
+msgid "Maximum unit"
+msgstr "Unidad máxima"
+
+msgid "Container Capacity"
+msgstr "Capacidad del envase"
+
+msgid "Container Unit"
+msgstr "Unidad de medida del envase"
+
+msgid "Container Quantity"
+msgstr "Cantidad de envases"
+
+msgid "Container Material"
+msgstr "Material del contenedor"
+
+msgid "Maximum Annual Amount"
+msgstr "Cantidad anual máxima"
+
+msgid "Expiration date of the reagent"
+msgstr "Fecha de caducidad del reactivo"

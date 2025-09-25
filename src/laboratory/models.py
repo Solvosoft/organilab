@@ -251,7 +251,7 @@ class ShelfObjectLimits(models.Model):
         default=0,
     )
     expiration_date = models.DateField(
-        null=True, blank=True, verbose_name=_("Expiration date")
+        null=True, blank=True, verbose_name=_("Expiration date?")
     )
 
 
