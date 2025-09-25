@@ -81,9 +81,14 @@
             <hr class="dropdown-divider">
         </li>
 
-        </li>
 					        <li>
             <a href="{% url 'laboratory:risk_zone_report' lab_pk=laboratory org_pk=org_pk %}">{% trans 'RiskZone Report' %}</a>
+        </li>
+													<li>
+            <hr class="dropdown-divider">
+        </li>
+					        <li>
+            <a href="{% url 'laboratory:reactive_stock_report' lab_pk=laboratory org_pk=org_pk %}">{% trans 'Stock Report' %}</a>
         </li>
 													<li>
             <hr class="dropdown-divider">
