@@ -241,6 +241,7 @@ lab_reports_urls = [
         "list/reactive/report", reports.ReactiveReport.as_view(), name="reactive_report"
     ),
     path("risk_zone/", reports.RiskZoneReport.as_view(), name="risk_zone_report"),
+    path("reactive/stock/", reports.ReactiveStockReport.as_view(), name="reactive_stock_report"),
 ]
 
 lab_features_urls = [

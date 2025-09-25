@@ -89,4 +89,11 @@ REPORT_FORMS = {
         "xlsx": "report.views.riskzones.report_risk_zone_list_doc",
         "ods": "report.views.riskzones.report_risk_zone_list_doc",
     },
+    "stock_reactive_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.ReactiveStockReportForm",
+        "xls": "report.views.stock.report_stock",
+        "xlsx": "report.views.stock.report_stock",
+        "ods": "report.views.stock.report_stock",
+    },
 }

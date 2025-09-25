@@ -5005,3 +5005,6 @@ msgstr "Cantidad anual máxima"
 
 msgid "Expiration date of the reagent"
 msgstr "Fecha de caducidad del reactivo"
+
+msgid "Stock Report"
+msgstr "Reporte de inventario de reactivos"
