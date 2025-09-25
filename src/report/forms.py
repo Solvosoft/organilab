@@ -454,3 +454,16 @@ class RiskZoneReportForm(ReportBase):
         if risk_zone.exists():
             return list(risk_zone.values_list("pk", flat=True))
         return []
+
+class ReactiveStockReportForm(ReportBase):
+    format = forms.ChoiceField(
+        widget=genwidgets.Select,
+        choices=(
+            ("xlsx", "XLSX"),
+            ("ods", "ODS"),
+        ),
+        required=False,
+        label=_("Format"),
+    )
+
+
