@@ -703,9 +703,9 @@ function editReactiveShelfObject(instance, event){
     form = $(instance).data('form');
     let is_created = form_modals.hasOwnProperty(modalid);
     edit_shelfobject_url = document.urls["edit_shelfobject"].replace('0',$(instance).data('shelfobject'))
+    document.getElementById(form).action = edit_shelfobject_url;
     show_me_modal(instance, event);
     form_modals[modalid].type='PUT';
-    form_modals[modalid].action = edit_shelfobject_url;
     get_shelfobject_data($(instance).data('shelfobject'));
 
 }
