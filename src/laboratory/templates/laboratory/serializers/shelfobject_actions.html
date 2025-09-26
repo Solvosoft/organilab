@@ -18,7 +18,7 @@
 {% endif %}
 <a class="ms-2" href="{% url 'laboratory:get_shelfobject_log' lab_pk=laboratory.pk org_pk=org_pk.pk pk=shelfobject.pk %}" target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
 {% if shelfobject.object.type == shelfobject.object.REACTIVE %}
-<a class="ms-2"   onclick=""  data-modalid="edit_reactive_form" title="{% trans 'Edit' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+<a class="ms-2"   onclick="return editReactiveShelfObject(this, event);"  data-modalid="edit_reactive_modal" title="{% trans 'Edit' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}" data-form="edit_reactive_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 <a class="ms-2"   onclick="return updateContainerOfShelfObject(this, event);"  data-modalid="managecontainermodal" title="{% trans 'Manage Container' %}" data-container="{{shelfobject.container.pk}}" data-containername="{{shelfobject.container}}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-hourglass-end" aria-hidden="true"></i></a>
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal" title="{% trans 'Move' %}" data-shelfobject="{{shelfobject.pk}}" data-shelf="{{shelfobject.shelf.pk}}"><i class="fa fa-arrows" aria-hidden="true"></i></a>
 {% else %}

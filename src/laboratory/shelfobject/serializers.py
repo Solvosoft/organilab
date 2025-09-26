@@ -18,7 +18,7 @@ from django_filters.widgets import CSVWidget
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget, DateRangeTextWidget
 from djgentelella.fields.files import ChunkedFileField
 from djgentelella.serializers import GTDateField, GTDateTimeField
-from djgentelella.serializers.selects import GTS2SerializerBase
+from djgentelella.serializers.selects import GTS2SerializerBase, ChoicesGTS2Serializer
 from djgentelella.views.select2autocomplete import GSerializerImgBase
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
 from auth_and_perms.models import Profile, Rol
@@ -2510,3 +2510,53 @@ class EditEquipmentShelfObjectSerializer(serializers.ModelSerializer):
             )
 
         return data
+
+
+class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
+    reactive_expiration_date =  DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=True, allow_null=False
+    )
+    status = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    physical_status = serializers.ChoiceField(
+        choices=ShelfObject.PHYSICAL_STATUS, required=True
+    )
+    description = serializers.CharField(required=True)
+
+    class Meta:
+        model = ShelfObject
+        fields = ["status", "description", "reactive_expiration_date", "physical_status"]
+
+    def validate(self, data):
+        org_context = self.context["org_pk"]
+        lab_context = self.context["lab_pk"]
+        shelfobject = self.instance
+
+        if lab_context != shelfobject.in_where_laboratory.pk:
+            logger.debug(
+                f"EditReactiveShelfObjectSerializer --> laboratory.pk ({lab_context}) != "
+                f"shelfobject.in_where_laboratory.pk ({shelfobject.in_where_laboratory.pk})"
+            )
+            raise serializers.ValidationError(
+                {"shelfobject": _("The shelfobject do not belong to the laboratory")}
+            )
+
+        if org_context != shelfobject.in_where_laboratory.organization.pk:
+            logger.debug(
+                f"EditReactiveShelfObjectSerializer --> org_context ({org_context}) != "
+                f"shelfobject.in_where_laboratory.organization.pk: ({shelfobject.in_where_laboratory.organization.pk:})"
+            )
+            raise serializers.ValidationError(
+                {"shelfobject": _("The shelfobject do not belong to the organization")}
+            )
+
+        return data
+
+class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
+    reactive_expiration_date = GTDateField(input_formats=settings.DATE_INPUT_FORMATS)
+    class Meta:
+        model = ShelfObject
+        fields = ["status", "description", "reactive_expiration_date", "physical_status"]

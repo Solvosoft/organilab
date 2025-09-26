@@ -1132,3 +1132,14 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
             "available_to_use": genwidgets.YesNoInput,
             "first_date_use": genwidgets.DateInput,
         }
+
+class EditReactiveForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = ShelfObject
+        fields = ["reactive_expiration_date", "status", "physical_status","description"]
+        widgets = {
+            "reactive_expiration_date": genwidgets.DateInput,
+            "status": genwidgets.Select,
+            "physical_status": genwidgets.Select,
+            "description": genwidgets.Textarea,
+        }
