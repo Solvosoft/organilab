@@ -479,8 +479,7 @@ shelfobjectrouter.register(
 shelfobjectrouter.register(
     "api_shelfobject", ShelfObjectApi.ShelfObjectViewSet, basename="api-shelfobject"
 )
-for x in shelfobjectrouter.urls:
-    print(x)
+
 shelfobjectrouter.register(
     "api_search_labview", ShelfObjectApi.SearchLabView, basename="api-search-labview"
 )
