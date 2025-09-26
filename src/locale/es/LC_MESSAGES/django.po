@@ -5011,3 +5011,12 @@ msgstr "Reporte de inventario de reactivos"
 
 msgid "Expiration Date"
 msgstr "Fecha de caducidad"
+
+msgid "Edit Reactive"
+msgstr "Editar Reactivo"
+
+msgid "Edit Equipment"
+msgstr "Editar Equipo"
+
+msgid "Edit Material"
+msgstr "Editar Material"

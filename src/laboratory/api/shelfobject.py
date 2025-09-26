@@ -676,10 +676,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "update_status": ["laboratory.change_shelfobject"],
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
-        "get_shelfobject_info": ["laboratory.view_change_shelfobject"],
+        "get_shelfobject_info": ["laboratory.view_shelfobject"],
         "manage_shelfobject_container": ["laboratory.change_shelfobject"],
         "edit_shelfobject": ["laboratory.change_shelfobject"],
-        "get_shelfobject": ["laboratory.viwe_shelfobject"],
+        "get_shelfobject": ["laboratory.view_shelfobject"],
     }
 
     # This is not an API endpoint
