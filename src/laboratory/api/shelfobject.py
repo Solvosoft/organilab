@@ -95,7 +95,8 @@ from laboratory.shelfobject.serializers import (
     ShelfObjectGuarenteeFilter,
     ValidateShelfobjectEditSerializer,
     EditEquipmentShelfObjectSerializer,
-    EditEquimentShelfobjectCharacteristicSerializer,
+    EditEquimentShelfobjectCharacteristicSerializer, EditReactiveShelfObjectSerializer,
+    ReactiveShelfObjectDataSerializer,
 )
 
 from laboratory.shelfobject.utils import (
@@ -675,6 +676,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "update_status": ["laboratory.change_shelfobject"],
         "move_shelfobject_to_shelf": ["laboratory.change_shelfobject"],
         "shelf_availability_information": ["laboratory.view_shelf"],
+        "get_shelfobject_info": ["laboratory.view_change_shelfobject"],
         "manage_shelfobject_container": ["laboratory.change_shelfobject"],
         "edit_shelfobject": ["laboratory.change_shelfobject"],
         "get_shelfobject": ["laboratory.viwe_shelfobject"],
@@ -1731,6 +1733,53 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             {"detail": _("Shelfobject was updated successfully.")},
             status=status.HTTP_200_OK,
         )
+
+    @action(detail=True, methods=["put"])
+    def edit_reactive_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "edit_shelfobject"
+        )
+        shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
+        context = {"lab_pk": lab_pk, "org_pk": org_pk}
+        serializer = EditReactiveShelfObjectSerializer(
+            instance=shelf_object, data=request.data, context=context
+        )
+        data = request.data.copy()
+        data.update({"shelfobject": shelf_object.pk})
+
+        errors = {}
+
+        if serializer.is_valid():
+            obj = serializer.save()
+            utils.organilab_logentry(
+                    request.user, obj, CHANGE, "shelfobject", relobj=lab_pk
+                )
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse(
+            {"detail": _("Shelfobject was updated successfully.")},
+            status=status.HTTP_200_OK,
+        )
+    @action(detail=True, methods=["get"])
+    def get_reactive_edit_data(self, request, org_pk, lab_pk,pk,**kwargs):
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "get_shelfobject_info"
+        )
+        self.serializer_class = ReactiveShelfObjectDataSerializer
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+
+        serializer = self.serializer_class(
+            shelfobject, context={"request": request}
+        )
+        errors, data = {}, {}
+
+
+        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
 
 class SearchLabView(viewsets.GenericViewSet):

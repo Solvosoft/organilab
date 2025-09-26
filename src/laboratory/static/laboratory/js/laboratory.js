@@ -697,3 +697,31 @@ function updateContainerOfShelfObject(instance, event){
     $('input[name="mc-shelf"]').val($('#id_shelf').val());
 }
 
+
+function editReactiveShelfObject(instance, event){
+    var modalid= $(instance).data('modalid');
+    form = $(instance).data('form');
+    let is_created = form_modals.hasOwnProperty(modalid);
+    edit_shelfobject_url = document.urls["edit_shelfobject"].replace('0',$(instance).data('shelfobject'))
+    show_me_modal(instance, event);
+    form_modals[modalid].type='PUT';
+    form_modals[modalid].action = edit_shelfobject_url;
+    get_shelfobject_data($(instance).data('shelfobject'));
+
+}
+
+function get_shelfobject_data(shelfobject){
+    edit_shelfobject_url = document.urls["get_shelfobject_data"].replace('0',shelfobject)
+    $.ajax({
+        url: edit_shelfobject_url,
+        type: "GET",
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        success: function(data){
+            document.querySelector("#id_edit-description").value = data.description;
+            document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
+            $('#id_edit-physical_status').val(data.physical_status).trigger('change');
+            $('#id_edit-status').val(data.status).trigger('change');
+        }
+    });
+}
+
