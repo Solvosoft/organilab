@@ -2538,10 +2538,18 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
         choices=ShelfObject.PHYSICAL_STATUS, required=True
     )
     description = serializers.CharField(required=True)
+    pictograms = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Pictogram.objects.using(settings.READONLY_DATABASE),
+        required=False,
+        allow_null=True,
+        allow_empty=True,
+    )
 
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "reactive_expiration_date", "physical_status"]
+        fields = ["status", "description", "reactive_expiration_date", "physical_status",
+                  "pictograms"]
 
     def validate(self, data):
         org_context = self.context["org_pk"]
@@ -2570,9 +2578,11 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
 
 class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
     reactive_expiration_date = GTDateField(input_formats=settings.DATE_INPUT_FORMATS)
+    pictograms = GTS2SerializerBase(many=True)
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "reactive_expiration_date", "physical_status"]
+        fields = ["status", "description", "reactive_expiration_date", "physical_status",
+                  "pictograms"]
 
 
 class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
@@ -2593,27 +2603,18 @@ class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, data):
-        quantity = self.context.get("quantity", 0)
         type_id = self.context.get("type_id", "-1")
         without_limit = self.context.get("without_limit", False)
         shelfobject = self.context.get("shelfobject",None)
+        shelfobject_quantity = 0
         if shelfobject:
-            shelfobject = ShelfObject.objects.filter(pk=shelfobject).first()
+            shelfobject_quantity = ShelfObject.objects.filter(pk=shelfobject).first().quantity
 
         errors = {}
-        if shelfobject.quantity < data["maximum_limit"]:
-            logger.debug(
-                f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({shelfobject.quantity}) < "
-                f'({data["maximum_limit"]})'
-            )
-            errors.update(
-                {"maximum_limit": _("The shelfobject quantity cannot be less than maximum limit.")}
-            )
-
-        if type_id == Object.REACTIVE and not without_limit:
+        if type_id in [Object.REACTIVE, Object.MATERIAL] and not without_limit:
             if data["minimum_limit"] > data["maximum_limit"]:
                 logger.debug(
-                    f'ShelfObjectLimitsSerializer --> data["minimum_limit"] ({data["minimum_limit"]}) > '
+                    f'ShelfObjectMaterialLimitsSerializer --> data["minimum_limit"] ({data["minimum_limit"]}) > '
                     f'data["maximum_limit"] ({data["maximum_limit"]})'
                 )
                 errors.update(
@@ -2624,15 +2625,17 @@ class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
                     }
                 )
 
-            if float(quantity) > data["maximum_limit"]:
+            if shelfobject_quantity < data["minimum_limit"]:
                 logger.debug(
-                    f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) > "
-                    f'({data["maximum_limit"]})'
+                    f"ShelfObjectMaterialLimitsSerializer --> shelfobject.quantity ({shelfobject_quantity}) < "
+                    f'({data["minimum_limit"]})'
                 )
                 errors.update(
-                    {"quantity": _("Quantity cannot be greater than maximum limit.")}
+                    {"minimum_limit": _(
+                        "The shelfobject quantity cannot be less than minimum limit.")}
                 )
-
+        if without_limit:
+            print(without_limit)
         if errors:
             raise serializers.ValidationError(errors)
 

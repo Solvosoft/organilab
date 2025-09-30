@@ -1745,7 +1745,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
         context = {"lab_pk": lab_pk, "org_pk": org_pk}
-        self.serializer_class = ShelfObjectLimitsSerializer
+        self.serializer_class = ShelfObjectMaterialLimitsSerializer
 
         shelf_object_serializer = EditReactiveShelfObjectSerializer(
             instance=shelf_object, data=request.data, context=context
@@ -1759,11 +1759,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 serializer = self.serializer_class(data=request.data,
                                                    instance=shelf_object.limits,
                                                context={"source_laboratory_id": lab_pk,
-                                                        "shelfobject":shelf_object.pk})
+                                                        "shelfobject":shelf_object.pk,
+                                                        "type_id":shelf_object.object.type})
             else:
                 serializer = self.serializer_class(data=request.data,
                                                    context={"source_laboratory_id": lab_pk,
-                                                            "shelfobject":shelf_object.pk})
+                                                            "shelfobject":shelf_object.pk,
+                                                            "type_id":shelf_object.object.type})
             if serializer.is_valid():
                 limit=serializer.save()
                 obj.limits = limit
@@ -1791,16 +1793,21 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(
             request, org_pk, lab_pk, "get_shelfobject_info"
         )
-        self.serializer_class = ReactiveShelfObjectDataSerializer
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
-
-        serializer = self.serializer_class(
+        self.serializer_class = ShelfObjectMaterialLimitsSerializer
+        shelfobject_serializer = ReactiveShelfObjectDataSerializer(
             shelfobject, context={"request": request}
         )
-        errors, data = {}, {}
 
-
-        return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        serializers = shelfobject_serializer.data
+        if hasattr(shelfobject, "limits"):
+            serializer = self.serializer_class(
+                shelfobject.limits, context={"source_laboratory_id": lab_pk}
+            )
+            serializers.update(serializer.data)
+            return JsonResponse(serializers, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse(serializers, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["get"])
     def get_shelfobject_limits(self, request, org_pk, lab_pk, pk, **kwargs):

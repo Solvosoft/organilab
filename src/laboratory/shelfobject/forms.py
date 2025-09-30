@@ -1139,14 +1139,14 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         super().__init__(*args, **kwargs)
 
         self.fields["without_limit"].initial = False
-        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits"})
+        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits","data-prefix":"id_edit-"})
         self.fields.pop("objecttype")
         self.fields.pop("expiration_date")
 
     class Meta:
         model = ShelfObject
         fields = ["reactive_expiration_date", "status", "physical_status","description",
-                  "without_limit", "minimum_limit", "maximum_limit"
+                  "without_limit", "minimum_limit", "maximum_limit","pictograms"
                   ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
@@ -1155,6 +1155,8 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "description": genwidgets.Textarea,
             "minimum_limit": genwidgets.TextInput,
             "maximum_limit": genwidgets.TextInput,
+            "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
+
         }
 
 class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
@@ -1164,7 +1166,7 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         super().__init__(*args, **kwargs)
 
         self.fields["without_limit"].initial = False
-        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits"})
+        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits","data-prefix":"id_edit_material-"})
         self.fields.pop("objecttype")
     class Meta:
         model = ShelfObject
