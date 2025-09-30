@@ -96,7 +96,8 @@ from laboratory.shelfobject.serializers import (
     ValidateShelfobjectEditSerializer,
     EditEquipmentShelfObjectSerializer,
     EditEquimentShelfobjectCharacteristicSerializer, EditReactiveShelfObjectSerializer,
-    ReactiveShelfObjectDataSerializer,
+    ReactiveShelfObjectDataSerializer, MaterialShelfObjectDataSerializer,
+    ShelfObjectMaterialLimitsSerializer,
 )
 
 from laboratory.shelfobject.utils import (
@@ -680,6 +681,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "manage_shelfobject_container": ["laboratory.change_shelfobject"],
         "edit_shelfobject": ["laboratory.change_shelfobject"],
         "get_shelfobject": ["laboratory.view_shelfobject"],
+        "get_shelfobject_limits": ["laboratory.view_shelfobject"],
+        "edit_shelfobject_limits": ["laboratory.change_shelfobject"],
     }
 
     # This is not an API endpoint
@@ -1742,21 +1745,38 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         shelf_object = self._get_shelfobject_with_check(pk, lab_pk)
         context = {"lab_pk": lab_pk, "org_pk": org_pk}
-        serializer = EditReactiveShelfObjectSerializer(
+        self.serializer_class = ShelfObjectLimitsSerializer
+
+        shelf_object_serializer = EditReactiveShelfObjectSerializer(
             instance=shelf_object, data=request.data, context=context
         )
-        data = request.data.copy()
-        data.update({"shelfobject": shelf_object.pk})
 
         errors = {}
 
-        if serializer.is_valid():
-            obj = serializer.save()
-            utils.organilab_logentry(
+        if shelf_object_serializer.is_valid():
+            obj = shelf_object_serializer.save()
+            if hasattr(shelf_object, "limits"):
+                serializer = self.serializer_class(data=request.data,
+                                                   instance=shelf_object.limits,
+                                               context={"source_laboratory_id": lab_pk,
+                                                        "shelfobject":shelf_object.pk})
+            else:
+                serializer = self.serializer_class(data=request.data,
+                                                   context={"source_laboratory_id": lab_pk,
+                                                            "shelfobject":shelf_object.pk})
+            if serializer.is_valid():
+                limit=serializer.save()
+                obj.limits = limit
+                obj.save()
+                utils.organilab_logentry(
                     request.user, obj, CHANGE, "shelfobject", relobj=lab_pk
                 )
+                return JsonResponse({}, status=status.HTTP_200_OK)
+            else:
+                errors.update(serializer.errors)
+
         else:
-            errors = serializer.errors
+            errors.update(shelf_object_serializer.errors)
 
         if errors:
             return JsonResponse({"errors":errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -1765,6 +1785,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             {"detail": _("Shelfobject was updated successfully.")},
             status=status.HTTP_200_OK,
         )
+
     @action(detail=True, methods=["get"])
     def get_reactive_edit_data(self, request, org_pk, lab_pk,pk,**kwargs):
         self._check_permission_on_laboratory(
@@ -1781,6 +1802,58 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["get"])
+    def get_shelfobject_limits(self, request, org_pk, lab_pk, pk, **kwargs):
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "get_shelfobject_limits"
+        )
+        self.serializer_class = ShelfObjectMaterialLimitsSerializer
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+        shelfobject_serializer = ReactiveShelfObjectDataSerializer(
+            shelfobject, context={"request": request}
+        )
+        serializers = shelfobject_serializer.data
+        if hasattr(shelfobject, "limits"):
+            serializer = self.serializer_class(
+                shelfobject.limits, context={"source_laboratory_id": lab_pk}
+            )
+            serializers.update(serializer.data)
+            return JsonResponse(serializers, status=status.HTTP_200_OK)
+        else:
+            return JsonResponse(serializers, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["put"])
+    def edit_material_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "edit_shelfobject_limits"
+        )
+        self.serializer_class = ShelfObjectLimitsSerializer
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+        shelfobject_serializer = MaterialShelfObjectDataSerializer(
+            data=request.data, instance=shelfobject, context={"request": request}
+        )
+        errors = {}
+        if shelfobject_serializer.is_valid():
+            obj = shelfobject_serializer.save()
+            if hasattr(shelfobject, "limits"):
+                serializer = self.serializer_class(data=request.data,
+                                                   instance=shelfobject.limits,
+                                               context={"source_laboratory_id": lab_pk,
+                                                        "shelfobject":shelfobject.pk})
+            else:
+                serializer = self.serializer_class(data=request.data,
+                                                   context={"source_laboratory_id": lab_pk,
+                                                            "shelfobject":shelfobject.pk})
+            if serializer.is_valid():
+                limit=serializer.save()
+                obj.limits = limit
+                obj.save()
+                return JsonResponse({}, status=status.HTTP_200_OK)
+            else:
+                errors = serializer.errors
+        else:
+            errors.update(shelfobject_serializer.errors)
+        return JsonResponse({"errors":errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class SearchLabView(viewsets.GenericViewSet):
     """
