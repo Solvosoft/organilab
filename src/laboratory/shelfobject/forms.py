@@ -27,7 +27,7 @@ from laboratory.models import (
     ShelfObjectTraining,
     ShelfObjectEquipmentCharacteristics,
     OrganizationStructure,
-    BaseUnitValues,
+    BaseUnitValues, ShelfObjectLimits,
 )
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import (
@@ -1133,13 +1133,47 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
             "first_date_use": genwidgets.DateInput,
         }
 
-class EditReactiveForm(forms.ModelForm, GTForm):
+class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        self.fields["without_limit"].initial = False
+        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits"})
+        self.fields.pop("objecttype")
+        self.fields.pop("expiration_date")
+
     class Meta:
         model = ShelfObject
-        fields = ["reactive_expiration_date", "status", "physical_status","description"]
+        fields = ["reactive_expiration_date", "status", "physical_status","description",
+                  "without_limit", "minimum_limit", "maximum_limit"
+                  ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
             "physical_status": genwidgets.Select,
             "description": genwidgets.Textarea,
+            "minimum_limit": genwidgets.TextInput,
+            "maximum_limit": genwidgets.TextInput,
+        }
+
+class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        self.fields["without_limit"].initial = False
+        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits"})
+        self.fields.pop("objecttype")
+    class Meta:
+        model = ShelfObject
+        fields = ["status", "description", "without_limit", "minimum_limit", "maximum_limit", "expiration_date"]
+        widgets = {
+            "description": genwidgets.Textarea,
+            "minimum_limit": genwidgets.TextInput,
+            "maximum_limit": genwidgets.TextInput,
+            "expiration_date": genwidgets.DateInput,
+            "status": genwidgets.Select,
+
         }

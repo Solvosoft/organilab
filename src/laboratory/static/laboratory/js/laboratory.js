@@ -710,6 +710,11 @@ function editReactiveShelfObject(instance, event){
 
 }
 
+$(".lock_limits").on('ifChanged', function(event){
+    show_hide_limits(this,"#id_edit_material-")
+
+})
+
 function get_shelfobject_data(shelfobject){
     edit_shelfobject_url = document.urls["get_shelfobject_data"].replace('0',shelfobject)
     $.ajax({
@@ -717,11 +722,64 @@ function get_shelfobject_data(shelfobject){
         type: "GET",
         headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
         success: function(data){
+         document.querySelector("#id_edit-minimum_limit").value = data.minimum_limit;
+        document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
             document.querySelector("#id_edit-description").value = data.description;
             document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
             $('#id_edit-physical_status').val(data.physical_status).trigger('change');
             $('#id_edit-status').val(data.status).trigger('change');
+
+        if(data.minimum_limit == 0 && data.maximum_limit == 0){
+            if(!$("#id_edit-without_limit").parent().hasClass('checked')){
+                $("#id_edit-without_limit").parent().addClass('checked')
+                $('#id_edit-without_limit').iCheck('check');
+            }
         }
+
+         show_hide_limits($(".lock_limits"),"#id_edit-");
+
+
+        }
+    });
+}
+
+function editMaterialShelfObject(instance, event){
+    var modalid= $(instance).data('modalid');
+    form = $(instance).data('form');
+    let is_created = form_modals.hasOwnProperty(modalid);
+    edit_shelfobject_url = document.urls["edit_material_shelfobject"].replace('0',$(instance).data('shelfobject'))
+    document.getElementById(form).action = edit_shelfobject_url;
+    show_me_modal(instance, event);
+    form_modals[modalid].type='PUT';
+    form_modals[modalid].action = edit_shelfobject_url;
+    get_material_shelfobject_data($(instance).data('shelfobject'));
+
+}
+
+function get_material_shelfobject_data(shelfobject){
+    edit_shelfobject_url = document.urls["get_shelfobject_limits"].replace('0',shelfobject)
+    $.ajax({
+        url: edit_shelfobject_url,
+        type: "GET",
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        success: function(data){
+        document.querySelector("#id_edit_material-description").value = data.description;
+        document.querySelector("#id_edit_material-minimum_limit").value = data.minimum_limit;
+        document.querySelector("#id_edit_material-maximum_limit").value = data.maximum_limit;
+        document.querySelector("#id_edit_material-expiration_date").value = data.expiration_date;
+
+        $('#id_edit_material-status').val(data.status).trigger('change');
+
+        if(data.minimum_limit == 0 && data.maximum_limit == 0){
+            if(!$("#id_edit_material-without_limit").parent().hasClass('checked')){
+                $("#id_edit_material-without_limit").parent().addClass('checked')
+                $('#id_edit_material-without_limit').iCheck('check');
+            }
+        }
+
+         show_hide_limits($(".lock_limits"),"#id_edit_material-");
+
+    }
     });
 }
 

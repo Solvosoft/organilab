@@ -36,7 +36,7 @@ from ..shelfobject.forms import (
     IncreaseShelfObjectForm,
     TransferInShelfObjectApproveWithContainerForm,
     ContainerManagementForm,
-    MoveShelfobjectWithContainerForm, EditReactiveForm,
+    MoveShelfobjectWithContainerForm, EditReactiveForm, EditMaterialForm,
 )
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
@@ -235,6 +235,8 @@ class LaboratoryRoomsList(ListView):
             )
         )
         context["edit_form"] = EditReactiveForm(prefix="edit",
+                                                         )
+        context["edit_material_form"] = EditMaterialForm(prefix="edit_material",
                                                          )
         context["options"] = ["Reservation", "Add", "Transfer", "Substract"]
         context["user"] = self.request.user

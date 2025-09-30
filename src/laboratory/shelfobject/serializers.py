@@ -419,8 +419,21 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         quantity = self.context.get("quantity", 0)
         type_id = self.context.get("type_id", "-1")
         without_limit = self.context.get("without_limit", False)
-        errors = {}
+        shelfobject = self.context.get("shelfobject", None)
+        if shelfobject:
+            shelfobject = ShelfObject.objects.filter(pk=shelfobject).first()
 
+        errors = {}
+        if shelfobject.quantity < data["maximum_limit"]:
+            logger.debug(
+                f"ShelfObjectLimitsSerializer --> shelfobject.quantity "
+                f"({shelfobject.quantity}) < "
+                f'({data["maximum_limit"]})'
+            )
+            errors.update(
+                {"maximum_limit": _(
+                    "The shelfobject quantity cannot be less than maximum limit.")}
+            )
         if type_id == Object.REACTIVE and not without_limit:
             if data["minimum_limit"] > data["maximum_limit"]:
                 logger.debug(
@@ -2560,3 +2573,76 @@ class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "reactive_expiration_date", "physical_status"]
+
+
+class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ShelfObject
+        fields = ["status", "description"]
+
+class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
+    minimum_limit = serializers.FloatField(min_value=0.0, required=True, initial=0.0)
+    maximum_limit = serializers.FloatField(min_value=0.0, required=True, initial=0.0)
+    expiration_date = GTDateField(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+
+    class Meta:
+        model = ShelfObjectLimits
+        fields = "__all__"
+
+    def validate(self, data):
+        quantity = self.context.get("quantity", 0)
+        type_id = self.context.get("type_id", "-1")
+        without_limit = self.context.get("without_limit", False)
+        shelfobject = self.context.get("shelfobject",None)
+        if shelfobject:
+            shelfobject = ShelfObject.objects.filter(pk=shelfobject).first()
+
+        errors = {}
+        if shelfobject.quantity < data["maximum_limit"]:
+            logger.debug(
+                f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({shelfobject.quantity}) < "
+                f'({data["maximum_limit"]})'
+            )
+            errors.update(
+                {"maximum_limit": _("The shelfobject quantity cannot be less than maximum limit.")}
+            )
+
+        if type_id == Object.REACTIVE and not without_limit:
+            if data["minimum_limit"] > data["maximum_limit"]:
+                logger.debug(
+                    f'ShelfObjectLimitsSerializer --> data["minimum_limit"] ({data["minimum_limit"]}) > '
+                    f'data["maximum_limit"] ({data["maximum_limit"]})'
+                )
+                errors.update(
+                    {
+                        "minimum_limit": _(
+                            "Minimum limit cannot be greater than maximum limit."
+                        )
+                    }
+                )
+
+            if float(quantity) > data["maximum_limit"]:
+                logger.debug(
+                    f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) > "
+                    f'({data["maximum_limit"]})'
+                )
+                errors.update(
+                    {"quantity": _("Quantity cannot be greater than maximum limit.")}
+                )
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return data
+
+    def get_fields(self, *args, **kwargs):
+        fields = super().get_fields(*args, **kwargs)
+
+        object_type = self.context.get("type_id", "-1")
+        if object_type == Object.EQUIPMENT:
+            fields["minimum_limit"].required = False
+            fields["maximum_limit"].required = False
+        return fields
