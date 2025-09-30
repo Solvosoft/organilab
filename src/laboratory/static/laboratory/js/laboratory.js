@@ -711,7 +711,8 @@ function editReactiveShelfObject(instance, event){
 }
 
 $(".lock_limits").on('ifChanged', function(event){
-    show_hide_limits(this,"#id_edit_material-")
+
+    show_hide_limits(this,"#"+this.dataset.prefix)
 
 })
 
@@ -733,8 +734,25 @@ function get_shelfobject_data(shelfobject){
             if(!$("#id_edit-without_limit").parent().hasClass('checked')){
                 $("#id_edit-without_limit").parent().addClass('checked')
                 $('#id_edit-without_limit').iCheck('check');
-            }
+            }else{
+                $('#id_edit-without_limit').iCheck('check');
+                }
+        }else if($("#id_edit-without_limit").parent().hasClass('checked')){
+            $("#id_edit-without_limit").parent().removeClass('checked')
+            $('#id_edit-without_limit').iCheck('uncheck');
         }
+
+            $('#id_edit-pictograms').val(null).trigger('change');
+              if (data.pictograms.length > 0) {
+                  if (Array.isArray(data.pictograms)) {
+                        for (var x = 0; x < data.pictograms.length; x++) {
+                            $('#id_edit-pictograms option[value="' + data.pictograms[x]['id'] + '"]').remove();
+                            var newOption = new Option(data.pictograms[x]["text"], data.pictograms[x]['id'], true, true);
+                            $('#id_edit-pictograms').append(newOption);
+                        }
+                    }
+                    $('#id_edit-pictograms').trigger('change')
+                }
 
          show_hide_limits($(".lock_limits"),"#id_edit-");
 
@@ -774,7 +792,14 @@ function get_material_shelfobject_data(shelfobject){
             if(!$("#id_edit_material-without_limit").parent().hasClass('checked')){
                 $("#id_edit_material-without_limit").parent().addClass('checked')
                 $('#id_edit_material-without_limit').iCheck('check');
+            }else{
+                $('#id_edit_material-without_limit').iCheck('check');
+
             }
+       }else if($("#id_edit_material-without_limit").parent().hasClass('checked')){
+            $("#id_edit_material-without_limit").parent().removeClass('checked')
+            $('#id_edit_material-without_limit').iCheck('uncheck');
+        }
         }
 
          show_hide_limits($(".lock_limits"),"#id_edit_material-");
@@ -782,4 +807,5 @@ function get_material_shelfobject_data(shelfobject){
     }
     });
 }
+
 
