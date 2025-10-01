@@ -306,6 +306,9 @@ class ShelfObject(models.Model):
         ("solid powder", _("Solid powder")),
         ("solid granular or crystalline", _("Solid granular or crystalline")),
         ("Gaseous", _("Gaseous")),
+        ("Tablets",_("Tablets")),
+        ("Lentils",_("Lentils")),
+        ("Granza",_("Granza")),
     )
     shelf = models.ForeignKey(
         "Shelf", verbose_name=_("Shelf"), on_delete=models.CASCADE
