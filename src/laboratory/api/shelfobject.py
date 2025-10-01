@@ -1751,7 +1751,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             instance=shelf_object, data=request.data, context=context
         )
 
-        errors = {}
+        errors, serializer = {}, {}
 
         if shelf_object_serializer.is_valid():
             obj = shelf_object_serializer.save()
