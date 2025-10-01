@@ -325,6 +325,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "shelf",
             "status",
             "quantity",
+            "batch",
             "limit_quantity",
             "marked_as_discard",
             "description",
@@ -335,6 +336,8 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "limit_quantity": forms.HiddenInput,
             "description": genwidgets.Textarea,
             "marked_as_discard": genwidgets.CheckboxInput,
+            "batch": genwidgets.TextInput,
+
         }
 
 
@@ -385,6 +388,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "shelf",
             "status",
             "quantity",
+            "batch",
             "limit_quantity",
             "marked_as_discard",
             "description",
@@ -395,6 +399,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "limit_quantity": forms.HiddenInput,
             "description": genwidgets.Textarea,
             "marked_as_discard": forms.HiddenInput,
+            "batch": genwidgets.TextInput,
         }
 
 
@@ -1146,13 +1151,14 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
     class Meta:
         model = ShelfObject
         fields = ["reactive_expiration_date", "status", "physical_status","description",
-                  "without_limit", "minimum_limit", "maximum_limit","pictograms"
+                  "batch","without_limit", "minimum_limit", "maximum_limit","pictograms"
                   ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
             "physical_status": genwidgets.Select,
             "description": genwidgets.Textarea,
+            "batch": genwidgets.TextInput,
             "minimum_limit": genwidgets.TextInput,
             "maximum_limit": genwidgets.TextInput,
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
@@ -1170,12 +1176,14 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         self.fields.pop("objecttype")
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "without_limit", "minimum_limit", "maximum_limit", "expiration_date"]
+        fields = ["status", "description", "batch", "without_limit", "minimum_limit",
+                  "maximum_limit", "expiration_date"]
         widgets = {
             "description": genwidgets.Textarea,
             "minimum_limit": genwidgets.TextInput,
             "maximum_limit": genwidgets.TextInput,
             "expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
+            "batch": genwidgets.TextInput,
 
         }

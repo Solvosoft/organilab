@@ -613,6 +613,7 @@ class MaterialShelfObjectSerializer(
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
+    batch = serializers.CharField(required=False, default="0")
 
     class Meta:
         model = ShelfObject
@@ -624,6 +625,7 @@ class MaterialShelfObjectSerializer(
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "batch",
         ]
 
     def validate(self, data):
@@ -653,6 +655,7 @@ class MaterialRefuseShelfObjectSerializer(
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
+    batch = serializers.CharField(required=False, default="0")
 
     class Meta:
         model = ShelfObject
@@ -664,6 +667,7 @@ class MaterialRefuseShelfObjectSerializer(
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "batch",
         ]
 
     def validate(self, data):
@@ -2582,14 +2586,14 @@ class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "reactive_expiration_date", "physical_status",
-                  "pictograms"]
+                  "pictograms","batch"]
 
 
 class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = ["status", "description"]
+        fields = ["status", "description", "batch"]
 
 class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
     minimum_limit = serializers.FloatField(min_value=0.0, required=True, initial=0.0)
