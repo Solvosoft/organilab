@@ -2549,11 +2549,12 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
         allow_null=True,
         allow_empty=True,
     )
+    batch = serializers.CharField(required=False, default="0")
 
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "reactive_expiration_date", "physical_status",
-                  "pictograms"]
+                  "pictograms","batch"]
 
     def validate(self, data):
         org_context = self.context["org_pk"]
