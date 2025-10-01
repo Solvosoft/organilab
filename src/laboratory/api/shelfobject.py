@@ -1834,7 +1834,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         self._check_permission_on_laboratory(
             request, org_pk, lab_pk, "edit_shelfobject_limits"
         )
-        self.serializer_class = ShelfObjectLimitsSerializer
+        self.serializer_class = ShelfObjectMaterialLimitsSerializer
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
         shelfobject_serializer = MaterialShelfObjectDataSerializer(
             data=request.data, instance=shelfobject, context={"request": request}
@@ -1846,11 +1846,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 serializer = self.serializer_class(data=request.data,
                                                    instance=shelfobject.limits,
                                                context={"source_laboratory_id": lab_pk,
-                                                        "shelfobject":shelfobject.pk})
+                                                        "shelfobject":shelfobject.pk,
+                                                        "type_id":shelfobject.object.type})
             else:
                 serializer = self.serializer_class(data=request.data,
                                                    context={"source_laboratory_id": lab_pk,
-                                                            "shelfobject":shelfobject.pk})
+                                                            "shelfobject":shelfobject.pk,
+                                                            "type_id":shelfobject.object.type})
             if serializer.is_valid():
                 limit=serializer.save()
                 obj.limits = limit
