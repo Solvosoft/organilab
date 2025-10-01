@@ -704,6 +704,9 @@ function editReactiveShelfObject(instance, event){
     let is_created = form_modals.hasOwnProperty(modalid);
     edit_shelfobject_url = document.urls["edit_shelfobject"].replace('0',$(instance).data('shelfobject'))
     document.getElementById(form).action = edit_shelfobject_url;
+    if(form_modals.hasOwnProperty(modalid)){
+        delete form_modals[modalid]
+    }
     show_me_modal(instance, event);
     form_modals[modalid].type='PUT';
     get_shelfobject_data($(instance).data('shelfobject'));
@@ -767,6 +770,9 @@ function editMaterialShelfObject(instance, event){
     let is_created = form_modals.hasOwnProperty(modalid);
     edit_shelfobject_url = document.urls["edit_material_shelfobject"].replace('0',$(instance).data('shelfobject'))
     document.getElementById(form).action = edit_shelfobject_url;
+    if(form_modals.hasOwnProperty(modalid)){
+        delete form_modals[modalid]
+    }
     show_me_modal(instance, event);
     form_modals[modalid].type='PUT';
     form_modals[modalid].action = edit_shelfobject_url;
@@ -800,12 +806,11 @@ function get_material_shelfobject_data(shelfobject){
             $("#id_edit_material-without_limit").parent().removeClass('checked')
             $('#id_edit_material-without_limit').iCheck('uncheck');
         }
+         show_hide_limits($(".lock_limits"),"#id_edit_material-");
         }
 
-         show_hide_limits($(".lock_limits"),"#id_edit_material-");
 
-    }
     });
-}
+    }
 
 
