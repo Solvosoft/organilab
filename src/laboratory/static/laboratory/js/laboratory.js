@@ -729,6 +729,7 @@ function get_shelfobject_data(shelfobject){
          document.querySelector("#id_edit-minimum_limit").value = data.minimum_limit;
         document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
             document.querySelector("#id_edit-description").value = data.description;
+            document.querySelector("#id_edit-batch").value = data.batch;
             document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
             $('#id_edit-physical_status').val(data.physical_status).trigger('change');
             $('#id_edit-status').val(data.status).trigger('change');
@@ -791,6 +792,7 @@ function get_material_shelfobject_data(shelfobject){
         document.querySelector("#id_edit_material-minimum_limit").value = data.minimum_limit;
         document.querySelector("#id_edit_material-maximum_limit").value = data.maximum_limit;
         document.querySelector("#id_edit_material-expiration_date").value = data.expiration_date;
+        document.querySelector("#id_edit_material-batch").value = data.batch;
 
         $('#id_edit_material-status').val(data.status).trigger('change');
 
