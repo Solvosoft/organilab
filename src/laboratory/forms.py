@@ -1051,6 +1051,12 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
             self.fields["plaque"] = forms.CharField(
                 widget=forms.HiddenInput(), required=False
             )
+        if data_type != Object.REACTIVE:
+            self.fields.pop("is_dangerous")
+            self.fields.pop("has_threshold")
+            self.fields.pop("threshold")
+            self.fields.pop("is_pure")
+
 
     def clean(self):
         cleaned_data = super().clean()
