@@ -706,6 +706,7 @@ function editReactiveShelfObject(instance, event){
     document.getElementById(form).action = edit_shelfobject_url;
     if(form_modals.hasOwnProperty(modalid)){
         delete form_modals[modalid]
+        $("#edit_reactive_modal").find('.formadd').off('click');
     }
     show_me_modal(instance, event);
     form_modals[modalid].type='PUT';
@@ -773,6 +774,8 @@ function editMaterialShelfObject(instance, event){
     document.getElementById(form).action = edit_shelfobject_url;
     if(form_modals.hasOwnProperty(modalid)){
         delete form_modals[modalid]
+        $("#edit_material_modal").find('.formadd').off('click');
+
     }
     show_me_modal(instance, event);
     form_modals[modalid].type='PUT';
