@@ -20,12 +20,10 @@ class Command(BaseCommand):
         container_sixty = containers.filter(container__object__materialcapacity__capacity=60.0).first()
         containers_delete = []
         for shelf_obj in containers:
-            shelf_obj.container = container
-            if shelf_obj.quantity> 40 and shelf_obj.quantity < 60:
-                shelf_obj.container = container_sixty
-            shelf_obj.save()
             if container.pk != shelf_obj.container.pk:
                 containers_delete.append(shelf_obj.container.pk)
+                shelf_obj.container = container
+                shelf_obj.save()
 
         container.save()
         ShelfObject.objects.filter(pk__in=containers_delete).delete()
