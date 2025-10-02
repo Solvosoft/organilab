@@ -29,3 +29,8 @@ Add the new pictograms
 Adde new units
 
     - python manage.py new_units
+
+02/10/2025
+Update container with Vitek box
+
+    - python manage.py update_vitek
