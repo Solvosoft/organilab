@@ -28,76 +28,83 @@ def get_stock_dataset(report, column_list=None):
         .distinct("pk")
         .values_list("object__pk", flat=True)
     )
-    filters["object__type"] = Object.MATERIAL
     containers = (
-        ShelfObject.objects.filter(**filters, container__isnull=True)
+        ShelfObject.objects.filter(**filters, container__isnull=False)
         .distinct("pk")
-        .values_list("object__pk", flat=True)
+        .values_list("container__pk", flat=True)
     )
-
+    containers = ShelfObject.objects.filter(container__pk__in=containers).values_list("container__pk", flat=True)
     reactives = []
-    for obj in objs:
-        data_column = {}
-        shelfobjects = ShelfObject.objects.filter(
-            container__object__in=containers, object__pk=obj, **reactive_filters
-        ).distinct("pk")
-        if shelfobjects.count() > 0:
-            reactive = shelfobjects.first()
+    for container in containers:
+        objs = (
+            ShelfObject.objects.filter(**filters,
+                                       container__pk=container)
+            .distinct("pk")
+            .values_list("object__pk", flat=True)
+        )
+        container_object = ShelfObject.objects.filter(pk=container).first()
+        for obj in set(objs):
 
-            amount = sum(
-                [
-                    get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
-                    for shelfobj in shelfobjects
-                ]
-            )
-            cas_id = ""
-            molecular_formula = ""
-            # if reactive.object.is_pure:
-            cas_id = reactive.object.cas_code
-            molecular_formula = (
-                reactive.object.sustancecharacteristics.molecular_formula
-            )
-            expiration_date = reactive.reactive_expiration_date
-            if expiration_date:
-                expiration_date = expiration_date.strftime("%d/%m/%Y")
-            else:
-                expiration_date = ""
-            status = ""
-            if reactive.physical_status:
-                status = reactive.get_physical_status_display()
-            base_unit = ""
-            if reactive.measurement_unit:
-                base_unit = BaseUnitValues.objects.get(
-                    measurement_unit=reactive.measurement_unit
-                ).measurement_unit_base.description
-            capacity = ""
-            capacity_measurement_unit = ""
-            if hasattr(reactive.container.object, "materialcapacity"):
-                capacity = reactive.container.object.materialcapacity.capacity
-                capacity_measurement_unit = (
-                    reactive.container.object.materialcapacity.capacity_measurement_unit.description
+            data_column = {}
+            shelfobjects = ShelfObject.objects.filter(
+                container__pk=container, object__pk=obj, **reactive_filters
+            ).distinct("pk")
+            if shelfobjects.count() > 0:
+                reactive = shelfobjects.first()
+
+                amount = sum(
+                    [
+                        get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
+                        for shelfobj in shelfobjects
+                    ]
                 )
-            data_column = {
-                "name": reactive.object.name,
-                "cas_id": cas_id,
-                "molecular_formula": molecular_formula,
-                "physical_status": status,
-                "quantity": amount,
-                "reactive_unit": base_unit,
-                "container_capacity": capacity,
-                "container_unit": capacity_measurement_unit,
-                "container_quantity": shelfobjects.count(),
-                "container": reactive.container.object.name,
-                "threshold": reactive.object.threshold,
-                "max_measurement_unit": "",
-                "expiration_date": expiration_date,
-            }
-        obj_item = list(data_column.values())
+                # if reactive.object.is_pure:
+                cas_id = reactive.object.cas_code
+                molecular_formula = (
+                    reactive.object.sustancecharacteristics.molecular_formula
+                )
+                expiration_date = reactive.reactive_expiration_date
+                if expiration_date:
+                    expiration_date = expiration_date.strftime("%d/%m/%Y")
+                else:
+                    expiration_date = ""
+                status = ""
+                if reactive.physical_status:
+                    status = reactive.get_physical_status_display()
+                base_unit = ""
+                if reactive.measurement_unit:
+                    base_unit = BaseUnitValues.objects.get(
+                        measurement_unit=reactive.measurement_unit
+                    ).measurement_unit_base.description
+                capacity = ""
+                capacity_measurement_unit = ""
+                if hasattr(container_object.object, "materialcapacity"):
+                    capacity = container_object.object.materialcapacity.capacity
+                    capacity_measurement_unit = (
+                        container_object.object.materialcapacity.capacity_measurement_unit.description
+                    )
+                data_column = {
+                    "name": reactive.object.name,
+                    "cas_id": cas_id,
+                    "molecular_formula": molecular_formula,
+                    "physical_status": status,
+                    "quantity": amount,
+                    "reactive_unit": base_unit,
+                    "container_capacity": capacity,
+                    "container_unit": capacity_measurement_unit,
+                    "container_quantity": shelfobjects.count(),
+                    "container": container_object.object.name,
+                    "threshold": reactive.object.threshold,
+                    "max_measurement_unit": "",
+                    "expiration_date": expiration_date,
+                }
+            obj_item = list(data_column.values())
+            print(data_column)
 
-        if column_list:
-            obj_item = load_dataset_by_column(column_list, data_column)
-        if len(obj_item) > 0:
-            dataset.append(obj_item)
+            if column_list:
+                obj_item = load_dataset_by_column(column_list, data_column)
+            if len(obj_item) > 0:
+                dataset.append(obj_item)
 
     for obj in object_no_containers:
         data_column = {}
