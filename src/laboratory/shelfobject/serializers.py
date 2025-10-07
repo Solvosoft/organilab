@@ -419,22 +419,9 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
         quantity = self.context.get("quantity", 0)
         type_id = self.context.get("type_id", "-1")
         without_limit = self.context.get("without_limit", False)
-        shelfobject = self.context.get("shelfobject", None)
-        if shelfobject:
-            shelfobject = ShelfObject.objects.filter(pk=shelfobject).first()
-
         errors = {}
-        if shelfobject.quantity < data["maximum_limit"]:
-            logger.debug(
-                f"ShelfObjectLimitsSerializer --> shelfobject.quantity "
-                f"({shelfobject.quantity}) < "
-                f'({data["maximum_limit"]})'
-            )
-            errors.update(
-                {"maximum_limit": _(
-                    "The shelfobject quantity cannot be less than maximum limit.")}
-            )
-        if type_id == Object.REACTIVE and not without_limit:
+
+        if type_id in [Object.REACTIVE, Object.MATERIAL] and not without_limit:
             if data["minimum_limit"] > data["maximum_limit"]:
                 logger.debug(
                     f'ShelfObjectLimitsSerializer --> data["minimum_limit"] ({data["minimum_limit"]}) > '
@@ -449,14 +436,21 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
                 )
 
             if float(quantity) > data["maximum_limit"]:
+                    logger.debug(
+                        f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) > "
+                        f'({data["maximum_limit"]})'
+                    )
+                    errors.update(
+                        {"quantity": _("Quantity cannot be greater than maximum limit.")}
+                    )
+            if float(quantity) < data["minimum_limit"]:
                 logger.debug(
-                    f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) > "
-                    f'({data["maximum_limit"]})'
+                    f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) < "
+                    f'({data["minimum_limit"]})'
                 )
                 errors.update(
-                    {"quantity": _("Quantity cannot be greater than maximum limit.")}
+                    {"quantity": _("Quantity cannot be lower than minimum limit.")}
                 )
-
         if errors:
             raise serializers.ValidationError(errors)
 
