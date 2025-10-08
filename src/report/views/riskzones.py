@@ -33,6 +33,7 @@ def get_dataset_report(report, column_list=None):
                 .exclude(buildings__isnull=True)
                 .values_list("buildings__laboratories", flat=True)
             )
+
     if "building" in report.data:
         if len(report.data["building"]) > 0:
             if len(laboratories) == 0:
@@ -49,10 +50,11 @@ def get_dataset_report(report, column_list=None):
                         ).values_list("buildings__laboratories", flat=True)
                     )
                 )
-    if len(laboratories) == 0:
+    if len(laboratories) == 0 and len(report.data["building"]) == 0 and len(report.data["risk_zone"]) == 0:
         laboratories = risk_zones.values_list("buildings__laboratories", flat=True)
 
     filters.update({"in_where_laboratory__in": list(set(laboratories))})
+
     objs = ShelfObject.objects.filter(**filters).values_list("object__pk", flat=True)
     objs = Object.objects.filter(pk__in=objs).distinct()
 

@@ -438,9 +438,7 @@ class RiskZoneReportForm(ReportBase):
             self.fields["building"].queryset = Buildings.objects.filter(
                 organization=org_pk
             )
-        else:
-            self.fields["risk_zone"].queryset = RiskZone.objects.none()
-            self.fields["building"].queryset = Buildings.objects.none()
+
 
     def clean_building(self):
         building = self.cleaned_data["building"]
@@ -452,6 +450,7 @@ class RiskZoneReportForm(ReportBase):
     def clean_risk_zone(self):
         risk_zone = self.cleaned_data["risk_zone"]
         if risk_zone.exists():
+            print(risk_zone)
             return list(risk_zone.values_list("pk", flat=True))
         return []
 

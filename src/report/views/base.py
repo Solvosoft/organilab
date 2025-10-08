@@ -143,7 +143,7 @@ def create_request_by_report(request, org_pk, lab_pk):
                 import_form = check_import_obj(type_report["form"])
 
                 if import_form:
-                    form = import_form(request.GET)
+                    form = import_form(request.GET, org_pk=org_pk)
                     status_code = 200
 
                     if form.is_valid():
