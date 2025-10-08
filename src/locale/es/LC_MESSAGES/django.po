@@ -5032,3 +5032,18 @@ msgstr "Lentejas"
 
 msgid "Granza"
 msgstr "Granza"
+
+msgid "Kit"
+msgstr "Kit"
+
+msgid "Colloidal"
+msgstr "Coloidal"
+
+msgid "Solid"
+msgstr "Solido"
+
+msgid "Card"
+msgstr "Tarjeta"
+
+msgid "Viscuos Liquid"
+msgstr "Líquido viscoso"
