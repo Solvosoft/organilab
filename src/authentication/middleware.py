@@ -49,6 +49,8 @@ class ProfileMiddleware:
 
         if "lab_pk" in view_kwargs and view_kwargs["lab_pk"]:
             lab_pk = view_kwargs["lab_pk"]
+        elif "lab_pk" in request.GET and request.GET["lab_pk"]:
+            lab_pk = request.GET["lab_pk"]
 
         if (
             hasattr(view_func, "view_class")
