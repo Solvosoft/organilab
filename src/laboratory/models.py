@@ -1557,3 +1557,21 @@ class MaterialCapacity(models.Model):
         key_value="units",
     )
     object = models.OneToOneField(Object, on_delete=models.CASCADE, null=True)
+
+
+
+class ObjectMaximumLimit(models.Model):
+    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, null=True, blank=True)
+    object = models.ForeignKey(Object, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.FloatField(null=True, default=0.0)
+    measurement_unit = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Measurement unit"),
+        key_name="key",
+        key_value="units",
+    )
+    created_at = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
