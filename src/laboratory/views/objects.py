@@ -18,7 +18,8 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm, ReactiveForm
+from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm, ReactiveForm, \
+    ReactiveLimitForm
 from laboratory.models import (
     Laboratory,
     BlockedListNotification,
@@ -312,6 +313,12 @@ def view_reactive_list(request, org_pk, lab_pk):
             initial={"laboratory": lab_pk},
             modal_id="#update_obj_form",
             laboratory_pk=lab_pk,
+        ),
+        "limit_form": ReactiveLimitForm(
+            prefix="limit",
+            initial={"laboratory": lab_pk},
+            modal_id="#limit_obj_form",
+            lab_pk=lab_pk,
         ),
     }
     return render(request, "laboratory/sustance/list.html", context=context)

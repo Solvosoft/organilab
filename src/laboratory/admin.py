@@ -135,5 +135,5 @@ admin.site.register(models.ShelfObjectObservation)
 admin.site.register(models.BaseUnitValues, BaseUnittAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.ObjectMaximumLimit)
-
+admin.site.register(models.ReactiveLimit)
 admin.site.site_header = _("Organilab Administration site")
