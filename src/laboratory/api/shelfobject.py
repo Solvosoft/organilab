@@ -1553,7 +1553,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     )
 
                     shelf_object.quantity = amount_converted
-                    shelf_object.measurement_unit = shelf_object.shelf.measurement_unit
+
+                    if shelf_object.shelf.measurement_unit:
+                        shelf_object.measurement_unit = shelf_object.shelf.measurement_unit
+
 
                     save_object_by_action(
                         user, shelf_object, relobj, changed_data, CHANGE, object_repr
