@@ -28,7 +28,7 @@ from laboratory.models import (
     RegisterUserQR,
     ShelfObject,
     ShelfObjectObservation,
-    EquipmentType,
+    EquipmentType, ReactiveLimit,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -1290,4 +1290,23 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "serie": genwidgets.TextInput,
             "plaque": genwidgets.TextInput,
             "is_pure": genwidgets.YesNoInput,
+        }
+
+class ReactiveLimitForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        laboratory = kwargs.pop("lab_pk")
+        modal_id = kwargs.pop("modal_id")
+
+        super(ReactiveLimitForm, self).__init__(*args, **kwargs)
+        self.fields["laboratory"].initial = laboratory
+
+    class Meta:
+        model = ReactiveLimit
+        fields = "__all__"
+        widgets = {
+            "laboratory": genwidgets.HiddenInput,
+            "object": genwidgets.HiddenInput,
+            "maximum_limit": genwidgets.TextInput,
+            "minimum_limit": genwidgets.TextInput,
+            "measurement_unit": genwidgets.Select
         }

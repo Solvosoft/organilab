@@ -1575,3 +1575,37 @@ class ObjectMaximumLimit(models.Model):
 
     def __str__(self):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
+
+class ReactiveLimit(models.Model):
+    laboratory = models.ForeignKey(
+        Laboratory,
+        on_delete=models.CASCADE,
+        verbose_name=_("Laboratory"),
+        related_name="laboratory_reactive_limits",
+    )
+    object = models.ForeignKey(
+        Object,
+        on_delete=models.CASCADE,
+        verbose_name=_("Object"),
+        related_name="object_reactive_limits",
+    )
+    maximum_limit = models.FloatField(
+        default=0.0,
+        verbose_name=_("Maximum Limit"),
+    )
+    minimum_limit = models.FloatField(
+        verbose_name=_("Minimum Limit"),
+        default=0.0,
+    )
+    measurement_unit = catalog.GTForeignKey(
+        Catalog,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Measurement unit"),
+        key_name="key",
+        key_value="units",
+        related_name="measurementunit_reactive_limits",
+
+    )
+
+    def __str__(self):
+        return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"

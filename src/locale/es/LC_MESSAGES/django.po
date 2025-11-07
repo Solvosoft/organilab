@@ -5024,3 +5024,8 @@ msgstr "Editar Material"
 msgid "The shelfobject quantity cannot be less than minimum limit."
 msgstr "La cantidad de la sustancia o material no puede ser menor a la cantidad mínima."
 
+msgid "Maximum limit cannot be lower than minimum limit."
+msgstr "El límite máximo no puede ser menor que el límite mínimo."
+
+msgid "Update Limits"
+msgstr "Actualizar límites"
