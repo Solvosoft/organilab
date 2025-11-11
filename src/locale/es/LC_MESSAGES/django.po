@@ -5038,3 +5038,6 @@ msgstr "Reactivos"
 
 msgid "Year"
 msgstr "Año"
+
+msgid "Reactive Stats"
+msgstr "Estadísticas de reactivos"
