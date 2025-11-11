@@ -900,6 +900,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
     maximum_limit = serializers.SerializerMethodField()
     minimum_limit = serializers.SerializerMethodField()
     measurement_unit = serializers.SerializerMethodField()
+    maximum_limit_table = serializers.SerializerMethodField()
+    minimum_limit_table = serializers.SerializerMethodField()
+    measurement_unit_table = serializers.SerializerMethodField()
 
     def get_reactive_limits(self, obj):
         lab = self.context["kwargs"].get("lab_pk", None)
@@ -909,7 +912,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
     def get_measurement_unit(self, obj):
         limit = self.get_reactive_limits(obj)
         if limit:
-            return limit.measurement_unit
+            return limit.measurement_unit.description
         return None
 
     def get_maximum_limit(self, obj):
@@ -924,11 +927,24 @@ class ReactiveSerializer(serializers.ModelSerializer):
             return limit.minimum_limit
         return 0.0
 
-    def get_measurement_unit(self, obj):
+    def get_measurement_unit_table(self, obj):
         limit = self.get_reactive_limits(obj)
         if limit:
-            return limit.measurement_unit.pk
-        return None
+            return limit.measurement_unit.description
+        return ""
+
+    def get_maximum_limit_table(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.maximum_limit
+        return ""
+
+    def get_minimum_limit_table(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.minimum_limit
+        return ""
+
     def get_iarc(self, obj):
         if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
             iarc = obj.sustancecharacteristics.iarc
@@ -1148,6 +1164,9 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "maximum_limit",
             "minimum_limit",
             "measurement_unit",
+            "maximum_limit_table",
+            "minimum_limit_table",
+            "measurement_unit_table",
         ]
 
 

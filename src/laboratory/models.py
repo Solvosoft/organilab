@@ -1606,7 +1606,6 @@ class ReactiveLimit(models.Model):
         related_name="measurementunit_reactive_limits",
 
     )
-    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
