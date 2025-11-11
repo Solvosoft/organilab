@@ -1077,3 +1077,9 @@ msgstr "Concentración"
 
 msgid "Threshold"
 msgstr "Umbral"
+
+msgid "Maximum Limit"
+msgstr "Límite Máximo"
+
+msgid "Minimum Limit"
+msgstr "Límite Mínimo"
