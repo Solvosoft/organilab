@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags risk_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+ {% define_true  "use_chartjs" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<h1 class="text-center">{% trans 'Stats' %}</h1>
+</div>
+
+<div class="row">
+
+	<div class="col-md-12 offset-md-0">
+					<form id="form-risk" method="GET">
+
+						{{form}}
+						<button  type="submit" class="btn btn-success float-end">{% trans 'Filter' %}</button>
+					</form>
+	</div>
+</div>
+<div class="container">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=objectlimits_url %}
+</div>
+{% endblock %}
+

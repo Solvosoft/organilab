@@ -30,10 +30,10 @@ from laboratory.models import (
     Catalog,
     EquipmentType,
     EquipmentCharacteristics,
-    SustanceCharacteristics, ReactiveLimit,
+    SustanceCharacteristics, ReactiveLimit, ObjectMaximumLimit,
 )
 from laboratory.models import Protocol
-from laboratory.utils import get_actions_by_perms
+from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
 from sga.models import DangerIndication
@@ -1207,3 +1207,18 @@ class ReactiveLimitSerializer(serializers.ModelSerializer):
 
 
         return data
+
+
+class ReactiveLimitsSerializer(serializers.Serializer):
+    object = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        queryset=Object.objects.all(),
+    )
+    laboratory = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        queryset=Laboratory.objects.all(),
+    )
+    years = serializers.ChoiceField(required=True,
+                                    choices=[(i, i) for i in ObjectMaximumLimit.objects.all().values_list("created_at__year", flat=True).distinct()])
