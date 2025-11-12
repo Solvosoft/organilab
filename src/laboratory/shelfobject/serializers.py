@@ -424,6 +424,8 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
             shelfobject = ShelfObject.objects.filter(pk=shelfobject).first()
 
         errors = {}
+
+
         if hasattr(shelfobject, "quantity"):
             if shelfobject.quantity < data["maximum_limit"]:
                 logger.debug(
@@ -457,7 +459,14 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
                 errors.update(
                     {"quantity": _("Quantity cannot be greater than maximum limit.")}
                 )
-
+            if float(quantity) < data["minimum_limit"]:
+                logger.debug(
+                    f"ShelfObjectLimitsSerializer --> shelfobject.quantity ({quantity}) < "
+                    f'({data["minimum_limit"]})'
+                )
+                errors.update(
+                    {"quantity": _("Quantity cannot be lower than minimum limit.")}
+                )
         if errors:
             raise serializers.ValidationError(errors)
 
