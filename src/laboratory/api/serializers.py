@@ -31,9 +31,11 @@ from laboratory.models import (
     EquipmentType,
     EquipmentCharacteristics,
     SustanceCharacteristics,
+    ReactiveLimit,
+    ObjectMaximumLimit,
 )
 from laboratory.models import Protocol
-from laboratory.utils import get_actions_by_perms
+from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
 from sga.models import DangerIndication
@@ -897,7 +899,53 @@ class ReactiveSerializer(serializers.ModelSerializer):
     seveso_list = serializers.SerializerMethodField()
     img_representation = serializers.SerializerMethodField()
     combined_booleans = serializers.SerializerMethodField()
+    maximum_limit = serializers.SerializerMethodField()
+    minimum_limit = serializers.SerializerMethodField()
+    measurement_unit = serializers.SerializerMethodField()
+    maximum_limit_table = serializers.SerializerMethodField()
+    minimum_limit_table = serializers.SerializerMethodField()
+    measurement_unit_table = serializers.SerializerMethodField()
 
+    def get_reactive_limits(self, obj):
+        lab = self.context["kwargs"].get("lab_pk", None)
+        reactive = ReactiveLimit.objects.filter(object=obj, laboratory__pk=lab).first()
+        return reactive
+
+    def get_measurement_unit(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.measurement_unit.description
+        return None
+
+    def get_maximum_limit(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.maximum_limit
+        return 0.0
+
+    def get_minimum_limit(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.minimum_limit
+        return 0.0
+
+    def get_measurement_unit_table(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.measurement_unit.description
+        return ""
+
+    def get_maximum_limit_table(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.maximum_limit
+        return ""
+
+    def get_minimum_limit_table(self, obj):
+        limit = self.get_reactive_limits(obj)
+        if limit:
+            return limit.minimum_limit
+        return ""
 
     def get_iarc(self, obj):
         if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
@@ -1073,6 +1121,8 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "update": ["laboratory.change_object", "laboratory.view_object"],
             "destroy": ["laboratory.delete_object", "laboratory.view_object"],
             "detail": ["laboratory.view_object"],
+            "add_limits": ["laboratory.add_object", "laboratory.view_object"],
+            "get_reactive_limits": ["laboratory.view_object"],
         }
         return get_actions_by_perms(user, action_list)
 
@@ -1113,6 +1163,12 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "threshold",
             "actions",
             "is_pure",
+            "maximum_limit",
+            "minimum_limit",
+            "measurement_unit",
+            "maximum_limit_table",
+            "minimum_limit_table",
+            "measurement_unit_table",
         ]
 
 
@@ -1121,3 +1177,84 @@ class ReactiveDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+    def get_fields(self):
+        fields = super().get_fields()
+        # fields["data"].child = ReactiveSerializer(context={"lab_pk": self.context["request"]})
+        return fields
+
+
+class GetReactiveLimitSerializer(serializers.ModelSerializer):
+    maximum_limit = serializers.FloatField(required=False, default=0.0)
+    minimum_limit = serializers.FloatField(required=False, default=0.0)
+    measurement_unit = GTS2SerializerBase(required=False)
+
+    class Meta:
+        model = ReactiveLimit
+        fields = ["maximum_limit", "minimum_limit", "measurement_unit"]
+
+
+class ReactiveLimitSerializer(serializers.ModelSerializer):
+    maximum_limit = serializers.FloatField(required=True)
+    minimum_limit = serializers.FloatField(required=True)
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="units"),
+        required=True,
+        allow_empty=True,
+        allow_null=True,
+    )
+    laboratory = serializers.PrimaryKeyRelatedField(
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
+        required=True,
+        allow_empty=True,
+        allow_null=True,
+    )
+    object = serializers.PrimaryKeyRelatedField(
+        queryset=Object.objects.using(settings.READONLY_DATABASE),
+        required=True,
+        allow_empty=True,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = ReactiveLimit
+        fields = "__all__"
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        if data["maximum_limit"] < data["minimum_limit"]:
+            logger.debug(
+                f"ReactiveLimitSerializer --> maximum_limit ({data['maximum_limit']}) is lower than minimum_limit ({data['minimum_limit']})"
+            )
+            raise serializers.ValidationError(
+                {
+                    "maximum_limit": _(
+                        "Maximum limit cannot be lower than minimum limit."
+                    )
+                }
+            )
+
+        return data
+
+
+class ReactiveLimitsSerializer(serializers.Serializer):
+    object = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        queryset=Object.objects.all(),
+    )
+    laboratory = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        queryset=Laboratory.objects.all(),
+    )
+    years = serializers.ChoiceField(required=True, choices=[])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["years"].choices = [
+            (i, i)
+            for i in ObjectMaximumLimit.objects.all()
+            .values_list("created_at__year", flat=True)
+            .distinct()
+        ]

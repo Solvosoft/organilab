@@ -24,6 +24,7 @@
 
 {% url "laboratory:api-reactive-list" org_pk lab_pk as list_obj_url %}
 	{% trans 'Create Reactive' as create_obj_tittle %}
+
 {% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class='modal-xl' %}
 
 {% url "laboratory:api-reactive-detail" org_pk lab_pk 0 as detail_obj_url %}
@@ -31,6 +32,11 @@
 {% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class='modal-xl' %}
 
 {% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+{% trans 'Update Limits' as limit_obj_tittle %}
+
+{% include 'gentelella/blocks/modal_template.html' with form=limit_form id="create_limit_modal" title=limit_obj_tittle form_id="create_reactive_limit_form" url=detail_obj_url principal_class='modal-xl' %}
+
+
 
 
 {% endblock %}
@@ -45,9 +51,10 @@ var object_urls = {
     destroy_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}",
     update_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}"
 }
-
-//laboratory:api-reactive-list
-
+var limit_urls = {
+					get_limits: "{% url 'laboratory:api-reactive-get-reactive-limits' org_pk=org_pk lab_pk=lab_pk pk=0 %}",
+					add_limits: "{% url 'laboratory:api-reactive-add-limits' org_pk=org_pk lab_pk=lab_pk %}"
+					}
 datatable_inits = {
     columns: [
                 {data: "id", name: "id", title: "ID", type: "string", visible: false},
@@ -55,6 +62,9 @@ datatable_inits = {
                 {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
                 {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
                 {data: "synonym", name: "synonym", title: gettext("Synonym"), type: "string", visible: true},
+                {data: "maximum_limit_table", name: "maximum_limit_table", title: gettext("Maximum Limit"), type: "readonly", visible: true},
+                {data: "minimum_limit_table", name: "minimum_limit_table", title: gettext("Minimum Limit"), type: "readonly", visible: true},
+                {data: "measurement_unit_table", name: "measurement_unit_table", title: gettext("Measurement Unit"), type: "readonly", visible: true},
                 {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 
 ],
@@ -77,6 +87,16 @@ var reactive_actions = {
 						'title' : gettext('Download'),
 						'in_action_column' : true,
 						'i_class' : 'fa fa-download',
+					},
+					{
+						'name' : 'add_limits',
+						'action' : 'add_limits',
+						'title' : gettext('Limits'),
+						'in_action_column' : true,
+						'i_class' : 'fa fa-lock',
+						'success' : function(instance, data){
+							instance.datatable.ajax.reload();
+						}
 					}
 				],
         title: gettext('Actions'),
@@ -118,8 +138,36 @@ crud.download = function(obj, action){
 		console.error("No security sheet available")
 	}
 }
-crud.init();
 
+
+
+crud.add_limits = function(obj, action){
+
+	$('#create_limit_modal').modal('show')
+	$("#create_limit_modal").find(".formadd").off("click")
+	document.getElementById('id_limit-object').value = obj.id;
+	add_url = limit_urls['add_limits']+"?reactive="+obj.id;
+	document.getElementById('create_reactive_limit_form').action =add_url;
+	document.getElementById('id_limit-maximum_limit').value = obj.maximum_limit;
+	document.getElementById('id_limit-minimum_limit').value = obj.minimum_limit;
+	$('#id_limit-measurement_unit').val(obj.measurement_unit).trigger('change');
+	$("#create_limit_modal").modal('show');
+
+	gtformequipment=GTBaseFormModal("#create_limit_modal", {},  {reload_table: false, type: "POST"});
+	gtformequipment.hide_modal = function(){
+					$(gtformequipment.form).find("ul.form_errors").remove();
+	};
+	gtformequipment.success = function(instance, data){
+					$("#create_limit_modal").modal('hide');
+	};
+	gtformequipment.show_modal = function(){};
+	gtformequipment.init();
+}
+
+crud.init();
+$('#create_limit_modal').on('hidden.bs.modal', function (){
+	crud.datatable.ajax.reload();
+})
 </script>
 
 

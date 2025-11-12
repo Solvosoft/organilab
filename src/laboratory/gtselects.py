@@ -455,7 +455,9 @@ class ObjectProvidersLookup(BaseSelect2View):
     obj = None
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    perms = {"list": ["laboratory.view_provider"]}
+    perms = {
+        "list": ["laboratory.view_provider"]
+    }
     permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):

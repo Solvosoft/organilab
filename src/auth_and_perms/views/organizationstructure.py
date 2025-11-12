@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
@@ -342,6 +342,9 @@ class AddUser(CreateView):
         )
 
         send_email(self.request, user)
+        group = Group.objects.filter(name="Profile").first()
+        if group:
+            user.groups.add(group)
         organilab_logentry(
             user,
             user,
