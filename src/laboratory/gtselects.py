@@ -109,9 +109,6 @@ class ObjectGModelLookup(BaseSelect2View):
     permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
-        if self.request.user.has_perm("laboratory.view_object"):
-            print(1)
-
         if self.shelf and self.shelf.limit_only_objects and self.shelfobjet_type:
             return self.shelf.available_objects_when_limit.filter(
                 type=self.shelfobjet_type
