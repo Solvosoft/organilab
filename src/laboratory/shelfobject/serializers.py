@@ -424,16 +424,17 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
             shelfobject = ShelfObject.objects.filter(pk=shelfobject).first()
 
         errors = {}
-        if shelfobject.quantity < data["maximum_limit"]:
-            logger.debug(
-                f"ShelfObjectLimitsSerializer --> shelfobject.quantity "
-                f"({shelfobject.quantity}) < "
-                f'({data["maximum_limit"]})'
-            )
-            errors.update(
-                {"maximum_limit": _(
-                    "The shelfobject quantity cannot be less than maximum limit.")}
-            )
+        if hasattr(shelfobject, "quantity"):
+            if shelfobject.quantity < data["maximum_limit"]:
+                logger.debug(
+                    f"ShelfObjectLimitsSerializer --> shelfobject.quantity "
+                    f"({shelfobject.quantity}) < "
+                    f'({data["maximum_limit"]})'
+                )
+                errors.update(
+                    {"maximum_limit": _(
+                        "The shelfobject quantity cannot be less than maximum limit.")}
+                )
         if type_id == Object.REACTIVE and not without_limit:
             if data["minimum_limit"] > data["maximum_limit"]:
                 logger.debug(

@@ -291,6 +291,10 @@ CELERYBEAT_SCHEDULE = {
         "task": "laboratory.tasks.create_precursor_reports",
         "schedule": crontab(minute=2, hour=0, day_of_month=1),
     },
+    "register_maximum_object_stock_per_day": {
+        "task": "laboratory.tasks.add_maximum_object_stock_per_day",
+        "schedule": crontab(minute=0, hour=10),
+    },
 }
 
 INTERNAL_IPS = ("127.0.0.1",)
