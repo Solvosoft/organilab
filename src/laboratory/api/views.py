@@ -9,6 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import status, viewsets, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -32,7 +33,7 @@ from laboratory.api.serializers import (
     ShelfObjectSerialize,
     LogEntryUserDataTableSerializer,
     ValidateEquipmentCharacteristicsSerializer,
-    ValidateReactiveCharacteristicsSerializer,
+    ValidateReactiveCharacteristicsSerializer, GetReactiveLimitSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -46,7 +47,7 @@ from laboratory.models import (
     Shelf,
     Object,
     Catalog,
-    EquipmentType,
+    EquipmentType, ReactiveLimit,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -870,12 +871,16 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         "destroy": serializers.ReactiveSerializer,
         "create": serializers.ValidateReactiveSerializer,
         "update": serializers.ValidateReactiveSerializer,
+        "add_limits": serializers.ReactiveLimitSerializer,
+
     }
     perms = {
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object", "laboratory.view_object"],
         "update": ["laboratory.change_object", "laboratory.view_object"],
         "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+        "add_limits": ["laboratory.add_object", "laboratory.view_object"],
+        "get_reactive_limits": ["laboratory.view_object"],
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
@@ -918,6 +923,11 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             )
 
         return reactive_ch_serializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['kwargs'] = self.kwargs
+        return context
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
@@ -1091,4 +1101,36 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
+        self.lab_pk = kwargs["lab_pk"]
         return super().list(request, *args, **kwargs)
+
+    @action(detail=True, methods=["get"])
+    def get_reactive_limits(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        reactive = kwargs.get("pk")
+        lab = kwargs.get("lab_pk")
+
+        if reactive:
+            obj = ReactiveLimit.objects.filter(object__id=reactive, laboratory__pk=lab).first()
+
+            serializer = GetReactiveLimitSerializer(instance=obj, many=False)
+            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["post"])
+    def add_limits(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        self.lab = kwargs["lab_pk"]
+        reactive = self.request.GET.get("reactive", None)
+        serializer = None
+        if reactive:
+            obj = ReactiveLimit.objects.filter(object__id=reactive, laboratory__pk=self.lab).first()
+            serializer = serializers.ReactiveLimitSerializer(data=request.data, instance=obj)
+            print(44)
+        else:
+            serializer = serializers.ReactiveLimitSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

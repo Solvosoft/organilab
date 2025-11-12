@@ -19,6 +19,7 @@ from laboratory.views.catalogs import (
     view_instrumental_family_list,
     view_equipmenttype_list,
 )
+from laboratory.views.objectlimits import ReactiveStockDashboard
 from laboratory.views.shelfobject import view_equipment_shelfobject_detail
 from sga.api.sga_components_viewsets import (
     WarningWordAPI,
@@ -277,6 +278,7 @@ reports_all_lab = [
 
 sustance_urls = [
     path("", view_reactive_list, name="sustance_list"),
+    path("reactive_stock/", ReactiveStockDashboard.as_view(), name="reactive_stock_list"),
 ]
 
 equipment_urls = [

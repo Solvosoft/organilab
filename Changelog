@@ -1,3 +1,8 @@
+23/10/2025
+Command to add a new role to create, update, decrease, and increase shelf objects and objects in laboratories
+
+    - python manage.py add_static_rol
+
 04/02/2020
     - python manage.py create_profile
 

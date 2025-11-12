@@ -5032,6 +5032,23 @@ msgstr "Lentejas"
 
 msgid "Granza"
 msgstr "Granza"
+msgid "Maximum limit cannot be lower than minimum limit."
+msgstr "El límite máximo no puede ser menor que el límite mínimo."
+
+msgid "Update Limits"
+msgstr "Actualizar límites"
+
+msgid "Monthly limit history %s"
+msgstr "Historial de límites mensuales %s"
+
+msgid "Reagents"
+msgstr "Reactivos"
+
+msgid "Year"
+msgstr "Año"
+
+msgid "Reactive Stats"
+msgstr "Estadísticas de reactivos"
 
 msgid "Kit"
 msgstr "Kit"
