@@ -29,6 +29,8 @@ from laboratory.models import (
     ShelfObject,
     ShelfObjectObservation,
     EquipmentType,
+    ReactiveLimit,
+    ObjectMaximumLimit,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -1057,7 +1059,6 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
             self.fields.pop("threshold")
             self.fields.pop("is_pure")
 
-
     def clean(self):
         cleaned_data = super().clean()
         is_container = cleaned_data.get("is_container")
@@ -1150,7 +1151,8 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["serie"], ["is_pure"], ["seveso_list"]],
         [["type"], ["organization"], ["created_by"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
-        [["description"]],  [["laboratory"]]
+        [["description"]],
+        [["laboratory"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1297,3 +1299,76 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "plaque": genwidgets.TextInput,
             "is_pure": genwidgets.YesNoInput,
         }
+
+
+class ReactiveLimitForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        laboratory = kwargs.pop("lab_pk")
+        modal_id = kwargs.pop("modal_id")
+
+        super(ReactiveLimitForm, self).__init__(*args, **kwargs)
+        self.fields["laboratory"].initial = laboratory
+
+    class Meta:
+        model = ReactiveLimit
+        fields = "__all__"
+        widgets = {
+            "laboratory": genwidgets.HiddenInput,
+            "object": genwidgets.HiddenInput,
+            "maximum_limit": genwidgets.TextInput,
+            "minimum_limit": genwidgets.TextInput,
+            "measurement_unit": genwidgets.Select,
+        }
+
+
+class ReactiveStockForm(GTForm, forms.Form):
+    years_choices = []
+    object = forms.ModelChoiceField(
+        queryset=Object.objects.none(),
+        required=False,
+        widget=genwidgets.Select,
+        label=_("Reagents"),
+    )
+    years = forms.ChoiceField(
+        widget=genwidgets.Select,
+        label=_("Year"),
+        choices=years_choices,
+        required=False,
+    )
+
+    default_render_type = "as_grid"
+
+    grid_representation = [
+        [
+            [
+                "years",
+            ],
+            [
+                "object",
+            ],
+        ],
+    ]
+
+    def __init__(self, *args, **kwargs):
+        laboratory = None
+        organization = None
+        if "laboratory" in kwargs:
+            laboratory = kwargs.pop("laboratory")
+        if "organization" in kwargs:
+            organization = kwargs.pop("organization")
+
+        years_choices = [
+            (i, i)
+            for i in ObjectMaximumLimit.objects.all()
+            .values_list("created_at__year", flat=True)
+            .distinct()
+        ]
+        years_choices.insert(0, (None, ""))
+        super().__init__(*args, **kwargs)
+        if organization:
+            self.fields["object"].queryset = Object.objects.filter(
+                organization__pk=organization,
+                type=Object.REACTIVE,
+            )
+
+        self.fields["years"].choices = years_choices

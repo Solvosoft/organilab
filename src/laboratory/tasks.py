@@ -10,7 +10,7 @@ from laboratory.models import (
     Laboratory,
     PrecursorReport,
     InformScheduler,
-    Furniture,
+    Furniture, Object, ObjectMaximumLimit,
 )
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import (
@@ -18,6 +18,7 @@ from .task_utils import (
     save_object_report_precursor,
     build_precursor_report_from_reports,
 )
+from .utils_base_unit import get_conversion_units
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 
@@ -89,3 +90,22 @@ def remove_shelf_not_furniture():
     for furniture in furnitures:
         obj_pks = re.findall(r"\d+", furniture.dataconfig)
         furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
+
+@app.task()
+def add_maximum_object_stock_per_day():
+    laboratories = Laboratory.objects.all()
+    for laboratory in laboratories:
+        objects = ShelfObject.objects.filter(in_where_laboratory=laboratory, object__type= Object.REACTIVE).values_list("object", flat=True)
+        objects = set(objects)
+        for obj in Object.objects.filter(pk__in=objects):
+            total = sum([get_conversion_units(shelfobject.measurement_unit, shelfobject.quantity)
+            for shelfobject in ShelfObject.objects.filter(in_where_laboratory=laboratory, object=obj)])
+            shelfobject = ShelfObject.objects.filter(in_where_laboratory=laboratory, object=obj).first()
+            data = {
+                "quantity": total,
+                "laboratory": laboratory,
+                "object": obj,
+            }
+            if shelfobject:
+                data["measurement_unit"] = shelfobject.measurement_unit
+            ObjectMaximumLimit.objects.create(**data)

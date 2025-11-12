@@ -29,4 +29,3 @@ qrcode==8.2
 sentry-sdk==2.38.0
 legacy-cgi==2.6.3
 setuptools<81
-django-ajax-selects==3.0.3

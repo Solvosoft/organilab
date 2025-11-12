@@ -65,6 +65,8 @@ class IncreaseShelfObjectForm(GTForm):
                 "data-s2filter-laboratory": "#id_laboratory",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-shelfobject": "#id_shelfobject",
+                "data-s2filter-org_pk": "#id_organization",
+                "data-s2filter-lab_pk": "#id_laboratory",
             },
         ),
     )
@@ -78,6 +80,8 @@ class IncreaseShelfObjectForm(GTForm):
             attrs={
                 "data-s2filter-laboratory": "#id_laboratory",
                 "data-s2filter-organization": "#id_organization",
+                "data-s2filter-org_pk": "#id_organization",
+                "data-s2filter-lab_pk": "#id_laboratory",
             },
         ),
     )
@@ -130,6 +134,8 @@ class DecreaseShelfObjectForm(GTForm):
                 "data-s2filter-laboratory": "#id_laboratory",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-shelfobject": "#id_shelfobject",
+                "data-s2filter-org_pk": "#id_organization",
+                "data-s2filter-lab_pk": "#id_laboratory",
             },
         ),
     )
@@ -159,6 +165,8 @@ class MoveShelfObjectForm(GTForm):
                 "data-groupname": "moveshelfform",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-laboratory": "#id_laboratory",
+                "data-s2filter-org_pk": "#id_organization",
+                "data-s2filter-lab_pk": "#id_laboratory",
             },
         ),
     )
@@ -173,6 +181,8 @@ class MoveShelfObjectForm(GTForm):
                 "data-groupname": "moveshelfform",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-laboratory": "#id_laboratory",
+                "data-s2filter-org_pk": "#id_organization",
+                "data-s2filter-lab_pk": "#id_laboratory",
             },
         ),
     )
@@ -188,6 +198,8 @@ class MoveShelfObjectForm(GTForm):
                 "data-s2filter-shelf": "#id_shelf",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-laboratory": "#id_laboratory",
+                "data-s2filter-org_pk": "#id_organization",
+                "data-s2filter-lab_pk": "#id_laboratory",
             },
         ),
         help_text=_(
@@ -212,6 +224,8 @@ class MoveShelfObjectForm(GTForm):
                     "data-s2filter-shelfobject": "#id_shelfobject",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-laboratory": "#id_laboratory",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -228,6 +242,8 @@ class MoveShelfObjectForm(GTForm):
                     "data-s2filter-shelfobject": "#id_shelfobject",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-laboratory": "#id_laboratory",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -244,6 +260,8 @@ class MoveShelfObjectForm(GTForm):
                     "data-s2filter-shelfobject": "#id_shelfobject",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-laboratory": "#id_laboratory",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text=_(
@@ -297,6 +315,8 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label="Material",
@@ -310,6 +330,8 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
                     "data-dropdownparent": "#material_form",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold">%s</a>'
@@ -357,6 +379,8 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label="Material",
@@ -372,6 +396,8 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
                     "data-dropdownparent": "#material_refuse_form",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold">%s</a>'
@@ -458,6 +484,8 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Equipment"),
@@ -471,6 +499,8 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
                     "data-dropdownparent": "#equipment_form",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold">%s</a>'
@@ -488,6 +518,8 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
                     "data-s2filter-object": "#id_ef-object",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -499,6 +531,8 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
                 attrs={
                     "data-dropdownparent": "#equipment_form",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -543,6 +577,8 @@ class ShelfObjectRefuseEquipmentForm(
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Equipment"),
@@ -555,6 +591,8 @@ class ShelfObjectRefuseEquipmentForm(
                     "data-dropdownparent": "#equipment_refuse_form",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold">%s</a>'
@@ -573,6 +611,8 @@ class ShelfObjectRefuseEquipmentForm(
                     "data-s2filter-object": "#id_erf-object",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -584,6 +624,8 @@ class ShelfObjectRefuseEquipmentForm(
                 attrs={
                     "data-dropdownparent": "#equipment_refuse_form",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -624,6 +666,8 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
                 attrs={
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'
@@ -672,6 +716,8 @@ class ContainerForm(GTForm):
                     "data-s2filter-shelf": "#id_shelf",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Container"),
@@ -686,6 +732,8 @@ class ContainerForm(GTForm):
                     "data-s2filter-shelf": "#id_shelf",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Container"),
@@ -721,6 +769,8 @@ class ShelfObjectReactiveForm(
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Reactive"),
@@ -736,6 +786,8 @@ class ShelfObjectReactiveForm(
                     "data-s2filter-shelf": "#id_shelf",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Measurement unit"),
@@ -749,6 +801,8 @@ class ShelfObjectReactiveForm(
                     "data-dropdownparent": "#reactive_form",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold">%s</a>'
@@ -820,6 +874,8 @@ class ShelfObjectRefuseReactiveForm(
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Reactive"),
@@ -834,6 +890,8 @@ class ShelfObjectRefuseReactiveForm(
                     "data-s2filter-shelf": "#id_shelf",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             label=_("Measurement unit"),
@@ -847,6 +905,8 @@ class ShelfObjectRefuseReactiveForm(
                     "data-dropdownparent": "#reactive_refuse_form",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
             help_text='<a class="add_status float-end fw-bold">%s</a>'
@@ -1048,6 +1108,8 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
                 attrs={
                     "data-dropdownparent": id_form,
                     "data-s2filter-organization": "#organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
@@ -1093,6 +1155,8 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
                     "data-s2filter-object": "#id_object",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
                 },
             ),
         )
