@@ -5049,3 +5049,18 @@ msgstr "Año"
 
 msgid "Reactive Stats"
 msgstr "Estadísticas de reactivos"
+
+msgid "Kit"
+msgstr "Kit"
+
+msgid "Colloidal"
+msgstr "Coloidal"
+
+msgid "Solid"
+msgstr "Solido"
+
+msgid "Card"
+msgstr "Tarjeta"
+
+msgid "Viscuos Liquid"
+msgstr "Líquido viscoso"
