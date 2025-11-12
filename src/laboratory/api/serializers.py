@@ -914,7 +914,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
     def get_measurement_unit(self, obj):
         limit = self.get_reactive_limits(obj)
         if limit:
-            return limit.measurement_unit.description
+            return limit.measurement_unit.pk
         return None
 
     def get_maximum_limit(self, obj):
