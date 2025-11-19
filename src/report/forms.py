@@ -81,6 +81,9 @@ class ValidateReportForm(ReportBase):
 
         return list(laboratory.values_list("pk", flat=True))
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ValidateReportForm, self).__init__(*args, **kwargs)
 
 class ReportObjectsBaseForm(ReportBase):
     all_labs_org = forms.BooleanField(
@@ -117,6 +120,9 @@ class ReportObjectForm(ReportObjectsBaseForm):
 
         return list(laboratory.values_list("pk", flat=True))
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ReportObjectForm, self).__init__(*args, **kwargs)
 
 class LaboratoryRoomReportForm(ReportBase):
     objects_type = list(Object.TYPE_CHOICES)
@@ -252,6 +258,9 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
                 furniture = self.get_furniture(lab_room, laboratory)
         return list(furniture.values_list("pk", flat=True).distinct())
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ValidateLaboratoryRoomReportForm, self).__init__(*args, **kwargs)
 
 class ObjectLogChangeBaseForm(ReportBase):
     all_labs_org = forms.BooleanField(
@@ -292,6 +301,9 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
             laboratory = get_laboratories_from_organization(organization)
         return list(laboratory.values_list("pk", flat=True).distinct())
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ValidateObjectLogChangeReportForm, self).__init__(*args, **kwargs)
 
 class OrganizationReactiveForm(ReportBase):
     users = forms.ModelMultipleChoiceField(
@@ -363,6 +375,10 @@ class ValidateFurnitureForm(GTForm):
                 self.add_error("furniture", _("Furniture is not allowed"))
         return cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ValidateFurnitureForm, self).__init__(*args, **kwargs)
+
 
 class TasksForm(GTForm):
     task = forms.CharField(max_length=255)
@@ -410,8 +426,10 @@ class DiscardShelfForm(ReportBase):
 
 
 class ReactiveReportForm(ReportBase):
-    pass
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ReactiveReportForm, self).__init__(*args, **kwargs)
 
 class RiskZoneReportForm(ReportBase):
     risk_zone = forms.ModelMultipleChoiceField(
@@ -464,5 +482,9 @@ class ReactiveStockReportForm(ReportBase):
         required=False,
         label=_("Format"),
     )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ReactiveStockReportForm, self).__init__(*args, **kwargs)
 
 
