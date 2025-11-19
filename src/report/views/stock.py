@@ -99,7 +99,6 @@ def get_stock_dataset(report, column_list=None):
                     "expiration_date": expiration_date,
                 }
             obj_item = list(data_column.values())
-            print(data_column)
 
             if column_list:
                 obj_item = load_dataset_by_column(column_list, data_column)
