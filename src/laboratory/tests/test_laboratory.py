@@ -103,6 +103,10 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
             "location": "San José",
             "geolocation": "9.895804362670006,-84.1552734375",
             "organization": self.org.pk,
+            "nearby_sites": self.chfile.upload_id,
+            "water_resources_affected": self.chfile.upload_id,
+            "area": 100
+
         }
         url = reverse("laboratory:create_lab", kwargs={"org_pk": self.org.pk})
         response = self.client.post(url, data=data)
@@ -127,6 +131,9 @@ class LaboratoryViewTest(BaseLaboratorySetUpTest):
             "location": "San José",
             "geolocation": "9.895804362670006,-84.1552734375",
             "organization": self.org.pk,
+            "nearby_sites": self.chfile.upload_id,
+            "water_resources_affected": self.chfile.upload_id,
+            "area": 100
         }
         response_post = self.client.post(url, data=data)
         self.assertEqual(response_post.status_code, 302)

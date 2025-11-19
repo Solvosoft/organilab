@@ -21,55 +21,20 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
 
     def test_delete_substance(self):
         url = reverse(
-            "laboratory:sustance_delete",
+            "laboratory:api-reactive-detail",
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": 2},
         )
-        response = self.client.post(url)
-        success_url = reverse(
-            "laboratory:sustance_list",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, success_url)
+        response = self.client.delete(url)
 
-    def test_sustance_add(self):
-        url = reverse(
-            "laboratory:sustance_add",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-        )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Object.objects.filter(pk=2).exists())
 
-    def test_sustance_manage(self):
-        url = reverse(
-            "laboratory:sustance_manage",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": 1},
-        )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
 
-    def test_sustance_list_json(self):
-        url = reverse(
-            "laboratory:sustance_list_json",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-        )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
 
-    def test_objectview_list(self):
-        url = reverse(
-            "laboratory:objectview_list",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-        )
-        data = {"type_id": "0"}
-        response = self.client.get(url, data=data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Tanque 1000 mL")
-
-    def test_objectview_update(self):
+    def test_update_reactive(self):
         object = Object.objects.get(name="RA 100 gr")
         url = reverse(
-            "laboratory:objectview_update",
+            "laboratory:api-reactive-detail",
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": object.pk},
         )
         data = {
@@ -83,7 +48,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "plaque": "RA4300",
             "type": "0",
         }
-        response = self.client.get(url, data=data)
+        response = self.client.put(url, data=data)
         self.assertEqual(response.status_code, 200)
 
     def test_objectview_delete(self):
@@ -101,6 +66,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         )
         self.assertRedirects(response, success_url)
 
+    #Materrial Object
     def test_objectview_create(self):
         total_obj = Object.objects.all().count()
         url = reverse(

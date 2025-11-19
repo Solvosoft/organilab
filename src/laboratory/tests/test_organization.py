@@ -108,8 +108,11 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "first_name": "Admin",
             "email": "orgadmin@gmail.com",
             "language": "en",
+            "address": "address",
+            "phone_number": "8888-8888",
         }
         response_post = self.client.post(url, data=data)
+
         self.assertRedirects(response_post, url)
         user_updated = User.objects.get(username="admin")
         self.assertEqual(user_updated.first_name, "Admin")
