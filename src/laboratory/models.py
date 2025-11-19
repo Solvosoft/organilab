@@ -309,6 +309,11 @@ class ShelfObject(models.Model):
         ("Tablets",_("Tablets")),
         ("Lentils",_("Lentils")),
         ("Granza",_("Granza")),
+        ("card", _("Card")),
+        ("solid",_("Solid")),
+        ("colloidal",_("Colloidal")),
+        ("viscuos liquid", _("Viscuos Liquid")),
+        ("kit", _("Kit")),
     )
     shelf = models.ForeignKey(
         "Shelf", verbose_name=_("Shelf"), on_delete=models.CASCADE
