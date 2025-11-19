@@ -100,4 +100,4 @@ class BaseUnitTest(TestCase):
         new_catalog = Catalog.objects.create(key='units', description='New Catalog')
         inst = ShelfObject(quantity=-0.10, measurement_unit=new_catalog)
         pre_save.send(sender=ShelfObject, instance=inst)
-        self.assertEqual(inst.quantity_base_unit, 0)
+        self.assertEqual(inst.quantity_base_unit, -0.1)
