@@ -29,7 +29,34 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         self.assertEqual(response.status_code, 204)
         self.assertFalse(Object.objects.filter(pk=2).exists())
 
+    def test_create_reactive(self):
+        url = reverse(
+            "laboratory:api-reactive-list",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
+        data = {
+            "name": "zzz",
+            "features": [1],
+            "code": "RA43",
+            "synonym": "RA",
+            "is_public": True,
+            "model": "RA2022",
+            "serie": "Reactive 008",
+            "plaque": "RA4300",
+            "type": "0",
+            "created_by": self.user.pk,
+            "molecular_formula": "C10H8",
+            "ue_code": [88],
+            "white_organ": [5],
+            "precursor_type": 85,
+            "storage_class": [135],
+            "organization": self.org.pk,
+            "laboratory": self.lab.pk,
+        }
 
+        response = self.client.post(url, data=data,content_type = "application/json")
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(Object.objects.filter(name=data["name"]).exists())
 
     def test_update_reactive(self):
         object = Object.objects.get(name="RA 100 gr")
@@ -38,6 +65,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": object.pk},
         )
         data = {
+            "obj": object.pk,
             "name": "RA Paquete 100 gr",
             "features": [1],
             "code": "RA43",
@@ -47,8 +75,17 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "serie": "Reactive 008",
             "plaque": "RA4300",
             "type": "0",
+            "created_by": self.user.pk,
+            "molecular_formula": "C10H8",
+            "ue_code": [88],
+            "white_organ": [5],
+            "precursor_type": 85,
+            "storage_class": [135],
+            "organization": self.org.pk,
+            "laboratory": self.lab.pk,
         }
-        response = self.client.put(url, data=data)
+
+        response = self.client.put(url, data=data,content_type = "application/json")
         self.assertEqual(response.status_code, 200)
 
     def test_objectview_delete(self):
