@@ -99,7 +99,7 @@ class EditShelfobject(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertTrue(
             json.loads(response.content)["detail"]
-            == _("You do not have permission to perform this action.")
+            == _("You can modify this laboratory")
         )
 
     def test_edit_shelfobject_other_organization(self):

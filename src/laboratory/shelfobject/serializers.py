@@ -272,6 +272,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
                 related_units = get_related_units(measurement_unit.pk, query_unit)
 
             if increase_unit not in related_units:
+
                 updated_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if errors or updated_errors:
@@ -504,7 +505,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
     pictograms = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Pictogram.objects.using(settings.READONLY_DATABASE),
-        required=True,
+        required=False,
     )
 
     class Meta:

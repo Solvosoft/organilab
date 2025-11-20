@@ -1,3 +1,5 @@
+import json
+
 from django.urls import reverse
 
 from laboratory.models import ShelfObject, Provider
@@ -28,6 +30,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             "bill": "905678",
             "provider": self.provider.pk,
             "shelf_object": self.shelf_object.pk,
+            "measurement_unit": self.shelf_object.measurement_unit.pk,
         }
         self.total = (
             self.shelf.get_total_refuse(
@@ -166,6 +169,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             + self.data["amount"]
         )
         response = self.client.post(self.url, data=data)
+        print(json.loads(response.content)["errors"])
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
