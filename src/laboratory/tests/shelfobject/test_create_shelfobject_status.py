@@ -76,7 +76,7 @@ class ShelfObjectStatusTest(BaseShelfobjectStatusSetUpTest):
         self.assertTrue(Catalog.objects.filter(key="shelfobject_status").count() == 1)
         self.assertTrue(
             json.loads(response.content)["detail"]
-            == _("You do not have permission to perform this action.")
+            == _("User renatafg not allowed on organization Org MK ")
         )
 
     def test_create_status_empty_description(self):

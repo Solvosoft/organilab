@@ -23,6 +23,7 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
             "amount": 2,
             "description": "Caso de estudio",
             "shelf_object": self.shelf_object.pk,
+            "measurement_unit": self.shelf_object.measurement_unit.pk,
         }
         self.url = reverse(
             "laboratory:api-shelfobject-fill-decrease-shelfobject",
@@ -40,6 +41,7 @@ class ShelfObjectDecreaseViewTest(ShelfObjectSetUp):
         4) Check if new quantity is not equal to old quantity
         """
         response = self.client.post(self.url, data=self.data)
+
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
