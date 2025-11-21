@@ -138,7 +138,7 @@ class ShelfObjectStatusTest(BaseShelfobjectStatusSetUpTest):
         self.assertTrue(Catalog.objects.filter(key="shelfobject_status").count() == 1)
         self.assertTrue(
             json.loads(response.content)["detail"]
-            == _("You do not have permission to perform this action.")
+            == _("You can modify this laboratory")
         )
 
     def test_update_status_not_organization(self):

@@ -1,4 +1,14 @@
 [
+{
+  "model": "laboratory.baseunitvalues",
+  "pk": 14,
+  "fields": {
+    "measurement_unit_base": 62,
+    "measurement_unit": 62,
+    "si_value": 1.0
+  }
+},
+
   {
     "model": "auth.user",
     "pk": 1,
@@ -507,7 +517,7 @@
       "quantity": 24.0,
       "limit_quantity": 7.0,
       "in_where_laboratory": 1,
-      "measurement_unit": 62,
+      "measurement_unit": 64,
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"

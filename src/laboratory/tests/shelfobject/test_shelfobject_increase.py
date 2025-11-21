@@ -25,6 +25,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         self.shelf = self.shelf_object.shelf
         self.provider = Provider.objects.get(pk=1)
         self.old_quantity = self.shelf_object.quantity
+
         self.data = {
             "amount": 2,
             "bill": "905678",
@@ -169,7 +170,6 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             + self.data["amount"]
         )
         response = self.client.post(self.url, data=data)
-        print(json.loads(response.content)["errors"])
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
