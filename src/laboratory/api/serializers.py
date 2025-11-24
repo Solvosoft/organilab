@@ -19,6 +19,7 @@ from auth_and_perms.organization_utils import (
 from laboratory.models import (
     CommentInform,
     Inform,
+    MaterialCapacity,
     ShelfObject,
     OrganizationStructure,
     Shelf,
@@ -1121,3 +1122,170 @@ class ReactiveDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+class ObjectMaterialCRUD(serializers.ModelSerializer):  
+    
+    capacity = serializers.CharField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        write_only=True
+    )
+    capacity_measurement_unit = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="units"),
+        required=False,
+        allow_null=True,
+        write_only=True
+    )
+    
+    class Meta:  
+        model = Object  
+        fields = [
+            "id", "code", "name", "synonym", "is_public", "description", 
+            "features", "is_container", "capacity", "capacity_measurement_unit"
+        ] 
+        extra_kwargs = {
+            'organization': {'read_only': True},
+            'created_by': {'read_only': True},
+            'type': {'read_only': True},
+        }
+        
+    def validate(self, data):
+        is_container = data.get("is_container")
+    
+        if not is_container:
+            data.pop("capacity", None)
+            data.pop("capacity_measurement_unit", None)
+            return data
+
+      
+        capacity = data.get("capacity")
+        capacity_unit = data.get("capacity_measurement_unit")
+        
+        
+        if capacity == "":
+            capacity = None
+            data['capacity'] = None
+        
+        if capacity in (None, ""):
+            raise serializers.ValidationError({
+                "capacity": "La capacidad es requerida cuando el objeto es contenedor."
+            })
+        
+        if capacity_unit is None:
+            raise serializers.ValidationError({
+                "capacity_measurement_unit": "La unidad de medida es requerida cuando el objeto es contenedor."
+            })
+
+        try:
+            capacity_float = float(capacity)
+            if capacity_float <= 0:
+                raise serializers.ValidationError({
+                    "capacity": "La capacidad debe ser mayor a 0."
+                })
+            data['capacity'] = capacity_float
+        except (TypeError, ValueError):
+            raise serializers.ValidationError({
+                "capacity": "Introduzca un número válido."
+            })
+
+        return data
+    
+    def create(self, validated_data):
+     
+        capacity = validated_data.pop('capacity', None)
+        capacity_measurement_unit = validated_data.pop('capacity_measurement_unit', None)
+        
+        org_pk = self.context.get('org_pk')
+        request = self.context.get('request')
+        
+        if org_pk:
+            try:
+                from laboratory.models import OrganizationStructure
+                validated_data['organization'] = OrganizationStructure.objects.get(pk=org_pk)
+            except OrganizationStructure.DoesNotExist:
+                raise serializers.ValidationError({
+                    "organization": f"Organization with pk {org_pk} does not exist"
+                })
+        
+        if request and request.user.is_authenticated:
+            validated_data['created_by'] = request.user
+
+        validated_data['type'] = Object.MATERIAL
+   
+        object_instance = super().create(validated_data)
+        
+        if object_instance.is_container:
+            try:
+                MaterialCapacity.objects.create(
+                    object=object_instance,
+                    capacity=capacity,
+                    capacity_measurement_unit=capacity_measurement_unit
+                )
+            except Exception as e:
+                object_instance.delete()
+                raise serializers.ValidationError({
+                    "capacity": f"Error creating capacity data: {str(e)}"
+                })
+
+        return object_instance
+    
+    def update(self, instance, validated_data):
+        capacity = validated_data.pop('capacity', None)
+        capacity_measurement_unit = validated_data.pop('capacity_measurement_unit', None)
+
+        instance = super().update(instance, validated_data)
+        
+        if instance.is_container:
+           MaterialCapacity.objects.update_or_create(
+                object=instance,
+                defaults={
+                    'capacity': capacity,
+                    'capacity_measurement_unit': capacity_measurement_unit
+                }
+            )
+        elif not instance.is_container and hasattr(instance, 'materialcapacity'):
+            instance.materialcapacity.delete()
+            
+        return instance
+class ObjectMaterialList(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    features = ObjDisplayNameSerializer(many=True)
+    capacity = serializers.FloatField(
+        source="materialcapacity.capacity",
+        read_only=True
+    )
+    
+    capacity_measurement_unit = GTS2SerializerBase(
+        many=False,
+        source="materialcapacity.capacity_measurement_unit",
+        read_only=True
+    )
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "description",
+            "features",
+            "is_container",
+            "is_public",
+            "capacity",
+            "capacity_measurement_unit",
+            "actions",
+        ]
+
+    def get_actions(self, obj):
+        return {
+            "update": True,
+            "destroy": True,
+        }
+class ObjectMaterialListTable(serializers.Serializer):  
+    data = serializers.ListField(child=ObjectMaterialList(), required=False)
+    draw = serializers.IntegerField()  
+    recordsFiltered = serializers.IntegerField()  
+    recordsTotal = serializers.IntegerField()  
+
+
