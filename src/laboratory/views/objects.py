@@ -18,7 +18,7 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm, ReactiveForm
+from laboratory.forms import MaterialForm, ObjectForm, ObjectUpdateForm, EquipmentForm, ReactiveForm
 from laboratory.models import (
     Laboratory,
     BlockedListNotification,
@@ -315,3 +315,14 @@ def view_reactive_list(request, org_pk, lab_pk):
         ),
     }
     return render(request, "laboratory/sustance/list.html", context=context)
+
+
+def view_material_list(request, lab_pk, org_pk):
+    context = {
+        "title": "Gestión de Objetos",
+        'create_form': MaterialForm(prefix='create'),
+        'update_form': MaterialForm(prefix='update'),
+        'org_pk': org_pk,  
+        'lab_pk': lab_pk,  
+    }
+    return render(request, "laboratory/material_object_list.html", context=context)
