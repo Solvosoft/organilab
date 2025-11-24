@@ -1297,3 +1297,41 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "plaque": genwidgets.TextInput,
             "is_pure": genwidgets.YesNoInput,
         }
+
+class MaterialForm(MaterialCapacityObjectForm, forms.ModelForm):
+    
+    def __init__(self, *args, **kwargs):
+        super(MaterialForm, self).__init__(*args, **kwargs)
+
+        self.fields["type"] = forms.CharField(
+            initial=Object.MATERIAL, 
+            widget=forms.HiddenInput()
+        )
+
+        self.fields["is_container"].initial = False
+    class Meta:
+        model = Object
+        fields = [
+            "code",
+            "name", 
+            "synonym",
+            "is_public",
+            "description",
+            "features",  
+            "is_container",
+            "capacity",
+            "capacity_measurement_unit",
+            "type",  
+        ]
+        widgets = {
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
+            "is_container": genwidgets.YesNoInput,
+            "type": genwidgets.HiddenInput,  
+            
+        }
+
