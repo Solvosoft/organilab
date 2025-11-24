@@ -33,6 +33,8 @@ from laboratory.api.serializers import (
     LogEntryUserDataTableSerializer,
     ValidateEquipmentCharacteristicsSerializer,
     ValidateReactiveCharacteristicsSerializer,
+    ObjectMaterialCRUD,
+    ObjectMaterialListTable,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -1092,3 +1094,35 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
     def list(self, request, *args, **kwargs):
         self.org_pk = kwargs["org_pk"]
         return super().list(request, *args, **kwargs)
+
+class ObjectMaterialManagement(AuthAllPermBaseObjectManagement):  
+    serializer_class = {  
+        'list': ObjectMaterialListTable,  
+        'create': ObjectMaterialCRUD,  
+        'update': ObjectMaterialCRUD,  
+        'retrieve': ObjectMaterialCRUD,  
+        'get_values_for_update': ObjectMaterialCRUD  
+    }
+    perms = {
+        "list": ["laboratory.view_object"],
+        "create": ["laboratory.add_object", "laboratory.view_object"],
+        "update": ["laboratory.change_object", "laboratory.view_object"],
+        "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+    
+    queryset = Object.objects.filter(
+            type=Object.MATERIAL
+        ).select_related('materialcapacity')
+    pagination_class = LimitOffsetPagination  
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)  
+    ordering = ('-pk',)
+    search_fields = ['code', 'name', 'synonym']  
+    filterset_class = filterset.MaterialFilterSet
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['org_pk'] = self.kwargs.get('org_pk')
+        context['lab_pk'] = self.kwargs.get('lab_pk')
+        return context
