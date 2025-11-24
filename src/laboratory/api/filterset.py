@@ -93,3 +93,13 @@ class ReactiveFilter(FilterSet):
             "code": ["icontains"],
             "synonym": ["icontains"],
         }
+        
+class MaterialFilterSet(FilterSet):
+    class Meta:
+        model = Object
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "code": ["icontains"],
+            "synonym": ["icontains"],
+        }
