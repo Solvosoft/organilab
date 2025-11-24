@@ -46,6 +46,7 @@ from laboratory.api.views import (
     InstrumentalFamilyManagementViewset,
     EquipmentTypeManagementViewset,
     ReactiveManagementViewset,
+    ObjectMaterialManagement,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -73,6 +74,7 @@ from laboratory.views.objects import (
     block_notifications,
     view_equipment_list,
     view_reactive_list,
+    view_material_list,
 )
 from laboratory.views.organizations import (
     OrganizationDeleteView,
@@ -543,9 +545,15 @@ objectrouter.register(
     "api_reactive_list", ReactiveManagementViewset, basename="api-reactive"
 )
 
+objectrouter.register(
+    "api_object_material",
+    ObjectMaterialManagement, 
+    basename="api-object-material"
+)
 
 """MULTILAB"""
 urlpatterns += organization_urls + [
+    path("lab/<int:org_pk>/<int:lab_pk>/material/", view_material_list, name="material_list"),
     path("<int:org_pk>/", include(organization_urls_org_pk)),
     path("inform_manager/<int:org_pk>/", include(informs_period_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/protocols/", include(lab_protocols_urls)),
