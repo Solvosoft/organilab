@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load i18n static laboratory %}
+{% load urlname_tags %}
+
+{% block pre_head %}
+    {% define_urlname_action 'objectview_list' %}
+    {% define_urlname_action 'material_manager' %}
+{% endblock %}
+
+{% block title %}{% trans 'Material List' %}{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{% trans 'Material List' %}</h1>
+
+<div class="row">
+    <table class="table table-striped w-100 table-responsive" id="material_table"></table>
+</div>
+
+<!-- Modal para crear -->
+{% url "laboratory:api-object-material-list" org_pk lab_pk as list_obj_url %}
+{% trans 'Create Material' as create_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class="modal-lg" %}
+
+<!-- Modal para actualizar -->
+{% url "laboratory:api-object-material-detail" org_pk lab_pk 0 as detail_obj_url %}
+{% trans 'Update Material' as update_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class="modal-lg" %}
+
+<!-- Modal para eliminar -->
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+
+{{block.super}}
+<script src="{% static 'laboratory/js/object_creation.js'%}"></script>
+{% endblock %}
+{% block js %}
+{{block.super}}
+
+<script>
+
+// URLs del API - MISMO PATRÓN que equipment
+var object_urls = {
+    list_url: "{% url 'laboratory:api-object-material-list' org_pk lab_pk %}",
+    create_url: "{% url 'laboratory:api-object-material-list' org_pk lab_pk %}",
+    destroy_url: "{% url 'laboratory:api-object-material-detail' org_pk lab_pk 0 %}",
+    update_url: "{% url 'laboratory:api-object-material-detail' org_pk lab_pk 0 %}"
+}
+
+// Configuración de columnas de DataTable
+var datatable_inits = {
+    columns: [
+        {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
+        {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+        {data: "synonym", name: "synonym", title: gettext("Synonym"), type: "string", visible: true},
+        {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
+    ],
+    addfilter: true
+}
+
+// IDs de los modales
+var material_modalids = {
+    create: "#create_obj_modal",
+    destroy: "#delete_obj_modal",
+    update: "#update_obj_modal"
+}
+
+// Acciones personalizadas
+var material_actions = {
+    table_actions: [],
+    object_actions: [],
+    title: gettext('Actions'),
+    className: "no-export-col"
+}
+
+// Configuración completa
+var objconfig = {
+    urls: object_urls,
+    datatable_element: "#material_table",
+    modal_ids: material_modalids,
+    actions: material_actions,
+    datatable_inits: datatable_inits,
+    add_filter: true,
+    relation_render: {'field_autocomplete': 'text' },
+    delete_display: function(data) { return data['name']; },
+    create: "btn-success",
+}
+
+// Inicializar ObjectCRUD
+var ocrud = ObjectCRUD("materialcrudobj", objconfig);
+ocrud.init();
+</script>
+{% endblock %}
