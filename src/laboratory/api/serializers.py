@@ -1168,24 +1168,24 @@ class ObjectMaterialCRUD(serializers.ModelSerializer):
         
         if capacity in (None, ""):
             raise serializers.ValidationError({
-                "capacity": "La capacidad es requerida cuando el objeto es contenedor."
+                "capacity": "Capacity is required when the object is a container.."
             })
         
         if capacity_unit is None:
             raise serializers.ValidationError({
-                "capacity_measurement_unit": "La unidad de medida es requerida cuando el objeto es contenedor."
+                "capacity_measurement_unit": "Measurement unit is required when the object is a container."
             })
 
         try:
             capacity_float = float(capacity)
             if capacity_float <= 0:
                 raise serializers.ValidationError({
-                    "capacity": "La capacidad debe ser mayor a 0."
+                    "capacity": "Capacity must be greater than 0."
                 })
             data['capacity'] = capacity_float
         except (TypeError, ValueError):
             raise serializers.ValidationError({
-                "capacity": "Introduzca un número válido."
+                "capacity": "Please enter a valid number."
             })
 
         return data
