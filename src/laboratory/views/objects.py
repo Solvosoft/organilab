@@ -324,5 +324,6 @@ def view_material_list(request, org_pk, lab_pk):
         'update_form': MaterialForm(prefix='update'),
         'org_pk': org_pk,  
         'lab_pk': lab_pk,  
+        "laboratory": lab_pk,
     }
     return render(request, "laboratory/material_object_list.html", context=context)
