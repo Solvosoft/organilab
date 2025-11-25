@@ -316,8 +316,8 @@ def view_reactive_list(request, org_pk, lab_pk):
     }
     return render(request, "laboratory/sustance/list.html", context=context)
 
-
-def view_material_list(request, lab_pk, org_pk):
+@permission_required("laboratory.view_object")
+def view_material_list(request, org_pk, lab_pk):
     context = {
         "title": "Gestión de Objetos",
         'create_form': MaterialForm(prefix='create'),
