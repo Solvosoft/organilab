@@ -468,7 +468,6 @@ class RiskZoneReportForm(ReportBase):
     def clean_risk_zone(self):
         risk_zone = self.cleaned_data["risk_zone"]
         if risk_zone.exists():
-            print(risk_zone)
             return list(risk_zone.values_list("pk", flat=True))
         return []
 
