@@ -4,6 +4,8 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+from risk_management.models import RiskZone, ZoneType
+
 
 class DerbAPITest(TestCase):
     fixtures = ["laboratory_data.json"]
@@ -42,6 +44,9 @@ class DerbAPITest(TestCase):
         self.client.post(url, data=data)
 
     def create_incident_report(self):
+        zone = ZoneType.objects.create(name="Test Zone Type")
+        risk = RiskZone.objects.create(name="Test Risk Zone", priority=1, num_workers=1,
+                                       zone_type=zone)
         data = {
             "short_description": "Incendió",
             "causes": "Alguien fumando",
@@ -56,11 +61,13 @@ class DerbAPITest(TestCase):
         }
         self.client.post(
             reverse(
-                "riskmanagement:incident_create",
-                kwargs={"org_pk": 1, "lab_pk": self.lab.pk},
+                "riskmanagement:api-incident-list",
+                kwargs={"org_pk": 1,"risk": risk.pk},
             ),
             data=data,
+            content_type="application/json",
         )
+
 
     def test_lab_api_by_user(self):
         response = self.client.get(
@@ -93,6 +100,8 @@ class DerbAPITest(TestCase):
         response = self.client.get(reverse("derb:api_incident", kwargs=self.url_attr))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response=response, text="Incendió")
+        RiskZone.objects.last().delete()
+        ZoneType.objects.last().delete()
 
     def test_users_by_org_api(self):
         response = self.client.get(
