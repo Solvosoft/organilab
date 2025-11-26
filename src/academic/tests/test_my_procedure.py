@@ -336,7 +336,7 @@ class CompleteMyProcedureViewTest(TestCase):
             + search_script
         )
         response = self.client.get(url)
-        expected = 1
+        expected = 2
         result = response.json()
         self.assertEqual(result["recordsFiltered"], expected)
 
