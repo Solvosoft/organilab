@@ -2650,8 +2650,7 @@ class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
                     {"minimum_limit": _(
                         "The shelfobject quantity cannot be less than minimum limit.")}
                 )
-        if without_limit:
-            print(without_limit)
+
         if errors:
             raise serializers.ValidationError(errors)
 

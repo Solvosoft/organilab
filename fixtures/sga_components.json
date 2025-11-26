@@ -1,4 +1,52 @@
 [
+    {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$DA6hKp10GrfiBkQgSiFvMr$jPnkP9C9rq93aN9Pw4j6fqRfDkth8VnJrPK+wSFW1io=",
+      "last_login": "2023-05-28T22:49:30.603Z",
+      "is_superuser": true,
+      "username": "first_user",
+      "first_name": "First",
+      "last_name": "User",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-04-10T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+    {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$390000$DA6hKp10GrfiBkQgSiFvMr$jPnkP9C9rq93aN9Pw4j6fqRfDkth8DnJrPK+wSFW1io=",
+      "last_login": "2023-05-28T22:49:30.603Z",
+      "is_superuser": true,
+      "username": "second_user",
+      "first_name": "Second",
+      "last_name": "User",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2023-04-10T19:45:29Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+    {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Test organization",
+      "position": 1,
+      "level": 1,
+      "rol": [],
+      "users": [1]
+    }
+  },
 {
   "model": "sga.warningclass",
   "pk": 2,
