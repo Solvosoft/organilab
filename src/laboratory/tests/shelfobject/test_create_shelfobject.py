@@ -366,12 +366,7 @@ class CreateShelfobjectTest(TestCase):
         response = self.client.post(url, data=data, content_type="application/json")
         poscount = ShelfObject.objects.filter(shelf=13).count()
         self.assertEqual(response.status_code, 403)
-        print("---------")
-        print(json.loads(response.content)["detail"])
-        #self.assertTrue(
-        #    json.loads(response.content)["detail"]
-        #    == _("You do not have permission to perform this action.")
-        #)
+
         self.assertTrue(poscount == precount)
 
     def test_create_shelfobject_other_organization(self):
@@ -459,7 +454,6 @@ class CreateShelfobjectTest(TestCase):
         shelf = Shelf.objects.get(pk=13)
         shelf.infinity_quantity = True
         shelf.save()
-        print(shelf.measurement_unit.pk)
         self.material.type = 1
         self.client.logout()
         self.client.force_login(self.user)
