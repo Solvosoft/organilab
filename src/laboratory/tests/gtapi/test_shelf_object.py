@@ -21,6 +21,7 @@ class ShelfObjectViewTest1(ShelfObjectViewTestOrgCanManageLab):
 
     def test_get_available_container_by_lab_and_shelf_case1(self):
         self.get_available_container_by_lab_and_shelf(
+            self.user1, self.client1,
             user_access=True, status_code=200, results_data=False, same_lab=True
         )
 
@@ -287,7 +288,7 @@ class ShelfObjectViewTest13(ShelfObjectViewTest, OrgDoesNotExists):
 
     def test_get_available_container_by_lab_and_shelf_case2(self):
         self.get_available_container_by_lab_and_shelf(
-            self.user2, self.client2, same_lab=True
+            self.user2, self.client2, same_lab=True,
         )
 
     def test_get_available_container_by_lab_and_shelf_case3(self):
