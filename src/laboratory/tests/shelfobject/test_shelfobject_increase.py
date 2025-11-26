@@ -19,7 +19,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         self.lab = self.lab1_org1
         self.user = self.user1_org1
         self.client = self.client1_org1
-        self.shelf_object = ShelfObject.objects.get(pk=1)
+        self.shelf_object = ShelfObject.objects.get(pk=6)
         self.shelf_object_material = ShelfObject.objects.get(pk=4)
         self.shelf_object_equipment = ShelfObject.objects.get(pk=5)
         self.shelf = self.shelf_object.shelf
