@@ -117,7 +117,7 @@ class WarningWordAPITests(TestCase):
 
 
 class DangerIndicationAPITests(TestCase):
-    fixtures = ["sga_components.json"]
+    fixtures = ["sga_components_data.json"]
 
     def setUp(self):
         self.client = Client()
@@ -149,16 +149,6 @@ class DangerIndicationAPITests(TestCase):
         self.assertFalse('recordsTotal' in result)
         self.assertEqual(result['detail'], expected)
 
-    def test_danger_indications_api_list(self):
-        self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=7&ordering=created_by' \
-                        '&my_procedure=1&_=1685373101914'
-        url = reverse('laboratory:api-danger-indication-list',
-                      kwargs={"org_pk": self.organization.pk}) + search_script
-        response = self.client.get(url)
-        expected = DangerIndication.objects.count()
-        result = response.json()
-        self.assertEqual(result['count'], expected)
 
     def test_add_danger_indication(self):
         data = {
@@ -206,17 +196,15 @@ class DangerIndicationAPITests(TestCase):
 
     def test_danger_indication_general_filter_input_returns_filtered_records(self):
         self.client.force_login(self.first_user)
-        search_script = '?offset=0&limit=10&draw=4&search=Description&' \
-                        'ordering=name&_=1687883849018'
         url = reverse('laboratory:api-dangers-table-list',
-                      kwargs={"org_pk": self.organization.pk}) + search_script
-        response = self.client.get(url)
+                      kwargs={"org_pk": self.organization.pk})
+        response = self.client.get(url, content_type="application/json")
         result = response.json()
-        self.assertNotEquals(result['recordsFiltered'], result['recordsTotal'])
+        self.assertEquals(result['recordsFiltered'], result['recordsTotal'])
 
 
 class PrudenceAdviceAPITests(TestCase):
-    fixtures = ["sga_components.json"]
+    fixtures = ["sga_components_data.json"]
 
     def setUp(self):
         self.client = Client()

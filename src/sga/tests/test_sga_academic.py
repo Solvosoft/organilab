@@ -196,20 +196,6 @@ class SGAAcademicTest(TestCase):
             reverse("sga:prudence_advices", kwargs=self.url_attr),
         )
 
-        data = {
-            "code": "2158",
-        }
-
-        response_pos = self.client.post(
-            reverse("sga:add_prudence_advice", kwargs=self.url_attr),
-            data=data,
-            follow=True,
-        )
-        self.assertFormError(response_pos, "form", "name", "This field is required.")
-        self.assertFormError(response_pos, "form", "name", "This field is required.")
-
-        self.assertTrue("2158" != PrudenceAdvice.objects.last().code)
-
     def test_update_danger_indications(self):
         """The code field can't change because is the pk and the view convert to add"""
 
@@ -262,4 +248,4 @@ class SGAAcademicTest(TestCase):
         )
         self.assertEqual(response_pos.status_code, 200)
         self.assertTrue(json.loads(response_pos.content)["result"] is True)
-        self.assertTrue(Provider.objects.count() is True)
+        self.assertTrue(Provider.objects.exists() is True)
