@@ -45,7 +45,7 @@ class TestUserProfile(TestCaseBase):
         user = get_user_model().objects.filter(username="user1").first()
         msg = json.loads(response.content)["detail"]
         self.assertTrue(user.groups.count() == 0)
-        self.assertTrue(msg == "You do not have permission to perform this action.")
+        self.assertTrue(msg.strip() == "User user1 not allowed on organization Organization 2")
 
     def test_update_profile_no_org(self):
         data = {"profile": 1, "groups": [1, 2, 3]}
@@ -55,7 +55,7 @@ class TestUserProfile(TestCaseBase):
         self.assertTrue(response.status_code == 404)
         user = get_user_model().objects.filter(username="user1").first()
         msg = json.loads(response.content)["detail"]
-        self.assertTrue(msg == "Not found.")
+        self.assertTrue(msg.strip() == "No OrganizationStructure matches the given query.")
         self.assertTrue(user.groups.count() == 0)
 
     def test_update_profile_no_login(self):
@@ -69,7 +69,7 @@ class TestUserProfile(TestCaseBase):
         self.assertTrue(user.groups.count() == 0)
         msg = json.loads(response.content)["detail"]
         self.assertTrue(user.groups.count() == 0)
-        self.assertTrue(msg == "You do not have permission to perform this action.")
+        self.assertTrue(msg == "User AnonymousUser not allowed on organization Organization 2 ")
 
     def test_update_profile_new_group(self):
         data = {"profile": 1, "groups": [1, 2, 3, 5], "organization": 1}
@@ -192,4 +192,4 @@ class TestUserProfile(TestCaseBase):
         user = get_user_model().objects.filter(username="user1").first()
         self.assertFalse(user.groups.count() == 0)
         msg = json.loads(response.content)["detail"]
-        self.assertTrue(msg == "Not found.")
+        self.assertTrue(msg.strip() == "No OrganizationStructure matches the given query.")
