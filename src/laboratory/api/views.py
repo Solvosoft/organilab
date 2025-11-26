@@ -1126,7 +1126,6 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         if reactive:
             obj = ReactiveLimit.objects.filter(object__id=reactive, laboratory__pk=self.lab).first()
             serializer = serializers.ReactiveLimitSerializer(data=request.data, instance=obj)
-            print(44)
         else:
             serializer = serializers.ReactiveLimitSerializer(data=request.data)
 

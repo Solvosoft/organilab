@@ -83,9 +83,6 @@ class ProtocolUpdateView(UpdateView):
         )
         return super(ProtocolUpdateView, self).form_valid(form)
 
-    def form_invalid(self, form):
-        print(form.errors)
-
 
 @method_decorator(permission_required("laboratory.delete_protocol"), name="dispatch")
 class ProtocolDeleteView(DeleteView):
