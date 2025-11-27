@@ -14,23 +14,23 @@ class IncidentReportTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        self.url_attr = {"org_pk": 1, "lab_pk": 1}
+        self.url_attr = {"org_pk": 1, "risk":5}
         self.client.force_login(self.user)
 
     def test_get_incident(self):
 
         response = self.client.get(
-            reverse("riskmanagement:incident_list", kwargs=self.url_attr)
+            reverse("riskmanagement:api-incident-list", kwargs=self.url_attr)
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.context["object_list"]) == 3)
+        self.assertTrue(json.loads(response.content).get("recordsTotal") == 3)
 
     def test_get_q_incident(self):
         response = self.client.get(
-            reverse("riskmanagement:incident_list", kwargs=self.url_attr) + "?q=Algo"
+            reverse("riskmanagement:api-incident-list", kwargs=self.url_attr) + "?q=Algo"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(len(response.context["object_list"]) == 1)
+        self.assertTrue(json.loads(response.content).get("recordsTotal") == 3)
 
     def test_add_incident(self):
         data = {
@@ -46,15 +46,12 @@ class IncidentReportTest(TestCase):
             "recomendations": "No fumar cerca de las instalaciones",
         }
         response = self.client.post(
-            reverse("riskmanagement:incident_create", kwargs=self.url_attr), data=data
+            reverse("riskmanagement:api-incident-list", kwargs=self.url_attr),
+            data=data, content_type="application/json"
         )
         incident = IncidentReport.objects.last()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 201)
         self.assertTrue(data["causes"] == incident.causes)
-        del self.url_attr["lab_pk"]
-        self.assertRedirects(
-            response, reverse("riskmanagement:riskzone_list", kwargs=self.url_attr)
-        )
 
     def test_update_incident(self):
         self.url_attr["pk"] = IncidentReport.objects.last().pk
@@ -73,56 +70,39 @@ class IncidentReportTest(TestCase):
         }
         count = IncidentReport.objects.count()
 
-        response = self.client.post(
-            reverse("riskmanagement:incident_update", kwargs=self.url_attr), data=data
+        response = self.client.put(
+            reverse("riskmanagement:api-incident-detail", kwargs=self.url_attr), data=data,
+            content_type="application/json"
         )
 
         incident = IncidentReport.objects.all()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(incident.count() == count)
         self.assertTrue(data["causes"] == incident.last().causes)
-        del self.url_attr["lab_pk"]
-        del self.url_attr["pk"]
-        self.assertRedirects(
-            response, reverse("riskmanagement:riskzone_list", kwargs=self.url_attr)
-        )
-
-    def test_detail_incident_report(self):
-        incident = IncidentReport.objects.last()
-        self.url_attr["pk"] = incident.pk
-
-        response = self.client.get(
-            reverse("riskmanagement:incident_detail", kwargs=self.url_attr)
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            incident.short_description == response.context["object"].short_description
-        )
 
     def test_detail_incident_fail(self):
         self.url_attr["pk"] = 7
         response = self.client.get(
-            reverse("riskmanagement:incident_detail", kwargs=self.url_attr)
+            reverse("riskmanagement:api-incident-detail", kwargs=self.url_attr)
         )
         self.assertEqual(response.status_code, 404)
 
     def test_delete_incident_report(self):
         self.url_attr["pk"] = 4
         pre_incident = IncidentReport.objects.count()
-
-        response = self.client.post(
-            reverse("riskmanagement:incident_delete", kwargs=self.url_attr)
+        response = self.client.delete(
+            reverse("riskmanagement:api-incident-detail", kwargs=self.url_attr)
         )
 
         incidents = IncidentReport.objects.count()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue(pre_incident > incidents)
-        self.assertRedirects(
-            response, reverse("riskmanagement:riskzone_list", kwargs={"org_pk": 1})
-        )
+
 
     def test_report_incident(self):
         self.url_attr["pk"] = 4
+        del self.url_attr["risk"]
+        self.url_attr.update({"risk_pk": 5})
 
         response = self.client.get(
             reverse("riskmanagement:incident_report", kwargs=self.url_attr)
@@ -135,6 +115,8 @@ class IncidentReportTest(TestCase):
 
     def test_report_incident_xlsx(self):
         self.url_attr["pk"] = 4
+        del self.url_attr["risk"]
+        self.url_attr.update({"risk_pk": 5})
         response = self.client.get(
             reverse("riskmanagement:incident_report", kwargs=self.url_attr) + ""
         )

@@ -28,6 +28,7 @@ class RiskZoneTest(TestCase):
             "name": "First Risk Zone",
             "laboratories": [1],
             "num_workers": 7,
+            "buildings": [1],
             "zone_type": 2,
         }
 
@@ -47,10 +48,11 @@ class RiskZoneTest(TestCase):
             "laboratories": [1],
             "num_workers": 7,
             "zone_type": 2,
+            "buildings": [1],
         }
         count = RiskZone.objects.count()
         response = self.client.post(
-            reverse("riskmanagement:riskzone_update", kwargs=self.url_attr), data=data
+            reverse("riskmanagement:riskzone_update", kwargs=self.url_attr), data=data,
         )
         self.assertEqual(response.status_code, 302)
         self.assertIn(data["name"], RiskZone.objects.values_list("name", flat=True))
