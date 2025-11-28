@@ -57,7 +57,7 @@ class AcademicTest(TestCase):
         procedure = Procedure.objects.all().first()
 
         self.assertEqual(data["description"], procedure.description)
-        self.assertNotEquals(data["description"], self.procedure.description)
+        self.assertNotEqual(data["description"], self.procedure.description)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(
             response, reverse("academic:procedure_list", kwargs=self.url_attr)
@@ -76,7 +76,7 @@ class AcademicTest(TestCase):
         url["pk"] = 0
         response = self.client.get(reverse("academic:procedure_detail", kwargs=url))
 
-        self.assertNotEquals(response.context["procedure"], self.procedure.pk)
+        self.assertNotEqual(response.context["procedure"], self.procedure.pk)
 
         self.assertEqual(response.status_code, 200)
 
@@ -114,7 +114,7 @@ class AcademicTest(TestCase):
         )
         pos_procedures = Procedure.objects.all().count()
 
-        self.assertEquals(pre_procedures, pos_procedures)
+        self.assertEqual(pre_procedures, pos_procedures)
         self.assertEqual(response.status_code, 404)
 
     def test_get_ajax_procedure(self):
@@ -147,7 +147,7 @@ class AcademicTest(TestCase):
         step = ProcedureStep.objects.filter(procedure=self.procedure).latest("pk")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(step.__str__(), "No titled step")
-        self.assertNotEquals(step.pk, early_step.pk)
+        self.assertNotEqual(step.pk, early_step.pk)
 
     def test_add_step(self):
         url = self.url_attr.copy()
@@ -160,7 +160,7 @@ class AcademicTest(TestCase):
         )
         steps = ProcedureStep.objects.filter(procedure=self.procedure)
 
-        self.assertNotEquals(early_step, steps.count())
+        self.assertNotEqual(early_step, steps.count())
         self.assertEqual(response.status_code, 200)
 
     def test_add_step_fail(self):
@@ -187,7 +187,7 @@ class AcademicTest(TestCase):
         )
         new_step = ProcedureStep.objects.filter(procedure=self.procedure).latest("pk")
 
-        self.assertNotEquals(step.description, new_step.description)
+        self.assertNotEqual(step.description, new_step.description)
         self.assertEqual(response.status_code, 200)
 
     def test_update_step_fail(self):
