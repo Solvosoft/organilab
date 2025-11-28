@@ -113,7 +113,7 @@ class WarningWordAPITests(TestCase):
                       kwargs={"org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         result = response.json()
-        self.assertNotEquals(result['recordsFiltered'], result['recordsTotal'])
+        self.assertNotEqual(result['recordsFiltered'], result['recordsTotal'])
 
 
 class DangerIndicationAPITests(TestCase):
@@ -200,7 +200,7 @@ class DangerIndicationAPITests(TestCase):
                       kwargs={"org_pk": self.organization.pk})
         response = self.client.get(url, content_type="application/json")
         result = response.json()
-        self.assertEquals(result['recordsFiltered'], result['recordsTotal'])
+        self.assertEqual(result['recordsFiltered'], result['recordsTotal'])
 
 
 class PrudenceAdviceAPITests(TestCase):
@@ -307,4 +307,4 @@ class PrudenceAdviceAPITests(TestCase):
                       kwargs={"org_pk": self.organization.pk}) + search_script
         response = self.client.get(url)
         result = response.json()
-        self.assertNotEquals(result['recordsFiltered'], result['recordsTotal'])
+        self.assertNotEqual(result['recordsFiltered'], result['recordsTotal'])
