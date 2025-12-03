@@ -1,6 +1,6 @@
 djgentelella[firmador]>=0.5.3
 async-notifications==0.2
-django==5.2.8
+django==5.2.9
 django-excel==0.0.10
 django-location-field==2.7.3
 django-reservation==0.2.10
