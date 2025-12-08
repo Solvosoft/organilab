@@ -108,10 +108,14 @@ class Object(AbstractOrganizationRef):
     serie = models.CharField(_("Serie"), max_length=50, null=True, blank=True)
     plaque = models.CharField(_("Plaque"), max_length=50, null=True, blank=True)
     is_container = models.BooleanField(default=False, verbose_name=_("Is Container?"))
-    is_dangerous = models.BooleanField(default=False, verbose_name=_("Is Dangerous?"))
-    has_threshold = models.BooleanField(default=False, verbose_name=_("Has threshold?"))
-    threshold = models.FloatField(default=0.0, verbose_name=_("Threshold"))
-    is_pure = models.BooleanField(default=False, verbose_name=_("Is pure?"))
+    is_dangerous = models.BooleanField(default=False, verbose_name=_("Is Dangerous?"),
+                                       help_text=_("It belongs to the regulations of decree 44741"))
+    has_threshold = models.BooleanField(default=False, verbose_name=_("Has threshold?"),
+                                        help_text=_("It belongs to the regulations of decree 44741"))
+    threshold = models.FloatField(default=0.0, verbose_name=_("Threshold"),
+                                  help_text=_("It belongs to the regulations of decree 44741"))
+    is_pure = models.BooleanField(default=False, verbose_name=_("Is pure?"),
+                                  help_text=_("It belongs to the regulations of decree 44741"))
 
     @property
     def is_reactive(self):
