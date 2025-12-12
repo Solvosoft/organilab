@@ -788,3 +788,33 @@ $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         });
     }
 });
+
+
+function inerit_profile(elementid, contentTypeobj){
+    var element=$("#inerit_"+elementid)[0]
+    Swal.fire(
+    {
+        showCancelButton: true,
+        title:  gettext('Are you sure you want to inerit this profile?'),
+        icon:  'question',
+        html: element.dataset.profile + gettext(' from ') + element.dataset.org,
+        confirmButtonText: gettext('Yes'),
+    }
+    ).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+          $.ajax({
+              type: "POST",
+              url: inerit_profile_url,
+              data: {'profile': element.dataset.profileid,
+                      'app_label': element.dataset.appname,
+                      'model': element.dataset.model,
+                      'object_id': element.dataset.objectid,
+                      'organization': contentTypeobj
+                      },
+              headers: {'X-CSRFToken': getCookie('csrftoken')},
+              success: reload_datatables,
+            });
+          }
+    })
+}
