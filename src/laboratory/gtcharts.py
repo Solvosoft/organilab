@@ -131,7 +131,8 @@ class ObjectLimitsClassChart(BaseChart, LineChart):
         if self.filters:
             queryset = queryset.filter(**self.filters).distinct()
             self.obj = queryset.first()
-            self.obj = f"{self.obj.object.name} ({self.obj.measurement_unit.description})"
+            if self.obj:
+                self.obj = f"{self.obj.object.name} ({self.obj.measurement_unit.description})"
         else:
             queryset = queryset.none()
 
