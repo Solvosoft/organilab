@@ -1083,3 +1083,6 @@ msgstr "Límite Máximo"
 
 msgid "Minimum Limit"
 msgstr "Límite Mínimo"
+
+msgid "Are you sure you want to add this profile into others  organizations?"
+msgstr "¿Está seguro de que desea agregar este perfil a otras organizaciones?"

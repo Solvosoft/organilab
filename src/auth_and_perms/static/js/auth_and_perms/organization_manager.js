@@ -795,7 +795,7 @@ function inerit_profile(elementid, contentTypeobj){
     Swal.fire(
     {
         showCancelButton: true,
-        title:  gettext('Are you sure you want to inerit this profile?'),
+        title:  gettext('Are you sure you want to add this profile into others  organizations?'),
         icon:  'question',
         html: element.dataset.profile + gettext(' from ') + element.dataset.org,
         confirmButtonText: gettext('Yes'),
