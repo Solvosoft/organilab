@@ -1,3 +1,8 @@
+16/12/2025
+Command to merge some organizations into one
+
+    - python manage.py merge_organizations
+
 23/10/2025
 Command to add a new role to create, update, decrease, and increase shelf objects and objects in laboratories
 
