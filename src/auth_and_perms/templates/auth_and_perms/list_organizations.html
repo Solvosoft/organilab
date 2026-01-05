@@ -429,7 +429,8 @@ userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
 delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
 create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
 external_user_url = "{% url 'auth_and_perms:api-extuserinorg-detail' 0 %}";
-groups_by_profile = "{% url 'groupsbyprofile-list' %}"
+groups_by_profile = "{% url 'groupsbyprofile-list' %}";
+inerit_profile_url = "{% url 'auth_and_perms:api-userinorg-inerit-profile' %}";
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 {% endblock%}

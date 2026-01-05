@@ -1,4 +1,5 @@
 import uuid
+from random import random
 
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
@@ -172,7 +173,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         if self.context["request"].user.has_perm("auth_and_perms.change_impostorlog"):
             if obj.user.pk != self.context["request"].user.pk:
                 impostor = (
-                    '<a class="mr-2" href="%s" target="_blank"><i class="fa fa-user-secret" aria-hidden="true"></i></a>'
+                    '<a class="me-2" href="%s" target="_blank"><i class="fa fa-user-secret" aria-hidden="true"></i></a>'
                     % (
                         reverse(
                             "auth_and_perms:change_to_impostor",
@@ -180,8 +181,27 @@ class ProfileSerializer(serializers.ModelSerializer):
                         )
                     )
                 )
+                new_uuid = str(uuid.uuid4())
+                data_inerit = (
+                    """ id="inerit_%s" data-org="%s" data-profileid="%s" data-profile="%s" data-appname="%s" data-model="%s" data-objectid="%s" """
+                    % (
+                        str(new_uuid),
+                        str(contenttypeobj),
+                        obj.pk,
+                        str(obj),
+                        contenttypeobj._meta.app_label,
+                        contenttypeobj._meta.model_name,
+                        contenttypeobj.pk,
+                    )
+                )
+                impostor += """<i %s class='fa fa-users me-2' onclick="inerit_profile('%s', %s)" aria-hidden="true"></i>""" % (
+                    data_inerit,
+                    str(new_uuid),
+                    str(org.pk),
+                )
+
         return """
-        <i %s class="fa fa-trash mr-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true"></i>%s
+        <i %s class="fa fa-trash me-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true"></i>%s
         """ % (
             datatext,
             action_uuid,
@@ -496,3 +516,19 @@ class ValidateLabOrgObjectSerializer(serializers.Serializer):
         allow_null=False,
         allow_empty=False,
     )
+
+class ValidateProfileOrganizationSerializer(serializers.Serializer):
+    profile = serializers.PrimaryKeyRelatedField(
+        queryset=Profile.objects.using(settings.READONLY_DATABASE),
+        many=False,
+        required=True
+    )
+    organization = serializers.PrimaryKeyRelatedField(
+        queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+        many=False,
+        required=True
+    )
+    app_label = serializers.CharField()
+    model = serializers.CharField()
+    object_id = serializers.IntegerField()
+

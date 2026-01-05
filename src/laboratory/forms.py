@@ -984,7 +984,7 @@ class EquipmentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Object
-        exclude = ["is_container", "is_dangerous", "has_threshold", "threshold"]
+        exclude = ["is_container", "is_dangerous", "has_threshold", "threshold","is_pure"]
         widgets = {
             "features": genwidgets.SelectMultiple(),
             "code": genwidgets.TextInput,
@@ -1253,7 +1253,8 @@ class ReactiveForm(GTForm, forms.ModelForm):
         widget=FileChunkedUpload, required=False, label=_("Sustance representation")
     )
     is_dangerous = forms.BooleanField(
-        widget=genwidgets.YesNoInput, required=False, label=_("Is dangerous?")
+        widget=genwidgets.YesNoInput, required=False, label=_("Is dangerous?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
     has_threshold = forms.BooleanField(
         widget=genwidgets.YesNoInput(
@@ -1262,9 +1263,11 @@ class ReactiveForm(GTForm, forms.ModelForm):
         ),
         required=False,
         label=_("Has threshold?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
     threshold = forms.FloatField(
-        widget=genwidgets.TextInput, required=False, label=_("Threshold")
+        widget=genwidgets.TextInput, required=False, label=_("Threshold"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
 
     def __init__(self, *args, **kwargs):
@@ -1273,13 +1276,6 @@ class ReactiveForm(GTForm, forms.ModelForm):
         prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
-        self.fields["is_threshold"] = forms.BooleanField(
-            widget=genwidgets.YesNoInput(
-                shparent=".mb-3", attrs={"rel": [f"#id_{prefix}-threshold"]}
-            ),
-            required=False,
-            label=_("Has threshold?"),
-        )
 
     class Meta:
         model = Object
