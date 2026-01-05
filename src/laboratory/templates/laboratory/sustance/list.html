@@ -168,6 +168,12 @@ crud.init();
 $('#create_limit_modal').on('hidden.bs.modal', function (){
 	crud.datatable.ajax.reload();
 })
+helptext_list = ["is_pure", "has_threshold", "is_dangerous", "threshold"]
+helptext_list.forEach(function(helptext){
+document.getElementById(`id_create-${helptext}_helptext`).classList.add("d-block");
+document.getElementById(`id_update-${helptext}_helptext`).classList.add("d-block");
+}
+ );
 </script>
 
 

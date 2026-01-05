@@ -5064,3 +5064,6 @@ msgstr "Tarjeta"
 
 msgid "Viscuos Liquid"
 msgstr "Líquido viscoso"
+
+msgid "It belongs to the regulations of decree 44741"
+msgstr "Pertenece al reglamento del decreto 44741"
