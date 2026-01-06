@@ -86,7 +86,7 @@ class IncreaseShelfObjectForm(GTForm):
         ),
     )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
-
+    use = forms.CharField(widget=genwidgets.Textarea, required=False)
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(
@@ -826,9 +826,12 @@ class ShelfObjectReactiveForm(
             "container_select_option",
             "container_for_cloning",
             "available_container",
+            "container_entry_date",
+            "container_open_date",
             "description",
             "marked_as_discard",
             "batch",
+            "type_budget",
             "objecttype",
             "concentration",
             "reactive_expiration_date",
@@ -853,6 +856,9 @@ class ShelfObjectReactiveForm(
             "physical_status": genwidgets.Select,
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
             "reactive_expiration_date": genwidgets.DateInput,
+            "type_budget": genwidgets.Select,
+            "container_entry_date": genwidgets.DateInput,
+            "container_open_date": genwidgets.DateInput,
         }
 
 
@@ -927,12 +933,16 @@ class ShelfObjectRefuseReactiveForm(
             "pictograms",
             "quantity",
             "concentration",
+            "measurement_unit",
             "container_select_option",
             "container_for_cloning",
             "available_container",
+            "container_entry_date",
+            "container_open_date",
             "description",
             "marked_as_discard",
             "batch",
+            "type_budget",
             "objecttype",
             "reactive_expiration_date",
         ]
@@ -954,6 +964,9 @@ class ShelfObjectRefuseReactiveForm(
             "physical_status": genwidgets.Select,
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
             "reactive_expiration_date": genwidgets.DateInput,
+            "type_budget": genwidgets.Select,
+            "container_entry_date": genwidgets.DateInput,
+            "container_open_date": genwidgets.DateInput,
         }
 
 
