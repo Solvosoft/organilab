@@ -354,7 +354,6 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
-            use = serializer.validated_data.get("use", "")
         )
         utils.organilab_logentry(
             created_by,

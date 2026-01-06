@@ -2591,11 +2591,23 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
         allow_empty=True,
     )
     batch = serializers.CharField(required=False, default="0")
-
+    type_budget = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="type_budget").using(settings.READONLY_DATABASE),
+        required=False,
+        allow_null=True,
+        allow_empty=True,
+    )
+    container_entry_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    container_open_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "reactive_expiration_date", "physical_status",
-                  "pictograms","batch"]
+                  "pictograms","batch","type_budget", "container_entry_date",
+                  "container_open_date"]
 
     def validate(self, data):
         org_context = self.context["org_pk"]
@@ -2625,10 +2637,15 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
 class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
     reactive_expiration_date = GTDateField(input_formats=settings.DATE_INPUT_FORMATS)
     pictograms = GTS2SerializerBase(many=True)
+    type_budget = GTS2SerializerBase(many=False)
+    container_entry_date = GTDateField(input_formats=settings.DATE_INPUT_FORMATS)
+    container_open_date = GTDateField(input_formats=settings.DATE_INPUT_FORMATS)
+
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "reactive_expiration_date", "physical_status",
-                  "pictograms","batch"]
+                  "pictograms","batch", "type_budget", "container_entry_date",
+                  "container_open_date"]
 
 
 class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
