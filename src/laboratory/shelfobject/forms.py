@@ -1228,7 +1228,8 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
     class Meta:
         model = ShelfObject
         fields = ["reactive_expiration_date", "status", "physical_status","description",
-                  "batch","without_limit", "minimum_limit", "maximum_limit","pictograms"
+                  "batch","without_limit", "minimum_limit", "maximum_limit","pictograms",
+                  "type_budget", "container_entry_date", "container_open_date"
                   ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
@@ -1239,6 +1240,9 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "minimum_limit": genwidgets.TextInput,
             "maximum_limit": genwidgets.TextInput,
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
+            "type_budget": genwidgets.Select,
+            "container_entry_date": genwidgets.DateInput,
+            "container_open_date": genwidgets.DateInput,
 
         }
 
