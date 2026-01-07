@@ -890,6 +890,10 @@ class ShelfObjectDetailSerializer(
     object_type = serializers.SerializerMethodField()
     physical_status = serializers.SerializerMethodField()
     concentration = serializers.FloatField(required=False, default=0.0)
+    container_entry_date = GTDateField(required=False, allow_null=True)
+    container_open_date = GTDateField(required=False, allow_null=True)
+    type_budget = serializers.SerializerMethodField()
+    reactive_expiration_date = GTDateField(required=False, allow_null=True)
 
     class Meta:
         model = ShelfObject
@@ -928,6 +932,10 @@ class ShelfObjectDetailSerializer(
     def get_physical_status(self, obj):
         return obj.get_physical_status_display()
 
+    def get_type_budget(self, obj):
+        if obj.type_budget:
+            return obj.type_budget.description
+        return ""
 
 class ShelfSerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
