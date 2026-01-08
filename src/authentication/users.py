@@ -18,7 +18,8 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from authentication.forms import PasswordChangeForm, EditUserForm
 from django.http import JsonResponse
 
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, Laboratory
+from laboratory.utils import get_user_laboratories
 
 
 @method_decorator(permission_required("auth.change_user"), name="dispatch")
@@ -48,6 +49,7 @@ class ChangeUser(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ChangeUser, self).get_context_data()
         context["password_form"] = PasswordChangeForm(user=self.object)
+        context["labs"] = get_user_laboratories(self.object)
         return context
 
     def form_valid(self, form):
