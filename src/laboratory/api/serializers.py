@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.fields.files import ChunkedFileField
-from djgentelella.serializers import GTDateField
+from djgentelella.serializers import GTDateField, GTDateTimeField
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -32,7 +32,7 @@ from laboratory.models import (
     EquipmentCharacteristics,
     SustanceCharacteristics,
     ReactiveLimit,
-    ObjectMaximumLimit,
+    ObjectMaximumLimit, LaboratoryProccess,
 )
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
@@ -1258,3 +1258,40 @@ class ReactiveLimitsSerializer(serializers.Serializer):
             .values_list("created_at__year", flat=True)
             .distinct()
         ]
+
+class LaboratoryProccessSerializer(serializers.ModelSerializer):
+    laboratory = serializers.PrimaryKeyRelatedField(
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
+        required=True,
+        many=False
+    )
+    description = serializers.CharField(required=True)
+
+    class Meta:
+        model = LaboratoryProccess
+        fields = "__all__"
+
+class LaboratoryProccessUpdateSerializer(serializers.ModelSerializer):
+    description = serializers.CharField(required=True)
+
+    class Meta:
+        model = LaboratoryProccess
+        fields = ["description"]
+
+class LaboratoryProccessSerializerTable(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    created_by = GTS2SerializerBase(many=False)
+    creation_date = GTDateTimeField(required=False)
+
+    def get_actions(self, obj):
+        return {}
+
+    class Meta:
+        model = LaboratoryProccess
+        fields = ["id", "description", "created_by", "creation_date", "actions"]
+
+class LaboratoryProccessDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LaboratoryProccessSerializerTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
