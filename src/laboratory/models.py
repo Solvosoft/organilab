@@ -1190,6 +1190,22 @@ class Laboratory(BaseCreationObj):
         null=True,
         blank=True,
     )
+    faculty_dispatch = models.CharField(
+        verbose_name=_("Faculty or dispatch"),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    workplace = catalog.GTForeignKey(
+        Catalog,
+        related_name="gt_workplace",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Workplace"),
+        key_name="key",
+        key_value="workplace",
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = _("Laboratory")
@@ -1621,3 +1637,13 @@ class ReactiveLimit(models.Model):
 
     def __str__(self):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
+
+
+class LaboratoryProccess(BaseCreationObj):
+    laboratory = models.ForeignKey(
+        Laboratory,
+        on_delete=models.CASCADE,
+        verbose_name=_("Laboratory"),
+        related_name="laboratory_proccess",
+    )
+    description = models.TextField(_("Description"), null=True, blank=True)
