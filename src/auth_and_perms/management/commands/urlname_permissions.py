@@ -300,6 +300,11 @@ URLNAME_PERMISSIONS = {
             "category": "Informs",
             "permission": "laboratory.view_inform",
         },
+        {
+            "name": "View Laboratory Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.view_laboratory_process",
+        },
     ],
     "list_provider": [
         {
@@ -2871,5 +2876,27 @@ URLNAME_PERMISSIONS = {
             "category": "Report",
             "permission": "laboratory.view_report",
         }
+    ],
+    "laboratory_process_list": [
+        {
+            "name": "View Process",
+            "category": "Process",
+            "permission": "laboratory.view_laboratory_process",
+        },
+        {
+            "name": "Create Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.add_laboratoryprocess",
+        },
+        {
+            "name": "Update Laboratory Process",
+            "category": "Process",
+            "permission": "laboratory.change_laboratoryprocess",
+        },
+        {
+            "name": "Delete Process",
+            "category": "Process",
+            "permission": "laboratory.delete_laboratoryprocess",
+        },
     ],
 }
