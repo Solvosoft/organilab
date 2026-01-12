@@ -5,7 +5,6 @@
 {% load gtsettings %}
 {% block pre_head %}
     {% define_urlname_action 'laboratory_process_list' %}
-
 {% endblock %}
 
 {% block title %}{% trans 'Laboratory Processes View' %}{% endblock %}
@@ -32,14 +31,13 @@
 {{block.super}}
 <script>
 
-console.log("laboratory_process_list");
 	var object_urls = {
 		list_url: "{% url 'laboratory:api-laboratory-process-list' org_pk lab_pk %}",
 		create_url: "{% url 'laboratory:api-laboratory-process-list' org_pk lab_pk %}",
 		destroy_url: "{% url "laboratory:api-laboratory-process-detail" org_pk lab_pk 0 %}",
 		update_url: "{% url "laboratory:api-laboratory-process-detail" org_pk lab_pk 0 %}"
 	}
-console.table(object_urls);
+
 	datatable_inits = {
 				columns: [
 								{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
