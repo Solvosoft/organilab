@@ -1284,7 +1284,15 @@ class LaboratoryProccessSerializerTable(serializers.ModelSerializer):
     creation_date = GTDateTimeField(required=False)
 
     def get_actions(self, obj):
-        return {}
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_laboratoryproccess"],
+            "update": ["laboratory.change_laboratoryproccess"],
+            "destroy": ["laboratory.delete_laboratoryproccess"],
+            "detail": ["laboratory.view_laboratoryproccess"],
+            "list": ["laboratory.view_laboratoryproccess"],
+        }
+        return get_actions_by_perms(user, action_list)
 
     class Meta:
         model = LaboratoryProccess
