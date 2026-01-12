@@ -124,10 +124,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
             "faculty_dispatch": genwidgets.TextInput,
-            "workplace": genwidgets.SelectWithAdd(
-                attrs={"add_url": reverse_lazy("laboratory:add_workplace_type_catalog",
-                                               kwargs={"key": "workplace"})}
-            ),
+            "workplace": genwidgets.SelectMultiple
         }
 
 
@@ -210,9 +207,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
             "faculty_dispatch": genwidgets.TextInput,
-            "workplace": genwidgets.SelectWithAdd(
-                attrs={"add_url": reverse_lazy("laboratory:add_workplace_type_catalog", kwargs={"key": "workplace"})}
-            ),
+            "workplace": genwidgets.SelectMultiple
         }
 
 

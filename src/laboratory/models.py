@@ -1196,15 +1196,11 @@ class Laboratory(BaseCreationObj):
         null=True,
         blank=True,
     )
-    workplace = catalog.GTForeignKey(
-        Catalog,
-        related_name="gt_workplace",
-        on_delete=models.DO_NOTHING,
-        verbose_name=_("Workplace"),
-        key_name="key",
-        key_value="workplace",
-        null=True,
+    workplace = models.ManyToManyField(
+        OrganizationStructure,
         blank=True,
+        related_name="workplace",
+        verbose_name=_("Workplace"),
     )
 
     class Meta:
