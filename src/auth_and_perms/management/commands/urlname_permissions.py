@@ -302,8 +302,8 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "View Laboratory Process",
-            "category": "Proccess",
-            "permission": "laboratory.view_laboratoryproccess",
+            "category": "Process",
+            "permission": "laboratory.view_laboratoryprocess",
         },
     ],
     "list_provider": [
@@ -2880,23 +2880,23 @@ URLNAME_PERMISSIONS = {
     "laboratory_process_list": [
         {
             "name": "View Process",
-            "category": "Proccess",
-            "permission": "laboratory.view_laboratoryproccess",
+            "category": "Process",
+            "permission": "laboratory.view_laboratoryprocess",
         },
         {
             "name": "Create Process",
-            "category": "Proccess",
-            "permission": "laboratory.add_laboratoryproccess",
+            "category": "Process",
+            "permission": "laboratory.add_laboratoryprocess",
         },
         {
             "name": "Update Process",
-            "category": "Proccess",
-            "permission": "laboratory.change_laboratoryproccess",
+            "category": "Process",
+            "permission": "laboratory.change_laboratoryprocess",
         },
         {
             "name": "Delete Process",
-            "category": "Proccess",
-            "permission": "laboratory.delete_laboratoryproccess",
+            "category": "Process",
+            "permission": "laboratory.delete_laboratoryprocess",
         },
     ],
 }

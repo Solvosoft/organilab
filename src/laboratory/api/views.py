@@ -47,7 +47,7 @@ from laboratory.models import (
     Shelf,
     Object,
     Catalog,
-    EquipmentType, ReactiveLimit, LaboratoryProccess,
+    EquipmentType, ReactiveLimit, LaboratoryProcess,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -1134,23 +1134,23 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LaboratoryProccessViewset(AuthAllPermBaseObjectManagement):
+class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
-        "list": serializers.LaboratoryProccessDataTableSerializer,
-        "destroy": serializers.LaboratoryProccessSerializer,
-        "create": serializers.LaboratoryProccessSerializer,
-        "update": serializers.LaboratoryProccessUpdateSerializer,
+        "list": serializers.LaboratoryProcessDataTableSerializer,
+        "destroy": serializers.LaboratoryProcessSerializer,
+        "create": serializers.LaboratoryProcessSerializer,
+        "update": serializers.LaboratoryProcessUpdateSerializer,
     }
     perms = {
-        "list": ["laboratory.view_laboratory"],
-        "create": ["laboratory.add_laboratory"],
-        "update": ["laboratory.change_laboratory"],
-        "destroy": ["laboratory.delete_laboratory"],
+        "list": ["laboratory.view_laboratory_process"],
+        "create": ["laboratory.add_laboratory_process"],
+        "update": ["laboratory.change_laboratory_process"],
+        "destroy": ["laboratory.delete_laboratory_process"],
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
 
-    queryset = LaboratoryProccess.objects.all()
+    queryset = LaboratoryProcess.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["description"]

@@ -46,7 +46,7 @@ from laboratory.api.views import (
     EquipmentManagementViewset,
     InstrumentalFamilyManagementViewset,
     EquipmentTypeManagementViewset,
-    ReactiveManagementViewset, LaboratoryProccessViewset,
+    ReactiveManagementViewset, LaboratoryProcessViewset,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -554,7 +554,7 @@ objectrouter.register(
 lab_process_router = DefaultRouter()
 lab_process_router.register(
     "api_laboratory_process",
-    LaboratoryProccessViewset,
+    LaboratoryProcessViewset,
     basename="api-laboratory-process",
 )
 

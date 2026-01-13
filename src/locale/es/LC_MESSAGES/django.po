@@ -5088,3 +5088,6 @@ msgstr "Listado de procesos del laboratorio"
 
 msgid "Workplace"
 msgstr "Centro de trabajo"
+
+msgid "Processes"
+msgstr "Procesos"
