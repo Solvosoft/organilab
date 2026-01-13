@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(blank=True, related_name='workplace', to='laboratory.organizationstructure', verbose_name='Workplace'),
         ),
         migrations.CreateModel(
-            name='LaboratoryProccess',
+            name='LaboratoryProcess',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('creation_date', models.DateTimeField(auto_now_add=True)),

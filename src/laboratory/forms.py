@@ -31,7 +31,7 @@ from laboratory.models import (
     ShelfObjectObservation,
     EquipmentType,
     ReactiveLimit,
-    ObjectMaximumLimit, LaboratoryProccess,
+    ObjectMaximumLimit, LaboratoryProcess,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -1386,7 +1386,7 @@ class ReactiveStockForm(GTForm, forms.Form):
 
 class LaboratoryProcessForm(GTForm, forms.ModelForm):
     class Meta:
-        model = LaboratoryProccess
+        model = LaboratoryProcess
         fields = ["description", "laboratory"]
         widgets = {
             "laboratory": genwidgets.HiddenInput,

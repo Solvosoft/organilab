@@ -1635,7 +1635,7 @@ class ReactiveLimit(models.Model):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
 
 
-class LaboratoryProccess(BaseCreationObj):
+class LaboratoryProcess(BaseCreationObj):
     laboratory = models.ForeignKey(
         Laboratory,
         on_delete=models.CASCADE,
