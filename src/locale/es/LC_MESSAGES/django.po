@@ -5091,3 +5091,27 @@ msgstr "Centro de trabajo"
 
 msgid "Processes"
 msgstr "Procesos"
+
+msgid "Container Entry Date"
+msgstr "Fecha de entrada del contenedor"
+
+msgid "Container Open Date"
+msgstr "Fecha de apertura del contenedor"
+
+msgid "Use"
+msgstr "Uso"
+
+msgid "Type Budget"
+msgstr "Tipo de presupuesto"
+
+msgid "ID Number"
+msgstr "Número de identificación"
+
+msgid "Substance name"
+msgstr "Nombre de la sustancia"
+
+msgid "Name of official"
+msgstr "Nombre del funcionario"
+
+msgid "Occupational Health Report"
+msgstr "Reporte de Salud Laboral"

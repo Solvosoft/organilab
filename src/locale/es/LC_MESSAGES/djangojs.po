@@ -1086,3 +1086,15 @@ msgstr "Límite Mínimo"
 
 msgid "Are you sure you want to add this profile into others  organizations?"
 msgstr "¿Está seguro de que desea agregar este perfil a otras organizaciones?"
+
+msgid "Type Budget"
+msgstr "Presupuesto de tipo"
+
+msgid "Container Entry Date"
+msgstr "Fecha de entrada del contenedor"
+
+msgid "Container Open Date"
+msgstr "Fecha de apertura del contenedor"
+
+msgid "Expiration Date"
+msgstr "Fecha de caducidad"
