@@ -47,7 +47,7 @@ from laboratory.models import (
     Shelf,
     Object,
     Catalog,
-    EquipmentType, ReactiveLimit,
+    EquipmentType, ReactiveLimit, LaboratoryProcess,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -1133,3 +1133,41 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": serializers.LaboratoryProcessDataTableSerializer,
+        "destroy": serializers.LaboratoryProcessSerializer,
+        "create": serializers.LaboratoryProcessSerializer,
+        "update": serializers.LaboratoryProcessUpdateSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_laboratory_process"],
+        "create": ["laboratory.add_laboratory_process"],
+        "update": ["laboratory.change_laboratory_process"],
+        "destroy": ["laboratory.delete_laboratory_process"],
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+
+    queryset = LaboratoryProcess.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["description"]
+    ordering_fields = ["pk"]
+    filterset_class = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        lab = self.kwargs.get("lab_pk",0)
+        if lab:
+            #self.lab = get_object_or_404(Laboratory, pk=lab)
+            return queryset.filter(laboratory__pk=lab)
+
+        return queryset.none()
+
+    def perform_create(self, serializer):
+
+        serializer.save(created_by=self.request.user)
+        return super().perform_create(serializer)
+

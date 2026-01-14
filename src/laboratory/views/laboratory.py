@@ -31,7 +31,7 @@ from laboratory.forms import (
     RegisterUserQRForm,
     RegisterForm,
     LoginForm,
-    PasswordCodeForm,
+    PasswordCodeForm, LaboratoryProcessForm,
 )
 from laboratory.models import (
     Laboratory,
@@ -783,4 +783,18 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
     )
     return render(
         request, "laboratory/register_user_qr/login_register_user.html", context=context
+    )
+
+@login_required()
+@permission_required("laboratory.view_laboratory_process")
+def laboratory_process_list(request, org_pk, lab_pk):
+    return render(
+        request,
+        "laboratory/laboratory_process/list.html",
+        context={
+            "org_pk": org_pk,
+            "lab_pk": lab_pk,
+            "create_form": LaboratoryProcessForm(prefix="create", initial={"laboratory": lab_pk}),
+            "update_form": LaboratoryProcessForm(prefix="update"),
+        },
     )

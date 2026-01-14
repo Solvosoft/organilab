@@ -1207,6 +1207,18 @@ class Laboratory(BaseCreationObj):
         null=True,
         blank=True,
     )
+    faculty_dispatch = models.CharField(
+        verbose_name=_("Faculty or dispatch"),
+        max_length=255,
+        null=True,
+        blank=True,
+    )
+    workplace = models.ManyToManyField(
+        OrganizationStructure,
+        blank=True,
+        related_name="workplace",
+        verbose_name=_("Workplace"),
+    )
 
     class Meta:
         verbose_name = _("Laboratory")
@@ -1638,3 +1650,13 @@ class ReactiveLimit(models.Model):
 
     def __str__(self):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
+
+
+class LaboratoryProcess(BaseCreationObj):
+    laboratory = models.ForeignKey(
+        Laboratory,
+        on_delete=models.CASCADE,
+        verbose_name=_("Laboratory"),
+        related_name="laboratory_proccess",
+    )
+    description = models.TextField(_("Description"), null=True, blank=True)

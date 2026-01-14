@@ -46,7 +46,7 @@ from laboratory.api.views import (
     EquipmentManagementViewset,
     InstrumentalFamilyManagementViewset,
     EquipmentTypeManagementViewset,
-    ReactiveManagementViewset,
+    ReactiveManagementViewset, LaboratoryProcessViewset,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -66,7 +66,8 @@ from laboratory.views.informs import (
     complete_inform,
     remove_inform,
 )
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, \
+    laboratory_process_list
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import (
@@ -372,6 +373,11 @@ catalogs_urls = [
         kwargs={"key": "structure_type"},
         name="add_structure_type_catalog",
     ),
+    path(
+        "workplace/type/<str:key>",
+        furniture.add_catalog,
+        name="add_workplace_type_catalog",
+    ),
 ]
 
 informs_period_urls = [
@@ -545,6 +551,12 @@ objectrouter.register(
     "api_reactive_list", ReactiveManagementViewset, basename="api-reactive"
 )
 
+lab_process_router = DefaultRouter()
+lab_process_router.register(
+    "api_laboratory_process",
+    LaboratoryProcessViewset,
+    basename="api-laboratory-process",
+)
 
 """MULTILAB"""
 urlpatterns += organization_urls + [
@@ -625,4 +637,6 @@ urlpatterns += organization_urls + [
         include(equipment_shelfobject_url),
     ),
     path("equipment/api/<int:org_pk>/<int:lab_pk>/", include(objectrouter.urls)),
+    path("<int:org_pk>/<int:lab_pk>/processes/", include(lab_process_router.urls)),
+    path("<int:org_pk>/<int:lab_pk>/processes/list/", laboratory_process_list, name="laboratory_process_list"),
 ]

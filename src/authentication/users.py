@@ -18,7 +18,8 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from authentication.forms import PasswordChangeForm, EditUserForm
 from django.http import JsonResponse
 
-from laboratory.models import OrganizationStructure
+from laboratory.models import OrganizationStructure, Laboratory
+from laboratory.utils import get_user_laboratories
 
 
 @method_decorator(permission_required("auth.change_user"), name="dispatch")
@@ -35,11 +36,17 @@ class ChangeUser(UpdateView):
         else:
             return response
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
     def get_initial(self):
         dev = super().get_initial()
         dev["language"] = self.request.user.profile.language
         dev["phone_number"] = self.request.user.profile.phone_number
         dev["address"] = self.request.user.profile.address
+        dev["workplace"] = self.request.user.profile.workplace.all()
         return dev
 
     def get_success_url(self):
@@ -48,6 +55,7 @@ class ChangeUser(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ChangeUser, self).get_context_data()
         context["password_form"] = PasswordChangeForm(user=self.object)
+        context["labs"] = get_user_laboratories(self.object)
         return context
 
     def form_valid(self, form):
@@ -56,6 +64,8 @@ class ChangeUser(UpdateView):
         profile.language = form.cleaned_data["language"]
         profile.address = form.cleaned_data["address"]
         profile.phone_number = form.cleaned_data["phone_number"]
+        profile.workplace.clear()
+        profile.workplace.add(*form.cleaned_data["workplace"])
         profile.save()
         return super(ChangeUser, self).form_valid(form)
 
