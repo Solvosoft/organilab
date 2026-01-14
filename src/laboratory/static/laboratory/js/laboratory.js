@@ -727,14 +727,16 @@ function get_shelfobject_data(shelfobject){
         type: "GET",
         headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
         success: function(data){
-         document.querySelector("#id_edit-minimum_limit").value = data.minimum_limit;
-        document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
+            document.querySelector("#id_edit-minimum_limit").value = data.minimum_limit;
+            document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
             document.querySelector("#id_edit-description").value = data.description;
             document.querySelector("#id_edit-batch").value = data.batch;
             document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
             $('#id_edit-physical_status').val(data.physical_status).trigger('change');
             $('#id_edit-status').val(data.status).trigger('change');
-
+            $('#id_edit-type_budget').val(data.type_budget.id).trigger('change');
+            $('#id_edit-container_entry_date').val(data.container_entry_date).trigger('change');
+            $('#id_edit-container_open_date').val(data.container_open_date).trigger('change');
         if(data.minimum_limit == 0 && data.maximum_limit == 0){
             if(!$("#id_edit-without_limit").parent().hasClass('checked')){
                 $("#id_edit-without_limit").parent().addClass('checked')

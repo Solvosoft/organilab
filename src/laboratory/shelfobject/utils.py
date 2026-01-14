@@ -1,9 +1,12 @@
 import logging
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.admin.models import CHANGE, ADDITION, DELETION
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
+
 from laboratory.logsustances import log_object_add_change, log_object_change
 from laboratory.models import (
     ShelfObjectObservation,
@@ -45,11 +48,12 @@ def save_increase_decrease_shelf_object(
     description = validated_data.get("description", "")
     shelfobject = validated_data["shelf_object"]
     amount = validated_data["amount"]
-
+    use = validated_data.get("use", "")
     old = shelfobject.quantity
     converted_amount = get_conversion_from_two_units(
         measurement_unit, shelfobject.shelf.measurement_unit, amount
     )
+
 
     if shelfobject.shelf.measurement_unit is None:
         converted_amount = get_conversion_from_two_units(
@@ -57,6 +61,7 @@ def save_increase_decrease_shelf_object(
         )
     new = old - converted_amount
     action_taken = _("Object was decreased")
+
 
     if is_increase_process:
 
@@ -68,7 +73,7 @@ def save_increase_decrease_shelf_object(
             shelfobject,
             old,
             new,
-            _("Income"),
+            use if use else _("Income"),
             provider,
             bill,
             create=False,
@@ -760,3 +765,9 @@ def save_shelfobject_characteristics(characteristic, user):
 def delete_shelfobjects(shelfobject, user, laboratory):
     organilab_logentry(user, shelfobject, DELETION, relobj=laboratory)
     shelfobject.delete()
+
+def get_shelf_object_expiration_date(expired_date):
+    date = now().date()
+    if not expired_date:
+        return date+timedelta(days=365*5)
+    return expired_date
