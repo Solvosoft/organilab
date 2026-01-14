@@ -54,6 +54,33 @@ width: 100%;
                     <th class="bold">{% trans "Limit Quantity" %}:</th>
                     <th class="thead">{{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</th>
                 </tr>
+																{% if obj.object.type == '0' %}
+																<tr>
+																		<th class="bold">{% trans "Physical Status" %}:</th>
+																		<th class="thead">{{ obj.get_physical_status_display|default_if_none:"" }}</th>
+																	</tr>
+																<tr>
+																		<th class="bold">{% trans "Expiration Date" %}:</th>
+																		<th class="thead">{{ obj.reactive_expiration_date }}</th>
+																	</tr>
+																<tr>
+																		<th class="bold">{% trans "Type Budget" %}:</th>
+																		<th class="thead">{{ obj.type_budget.description|default_if_none:"" }}</th>
+																	</tr>
+																<tr>
+																		<th class="bold">{% trans "Container" %}:</th>
+																		<th class="thead">{{ obj.container.object.name }}</th>
+																	</tr>
+																<tr>
+																		<th class="bold">{% trans "Container Entry Date" %}:</th>
+																		<th class="thead">{{ obj.container_entry_date }}</th>
+																	</tr>
+																<tr>
+																		<th class="bold">{% trans "Container Open Date" %}:</th>
+																		<th class="thead">{{ obj.container_open_date }}</th>
+																	</tr>
+																{% endif %}
+
                 <tr>
                     <th class="bold">{% trans "Code" %}:</th>
                     <th class="thead">{{ obj.object.code }}</th>
