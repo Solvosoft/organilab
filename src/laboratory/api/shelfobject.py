@@ -111,7 +111,7 @@ from laboratory.shelfobject.utils import (
     create_new_shelfobject_from_object_in,
     clone_shelfobject_to,
     save_shelfobject_characteristics,
-    delete_shelfobjects,
+    delete_shelfobjects, get_shelf_object_expiration_date,
 )
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
@@ -228,11 +228,14 @@ class ShelfObjectCreateMethods:
             container_for_cloning,
             available_container,
         )
+        expired_date = get_shelf_object_expiration_date(
+            serializer.validated_data.get("reactive_expiration_date", None))
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
             container=container,
+            reactive_expiration_date=expired_date
         )
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
             shelfobject.quantity = get_conversion_from_two_units(
@@ -315,12 +318,17 @@ class ShelfObjectCreateMethods:
             container_for_cloning,
             available_container,
         )
+        expired_date = get_shelf_object_expiration_date(
+            serializer.validated_data.get("reactive_expiration_date", None))
+
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
             container=container,
+            reactive_expiration_date=expired_date
         )
+
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
             shelfobject.quantity = get_conversion_from_two_units(
                 shelfobject.measurement_unit,
