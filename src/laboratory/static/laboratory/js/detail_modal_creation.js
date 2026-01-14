@@ -23,7 +23,11 @@ function configure_modal(data){
         'description': gettext('Description'),
         'model': gettext('Model'),
         'serie': gettext('Serie'),
-        'plaque': gettext('Plaque')
+        'plaque': gettext('Plaque'),
+        'type_budget': gettext('Type Budget'),
+        'container_entry_date': gettext('Container Entry Date'),
+        'container_open_date': gettext('Container Open Date'),
+        'reactive_expiration_date': gettext('Expiration Date')
     }
     insert_substance_data(data.object.object_inst, tbody_instance, object_titles);
     insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')});
@@ -40,6 +44,18 @@ function configure_modal(data){
         }
        if (data.object['concentration']){
             insert_substance_data(data.object, tbody_instance, {'concentration': gettext('Concentration')});
+        }
+        if (data.object['reactive_expiration_date']){
+            insert_substance_data(data.object, tbody_instance, {'reactive_expiration_date': gettext('Expiration Date')});
+        }
+        if (data.object['container_entry_date']){
+            insert_substance_data(data.object, tbody_instance, {'container_entry_date': gettext('Container Entry Date')});
+        }
+        if (data.object['container_open_date']){
+            insert_substance_data(data.object, tbody_instance, {'container_open_date': gettext('Container Open Date')});
+        }
+        if (data.object['type_budget']){
+            insert_substance_data(data.object, tbody_instance, {'type_budget': gettext('Type Budget')});
         }
       }
     if (data.object['substance_characteristics']){
