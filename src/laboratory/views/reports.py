@@ -390,7 +390,7 @@ class OrganizationReactivePresenceList(ReportListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        title = _("User Reactive Exposition in Organization Report")
+        title = _("Occupational Health Report")
         context.update(
             {
                 "title_view": title,
