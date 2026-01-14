@@ -2,21 +2,17 @@
 
 from django.db import migrations
 
+
 def add_key_show_sga(apps, schema_editor):
     Settings = apps.get_model("djgentelella", "GentelellaSettings")
-    Settings.objects.get_or_create(
-        key='show_sga',
-        value='true'
-    )
+    Settings.objects.get_or_create(key="show_sga", value="true")
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ("sga", "0065_alter_displaylabel_logo_and_more"),
+        ("djgentelella", "0017_alter_chunkedupload_status"),
     ]
 
-    operations = [
-        migrations.RunPython(add_key_show_sga)
-
-    ]
+    operations = [migrations.RunPython(add_key_show_sga)]
