@@ -492,8 +492,14 @@ class ChemicalInventoryReportForm(ReportForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super(ChemicalInventoryReportForm, self).__init__(*args, **kwargs)
-
+        self.fields.pop("all_labs_org")
         if org_pk:
+            self.fields["laboratory"].widget=genwidgets.SelectMultiple(attrs={"class": "form-control"})
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 organization=org_pk
             )
+    def clean_laboratory(self):
+        lab = self.cleaned_data["laboratory"]
+        if lab.exists():
+            return list(lab.values_list("pk", flat=True))
+        return []

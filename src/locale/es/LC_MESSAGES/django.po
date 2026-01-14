@@ -5091,3 +5091,6 @@ msgstr "Nombre del funcionario"
 
 msgid "Occupational Health Report"
 msgstr "Reporte de Salud Laboral"
+
+msgid "Chemical inventory report"
+msgstr "Informe de inventario de sustancias químicas"
