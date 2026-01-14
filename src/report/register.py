@@ -96,4 +96,14 @@ REPORT_FORMS = {
         "xlsx": "report.views.stock.report_stock",
         "ods": "report.views.stock.report_stock",
     },
+    "stock_reactive_cartel_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.ReactiveStockReportForm",
+        "xls": "report.views.stock.report_stock_cartel",
+        "xlsx": "report.views.stock.report_stock_cartel",
+        "ods": "report.views.stock.report_stock_cartel",
+        "html": "report.views.stock.report_reactive_stock_html",
+        "pdf": "report.views.base.base_pdf",
+    },
+
 }

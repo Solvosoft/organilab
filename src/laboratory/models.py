@@ -136,6 +136,15 @@ class Object(AbstractOrganizationRef):
                 return ""
         return False
 
+    @property
+    def get_storage_class(self):
+        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
+            if self.sustancecharacteristics.storage_class:
+                return ", ".join(self.sustancecharacteristics.storage_class.values_list("description", flat=True))
+            else:
+                return ""
+        return ""
+
     class Meta:
         verbose_name = _("Object")
         verbose_name_plural = _("Objects")
