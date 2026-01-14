@@ -96,7 +96,7 @@ REPORT_FORMS = {
         "xlsx": "report.views.stock.report_stock",
         "ods": "report.views.stock.report_stock",
     },
-    "stock_reactive_cartel_report": {
+    "chemicalinventory": {
         "task": "report.tasks.task_report",
         "form": "report.forms.ReactiveStockReportForm",
         "xls": "report.views.stock.report_stock_cartel",

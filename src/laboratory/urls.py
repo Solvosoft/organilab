@@ -274,6 +274,11 @@ reports_all_lab = [
         reports.OrganizationReactivePresenceList.as_view(),
         name="organizationreactivepresence",
     ),
+    path(
+        "chemicalinventory/",
+        reports.ChemicalInventoryReport.as_view(),
+        name="chemicalinventory",
+    ),
 ]
 
 sustance_urls = [
