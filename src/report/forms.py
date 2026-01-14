@@ -487,3 +487,13 @@ class ReactiveStockReportForm(ReportBase):
         super(ReactiveStockReportForm, self).__init__(*args, **kwargs)
 
 
+class ChemicalInventoryReportForm(ReportForm):
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ChemicalInventoryReportForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                organization=org_pk
+            )
