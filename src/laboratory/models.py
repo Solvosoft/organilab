@@ -410,6 +410,23 @@ class ShelfObject(models.Model):
     reactive_expiration_date = models.DateField(
         blank=True, null=True, verbose_name=_("Expiration Date")
     )
+    type_budget = catalog.GTForeignKey(
+        Catalog,
+        related_name="type_budget",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Type Budget"),
+        key_name="key",
+        key_value="type_budget",
+        blank=True,
+        null=True,
+    )
+
+    container_entry_date = models.DateField(
+        blank=True, null=True, verbose_name=_("Container Entry Date")
+    )
+    container_open_date = models.DateField(
+        blank=True, null=True, verbose_name=_("Container Open Date")
+    )
 
     @staticmethod
     def get_units(unit):
