@@ -219,9 +219,9 @@ def get_stock_cartel_dataset(report, column_list=None):
     dataset = []
     filters = {"object__type": Object.REACTIVE}
     reactive_filters = dict()
-    if "lab_pk" in report.data:
-        filters["in_where_laboratory__pk"] = report.data["lab_pk"]
-        reactive_filters["in_where_laboratory__pk"] = report.data["lab_pk"]
+    if "laboratory" in report.data:
+        filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
+        reactive_filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
     objs = (
         ShelfObject.objects.filter(**filters)
         .distinct("pk")

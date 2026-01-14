@@ -98,7 +98,7 @@ REPORT_FORMS = {
     },
     "chemicalinventory": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ReactiveStockReportForm",
+        "form": "report.forms.ChemicalInventoryReportForm",
         "xls": "report.views.stock.report_stock_cartel",
         "xlsx": "report.views.stock.report_stock_cartel",
         "ods": "report.views.stock.report_stock_cartel",
