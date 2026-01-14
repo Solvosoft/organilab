@@ -15,6 +15,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.tinymce import EditorTinymce
 
 from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
@@ -30,7 +31,7 @@ from laboratory.models import (
     ShelfObjectObservation,
     EquipmentType,
     ReactiveLimit,
-    ObjectMaximumLimit,
+    ObjectMaximumLimit, LaboratoryProcess,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -63,6 +64,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
                 "name",
                 "coordinator",
                 "unit",
+                'faculty_dispatch',
                 "location",
                 "nearby_sites",
                 "description",
@@ -70,6 +72,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             [
                 "responsible",
                 "email",
+                "workplace",
                 "phone_number",
                 "area",
                 "water_resources_affected",
@@ -103,6 +106,8 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "responsible",
             "nearby_sites",
             "water_resources_affected",
+            "faculty_dispatch",
+            "workplace",
         ]
         widgets = {
             "name": genwidgets.TextInput,
@@ -118,6 +123,8 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "responsible": genwidgets.Select,
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
+            "faculty_dispatch": genwidgets.TextInput,
+            "workplace": genwidgets.SelectMultiple
         }
 
 
@@ -135,6 +142,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
                 "name",
                 "coordinator",
                 "unit",
+                "faculty_dispatch",
                 "location",
                 "regent",
                 "nearby_sites",
@@ -142,6 +150,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             ],
             [
                 "responsible",
+                "workplace",
                 "email",
                 "phone_number",
                 "area",
@@ -161,6 +170,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         )
         self.fields["responsible"].queryset = self.instance.organization.users.all()
 
+
     class Meta:
         model = Laboratory
         fields = [
@@ -171,6 +181,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "email",
             "location",
             "geolocation",
+            "workplace",
             "organization",
             "area",
             "description",
@@ -178,6 +189,8 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "responsible",
             "nearby_sites",
             "water_resources_affected",
+            "faculty_dispatch",
+            "workplace",
         ]
         widgets = {
             "name": genwidgets.TextInput,
@@ -193,6 +206,8 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "responsible": genwidgets.Select,
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
+            "faculty_dispatch": genwidgets.TextInput,
+            "workplace": genwidgets.SelectMultiple
         }
 
 
@@ -1368,3 +1383,12 @@ class ReactiveStockForm(GTForm, forms.Form):
             )
 
         self.fields["years"].choices = years_choices
+
+class LaboratoryProcessForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = LaboratoryProcess
+        fields = ["description", "laboratory"]
+        widgets = {
+            "laboratory": genwidgets.HiddenInput,
+            "description": EditorTinymce,
+        }
