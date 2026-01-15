@@ -110,6 +110,7 @@ class ProfileViewTest(BaseLaboratorySetUpTest):
             "language": "en",
             "address": "address",
             "phone_number": "8888-8888",
+            "workplace": [1],
         }
         response_post = self.client.post(url, data=data)
 

@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from djgentelella.fields.files import ChunkedFileField
-from djgentelella.serializers import GTDateField
+from djgentelella.serializers import GTDateField, GTDateTimeField
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -32,7 +32,7 @@ from laboratory.models import (
     EquipmentCharacteristics,
     SustanceCharacteristics,
     ReactiveLimit,
-    ObjectMaximumLimit,
+    ObjectMaximumLimit, LaboratoryProcess,
 )
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
@@ -1258,3 +1258,48 @@ class ReactiveLimitsSerializer(serializers.Serializer):
             .values_list("created_at__year", flat=True)
             .distinct()
         ]
+
+class LaboratoryProcessSerializer(serializers.ModelSerializer):
+    laboratory = serializers.PrimaryKeyRelatedField(
+        queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
+        required=True,
+        many=False
+    )
+    description = serializers.CharField(required=True)
+
+    class Meta:
+        model = LaboratoryProcess
+        fields = "__all__"
+
+class LaboratoryProcessUpdateSerializer(serializers.ModelSerializer):
+    description = serializers.CharField(required=True)
+
+    class Meta:
+        model = LaboratoryProcess
+        fields = ["description"]
+
+class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    created_by = GTS2SerializerBase(many=False)
+    creation_date = GTDateTimeField(required=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "create": ["laboratory.add_laboratoryprocess"],
+            "update": ["laboratory.change_laboratoryprocess"],
+            "destroy": ["laboratory.delete_laboratoryprocess"],
+            "detail": ["laboratory.view_laboratoryprocess"],
+            "list": ["laboratory.view_laboratoryprocess"],
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = LaboratoryProcess
+        fields = ["id", "description", "created_by", "creation_date", "actions"]
+
+class LaboratoryProcessDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LaboratoryProcessSerializerTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
