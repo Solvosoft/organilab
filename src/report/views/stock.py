@@ -217,11 +217,17 @@ def report_stock(report):
 
 def get_stock_cartel_dataset(report, column_list=None):
     dataset = []
-    filters = {"object__type": Object.REACTIVE}
+    filters = {
+        "object__type": Object.REACTIVE,
+        "in_where_laboratory__organization__pk": report.data["organization"]
+               }
     reactive_filters = dict()
     if "laboratory" in report.data:
-        filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
-        reactive_filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
+        if len(report.data["laboratory"]) > 0:
+            filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
+            reactive_filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
+            del filters["in_where_laboratory__organization__pk"]
+
     objs = (
         ShelfObject.objects.filter(**filters)
         .distinct("pk")
@@ -253,7 +259,7 @@ def get_stock_cartel_dataset(report, column_list=None):
                     "substance_name": shelfobj.object.name,
                     "cas_id": cas_id,
                     "quantity": amount,
-                   "measurement_unit": unit.measurement_unit_base.description,
+                    "measurement_unit": unit.measurement_unit_base.description,
                     "physical_status": status,
                     "storage_class": shelfobj.object.get_storage_class,
                 }
@@ -268,10 +274,10 @@ def get_stock_cartel_dataset(report, column_list=None):
 def report_reactive_stock_html(report):
     columns_fields = [
         {"name": "substance_name", "title": _("Subatnce name")},
-        {"name": "cas_id", "title": _("CAS")},
+        {"name": "cas_id", "title": _("CAS Number")},
         {"name": "quantity", "title": _("Quantity")},
-        {"name": "physical_status", "title": _("Physical Status")},
         {"name": "measurement_unit", "title": _("Measurement Unit")},
+        {"name": "physical_status", "title": _("State")},
         {"name": "storage_class", "title": _("Storage Class")},
     ]
     columns_fields = set_format_table_columns(columns_fields)
@@ -292,7 +298,7 @@ def report_stock_cartel(report):
             _("CAS Number"),
             _("Quantity"),
             _("Measurement Unit"),
-            _("Physical Status"),
+            _("State"),
             _("Storage Class"),
         ]
     ]
