@@ -5068,6 +5068,30 @@ msgstr "Líquido viscoso"
 msgid "It belongs to the regulations of decree 44741"
 msgstr "Pertenece al reglamento del decreto 44741"
 
+msgid "Laboratories where you are affiliated"
+msgstr "Laboratorios en los que estás afiliado:"
+
+msgid "Faculty or dispatch"
+msgstr "Facultad o Despacho"
+
+msgid "Laboratory Processes View"
+msgstr "Vista de procesos de laboratorio"
+
+msgid "Create process"
+msgstr "Crear proceso"
+
+msgid "Update process"
+msgstr "Actualizar proceso"
+
+msgid "Laboratory Processes List"
+msgstr "Listado de procesos del laboratorio"
+
+msgid "Workplace"
+msgstr "Centro de trabajo"
+
+msgid "Processes"
+msgstr "Procesos"
+
 msgid "Container Entry Date"
 msgstr "Fecha de entrada del contenedor"
 

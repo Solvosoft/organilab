@@ -11,8 +11,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
-from presentation.models import AbstractOrganizationRef
-
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -30,6 +28,13 @@ class Profile(models.Model):
     )
     address = models.TextField(
         verbose_name=_("Address"), null=True, blank=True, default=""
+    )
+
+    workplace = models.ManyToManyField(
+        "laboratory.OrganizationStructure",
+        blank=True,
+        related_name="profile_workplace",
+        verbose_name=_("Workplace"),
     )
 
     def __str__(self):
