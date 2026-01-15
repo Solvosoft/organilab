@@ -61,7 +61,13 @@
                   </a>
                 </li>
               {% endif %}
-
+													{% if perms.laboratory.view_laboratory_process %}
+                <li class="list-group-item">
+                  <a href="{% url 'laboratory:laboratory_process_list' org_pk=org_pk lab_pk=laboratory %}">
+                    <strong>{% trans 'Processes' %}</strong>
+                  </a>
+                </li>
+													{% endif %}
               {% if perms.laboratory.view_protocol %}
               <li class="list-group-item">
                   <a href="{% url 'laboratory:protocol_list' org_pk=org_pk lab_pk=laboratory %}">
