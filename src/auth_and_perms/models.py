@@ -65,7 +65,7 @@ class Rol(models.Model):
         verbose_name=_("permissions"),
         blank=True,
     )
-
+    description = models.TextField(blank=True, null=True)
     def __str__(self):
         return f"{self.pk} {self.name}"
 

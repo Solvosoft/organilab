@@ -272,9 +272,11 @@ class ProfileGroupForm(GTForm):
         widget=AutocompleteSelect(
             "usersbyorg", attrs={"data-s2filter-organization": ".nodeorg:checked"}
         ),
+        label=_("Profile")
     )
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), widget=genwidgets.SelectMultiple
+        queryset=Group.objects.all(), widget=genwidgets.SelectMultiple,
+        label=_("Groups")
     )
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
 
