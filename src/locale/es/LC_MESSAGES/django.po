@@ -5130,3 +5130,6 @@ msgstr "Grupos"
 
 msgid "Help Text"
 msgstr "Texto de ayuda"
+
+msgid "Show descriptions of groups"
+msgstr "Mostrar descripciones de los grupos"

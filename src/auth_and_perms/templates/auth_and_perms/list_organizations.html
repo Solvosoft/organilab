@@ -109,8 +109,7 @@
                     {% endif %}
 																				{% if perms.auth_and_perms.view_rol %}
                     <li class="list-group-item">
-																						<a class="rol_details_btn" data-org="{{node.0.pk}}" title="{% trans 'Show Roles information' %}"> <i class="fa fa-user"></i></a>
-
+																						<a class="rol_details_btn" data-org="{{node.0.pk}}" title="{% trans 'Show Roles information' %}"> <i class="fa fa-info-circle"></i></a>
                     </li>
 																				{% endif %}
 
@@ -212,6 +211,20 @@
 										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
 																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
 										</form>
+									<a class="btn btn-secondary-outline" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+											<i class="fa fa-info-circle" aria-hidden="true"></i> {% trans 'Show descriptions of groups' %}
+									</a>
+							<div class="collapse" id="collapseExample">
+									<div class="card card-body">
+										{% for group in groups %}
+										<div class="list-group pt-2">
+											<h6 class="mb-2 fw-bold">{{group.group.name}}</h6>
+											<br>
+											<p class="ms-2">{{group.description | default_if_none:"No description"}}</p>
+										</div>
+										{% endfor %}
+									</div>
+							</div>
         </div>
 
 
