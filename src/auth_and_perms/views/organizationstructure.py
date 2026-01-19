@@ -24,7 +24,7 @@ from auth_and_perms.forms import (
     OrganizationActionsWithoutInactive,
 )
 from auth_and_perms.forms import LaboratoryOfOrganizationForm, ProfileListForm
-from auth_and_perms.models import ProfilePermission, Rol, Profile
+from auth_and_perms.models import ProfilePermission, Rol, Profile, GroupDescription
 from auth_and_perms.node_tree import get_organization_tree, get_org_parents_info
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
@@ -74,6 +74,7 @@ def organization_manage_view(request):
         "actionwiform": OrganizationActionsWithoutInactive(prefix="wi"),
         "actioncloneform": OrganizationActionsClone(prefix="clone"),
         "profile_group_form": ProfileGroupForm(prefix="pg"),
+        "groups": GroupDescription.objects.all()
     }
     return render(request, "auth_and_perms/list_organizations.html", context)
 
