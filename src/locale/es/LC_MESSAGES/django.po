@@ -5115,3 +5115,18 @@ msgstr "Nombre del funcionario"
 
 msgid "Occupational Health Report"
 msgstr "Reporte de Salud Laboral"
+
+msgid "Show Roles information"
+msgstr "Mostrar información de roles"
+
+msgid "Add a description"
+msgstr "Agregar una descripción"
+
+msgid "Add a new rol"
+msgstr "Agregar un nuevo rol"
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Help Text"
+msgstr "Texto de ayuda"
