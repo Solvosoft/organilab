@@ -3,7 +3,8 @@ from django.contrib.admin.models import ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect
+from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect, \
+    JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -397,3 +398,12 @@ def copy_rols(request, pk):
     else:
         messages.error(request, _("Error, form is invalid"))
     return redirect("auth_and_perms:organizationManager")
+
+@login_required
+@permission_required("auth_and_perms.view_rol")
+@require_http_methods(["GET"])
+def get_roles_by_organization(request, pk):
+    roles = get_object_or_404(OrganizationStructure, pk=pk).rol.all()
+    roles = [{"name":role.name, "description": role.description if role.description
+    else ""} for role in roles]
+    return JsonResponse({"roles": roles})
