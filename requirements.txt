@@ -20,7 +20,7 @@ Markdown==3.9
 django-celery-beat==2.8.1
 django-celery-results==2.6.0
 celery==5.5.3
-weasyprint==66.0
+weasyprint==68.0
 CairoSVG==2.8.2
 pyfva==0.0.43
 django-otp==1.6.1
