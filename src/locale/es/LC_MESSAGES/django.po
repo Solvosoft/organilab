@@ -5139,3 +5139,6 @@ msgstr "El rol fue actualizado exitosamente"
 
 msgid "Edit Role"
 msgstr "Editar Rol"
+
+msgid "Chemical inventory report"
+msgstr "Informe de inventario de sustancias químicas"
