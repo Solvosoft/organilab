@@ -204,6 +204,10 @@
 									<div class="jumbotron">
 										<h6>{% trans 'Help Text' %}</h6>
 										<p>{% trans 'This section will assign permissions groups to some profile who belongs to selected organization. If you do not find the user in profile selector, could you add it from By organization tab.' %}</p>
+									<a class="btn btn-secondary-outline float-end" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+											<i class="fa fa-info-circle" aria-hidden="true"></i> {% trans 'Show descriptions of groups' %}
+									</a>
+										<div class="clearfix"></div>
 									</div>
 									<form method="post" id="groups_by_profile_form">
 										{% csrf_token %}
@@ -211,9 +215,7 @@
 										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
 																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
 										</form>
-									<a class="btn btn-secondary-outline" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-											<i class="fa fa-info-circle" aria-hidden="true"></i> {% trans 'Show descriptions of groups' %}
-									</a>
+
 							<div class="collapse" id="collapseExample">
 									<div class="card card-body">
 										{% for group in groups %}
@@ -233,7 +235,7 @@
 </div>
 </div>
 <div id="addrolmodal" class="modal fade" tabindex="-1" aria-labelledby="rolmodalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
             <form method="post">

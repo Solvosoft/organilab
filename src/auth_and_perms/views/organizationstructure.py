@@ -21,7 +21,7 @@ from auth_and_perms.forms import (
     ProfileGroupForm,
     IncludeEmailExternalUserForm,
     OrganizationActionsClone,
-    OrganizationActionsWithoutInactive,
+    OrganizationActionsWithoutInactive, RolForm,
 )
 from auth_and_perms.forms import LaboratoryOfOrganizationForm, ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile, GroupDescription
@@ -228,13 +228,18 @@ class ListRolByOrganization(ListView):
             super()
             .get_queryset()
             .using(settings.READONLY_DATABASE)
-            .filter(organizationstructure=self.org)
+            .filter(organizationstructure=self.org).order_by("pk")
         )
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org
         )
         user_is_allowed_on_organization(self.request.user, organization)
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["rol_form"] = RolForm()
+        return context
 
 
 @method_decorator(permission_required("auth_and_perms.delete_rol"), name="dispatch")
@@ -408,3 +413,25 @@ def get_roles_by_organization(request, pk):
     roles = [{"name":role.name, "description": role.description if role.description
     else ""} for role in roles]
     return JsonResponse({"roles": roles})
+
+@login_required
+@permission_required("auth_and_perms.view_rol")
+@require_http_methods(["GET"])
+def get_rol(request, pk):
+    rol = get_object_or_404(Rol, pk=pk)
+    context = {"name": rol.name, "description": rol.description}
+    return JsonResponse(context)
+
+@login_required
+@permission_required("auth_and_perms.change_rol")
+@require_http_methods(["POST"])
+def update_rol(request, org_pk, pk):
+    rol = get_object_or_404(Rol, pk=pk)
+    form = RolForm(request.POST, instance=rol)
+    if form.is_valid():
+        rol = form.save()
+        messages.success(request, _("Role updated successfully"))
+        return redirect(reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk}))
+    else:
+        messages.error(request, _("Error, form is invalid"))
+    return redirect(reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk}))
