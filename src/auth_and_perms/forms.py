@@ -308,3 +308,14 @@ class SearchObjByOrgForm(GTForm):
 class SearchShelfObjectViewsetForm(forms.Form):
     organization = forms.ModelChoiceField(queryset=OrganizationStructure.objects.all())
     object = forms.ModelChoiceField(queryset=Object.objects.all())
+
+
+class RolForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = Rol
+        fields = ["name", "description"]
+        exclude = ["permissions"]
+        widgets = {
+            "name": genwidgets.TextInput,
+            "description": genwidgets.Textarea(attrs={"rows": 10}),
+        }
