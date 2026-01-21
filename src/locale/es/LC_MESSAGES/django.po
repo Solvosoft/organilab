@@ -5133,3 +5133,9 @@ msgstr "Texto de ayuda"
 
 msgid "Show descriptions of groups"
 msgstr "Mostrar descripciones de los grupos"
+
+msgid "Role updated successfully"
+msgstr "El rol fue actualizado exitosamente"
+
+msgid "Edit Role"
+msgstr "Editar Rol"
