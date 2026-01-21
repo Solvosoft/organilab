@@ -58,7 +58,7 @@ from report.forms import (
     ValidateObjectTypeForm,
     DiscardShelfForm,
     ReactiveReportForm,
-    RiskZoneReportForm, ReactiveStockReportForm,
+    RiskZoneReportForm, ReactiveStockReportForm, ChemicalInventoryReportForm,
 )
 from risk_management.models import RiskZone
 from sga.forms import SearchDangerIndicationForm
@@ -553,6 +553,36 @@ class ReactiveStockReport(ListView):
                         "report_name": "stock_reactive_report",
                         "laboratory": lab_obj,
                     }
+                ),
+            }
+        )
+        return context
+
+
+@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+class ChemicalInventoryReport(ReportListView):
+    model = ShelfObject
+    template_name = "report/base_report_form_view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        title = _("Chemical inventory report")
+        context.update(
+            {
+                "title_view": title,
+                "laboratory": 0,
+                "report_urlnames": ["chemicalinventory"],
+                "form": ChemicalInventoryReportForm(
+                    initial={
+                        "name": slugify(
+                            title + " " + now().strftime("%x").replace("/", "-")
+                        ),
+                        "title": title,
+                        "organization": self.org,
+                        "report_name": "chemicalinventory",
+
+                    },
+                    org_pk=self.org,
                 ),
             }
         )
