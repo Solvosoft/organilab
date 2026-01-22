@@ -233,47 +233,58 @@ def get_stock_cartel_dataset(report, column_list=None):
         .distinct("pk")
     )
     units = Catalog.objects.filter(pk__in=objs.values_list("measurement_unit", flat=True))
-    base_units = BaseUnitValues.objects.filter(measurement_unit__in=units)
-    for unit in base_units:
-        units = BaseUnitValues.objects.filter(measurement_unit_base=unit.measurement_unit)
-        filters["measurement_unit__pk__in"] = units.values_list("measurement_unit", flat=True)
+    base_units = BaseUnitValues.objects.filter(measurement_unit__in=units).values_list("measurement_unit_base", flat=True)
+    physical_status_list = list(dict(ShelfObject.PHYSICAL_STATUS).keys())
+    physical_status_list.insert(0, "")
+
+    for unit in set(base_units):
+        filters["measurement_unit__pk__in"] = BaseUnitValues.objects.filter(measurement_unit_base__pk=unit).values_list("measurement_unit", flat=True)
         filters["object__isnull"] = False
         shelfobjs = (
             ShelfObject.objects.filter(**filters)
             .distinct("pk")
             .values_list("object__pk", flat=True)
         )
+        del filters["object__isnull"]
+
         for obj in set(shelfobjs):
-            status = ""
-            data_column = {}
-            amount = sum([
-                get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
-                for shelfobj in ShelfObject.objects.filter(object__pk=obj,**filters)
-                ])
-            shelfobj = ShelfObject.objects.filter(object__pk=obj,**filters).first()
-            cas_id = shelfobj.object.cas_code
-            if shelfobj.physical_status:
-                status = shelfobj.get_physical_status_display()
+            for physical_status in physical_status_list:
+                status = ""
+                physical = "physical_status" if physical_status!="" else "physical_status__isnull"
+                filters[physical] = physical_status if physical=="physical_status" else True
 
-            data_column = {
-                    "substance_name": shelfobj.object.name,
-                    "cas_id": cas_id,
-                    "quantity": amount,
-                    "measurement_unit": unit.measurement_unit_base.description,
-                    "physical_status": status,
-                    "storage_class": shelfobj.object.get_storage_class,
-                }
-            obj_item = list(data_column.values())
+                amount = sum([
+                    get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
+                    for shelfobj in ShelfObject.objects.filter(object__pk=obj,**filters)
+                    ])
 
-            if column_list:
-                obj_item = load_dataset_by_column(column_list, data_column)
-            if len(obj_item) > 0:
-                dataset.append(obj_item)
+                shelfobj = ShelfObject.objects.filter(object__pk=obj,**filters).first()
+                del filters[physical]
+
+                if shelfobj:
+                    cas_id = shelfobj.object.cas_code
+                    if shelfobj.physical_status:
+                        status = shelfobj.get_physical_status_display()
+
+                    data_column = {
+                            "substance_name": shelfobj.object.name,
+                            "cas_id": cas_id,
+                            "quantity": amount,
+                            "measurement_unit": Catalog.objects.get(pk=unit).description,
+                            "physical_status": status,
+                            "storage_class": shelfobj.object.get_storage_class,
+                        }
+                    obj_item = list(data_column.values())
+
+                    if column_list:
+                        obj_item = load_dataset_by_column(column_list, data_column)
+                    if len(obj_item) > 0:
+                        dataset.append(obj_item)
     return dataset
 
 def report_reactive_stock_html(report):
     columns_fields = [
-        {"name": "substance_name", "title": _("Subatnce name")},
+        {"name": "substance_name", "title": _("Substance")},
         {"name": "cas_id", "title": _("CAS Number")},
         {"name": "quantity", "title": _("Quantity")},
         {"name": "measurement_unit", "title": _("Measurement Unit")},
