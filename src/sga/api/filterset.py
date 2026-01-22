@@ -89,4 +89,5 @@ class HCategoryFilterSet(FilterSet):
             "threshold": ["exact"],
             "danger_category": ["exact"],
             "h_code": ["exact"],
+            "measurement_unit": ["exact"],
         }

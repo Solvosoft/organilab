@@ -39,7 +39,15 @@ datatable_inits = {
             type: "number",
             visible: true
          },
-
+         {
+            data: "measurement_unit",
+            name: "measurement_unit",
+            title: gettext("Measurement Unit"),
+            type: "select2",
+            render: selectobjprint({display_name: "text"}),
+            url: selects2_url["catalog_url"],
+            visible: true
+        },
         {
             data: "actions",
             name: "actions",
