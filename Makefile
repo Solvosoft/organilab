@@ -45,6 +45,14 @@ migrate: ## - makemigrations && migrate
 requirements: ## - install all dependencies
 	pip install -r requirements.txt
 
+create-profile: ## create user and user profile
+	cd src && python manage.py createsuperuser && \
+	python manage.py shell -c "\
+	from auth_and_perms.models import Profile; \
+	from django.contrib.auth.models import User; \
+	user = User.objects.last(); \
+	Profile.objects.get_or_create(user=user)"
+
 ##--------------------------------------------------------
 ## Project build
 ##--------------------------------------------------------
