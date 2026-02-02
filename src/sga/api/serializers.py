@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 
+from laboratory.models import Catalog
 from sga.models import (
     SGAComplement,
     PrudenceAdvice,
@@ -484,6 +485,13 @@ class DangerCategoryActionsSerializer(serializers.ModelSerializer):
         allow_empty=False,
     )
     danger_category = serializers.CharField(max_length=50, required=True)
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=True,
+        queryset=Catalog.objects.
+        using(settings.READONLY_DATABASE).
+        filter(key="units", description__in=["Litros","Kilogramos","Libra"]),
+    )
 
     class Meta:
         model = HCodeCategory
@@ -508,6 +516,7 @@ class DangerCategorySerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     h_code = GTS2SerializerBase(many=True)
     danger_category = ChoicesGTS2Serializer(choices=HCodeCategory.HCATEGORY, many=False)
+    measurement_unit = GTS2SerializerBase(many=False)
 
     def get_actions(self, obj):
         user = self.context["request"].user
