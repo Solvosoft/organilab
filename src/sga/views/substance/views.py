@@ -584,6 +584,7 @@ def view_warning_words(request, org_pk):
     )
 
 
+@permission_required("auth_and_perms.una_can_access")
 def view_recipient_size(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
