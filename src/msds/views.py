@@ -4,7 +4,7 @@ import zipfile
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseRedirect
@@ -21,10 +21,12 @@ from msds.models import MSDSObject, RegulationDocument
 logger = logging.getLogger("organilab")
 
 
+@permission_required("auth_and_perms.una_can_access")
 def index_msds(request, org_pk):
     return render(request, "index_msds.html", context={"org_pk": org_pk})
 
 
+@permission_required("auth_and_perms.una_can_access")
 def get_download_links(request, obj):
 
     new_url = reverse(
@@ -107,11 +109,11 @@ class MSDSObjectCRUD(CRUDView):
     check_login = False
     check_perms = False
     perms = {
-        "create": ["msds.add_msdsobject"],
-        "list": [],
-        "delete": ["msds.delete_msdsobject"],
-        "update": ["msds.change_msdsobject"],
-        "detail": [],
+        "create": ["msds.add_msdsobject", "auth_and_perms.una_can_access"],
+        "list": ["auth_and_perms.una_can_access"],
+        "delete": ["msds.delete_msdsobject", "auth_and_perms.una_can_access"],
+        "update": ["msds.change_msdsobject", "auth_and_perms.una_can_access"],
+        "detail": ["auth_and_perms.una_can_access"],
     }
     form_widget_exclude = ["file"]
 
