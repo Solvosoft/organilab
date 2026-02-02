@@ -42,6 +42,7 @@ class HCodeCategoryViewSet(AuthAllPermBaseObjectManagement):
         "danger_category",
         "h_code__code",
         "h_code__description",
+        "measurement_unit__description",
     ]
     filterset_class = HCategoryFilterSet
     ordering_fields = ["id"]

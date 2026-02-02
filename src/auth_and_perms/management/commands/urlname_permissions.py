@@ -1314,14 +1314,19 @@ URLNAME_PERMISSIONS = {
     ],
     "copy_rols": [
         {
-            "name": "Change Organization Structure",
-            "category": "Organization Structure",
-            "permission": "laboratory.change_organizationstructure",
+            "name": "Edit Role",
+            "category": "Role",
+            "permission": "auth_and_perms.change_rol",
         },
         {
-            "name": "View Organization Structure",
-            "category": "Organization Structure",
-            "permission": "laboratory.view_organizationstructure",
+            "name": "View Role",
+            "category": "Role",
+            "permission": "auth_and_perms.view_rol",
+        },
+        {
+            "name": "Delete Role",
+            "category": "Role",
+            "permission": "auth_and_perms.delete_rol",
         },
     ],
     "index": [

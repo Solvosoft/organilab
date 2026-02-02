@@ -3,7 +3,7 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission, User, Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
@@ -58,13 +58,14 @@ def get_random_color():
 
 
 class Rol(models.Model):
-    name = models.CharField(blank=True, max_length=100)
+    name = models.CharField(blank=True, max_length=100, verbose_name=_("Name"))
     color = models.CharField(max_length=20, default=get_random_color)
     permissions = models.ManyToManyField(
         Permission,
         verbose_name=_("permissions"),
         blank=True,
     )
+    description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
 
     def __str__(self):
         return f"{self.pk} {self.name}"
@@ -224,3 +225,11 @@ class ImpostorLog(models.Model):
         :return:
         """
         return "{} as {}".format(self.impostor, self.imposted_as)
+
+
+class GroupDescription(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.group.name

@@ -130,4 +130,19 @@ urlpatterns = [
         OrganizationButtons.as_view(),
         name="api_organization_buttons",
     ),
+    path(
+        "get_roles_by_organization/<int:pk>/",
+        orgstruct.get_roles_by_organization,
+        name="get_roles_by_organization",
+    ),
+    path(
+        "update_rol/<int:org_pk>/<int:pk>/",
+        orgstruct.update_rol,
+        name="update_rol",
+    ),
+    path(
+        "get_rol/<int:pk>/",
+        orgstruct.get_rol,
+        name="get_rol",
+    ),
 ]
