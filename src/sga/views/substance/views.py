@@ -43,7 +43,7 @@ from ...api.serializers import (
 
 
 @login_required
-@permission_required("laboratory.change_object")
+@permission_required(("laboratory.change_object", "auth_and_perms.una_can_access"))
 def create_edit_sustance(request, org_pk, pk=None):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -154,7 +154,7 @@ def create_edit_sustance(request, org_pk, pk=None):
 
 
 @login_required
-@permission_required("sga.view_substance")
+@permission_required(("sga.view_substance", "auth_and_perms.una_can_access"))
 def get_substances(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -165,7 +165,7 @@ def get_substances(request, org_pk):
 
 
 @login_required
-@permission_required("sga.view_substance")
+@permission_required(("sga.view_substance", "auth_and_perms.una_can_access"))
 def get_list_substances(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -178,7 +178,7 @@ def get_list_substances(request, org_pk):
 
 
 @login_required
-@permission_required("sga.change_substance")
+@permission_required(("sga.change_substance", "auth_and_perms.una_can_access"))
 def approve_substances(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -200,7 +200,7 @@ def approve_substances(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.delete_substance")
+@permission_required(("sga.delete_substance", "auth_and_perms.una_can_access"))
 def delete_substance(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -216,7 +216,7 @@ def delete_substance(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.change_substance")
+@permission_required(("sga.change_substance", "auth_and_perms.una_can_access"))
 def detail_substance(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -247,7 +247,7 @@ def detail_substance(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.change_sgacomplement")
+@permission_required(("sga.change_sgacomplement", "auth_and_perms.una_can_access"))
 def step_two(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -344,7 +344,7 @@ def step_two(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.change_displaylabel")
+@permission_required(("sga.change_displaylabel", "auth_and_perms.una_can_access"))
 def step_three(request, org_pk, template, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -421,7 +421,7 @@ def step_three(request, org_pk, template, substance):
 
 
 @login_required
-@permission_required("sga.change_securityleaf")
+@permission_required(("sga.change_securityleaf", "auth_and_perms.una_can_access"))
 def step_four(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -461,6 +461,7 @@ def step_four(request, org_pk, substance):
 
 
 @login_required
+@permission_required("auth_and_perms.una_can_access")
 def security_leaf_pdf(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
