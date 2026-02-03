@@ -1511,7 +1511,7 @@ msgid "Reason to spend"
 msgstr "Razón del gasto"
 
 msgid "Inform"
-msgstr "Información"
+msgstr "Informe"
 
 msgid "Log Entry"
 msgstr "Entrada de bitácora"
@@ -2285,7 +2285,7 @@ msgid "Submit"
 msgstr "Enviar"
 
 msgid "Delete Protocol"
-msgstr "Borrar Protocolo"
+msgstr "Eliminar Protocolo"
 
 msgid "Upload your Protocol"
 msgstr "Subir su Protocolo"
@@ -2374,8 +2374,22 @@ msgstr "Objetos reactivos precursores"
 msgid "Exposition report"
 msgstr "Reporte de exposición"
 
+# Reservations
 msgid "Reservations"
-msgstr "Mis reservaciones"
+msgstr "Reservaciones"
+
+msgid "View Reservations"
+msgstr "Ver Reservaciones"
+
+msgid "Add Reservations"
+msgstr "Agregar Reservaciones"
+
+msgid "Change Reservations"
+msgstr "Actualizar Reservaciones"
+
+msgid "Delete Reservations"
+msgstr "Eliminar Reservaciones"
+
 
 msgid "Complete the fields"
 msgstr "Complete los campos"
@@ -3360,7 +3374,7 @@ msgid "Warning Words"
 msgstr "Palabras de Advertencia"
 
 msgid "Prudence Advice"
-msgstr "Crear consejo de prudencia"
+msgstr "Consejo de prudencia"
 
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"

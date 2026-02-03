@@ -1,0 +1,1150 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-04-10 14:02-0600\n"
+"PO-Revision-Date: 2025-04-10 14:07-0600\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#  Common actions
+msgid "Add"
+msgstr "Agregar"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "List"
+msgstr "Listar"
+
+msgid "Manage"
+msgstr "Gestionar"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Change"
+msgstr "Actualizar"
+
+msgid "Switch to other user"
+msgstr "Actualizar a otro usuario"
+
+# Provider Laboratory
+msgid "Add Provider Laboratory"
+msgstr "Agregar Proveedor de Laboratorio"
+
+msgid "View Provider Laboratory"
+msgstr "Ver Proveedor de Laboratorio"
+
+msgid "Change Provider Laboratory"
+msgstr "Actualizar Proveedor de Laboratorio"
+
+msgid "Delete Provider Laboratory"
+msgstr "Eliminar Proveedor de Laboratorio "
+
+msgid "Provider Laboratory"
+msgstr "Proveedor de Laboratorio"
+
+# Provider SGA
+msgid "Add Provider SGA"
+msgstr "Agregar Proveedor de SGA"
+
+msgid "View Provider SGA"
+msgstr "Ver Proveedor de SGA"
+
+msgid "Change Provider SGA"
+msgstr "Actualizar Proveedor de SGA"
+
+msgid "Delete Provider SGA"
+msgstr "Eliminar Proveedor de SGA "
+
+msgid "Provider SGA"
+msgstr "Proveedor de SGA"
+
+#  Laboratory
+msgid "Add Laboratory"
+msgstr "Agregar Laboratorio"
+
+msgid "View Laboratory"
+msgstr "Ver Laboratorio"
+
+msgid "Change Laboratory"
+msgstr "Actualizar Laboratorio"
+
+msgid "Delete Laboratory"
+msgstr "Eliminar Laboratorio"
+
+msgid "Laboratory"
+msgstr "Laboratorio"
+
+
+#  Permissions / Roles
+msgid "Manage Permissions"
+msgstr "Gestionar permisos"
+
+msgid "Role"
+msgstr "Rol"
+
+msgid "Add Role"
+msgstr "Agregar Rol"
+
+msgid "Delete Role"
+msgstr "Eliminar Rol"
+
+msgid "View Role"
+msgstr "Ver Rol"
+
+msgid "Change Role"
+msgstr "Actualizar Rol"
+
+#  Profile Permission
+msgid "Add Profile Permission"
+msgstr "Agregar permiso de perfil"
+
+msgid "Change Profile Permission"
+msgstr "Actualizar permiso de perfil"
+
+msgid "Delete Profile Permission"
+msgstr "Eliminar permiso de perfil"
+
+msgid "View Profile Permission"
+msgstr "Ver permiso de perfil"
+
+msgid "Profile Permission"
+msgstr "Permiso de perfil"
+
+#  Profile
+msgid "Add Profile"
+msgstr "Agregar perfil"
+
+msgid "View Profile"
+msgstr "Ver perfil"
+
+msgid "Change Profile"
+msgstr "Actualizar perfil"
+
+msgid "Delete Profile"
+msgstr "Eliminar perfil"
+
+msgid "Profile"
+msgstr "Perfil"
+
+
+#  User
+msgid "Add User"
+msgstr "Agregar usuario"
+
+msgid "Change User"
+msgstr "Actualizar usuario"
+
+msgid "View User"
+msgstr "Ver usuario"
+
+msgid "Delete User"
+msgstr "Eliminar usuario"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Add External User in Organization"
+msgstr "Agregar usuario externo a la organización"
+
+#  Organization Structure
+msgid "Add Organization Structure"
+msgstr "Agregar estructura organizacional"
+
+msgid "Change Organization Structure"
+msgstr "Actualizar estructura organizacional"
+
+msgid "View Organization Structure"
+msgstr "Ver estructura organizacional"
+
+msgid "Delete Organization Structure"
+msgstr "Eliminar estructura organizacional"
+
+# --- Organization Structure Relations ---
+msgid "Add Organization Structure Relations"
+msgstr "Agregar relaciones de estructura organizacional"
+
+msgid "View Organization Structure Relations"
+msgstr "Ver relaciones de estructura organizacional"
+
+msgid "Organization Structure Relations"
+msgstr "Relaciones de estructura organizacional"
+
+#  Organization User Management
+msgid "Add Organization User Management"
+msgstr "Agregar gestión de usuarios de la organización"
+
+msgid "Change Organization User Management"
+msgstr "Actualizar gestión de usuarios de la organización"
+
+msgid "Delete Organization User Management"
+msgstr "Eliminar gestión de usuarios de la organización"
+
+msgid "View Organization User Management"
+msgstr "Ver gestión de usuarios de la organización"
+
+msgid "Organization User Management"
+msgstr "Gestión de usuarios de la organización"
+
+#  Disposal
+msgid "Manage Disposal"
+msgstr "Gestionar desecho"
+
+msgid "View Disposal"
+msgstr "Ver desecho"
+
+msgid "Add Disposal"
+msgstr "Agregar desecho"
+
+msgid "Delete Disposal"
+msgstr "Eliminar desecho"
+
+msgid "Change Disposal"
+msgstr "Actualizar desecho"
+
+#  Shelf
+msgid "Shelf"
+msgstr "Estantería"
+
+msgid "Add Shelf"
+msgstr "Agregar Estantería"
+
+msgid "Delete Shelf"
+msgstr "Eliminar Estantería"
+
+msgid "Change Shelf"
+msgstr "Actualizar Estantería"
+
+msgid "View Shelf"
+msgstr "Ver Estantería"
+
+#  Custom template
+msgid "Custom template"
+msgstr "Plantilla personalizada"
+
+msgid "Add Custom template"
+msgstr "Agregar Plantilla personalizada"
+
+msgid "View Custom template"
+msgstr "Ver Plantilla personalizada"
+
+msgid "Delete Custom template"
+msgstr "Eliminar Plantilla personalizada"
+
+msgid "Change Custom template"
+msgstr "Actualizar Plantilla personalizada"
+
+#  Risk Management
+msgid "View Risk Management"
+msgstr "Ver gestión de riesgos"
+
+msgid "Risk Management"
+msgstr "Gestión de riesgos"
+
+#  Recipient Size
+msgid "Add Recipient Size"
+msgstr "Agregar Tamaño de Recipiente"
+
+msgid "Change Recipient Size"
+msgstr "Actualizar Tamaño de Recipiente"
+
+msgid "Delete Recipient Size"
+msgstr "Eliminar Tamaño de Recipiente"
+
+msgid "View Recipient Size"
+msgstr "Ver Tamaño de Recipiente"
+
+msgid "Recipient Size"
+msgstr "Tamaño de Recipiente"
+
+
+# Laboratory
+msgid "Laboratory Room"
+msgstr "Sala de laboratorio"
+
+msgid "Add Laboratory Room"
+msgstr "Agregar Sala de laboratorio"
+
+msgid "Delete Laboratory Room"
+msgstr "Eliminar Sala de laboratorio"
+
+msgid "View Laboratory Room"
+msgstr "Ver Sala de laboratorio"
+
+msgid "Change Laboratory Room"
+msgstr "Actualizar Sala de laboratorio"
+
+#  Organization
+msgid "Organization Structure"
+msgstr "Estructura organizacional"
+
+# Reservations
+msgid "Reservations"
+msgstr "Reservas"
+
+msgid "Reservation"
+msgstr "Reserva"
+
+# Reserved Products
+msgid "Reserved Products"
+msgstr "Productos reservados"
+
+msgid "Add Reserved Products"
+msgstr "Agregar Productos reservados"
+
+msgid "Change Reserved Products"
+msgstr "Cambiar Productos reservados"
+
+msgid "Delete Reserved Products"
+msgstr "Eliminar Productos reservados"
+
+msgid "View Reserved Products"
+msgstr "Ver Productos reservados"
+
+
+# Furniture
+msgid "Furniture"
+msgstr "Mueble"
+
+msgid "Add Furniture"
+msgstr "Agregar Mueble"
+
+msgid "Delete Furniture"
+msgstr "Eliminar Mueble"
+
+msgid "View Furniture"
+msgstr "Ver Mueble"
+
+msgid "Change Furniture"
+msgstr "Actualizar Mueble"
+
+# Shelf
+msgid "Shelf Object"
+msgstr "Objeto de estantería"
+
+msgid "Add Shelf Object"
+msgstr "Agregar Objeto de estantería"
+
+msgid "Delete Shelf Object"
+msgstr "Eliminar Objeto de estantería"
+
+msgid "Change Shelf Object"
+msgstr "Actualizar Objeto de estantería"
+
+msgid "View Shelf Object"
+msgstr "Ver Objeto de estantería"
+
+msgid "Add Shelf Object Status"
+msgstr "Agregar Estado del objeto de estantería"
+
+msgid "Shelf Object Status"
+msgstr "Estado del objeto de estantería"
+
+# Shelf Object Observations
+msgid "Shelf Object Observations"
+msgstr "Observaciones del objeto de estantería"
+
+msgid "Add Shelf Object Observations"
+msgstr "Agregar Observaciones del objeto de estantería"
+
+msgid "Delete Shelf Object Observations"
+msgstr "Eliminar Observaciones del objeto de estantería"
+
+msgid "Change Shelf Object Observations"
+msgstr "Actualizar Observaciones del objeto de estantería"
+
+msgid "View Shelf Object Observations"
+msgstr "Ver Observaciones del objeto de estantería"
+
+#  Shelf Object Calibration
+msgid "Shelf Object Calibration"
+msgstr "Calibración del objeto de estantería"
+
+msgid "Add Shelf Object Calibration"
+msgstr "Agregar Calibración del objeto de estantería"
+
+msgid "Delete Shelf Object Calibration"
+msgstr "Eliminar Calibración del objeto de estantería"
+
+msgid "Change Shelf Object Calibration"
+msgstr "Actualizar Calibración del objeto de estantería"
+
+msgid "View Shelf Object Calibration"
+msgstr "Ver Calibración del objeto de estantería"
+
+# Shelf Object Guarantee
+msgid "Shelf Object Guarantee"
+msgstr "Garantía del objeto de estantería"
+
+msgid "Add Shelf Object Guarantee"
+msgstr "Agregar Garantía del objeto de estantería"
+
+msgid "Delete Shelf Object Guarantee"
+msgstr "Eliminar Garantía del objeto de estantería"
+
+msgid "View Shelf Object Guarantee"
+msgstr "Ver Garantía del objeto de estantería"
+
+msgid "Change Shelf Object Guarantee"
+msgstr "Actualizar Garantía del objeto de estantería"
+
+# Reports
+msgid "Report"
+msgstr "Reporte"
+
+msgid "Add Report"
+msgstr "Agregar Reporte"
+
+msgid "View Report"
+msgstr "Ver Reporte"
+
+msgid "Delete Report"
+msgstr "Eliminar Reporte"
+
+msgid "Change Report"
+msgstr "Actualizar Reporte"
+
+# Report Template
+msgid "Report Template"
+msgstr "Plantilla de reporte"
+
+msgid "Add Report Template"
+msgstr "Agregar Plantilla de reporte"
+
+msgid "Add Period Inform Scheduler"
+msgstr "Agregar Agendador Periodo de informe"
+
+msgid "Change Report Template"
+msgstr "Actualizar Plantilla de reporte"
+
+msgid "Delete Report Template"
+msgstr "Eliminar Plantilla de reporte"
+
+msgid "View Report Template"
+msgstr "Ver Plantilla de reporte"
+
+msgid "List my reservations"
+msgstr "Listar mis reservas"
+
+
+# Inform Observation
+msgid "Inform Observation"
+msgstr "Observación del informe"
+
+msgid "Add Inform Observation"
+msgstr "Agregar Observación del informe"
+
+msgid "Change Inform Observation"
+msgstr "Actualizar Observación del informe"
+
+msgid "Delete Inform Observation"
+msgstr "Eliminar Observación del informe"
+
+msgid "View Inform Observation"
+msgstr "Ver Observación del informe"
+
+# Inform
+msgid "Inform"
+msgstr "Informe"
+
+msgid "Add Inform"
+msgstr "Agregar Informe"
+
+msgid "Delete Inform"
+msgstr "Eliminar Informe"
+
+msgid "Change Inform"
+msgstr "Actualizar Informe"
+
+msgid "View Inform"
+msgstr "Ver Informe"
+
+msgid "Manage status Inform"
+msgstr "Gestionar estado Informe"
+
+# Precursor Report
+msgid "Precursor Report"
+msgstr "Informe de precursores"
+
+msgid "Add Precursor Report"
+msgstr "Agregar Informe de precursores"
+
+msgid "Delete Precursor Report"
+msgstr "Eliminar Informe de precursores"
+
+msgid "Change Precursor Report"
+msgstr "Actualizar Informe de precursores"
+
+msgid "View Precursor Report"
+msgstr "Ver Informe de precursores"
+
+# Procedures
+msgid "Procedure"
+msgstr "Procedimiento"
+
+msgid "Add Procedure"
+msgstr "Agregar Procedimiento"
+
+msgid "Delete Procedure"
+msgstr "Eliminar Procedimiento"
+
+msgid "View Procedure"
+msgstr "Ver Procedimiento"
+
+msgid "Change Procedure"
+msgstr "Actualizar Procedimiento"
+
+# Procedures Step
+msgid "Procedure Step"
+msgstr "Paso del procedimiento"
+
+msgid "Add Procedure Step"
+msgstr "Agregar Paso del procedimiento"
+
+msgid "Delete Procedure Step"
+msgstr "Eliminar Paso del procedimiento"
+
+msgid "Change Procedure Step"
+msgstr "Actualizar Paso del procedimiento"
+
+msgid "View Procedure Step"
+msgstr "Ver Paso del procedimiento"
+
+msgid "Procedure Template"
+msgstr "Plantilla de procedimiento"
+
+# My Procedure
+msgid "My Procedure"
+msgstr "Mi procedimiento"
+
+msgid "Add My Procedure"
+msgstr "Agregar Mi procedimiento"
+
+msgid "Delete My Procedure"
+msgstr "Eliminar Mi procedimiento"
+
+msgid "Change My Procedure"
+msgstr "Actualizar Mi procedimiento"
+
+msgid "View My Procedure"
+msgstr "Ver Mi procedimiento"
+
+# Procedure Required Object
+msgid "Procedure Required Object"
+msgstr "Objeto Requerido por el Procedimiento"
+
+msgid "Add Procedure Required Object"
+msgstr "Agregar Objeto Requerido por el Procedimiento"
+
+msgid "Delete Procedure Required Object"
+msgstr "Eliminar Objeto Requerido por el Procedimiento"
+
+msgid "Update Procedure Required Object"
+msgstr "Actualizar Objeto Requerido por el Procedimiento"
+
+msgid "View Procedure Required Object"
+msgstr "Ver Objeto Requerido por el Procedimiento"
+
+# Procedure Observations
+msgid "Procedure Observations"
+msgstr "Observaciones del procedimiento"
+
+msgid "Add Procedure Observations"
+msgstr "Agregar Observaciones del procedimiento"
+
+msgid "Delete Procedure Observations"
+msgstr "Eliminar Observaciones del procedimiento"
+
+msgid "Update Procedure Observations"
+msgstr "Actualizar Observaciones del procedimiento"
+
+msgid "View Procedure Observations"
+msgstr "Ver Observaciones del procedimiento"
+
+# Risk Management
+msgid "Risk Zone"
+msgstr "Zona de Riesgo"
+
+msgid "Add Risk Zone"
+msgstr "Agregar Zona de Riesgo"
+
+msgid "Delete Risk Zone"
+msgstr "Eliminar Zona de Riesgo"
+
+msgid "Change Risk Zone"
+msgstr "Actualizar Zona de Riesgo"
+
+msgid "View Risk Zone"
+msgstr "Ver Zona de Riesgo"
+
+
+# Incident Report
+msgid "Incident Report"
+msgstr "Reporte de incidente"
+
+msgid "Add Incident Report"
+msgstr "Agregar Reporte de incidente"
+
+msgid "Delete Incident Report"
+msgstr "Eliminar Reporte de incidente"
+
+msgid "Change Incident Report"
+msgstr "Actualizar Reporte de incidente"
+
+msgid "View Incident Report"
+msgstr "Ver Reporte de incidente"
+
+# SGA / Safety
+msgid "SGA"
+msgstr "SGA"
+
+msgid "View SGA"
+msgstr "Ver SGA"
+
+msgid "View SGA Label"
+msgstr "Ver etiqueta SGA"
+
+# Label SGA
+msgid "Label SGA"
+msgstr "Etiqueta SGA"
+
+msgid "Add Label SGA"
+msgstr "Agregar Etiqueta SGA"
+
+msgid "Delete Label SGA"
+msgstr "Eliminar Etiqueta SGA"
+
+msgid "Change Label SGA"
+msgstr "Actualizar Etiqueta SGA"
+
+msgid "View Label SGA"
+msgstr "Ver Etiqueta SGA"
+
+# Security Leaf
+msgid "Security Leaf"
+msgstr "Hoja de seguridad"
+
+msgid "Add Security Leaf"
+msgstr "Agregar Hoja de seguridad"
+
+msgid "Delete Security Leaf"
+msgstr "Eliminar Hoja de seguridad"
+
+msgid "Change Security Leaf"
+msgstr "Hoja de seguridad"
+
+msgid "View Security Leaf"
+msgstr "Ver Hoja de seguridad"
+
+
+# MSDS
+msgid "MSDS"
+msgstr "MSDS"
+
+# MSDS Object
+msgid "MSDS Object"
+msgstr "Objeto MSDS"
+
+msgid "Add MSDS Object"
+msgstr "Agregar Objeto MSDS"
+
+msgid "Delete MSDS Object"
+msgstr "Eliminar Objeto MSDS"
+
+msgid "View MSDS Object"
+msgstr "Ver Objeto MSDS"
+
+msgid "Change MSDS Object"
+msgstr "Actualizar Objeto MSDS"
+
+
+msgid "View MSDS"
+msgstr "Ver MSDS"
+
+# Equipment
+msgid "Equipment Type"
+msgstr "Tipo de equipo"
+
+msgid "Add Equipment Type"
+msgstr "Agregar Tipo de equipo"
+
+msgid "Delete Equipment Type"
+msgstr "Eliminar Tipo de equipo"
+
+msgid "Change Equipment Type"
+msgstr "Actualizar Tipo de equipo"
+
+msgid "View Equipment Type"
+msgstr "Ver Tipo de equipo"
+
+# Instrumental Family
+msgid "Instrumental Family"
+msgstr "Familia instrumental"
+
+msgid "Add Instrumental Family"
+msgstr "Agregar Familia instrumental"
+
+msgid "View Instrumental Family"
+msgstr "Ver Familia instrumental"
+
+msgid "Delete Instrumental Family"
+msgstr "Eliminar Familia instrumental"
+
+msgid "Change Instrumental Family"
+msgstr "Actualizar Familia instrumental"
+
+# Contracts
+msgid "Contracts"
+msgstr "Contratos"
+
+msgid "Add Contracts"
+msgstr "Agregar Contratos"
+
+msgid "Delete Contracts"
+msgstr "Eliminar Contratos"
+
+msgid "Change Contracts"
+msgstr "Actualizar Contratos"
+
+msgid "View Contracts"
+msgstr "Ver Contratos"
+
+# Objeto
+msgid "Object"
+msgstr "Objeto"
+
+msgid "Add Object"
+msgstr "Agregar Objeto"
+
+msgid "Delete Object"
+msgstr "Eliminar Objeto"
+
+msgid "View Object"
+msgstr "Ver Objeto"
+
+msgid "Change Object"
+msgstr "Actualizar Objeto"
+
+# Object Features
+msgid "Object Features"
+msgstr "Características del objeto"
+
+msgid "Add Object Features"
+msgstr "Agregar Características del objeto"
+
+msgid "Delete Object Features"
+msgstr "Eliminar Características del objeto"
+
+msgid "View Object Features"
+msgstr "Ver Características del objeto"
+
+msgid "Change Object Features"
+msgstr "Actualizar Características del objeto"
+
+# Protocol
+msgid "Protocol"
+msgstr "Protocolo"
+
+msgid "Add Protocol"
+msgstr "Agregar Protocolo"
+
+msgid "Delete Protocol"
+msgstr "Eliminar Protocolo"
+
+msgid "View Protocol"
+msgstr "Ver Protocolo"
+
+msgid "Change Protocol"
+msgstr "Actualizar Protocolo"
+
+# Register User QR Code
+msgid "Register User QR Code"
+msgstr "Código QR de registro de usuario"
+
+msgid "Add Register User QR Code"
+msgstr "Agregar Código QR de registro de usuario"
+
+msgid "Change Register User QR Code"
+msgstr "Actualizar Código QR de registro de usuario"
+
+msgid "Delete Register User QR Code"
+msgstr "Eliminar Código QR de registro de usuario"
+
+msgid "View Register User QR Code"
+msgstr "Ver Código QR de registro de usuario"
+
+# H Code Category
+msgid "H Code Category"
+msgstr "Categoría de código H"
+
+msgid "Add H Code Category"
+msgstr "Agregar Categoría de código H"
+
+msgid "Delete H Code Category"
+msgstr "Eliminar Categoría de código H"
+
+msgid "Change H Code Category"
+msgstr "Actualizar Categoría de código H"
+
+msgid "View H Code Category"
+msgstr "Ver Categoría de código H"
+
+# Structure
+msgid "Structure"
+msgstr "Estructura"
+
+msgid "Add Structure"
+msgstr "Agregar estructura"
+
+msgid "Change Structure"
+msgstr "Actualizar estructura"
+
+msgid "Delete Structure"
+msgstr "Eliminar estructura"
+
+msgid "View Structure"
+msgstr "Ver estructura"
+
+# Regent
+msgid "Add Regent"
+msgstr "Agregar regente"
+
+msgid "Change Regent"
+msgstr "Actualizar regente"
+
+msgid "Delete Regent"
+msgstr "Eliminar regente"
+
+msgid "View Regent"
+msgstr "Ver regente"
+
+msgid "Regent"
+msgstr "Regente"
+
+# Building
+msgid "Add Building"
+msgstr "Agregar edificio"
+
+msgid "Change Building"
+msgstr "Actualizar edificio"
+
+msgid "Delete Building"
+msgstr "Eliminar edificio"
+
+msgid "View Building"
+msgstr "Ver edificio"
+
+msgid "Building"
+msgstr "Edificio"
+
+# SGA Complement
+msgid "Add SGA Complement"
+msgstr "Agregar complemento SGA"
+
+msgid "Change SGA Complement"
+msgstr "Actualizar complemento SGA"
+
+msgid "View SGA Complement"
+msgstr "Ver complemento SGA"
+
+msgid "SGA Complement"
+msgstr "Complemento SGA"
+
+# Display
+msgid "Change Display Label"
+msgstr "Actualizar etiqueta visible"
+
+msgid "Display Label"
+msgstr "Etiqueta visible"
+
+# Label
+msgid "Label"
+msgstr "Etiqueta"
+
+msgid "Add Label"
+msgstr "Agregar Etiqueta"
+
+msgid "Delete Label"
+msgstr "Eliminar Etiqueta"
+
+msgid "Change Label"
+msgstr "Actualizar Etiqueta"
+
+msgid "View Label"
+msgstr "Ver Etiqueta"
+
+# Warning Word
+msgid "Add Warning Word"
+msgstr "Agregar palabra de advertencia"
+
+msgid "Change Warning Word"
+msgstr "Actualizar palabra de advertencia"
+
+msgid "Delete Warning Word"
+msgstr "Eliminar palabra de advertencia"
+
+msgid "View Warning Word"
+msgstr "Ver palabra de advertencia"
+
+msgid "Warning Word"
+msgstr "Palabra de advertencia"
+
+# Danger Indication
+msgid "Add Danger Indication"
+msgstr "Agregar indicación de peligro"
+
+msgid "Change Danger Indication"
+msgstr "Actualizar indicación de peligro"
+
+msgid "Delete Danger Indication"
+msgstr "Eliminar indicación de peligro"
+
+msgid "View Danger Indication"
+msgstr "Ver indicación de peligro"
+
+msgid "Danger Indication"
+msgstr "Indicación de peligro"
+
+# Prudence Advice
+msgid "Add Prudence Advice"
+msgstr "Agregar consejo de prudencia"
+
+msgid "Change Prudence Advice"
+msgstr "Actualizar consejo de prudencia"
+
+msgid "Delete Prudence Advice"
+msgstr "Eliminar consejo de prudencia"
+
+msgid "View Prudence Advice"
+msgstr "Ver consejo de prudencia"
+
+msgid "Prudence Advice"
+msgstr "Consejo de prudencia"
+
+# Substance Observation
+msgid "Substance Observation"
+msgstr "Observación de la sustancia"
+
+msgid "View Substance Observation"
+msgstr "Ver Observación de la sustancia"
+
+msgid "Add Substance Observation"
+msgstr "Agregar Observación de la sustancia"
+
+msgid "Delete Substance Observation"
+msgstr "Eliminar Observación de la sustancia"
+
+msgid "Change Substance Observation"
+msgstr "Actualizar Observación de la sustancia"
+
+# Substance Characteristics
+msgid "Substance Characteristics"
+msgstr "Características de la sustancia"
+
+msgid "View Substance Characteristics"
+msgstr "Ver Características de la sustancia"
+
+msgid "Add Substance Characteristics"
+msgstr "Agregar Características de la sustancia"
+
+msgid "Change Substance Characteristics"
+msgstr "Actualizar Características de la sustancia"
+
+msgid "Delete Substance Characteristics"
+msgstr "Eliminar Características de la sustancia"
+
+# Substance Characteristics
+msgid "ZoneType"
+msgstr "Tipo de Zona"
+
+msgid "Add ZoneType"
+msgstr "Agregar Tipo de Zona"
+
+msgid "View ZoneType"
+msgstr "Ver Tipo de Zona"
+
+msgid "Change ZoneType"
+msgstr "Actualizar Tipo de Zona"
+
+msgid "Delete ZoneType"
+msgstr "Eliminar Tipo de Zona"
+
+# Transfer
+msgid "Transfer"
+msgstr "Transferencia"
+
+msgid "Add Transfer"
+msgstr "Agregar Transferencia"
+
+msgid "Change Transfer"
+msgstr "Actualizar Transferencia"
+
+msgid "View Transfer"
+msgstr "Ver Transferencia"
+
+msgid "Delete Transfer"
+msgstr "Eliminar Transferencia"
+
+# Substance
+msgid "Substance"
+msgstr "Sustancia"
+
+msgid "Add Substance"
+msgstr "Agregar Sustancia"
+
+msgid "Delete Substance"
+msgstr "Eliminar Sustancia"
+
+msgid "Change Substance"
+msgstr "Actualizar Sustancia"
+
+msgid "View Substance"
+msgstr "Ver Sustancia"
+
+# Template SGA
+msgid "Template SGA"
+msgstr "Plantilla SGA"
+
+msgid "Add Template SGA"
+msgstr "Agregar Plantilla SGA"
+
+msgid "Delete Template SGA"
+msgstr "Eliminar Plantilla SGA"
+
+msgid "Change Template SGA"
+msgstr "Actualizar Plantilla SGA"
+
+msgid "View Template SGA"
+msgstr "Ver Plantilla SGA"
+
+# Step Comment
+msgid "Step Comment"
+msgstr "Comentario del paso"
+
+msgid "Add Step Comment"
+msgstr "Agregar Comentario del paso"
+
+msgid "Delete Step Comment"
+msgstr "Eliminar Comentario del paso"
+
+msgid "Change Step Comment"
+msgstr "Actualizar Comentario del paso"
+
+msgid "View Step Comment"
+msgstr "Ver Comentario del paso"
+
+# Shelf Object Training
+msgid "Shelf Object Training"
+msgstr "Capacitación sobre objeto de estantería"
+
+msgid "Add Shelf Object Training"
+msgstr "Agregar Capacitación sobre objeto de estantería"
+
+msgid "Change Shelf Object Training"
+msgstr "Actualizar Capacitación sobre objeto de estantería"
+
+msgid "Delete Shelf Object Training"
+msgstr "Eliminar Capacitación sobre objeto de estantería"
+
+msgid "View Shelf Object Training"
+msgstr "Ver Capacitación sobre objeto de estantería"
+
+# Shelf Object Log
+msgid "Shelf Object Log"
+msgstr "Registro del objeto de estantería"
+
+msgid "Add Shelf Object Log"
+msgstr "Agregar Registro del objeto de estantería"
+
+msgid "Change Shelf Object Log"
+msgstr "Actualizar Registro del objeto de estantería"
+
+msgid "Delete Shelf Object Log"
+msgstr "Eliminar Registro del objeto de estantería"
+
+msgid "View Shelf Object Log"
+msgstr "Ver Registro del objeto de estantería"
+
+# Regulation Document
+msgid "Regulation Document"
+msgstr "Documento normativo"
+
+msgid "View Regulation Document"
+msgstr "Ver Documento normativo"
+
+msgid "Delete Regulation Document"
+msgstr "Eliminar Documento normativo"
+
+msgid "Change Regulation Document"
+msgstr "Actualizar Documento normativo"
+
+msgid "Add Regulation Document"
+msgstr "Agregar Documento normativo"
+
+# Entry
+msgid "Blog Entry"
+msgstr "Entrada de Blog"
+
+msgid "Add Blog Entry"
+msgstr "Agregar Entrada de Blog"
+
+msgid "Delete Blog Entry"
+msgstr "Eliminar Entrada de Blog"
+
+msgid "Change Blog Entry"
+msgstr "Actualizar Entrada de Blog"
+
+msgid "View Blog Entry"
+msgstr "Ver Entrada de Blog"
+
+# Blog Category
+msgid "Blog Category"
+msgstr "Categoría del blog"
+
+msgid "Add Blog Category"
+msgstr "Agregar Categoría del blog"
+
+msgid "Delete Blog Category"
+msgstr "Eliminar Categoría del blog"
+
+msgid "Change Blog Category"
+msgstr "Actualizar Categoría del blog"
+
+msgid "View Blog Category"
+msgstr "Ver Categoría del blog"
+
+# Laboratory Process
+msgid "Laboratory Process"
+msgstr "Proceso de Laboratorio"
+
+msgid "Add Laboratory Process"
+msgstr "Agregar Proceso de Laboratorio"
+
+msgid "Change Laboratory Process"
+msgstr "Actualizar Proceso de Laboratorio"
+
+msgid "Delete Laboratory Process"
+msgstr "Eliminar Proceso de Laboratorio"
+
+msgid "View Laboratory Process"
+msgstr "Ver Proceso de Laboratorio"
