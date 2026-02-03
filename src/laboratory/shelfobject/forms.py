@@ -811,6 +811,7 @@ class ShelfObjectReactiveForm(
         )
 
         self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
+        del self.fields["expiration_date"]
 
     class Meta:
         model = ShelfObject
@@ -845,6 +846,7 @@ class ShelfObjectReactiveForm(
             "shelf_object_url",
             "shelf_object_qr",
             "limits",
+
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -922,6 +924,7 @@ class ShelfObjectRefuseReactiveForm(
 
         self.fields["marked_as_discard"].initial = True
         self.fields["physical_status"].choices = ShelfObject.PHYSICAL_STATUS[1:]
+        del self.fields["expiration_date"]
 
     class Meta:
         model = ShelfObject

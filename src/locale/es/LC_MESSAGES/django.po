@@ -5115,3 +5115,33 @@ msgstr "Nombre del funcionario"
 
 msgid "Occupational Health Report"
 msgstr "Reporte de Salud Laboral"
+
+msgid "Show Roles information"
+msgstr "Mostrar información de roles"
+
+msgid "Add a description"
+msgstr "Agregar una descripción"
+
+msgid "Add a new rol"
+msgstr "Agregar un nuevo rol"
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Help Text"
+msgstr "Texto de ayuda"
+
+msgid "Show descriptions of groups"
+msgstr "Mostrar descripciones de los grupos"
+
+msgid "Role updated successfully"
+msgstr "El rol fue actualizado exitosamente"
+
+msgid "Edit Role"
+msgstr "Editar Rol"
+
+msgid "Chemical inventory report"
+msgstr "Informe de inventario de sustancias químicas"
+
+msgid "UNA can access"
+msgstr "UNA puede acceder"
