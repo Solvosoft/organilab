@@ -1,6 +1,7 @@
 from async_notifications.utils import send_email_from_template
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponseRedirect
@@ -15,14 +16,16 @@ import logging
 logger = logging.getLogger("organilab")
 
 
+@permission_required("auth_and_perms.una_can_access")
 def index_tutorial(request, org_pk):
     return render(request, "tutorial.html", context={"org_pk": org_pk})
 
 
 @method_decorator(login_required(), name="dispatch")
-class FeedbackView(CreateView):
+class FeedbackView(PermissionRequiredMixin, CreateView):
     template_name = "feedback/feedbackentry_form.html"
     model = FeedbackEntry
+    permission_required = "auth_and_perms.una_can_access"
     form_class = FeedbackEntryForm
 
     def get(self, request, *args, **kwargs):
