@@ -751,7 +751,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
     has_threshold = serializers.BooleanField(required=False)
     threshold = serializers.FloatField(default=0.0, required=False)
     reactive_expiration_date = serializers.DateField(required=False)
-
+    density = serializers.FloatField(default=0.0, required=False)
     def validate(self, data):
         data = super().validate(data)
         org_pk_view = self.context["view"].org_pk
@@ -905,6 +905,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
     maximum_limit_table = serializers.SerializerMethodField()
     minimum_limit_table = serializers.SerializerMethodField()
     measurement_unit_table = serializers.SerializerMethodField()
+    density = serializers.SerializerMethodField()
 
     def get_reactive_limits(self, obj):
         lab = self.context["kwargs"].get("lab_pk", None)
@@ -1097,6 +1098,11 @@ class ReactiveSerializer(serializers.ModelSerializer):
                 return ChunkedFileField().to_representation(file_value)
             return None
 
+    def get_density(self, obj):
+        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.density
+        return None
+
     def get_combined_booleans(self, obj):
         is_public = (
             '<i class="fa fa-users fa-fw text-success"></i>'
@@ -1169,6 +1175,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "maximum_limit_table",
             "minimum_limit_table",
             "measurement_unit_table",
+            "density",
         ]
 
 
