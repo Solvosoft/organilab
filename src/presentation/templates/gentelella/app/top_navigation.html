@@ -1,35 +1,36 @@
 {% load i18n shelf_position laboratory %}
-{% load urlname_tags i18n gentelellamenu gtsettings  %}
+{% load urlname_tags i18n gentelellamenu gtsettings %}
 <nav class="nav_menu">
 
-<div class="container-fluid">
-    <div class="nav toggle" style="margin-top:9px;">
-        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-    </div>
-    {% if laboratory and org_pk %}
-        <ul class="nav navbar-nav float-start">
-            <li><a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">{% show_laboratory_name %}</a></li>
-        </ul>
-    {% endif %}
+	<div class="container-fluid">
+		<div class="nav toggle" style="margin-top:9px;">
+			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
+		</div>
+		{% if laboratory and org_pk %}
+			<ul class="nav navbar-nav float-start">
+				<li><a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">{% show_laboratory_name %}</a></li>
+			</ul>
+		{% endif %}
 
-    <ul class="nav navbar-nav float-end flex-row-reverse">
-        {% if request.user.is_authenticated %}
-        {% include 'gentelella/app/top_navigation_user_authenticated.html' %}
-        {% endif %}
+		<ul class="nav navbar-nav float-end flex-row-reverse">
+			{% if request.user.is_authenticated %}
+				{% include 'gentelella/app/top_navigation_user_authenticated.html' %}
+			{% endif %}
 
-        {% if org_pk %}
+			{% if org_pk %}
+				{% if perms.auth_and_perms.una_can_access %}
+					<li id="tutorials">
+						<a href="{% url 'tutorials' org_pk %}"><strong>{% trans 'Tutorials' %}</strong></a>
+					</li>
+				{% endif %}
 
-            <li id="tutorials">
-                <a href="{% url 'tutorials' org_pk %}"><strong>{% trans 'Tutorials' %}</strong></a>
-            </li>
+			{% endif %}
 
-        {% endif %}
+			{% if not request.user.is_authenticated %}
+				<li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
+			{% endif %}
 
-        {% if not request.user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">{% trans "Log in" %}</a></li>
-        {% endif %}
-
-    </ul>
-    </div>
-    <div class="clearfix"></div>
+		</ul>
+	</div>
+	<div class="clearfix"></div>
 </nav>
