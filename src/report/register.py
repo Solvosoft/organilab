@@ -96,4 +96,9 @@ REPORT_FORMS = {
         "xlsx": "report.views.stock.report_stock",
         "ods": "report.views.stock.report_stock",
     },
+    "regency_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.RegencyReportForm",
+        "html": "report.views.regency.report_regency_html",
+    },
 }

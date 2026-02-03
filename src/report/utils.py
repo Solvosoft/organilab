@@ -4,12 +4,13 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
-from laboratory.models import Furniture
+from laboratory.models import Furniture, BaseUnitValues
 from report.models import (
     DocumentReportStatus,
     ObjectChangeLogReport,
     ObjectChangeLogReportBuilder,
 )
+from sga.models import HCodeCategory
 
 
 def format_date(value):
@@ -222,3 +223,48 @@ def format_datetime(value, position):
         pass
 
     return day_result
+
+
+def get_danger_categories(reactive, total=0):
+    danger_categories_list = []
+    category_h_total = {"environment": 0, "health": 0, "physical": 0}
+    code_h = HCodeCategory.objects.filter(
+        h_code__isnull=False,
+        h_code__pk__in=reactive.sustancecharacteristics.h_code.values_list(
+            "pk", flat=True
+        ),
+    ).distinct()
+    for code in code_h:
+        codes = set(code.h_code.values_list("pk", flat=True))
+        obj_hcodes = set(
+            reactive.sustancecharacteristics.h_code.values_list("pk", flat=True)
+        )
+        intersection = codes.intersection(obj_hcodes)
+        if len(intersection) == code.count():
+            category_h_total[code.danger_category] += code.threshold * 1000
+            danger_categories_list.append(
+                [reactive, total, code.danger_category, code.threshold * 1000]
+            )
+    return danger_categories_list
+
+    return unitbase
+
+
+def get_conversion_units_to_kilograms(unit, amount, density=None):
+    query = BaseUnitValues.objects.filter(measurement_unit=unit)
+    result = 0
+    if query.exists():
+        unit = query.first()
+        base = unit.measurement_unit
+        value = unit.si_value
+
+        if base.description == unit.measurement_unit_base.description:
+            result = amount / value
+        else:
+            result = amount / value
+
+        if unit.measurement_unit_base.description == "Litros":
+            result = result * 0.8 if density else result * density
+        elif unit.measurement_unit.description == "Libra":
+            result = result * 0.4536 if density else result * density
+    return result
