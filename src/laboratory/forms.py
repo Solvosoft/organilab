@@ -1167,7 +1167,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["type"], ["organization"], ["created_by"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
         [["description"]],
-        [["laboratory"]],
+        [["density"],["laboratory"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1284,7 +1284,11 @@ class ReactiveForm(GTForm, forms.ModelForm):
         widget=genwidgets.TextInput, required=False, label=_("Threshold"),
         help_text=_("It belongs to the regulations of decree 44741"),
     )
-
+    density = forms.FloatField(
+        widget=genwidgets.TextInput, required=False, label=_("Density"),
+        help_text=_("It belongs to the regulations of decree 44741, "
+                    "only use dot like 0.344 on decimal"),
+    )
     def __init__(self, *args, **kwargs):
         kwargs.pop("modal_id")
         kwargs.pop("laboratory_pk")

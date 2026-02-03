@@ -237,6 +237,12 @@ class SustanceCharacteristics(models.Model):
         null=True,
         blank=True,
     )
+    density = models.FloatField(
+        verbose_name=_("Density"),
+        help_text=_("t belongs to the regulations of decree 44741, "
+                    "only use dot like 0.344 on decimal"),
+        default=0,
+    )
 
     class Meta:
         verbose_name = _("Sustance characteristic")
