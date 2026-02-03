@@ -53,6 +53,7 @@ create-profile: ## create user and user profile
 	user = User.objects.last(); \
 	Profile.objects.get_or_create(user=user)"
 
+
 ##--------------------------------------------------------
 ## Project build
 ##--------------------------------------------------------
@@ -109,6 +110,9 @@ build_docker: ##  - build docker images
 
 build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
+
+load-perms: ## Load permissions
+	$(MAKE) trans  && cd src  && python manage.py load_urlname_permissions
 
 ##--------------------------------------------------------
 ## Project utils
