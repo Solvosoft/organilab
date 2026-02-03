@@ -44,12 +44,16 @@ class Profile(models.Model):
         return "%s" % (self.user,)
 
     class Meta:
-        permissions = (
+        permissions = [
             (
                 "can_add_external_user_in_org",
                 _("Can add external user to organization"),
             ),
-        )
+            (
+                "una_can_access",
+                _("UNA can access"),
+            ),
+        ]
 
 
 def get_random_color():
