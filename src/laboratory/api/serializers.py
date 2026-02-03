@@ -32,12 +32,14 @@ from laboratory.models import (
     EquipmentCharacteristics,
     SustanceCharacteristics,
     ReactiveLimit,
-    ObjectMaximumLimit, LaboratoryProcess,
+    ObjectMaximumLimit,
+    LaboratoryProcess,
 )
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
+from sga.api.serializers import ChoicesGTS2Serializer
 from sga.models import DangerIndication
 
 logger = logging.getLogger("organilab")
@@ -1259,11 +1261,12 @@ class ReactiveLimitsSerializer(serializers.Serializer):
             .distinct()
         ]
 
+
 class LaboratoryProcessSerializer(serializers.ModelSerializer):
     laboratory = serializers.PrimaryKeyRelatedField(
         queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
         required=True,
-        many=False
+        many=False,
     )
     description = serializers.CharField(required=True)
 
@@ -1271,12 +1274,14 @@ class LaboratoryProcessSerializer(serializers.ModelSerializer):
         model = LaboratoryProcess
         fields = "__all__"
 
+
 class LaboratoryProcessUpdateSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=True)
 
     class Meta:
         model = LaboratoryProcess
         fields = ["description"]
+
 
 class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
@@ -1298,8 +1303,64 @@ class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
         model = LaboratoryProcess
         fields = ["id", "description", "created_by", "creation_date", "actions"]
 
+
 class LaboratoryProcessDataTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=LaboratoryProcessSerializerTable(), required=True)
+    data = serializers.ListField(
+        child=LaboratoryProcessSerializerTable(), required=True
+    )
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ShelObjectReactiveSerializer(serializers.ModelSerializer):
+    shelf = GTS2SerializerBase(many=False)
+    object = GTS2SerializerBase(many=False)
+    limits = GTS2SerializerBase(many=False)
+    in_where_laboratory = GTS2SerializerBase(many=False)
+    container = serializers.SerializerMethodField()
+    cas_code = serializers.SerializerMethodField()
+    measurement_unit = GTS2SerializerBase(many=False)
+    actions = serializers.SerializerMethodField()
+    labroom = serializers.SerializerMethodField()
+    furniture = serializers.SerializerMethodField()
+
+    def get_container(self, obj):
+        if obj.container and obj.container.object:
+            return obj.container.object.name
+        return None
+
+    def get_labroom(self, obj):
+        if obj.shelf and obj.shelf.furniture and obj.shelf.furniture.labroom:
+            return obj.shelf.furniture.labroom.name
+        return None
+
+    def get_furniture(self, obj):
+        if obj.shelf and obj.shelf.furniture:
+            return obj.shelf.furniture.name
+        return None
+
+    def get_cas_code(self, obj):
+        return obj.object.cas_code
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "increase": user.has_perm(
+                "laboratory.change_shel_object", "laboratory.view_object"
+            ),
+            "decrease": user.has_perm(
+                "laboratory.change_shel_object", "laboratory.view_object"
+            ),
+        }
+
+    class Meta:
+        model = ShelfObject
+        fields = "__all__"
+
+
+class ShelObjectReactiveDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelObjectReactiveSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)

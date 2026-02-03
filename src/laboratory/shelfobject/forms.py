@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
@@ -27,7 +28,8 @@ from laboratory.models import (
     ShelfObjectTraining,
     ShelfObjectEquipmentCharacteristics,
     OrganizationStructure,
-    BaseUnitValues, ShelfObjectLimits,
+    BaseUnitValues,
+    ShelfObjectLimits,
 )
 from reservations_management.models import ReservedProducts
 from laboratory.shelfobject.serializers import (
@@ -87,6 +89,7 @@ class IncreaseShelfObjectForm(GTForm):
     )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
     use = forms.CharField(widget=genwidgets.Textarea, required=False)
+
 
 class TransferOutShelfObjectForm(GTForm):
     amount_to_transfer = forms.FloatField(
@@ -359,7 +362,6 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "description": genwidgets.Textarea,
             "marked_as_discard": genwidgets.CheckboxInput,
             "batch": genwidgets.TextInput,
-
         }
 
 
@@ -846,7 +848,6 @@ class ShelfObjectReactiveForm(
             "shelf_object_url",
             "shelf_object_qr",
             "limits",
-
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -1218,22 +1219,35 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
             "first_date_use": genwidgets.DateInput,
         }
 
+
 class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
 
         self.fields["without_limit"].initial = False
-        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits","data-prefix":"id_edit-"})
+        self.fields["without_limit"].widget = genwidgets.CheckboxInput(
+            attrs={"class": "lock_limits", "data-prefix": "id_edit-"}
+        )
         self.fields.pop("objecttype")
         self.fields.pop("expiration_date")
 
     class Meta:
         model = ShelfObject
-        fields = ["reactive_expiration_date", "status", "physical_status","description",
-                  "batch","without_limit", "minimum_limit", "maximum_limit","pictograms",
-                  "type_budget", "container_entry_date", "container_open_date"
-                  ]
+        fields = [
+            "reactive_expiration_date",
+            "status",
+            "physical_status",
+            "description",
+            "batch",
+            "without_limit",
+            "minimum_limit",
+            "maximum_limit",
+            "pictograms",
+            "type_budget",
+            "container_entry_date",
+            "container_open_date",
+        ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
@@ -1246,8 +1260,8 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "type_budget": genwidgets.Select,
             "container_entry_date": genwidgets.DateInput,
             "container_open_date": genwidgets.DateInput,
-
         }
+
 
 class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
@@ -1256,12 +1270,22 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         super().__init__(*args, **kwargs)
 
         self.fields["without_limit"].initial = False
-        self.fields["without_limit"].widget = genwidgets.CheckboxInput(attrs={"class": "lock_limits","data-prefix":"id_edit_material-"})
+        self.fields["without_limit"].widget = genwidgets.CheckboxInput(
+            attrs={"class": "lock_limits", "data-prefix": "id_edit_material-"}
+        )
         self.fields.pop("objecttype")
+
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "batch", "without_limit", "minimum_limit",
-                  "maximum_limit", "expiration_date"]
+        fields = [
+            "status",
+            "description",
+            "batch",
+            "without_limit",
+            "minimum_limit",
+            "maximum_limit",
+            "expiration_date",
+        ]
         widgets = {
             "description": genwidgets.Textarea,
             "minimum_limit": genwidgets.TextInput,
@@ -1269,5 +1293,53 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
             "batch": genwidgets.TextInput,
+        }
 
+
+class ShelObjectReactiveForm(GTForm, forms.ModelForm):
+    reason = forms.CharField(widget=genwidgets.Textarea, required=False)
+    shelfobject = forms.IntegerField(widget=forms.HiddenInput)
+    shelf = forms.IntegerField(widget=genwidgets.HiddenInput)
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
+    organization = forms.IntegerField(widget=genwidgets.HiddenInput)
+    amount = forms.IntegerField(
+        widget=genwidgets.NumberInput, min_value=settings.DEFAULT_MIN_QUANTITY
+    )
+
+    def __init__(self, *args, **kwargs):
+        prefix = kwargs.get("prefix", "")
+        super().__init__(*args, **kwargs)
+        self.fields["measurement_unit"] = forms.ModelChoiceField(widget=AutocompleteSelect(
+                "catalogunitIncDec",
+                attrs={
+                    "data-s2filter-shelf": f"#id_{prefix}-shelf",
+                    "data-s2filter-laboratory": f"#id_{prefix}-laboratory",
+                    "data-s2filter-organization": f"#id_{prefix}-organization",
+                    "data-s2filter-shelfobject": f"#id_{prefix}-shelfobject",
+                    "data-s2filter-org_pk": f"#id_{prefix}-organization",
+                    "data-s2filter-lab_pk": f"#id_{prefix}-laboratory",
+                },
+            ),
+        label=_("Measurement unit"),
+        queryset=Catalog.objects.all(),
+        )
+
+    class Meta:
+        model = ShelfObject
+        fields = [
+            "measurement_unit",
+            "amount",
+            "reason",
+            "shelf",
+            "laboratory",
+            "organization",
+            "shelfobject",
+        ]
+        widgets = {
+            "amount": genwidgets.NumberInput,
+            "reason": genwidgets.Textarea,
+            "shelf": genwidgets.HiddenInput,
+            "laboratory": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "shelfobject": genwidgets.HiddenInput,
         }
