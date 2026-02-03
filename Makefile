@@ -45,7 +45,7 @@ migrate: ## - makemigrations && migrate
 requirements: ## - install all dependencies
 	pip install -r requirements.txt
 
-create-profile: ## create user and user profile
+create-profile: ## - create user and user profile
 	cd src && python manage.py createsuperuser && \
 	python manage.py shell -c "\
 	from auth_and_perms.models import Profile; \
@@ -69,7 +69,7 @@ clean-pyc: #  - remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 
 clean: ##  - remove build artifacts and remove Python file artifacts
-	clean-build && clean-pyc
+	$(MAKE) clean-build && $(MAKE)  clean-pyc
 
 test: ##  - run tests quickly with the default Python
 	cd src && python manage.py test  --no-input --exclude-tag=selenium
@@ -96,7 +96,7 @@ trans: ##  - compile messages of translations
 	cd src && django-admin compilemessages --locale es
 
 release: ##  - package and upload a release
-	clean && trans && builddocker
+	$(MAKE) clean && $(MAKE) trans && builddocker
 
 dist: ##  - print current version of organilab
 	#echo $(setup_version)
@@ -104,14 +104,14 @@ dist: ##  - print current version of organilab
 	git push origin "refs/tags/v$(setup_version)"
 
 build_docker: ##  - build docker images
-	clean trans && /
+	$(MAKE) clean && $(MAKE) trans && /
 	docker pull python:3.13-trixie && /
 	docker build  -t organilab:$(setup_version)  .
 
 build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
 
-load-perms: ## Load permissions
+load-perms: ## - load permissions
 	$(MAKE) trans  && cd src  && python manage.py load_urlname_permissions
 
 ##--------------------------------------------------------
