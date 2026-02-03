@@ -2,7 +2,7 @@ from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.test import TestCase, Client
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 import json
 
 from msds.models import *
@@ -15,6 +15,8 @@ class MsdsTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
+        permission = Permission.objects.get(codename="una_can_access")
+        self.user.user_permissions.add(permission)
         self.url_attr = {"org_pk": 1}
         self.client.force_login(self.user)
 

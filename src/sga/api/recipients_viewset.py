@@ -31,10 +31,22 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = RecipientSize.objects.all()
     serializer_class = RecipientSizeDataTableSerializer
     permissions_by_endpoint = {
-        "create": ["sga.view_recipientsize", "sga.add_recipientsize"],
-        "list": ["sga.view_recipientsize"],
-        "update": ["sga.view_recipientsize", "sga.change_recipientsize"],
-        "delete": ["sga.view_recipientsize", "sga.delete_recipientsize"],
+        "create": [
+            "sga.view_recipientsize",
+            "sga.add_recipientsize",
+            "auth_and_perms.una_can_access",
+        ],
+        "list": ["sga.view_recipientsize", "auth_and_perms.una_can_access"],
+        "update": [
+            "sga.view_recipientsize",
+            "sga.change_recipientsize",
+            "auth_and_perms.una_can_access",
+        ],
+        "delete": [
+            "sga.view_recipientsize",
+            "sga.delete_recipientsize",
+            "auth_and_perms.una_can_access",
+        ],
     }
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["name", "width", "height", "width_unit", "height_unit"]
