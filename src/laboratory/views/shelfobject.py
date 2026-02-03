@@ -59,6 +59,7 @@ from ..shelfobject.forms import (
     ShelfObjectGuaranteeForm,
     ShelfObjectTrainingForm,
     EditEquimentShelfobjectForm,
+    ShelObjectReactiveForm,
 )
 
 
@@ -885,4 +886,18 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     }
     return render(
         request, "laboratory/shelfobject/equipment_edit.html", context=context
+    )
+
+
+def shelf_object_reagents(request, org_pk, lab_pk):
+    return render(
+        request,
+        "laboratory/shelfobject/reactive.html",
+        context={
+            "org_pk": org_pk,
+            "lab_pk": lab_pk,
+            "laboratory": lab_pk,
+            "increaseForm": ShelObjectReactiveForm(prefix="increase"),
+            "decreaseForm": ShelObjectReactiveForm(prefix="decrease"),
+        },
     )

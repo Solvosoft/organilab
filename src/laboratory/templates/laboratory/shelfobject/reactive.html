@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load gtsettings i18n static %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'shelfobject-list' %}
+
+	{% trans 'List Reagents' as view_reagents %}
+	{% get_or_create_permission_context 'shelfobject-list' 'laboratory' 'view_shelfobject' perms_str view_reagents %}
+{% endblock %}
+
+{% block title %}{% trans 'Consumption record' %}{% endblock %}
+
+{% block container %}container-fluid{% endblock %}
+
+{% block content %}
+	<div class="card mt-2">
+		<div class="card-body">
+			{# Titulo de tabla #}
+			<div class="card-title titles">
+				<h1 class="text-center"> {% trans 'Consumption record' %} </h1>
+			</div>
+
+			{# Contenido de tabla #}
+			<div class="row mt-3 ">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{# Modales de acciones #}
+	{% url "laboratory:api-shelobjectsreactives-list" org_pk lab_pk as list_obj_url %}
+
+	{% url "laboratory:api-shelobjectsreactives-increase" lab_pk=laboratory org_pk=org_pk as increase_so_url %}#}
+	{% trans 'Add' as increase_so_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=increaseForm id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}#}
+
+	{% url "laboratory:api-shelobjectsreactives-decrease" lab_pk=laboratory org_pk=org_pk as increase_so_url %}#}
+	{% trans 'Decrease' as increase_so_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=decreaseForm id="decreasesomodal" title=increase_so_tittle form_id="decreasesoform" url=increase_so_url %}#}
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		window.object_urls = {
+			list_url: "{% url 'laboratory:api-shelobjectsreactives-list' org_pk lab_pk %}",
+			increase_url: "{% url 'laboratory:api-shelobjectsreactives-increase' org_pk lab_pk %}",
+			decrease_url: "{% url 'laboratory:api-shelobjectsreactives-decrease' org_pk lab_pk %}",
+		}
+		let org_pk = "{{ org_pk }}";
+	</script>
+	<script type="text/javascript"
+									src="{% static 'laboratory/js/base_modal_management.js' %}?v={% get_organilab_version %}">
+	</script>
+	<script type="text/javascript"
+									src="{% static 'laboratory/js/reactives_management.js' %}?v={% get_organilab_version %}">
+	</script>
+{% endblock %}
