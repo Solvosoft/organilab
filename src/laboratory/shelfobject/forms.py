@@ -1297,13 +1297,14 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
 
 class ShelObjectReactiveForm(GTForm, forms.ModelForm):
-    reason = forms.CharField(widget=genwidgets.Textarea, required=False)
+    description = forms.CharField(widget=genwidgets.Textarea, label=_("Reason"))
     shelfobject = forms.IntegerField(widget=forms.HiddenInput)
     shelf = forms.IntegerField(widget=genwidgets.HiddenInput)
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
     amount = forms.IntegerField(
-        widget=genwidgets.NumberInput, min_value=settings.DEFAULT_MIN_QUANTITY
+        widget=genwidgets.NumberInput, min_value=settings.DEFAULT_MIN_QUANTITY,
+        label=_("Amount")
     )
 
     def __init__(self, *args, **kwargs):
@@ -1329,7 +1330,7 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
         fields = [
             "measurement_unit",
             "amount",
-            "reason",
+            "description",
             "shelf",
             "laboratory",
             "organization",
@@ -1337,7 +1338,7 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
         ]
         widgets = {
             "amount": genwidgets.NumberInput,
-            "reason": genwidgets.Textarea,
+            "description": genwidgets.Textarea,
             "shelf": genwidgets.HiddenInput,
             "laboratory": genwidgets.HiddenInput,
             "organization": genwidgets.HiddenInput,

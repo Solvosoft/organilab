@@ -2810,7 +2810,7 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(
         min_value=settings.DEFAULT_MIN_QUANTITY, required=True
     )
-    reason = serializers.CharField(required=True)
+    description = serializers.CharField(required=True)
     measurement_unit = serializers.PrimaryKeyRelatedField(
         queryset=Catalog.objects.using(settings.READONLY_DATABASE)
     )
@@ -2863,7 +2863,7 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
             container=container,
         )
         errors = {('amount' if k == 'quantity' else k): v for k, v in errors.items()}
-        if hasattr(shelf_object, "limits") and shelf_object:
+        if hasattr(shelf_object, "limits") and shelf_object.limits is not None:
             if shelf_object.shelf.measurement_unit is None:
                 converted_amount = get_conversion_from_two_units(
                     increase_unit, shelf_object.measurement_unit, amount
@@ -2930,7 +2930,7 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(
         min_value=settings.DEFAULT_MIN_QUANTITY, required=True
     )
-    reason = serializers.CharField(required=False, allow_blank=True)
+    description = serializers.CharField(required=False, allow_blank=True)
     measurement_unit = serializers.PrimaryKeyRelatedField(
         queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True
     )
@@ -2993,7 +2993,7 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
             decrease_errors["amount"] = _(
                 "Subtract amount cannot be greater than the available quantity."
             )
-        if hasattr(shelf_object, "limits"):
+        if hasattr(shelf_object, "limits") and shelf_object.limits is not None:
             if shelf_object.shelf.measurement_unit is None:
                 converted_amount = get_conversion_from_two_units(
                     decreased_unit, shelf_object.measurement_unit, amount

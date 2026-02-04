@@ -5174,3 +5174,7 @@ msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(
 
 msgid "Quantity cannot be greater than the container object maximum limit: %(limit)s."
 msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(limit)s."
+
+msgid "Decrease"
+msgstr "Disminuir"
+
