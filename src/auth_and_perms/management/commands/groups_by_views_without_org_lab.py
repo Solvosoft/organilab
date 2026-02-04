@@ -58,6 +58,10 @@ class Command(BaseCommand):
                 ],
             },
             {"name": "Profile", "permissions": ["auth.change_user"]},
+            {
+                "name": "RegisterOrganization",
+                "permissions": ["laboratory.can_manage_org_permissions"],
+            },
         ]
 
         for g in groups:
