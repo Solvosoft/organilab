@@ -31,7 +31,7 @@
 				<a class="btn btn-info btn-sm" href="{% url 'laboratory:inform_index' organization.pk %}">
 					<i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'Admin Informs' %}</a>
 				{% endif %}
-				{% if can_msds and can_una%}
+				{% if can_msds and can_una %}
 				<a class="btn btn-danger btn-sm" href="{% url 'msds:index_msds' organization.pk %}"><i class="fa fa-file-text-o"
 																																																																																					aria-hidden="true"></i>
 					{% trans 'MSDS' %}</a>
