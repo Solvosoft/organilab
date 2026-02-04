@@ -2753,6 +2753,59 @@ class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
         return fields
 
 
+class ShelObjectReactiveSerializer(serializers.ModelSerializer):
+    shelf = GTS2SerializerBase(many=False)
+    object = GTS2SerializerBase(many=False)
+    limits = GTS2SerializerBase(many=False)
+    in_where_laboratory = GTS2SerializerBase(many=False)
+    container = serializers.SerializerMethodField()
+    cas_code = serializers.SerializerMethodField()
+    measurement_unit = GTS2SerializerBase(many=False)
+    actions = serializers.SerializerMethodField()
+    labroom = serializers.SerializerMethodField()
+    furniture = serializers.SerializerMethodField()
+
+    def get_container(self, obj):
+        if obj.container and obj.container.object:
+            return obj.container.object.name
+        return None
+
+    def get_labroom(self, obj):
+        if obj.shelf and obj.shelf.furniture and obj.shelf.furniture.labroom:
+            return obj.shelf.furniture.labroom.name
+        return None
+
+    def get_furniture(self, obj):
+        if obj.shelf and obj.shelf.furniture:
+            return obj.shelf.furniture.name
+        return None
+
+    def get_cas_code(self, obj):
+        return obj.object.cas_code
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "increase": user.has_perm(
+                "laboratory.change_shel_object", "laboratory.view_object"
+            ),
+            "decrease": user.has_perm(
+                "laboratory.change_shel_object", "laboratory.view_object"
+            ),
+        }
+
+    class Meta:
+        model = ShelfObject
+        fields = "__all__"
+
+
+class ShelObjectReactiveDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelObjectReactiveSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
 class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
     amount = serializers.FloatField(
         min_value=settings.DEFAULT_MIN_QUANTITY, required=True
@@ -2799,13 +2852,55 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
 
         query_unit = Catalog.objects.filter(key="units")
         updated_errors = {}
-        measurement_unit = shelf_object.measurement_unit
+        container = None
+        if hasattr(shelf_object, "container"):
+            container = shelf_object.container
         errors = validate_measurement_unit_and_quantity(
-            shelf, shelf_object.object, amount, measurement_unit=measurement_unit
+            shelf,
+            shelf_object.object,
+            amount,
+            measurement_unit=shelf_object.measurement_unit,
+            container=container,
         )
+        errors = {('amount' if k == 'quantity' else k): v for k, v in errors.items()}
+        if hasattr(shelf_object, "limits") and shelf_object:
+            if shelf_object.shelf.measurement_unit is None:
+                converted_amount = get_conversion_from_two_units(
+                    increase_unit, shelf_object.measurement_unit, amount
+                )
+            else:
+                converted_amount = get_conversion_from_two_units(
+                    increase_unit, shelf_object.shelf.measurement_unit, amount
+                )
 
+            total = shelf_object.quantity + converted_amount
+            limits = shelf_object.limits
+            if limits.minimum_limit > total and limits.maximum_limit != 0:
+                logger.debug(
+                    f"validate_measurement_unit_and_quantity --> limits.minimun_limit ({limits.minimum_limit}) > quantity ({total})"
+                )
+                errors.update(
+                    {
+                        "amount": _(
+                            "Quantity cannot be less than the container object minimun limit: %(limit)s."
+                        )
+                        % {"limit": limits.minimum_limit}
+                    }
+                )
+            if limits.maximum_limit < total and limits.maximum_limit != 0:
+                logger.debug(
+                    f"validate_measurement_unit_and_quantity --> limits.maximum_limit ({limits.maximum_limit}) < quantity ({total})"
+                )
+                errors.update(
+                    {
+                        "amount": _(
+                            "Quantity cannot be greater than the container object maximum limit: %(limit)s."
+                        )
+                        % {"limit": limits.maximum_limit}
+                    }
+                )
         if increase_unit:
-            related_units = get_related_units(measurement_unit.pk, query_unit)
+            related_units = get_related_units(shelf_object.measurement_unit, query_unit)
 
             if increase_unit not in related_units:
                 updated_errors["measurement_unit"] = _(
@@ -2898,6 +2993,25 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
             decrease_errors["amount"] = _(
                 "Subtract amount cannot be greater than the available quantity."
             )
+        if hasattr(shelf_object, "limits"):
+            if shelf_object.shelf.measurement_unit is None:
+                converted_amount = get_conversion_from_two_units(
+                    decreased_unit, shelf_object.measurement_unit, amount
+                )
+            else:
+                converted_amount = get_conversion_from_two_units(
+                    decreased_unit, shelf_object.shelf.measurement_unit, amount
+                )
+            total = shelf_object.quantity - converted_amount
+            limits = shelf_object.limits
+            if limits.minimum_limit > total and limits.minimum_limit != 0:
+                logger.debug(
+                    f"validate_measurement_unit_and_quantity --> limits.minimun_limit ({limits.minimum_limit}) > quantity ({total})"
+                )
+                decrease_errors["amount"] = _(
+                    "Quantity cannot be less than the container object minimun limit: %(limit)s."
+                    % {"limit": limits.minimum_limit}
+                )
 
         limit_obj_error = limit_objects_by_shelf(
             shelf_object.shelf, shelf_object.object
