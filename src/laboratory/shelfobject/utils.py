@@ -46,7 +46,6 @@ def save_increase_decrease_shelf_object(
 
     bill = validated_data.get("bill", "")
     description = validated_data.get("description", "")
-    print("description", description)
     shelfobject = validated_data["shelf_object"]
     amount = validated_data["amount"]
     use = validated_data.get("use", "")
@@ -54,7 +53,6 @@ def save_increase_decrease_shelf_object(
     converted_amount = get_conversion_from_two_units(
         measurement_unit, shelfobject.shelf.measurement_unit, amount
     )
-
 
     if shelfobject.shelf.measurement_unit is None:
         converted_amount = get_conversion_from_two_units(
