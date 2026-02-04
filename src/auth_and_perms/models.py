@@ -29,7 +29,7 @@ class Profile(models.Model):
     address = models.TextField(
         verbose_name=_("Address"), null=True, blank=True, default=""
     )
-
+    identification = models.CharField(_("Identification"), max_length=20, null=True, blank=True)
     workplace = models.ManyToManyField(
         "laboratory.OrganizationStructure",
         blank=True,

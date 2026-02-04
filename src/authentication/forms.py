@@ -54,6 +54,7 @@ class EditUserForm(forms.ModelForm, GTForm):
         max_length=25, label=_("Phone"), widget=djgenwidgets.TextInput
     )
     language = forms.ChoiceField(choices=settings.LANGUAGES, widget=djgenwidgets.Select)
+    identification = forms.CharField(label=_("Identification"), max_length=100, widget=djgenwidgets.TextInput, required=False)
     address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"))
     workplace = forms.ModelMultipleChoiceField(
         widget=djgenwidgets.SelectMultiple,
