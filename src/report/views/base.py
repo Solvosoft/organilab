@@ -18,6 +18,7 @@ from report.models import (
     ObjectChangeLogReport,
     ObjectChangeLogReportBuilder,
     RegencyReportBuilder,
+    RegencyReport,
 )
 from report import register
 from django.utils import translation, timezone
@@ -396,8 +397,6 @@ def download__organization_report(request, org_pk):
                         response["result"] = True
                         if task.file_type == "html":
                             url_name = "report:report_organization_table"
-                            if task.type_report == "report_regency":
-                                url_name = "report:regency_report"
                             response.update(
                                 {
                                     "url_file": reverse(
@@ -405,6 +404,9 @@ def download__organization_report(request, org_pk):
                                         kwargs={"org_pk": org_pk, "pk": task.pk},
                                     ),
                                     "type_report": task.file_type,
+                                    "regency": RegencyReport.objects.filter(
+                                        pk=task.pk
+                                    ).first(),
                                 }
                             )
                             create_notification(
@@ -436,40 +438,21 @@ def report_organization_table(request, org_pk, pk):
     task = get_object_or_404(
         TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
     )
-    template_name = "report/general_reports.html"
+    template_name = "report/general_organization_report.html"
     content = {
         "table": task.table_content,
         "org_pk": org_pk,
         "obj_task": task,
         "changelogreport": None,
+        "regency_report": None,
     }
     if task.type_report == "report_objectschanges":
         template_name = "report/log_change.html"
         content["changelogreport"] = ObjectChangeLogReport.objects.filter(
             task_report=task
         )
-    return render(request, template_name=template_name, context=content)
-
-
-@login_required
-@permission_required("laboratory.do_report")
-def report_organization_table(request, org_pk, pk):
-    user_is_allowed_on_organization(request.user, org_pk)
-    task = get_object_or_404(
-        TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
-    )
-    template_name = "report/general_reports.html"
-    content = {
-        "table": task.table_content,
-        "org_pk": org_pk,
-        "obj_task": task,
-        "changelogreport": None,
-    }
-    if task.type_report == "report_objectschanges":
-        template_name = "report/log_change.html"
-        content["changelogreport"] = ObjectChangeLogReport.objects.filter(
-            task_report=task
-        )
+    if task.type_report == "report_regency":
+        content["regency_report"] = RegencyReport.objects.filter(pk=task.pk).first()
     return render(request, template_name=template_name, context=content)
 
 
