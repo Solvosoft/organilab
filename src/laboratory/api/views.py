@@ -25,7 +25,8 @@ from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
 )
 from laboratory.api import serializers, filterset
-from laboratory.api.filterset import ProtocolFilterSet, LogEntryFilterSet
+from laboratory.api.filterset import ProtocolFilterSet, LogEntryFilterSet, \
+    ShelObjectReactiveFilter
 from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import (
     ReservedProductsSerializer,
@@ -59,6 +60,7 @@ from laboratory.shelfobject.forms import ShelfObjectStatusForm
 from laboratory.shelfobject.serializers import (
     IncreaseReactiveShelfObjectSerializer,
     DecreaseReactiveShelfObjectSerializer,
+    ShelObjectReactiveDataTableSerializer,
 )
 from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import (
@@ -1191,7 +1193,7 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
 
 class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
-        "list": serializers.ShelObjectReactiveDataTableSerializer,
+        "list": ShelObjectReactiveDataTableSerializer,
     }
     perms = {
         "list": ["laboratory.view_shel_object"],
@@ -1204,8 +1206,16 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = [
         "id",
+        "object__name",
+        "shelf__furniture__labroom__name",
+        "shelf__name",
+        "shelf__furniture__name",
+        "container__object__name",
+        "quantity",
+        "measurement_unit__description",
+        "measurement_unit__key"
     ]
-    filterset_class = None
+    filterset_class = filterset.ShelObjectReactiveFilter
     ordering_fields = ["id"]
 
     def get_queryset(self):

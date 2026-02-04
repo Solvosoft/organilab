@@ -436,6 +436,7 @@ class ShelfObject(models.Model):
     container_open_date = models.DateField(
         blank=True, null=True, verbose_name=_("Container Open Date")
     )
+    without_limit = models.BooleanField(default=False, verbose_name=_("Without limit"))
 
     @staticmethod
     def get_units(unit):

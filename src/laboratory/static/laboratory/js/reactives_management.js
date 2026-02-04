@@ -5,7 +5,7 @@ datatable_inits = {
         {data: "id", name: "id", title: "ID", type: "number", visible: false},
         {
             data: "object",
-            name: "object",
+            name: "object_name",
             title: gettext("Name"),
             render: selectobjprint({display_name: "text"}),
             visible: true,
@@ -15,26 +15,26 @@ datatable_inits = {
             data: "cas_code",
             name: "cas_code",
             title: gettext("Nº CAS"),
-            type: "string",
+            type: "readonly",
             visible: true
         },
         {
             data: "labroom",
-            name: "labroom",
+            name: "labroom_name",
             title: gettext("Labroom"),
             type: "string",
             visible: true
         },
         {
             data: "furniture",
-            name: "furniture",
+            name: "furniture_name",
             title: gettext("Furniture"),
             type: "string",
             visible: true
         },
         {
             data: "shelf",
-            name: "shelf",
+            name: "shelf_name",
             title: gettext("Shelf"),
             render: selectobjprint({display_name: "text"}),
             type: "string",
@@ -42,7 +42,7 @@ datatable_inits = {
         },
         {
             data: "container",
-            name: "container",
+            name: "container_name",
             title: gettext("Container"),
             type: "string",
             visible: true,
@@ -56,7 +56,7 @@ datatable_inits = {
         },
         {
             data: "measurement_unit",
-            name: "measurement_unit",
+            name: "measurement_description",
             title: gettext("Measurement Unit"),
             render: selectobjprint({display_name: "text"}),
             type: "string",

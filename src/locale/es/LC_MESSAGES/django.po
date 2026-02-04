@@ -5154,3 +5154,9 @@ msgstr "Listar Reactivos"
 
 msgid "Reorder Reactives"
 msgstr "Reordenar Reactivos"
+
+msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
+msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
+
+msgid "Quantity cannot be greater than the container object maximum limit: %(limit)s."
+msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(limit)s."
