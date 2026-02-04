@@ -7,32 +7,23 @@ def forwards(apps, schema_editor):
     Group = apps.get_model("auth", "Group")
     Permission = apps.get_model("auth", "Permission")
     ContentType = apps.get_model("contenttypes", "ContentType")
+    OrganizationStructure = apps.get_model("laboratory", "OrganizationStructure")
 
-    group_name = "RegisterOrganization"
-    perm_codename = "can_manage_org_permissions"
-    perm_name = "Can manage organization permission structure"
+    group, _ = Group.objects.get_or_create(name="RegisterOrganization")
 
-    # Asegurar el grupo
-    group, _ = Group.objects.get_or_create(name=group_name)
-
-    # Asegurar el ContentType del modelo OrganizationStructure
-    #    model en contenttypes va en minúscula
-    ct = ContentType.objects.get(app_label="laboratory", model="organizationstructure")
-
-    # Asegurar el permiso (por si post_migrate aún no lo creó)
-    perm, _ = Permission.objects.get_or_create(
-        content_type=ct,
-        codename=perm_codename,
-        defaults={"name": perm_name},
+    ct, _ = ContentType.objects.get_or_create(
+        app_label="laboratory",
+        model=OrganizationStructure._meta.model_name,  # "organizationstructure"
     )
 
-    # Si existía con otro name, lo alineamos (opcional pero útil)
-    if perm.name != perm_name:
-        perm.name = perm_name
-        perm.save(update_fields=["name"])
+    perm, _ = Permission.objects.get_or_create(
+        content_type=ct,
+        codename="can_manage_org_permissions",
+        defaults={"name": "Can manage organization permission structure"},
+    )
 
-    # Asignar permiso al grupo
-    group.permissions.add(perm)
+    if not group.permissions.filter(pk=perm.pk).exists():
+        group.permissions.add(perm)
 
 
 def backwards(apps, schema_editor):
