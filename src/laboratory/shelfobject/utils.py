@@ -46,6 +46,7 @@ def save_increase_decrease_shelf_object(
 
     bill = validated_data.get("bill", "")
     description = validated_data.get("description", "")
+    print("description", description)
     shelfobject = validated_data["shelf_object"]
     amount = validated_data["amount"]
     use = validated_data.get("use", "")
@@ -59,10 +60,7 @@ def save_increase_decrease_shelf_object(
         converted_amount = get_conversion_from_two_units(
             measurement_unit, shelfobject.measurement_unit, amount
         )
-    print("converted_amount: ", converted_amount)
-    print("old: ", old)
     new = old - converted_amount
-    print("new: ", new)
     action_taken = _("Object was decreased")
 
 

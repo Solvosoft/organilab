@@ -118,9 +118,6 @@ const objconfig = {
     datatable_inits: datatable_inits,
     add_filter: true,
     relation_render: {'field_autocomplete': 'text'},
-    delete_display: data => {
-        return `Eliminar`
-    },
     create: "btn-success",
     icons: icons,
     urls: object_urls
