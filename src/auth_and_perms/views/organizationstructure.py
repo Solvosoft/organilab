@@ -3,8 +3,12 @@ from django.contrib.admin.models import ADDITION
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponseForbidden, Http404, HttpResponseRedirect, \
-    JsonResponse
+from django.http import (
+    HttpResponseForbidden,
+    Http404,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -21,7 +25,8 @@ from auth_and_perms.forms import (
     ProfileGroupForm,
     IncludeEmailExternalUserForm,
     OrganizationActionsClone,
-    OrganizationActionsWithoutInactive, RolForm,
+    OrganizationActionsWithoutInactive,
+    RolForm,
 )
 from auth_and_perms.forms import LaboratoryOfOrganizationForm, ProfileListForm
 from auth_and_perms.models import ProfilePermission, Rol, Profile, GroupDescription
@@ -45,7 +50,7 @@ from django.conf import settings
 
 
 @login_required
-@permission_required("laboratory.change_organizationstructure")
+@permission_required("laboratory.can_manage_org_permissions")
 def organization_manage_view(request):
     parents, parents_pks = get_org_parents_info(request.user)
     nodes = []
@@ -74,7 +79,7 @@ def organization_manage_view(request):
         "actionwiform": OrganizationActionsWithoutInactive(prefix="wi"),
         "actioncloneform": OrganizationActionsClone(prefix="clone"),
         "profile_group_form": ProfileGroupForm(prefix="pg"),
-        "groups": GroupDescription.objects.all()
+        "groups": GroupDescription.objects.all(),
     }
     return render(request, "auth_and_perms/list_organizations.html", context)
 
@@ -228,7 +233,8 @@ class ListRolByOrganization(ListView):
             super()
             .get_queryset()
             .using(settings.READONLY_DATABASE)
-            .filter(organizationstructure=self.org).order_by("pk")
+            .filter(organizationstructure=self.org)
+            .order_by("pk")
         )
         organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=self.org
@@ -405,14 +411,18 @@ def copy_rols(request, pk):
         messages.error(request, _("Error, form is invalid"))
     return redirect("auth_and_perms:organizationManager")
 
+
 @login_required
 @permission_required("auth_and_perms.view_rol")
 @require_http_methods(["GET"])
 def get_roles_by_organization(request, pk):
     roles = get_object_or_404(OrganizationStructure, pk=pk).rol.all()
-    roles = [{"name":role.name, "description": role.description if role.description
-    else ""} for role in roles]
+    roles = [
+        {"name": role.name, "description": role.description if role.description else ""}
+        for role in roles
+    ]
     return JsonResponse({"roles": roles})
+
 
 @login_required
 @permission_required("auth_and_perms.view_rol")
@@ -421,6 +431,7 @@ def get_rol(request, pk):
     rol = get_object_or_404(Rol, pk=pk)
     context = {"name": rol.name, "description": rol.description}
     return JsonResponse(context)
+
 
 @login_required
 @permission_required("auth_and_perms.change_rol")
@@ -431,7 +442,11 @@ def update_rol(request, org_pk, pk):
     if form.is_valid():
         rol = form.save()
         messages.success(request, _("Role updated successfully"))
-        return redirect(reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk}))
+        return redirect(
+            reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk})
+        )
     else:
         messages.error(request, _("Error, form is invalid"))
-    return redirect(reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk}))
+    return redirect(
+        reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk})
+    )

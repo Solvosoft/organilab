@@ -191,6 +191,9 @@ msgid "Organization Structure Relations"
 msgstr "Relaciones de estructura organizacional"
 
 #  Organization User Management
+msgid "Add Organization Permissions Management"
+msgstr "Agregar administración de permisos de organización"
+
 msgid "Add Organization User Management"
 msgstr "Agregar gestión de usuarios de la organización"
 
@@ -1148,3 +1151,6 @@ msgstr "Eliminar Proceso de Laboratorio"
 
 msgid "View Laboratory Process"
 msgstr "Ver Proceso de Laboratorio"
+
+msgid "Can manage organization permission structure"
+msgstr "Puede gestionar la estructura de permisos de la organización"
