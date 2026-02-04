@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
-from report.api.views import ReportDataViewSet, ReportDataLogViewSet
+from report.api.views import ReportDataViewSet, ReportDataLogViewSet, RegencyViewSet
 from report.views import base
 
 base_reports = [
@@ -43,6 +43,8 @@ router = DefaultRouter()
 router.register("api_report", ReportDataViewSet, basename="api-report")
 router.register("api_report_log", ReportDataLogViewSet, basename="api-report-log")
 
+router_report = DefaultRouter()
+router_report.register("api_regency", RegencyViewSet, basename="api-regency")
 
 app_name = "report"
 
@@ -55,4 +57,5 @@ urlpatterns = [
     path("<int:org_pk>/<int:lab_pk>/", include(base_reports)),
     path("<int:org_pk>/", include(base_organization_reports)),
     path("reports/<int:org_pk>", include(report_urls)),
+    path("api/reports/<int:org_pk>", include(router_report.urls)),
 ]

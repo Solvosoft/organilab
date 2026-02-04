@@ -5,6 +5,7 @@ from django.db.models import Q, Value
 from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -12,16 +13,22 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from laboratory.utils import (
+    PermissionByOrganization,
+)
 from report.api.filterset import ObjectChangeLogFilterSet
 from report.models import (
     TaskReport,
     ObjectChangeLogReportBuilder,
     ObjectChangeLogReport,
+    RegencyReportBuilder,
+    RegencyReport,
 )
 from report.api.serializers import (
     ReportDataTableSerializer,
     ObjectChangeDataTableSerializer,
     ValidateObjectChangeFilters,
+    RegencyDataTableSerializer,
 )
 from django.db import connection
 
@@ -271,3 +278,88 @@ class ReportDataLogViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
             "draw": self.request.GET.get("draw", 1),
         }
         return Response(self.get_serializer(response).data)
+
+
+class RegencyViewSetX(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = RegencyReportBuilder.objects.all().using(settings.READONLY_DATABASE)
+    serializer_class = RegencyDataTableSerializer
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = [
+        "substance",
+        "danger_category",
+        "total",
+    ]
+    filterset_class = None
+    ordering_fields = [
+        "substance",
+        "danger_category",
+        "total",
+    ]
+    ordering = ("substance", "danger_category", "total")
+    report = None
+    step = None
+
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.report and self.step:
+            return queryset.filter(report=self.report, danger_list=self.step)
+        else:
+            return queryset.none()
+
+    def retrieve(self, request, pk, **kwargs):
+        task_report = get_object_or_404(TaskReport, pk=pk)
+
+        self.step = request.GET.get("step", None)
+        self.report = RegencyReport.objects.filter(
+            task_report=task_report,
+        ).first()
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        if "ordering" in self.request.GET:
+            queryset = queryset.order_by(self.request.GET["ordering"])
+
+        data = self.paginate_queryset(queryset)
+
+        total = RegencyReportBuilder.objects.filter(report=self.report).count()
+        response = {
+            "data": data,
+            "recordsTotal": total,
+            "recordsFiltered": queryset.count(),
+            "draw": self.request.GET.get("draw", 1),
+        }
+        return Response(self.get_serializer(response).data)
+
+
+class RegencyViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": RegencyDataTableSerializer,
+    }
+    perms = {
+        "list": ["laboratory.do_report"],
+    }
+
+    permission_classes = (PermissionByOrganization,)
+
+    queryset = RegencyReportBuilder.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["substance", "danger_category"]
+    ordering_fields = ["pk"]
+    filterset_class = None
+
+    def get_queryset(self):
+        queryset = self.queryset
+        if self.report and self.step:
+            return queryset.filter(report=self.report, danger_list=int(self.step))
+        else:
+            return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+        task = get_object_or_404(TaskReport, pk=self.request.GET.get("pk"))
+        self.report = RegencyReport.objects.filter(task_report=task).first()
+        self.step = request.GET.get("step", None)
+        return super().list(request, *args, **kwargs)

@@ -576,3 +576,29 @@ def remove_shelfobject_from_shelf(laboratory, shelf, user, organization):
             organization=organization,
         )
     shelfobjects.delete()
+
+
+class PermissionByOrganization(BasePermission):
+
+    def has_permission(self, request, view):
+        org_pk = view.kwargs.get("org_pk")
+        dev = True
+        if org_pk is None:
+
+            return False
+        view.organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+        )
+        print(view.organization)
+        try:
+            user_is_allowed_on_organization(view.request.user, view.organization)
+
+        except Exception as e:
+            dev = False
+        return dev
+
+    def has_object_permission(self, request, view, obj):
+        """
+        Return `True` if permission is granted, `False` otherwise.
+        """
+        return self.has_permission(request, view)
