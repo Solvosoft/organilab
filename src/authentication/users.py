@@ -48,6 +48,7 @@ class ChangeUser(UpdateView):
         dev["phone_number"] = self.request.user.profile.phone_number
         dev["address"] = self.request.user.profile.address
         dev["workplace"] = self.request.user.profile.workplace.all()
+        dev["identification"] = self.request.user.profile.identification
         return dev
 
     def get_success_url(self):
@@ -71,6 +72,7 @@ class ChangeUser(UpdateView):
         profile.language = form.cleaned_data["language"]
         profile.address = form.cleaned_data["address"]
         profile.phone_number = form.cleaned_data["phone_number"]
+        profile.identification = form.cleaned_data["identification"]
         profile.workplace.clear()
         profile.workplace.add(*form.cleaned_data["workplace"])
         profile.save()

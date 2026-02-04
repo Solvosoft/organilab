@@ -5177,4 +5177,3 @@ msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(
 
 msgid "Decrease"
 msgstr "Disminuir"
-
