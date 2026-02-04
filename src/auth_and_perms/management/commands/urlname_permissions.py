@@ -1165,6 +1165,11 @@ URLNAME_PERMISSIONS = {
             "category": "Role",
             "permission": "djgentelella.can_manage_permissions",
         },
+        # {
+        #     "name": "Add Organization Permissions Management",
+        #     "category": "Role",
+        #     "permission": "laboratory.can_manage_org_permissions",
+        # },
         {
             "name": "View Laboratory",
             "category": "Laboratory",
