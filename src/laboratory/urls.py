@@ -49,6 +49,7 @@ from laboratory.api.views import (
     ReactiveManagementViewset,
     LaboratoryProcessViewset,
     ProviderViewSet,
+    ObjectFeatureViewSet,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -257,21 +258,33 @@ lab_reports_urls = [
     ),
 ]
 
+
+objectfeature_router = DefaultRouter()
+objectfeature_router.register(
+    "api_objectfeature", ObjectFeatureViewSet, basename="api-objectfeature"
+)
+
 lab_features_urls = [
+    # path(
+    #     "create/",
+    #     objectfeature.FeatureCreateView.as_view(),
+    #     name="object_feature_create",
+    # ),
+    # path(
+    #     "edit/<int:pk>/",
+    #     objectfeature.FeatureUpdateView.as_view(),
+    #     name="object_feature_update",
+    # ),
+    # path(
+    #     "delete/<int:pk>/",
+    #     objectfeature.FeatureDeleteView.as_view(),
+    #     name="object_feature_delete",
+    # ),
+    path("api/objectfeature/", include(objectfeature_router.urls)),
     path(
-        "create/",
-        objectfeature.FeatureCreateView.as_view(),
-        name="object_feature_create",
-    ),
-    path(
-        "edit/<int:pk>/",
-        objectfeature.FeatureUpdateView.as_view(),
-        name="object_feature_update",
-    ),
-    path(
-        "delete/<int:pk>/",
-        objectfeature.FeatureDeleteView.as_view(),
-        name="object_feature_delete",
+        "list/",
+        objectfeature.objectfeatures_view,
+        name="objectfeatures_view",
     ),
 ]
 

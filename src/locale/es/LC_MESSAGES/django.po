@@ -5165,3 +5165,12 @@ msgstr "Este endpoint requiere lab_pk en la URL."
 
 msgid "Legal Identity"
 msgstr "Identidad Jurídica"
+
+msgid "Register Object Feature"
+msgstr "Registrar características de objetos"
+
+msgid "Update Object Feature"
+msgstr "Actualizar características de objetos"
+
+msgid "Delete Object Feature"
+msgstr "Eliminar características de objetos"

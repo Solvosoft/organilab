@@ -4,22 +4,13 @@ datatable_inits = {
     columns: [
         {data: "id", name: "id", title: "ID", type: "number", visible: false},
         {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
-        {data: "phone_number", name: "phone_number", title: gettext("Phone"), type: "string", visible: true},
-        {data: "email", name: "email", title: gettext("Email"), type: "string", visible: true},
         {
-            data: "legal_identity",
-            name: "legal_identity",
-            title: gettext("Legal Identity"),
+            data: "description",
+            name: "description",
+            title: gettext("Description"),
             type: "string",
+            render: truncateTextRenderer(),
             visible: true
-        },
-        {
-            data: "laboratory",
-            name: "laboratory",
-            title: gettext("Laboratory"),
-            type: "string",
-            render: selectobjprint({display_name: 'text'}),
-            visible: false
         },
 
         {

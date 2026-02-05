@@ -4,7 +4,15 @@ from django_filters import FilterSet, DateFromToRangeFilter, CharFilter
 from django.db.models.functions import Concat
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
-from laboratory.models import EquipmentType, Catalog, Object, Protocol, Inform, Provider
+from laboratory.models import (
+    EquipmentType,
+    Catalog,
+    Object,
+    Protocol,
+    Inform,
+    Provider,
+    ObjectFeatures,
+)
 from sga.models import Substance
 from django.db.models.expressions import Value
 
@@ -47,6 +55,16 @@ class ProviderFilter(FilterSet):
             "email": ["icontains"],
             "legal_identity": ["icontains"],
             "laboratory__name": ["icontains"],
+        }
+
+
+class ObjectFeatureFilter(FilterSet):
+    class Meta:
+        model = ObjectFeatures
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "description": ["icontains"],
         }
 
 

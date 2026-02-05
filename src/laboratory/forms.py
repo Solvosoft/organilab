@@ -369,7 +369,7 @@ class ProviderForm(GTForm, forms.ModelForm):
         }
 
 
-class ObjectFeaturesForm(forms.ModelForm, GTForm):
+class ObjectFeaturesForm(GTForm, forms.ModelForm):
     class Meta:
         model = ObjectFeatures
         fields = "__all__"
