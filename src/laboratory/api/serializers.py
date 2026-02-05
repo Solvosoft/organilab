@@ -32,7 +32,8 @@ from laboratory.models import (
     EquipmentCharacteristics,
     SustanceCharacteristics,
     ReactiveLimit,
-    ObjectMaximumLimit, LaboratoryProcess,
+    ObjectMaximumLimit,
+    LaboratoryProcess,
 )
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
@@ -1259,11 +1260,12 @@ class ReactiveLimitsSerializer(serializers.Serializer):
             .distinct()
         ]
 
+
 class LaboratoryProcessSerializer(serializers.ModelSerializer):
     laboratory = serializers.PrimaryKeyRelatedField(
         queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
         required=True,
-        many=False
+        many=False,
     )
     description = serializers.CharField(required=True)
 
@@ -1271,12 +1273,14 @@ class LaboratoryProcessSerializer(serializers.ModelSerializer):
         model = LaboratoryProcess
         fields = "__all__"
 
+
 class LaboratoryProcessUpdateSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=True)
 
     class Meta:
         model = LaboratoryProcess
         fields = ["description"]
+
 
 class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
@@ -1298,8 +1302,61 @@ class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
         model = LaboratoryProcess
         fields = ["id", "description", "created_by", "creation_date", "actions"]
 
+
 class LaboratoryProcessDataTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=LaboratoryProcessSerializerTable(), required=True)
+    data = serializers.ListField(
+        child=LaboratoryProcessSerializerTable(), required=True
+    )
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+# Provider
+class ProviderSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    laboratory = GTS2SerializerBase(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_provider"),
+            "update": user.has_perm("laboratory.change_provider"),
+            "destroy": user.has_perm("laboratory.delete_provider"),
+            "list": user.has_perm("laboratory.view_provider"),
+        }
+
+    class Meta:
+        model = Provider
+        fields = "__all__"
+
+
+class ProviderDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ProviderSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ProviderValidateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False, max_length=225
+    )
+    phone_number = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=25
+    )
+    legal_identity = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=50
+    )
+    email = serializers.EmailField(
+        required=False, allow_blank=True, allow_null=True, max_length=100
+    )
+
+    class Meta:
+        model = Provider
+        fields = (
+            "name",
+            "phone_number",
+            "legal_identity",
+            "email",
+        )

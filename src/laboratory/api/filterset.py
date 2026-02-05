@@ -4,7 +4,7 @@ from django_filters import FilterSet, DateFromToRangeFilter, CharFilter
 from django.db.models.functions import Concat
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
-from laboratory.models import EquipmentType, Catalog, Object, Protocol, Inform
+from laboratory.models import EquipmentType, Catalog, Object, Protocol, Inform, Provider
 from sga.models import Substance
 from django.db.models.expressions import Value
 
@@ -35,6 +35,19 @@ class InstrumentalFamilyFilter(FilterSet):
     class Meta:
         model = Catalog
         fields = {"id": ["exact"], "description": ["icontains"]}
+
+
+class ProviderFilter(FilterSet):
+    class Meta:
+        model = Provider
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "phone_number": ["icontains"],
+            "email": ["icontains"],
+            "legal_identity": ["icontains"],
+            "laboratory__name": ["icontains"],
+        }
 
 
 class EquipmentTypeFilter(FilterSet):
