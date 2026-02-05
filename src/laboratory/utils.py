@@ -589,7 +589,7 @@ class PermissionByOrganization(BasePermission):
         view.organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
         )
-        print(view.organization)
+
         try:
             user_is_allowed_on_organization(view.request.user, view.organization)
 
