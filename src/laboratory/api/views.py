@@ -1196,9 +1196,9 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         "list": ShelObjectReactiveDataTableSerializer,
     }
     perms = {
-        "list": ["laboratory.view_shel_object"],
-        "increase": ["laboratory.change_shel_object"],
-        "decrease": ["laboratory.change_shel_object"],
+        "list": ["laboratory.view_shelfobject"],
+        "increase": ["laboratory.change_shelfobject"],
+        "decrease": ["laboratory.change_shelfobject"],
     }
     permission_classes = (PermissionByLaboratoryInOrganization,)
     queryset = ShelfObject.objects.filter(object__type=Object.REACTIVE)

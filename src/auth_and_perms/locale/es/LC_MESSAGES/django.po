@@ -1148,3 +1148,15 @@ msgstr "Eliminar Proceso de Laboratorio"
 
 msgid "View Laboratory Process"
 msgstr "Ver Proceso de Laboratorio"
+
+#Shelf Object Maintenance
+
+msgid "Update Shelf Object"
+msgstr "Actualizar objeto de estantería"
+
+msgid "View Unit Measurement"
+msgstr "Ver unidad de medida"
+
+msgid "Unit Measurement"
+msgstr "Unidad de medida"
+

@@ -7,8 +7,6 @@
 	{% define_true "use_datatables" %}
 	{% define_urlname_action 'shelfobject-list' %}
 
-	{% trans 'List Reagents' as view_reagents %}
-	{% get_or_create_permission_context 'shelfobject-list' 'laboratory' 'view_shelfobject' perms_str view_reagents %}
 {% endblock %}
 
 {% block title %}{% trans 'Consumption record' %}{% endblock %}
