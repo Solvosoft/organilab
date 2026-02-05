@@ -121,13 +121,15 @@
 							{% if perms.laboratory.add_objectfeatures %}
 								<li class="list-group-item">
 									<a
-										href="{% url 'laboratory:object_feature_create' org_pk laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
+										href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
+
 								</li>
 							{% endif %}
 
 							{% if perms.laboratory.view_provider %}
 								<li class="list-group-item">
-									<a href="{% url 'laboratory:provider_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
+									<a
+										href="{% url 'laboratory:provider_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
 								</li>
 							{% endif %}
 						</ul>

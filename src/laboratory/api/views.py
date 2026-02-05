@@ -28,6 +28,7 @@ from laboratory.api.filterset import (
     ProtocolFilterSet,
     LogEntryFilterSet,
     ProviderFilter,
+    ObjectFeatureFilter,
 )
 from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import (
@@ -43,6 +44,9 @@ from laboratory.api.serializers import (
     ProviderSerializer,
     ProviderDataTableSerializer,
     ProviderValidateSerializer,
+    ObjectFeatureSerializer,
+    ObjectFeatureDataTableSerializer,
+    ObjectFeatureValidateSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -60,6 +64,7 @@ from laboratory.models import (
     ReactiveLimit,
     LaboratoryProcess,
     Provider,
+    ObjectFeatures,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -1295,6 +1300,99 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             "provider",
             changed_data=[],  # no aplica en delete
             object_repr=provider_repr,
+            relobj=lab_pk,
+        )
+
+        instance.delete()
+
+
+#  ObjectFeature
+class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": ObjectFeatureDataTableSerializer,
+        "destroy": ObjectFeatureSerializer,
+        "create": ObjectFeatureValidateSerializer,
+        "update": ObjectFeatureValidateSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_objectfeatures"],
+        "create": ["laboratory.add_objectfeatures"],
+        "update": ["laboratory.change_objectfeatures"],
+        "destroy": ["laboratory.delete_objectfeatures"],
+    }
+
+    queryset = ObjectFeatures.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name", "description"]
+    filterset_class = ObjectFeatureFilter
+    ordering_fields = ["name"]
+    ordering = ("id",)
+
+    def get_lab_pk_or_error(self):
+        lab_pk = self.kwargs.get("lab_pk")
+        if not lab_pk:
+            raise ValidationError(
+                {"lab_pk": _("This endpoint requires lab_pk in the URL.")}
+            )
+        return lab_pk
+
+    def perform_create(self, serializer):
+        lab_pk = self.get_lab_pk_or_error()
+
+        objectfeatures = serializer.save()
+
+        organilab_logentry(
+            self.request.user,
+            objectfeatures,
+            ADDITION,
+            "objectfeatures",
+            changed_data=[],  # no necesaria en create
+            relobj=lab_pk,  # para LabOrgLogEntry
+        )
+
+    def perform_update(self, serializer):
+        lab_pk = self.get_lab_pk_or_error()
+
+        objectfeatures_before = self.get_object()
+
+        before = {
+            "name": objectfeatures_before.name,
+            "description": objectfeatures_before.description,
+        }
+
+        objectfeatures = serializer.save()
+
+        after = {
+            "name": objectfeatures.name,
+            "description": objectfeatures.description,
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            objectfeatures,
+            CHANGE,
+            "objectfeatures",
+            changed_data=changed_fields,
+            relobj=lab_pk,
+        )
+
+    def perform_destroy(self, instance):
+        lab_pk = self.get_lab_pk_or_error()
+
+        objectfeatures_id = instance.pk
+        objectfeatures_repr = str(instance)
+
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "objectfeatures",
+            changed_data=[],  # no aplica en delete
+            object_repr=objectfeatures_repr,
             relobj=lab_pk,
         )
 

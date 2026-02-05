@@ -1360,3 +1360,44 @@ class ProviderValidateSerializer(serializers.ModelSerializer):
             "legal_identity",
             "email",
         )
+
+
+# ObjectFeatures
+class ObjectFeatureSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_objectfeatures"),
+            "update": user.has_perm("laboratory.change_objectfeatures"),
+            "destroy": user.has_perm("laboratory.delete_objectfeatures"),
+            "list": user.has_perm("laboratory.view_objectfeatures"),
+        }
+
+    class Meta:
+        model = ObjectFeatures
+        fields = "__all__"
+
+
+class ObjectFeatureDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ObjectFeatureSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ObjectFeatureValidateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False, max_length=150
+    )
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=300
+    )
+
+    class Meta:
+        model = ObjectFeatures
+        fields = (
+            "name",
+            "description",
+        )
