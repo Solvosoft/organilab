@@ -1,52 +1,61 @@
 {% extends 'base.html' %}
-{% load i18n laboratory %}
+{% load i18n laboratory static %}
 {% load gtsettings %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% block pre_head %}
-    {% define_true  "use_datatables" %}
+	{% define_true "use_datatables" %}
 	{% define_urlname_action 'list_provider' %}
 {% endblock %}
 {% block title %}{% trans 'Laboratory providers management' %}{% endblock %}
 
 {% block content %}
-  	<div class="page-header text-center"><h1>{% trans 'Providers List' %}</h1></div>
-		<a class="btn btn-success pull-right" href="{% url 'laboratory:add_provider' org_pk laboratory %}"><i class="fa fa-plus" aria-hidden="true"></i> {% trans 'Add' %}</a>
-		{% if perms.laboratory.view_provider  %}
-			<table id="providertable" class="table">
-				<thead>
-					<tr>
-						<th class="text-center">{% trans "Name" %}</th>
-						<th class="text-center">{% trans "Phone" %}</th>
-						<th class="text-center">{% trans "Email" %}</th>
-						<th class="text-center">{% trans 'Action' %}</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for obj in object_list %}
-						<tr>
-							<td class="text-center">{{ obj.name }}</td>
-							<td class="text-center">{{ obj.phone_number }}</td>
-							<td class="text-center">{{ obj.email }}</td>
-							<td class="text-center"> <a class="btn btn-md btn-success"
-									href="{% url 'laboratory:update_lab_provider' lab_pk=laboratory pk=obj.pk org_pk=org_pk %}"  title="{% trans 'Update' %}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-							</td>
-						</tr>
-					{% empty %}
-						<tr><td colspan="6"> {% trans "No objects" %}</td> </tr>
-					{% endfor %}
-				</tbody>
-			</table>
+	<div class="page-header text-center"><h1>{% trans 'Providers List' %}</h1></div>
+
+	<section class="my-3">
+		{% if perms.laboratory.view_provider %}
+
+			<div class="row mt-3 ">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table">
+					</table>
+				</div>
+			</div>
+
 		{% else %}
 			{% include 'laboratory/action_denied.html' %}
 		{% endif %}
-		<div>
+	</section>
+	<div>
 	</div>
+
+	{# Modales de acciones #}
+	{% url "laboratory:api-provider-list" org_pk lab_pk as list_obj_url %}
+	{% trans 'Register Provider' as create_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle modal_class=create_obj_tittle url=list_obj_url %}
+
+	{% url "laboratory:api-provider-detail" org_pk lab_pk 0 as detail_obj_url %}
+	{% trans 'Update Provider' as update_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle url=detail_obj_url %}
+
+	{% trans 'Delete Provider' as delete_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+
+
 {% endblock %}
 
 {% block js %}
-	{{block.super}}
+	{{ block.super }}
+
 	<script>
-		$("#providertable").DataTable();
+		const object_urls = {
+			list_url: "{% url 'laboratory:api-provider-list' org_pk lab_pk %}",
+			create_url: "{% url 'laboratory:api-provider-list' org_pk lab_pk %}",
+			destroy_url: "{% url "laboratory:api-provider-detail" org_pk lab_pk 0 %}",
+			update_url: "{% url "laboratory:api-provider-detail" org_pk lab_pk 0 %}",
+		}
 	</script>
+	<script src="{% static '/laboratory/js/provider_management.js' %}?v={% get_organilab_version %}"></script>
+
 {% endblock %}
 

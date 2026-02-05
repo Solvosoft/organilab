@@ -46,7 +46,9 @@ from laboratory.api.views import (
     EquipmentManagementViewset,
     InstrumentalFamilyManagementViewset,
     EquipmentTypeManagementViewset,
-    ReactiveManagementViewset, LaboratoryProcessViewset,
+    ReactiveManagementViewset,
+    LaboratoryProcessViewset,
+    ProviderViewSet,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -66,8 +68,11 @@ from laboratory.views.informs import (
     complete_inform,
     remove_inform,
 )
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView, \
-    laboratory_process_list
+from laboratory.views.laboratory import (
+    LaboratoryListView,
+    LaboratoryDeleteView,
+    laboratory_process_list,
+)
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import (
@@ -82,7 +87,9 @@ from laboratory.views.organizations import (
     OrganizationUpdateView,
     OrganizationActionsFormview,
 )
-from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
+
+# from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
+from laboratory.views.provider import provider_view
 
 objviews = ObjectView()
 
@@ -243,7 +250,11 @@ lab_reports_urls = [
         "list/reactive/report", reports.ReactiveReport.as_view(), name="reactive_report"
     ),
     path("risk_zone/", reports.RiskZoneReport.as_view(), name="risk_zone_report"),
-    path("reactive/stock/", reports.ReactiveStockReport.as_view(), name="reactive_stock_report"),
+    path(
+        "reactive/stock/",
+        reports.ReactiveStockReport.as_view(),
+        name="reactive_stock_report",
+    ),
 ]
 
 lab_features_urls = [
@@ -284,7 +295,9 @@ reports_all_lab = [
 
 sustance_urls = [
     path("", view_reactive_list, name="sustance_list"),
-    path("reactive_stock/", ReactiveStockDashboard.as_view(), name="reactive_stock_list"),
+    path(
+        "reactive_stock/", ReactiveStockDashboard.as_view(), name="reactive_stock_list"
+    ),
 ]
 
 equipment_urls = [
@@ -323,14 +336,16 @@ organization_urls = [
     path("reports/<int:org_pk>/", reports.report_index, name="reports"),
 ]
 
+provider_router = DefaultRouter()
+provider_router.register("api_provider", ProviderViewSet, basename="api-provider")
+
 provider_urls = [
-    path("provider/", ProviderCreate.as_view(), name="add_provider"),
+    path("api/provider/", include(provider_router.urls)),
     path(
-        "update_provider/<int:pk>/",
-        ProviderUpdate.as_view(),
-        name="update_lab_provider",
+        "list/",
+        provider_view,
+        name="provider_view",
     ),
-    path("list/", ProviderList.as_view(), name="list_provider"),
 ]
 
 informs_urls = [
@@ -643,5 +658,9 @@ urlpatterns += organization_urls + [
     ),
     path("equipment/api/<int:org_pk>/<int:lab_pk>/", include(objectrouter.urls)),
     path("<int:org_pk>/<int:lab_pk>/processes/", include(lab_process_router.urls)),
-    path("<int:org_pk>/<int:lab_pk>/processes/list/", laboratory_process_list, name="laboratory_process_list"),
+    path(
+        "<int:org_pk>/<int:lab_pk>/processes/list/",
+        laboratory_process_list,
+        name="laboratory_process_list",
+    ),
 ]

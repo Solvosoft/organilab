@@ -1098,3 +1098,6 @@ msgstr "Fecha de apertura del contenedor"
 
 msgid "Expiration Date"
 msgstr "Fecha de caducidad"
+
+msgid "Legal Identity"
+msgstr "Identidad Jurídica"

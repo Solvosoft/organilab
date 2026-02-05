@@ -1275,7 +1275,7 @@ class Provider(BaseCreationObj):
     )
     email = models.EmailField(blank=True, verbose_name=_("Email"))
     legal_identity = models.CharField(
-        max_length=50, blank=True, default="", verbose_name=_("legal identity")
+        max_length=50, blank=True, default="", verbose_name=_("Legal Identity")
     )
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, blank=True, null=True
