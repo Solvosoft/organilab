@@ -26,15 +26,9 @@ def get_dataset_report(report, column_list=None):
     dataset = []
     filters = {"object__type": 0}
     logs = ObjectLogChange.objects.filter(
-        organization_where_action_taken__pk=42, update_time__year=2025
-    )
-    risk_zones = RiskZone.objects.filter(organization__pk=42)
-    filters.update(
-        {
-            "in_where_laboratory__pk__in": list(
-                set(logs.values_list("laboratory", flat=True))
-            )
-        }
+        organization_where_action_taken__pk=report.data["organization"],
+        update_time__year=report.data["years"],
+        laboratory__pk__in=report.data["laboratories"],
     )
     objs = Object.objects.filter(
         pk__in=logs.values_list("object__pk", flat=True),
@@ -52,9 +46,10 @@ def get_dataset_report(report, column_list=None):
     ).first()
     data = {
         "organization": organization,
-        "year": 2025,  # report.data["year"],
+        "year": report.data["years"],
         "task_report": report,
     }
+
     report_regency = RegencyReport.objects.create(**data)
     reactive_list = []
     for reactive in objs:
@@ -134,16 +129,11 @@ def get_dataset_report_doc(report, column_list=None):
     dataset = []
     filters = {"object__type": 0}
     logs = ObjectLogChange.objects.filter(
-        organization_where_action_taken__pk=42, update_time__year=2025
+        organization_where_action_taken__pk=report.data["organization"],
+        update_time__year=report.data["years"],
+        laboratory__pk__in=report.data["laboratories"],
     )
-    risk_zones = RiskZone.objects.filter(organization__pk=42)
-    filters.update(
-        {
-            "in_where_laboratory__pk__in": list(
-                set(logs.values_list("laboratory", flat=True))
-            )
-        }
-    )
+
     objs = Object.objects.filter(
         pk__in=logs.values_list("object__pk", flat=True),
         has_threshold=True,
@@ -264,3 +254,46 @@ def report_regency_doc(report):
     report.file = doc
     report.save()
     return totals
+
+
+def get_pdf_regency_table_content(report):
+    table_content = RegencyReportBuilder.objects.filter(report__task_report=report)
+    pdf_table = ""
+
+    pdf_table += "<table id='pdf_table_report'><thead>"
+    pdf_table += "<tr>"
+    for col in [
+        _("Dangerous substance of the list 3"),
+        _("Total"),
+        _("Break threshold"),
+    ]:
+        pdf_table += "<th>%s</th>" % (col)
+    pdf_table += "</tr></thead><tbody>"
+    for data in table_content.filter(danger_list=3):
+        pdf_table += "<tr>"
+        pdf_table += "<td>%s</td>" % (data.substance.name)
+        pdf_table += "<td>%s</td>" % (data.total)
+        pdf_table += "<td>%s</td>" % (_("Yes") if data.break_threshold else _("No"))
+        pdf_table += "</tr>"
+    pdf_table += "</tbody></table><br><br>"
+    pdf_table += "<table id='pdf_table_report'><thead>"
+    pdf_table += "<tr>"
+    for col in [
+        _("Dangerous substance of the list 4"),
+        _("Total"),
+        _("Break threshold"),
+        _("Danger category"),
+    ]:
+        pdf_table += "<th>%s</th>" % (col)
+    pdf_table += "</tr></thead><tbody>"
+
+    for data in table_content.filter(danger_list=4):
+        pdf_table += "<tr>"
+        pdf_table += "<td>%s</td>" % (data.substance.name)
+        pdf_table += "<td>%s</td>" % (data.total)
+        pdf_table += "<td>%s</td>" % (_("Yes") if data.break_threshold else _("No"))
+        pdf_table += "<td>%s</td>" % (data.danger_category)
+        pdf_table += "</tr>"
+    pdf_table += "</tbody></table><br><br>"
+
+    return pdf_table

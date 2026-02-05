@@ -100,6 +100,7 @@ REPORT_FORMS = {
         "task": "report.tasks.task_report",
         "form": "report.forms.RegencyReportForm",
         "html": "report.views.regency.report_regency_html",
+        "pdf": "report.views.base.base_pdf",
         "xls": "report.views.regency.report_regency_doc",
         "xlsx": "report.views.regency.report_regency_doc",
         "ods": "report.views.regency.report_regency_doc",

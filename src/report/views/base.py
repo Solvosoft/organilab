@@ -37,6 +37,8 @@ from report.utils import (
 )
 from django_celery_results.models import TaskResult
 
+from report.views.regency import get_pdf_regency_table_content
+
 
 def build_report(pk, absolute_uri):
     report = TaskReport.objects.get(pk=pk)
@@ -100,8 +102,8 @@ def base_pdf(report, uri):
         total = ObjectChangeLogReportBuilder.objects.filter(
             report__task_report=report
         ).count()
-    elif report.type_report == "report_regency":
-        # datalist = get_pdf_regency_table_content(report)
+    elif report.type_report == "regency_report":
+        datalist = get_pdf_regency_table_content(report)
         total = RegencyReportBuilder.objects.filter(report__task_report=report).count()
     else:
         datalist = get_pdf_table_content(report.table_content)

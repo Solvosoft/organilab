@@ -514,12 +514,13 @@ class RegencyReportForm(ReportBase):
         widget=genwidgets.SelectMultiple,
         queryset=Laboratory.objects.all(),
         required=False,
+        _label=_("Laboratories"),
     )
     years = forms.ChoiceField(
         widget=genwidgets.Select,
         choices=get_years(),
-        required=False,
-        label=_("Years"),
+        required=True,
+        label=_("Year"),
     )
 
     def __init__(self, *args, **kwargs):
