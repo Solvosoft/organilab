@@ -247,8 +247,6 @@ def get_danger_categories(reactive, total=0):
             )
     return danger_categories_list
 
-    return unitbase
-
 
 def get_conversion_units_to_kilograms(unit, amount, density=None):
     query = BaseUnitValues.objects.filter(measurement_unit=unit)
