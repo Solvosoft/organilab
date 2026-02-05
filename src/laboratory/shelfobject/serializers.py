@@ -2787,10 +2787,10 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         return {
             "increase": user.has_perm(
-                "laboratory.change_shel_object", "laboratory.view_object"
+                "laboratory.change_shelfobject"
             ),
             "decrease": user.has_perm(
-                "laboratory.change_shel_object", "laboratory.view_object"
+                "laboratory.change_shelfobject"
             ),
         }
 
@@ -2864,15 +2864,9 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
         )
         errors = {('amount' if k == 'quantity' else k): v for k, v in errors.items()}
         if hasattr(shelf_object, "limits") and shelf_object.limits is not None:
-            if shelf_object.shelf.measurement_unit is None:
-                converted_amount = get_conversion_from_two_units(
-                    increase_unit, shelf_object.measurement_unit, amount
-                )
-            else:
-                converted_amount = get_conversion_from_two_units(
-                    increase_unit, shelf_object.shelf.measurement_unit, amount
-                )
-
+            converted_amount = get_conversion_from_two_units(
+                increase_unit, shelf_object.measurement_unit, amount
+            )
             total = shelf_object.quantity + converted_amount
             limits = shelf_object.limits
             if limits.minimum_limit > total and limits.maximum_limit != 0:

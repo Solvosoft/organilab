@@ -2928,4 +2928,21 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.delete_laboratoryprocess",
         },
     ],
+    "shelfobject-list": [
+        {
+            "name": "View Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.view_shelfobject",
+        },
+        {
+            "name": "Update Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.change_shelfobject",
+        },
+        {
+            "name": "View Unit Measurement",
+            "category": "Unit Measurement",
+            "permission": "laboratory.view_catalog",
+        }
+    ],
 }
