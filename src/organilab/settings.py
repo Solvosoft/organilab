@@ -236,7 +236,7 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "sitio@organilab.org")
 # EMAIL_HOST = "localhost"
 # EMAIL_PORT = "1025"
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "False").lower() == "true"
 EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")  # mail service smtp
@@ -245,7 +245,7 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", None)  # a real email
 # the password of the real email
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", None)
 SERVER_EMAIL = os.getenv("SERVER_EMAIL", "sitio@organilab.org")
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
@@ -295,6 +295,10 @@ CELERYBEAT_SCHEDULE = {
         "task": "laboratory.tasks.add_maximum_object_stock_per_day",
         "schedule": crontab(minute=0, hour=10),
     },
+    "shel_object_expiration_email": {
+        "task": "laboratory.tasks.send_expiration_email",
+        "schedule": crontab(minute=0, hour=7),
+    }
 }
 
 INTERNAL_IPS = ("127.0.0.1",)

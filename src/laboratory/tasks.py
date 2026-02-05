@@ -2,9 +2,16 @@ from __future__ import absolute_import, unicode_literals
 
 import importlib
 import re
-from datetime import date
+from collections import defaultdict
+from datetime import date, timedelta
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+from auth_and_perms.models import Profile, ProfilePermission
 from laboratory.models import (
     ShelfObject,
     Laboratory,
@@ -109,3 +116,44 @@ def add_maximum_object_stock_per_day():
             if shelfobject:
                 data["measurement_unit"] = shelfobject.measurement_unit
             ObjectMaximumLimit.objects.create(**data)
+
+
+@app.task()
+def send_expiration_email():
+    tomorrow = date.today() + timedelta(days=1)
+    expiring_reactives = ShelfObject.objects.filter(
+        object__type=Object.REACTIVE,
+        reactive_expiration_date=tomorrow
+    ).select_related('object', 'shelf__furniture__labroom')
+
+    reactives_by_lab = defaultdict(list)
+    for reactive in expiring_reactives:
+        lab = reactive.in_where_laboratory
+        if lab:
+            reactives_by_lab[lab].append(reactive)
+
+    for lab, reactives in reactives_by_lab.items():
+        cc = ContentType.objects.get_for_model(Laboratory)
+        user_ids = ProfilePermission.objects.filter(
+            content_type=cc,
+            object_id=lab.pk
+        ).values_list("profile__user", flat=True)
+
+        users = User.objects.filter(id__in=user_ids)
+        emails = [user.email for user in users if user.email]
+
+        if emails:
+            context = {
+                'laboratory': lab,
+                'shelf_object': reactives,
+            }
+            html_message = render_to_string('email/shelf_object_expiration.html', context)
+            send_mail(
+                subject=f'Reactivos próximos a vencer - {lab.name}',
+                message='',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=emails,
+                html_message=html_message,
+                fail_silently=False,
+            )
+

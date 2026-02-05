@@ -1,0 +1,25 @@
+{% load i18n %}
+<p>{% trans 'Hi,' %}</p>
+<br>
+<p>{% trans 'You have received this email because you have expiring reactives in the Organilab system.' %}</p>
+<br>
+<p>{% blocktrans with lab_name=laboratory.name %}This message is to notify you that one or more reactives in the laboratory <strong>{{ lab_name }}</strong> will expire tomorrow.{% endblocktrans %}</p>
+
+<h4>{% trans 'Expiring reactives' %}</h4>
+
+{% for obj in shelf_object %}
+<p>
+<strong>{% trans 'Shelf:' %}</strong> {{ obj.shelf }}
+<strong>{% trans 'Reactive:' %}</strong> {{ obj.object }}
+<strong>{% trans 'Expiration date:' %}</strong> {{ obj.reactive_expiration_date }}
+<strong>{% trans 'Available quantity:' %}</strong> {{ obj.quantity }} {{ obj.measurement_unit }}
+</p>
+{% endfor %}
+
+<br><br>
+<p>{% trans 'Please take the necessary measures with these reactives before they expire.' %}</p>
+
+<br>
+{% trans 'Thanks,' %}
+<br><br>
+{% trans 'Organilab: Expiring reactives notification' %}
