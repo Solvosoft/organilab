@@ -29,7 +29,7 @@ from djgentelella.widgets.selects import AutocompleteSelect
 
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
-    organization_can_change_laboratory, user_is_allowed_on_laboratory,
+    organization_can_change_laboratory,
 )
 from laboratory import utils
 from laboratory.forms import (
@@ -894,7 +894,7 @@ def shelf_object_reagents(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     user_is_allowed_on_organization(request.user, org)
-    user_is_allowed_on_laboratory(request.user, lab)
+    organization_can_change_laboratory(lab, org)
     return render(
         request,
         "laboratory/shelfobject/reactive.html",

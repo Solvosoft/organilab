@@ -18,21 +18,6 @@ def user_is_allowed_on_organization(user, organization):
             % {"user": user, "organization": organization}
         )
 
-
-def user_is_allowed_on_laboratory(user, laboratory):
-    if laboratory is None:
-        raise ObjectDoesNotExist("Laboratory not found")
-    profile = get_object_or_404(Profile, user=user)
-    laboratories = profile.laboratories.all()
-    for lab in laboratories:
-        if lab.pk == laboratory.pk:
-            return True
-    raise PermissionDenied(
-        _("User %(user)s not allowed on laboratory %(laboratory)r ")
-        % {"user": user, "laboratory": laboratory}
-    )
-
-
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
         return True

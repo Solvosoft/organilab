@@ -5157,8 +5157,8 @@ msgstr "Editar Rol"
 msgid "Chemical inventory report"
 msgstr "Informe de inventario de sustancias químicas"
 
-msgid "UNA can access"
-msgstr "UNA puede acceder"
+msgid "Intitution can access"
+msgstr "Institución puede acceder"
 
 msgid "Consumption record"
 msgstr "Registro de consumo"

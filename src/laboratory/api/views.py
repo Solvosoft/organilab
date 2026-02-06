@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
@@ -18,6 +20,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
+logger = logging.getLogger("organilab")
 
 from api.utils import AllPermissionOrganizationByAction
 from auth_and_perms.organization_utils import (
@@ -1250,7 +1253,6 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         data = request.data.copy()
         if "shelfobject" in data and "shelf_object" not in data:
             data["shelf_object"] = data["shelfobject"]
-        print(data)
         serializer = self.serializer_class(
             data=data, context={"request": request, "source_laboratory_id": lab_pk}
         )
@@ -1265,7 +1267,7 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
             )
         else:
             errors = serializer.errors
-
+            logger.error(f"Error in increase reactive shelf object: {errors}")
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1280,16 +1282,8 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
 
         data = request.data.copy()
 
-        # Mapear shelfobject a shelf_object si es necesario
         if "shelfobject" in data and "shelf_object" not in data:
             data["shelf_object"] = data["shelfobject"]
-
-        # Asegurarse de que sea entero
-        if "shelf_object" in data:
-            try:
-                data["shelf_object"] = int(data["shelf_object"])
-            except (ValueError, TypeError):
-                pass
 
         serializer = DecreaseReactiveShelfObjectSerializer(
             data=data, context={"request": request, "source_laboratory_id": lab_pk}
@@ -1298,31 +1292,22 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         if serializer.is_valid():
             validated_data = serializer.validated_data.copy()
 
-            # Mapear 'reason' a 'description' si la función lo espera así
             if "reason" in validated_data:
                 validated_data["description"] = validated_data.pop("reason")
-
-            try:
-                laboratory = Laboratory.objects.get(pk=lab_pk)
-                organization = OrganizationStructure.objects.get(pk=org_pk)
-            except (Laboratory.DoesNotExist, OrganizationStructure.DoesNotExist) as e:
-                return JsonResponse(
-                    {"errors": {"detail": str(e)}}, status=status.HTTP_400_BAD_REQUEST
-                )
 
             save_increase_decrease_shelf_object(
                 request.user,
                 validated_data,
-                laboratory,
-                organization,
-                is_increase_process=False,  # ✅ False para decremento
+                self.laboratory,
+                self.organization,
+                is_increase_process=False,
             )
 
             return JsonResponse(
                 {"detail": _("Shelf object was decreased successfully.")},
                 status=status.HTTP_200_OK,
             )
-
+        logger.error(f"Error in decrease reactive shelf object: {serializer.errors}")
         return JsonResponse(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
