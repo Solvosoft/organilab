@@ -49,7 +49,7 @@
 						</a>
 					</li>
 				{% endif %}
-				{% if perms.auth_and_perms.una_can_access %}
+				{% if perms.auth_and_perms.institution_can_access %}
 					<li>
 						<a class="nav-link" href="
 							{% url 'feedback' %}{% if laboratory and org_pk %}?lab_pk={{ laboratory }}&org_pk={{ org_pk }}{% endif %}">

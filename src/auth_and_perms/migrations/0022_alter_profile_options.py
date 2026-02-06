@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                         "can_add_external_user_in_org",
                         "Can add external user to organization",
                     ),
-                    ("una_can_access", "UNA puede acceder"),
+                    ("institution_can_access", "Institution puede acceder"),
                 ]
             },
         ),

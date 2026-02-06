@@ -673,7 +673,6 @@ def validate_measurement_unit_and_quantity(
         errors.update({"quantity": _("Quantity cannot be less or equal to zero.")})
 
     if container:
-        print("Si accedemos aqui")
         if not hasattr(container, "object"):
             if hasattr(container, "materialcapacity"):
                 material_capacity = container.materialcapacity

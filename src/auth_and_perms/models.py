@@ -49,8 +49,8 @@ class Profile(models.Model):
                 _("Can add external user to organization"),
             ),
             (
-                "una_can_access",
-                _("UNA can access"),
+                "institution_can_access",
+                _("Institution can access"),
             ),
         ]
 
