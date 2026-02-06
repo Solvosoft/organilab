@@ -8,6 +8,8 @@ import json
 from django_otp.plugins.otp_totp.models import TOTPDevice
 
 from auth_and_perms.models import Rol, RegistrationUser, UserTOTPDevice
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from laboratory.models import (
     UserOrganization,
     OrganizationStructure,
@@ -21,6 +23,11 @@ class OrganizationTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
+        ct = ContentType.objects.get_for_model(OrganizationStructure)
+        perm = Permission.objects.get(
+            content_type=ct, codename="can_manage_org_permissions"
+        )
+        self.user.user_permissions.add(perm)
         self.client.force_login(self.user)
 
     def test_get_select_organization(self):
