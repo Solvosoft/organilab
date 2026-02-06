@@ -791,6 +791,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
                 "status": shelfobject.status,
                 "description": shelfobject.description,
                 "marked_as_discard": shelfobject.marked_as_discard,
+                "was_donated": shelfobject.was_donated,
             },
         )
     else:
