@@ -655,6 +655,7 @@ class MaterialShelfObjectSerializer(
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
     batch = serializers.CharField(required=False, default="0")
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -667,6 +668,7 @@ class MaterialShelfObjectSerializer(
             "marked_as_discard",
             "description",
             "batch",
+            "was_donated",
         ]
 
     def validate(self, data):
@@ -697,6 +699,7 @@ class MaterialRefuseShelfObjectSerializer(
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
     batch = serializers.CharField(required=False, default="0")
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -709,6 +712,7 @@ class MaterialRefuseShelfObjectSerializer(
             "marked_as_discard",
             "description",
             "batch",
+            "was_donated",
         ]
 
     def validate(self, data):

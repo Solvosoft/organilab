@@ -351,6 +351,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "was_donated"
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -359,7 +360,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "description": genwidgets.Textarea,
             "marked_as_discard": genwidgets.CheckboxInput,
             "batch": genwidgets.TextInput,
-
+            "was_donated": genwidgets.CheckboxInput
         }
 
 
@@ -418,6 +419,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "was_donated"
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -426,6 +428,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "description": genwidgets.Textarea,
             "marked_as_discard": forms.HiddenInput,
             "batch": genwidgets.TextInput,
+            "was_donated": genwidgets.CheckboxInput
         }
 
 
