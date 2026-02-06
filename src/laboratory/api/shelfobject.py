@@ -1847,7 +1847,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         self.serializer_class = ShelfObjectMaterialLimitsSerializer
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
-        print(request.data)
         shelfobject_serializer = MaterialShelfObjectDataSerializer(
             data=request.data, instance=shelfobject, context={"request": request}
         )
