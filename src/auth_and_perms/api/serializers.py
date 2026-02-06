@@ -31,10 +31,11 @@ logger = logging.getLogger("organilab")
 
 class RolSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=True)
+    description = serializers.CharField(required=False)
 
     class Meta:
         model = Rol
-        fields = ["name", "permissions"]
+        fields = ["name", "permissions", "description"]
 
 
 class ProfileAssociateOrganizationSerializer(serializers.Serializer):
