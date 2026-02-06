@@ -549,6 +549,7 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "was_donated",
         ]
         exclude = ["quantity"]
         widgets = {
@@ -556,6 +557,7 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
             "limit_quantity": forms.HiddenInput,
             "description": genwidgets.Textarea,
             "marked_as_discard": genwidgets.CheckboxInput,
+            "was_donated": genwidgets.CheckboxInput,
         }
 
 
@@ -642,6 +644,7 @@ class ShelfObjectRefuseEquipmentForm(
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "was_donated",
         ]
         exclude = ["quantity"]
         widgets = {
@@ -649,6 +652,7 @@ class ShelfObjectRefuseEquipmentForm(
             "limit_quantity": forms.HiddenInput,
             "description": genwidgets.Textarea,
             "marked_as_discard": forms.HiddenInput,
+            "was_donated": genwidgets.CheckboxInput,
         }
 
 
@@ -830,6 +834,7 @@ class ShelfObjectReactiveForm(
             "container_select_option",
             "container_for_cloning",
             "available_container",
+            "was_donated",
             "container_entry_date",
             "container_open_date",
             "description",
@@ -849,7 +854,6 @@ class ShelfObjectReactiveForm(
             "shelf_object_url",
             "shelf_object_qr",
             "limits",
-
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -862,6 +866,7 @@ class ShelfObjectReactiveForm(
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
             "reactive_expiration_date": genwidgets.DateInput,
             "type_budget": genwidgets.Select,
+            "was_donated": genwidgets.CheckboxInput,
             "container_entry_date": genwidgets.DateInput,
             "container_open_date": genwidgets.DateInput,
         }
@@ -943,6 +948,7 @@ class ShelfObjectRefuseReactiveForm(
             "container_select_option",
             "container_for_cloning",
             "available_container",
+            "was_donated",
             "container_entry_date",
             "container_open_date",
             "description",
@@ -971,6 +977,7 @@ class ShelfObjectRefuseReactiveForm(
             "pictograms": AutocompleteSelectMultipleImage("imagebasename"),
             "reactive_expiration_date": genwidgets.DateInput,
             "type_budget": genwidgets.Select,
+            "was_donated": genwidgets.CheckboxInput,
             "container_entry_date": genwidgets.DateInput,
             "container_open_date": genwidgets.DateInput,
         }
@@ -1159,6 +1166,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         widget=genwidgets.Select,
     )
     marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
+    was_donated = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("Was donated?"))
 
     def __init__(self, *args, **kwargs):
         org = kwargs.pop("org_pk")
@@ -1198,6 +1206,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         "available_to_use",
         "first_date_use",
         "notes",
+        "was_donated",
     ]
 
     class Meta:
@@ -1219,6 +1228,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
             "contract_of_maintenance": FileChunkedUpload,
             "available_to_use": genwidgets.YesNoInput,
             "first_date_use": genwidgets.DateInput,
+            "was_donated": genwidgets.CheckboxInput,
         }
 
 class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
@@ -1235,7 +1245,7 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         model = ShelfObject
         fields = ["reactive_expiration_date", "status", "physical_status","description",
                   "batch","without_limit", "minimum_limit", "maximum_limit","pictograms",
-                  "type_budget", "container_entry_date", "container_open_date"
+                  "type_budget", "container_entry_date", "container_open_date", "was_donated",
                   ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
@@ -1249,7 +1259,7 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "type_budget": genwidgets.Select,
             "container_entry_date": genwidgets.DateInput,
             "container_open_date": genwidgets.DateInput,
-
+            "was_donated": genwidgets.CheckboxInput,
         }
 
 class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
@@ -1264,7 +1274,7 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "batch", "without_limit", "minimum_limit",
-                  "maximum_limit", "expiration_date"]
+                  "maximum_limit", "expiration_date", "was_donated"]
         widgets = {
             "description": genwidgets.Textarea,
             "minimum_limit": genwidgets.TextInput,
@@ -1272,5 +1282,5 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
             "batch": genwidgets.TextInput,
-
+            "was_donated": genwidgets.CheckboxInput,
         }
