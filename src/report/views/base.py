@@ -406,11 +406,21 @@ def download__organization_report(request, org_pk):
                                         kwargs={"org_pk": org_pk, "pk": task.pk},
                                     ),
                                     "type_report": task.file_type,
-                                    "regency": RegencyReport.objects.filter(
-                                        pk=task.pk
-                                    ).first(),
                                 }
                             )
+                            if task.type_report == "report_regency":
+                                url_name = "report:report_regency_table"
+                                response.update(
+                                    {
+                                        "regency": RegencyReport.objects.filter(
+                                            pk=task.pk
+                                        ).first(),
+                                        "url_file": reverse(
+                                            url_name,
+                                            kwargs={"org_pk": org_pk, "pk": task.pk},
+                                        ),
+                                    }
+                                )
                             create_notification(
                                 request.user,
                                 f"{task.data['name']} {_('On screen')}".capitalize(),
@@ -453,7 +463,8 @@ def report_organization_table(request, org_pk, pk):
         content["changelogreport"] = ObjectChangeLogReport.objects.filter(
             task_report=task
         )
-    if task.type_report == "report_regency":
+    if task.type_report == "regency_report":
+        template_name = "report/regency_report_table.html"
         content["regency_report"] = RegencyReport.objects.filter(pk=task.pk).first()
     return render(request, template_name=template_name, context=content)
 
