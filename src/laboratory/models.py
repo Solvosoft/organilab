@@ -1092,6 +1092,12 @@ class OrganizationStructure(TreeNode):
         ordering = ["position"]
         verbose_name = _("Organization")
         verbose_name_plural = _("Organizations")
+        permissions = [
+            (
+                "can_manage_org_permissions",
+                _("Can manage organization permission structure"),
+            ),
+        ]
 
     def __str__(self):
         return "%s" % self.name
