@@ -514,7 +514,7 @@ class RegencyReportForm(ReportBase):
         widget=genwidgets.SelectMultiple,
         queryset=Laboratory.objects.all(),
         required=False,
-        _label=_("Laboratories"),
+        label=_("Laboratories"),
     )
     years = forms.ChoiceField(
         widget=genwidgets.Select,
