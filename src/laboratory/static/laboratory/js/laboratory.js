@@ -227,6 +227,7 @@ $(document).ready(function(){
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
             {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
             {data: "container", name: "container__object__name", title: gettext("Container"), type: "string", visible: true},
+            {data: "was_donated", name: "was_donated", title: gettext("Donated"), type: "boolean", render: objShowBool, visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [
@@ -737,6 +738,14 @@ function get_shelfobject_data(shelfobject){
             $('#id_edit-type_budget').val(data.type_budget.id).trigger('change');
             $('#id_edit-container_entry_date').val(data.container_entry_date).trigger('change');
             $('#id_edit-container_open_date').val(data.container_open_date).trigger('change');
+            if(data.was_donated) {
+                if (!$("#id_edit-was_donated").parent().hasClass('checked')) {
+                    $("#id_edit-was_donated").parent().addClass('checked')
+                    $('#id_edit-was_donated').iCheck('check');
+                } else {
+                    $('#id_edit-was_donated').iCheck('check');
+                }
+            }
         if(data.minimum_limit == 0 && data.maximum_limit == 0){
             if(!$("#id_edit-without_limit").parent().hasClass('checked')){
                 $("#id_edit-without_limit").parent().addClass('checked')
@@ -798,16 +807,21 @@ function get_material_shelfobject_data(shelfobject){
         document.querySelector("#id_edit_material-maximum_limit").value = data.maximum_limit;
         document.querySelector("#id_edit_material-expiration_date").value = data.expiration_date;
         document.querySelector("#id_edit_material-batch").value = data.batch;
-
         $('#id_edit_material-status').val(data.status).trigger('change');
-
+        if(data.was_donated) {
+            if (!$("#id_edit_material-was_donated").parent().hasClass('checked')) {
+                $("#id_edit_material-was_donated").parent().addClass('checked')
+                $('#id_edit_material-was_donated').iCheck('check');
+            } else {
+                $('#id_edit_material-was_donated').iCheck('check');
+            }
+        }
         if(data.minimum_limit == 0 && data.maximum_limit == 0){
             if(!$("#id_edit_material-without_limit").parent().hasClass('checked')){
                 $("#id_edit_material-without_limit").parent().addClass('checked')
                 $('#id_edit_material-without_limit').iCheck('check');
             }else{
                 $('#id_edit_material-without_limit').iCheck('check');
-
             }
        }else if($("#id_edit_material-without_limit").parent().hasClass('checked')){
             $("#id_edit_material-without_limit").parent().removeClass('checked')
@@ -815,8 +829,6 @@ function get_material_shelfobject_data(shelfobject){
         }
          show_hide_limits($(".lock_limits"),"#id_edit_material-");
         }
-
-
     });
     }
 

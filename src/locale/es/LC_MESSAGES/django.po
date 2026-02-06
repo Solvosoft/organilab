@@ -5159,3 +5159,6 @@ msgstr "Informe de inventario de sustancias químicas"
 
 msgid "UNA can access"
 msgstr "UNA puede acceder"
+
+msgid "Was donated?"
+msgstr "Fue donado?"

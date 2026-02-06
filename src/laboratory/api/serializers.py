@@ -334,6 +334,7 @@ class ShelfObjectLaboratoryViewSerializer(
             "last_update",
             "created_by",
             "container",
+            "was_donated",
             "actions",
         ]
 
