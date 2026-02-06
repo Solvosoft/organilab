@@ -260,8 +260,11 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
             if shelf_object.object.type == Object.REACTIVE
             else None
         )
+        container = None
+        if hasattr(shelf_object, "container"):
+            container = shelf_object.container
         errors = validate_measurement_unit_and_quantity(
-            shelf, shelf_object.object, amount, measurement_unit=measurement_unit
+            shelf, shelf_object.object, amount, measurement_unit=measurement_unit, container=container, shelf_object=shelf_object, increase_unit=increase_unit
         )
 
         if increase_unit:
@@ -2988,14 +2991,9 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
                 "Subtract amount cannot be greater than the available quantity."
             )
         if hasattr(shelf_object, "limits") and shelf_object.limits is not None:
-            if shelf_object.shelf.measurement_unit is None:
-                converted_amount = get_conversion_from_two_units(
-                    decreased_unit, shelf_object.measurement_unit, amount
-                )
-            else:
-                converted_amount = get_conversion_from_two_units(
-                    decreased_unit, shelf_object.shelf.measurement_unit, amount
-                )
+            converted_amount = get_conversion_from_two_units(
+                decreased_unit, shelf_object.measurement_unit, amount
+            )
             total = shelf_object.quantity - converted_amount
             limits = shelf_object.limits
             if limits.minimum_limit > total and limits.minimum_limit != 0:
