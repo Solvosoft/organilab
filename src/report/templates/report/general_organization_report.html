@@ -1,70 +1,104 @@
 {% extends 'base.html' %}
-{% load static i18n gtsettings %}
-{% load i18n laboratory %}
+{% load i18n laboratory static %}
 {% load urlname_tags %}
 {% load organilab_tags %}
-{% block title %}{% trans 'Reports' %} {% endblock %}
+
 {% block pre_head %}
-    {% define_true 'use_datatables' %}
-	{% define_urlname_action 'can_do_report' %}
+    {% if report_urlnames %}
+        {% for urlname in report_urlnames %}
+            {% define_urlname_action urlname %}
+        {% endfor %}
+    {% endif %}
 {% endblock %}
+
+{% block title %}{{title_view}}{% endblock %}
 
 {% block content %}
 
-{% if perms.laboratory.do_report and perms.laboratory.view_object  %}
-<div class="offset-md-2 col-md-8">
-	<div class="page-header" align="center">
-		<h3 class="heading-1" ><span> {{obj_task.data.title}}  </span></h3>
-	</div>
-<br>
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
-					{% trans "Danger Substance of the list 3" %}</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
-					{% trans "Danger Categories of the list 3" %}
-				</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">
-					{% trans "Calculator" %}
-				</button>
-  </li>
-</ul>
-<div class="tab-content" id="pills-tabContent">
-  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-			<table id="table_3" class="display table table-striped table-bordered text-center dt-responsive"></table>
-			</div>
-  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12">
-						<table id="table_4" class="display table table-striped table-bordered text-center dt-responsive" style="width: 100%"></table>
-					</div>
-				</div>
-		</div>
-  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
-</div>
-</div>
-</div>
+{% if perms.laboratory.do_report %}
+    <div class="row p-3 mt-1">
+        <div class='col-md-10 offset-md-1'>
+            <div class="container">
+                <div class="row" id="diverrormessage" style="display: none;">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div id="errormessagecontent"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-title text-center">
+                        <h2>{{title_view}}</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="form" onsubmit="return false;">
+                            {{form.as_horizontal}}
+                            <div class="form-group row justify-content-end">
+                                <div class="col-sm-9">
+                                    <button id="send" class="btn btn-outline-success float-end me-0" type="button">
+                                        <span id="button-text">{% trans 'Send' %}</span>
+                                        <span id="spiner" role="status" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="row statuspanel d-none">
+    <div class="col-md-10 offset-md-1">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">{% trans "Detail of the process please do not close this window" %}</h2>
+                </div>
+                <div class="card-body">
+                    {% trans 'Queuing report creation' %}
+                    <ul id="textstatus"></ul>
+                </div>
+                <div class="card-footer d-none">
+                    <h2 class="text-center">{% trans 'Download the report in this link' %} <a class="text-success" id="download_file" href="#" target="_blank" download="">{% trans 'Download' %}</a></h2>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endif %}
 
-{% endblock %}
-{% block js %}
-{{block.super}}
 
+<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title">{% trans 'Download document' %}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>{% trans 'Do you want to download the report' %}</p>
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-danger" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Cancel' %}</button>
+          <a id="download-report" target="_blank" class="btn btn-success" href="#" download=""><i class="fa fa-download" aria-hidden="true"></i> {% trans 'Download' %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block javascript %}
+{{ block.super }}
 <script>
 	const report_urls = {
-		list_url : '{% url "report:api-regency-list" org_pk=org_pk %}'+"?step=3&pk="+"{{ obj_task.pk }}",
-	}
-	const report_quarter_urls = {
-		list_url : '{% url "report:api-regency-list" org_pk=org_pk %}'+"?step=4&pk="+"{{ obj_task.pk }}",
+		create_request : "{% url 'report:create_organization_report_request' org_pk=org_pk %}",
+		generate_report : "{% url 'report:generate_organization_report' org_pk=org_pk %}",
+		report_status: "{% url 'report:report_organization_status' org_pk=org_pk %}",
 	}
 
-	</script>
-<script src="{% static 'js/regency_datatables.js' %}?v={% get_organilab_version %}"></script>
+	window.name = "reportbase";
+
+</script>
+<script src="{% static 'js/organization_report.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

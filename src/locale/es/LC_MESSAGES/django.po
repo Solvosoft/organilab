@@ -5159,3 +5159,42 @@ msgstr "Informe de inventario de sustancias químicas"
 
 msgid "UNA can access"
 msgstr "UNA puede acceder"
+
+msgid "High-risk establishment"
+msgstr "Establecimiento de alto riesgo"
+
+msgid "Health totals:"
+msgstr "Totales de salud:"
+
+msgid "Physical totals:"
+msgstr "Totales físicos:"
+
+msgid "Environmental totals:"
+msgstr "Totales ambientales:"
+
+msgid "Calculator"
+msgstr "Calculadora"
+
+msgid "Danger Categories of the list 4"
+msgstr "Categorías de peligro de la lista 4"
+
+msgid "Danger Substance of the list 3"
+msgstr "Sustancia de peligro de la lista 3"
+
+msgid "Sum of dangers categories"
+msgstr "Suma de categorías de peligro"
+
+msgid "Danger substance"
+msgstr "Sustancia de peligro"
+
+msgid "Break threshold"
+msgstr "Umbral superado"
+
+mgsid "Regency Report"
+msgstr "Informe de Región"
+
+msgid "Regency Reports"
+msgstr "Informes de Región"
+
+msgid "Regency Report"
+msgstr "Informe Regencial"
