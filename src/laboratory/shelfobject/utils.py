@@ -609,7 +609,7 @@ def limit_objects_by_shelf(shelf, object):
 
 
 def validate_measurement_unit_and_quantity(
-    shelf, object, quantity, measurement_unit=None, container=None
+    shelf, object, quantity, measurement_unit=None, container=None, shelf_object=None, increase_unit=None
 ):
     errors = {}
 
@@ -673,6 +673,7 @@ def validate_measurement_unit_and_quantity(
         errors.update({"quantity": _("Quantity cannot be less or equal to zero.")})
 
     if container:
+        print("Si accedemos aqui")
         if not hasattr(container, "object"):
             if hasattr(container, "materialcapacity"):
                 material_capacity = container.materialcapacity
@@ -685,7 +686,14 @@ def validate_measurement_unit_and_quantity(
 
         container_capacity = material_capacity.capacity
         container_unit = material_capacity.capacity_measurement_unit
-        if container_capacity < quantity:
+        if shelf_object:
+            converted_amount = get_conversion_from_two_units(
+                increase_unit, measurement_unit, quantity
+            )
+            total = shelf_object.quantity + converted_amount
+        else:
+            total = quantity
+        if container_capacity < total:
             logger.debug(
                 f"validate --> total ({container_capacity}) < quantity ({quantity})"
             )
