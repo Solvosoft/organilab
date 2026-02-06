@@ -42,6 +42,13 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
         self.org = OrganizationStructure.objects.first()
         self.lab = Laboratory.objects.first()
         self.labroom = self.lab.laboratoryroom_set.first()
+
+        ct = ContentType.objects.get_for_model(OrganizationStructure)
+        perm = Permission.objects.get(
+            content_type=ct, codename="can_manage_org_permissions"
+        )
+        self.user.user_permissions.add(perm)
+
         self.client.force_login(self.user)
 
 

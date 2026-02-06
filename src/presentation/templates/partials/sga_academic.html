@@ -1,5 +1,6 @@
 {% load i18n %}
-{% if perms.sga.view_label %}
+{% if perms.sga.view_label and perms.auth_and_perms.una_can_access %}
+
 <li>
     <a>
         <i class="fa fa-tags"></i>
@@ -8,11 +9,13 @@
     </span>
     </a>
     <ul class="nav child_menu">
+
         <li>
             <a href="{% url 'sga:create_sustance' org_pk=org_pk %}">
                 {% trans 'Create Substances' %}
             </a>
         </li>
+
         <li>
             <a href="{% url 'sga:get_substance' org_pk=org_pk %}">
                 {% trans 'My Substances' %}
