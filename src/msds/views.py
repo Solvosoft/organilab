@@ -21,12 +21,12 @@ from msds.models import MSDSObject, RegulationDocument
 logger = logging.getLogger("organilab")
 
 
-@permission_required("auth_and_perms.una_can_access")
+@permission_required("auth_and_perms.institution_can_access")
 def index_msds(request, org_pk):
     return render(request, "index_msds.html", context={"org_pk": org_pk})
 
 
-@permission_required("auth_and_perms.una_can_access")
+@permission_required("auth_and_perms.institution_can_access")
 def get_download_links(request, obj):
 
     new_url = reverse(
@@ -109,11 +109,11 @@ class MSDSObjectCRUD(CRUDView):
     check_login = False
     check_perms = False
     perms = {
-        "create": ["msds.add_msdsobject", "auth_and_perms.una_can_access"],
-        "list": ["auth_and_perms.una_can_access"],
-        "delete": ["msds.delete_msdsobject", "auth_and_perms.una_can_access"],
-        "update": ["msds.change_msdsobject", "auth_and_perms.una_can_access"],
-        "detail": ["auth_and_perms.una_can_access"],
+        "create": ["msds.add_msdsobject", "auth_and_perms.institution_can_access"],
+        "list": ["auth_and_perms.institution_can_access"],
+        "delete": ["msds.delete_msdsobject", "auth_and_perms.institution_can_access"],
+        "update": ["msds.change_msdsobject", "auth_and_perms.institution_can_access"],
+        "detail": ["auth_and_perms.institution_can_access"],
     }
     form_widget_exclude = ["file"]
 

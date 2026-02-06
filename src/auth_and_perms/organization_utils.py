@@ -2,6 +2,8 @@ from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+
+from auth_and_perms.models import ProfilePermission, Profile
 from laboratory.models import OrganizationStructureRelations, OrganizationStructure
 
 
@@ -16,19 +18,18 @@ def user_is_allowed_on_organization(user, organization):
             % {"user": user, "organization": organization}
         )
 
-
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
         return True
     if (
         OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
-        .filter(
+            .filter(
             content_type__app_label=laboratory._meta.app_label,
             content_type__model=laboratory._meta.model_name,
             object_id=laboratory.pk,
             organization=organization,
         )
-        .exists()
+            .exists()
     ):
         return True
 
