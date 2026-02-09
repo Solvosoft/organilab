@@ -5189,3 +5189,6 @@ msgstr "Usuario de Laboratorio: Ejecuta procedimientos y agregar o quitar sustan
 
 msgid "User Profile Explanations"
 msgstr "Explicación de los perfiles de usuario"
+
+msgid "Was donated?"
+msgstr "Fue donado?"
