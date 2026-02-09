@@ -21,6 +21,7 @@ def create_expiration_template(apps, schema_editor):
                "<strong>Fecha de vencimiento:</strong> {{ obj.reactive_expiration_date }} " \
                "<strong>Cantidad disponible:</strong> {{ obj.quantity }} {{ obj.measurement_unit }}" \
                "</p>" \
+               "<p><a href='{{ blockurl }}{{ obj.object.pk }}/'>{{ blockurl }}{{ obj.object.pk }}/</a></p>" \
                "{% endfor %}" \
                "<p>&nbsp;</p>" \
                "<p>&nbsp;</p>" \
