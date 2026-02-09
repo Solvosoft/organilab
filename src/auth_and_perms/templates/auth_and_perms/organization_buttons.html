@@ -6,6 +6,7 @@
 {% has_perm_in_org organization.pk 'derb.view_customform' as can_inform %}
 {% has_perm_in_org organization.pk 'msds.view_msdsobject' as can_msds %}
 {% has_perm_in_org organization.pk 'sga.view_substance' as can_sustance %}
+{% has_perm_in_org organization.pk 'auth_and_perms.institution_can_access' as institution_can_access %}
 
 {% organization_any_permission_required organization.pk 'laboratory.can_manage_disposal' 'laboratory.can_view_disposal' as disposal_perms %}
 
@@ -30,12 +31,12 @@
 				<a class="btn btn-info btn-sm" href="{% url 'laboratory:inform_index' organization.pk %}">
 					<i class="fa fa-calendar-check-o" aria-hidden="true"></i> {% trans 'Admin Informs' %}</a>
 				{% endif %}
-				{% if can_msds %}
+				{% if can_msds and institution_can_access %}
 				<a class="btn btn-danger btn-sm" href="{% url 'msds:index_msds' organization.pk %}"><i class="fa fa-file-text-o"
 																																																																																					aria-hidden="true"></i>
 					{% trans 'MSDS' %}</a>
 				{% endif %}
-				{% if can_sustance %}
+				{% if can_sustance and institution_can_access %}
 				<a class="btn btn-secondary btn-sm" href="{% url 'sga:add_personal' organization.pk  %}">
 					<i class="fa fa-tags" aria-hidden="true"></i> {% trans 'SGA' %}</a>
 				{% endif %}

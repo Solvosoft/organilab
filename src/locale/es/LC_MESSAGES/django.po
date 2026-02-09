@@ -5157,8 +5157,38 @@ msgstr "Editar Rol"
 msgid "Chemical inventory report"
 msgstr "Informe de inventario de sustancias químicas"
 
-msgid "UNA can access"
-msgstr "UNA puede acceder"
+msgid "Intitution can access"
+msgstr "Institución puede acceder"
+
+msgid "Consumption record"
+msgstr "Registro de consumo"
+
+msgid "List Reagents"
+msgstr "Listar Reactivos"
+
+msgid "Reorder Reactives"
+msgstr "Reordenar Reactivos"
+
+msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
+msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
+
+msgid "Quantity cannot be greater than the container object maximum limit: %(limit)s."
+msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(limit)s."
+
+msgid "Decrease"
+msgstr "Disminuir"
+
+msgid "Administrator: Manages organizations, users, permissions, laboratories, risk zones, and reports at the system level."
+msgstr "Administrador: Gestiona organizaciones, usuarios, permisos, laboratorios, zonas de riesgo y reportes a nivel sistema."
+
+msgid "Laboratory Administrator: Manages substance inventory and the physical structure of the laboratory (shelves, zones)."
+msgstr "Administrador de Laboratorio: Administra el inventario de sustancias y la estructura física del laboratorio (estantes, zonas)."
+
+msgid "Laboratory User: Executes procedures and adds or removes substances between shelves."
+msgstr "Usuario de Laboratorio: Ejecuta procedimientos y agregar o quitar sustancias entre estantes."
+
+msgid "User Profile Explanations"
+msgstr "Explicación de los perfiles de usuario"
 
 msgid "Was donated?"
 msgstr "Fue donado?"

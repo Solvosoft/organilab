@@ -34,18 +34,18 @@ class RecipientSizeAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         "create": [
             "sga.view_recipientsize",
             "sga.add_recipientsize",
-            "auth_and_perms.una_can_access",
+            "auth_and_perms.institution_can_access",
         ],
-        "list": ["sga.view_recipientsize", "auth_and_perms.una_can_access"],
+        "list": ["sga.view_recipientsize", "auth_and_perms.institution_can_access"],
         "update": [
             "sga.view_recipientsize",
             "sga.change_recipientsize",
-            "auth_and_perms.una_can_access",
+            "auth_and_perms.institution_can_access",
         ],
         "delete": [
             "sga.view_recipientsize",
             "sga.delete_recipientsize",
-            "auth_and_perms.una_can_access",
+            "auth_and_perms.institution_can_access",
         ],
     }
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)

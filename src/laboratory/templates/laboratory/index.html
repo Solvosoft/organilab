@@ -114,6 +114,11 @@
 																	/  <a  href="{% url 'laboratory:reactive_stock_list' org_pk laboratory %}"><strong>{% trans 'Reactive Stats' %}</strong></a>
                 </li>
               {% endif %}
+														{% if perms.laboratory.view_shelfobject %}
+																<li class="list-group-item">
+                  <a href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Reorder Reactives' %}</strong></a>
+                </li>
+														{% endif %}
               {% if perms.laboratory.add_objectfeatures %}
                 <li class="list-group-item">
                   <a href="{% url 'laboratory:object_feature_create' org_pk laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
