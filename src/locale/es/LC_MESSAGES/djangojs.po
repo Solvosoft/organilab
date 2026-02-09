@@ -1104,3 +1104,6 @@ msgstr "Sala de laboratorio"
 
 msgid "Furniture"
 msgstr "Mueble"
+
+msgid "Donated income"
+msgstr "Ingreso por donacion"
