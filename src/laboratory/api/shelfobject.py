@@ -228,6 +228,7 @@ class ShelfObjectCreateMethods:
             container_for_cloning,
             available_container,
         )
+        print("fecha de expiracion ",  serializer.validated_data.get("reactive_expiration_date", None))
         expired_date = get_shelf_object_expiration_date(
             serializer.validated_data.get("reactive_expiration_date", None))
         shelfobject = serializer.save(
