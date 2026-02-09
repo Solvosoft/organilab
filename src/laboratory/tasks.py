@@ -2,15 +2,22 @@ from __future__ import absolute_import, unicode_literals
 
 import importlib
 import re
-from datetime import date
+from collections import defaultdict
+from datetime import date, timedelta
 
+from async_notifications.utils import send_email_from_template
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import Site
+
+from auth_and_perms.models import ProfilePermission
 from laboratory.models import (
     ShelfObject,
     Laboratory,
     PrecursorReport,
     InformScheduler,
-    Furniture, Object, ObjectMaximumLimit,
+    Furniture, Object, ObjectMaximumLimit, BlockedListNotification,
 )
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import (
@@ -109,3 +116,52 @@ def add_maximum_object_stock_per_day():
             if shelfobject:
                 data["measurement_unit"] = shelfobject.measurement_unit
             ObjectMaximumLimit.objects.create(**data)
+
+@app.task()
+def send_expiration_email():
+    tomorrow = date.today() + timedelta(days=1)
+    expiring_reactives = ShelfObject.objects.filter(
+        object__type=Object.REACTIVE,
+        reactive_expiration_date=tomorrow
+    ).select_related('object', 'shelf__furniture__labroom')
+    print("Expiring reactives:", expiring_reactives)
+
+    reactives_by_lab = defaultdict(list)
+    for reactive in expiring_reactives:
+        lab = reactive.in_where_laboratory
+        if lab:
+            reactives_by_lab[lab].append(reactive)
+
+    for lab, reactives in reactives_by_lab.items():
+        blocked = BlockedListNotification.objects.filter(
+            laboratory=lab,
+            object__in=[r.object for r in reactives]
+        )
+        blocked_emails = list(blocked.values_list("user__email", flat=True))
+        cc = ContentType.objects.get_for_model(Laboratory)
+        user_ids = ProfilePermission.objects.filter(
+            content_type=cc,
+            object_id=lab.pk
+        ).values_list("profile__user", flat=True)
+        users = User.objects.filter(id__in=user_ids)
+        print("Users:", users)
+        emails = [user.email for user in users if
+                  user.email and user.email not in blocked_emails]
+        if emails:
+            schema = "https" if not settings.DEBUG else "http"
+            domain = Site.objects.get_current().domain
+            url = f"/lab/{lab.pk}/blocknotifications/"
+            context = {
+                'laboratory': lab,
+                'shelf_object': reactives,
+                'blockurl': f"{schema}://{domain}{url}",
+                'domain': domain,
+            }
+            send_email_from_template(
+                "Expiring reactives",
+                emails,
+                context=context,
+                enqueued=False,
+                user=None,
+                upfile=None,
+            )
