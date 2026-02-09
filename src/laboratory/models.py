@@ -341,12 +341,12 @@ class ShelfObject(models.Model):
         ("solid powder", _("Solid powder")),
         ("solid granular or crystalline", _("Solid granular or crystalline")),
         ("Gaseous", _("Gaseous")),
-        ("Tablets", _("Tablets")),
-        ("Lentils", _("Lentils")),
-        ("Granza", _("Granza")),
+        ("Tablets",_("Tablets")),
+        ("Lentils",_("Lentils")),
+        ("Granza",_("Granza")),
         ("card", _("Card")),
-        ("solid", _("Solid")),
-        ("colloidal", _("Colloidal")),
+        ("solid",_("Solid")),
+        ("colloidal",_("Colloidal")),
         ("viscuos liquid", _("Viscuos Liquid")),
         ("kit", _("Kit")),
     )
@@ -458,6 +458,7 @@ class ShelfObject(models.Model):
     container_open_date = models.DateField(
         blank=True, null=True, verbose_name=_("Container Open Date")
     )
+    was_donated = models.BooleanField(default=False, verbose_name=_("Was donated?"))
 
     @staticmethod
     def get_units(unit):
@@ -1635,6 +1636,7 @@ class MaterialCapacity(models.Model):
         key_value="units",
     )
     object = models.OneToOneField(Object, on_delete=models.CASCADE, null=True)
+
 
 
 class ObjectMaximumLimit(models.Model):

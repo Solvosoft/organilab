@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Permission
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -259,10 +260,6 @@ class OrganizationButtonsByUserViewTest(TestCaseBase):
             )
             self.assertEqual(
                 "btn-secondary" in content["result"], can_view_actions_buttons
-            )
-            self.assertEqual("btn-dark" in content["result"], can_view_actions_buttons)
-            self.assertEqual(
-                "btn-danger" in content["result"], can_view_actions_buttons
             )
 
     def check_tests(

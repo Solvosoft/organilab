@@ -23,7 +23,7 @@
 					{% trans 'Prudence Advice' %}
 				</a>
 			</li>
-			{% if perms.auth_and_perms.una_can_access %}
+			{% if perms.auth_and_perms.institution_can_access %}
 				<li>
 					<a href="{% url 'sga:recipient_size' org_pk %}">
 						{% trans 'Size of recipients' %}

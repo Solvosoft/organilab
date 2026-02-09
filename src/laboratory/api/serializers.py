@@ -32,12 +32,14 @@ from laboratory.models import (
     EquipmentCharacteristics,
     SustanceCharacteristics,
     ReactiveLimit,
-    ObjectMaximumLimit, LaboratoryProcess,
+    ObjectMaximumLimit,
+    LaboratoryProcess,
 )
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
+from sga.api.serializers import ChoicesGTS2Serializer
 from sga.models import DangerIndication
 
 logger = logging.getLogger("organilab")
@@ -334,6 +336,7 @@ class ShelfObjectLaboratoryViewSerializer(
             "last_update",
             "created_by",
             "container",
+            "was_donated",
             "actions",
         ]
 
@@ -1266,11 +1269,12 @@ class ReactiveLimitsSerializer(serializers.Serializer):
             .distinct()
         ]
 
+
 class LaboratoryProcessSerializer(serializers.ModelSerializer):
     laboratory = serializers.PrimaryKeyRelatedField(
         queryset=Laboratory.objects.using(settings.READONLY_DATABASE),
         required=True,
-        many=False
+        many=False,
     )
     description = serializers.CharField(required=True)
 
@@ -1278,12 +1282,14 @@ class LaboratoryProcessSerializer(serializers.ModelSerializer):
         model = LaboratoryProcess
         fields = "__all__"
 
+
 class LaboratoryProcessUpdateSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=True)
 
     class Meta:
         model = LaboratoryProcess
         fields = ["description"]
+
 
 class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
@@ -1305,8 +1311,12 @@ class LaboratoryProcessSerializerTable(serializers.ModelSerializer):
         model = LaboratoryProcess
         fields = ["id", "description", "created_by", "creation_date", "actions"]
 
+
 class LaboratoryProcessDataTableSerializer(serializers.Serializer):
-    data = serializers.ListField(child=LaboratoryProcessSerializerTable(), required=True)
+    data = serializers.ListField(
+        child=LaboratoryProcessSerializerTable(), required=True
+    )
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
