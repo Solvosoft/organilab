@@ -27,4 +27,5 @@ python-barcode==0.16.1
 qrcode==8.2
 sentry-sdk==2.49.0
 legacy-cgi==2.6.4
-setuptools<81
+coverage-badge==1.1.2
+setuptools<82
