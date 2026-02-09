@@ -52,9 +52,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "storage_class": [135],
             "organization": self.org.pk,
             "laboratory": self.lab.pk,
+            "density": 1.0,
         }
 
-        response = self.client.post(url, data=data,content_type = "application/json")
+        response = self.client.post(url, data=data, content_type="application/json")
         self.assertEqual(response.status_code, 201)
         self.assertTrue(Object.objects.filter(name=data["name"]).exists())
 
@@ -83,9 +84,10 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "storage_class": [135],
             "organization": self.org.pk,
             "laboratory": self.lab.pk,
+            "density": 1.0,
         }
 
-        response = self.client.put(url, data=data,content_type = "application/json")
+        response = self.client.put(url, data=data, content_type="application/json")
         self.assertEqual(response.status_code, 200)
 
     def test_objectview_delete(self):
@@ -103,7 +105,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         )
         self.assertRedirects(response, success_url)
 
-    #Materrial Object
+    # Materrial Object
     def test_objectview_create(self):
         total_obj = Object.objects.all().count()
         url = reverse(

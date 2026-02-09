@@ -754,7 +754,7 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
     has_threshold = serializers.BooleanField(required=False)
     threshold = serializers.FloatField(default=0.0, required=False)
     reactive_expiration_date = serializers.DateField(required=False)
-    density = serializers.FloatField(default=0.0, required=False)
+
     def validate(self, data):
         data = super().validate(data)
         org_pk_view = self.context["view"].org_pk
@@ -877,6 +877,7 @@ class ValidateReactiveCharacteristicsSerializer(serializers.ModelSerializer):
     img_representation = ChunkedFileField(
         allow_null=True, required=False, allow_empty_file=True
     )
+    density = serializers.FloatField(default=0.0, required=False)
 
     class Meta:
         model = SustanceCharacteristics
@@ -1319,4 +1320,3 @@ class LaboratoryProcessDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
-
