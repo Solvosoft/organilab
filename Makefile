@@ -74,6 +74,9 @@ clean: ##  - remove build artifacts and remove Python file artifacts
 test: ##  - run tests quickly with the default Python
 	cd src && python manage.py test  --no-input --exclude-tag=selenium
 
+single-test: ## Run Django tests (optional: TEST=path.to.test, example: make single-test TEST=laboratory.tests.test_provider.ProviderViewTest)
+	cd src && python manage.py test $(TEST) --no-input --exclude-tag=selenium
+
 docs: ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
 	$(MAKE) -C docs clean
