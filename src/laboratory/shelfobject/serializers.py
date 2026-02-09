@@ -2857,6 +2857,8 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
             amount,
             measurement_unit=shelf_object.measurement_unit,
             container=container,
+            shelf_object=shelf_object,
+            increase_unit=increase_unit
         )
         errors = {('amount' if k == 'quantity' else k): v for k, v in errors.items()}
         if hasattr(shelf_object, "limits") and shelf_object.limits is not None:
