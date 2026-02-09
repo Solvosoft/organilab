@@ -590,7 +590,7 @@ urlpatterns += organization_urls + [
     path("lab/<int:org_pk>/<int:lab_pk>/sustance/", include(sustance_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/equipment/", include(equipment_urls)),
     path(
-        "lab/<int:org_pk>/<int:lab_pk>/blocknotifications/",
+        "lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/",
         block_notifications,
         name="block_notification",
     ),
