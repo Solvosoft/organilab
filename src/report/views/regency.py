@@ -295,6 +295,7 @@ def get_pdf_regency_table_content(report):
         or regency.break_physical_total
     ):
         pdf_table += "<h3>%s</h3>" % (_("High-risk establishment"))
+    pdf_table += "<h3>%s</h3><br>" % (_("Dangerous substance of the list 3"))
     pdf_table += "<table id='pdf_table_report'><thead>"
     pdf_table += "<tr>"
     for col in [
@@ -313,6 +314,7 @@ def get_pdf_regency_table_content(report):
 
         pdf_table += "</tbody></table><br><br>"
     if not third_list:
+        pdf_table += "<h3>%s</h3><br>" % (_("Dangerous categories of the list 4"))
         pdf_table += "<table id='pdf_table_report'><thead>"
         pdf_table += "<tr>"
         for col in [
@@ -331,9 +333,9 @@ def get_pdf_regency_table_content(report):
             pdf_table += "<td>%s</td>" % (data.danger_category)
             pdf_table += "</tr>"
         pdf_table += "</tbody></table><br><br>"
-    if not quarter_list:
+
+    if not quarter_list and not third_list:
         pdf_table += "<p>%s</p>" % (_("Sum of dangers categories"))
-        pdf_table += "<br>"
         pdf_table += "<p>%s %s</p>" % (_("Health totals:"), regency.health_total)
         pdf_table += "<p>%s %s</p>" % (_("Physical totals:"), regency.physical_total)
         pdf_table += "<p>%s %s</p>" % (
