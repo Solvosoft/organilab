@@ -5190,11 +5190,17 @@ msgstr "Sustancia de peligro"
 msgid "Break threshold"
 msgstr "Umbral superado"
 
-mgsid "Regency Report"
-msgstr "Informe de Región"
-
-msgid "Regency Reports"
-msgstr "Informes de Región"
-
 msgid "Regency Report"
 msgstr "Informe Regencial"
+
+msgid "Dangerous substance of the list 3"
+msgstr "Sustancia peligrosa de la lista 3"
+
+msgid "Dangerous categoies of the list 4"
+msgstr "Categorías peligrosas de la lista 4"
+
+msgid "Dangerous substance of the list 4"
+msgstr "Sustancia peligrosa de la lista 4"
+
+msgid "Danger category"
+msgstr "Categoría de peligro"
