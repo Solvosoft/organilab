@@ -1101,3 +1101,9 @@ msgstr "Fecha de caducidad"
 
 msgid "Legal Identity"
 msgstr "Identidad Jurídica"
+
+msgid "Object Features"
+msgstr "Características del objeto"
+
+msgid "Is Container?"
+msgstr "Es contenedor?"

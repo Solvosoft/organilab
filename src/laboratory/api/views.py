@@ -29,6 +29,7 @@ from laboratory.api.filterset import (
     LogEntryFilterSet,
     ProviderFilter,
     ObjectFeatureFilter,
+    ObjectFilter,
 )
 from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import (
@@ -47,6 +48,9 @@ from laboratory.api.serializers import (
     ObjectFeatureSerializer,
     ObjectFeatureDataTableSerializer,
     ObjectFeatureValidateSerializer,
+    ObjectSerializer,
+    ObjectDataTableSerializer,
+    ObjectValidateSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -1394,6 +1398,122 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             changed_data=[],  # no aplica en delete
             object_repr=objectfeatures_repr,
             relobj=lab_pk,
+        )
+
+        instance.delete()
+
+
+#  Object
+class ObjectViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": ObjectDataTableSerializer,
+        "destroy": ObjectSerializer,
+        "create": ObjectValidateSerializer,
+        "update": ObjectValidateSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_object"],
+        "create": ["laboratory.add_object"],
+        "update": ["laboratory.change_object"],
+        "destroy": ["laboratory.delete_object"],
+    }
+
+    queryset = Object.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name", "code", "model", "serie", "plaque"]
+    filterset_class = ObjectFilter
+    ordering_fields = ["name"]
+    ordering = ("-creation_date",)
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        qs = Object.objects.all()
+
+        if org_pk:
+            qs = qs.filter(organization_id=org_pk, type=Object.MATERIAL)
+
+        return qs
+
+    def get_org_pk_or_error(self):
+        org_pk = self.kwargs.get("org_pk")
+        if not org_pk:
+            raise ValidationError(
+                {"org_pk": _("This endpoint requires org_pk in the URL.")}
+            )
+        return org_pk
+
+    def perform_create(self, serializer):
+        org_pk = self.get_org_pk_or_error()
+
+        object = serializer.save(
+            organization_id=org_pk,
+            created_by=self.request.user,
+        )
+
+        organilab_logentry(
+            self.request.user,
+            object,
+            ADDITION,
+            "object",
+            changed_data=[],  # no necesaria en create
+            relobj=org_pk,  # para LabOrgLogEntry
+        )
+
+    def perform_update(self, serializer):
+        org_pk = self.get_org_pk_or_error()
+
+        object_before = self.get_object()
+        before = {
+            "code": object_before.code,
+            "name": object_before.name,
+            "synonym": object_before.synonym,
+            "description": object_before.description,
+            "is_public": object_before.is_public,
+            "is_container": object_before.is_container,
+            "type": object_before.type,
+            "features": list(object_before.features.values_list("pk", flat=True)),
+        }
+
+        object = serializer.save()
+
+        after = {
+            "code": object.code,
+            "name": object.name,
+            "synonym": object.synonym,
+            "description": object.description,
+            "is_public": object.is_public,
+            "is_container": object.is_container,
+            "type": object.type,
+            "features": list(object.features.values_list("pk", flat=True)),
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            object,
+            CHANGE,
+            "object",
+            changed_data=changed_fields,
+            relobj=org_pk,
+        )
+
+    def perform_destroy(self, instance):
+        org_pk = self.get_org_pk_or_error()
+
+        object_id = instance.pk
+        object_repr = str(instance)
+
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "object",
+            changed_data=[],  # no aplica en delete
+            object_repr=object_repr,
+            relobj=org_pk,
         )
 
         instance.delete()

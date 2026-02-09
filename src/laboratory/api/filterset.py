@@ -12,6 +12,7 @@ from laboratory.models import (
     Inform,
     Provider,
     ObjectFeatures,
+    Object,
 )
 from sga.models import Substance
 from django.db.models.expressions import Value
@@ -65,6 +66,20 @@ class ObjectFeatureFilter(FilterSet):
             "id": ["exact"],
             "name": ["icontains"],
             "description": ["icontains"],
+        }
+
+
+class ObjectFilter(FilterSet):
+    class Meta:
+        model = Object
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "code": ["icontains"],
+            "model": ["icontains"],
+            "serie": ["icontains"],
+            "plaque": ["icontains"],
+            "is_container": ["exact"],
         }
 
 

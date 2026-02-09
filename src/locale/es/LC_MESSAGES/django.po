@@ -5174,3 +5174,15 @@ msgstr "Actualizar características de objetos"
 
 msgid "Delete Object Feature"
 msgstr "Eliminar características de objetos"
+
+msgid "Register Object"
+msgstr "Registrar Material"
+
+msgid "Delete Object"
+msgstr "Eliminar Material"
+
+msgid "Cannot change measurement unit because this material is referenced by shelf objects."
+msgstr "No se puede cambiar la unidad de medida porque este material está referenciado por objetos del estante."
+
+msgid "Cannot change is container because this material is referenced by shelf objects."
+msgstr "No se puede cambiar el contenedor porque este material está referenciado por objetos del estante."
