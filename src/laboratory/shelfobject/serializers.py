@@ -430,6 +430,7 @@ class ShelfObjectLimitsSerializer(serializers.ModelSerializer):
 
         errors = {}
 
+
         if hasattr(shelfobject, "quantity"):
             if shelfobject.quantity < data["maximum_limit"]:
                 logger.debug(
@@ -663,6 +664,7 @@ class MaterialShelfObjectSerializer(
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
     batch = serializers.CharField(required=False, default="0")
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -675,6 +677,7 @@ class MaterialShelfObjectSerializer(
             "marked_as_discard",
             "description",
             "batch",
+            "was_donated",
         ]
 
     def validate(self, data):
@@ -705,6 +708,7 @@ class MaterialRefuseShelfObjectSerializer(
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
     batch = serializers.CharField(required=False, default="0")
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -717,6 +721,7 @@ class MaterialRefuseShelfObjectSerializer(
             "marked_as_discard",
             "description",
             "batch",
+            "was_donated",
         ]
 
     def validate(self, data):
@@ -746,6 +751,7 @@ class EquipmentShelfObjectSerializer(
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=False, required=False)
     description = serializers.CharField(required=False)
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -757,6 +763,7 @@ class EquipmentShelfObjectSerializer(
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "was_donated",
         ]
 
     def validate(self, data):
@@ -786,6 +793,7 @@ class EquipmentRefuseShelfObjectSerializer(
     limit_quantity = serializers.FloatField(required=True)
     marked_as_discard = serializers.BooleanField(default=True, required=False)
     description = serializers.CharField(required=False)
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -797,6 +805,7 @@ class EquipmentRefuseShelfObjectSerializer(
             "limit_quantity",
             "marked_as_discard",
             "description",
+            "was_donated",
         ]
 
     def validate(self, data):
@@ -2556,10 +2565,11 @@ class EditEquipmentShelfObjectSerializer(serializers.ModelSerializer):
     )
     description = serializers.CharField(required=False)
     marked_as_discard = serializers.BooleanField(required=False)
+    was_donated = serializers.BooleanField(required=False)
 
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "marked_as_discard"]
+        fields = ["status", "description", "marked_as_discard", "was_donated"]
 
     def validate(self, data):
         org_context = self.context["org_pk"]
@@ -2622,20 +2632,13 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
     container_open_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
     )
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
-        fields = [
-            "status",
-            "description",
-            "reactive_expiration_date",
-            "physical_status",
-            "pictograms",
-            "batch",
-            "type_budget",
-            "container_entry_date",
-            "container_open_date",
-        ]
+        fields = ["status", "description", "reactive_expiration_date", "physical_status",
+                  "pictograms","batch","type_budget", "container_entry_date",
+                  "container_open_date", "was_donated"]
 
     def validate(self, data):
         org_context = self.context["org_pk"]
@@ -2672,24 +2675,16 @@ class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = [
-            "status",
-            "description",
-            "reactive_expiration_date",
-            "physical_status",
-            "pictograms",
-            "batch",
-            "type_budget",
-            "container_entry_date",
-            "container_open_date",
-        ]
+        fields = ["status", "description", "reactive_expiration_date", "physical_status",
+                  "pictograms","batch", "type_budget", "container_entry_date",
+                  "container_open_date", "was_donated"]
 
 
 class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
-
+    was_donated = serializers.BooleanField(default=False, required=False)
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "batch"]
+        fields = ["status", "description", "batch", "was_donated"]
 
 
 class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):

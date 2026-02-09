@@ -5241,3 +5241,6 @@ msgstr "Por favor tome las medidas necesarias con estos reactivos antes de su ve
 msgid "Organilab: Expiring reactives notification"
 msgstr "Organilab: Notificación de reactivos por vencer"
 
+
+msgid "Was donated?"
+msgstr "Fue donado?"
