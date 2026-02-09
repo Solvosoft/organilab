@@ -15,7 +15,7 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone_number = models.CharField(_("Phone"), default="", max_length=25)
-    id_card = models.CharField(_("ID Card"), max_length=100)
+    id_card = models.CharField(_("Identification"), max_length=100)
     laboratories = models.ManyToManyField(
         "laboratory.Laboratory", verbose_name=_("Laboratories"), blank=True
     )
@@ -29,7 +29,6 @@ class Profile(models.Model):
     address = models.TextField(
         verbose_name=_("Address"), null=True, blank=True, default=""
     )
-
     workplace = models.ManyToManyField(
         "laboratory.OrganizationStructure",
         blank=True,
@@ -50,8 +49,8 @@ class Profile(models.Model):
                 _("Can add external user to organization"),
             ),
             (
-                "una_can_access",
-                _("UNA can access"),
+                "institution_can_access",
+                _("Institution can access"),
             ),
         ]
 

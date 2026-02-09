@@ -400,8 +400,8 @@ $(".check_limit").on('ifChanged', function(event){
 
 function show_hide_limits(e,prefix){
     if($(e).is(":checked")){
-        $(prefix+'minimum_limit').parent().parent().hide();
-        $(prefix+'maximum_limit').parent().parent().hide();
+        $(prefix+'minimum_limit').val(0).parent().parent().hide();
+        $(prefix+'maximum_limit').val(0).parent().parent().hide();
         $(prefix+'expiration_date').parent().parent().parent().hide();
     }else{
         $(prefix+'minimum_limit').parent().parent().show();
