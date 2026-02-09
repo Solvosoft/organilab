@@ -124,8 +124,6 @@ def send_expiration_email():
         object__type=Object.REACTIVE,
         reactive_expiration_date=tomorrow
     ).select_related('object', 'shelf__furniture__labroom')
-    print("Expiring reactives:", expiring_reactives)
-
     reactives_by_lab = defaultdict(list)
     for reactive in expiring_reactives:
         lab = reactive.in_where_laboratory
@@ -144,7 +142,6 @@ def send_expiration_email():
             object_id=lab.pk
         ).values_list("profile__user", flat=True)
         users = User.objects.filter(id__in=user_ids)
-        print("Users:", users)
         emails = [user.email for user in users if
                   user.email and user.email not in blocked_emails]
         if emails:
