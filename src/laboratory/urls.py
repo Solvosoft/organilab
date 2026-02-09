@@ -50,6 +50,7 @@ from laboratory.api.views import (
     LaboratoryProcessViewset,
     ProviderViewSet,
     ObjectFeatureViewSet,
+    ObjectViewSet,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -81,6 +82,7 @@ from laboratory.views.objects import (
     block_notifications,
     view_equipment_list,
     view_reactive_list,
+    object_view,
 )
 from laboratory.views.organizations import (
     OrganizationDeleteView,
@@ -88,8 +90,6 @@ from laboratory.views.organizations import (
     OrganizationUpdateView,
     OrganizationActionsFormview,
 )
-
-# from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 from laboratory.views.provider import provider_view
 
 objviews = ObjectView()
@@ -258,37 +258,6 @@ lab_reports_urls = [
     ),
 ]
 
-
-objectfeature_router = DefaultRouter()
-objectfeature_router.register(
-    "api_objectfeature", ObjectFeatureViewSet, basename="api-objectfeature"
-)
-
-lab_features_urls = [
-    # path(
-    #     "create/",
-    #     objectfeature.FeatureCreateView.as_view(),
-    #     name="object_feature_create",
-    # ),
-    # path(
-    #     "edit/<int:pk>/",
-    #     objectfeature.FeatureUpdateView.as_view(),
-    #     name="object_feature_update",
-    # ),
-    # path(
-    #     "delete/<int:pk>/",
-    #     objectfeature.FeatureDeleteView.as_view(),
-    #     name="object_feature_delete",
-    # ),
-    path("api/objectfeature/", include(objectfeature_router.urls)),
-    path(
-        "list/",
-        objectfeature.objectfeatures_view,
-        name="objectfeatures_view",
-    ),
-]
-
-
 reports_all_lab = [
     path("reports/hcode", laboratory.HCodeReports.as_view(), name="h_code_reports"),
     path(
@@ -349,15 +318,38 @@ organization_urls = [
     path("reports/<int:org_pk>/", reports.report_index, name="reports"),
 ]
 
+objectfeature_router = DefaultRouter()
+objectfeature_router.register(
+    "api_objectfeature", ObjectFeatureViewSet, basename="api-objectfeature"
+)
+lab_features_urls = [
+    path("api/objectfeature/", include(objectfeature_router.urls)),
+    path(
+        "list/",
+        objectfeature.objectfeatures_view,
+        name="objectfeatures_view",
+    ),
+]
+
 provider_router = DefaultRouter()
 provider_router.register("api_provider", ProviderViewSet, basename="api-provider")
-
 provider_urls = [
     path("api/provider/", include(provider_router.urls)),
     path(
         "list/",
         provider_view,
         name="provider_view",
+    ),
+]
+
+object_router = DefaultRouter()
+object_router.register("api_object", ObjectViewSet, basename="api-object")
+object_urls = [
+    path("api/object/", include(object_router.urls)),
+    path(
+        "list/",
+        object_view,
+        name="object_view",
     ),
 ]
 
@@ -614,6 +606,7 @@ urlpatterns += organization_urls + [
     path("lab/<int:org_pk>/<int:lab_pk>/shelf/", include(lab_shelf_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/features/", include(lab_features_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/provider/", include(provider_urls)),
+    path("lab/<int:org_pk>/<int:lab_pk>/object/", include(object_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/informs/", include(informs_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/sustance/", include(sustance_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/equipment/", include(equipment_urls)),
