@@ -108,14 +108,26 @@ class Object(AbstractOrganizationRef):
     serie = models.CharField(_("Serie"), max_length=50, null=True, blank=True)
     plaque = models.CharField(_("Plaque"), max_length=50, null=True, blank=True)
     is_container = models.BooleanField(default=False, verbose_name=_("Is Container?"))
-    is_dangerous = models.BooleanField(default=False, verbose_name=_("Is Dangerous?"),
-                                       help_text=_("It belongs to the regulations of decree 44741"))
-    has_threshold = models.BooleanField(default=False, verbose_name=_("Has threshold?"),
-                                        help_text=_("It belongs to the regulations of decree 44741"))
-    threshold = models.FloatField(default=0.0, verbose_name=_("Threshold"),
-                                  help_text=_("It belongs to the regulations of decree 44741"))
-    is_pure = models.BooleanField(default=False, verbose_name=_("Is pure?"),
-                                  help_text=_("It belongs to the regulations of decree 44741"))
+    is_dangerous = models.BooleanField(
+        default=False,
+        verbose_name=_("Is Dangerous?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    has_threshold = models.BooleanField(
+        default=False,
+        verbose_name=_("Has threshold?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    threshold = models.FloatField(
+        default=0.0,
+        verbose_name=_("Threshold"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
+    is_pure = models.BooleanField(
+        default=False,
+        verbose_name=_("Is pure?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
+    )
 
     @property
     def is_reactive(self):
@@ -135,6 +147,19 @@ class Object(AbstractOrganizationRef):
             else:
                 return ""
         return False
+
+    @property
+    def get_storage_class(self):
+        if hasattr(self, "sustancecharacteristics") and self.sustancecharacteristics:
+            if self.sustancecharacteristics.storage_class:
+                return ", ".join(
+                    self.sustancecharacteristics.storage_class.values_list(
+                        "description", flat=True
+                    )
+                )
+            else:
+                return ""
+        return ""
 
     class Meta:
         verbose_name = _("Object")
@@ -427,6 +452,7 @@ class ShelfObject(models.Model):
     container_open_date = models.DateField(
         blank=True, null=True, verbose_name=_("Container Open Date")
     )
+    was_donated = models.BooleanField(default=False, verbose_name=_("Was donated?"))
 
     @staticmethod
     def get_units(unit):
@@ -699,11 +725,11 @@ class Shelf(BaseCreationObj):
         return (None, None)
 
     def row(self):
-        (row, col) = self.positions()
+        row, col = self.positions()
         return row
 
     def col(self):
-        (row, col) = self.positions()
+        row, col = self.positions()
         return col
 
     class Meta:
@@ -1066,6 +1092,12 @@ class OrganizationStructure(TreeNode):
         ordering = ["position"]
         verbose_name = _("Organization")
         verbose_name_plural = _("Organizations")
+        permissions = [
+            (
+                "can_manage_org_permissions",
+                _("Can manage organization permission structure"),
+            ),
+        ]
 
     def __str__(self):
         return "%s" % self.name
@@ -1602,7 +1634,9 @@ class MaterialCapacity(models.Model):
 
 
 class ObjectMaximumLimit(models.Model):
-    laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE, null=True, blank=True)
+    laboratory = models.ForeignKey(
+        Laboratory, on_delete=models.CASCADE, null=True, blank=True
+    )
     object = models.ForeignKey(Object, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.FloatField(null=True, default=0.0)
     measurement_unit = catalog.GTForeignKey(
@@ -1616,6 +1650,7 @@ class ObjectMaximumLimit(models.Model):
 
     def __str__(self):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
+
 
 class ReactiveLimit(models.Model):
     laboratory = models.ForeignKey(
@@ -1645,7 +1680,6 @@ class ReactiveLimit(models.Model):
         key_name="key",
         key_value="units",
         related_name="measurementunit_reactive_limits",
-
     )
 
     def __str__(self):

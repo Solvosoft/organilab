@@ -31,7 +31,8 @@ from laboratory.models import (
     ShelfObjectObservation,
     EquipmentType,
     ReactiveLimit,
-    ObjectMaximumLimit, LaboratoryProcess,
+    ObjectMaximumLimit,
+    LaboratoryProcess,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -64,7 +65,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
                 "name",
                 "coordinator",
                 "unit",
-                'faculty_dispatch',
+                "faculty_dispatch",
                 "location",
                 "nearby_sites",
                 "description",
@@ -124,7 +125,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
             "faculty_dispatch": genwidgets.TextInput,
-            "workplace": genwidgets.SelectMultiple
+            "workplace": genwidgets.SelectMultiple,
         }
 
 
@@ -170,7 +171,6 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         )
         self.fields["responsible"].queryset = self.instance.organization.users.all()
 
-
     class Meta:
         model = Laboratory
         fields = [
@@ -207,7 +207,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
             "faculty_dispatch": genwidgets.TextInput,
-            "workplace": genwidgets.SelectMultiple
+            "workplace": genwidgets.SelectMultiple,
         }
 
 
@@ -999,7 +999,13 @@ class EquipmentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Object
-        exclude = ["is_container", "is_dangerous", "has_threshold", "threshold","is_pure"]
+        exclude = [
+            "is_container",
+            "is_dangerous",
+            "has_threshold",
+            "threshold",
+            "is_pure",
+        ]
         widgets = {
             "features": genwidgets.SelectMultiple(),
             "code": genwidgets.TextInput,
@@ -1268,7 +1274,9 @@ class ReactiveForm(GTForm, forms.ModelForm):
         widget=FileChunkedUpload, required=False, label=_("Sustance representation")
     )
     is_dangerous = forms.BooleanField(
-        widget=genwidgets.YesNoInput, required=False, label=_("Is dangerous?"),
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Is dangerous?"),
         help_text=_("It belongs to the regulations of decree 44741"),
     )
     has_threshold = forms.BooleanField(
@@ -1281,7 +1289,9 @@ class ReactiveForm(GTForm, forms.ModelForm):
         help_text=_("It belongs to the regulations of decree 44741"),
     )
     threshold = forms.FloatField(
-        widget=genwidgets.TextInput, required=False, label=_("Threshold"),
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Threshold"),
         help_text=_("It belongs to the regulations of decree 44741"),
     )
 
@@ -1383,6 +1393,7 @@ class ReactiveStockForm(GTForm, forms.Form):
             )
 
         self.fields["years"].choices = years_choices
+
 
 class LaboratoryProcessForm(GTForm, forms.ModelForm):
     class Meta:

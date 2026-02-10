@@ -1,7 +1,10 @@
+import logging
+
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Value, DateField, Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -16,6 +19,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.utils.translation import gettext_lazy as _
+logger = logging.getLogger("organilab")
 
 from api.utils import AllPermissionOrganizationByAction
 from auth_and_perms.organization_utils import (
@@ -23,7 +28,8 @@ from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
 )
 from laboratory.api import serializers, filterset
-from laboratory.api.filterset import ProtocolFilterSet, LogEntryFilterSet
+from laboratory.api.filterset import ProtocolFilterSet, LogEntryFilterSet, \
+    ShelObjectReactiveFilter
 from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import (
     ReservedProductsSerializer,
@@ -33,7 +39,8 @@ from laboratory.api.serializers import (
     ShelfObjectSerialize,
     LogEntryUserDataTableSerializer,
     ValidateEquipmentCharacteristicsSerializer,
-    ValidateReactiveCharacteristicsSerializer, GetReactiveLimitSerializer,
+    ValidateReactiveCharacteristicsSerializer,
+    GetReactiveLimitSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -47,10 +54,18 @@ from laboratory.models import (
     Shelf,
     Object,
     Catalog,
-    EquipmentType, ReactiveLimit, LaboratoryProcess,
+    EquipmentType,
+    ReactiveLimit,
+    LaboratoryProcess,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
+from laboratory.shelfobject.serializers import (
+    IncreaseReactiveShelfObjectSerializer,
+    DecreaseReactiveShelfObjectSerializer,
+    ShelObjectReactiveDataTableSerializer,
+)
+from laboratory.shelfobject.utils import save_increase_decrease_shelf_object
 from laboratory.utils import (
     get_logentries_org_management,
     get_pk_org_ancestors_decendants,
@@ -58,6 +73,7 @@ from laboratory.utils import (
     organilab_logentry,
 )
 from reservations_management.models import ReservedProducts
+from rest_framework.exceptions import PermissionDenied
 
 
 class ApiReservedProductsCRUD(APIView):
@@ -872,7 +888,6 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         "create": serializers.ValidateReactiveSerializer,
         "update": serializers.ValidateReactiveSerializer,
         "add_limits": serializers.ReactiveLimitSerializer,
-
     }
     perms = {
         "list": ["laboratory.view_object"],
@@ -926,7 +941,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        context['kwargs'] = self.kwargs
+        context["kwargs"] = self.kwargs
         return context
 
     def filter_queryset(self, queryset):
@@ -1111,7 +1126,9 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         lab = kwargs.get("lab_pk")
 
         if reactive:
-            obj = ReactiveLimit.objects.filter(object__id=reactive, laboratory__pk=lab).first()
+            obj = ReactiveLimit.objects.filter(
+                object__id=reactive, laboratory__pk=lab
+            ).first()
 
             serializer = GetReactiveLimitSerializer(instance=obj, many=False)
             return Response(serializer.data)
@@ -1124,8 +1141,12 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         reactive = self.request.GET.get("reactive", None)
         serializer = None
         if reactive:
-            obj = ReactiveLimit.objects.filter(object__id=reactive, laboratory__pk=self.lab).first()
-            serializer = serializers.ReactiveLimitSerializer(data=request.data, instance=obj)
+            obj = ReactiveLimit.objects.filter(
+                object__id=reactive, laboratory__pk=self.lab
+            ).first()
+            serializer = serializers.ReactiveLimitSerializer(
+                data=request.data, instance=obj
+            )
         else:
             serializer = serializers.ReactiveLimitSerializer(data=request.data)
 
@@ -1133,6 +1154,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
@@ -1159,9 +1181,9 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        lab = self.kwargs.get("lab_pk",0)
+        lab = self.kwargs.get("lab_pk", 0)
         if lab:
-            #self.lab = get_object_or_404(Laboratory, pk=lab)
+            # self.lab = get_object_or_404(Laboratory, pk=lab)
             return queryset.filter(laboratory__pk=lab)
 
         return queryset.none()
@@ -1171,3 +1193,121 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
         serializer.save(created_by=self.request.user)
         return super().perform_create(serializer)
 
+
+class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": ShelObjectReactiveDataTableSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_shelfobject"],
+        "increase": ["laboratory.change_shelfobject"],
+        "decrease": ["laboratory.change_shelfobject"],
+    }
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+    queryset = ShelfObject.objects.filter(object__type=Object.REACTIVE)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = [
+        "id",
+        "object__name",
+        "shelf__furniture__labroom__name",
+        "shelf__name",
+        "shelf__furniture__name",
+        "container__object__name",
+        "quantity",
+        "measurement_unit__description",
+        "measurement_unit__key"
+    ]
+    filterset_class = filterset.ShelObjectReactiveFilter
+    ordering_fields = ["id"]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        lab = self.kwargs.get("lab_pk", 0)
+        if lab:
+            return queryset.filter(in_where_laboratory=lab)
+        return queryset.none()
+
+    def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
+        if request.user.has_perms(
+            self.perms[method_name]
+        ):  # user can actually perform the requested action, then check object access permissions
+            self.organization = get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=org_pk,
+            )
+            self.laboratory = get_object_or_404(
+                Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk
+            )
+            user_is_allowed_on_organization(request.user, self.organization)
+            organization_can_change_laboratory(
+                self.laboratory, self.organization, raise_exec=True
+            )
+        else:
+            raise PermissionDenied()
+
+    @action(detail=False, methods=["post"])
+    def increase(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "increase")
+        self.serializer_class = IncreaseReactiveShelfObjectSerializer
+        data = request.data.copy()
+        if "shelfobject" in data and "shelf_object" not in data:
+            data["shelf_object"] = data["shelfobject"]
+        serializer = self.serializer_class(
+            data=data, context={"request": request, "source_laboratory_id": lab_pk}
+        )
+        errors = {}
+        if serializer.is_valid():
+            save_increase_decrease_shelf_object(
+                request.user,
+                serializer.validated_data,
+                self.laboratory,
+                self.organization,
+                is_increase_process=True,
+            )
+        else:
+            errors = serializer.errors
+            logger.error(f"Error in increase reactive shelf object: {errors}")
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse(
+            {"detail": _("Shelf object was increased successfully.")},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=False, methods=["post"])
+    def decrease(self, request, org_pk, lab_pk, **kwargs):
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "decrease")
+
+        data = request.data.copy()
+
+        if "shelfobject" in data and "shelf_object" not in data:
+            data["shelf_object"] = data["shelfobject"]
+
+        serializer = DecreaseReactiveShelfObjectSerializer(
+            data=data, context={"request": request, "source_laboratory_id": lab_pk}
+        )
+
+        if serializer.is_valid():
+            validated_data = serializer.validated_data.copy()
+
+            if "reason" in validated_data:
+                validated_data["description"] = validated_data.pop("reason")
+
+            save_increase_decrease_shelf_object(
+                request.user,
+                validated_data,
+                self.laboratory,
+                self.organization,
+                is_increase_process=False,
+            )
+
+            return JsonResponse(
+                {"detail": _("Shelf object was decreased successfully.")},
+                status=status.HTTP_200_OK,
+            )
+        logger.error(f"Error in decrease reactive shelf object: {serializer.errors}")
+        return JsonResponse(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
