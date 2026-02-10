@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
@@ -31,7 +32,7 @@ from auth_and_perms.api.serializers import (
     ShelfObjectDataTableSerializer,
     ValidateOrganizationSerializer,
     ExternalUserSerializer,
-    AddExternalUserSerializer,
+    AddExternalUserSerializer, ValidateProfileOrganizationSerializer,
 )
 from auth_and_perms.forms import (
     LaboratoryAndOrganizationForm,
@@ -369,6 +370,46 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
             "draw": self.request.GET.get("draw", 1),
         }
         return Response(self.get_serializer(response).data)
+
+    @action(detail=False, methods=["post"])
+    def inerit_profile(self, request):
+        serializer = ValidateProfileOrganizationSerializer(data=request.data)
+        if serializer.is_valid():
+            organization = serializer.validated_data['organization']
+            user_is_allowed_on_organization(request.user, organization)
+            object_id = serializer.validated_data['object_id']
+            user_pp = ProfilePermission.objects.filter(profile=serializer.validated_data['profile'],
+                                                       content_type=ContentType.objects.filter(
+                                                           app_label=organization._meta.app_label,
+                                                           model=organization._meta.model_name).first(),
+                                                       object_id=organization.pk).first()
+
+            descendants = serializer.validated_data['organization'].descendants(include_self=False)
+            org_vinculate = UserOrganization.objects.filter(user=serializer.validated_data['profile'].user,
+                                                             organization=serializer.validated_data['organization']).first().type_in_organization
+
+            for org in descendants:
+                obj, created = ProfilePermission.objects.get_or_create(
+                    profile=serializer.validated_data['profile'],
+                    content_type=ContentType.objects.filter(
+                        app_label=org._meta.app_label, model=org._meta.model_name).first(),
+                    object_id=org.pk,
+                )
+                org.users.add(serializer.validated_data['profile'].user)
+                if user_pp:
+                    for rol in user_pp.rol.filter(organizationstructure=organization):
+                        org.rol.add(rol)
+                        obj.rol.add(rol)
+
+
+                UserOrganization.objects.get_or_create(
+                    organization=serializer.validated_data['organization'],
+                    user=serializer.validated_data['profile'].user,
+                    type_in_organization=org_vinculate
+                )
+
+            return Response({"result": "ok"})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ExternalUserToOrganizationViewSet(

@@ -34,7 +34,7 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "Add Reserved Products",
-            "category": "Reservations",
+            "category": "Reserved Products",
             "permission": "reservations_management.add_reservedproducts",
         },
         {
@@ -104,11 +104,11 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "Manage Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_manage_disposal",
         },
         {
-            "name": "Do Report",
+            "name": "Add Report",
             "category": "Report",
             "permission": "laboratory.do_report",
         },
@@ -119,12 +119,12 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "View Shelf Object Observations",
-            "category": "Shelf Object",
+            "category": "Shelf Object Observations",
             "permission": "laboratory.view_shelfobjectobservation",
         },
         {
             "name": "Add Shelf Object Observations",
-            "category": "Shelf Object",
+            "category": "Shelf Object Observations",
             "permission": "laboratory.add_shelfobjectobservation",
         },
         {
@@ -149,17 +149,17 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "View Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_view_disposal",
         },
         {
             "name": "Add Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_add_disposal",
         },
         {
             "name": "View Contracts",
-            "category": "Shelf Object",
+            "category": "Contracts",
             "permission": "laboratory.can_view_contract",
         },
     ],
@@ -201,7 +201,7 @@ URLNAME_PERMISSIONS = {
     ],
     "labindex": [
         {
-            "name": "Do Report",
+            "name": "Add Report",
             "category": "Report",
             "permission": "laboratory.do_report",
         },
@@ -216,13 +216,13 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.delete_laboratory",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.view_provider",
         },
         {
-            "name": "Add Provider",
-            "category": "Provider",
+            "name": "Add Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.add_provider",
         },
         {
@@ -296,54 +296,59 @@ URLNAME_PERMISSIONS = {
             "permission": "djreservation.add_reservation",
         },
         {
-            "name": "View Informs",
-            "category": "Informs",
+            "name": "View Inform",
+            "category": "Inform",
             "permission": "laboratory.view_inform",
+        },
+        {
+            "name": "View Laboratory Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.view_laboratoryprocess",
         },
     ],
     "list_provider": [
         {
-            "name": "Add Provider",
-            "category": "Provider",
+            "name": "Add Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.add_provider",
         },
         {
-            "name": "Change Provider",
-            "category": "Provider",
+            "name": "Change Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.change_provider",
         },
         {
-            "name": "Delete Provider",
-            "category": "Provider",
+            "name": "Delete Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.delete_provider",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.view_provider",
         },
     ],
     "add_provider": [
         {
-            "name": "Add Provider",
-            "category": "Provider",
+            "name": "Add Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.add_provider",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.view_provider",
         },
     ],
     "update_lab_provider": [
         {
-            "name": "Change Provider",
-            "category": "Provider",
+            "name": "Change Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.change_provider",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.view_provider",
         },
     ],
@@ -720,29 +725,29 @@ URLNAME_PERMISSIONS = {
     ],
     "structure_list": [
         {
-            "name": "Add structure",
-            "category": "Risk Zone",
+            "name": "Add Structure",
+            "category": "Structure",
             "permission": "risk_management.add_structure",
         },
         {
-            "name": "Change structure",
-            "category": "Risk Zone",
+            "name": "Change Structure",
+            "category": "Structure",
             "permission": "risk_management.change_structure",
         },
         {
-            "name": "Delete structure",
-            "category": "Risk Zone",
+            "name": "Delete Structure",
+            "category": "Structure",
             "permission": "risk_management.delete_structure",
         },
         {
-            "name": "View structure",
-            "category": "Risk Zone",
+            "name": "View Structure",
+            "category": "Structure",
             "permission": "risk_management.view_structure",
         },
     ],
     "structure_create": [
         {
-            "name": "Add structure",
+            "name": "Add Structure",
             "category": "Risk Zone",
             "permission": "risk_management.add_structure",
         },
@@ -773,54 +778,54 @@ URLNAME_PERMISSIONS = {
     ],
     "regent_list": [
         {
-            "name": "Add regent",
-            "category": "Risk Zone",
+            "name": "Add Regent",
+            "category": "Regent",
             "permission": "risk_management.add_regent",
         },
         {
-            "name": "Change regent",
-            "category": "Risk Zone",
+            "name": "Change Regent",
+            "category": "Regent",
             "permission": "risk_management.change_regent",
         },
         {
-            "name": "Delete regent",
-            "category": "Risk Zone",
+            "name": "Delete Regent",
+            "category": "Regent",
             "permission": "risk_management.delete_regent",
         },
         {
-            "name": "View regent",
-            "category": "Risk Zone",
+            "name": "View Regent",
+            "category": "Regent",
             "permission": "risk_management.view_regent",
         },
     ],
     "regent_create": [
         {
-            "name": "Add regent",
-            "category": "Risk Zone",
+            "name": "Add Regent",
+            "category": "Regent",
             "permission": "risk_management.add_regent",
         },
         {
-            "name": "View regent",
-            "category": "Risk Zone",
+            "name": "View Regent",
+            "category": "Regent",
             "permission": "risk_management.view_regent",
         },
     ],
     "regent_delete": [
         {
-            "name": "Delete regent",
-            "category": "Risk Zone",
+            "name": "Delete Regent",
+            "category": "Regent",
             "permission": "risk_management.delete_regent",
         },
         {
-            "name": "View regent",
-            "category": "Risk Zone",
+            "name": "View Regent",
+            "category": "Regent",
             "permission": "risk_management.view_regent",
         },
     ],
     "regent_detail": [
         {
-            "name": "View regent",
-            "category": "Risk Zone",
+            "name": "View Regent",
+            "category": "Regent",
             "permission": "risk_management.view_regent",
         }
     ],
@@ -1157,23 +1162,32 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "Manage Permissions",
-            "category": "Rol",
+            "category": "Role",
             "permission": "djgentelella.can_manage_permissions",
         },
+        # {
+        #     "name": "Add Organization Permissions Management",
+        #     "category": "Role",
+        #     "permission": "laboratory.can_manage_org_permissions",
+        # },
         {
             "name": "View Laboratory",
             "category": "Laboratory",
             "permission": "laboratory.view_laboratory",
         },
-        {"name": "Add Rol", "category": "Rol", "permission": "auth_and_perms.add_rol"},
         {
-            "name": "View Rol",
-            "category": "Rol",
+            "name": "Add Role",
+            "category": "Role",
+            "permission": "auth_and_perms.add_rol",
+        },
+        {
+            "name": "View Role",
+            "category": "Role",
             "permission": "auth_and_perms.view_rol",
         },
         {
-            "name": "Change Rol",
-            "category": "Rol",
+            "name": "Change Role",
+            "category": "Role",
             "permission": "auth_and_perms.change_rol",
         },
         {
@@ -1271,17 +1285,17 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "Manage Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_manage_disposal",
         },
         {
             "name": "View Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_view_disposal",
         },
         {
             "name": "Add Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_add_disposal",
         },
         {"name": "View SGA", "category": "SGA", "permission": "sga.view_label"},
@@ -1291,8 +1305,8 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.add_displaylabel",
         },
         {
-            "name": "View Template Inform",
-            "category": "Derb",
+            "name": "View Custom template",
+            "category": "Custom template",
             "permission": "derb.add_customform",
         },
         {
@@ -1309,14 +1323,19 @@ URLNAME_PERMISSIONS = {
     ],
     "copy_rols": [
         {
-            "name": "Change Organization Structure",
-            "category": "Organization Structure",
-            "permission": "laboratory.change_organizationstructure",
+            "name": "Edit Role",
+            "category": "Role",
+            "permission": "auth_and_perms.change_rol",
         },
         {
-            "name": "View Organization Structure",
-            "category": "Organization Structure",
-            "permission": "laboratory.view_organizationstructure",
+            "name": "View Role",
+            "category": "Role",
+            "permission": "auth_and_perms.view_rol",
+        },
+        {
+            "name": "Delete Role",
+            "category": "Role",
+            "permission": "auth_and_perms.delete_rol",
         },
     ],
     "index": [
@@ -1464,7 +1483,7 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.view_dangerindication",
         },
         {
-            "name": "Do Report",
+            "name": "Add Report",
             "category": "Report",
             "permission": "laboratory.do_report",
         },
@@ -1488,7 +1507,7 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_inform",
         },
         {
-            "name": "Fill Informs",
+            "name": "View Inform",
             "category": "Inform",
             "permission": "laboratory.view_inform",
         },
@@ -1555,16 +1574,28 @@ URLNAME_PERMISSIONS = {
         },
     ],
     "entrylist": [
-        {"name": "View Entry", "category": "Entry", "permission": "blog.view_entry"},
         {
-            "name": "Delete Entry",
-            "category": "Entry",
+            "name": "View Blog Entry",
+            "category": "Blog Entry",
+            "permission": "blog.view_entry",
+        },
+        {
+            "name": "Delete Blog Entry",
+            "category": "Blog Entry",
             "permission": "blog.delete_entry",
         },
     ],
     "entrycreate": [
-        {"name": "Add Entry", "category": "Entry", "permission": "blog.add_entry"},
-        {"name": "View Entry", "category": "Entry", "permission": "blog.view_entry"},
+        {
+            "name": "Add Blog Entry",
+            "category": "Blog Entry",
+            "permission": "blog.add_entry",
+        },
+        {
+            "name": "View Blog Entry",
+            "category": "Blog Entry",
+            "permission": "blog.view_entry",
+        },
         {
             "name": "Add Blog Category",
             "category": "Blog Category",
@@ -1573,11 +1604,15 @@ URLNAME_PERMISSIONS = {
     ],
     "entry_update": [
         {
-            "name": "Change Entry",
-            "category": "Entry",
+            "name": "Change Blog Entry",
+            "category": "Blog Entry",
             "permission": "blog.change_entry",
         },
-        {"name": "View Entry", "category": "Entry", "permission": "blog.view_entry"},
+        {
+            "name": "View Blog Entry",
+            "category": "Blog Entry",
+            "permission": "blog.view_entry",
+        },
         {
             "name": "Add Blog Category",
             "category": "Blog Category",
@@ -1586,11 +1621,15 @@ URLNAME_PERMISSIONS = {
     ],
     "entry_delete": [
         {
-            "name": "Delete Entry",
-            "category": "Entry",
+            "name": "Delete Blog Entry",
+            "category": "Blog Entry",
             "permission": "blog.delete_entry",
         },
-        {"name": "View Entry", "category": "Entry", "permission": "blog.view_entry"},
+        {
+            "name": "View Blog Entry",
+            "category": "Blog Entry",
+            "permission": "blog.view_entry",
+        },
     ],
     "profile": [
         {"name": "Change User", "category": "User", "permission": "auth.change_user"},
@@ -1680,7 +1719,7 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_shelfobject",
         },
         {
-            "name": "Do Report",
+            "name": "Add Report",
             "category": "Report",
             "permission": "laboratory.do_report",
         },
@@ -1771,12 +1810,12 @@ URLNAME_PERMISSIONS = {
         },
         {
             "name": "View Shelf Object Observations",
-            "category": "Shelf Object",
+            "category": "Shelf Object Observations",
             "permission": "laboratory.view_shelfobjectobservation",
         },
         {
             "name": "Add Shelf Object Observations",
-            "category": "Shelf Object",
+            "category": "Shelf Object Observations",
             "permission": "laboratory.add_shelfobjectobservation",
         },
         {
@@ -2119,13 +2158,13 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.view_displaylabel",
         },
         {
-            "name": "Add Provider",
-            "category": "Provider",
+            "name": "Add Provider SGA",
+            "category": "Provider SGA",
             "permission": "sga.add_provider",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider SGA",
+            "category": "Provider SGA",
             "permission": "sga.view_provider",
         },
         {
@@ -2208,13 +2247,13 @@ URLNAME_PERMISSIONS = {
     ],
     "add_sga_provider": [
         {
-            "name": "Add Provider",
-            "category": "Provider",
+            "name": "Add Provider SGA",
+            "category": "Provider SGA",
             "permission": "sga.add_provider",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider SGA",
+            "category": "Provider SGA",
             "permission": "sga.view_provider",
         },
     ],
@@ -2354,7 +2393,7 @@ URLNAME_PERMISSIONS = {
     ],
     "incident_report": [
         {
-            "name": "Do Report",
+            "name": "Add Report",
             "category": "Report",
             "permission": "laboratory.do_report",
         },
@@ -2383,22 +2422,22 @@ URLNAME_PERMISSIONS = {
     ],
     "protocol_list": [
         {
-            "name": "Create a Protocol",
+            "name": "Add Protocol",
             "category": "Protocol",
             "permission": "laboratory.add_protocol",
         },
         {
-            "name": "View a Protocol",
+            "name": "View Protocol",
             "category": "Protocol",
             "permission": "laboratory.view_protocol",
         },
         {
-            "name": "Update a Protocol",
+            "name": "Change Protocol",
             "category": "Protocol",
             "permission": "laboratory.change_protocol",
         },
         {
-            "name": "Delete a Protocol",
+            "name": "Delete Protocol",
             "category": "Protocol",
             "permission": "laboratory.delete_protocol",
         },
@@ -2410,7 +2449,7 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.add_registeruserqr",
         },
         {
-            "name": "Edit Register User QR Code",
+            "name": "Change Register User QR Code",
             "category": "Register User QR Code",
             "permission": "laboratory.change_registeruserqr",
         },
@@ -2428,12 +2467,12 @@ URLNAME_PERMISSIONS = {
     "view_disposal": [
         {
             "name": "Manage Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_manage_disposal",
         },
         {
             "name": "View Disposal",
-            "category": "Shelf",
+            "category": "Disposal",
             "permission": "laboratory.can_view_disposal",
         },
         {
@@ -2451,7 +2490,7 @@ URLNAME_PERMISSIONS = {
     ],
     "can_do_report": [
         {
-            "name": "Do Report",
+            "name": "Add Report",
             "category": "Report",
             "permission": "laboratory.do_report",
         },
@@ -2685,13 +2724,13 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_catalog",
         },
         {
-            "name": "View Provider",
-            "category": "Provider",
+            "name": "View Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.view_provider",
         },
         {
-            "name": "Add Provider",
-            "category": "Provider",
+            "name": "Add Provider Laboratory",
+            "category": "Provider Laboratory",
             "permission": "laboratory.add_provider",
         },
     ],
@@ -2805,7 +2844,7 @@ URLNAME_PERMISSIONS = {
     ],
     "buildings_list": [
         {
-            "name": "Viwe Structure",
+            "name": "View Building",
             "category": "Building",
             "permission": "risk_management.view_buildings",
         },
@@ -2870,6 +2909,45 @@ URLNAME_PERMISSIONS = {
             "name": "View Report",
             "category": "Report",
             "permission": "laboratory.view_report",
+        }
+    ],
+    "laboratory_process_list": [
+        {
+            "name": "View Laboratory Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.view_laboratoryprocess",
+        },
+        {
+            "name": "Add Laboratory Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.add_laboratoryprocess",
+        },
+        {
+            "name": "Change Laboratory Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.change_laboratoryprocess",
+        },
+        {
+            "name": "Delete Laboratory Process",
+            "category": "Laboratory Process",
+            "permission": "laboratory.delete_laboratoryprocess",
+        },
+    ],
+    "shelfobject-list": [
+        {
+            "name": "View Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.view_shelfobject",
+        },
+        {
+            "name": "Update Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.change_shelfobject",
+        },
+        {
+            "name": "View Unit Measurement",
+            "category": "Unit Measurement",
+            "permission": "laboratory.view_catalog",
         }
     ],
 }

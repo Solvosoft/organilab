@@ -20,7 +20,10 @@ from laboratory.views.catalogs import (
     view_equipmenttype_list,
 )
 from laboratory.views.objectlimits import ReactiveStockDashboard
-from laboratory.views.shelfobject import view_equipment_shelfobject_detail
+from laboratory.views.shelfobject import (
+    view_equipment_shelfobject_detail,
+    shelf_object_reagents,
+)
 from sga.api.sga_components_viewsets import (
     WarningWordAPI,
     WarningWordTableView,
@@ -47,6 +50,8 @@ from laboratory.api.views import (
     InstrumentalFamilyManagementViewset,
     EquipmentTypeManagementViewset,
     ReactiveManagementViewset,
+    LaboratoryProcessViewset,
+    ShelObjectReactiveViewset,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -66,7 +71,11 @@ from laboratory.views.informs import (
     complete_inform,
     remove_inform,
 )
-from laboratory.views.laboratory import LaboratoryListView, LaboratoryDeleteView
+from laboratory.views.laboratory import (
+    LaboratoryListView,
+    LaboratoryDeleteView,
+    laboratory_process_list,
+)
 from laboratory.views.logentry import get_logentry_from_organization
 from laboratory.views.my_reservations import MyReservationView
 from laboratory.views.objects import (
@@ -84,6 +93,7 @@ from laboratory.views.organizations import (
 from laboratory.views.provider import ProviderCreate, ProviderList, ProviderUpdate
 
 objviews = ObjectView()
+
 
 organization_urls_org_pk = [
     path(
@@ -242,7 +252,11 @@ lab_reports_urls = [
         "list/reactive/report", reports.ReactiveReport.as_view(), name="reactive_report"
     ),
     path("risk_zone/", reports.RiskZoneReport.as_view(), name="risk_zone_report"),
-    path("reactive/stock/", reports.ReactiveStockReport.as_view(), name="reactive_stock_report"),
+    path(
+        "reactive/stock/",
+        reports.ReactiveStockReport.as_view(),
+        name="reactive_stock_report",
+    ),
 ]
 
 lab_features_urls = [
@@ -261,6 +275,11 @@ lab_features_urls = [
         objectfeature.FeatureDeleteView.as_view(),
         name="object_feature_delete",
     ),
+    path(
+        "reactives/",
+        shelf_object_reagents,
+        name="shel_objects_reactives",
+    ),
 ]
 
 
@@ -274,11 +293,18 @@ reports_all_lab = [
         reports.OrganizationReactivePresenceList.as_view(),
         name="organizationreactivepresence",
     ),
+    path(
+        "chemicalinventory/",
+        reports.ChemicalInventoryReport.as_view(),
+        name="chemicalinventory",
+    ),
 ]
 
 sustance_urls = [
     path("", view_reactive_list, name="sustance_list"),
-    path("reactive_stock/", ReactiveStockDashboard.as_view(), name="reactive_stock_list"),
+    path(
+        "reactive_stock/", ReactiveStockDashboard.as_view(), name="reactive_stock_list"
+    ),
 ]
 
 equipment_urls = [
@@ -372,6 +398,11 @@ catalogs_urls = [
         kwargs={"key": "structure_type"},
         name="add_structure_type_catalog",
     ),
+    path(
+        "workplace/type/<str:key>",
+        furniture.add_catalog,
+        name="add_workplace_type_catalog",
+    ),
 ]
 
 informs_period_urls = [
@@ -441,6 +472,12 @@ comment_router.register("api_inform", CommentAPI, basename="api-inform")
 router.register("api_protocol", ProtocolViewSet, basename="api-protocol")
 router.register("api_logentry", LogEntryViewSet, basename="api-logentry")
 router.register("api_informs", InformViewSet, basename="api-informs")
+shelObjectReactive_router = DefaultRouter()
+shelObjectReactive_router.register(
+    "api_shelobjectsreactives",
+    ShelObjectReactiveViewset,
+    basename="api-shelobjectsreactives",
+)
 
 stepcommentsrouter = DefaultRouter()
 stepcommentsrouter.register(
@@ -545,6 +582,12 @@ objectrouter.register(
     "api_reactive_list", ReactiveManagementViewset, basename="api-reactive"
 )
 
+lab_process_router = DefaultRouter()
+lab_process_router.register(
+    "api_laboratory_process",
+    LaboratoryProcessViewset,
+    basename="api-laboratory-process",
+)
 
 """MULTILAB"""
 urlpatterns += organization_urls + [
@@ -561,6 +604,10 @@ urlpatterns += organization_urls + [
         SearchDisposalObject.as_view(),
         name="disposal_substance",
     ),
+    path(
+        "/<int:org_pk>/<int:lab_pk>/api/reactives/",
+        include(shelObjectReactive_router.urls),
+    ),
     path("lab/<int:org_pk>/<int:lab_pk>/rooms/", include(lab_rooms_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/furniture/", include(lab_furniture_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/objects/", include(objviews.get_urls())),
@@ -573,7 +620,7 @@ urlpatterns += organization_urls + [
     path("lab/<int:org_pk>/<int:lab_pk>/sustance/", include(sustance_urls)),
     path("lab/<int:org_pk>/<int:lab_pk>/equipment/", include(equipment_urls)),
     path(
-        "lab/<int:org_pk>/<int:lab_pk>/blocknotifications/",
+        "lab/<int:lab_pk>/blocknotifications/<int:obj_pk>/",
         block_notifications,
         name="block_notification",
     ),
@@ -625,4 +672,10 @@ urlpatterns += organization_urls + [
         include(equipment_shelfobject_url),
     ),
     path("equipment/api/<int:org_pk>/<int:lab_pk>/", include(objectrouter.urls)),
+    path("<int:org_pk>/<int:lab_pk>/processes/", include(lab_process_router.urls)),
+    path(
+        "<int:org_pk>/<int:lab_pk>/processes/list/",
+        laboratory_process_list,
+        name="laboratory_process_list",
+    ),
 ]

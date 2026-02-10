@@ -1,15 +1,16 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
-from laboratory.models import ShelfObject, Object
+from laboratory.models import ShelfObject, Object, Catalog
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils_base_unit import get_conversion_units
 from report.utils import (
     filter_period,
     set_format_table_columns,
     get_report_name,
-    load_dataset_by_column,
+    load_dataset_by_column, get_danger_categories, get_conversion_units_to_kilograms,
 )
 from risk_management.models import RiskZone
+from sga.models import HCodeCategory
 
 
 def get_hcode_threshold(hcodes_quantity, quantity):
@@ -20,6 +21,107 @@ def get_hcode_threshold(hcodes_quantity, quantity):
                 return True
     return result
 
+
+def get_dataset_report_x(report, column_list=None):
+
+    dataset = []
+    filters = {"object__type": 0}
+    risk_zones = RiskZone.objects.filter(organization__pk=report.data["organization"])
+    laboratories = []
+    if "risk_zone" in report.data:
+        if len(report.data["risk_zone"]) > 0:
+            laboratories = list(
+                risk_zones.filter(pk__in=report.data["risk_zone"])
+                .exclude(buildings__isnull=True)
+                .values_list("buildings__laboratories", flat=True)
+            )
+
+    if "building" in report.data:
+        if len(report.data["building"]) > 0:
+            if len(laboratories) == 0:
+                laboratories = list(
+                    risk_zones.filter(
+                        buildings__pk__in=report.data["building"]
+                    ).values_list("buildings__laboratories", flat=True)
+                )
+            else:
+                laboratories.extend(
+                    list(
+                        risk_zones.filter(
+                            buildings__pk__in=report.data["building"]
+                        ).values_list("buildings__laboratories", flat=True)
+                    )
+                )
+    if len(laboratories) == 0 and len(report.data["building"]) == 0 and len(
+        report.data["risk_zone"]) == 0:
+        laboratories = risk_zones.values_list("buildings__laboratories", flat=True)
+
+    filters.update({"in_where_laboratory__in": list(set(laboratories))})
+    objsx = ShelfObject.objects.filter(**filters)
+    objs = Object.objects.filter(pk__in=objs.values_list("object__pk", flat=True),
+                                 has_threshold=True,
+                                 is_dangerous=True,
+                                 threshold__isnull=False).distinct()
+    units = Catalog.objects.filter(pk__in=objsx.values_list("measurement_unit", flat=True))
+    third_list = []
+    fourth_list = []
+    for reactive in objs:
+        reactive_list = []
+
+        third_square = False
+        total_shelfobjects = 0
+        reactive_list.append(reactive.name)
+        for unit in units:
+            shelfobjects = ShelfObject.objects.filter(object=reactive, measurement_unit=unit).distinct()
+            if shelfobjects.count() > 0:
+                total_shelfobjects += sum(
+                    [
+                        get_conversion_units_to_kilograms(obj.measurement_unit, obj.quantity)
+                        for obj in shelfobjects
+                    ]
+                )
+        #list 3
+        reactive_list.append(reactive.threshold)
+        reactive_list.append(total_shelfobjects)
+        reactive_list.append(_("No Exceeds Threshold"))
+
+        if reactive.threshold*1000 < total_shelfobjects:
+            reactive_list[-1]=_("Yes Exceeds Threshold")
+            third_square = True
+        third_list.append(reactive_list)
+
+        if not third_square and hasattr(reactive, "sustancecharacteristics"):
+            #list 4
+            danger_categories_list = get_danger_categories(reactive, total_shelfobjects)
+            if len(danger_categories_list) > 0:
+                if danger_categories_list[-1].threshold*1000 < total_shelfobjects:
+                    danger_categories_list.append(_("Yes Exceeds Threshold"))
+                else:
+                    danger_categories_list.append(_("No Exceeds Threshold"))
+                fourth_list.extend(danger_categories_list)
+    total_fifth_list = {
+        "enviroment":{"substance":0,"category_threshold":0, "total":0},
+        "health":{"substance":0,"category_threshold":0, "total":0},
+        "physical":{"substance":0,"category_threshold":0, "total":0}
+    }
+    if len(fourth_list) > 0:
+        for danger in fourth_list:
+            total_fifth_list[danger[2]]["substance"] += danger[3]
+            total_fifth_list[danger[2]]["category_threshold"] += danger[4]
+            try:
+                total_fifth_list[danger[2]]["total"] += danger[3]/danger[4]
+            except ZeroDivisionError:
+                total_fifth_list[danger[2]]["total"] = 0
+
+        for danger in total_fifth_list:
+            total_fifth_list[danger]["category_threshold"] /= 1000
+
+    context = {
+        "total_fifth_list": total_fifth_list,
+        "third_list": third_list,
+        "fourth_list": fourth_list
+    }
+    return  context
 
 def get_dataset_report(report, column_list=None):
     dataset = []

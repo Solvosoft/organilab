@@ -3,6 +3,8 @@ import uuid
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from rest_framework import permissions
+
 from auth_and_perms.models import Rol, ProfilePermission
 from laboratory.models import OrganizationStructure
 

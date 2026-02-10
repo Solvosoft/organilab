@@ -61,6 +61,7 @@ def render_editor_sga(request, org_pk):
 
 # SGA editor
 @login_required
+@permission_required("auth_and_perms.institution_can_access")
 def template_editor(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -137,7 +138,7 @@ def clean_json_text(text):
 
 
 @login_required
-@permission_required("sga.add_displaylabel")
+@permission_required(("sga.add_displaylabel", "auth_and_perms.institution_can_access"))
 def create_personal_template(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -275,7 +276,7 @@ def edit_personal_template(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.delete_displaylabel")
+@permission_required(("sga.delete_displaylabel", "auth_and_perms.institution_can_access"))
 def delete_sgalabel(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -351,7 +352,7 @@ def create_sgalabel(request, org_pk):
 
 
 @login_required
-@permission_required("sga.change_displaylabel")
+@permission_required(("sga.change_displaylabel", "auth_and_perms.institution_can_access"))
 def sgalabel_step_one(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -423,7 +424,7 @@ def sgalabel_step_one(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.change_displaylabel")
+@permission_required(("sga.change_displaylabel", "auth_and_perms.institution_can_access"))
 def sgalabel_step_two(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -486,7 +487,7 @@ def get_barcode_from_number(request, org_pk, code):
 
 
 @login_required
-@permission_required("sga.view_builderinformation")
+@permission_required(("sga.view_builderinformation", "auth_and_perms.institution_can_access"))
 def get_companies(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -503,7 +504,7 @@ def get_companies(request, org_pk):
 
 
 @login_required
-@permission_required("sga.add_builderinformation")
+@permission_required(("sga.add_builderinformation", "auth_and_perms.institution_can_access"))
 def create_company(request, org_pk):
     form = CompanyForm(user=request.user)
     organization = get_object_or_404(
@@ -529,7 +530,7 @@ def create_company(request, org_pk):
 
 
 @login_required
-@permission_required("sga.change_builderinformation")
+@permission_required(("sga.change_builderinformation", "auth_and_perms.institution_can_access"))
 def edit_company(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -553,7 +554,7 @@ def edit_company(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.delete_builderinformation")
+@permission_required(("sga.delete_builderinformation", "auth_and_perms.institution_can_access"))
 def remove_company(request, org_pk, pk):
     if pk:
         company = BuilderInformation.objects.get(pk=pk)

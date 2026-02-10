@@ -1,44 +1,45 @@
 {% load i18n %}
-{% if perms.sga.view_label %}
-<li>
-    <a>
-        <i class="fa fa-tags"></i>
-        {% trans 'SGA Management' %}
-        <span class="fa fa-chevron-down">
+{% if perms.sga.view_label and perms.auth_and_perms.institution_can_access %}
+	<li>
+		<a>
+			<i class="fa fa-tags"></i>
+			{% trans 'SGA Management' %}
+			<span class="fa fa-chevron-down">
     </span>
-    </a>
-    <ul class="nav child_menu">
-        <li>
-            <a href="{% url 'sga:add_personal' org_pk=org_pk %}">
-                {% trans 'SGA Labeling' %}
-            </a>
-        </li>
+		</a>
+		<ul class="nav child_menu">
+			<li>
+				<a href="{% url 'sga:add_personal' org_pk=org_pk %}">
+					{% trans 'SGA Labeling' %}
+				</a>
+			</li>
 
-        {% if perms.sga.change_templatesga %}
-         <li>
-            <a href="{% url 'sga:editor' org_pk=org_pk  %}">
-                {% trans 'SGA Editor' %}
-            </a>
-        </li>
-         {% endif %}
+			{% if perms.sga.change_templatesga %}
+				<li>
+					<a href="{% url 'sga:editor' org_pk=org_pk %}">
+						{% trans 'SGA Editor' %}
+					</a>
+				</li>
+			{% endif %}
 
-        {% if perms.msds.view_msdsobject %}
-        <li>
-            <a href="{% url 'msds:index_msds' org_pk=org_pk %}">
-                {% trans 'MSDS: Security sheets' %}
-            </a>
-        </li>
-        {% endif %}
-    {% include 'partials/sga_complements.html' %}
-        {% if perms.sga.view_builderinformation %}
-        <li>
-            <a href="{% url 'sga:get_companies' org_pk %}">
-                {% trans 'Companies Managment' %}
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-    <!-- /.nav-second-level -->
-</li>
-
+			{% if perms.msds.view_msdsobject %}
+				<li>
+					<a href="{% url 'msds:index_msds' org_pk=org_pk %}">
+						{% trans 'MSDS: Security sheets' %}
+					</a>
+				</li>
+			{% endif %}
+			{% include 'partials/sga_complements.html' %}
+			{% if perms.sga.view_builderinformation %}
+				<li>
+					<a href="{% url 'sga:get_companies' org_pk %}">
+						{% trans 'Companies Managment' %}
+					</a>
+				</li>
+			{% endif %}
+		</ul>
+		<!-- /.nav-second-level -->
+	</li>
+{% else %}
+	{% include 'partials/sga_complements.html' %}
 {% endif %}

@@ -522,8 +522,7 @@ def get_dataset_report_organization_reactive(report, column_list=None):
             iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
             data_column = {
                 "laboratory_name": reactive["laboratory__name"],
-                "first_name": reactive["user__first_name"],
-                "last_name": reactive["user__last_name"],
+                "name": reactive["user__first_name"]+" "+reactive["user__last_name"],
                 "code": reactive["object__code"],
                 "substance": reactive["object__name"],
                 "cas": caracteristics.cas_id_number,
@@ -531,7 +530,6 @@ def get_dataset_report_organization_reactive(report, column_list=None):
                 "carcinogenic": iarc,
                 "id_card": "",
                 "job_position": "",
-                "amount": 1,
             }
 
             try:
@@ -540,7 +538,6 @@ def get_dataset_report_organization_reactive(report, column_list=None):
                     {
                         "id_card": profile.id_card,
                         "job_position": profile.job_position,
-                        "amount": reactive["count"],
                     }
                 )
             except Profile.DoesNotExist as error:
@@ -556,17 +553,15 @@ def get_dataset_report_organization_reactive(report, column_list=None):
 
 def report_reactive_exposition_html(report):
     columns_fields = [
-        {"name": "laboratory_name", "title": _("Laboratory name")},
-        {"name": "first_name", "title": _("First Name")},
-        {"name": "last_name", "title": _("Last Name")},
+        {"name": "laboratory_name", "title": _("Laboratory")},
+        {"name": "name", "title": _("Name of official")},
         {"name": "code", "title": _("Code")},
-        {"name": "substance", "title": _("Substance")},
-        {"name": "cas", "title": _("CAS")},
+        {"name": "substance", "title": _("Substance name")},
+        {"name": "cas", "title": _("Cas number")},
         {"name": "white_organ", "title": _("White Organ")},
         {"name": "carcinogenic", "title": _("Carcinogenic")},
-        {"name": "id_card", "title": _("ID Card")},
+        {"name": "id_card", "title": _("ID Number")},
         {"name": "job_position", "title": _("Job Position")},
-        {"name": "amount", "title": "#" + _("Exposition")},
     ]
     columns_fields = set_format_table_columns(columns_fields)
     column_list = list(map(lambda x: x["name"], columns_fields))
@@ -582,17 +577,15 @@ def report_organization_reactive_list_doc(report):
     builder = ExcelGraphBuilder()
     content = [
         [
-            _("Laboratory name"),
-            _("First Name"),
-            _("Last Name"),
+            _("Laboratory"),
+            _("Name of official"),
             _("Code"),
-            _("Sustance"),
-            _("CAS"),
+            _("Substance name"),
+            _("Cas number"),
             _("White Organ"),
             _("Carcinogenic"),
-            _("ID Card"),
+            _("ID Number"),
             _("Job Position"),
-            "#" + _("Exposition"),
         ]
     ]
 

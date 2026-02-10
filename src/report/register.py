@@ -96,4 +96,22 @@ REPORT_FORMS = {
         "xlsx": "report.views.stock.report_stock",
         "ods": "report.views.stock.report_stock",
     },
+    "regency_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.RegencyReportForm",
+        "html": "report.views.regency.report_regency_html",
+        "pdf": "report.views.base.base_pdf",
+        "xls": "report.views.regency.report_regency_doc",
+        "xlsx": "report.views.regency.report_regency_doc",
+        "ods": "report.views.regency.report_regency_doc",
+    },
+    "chemicalinventory": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.ChemicalInventoryReportForm",
+        "xls": "report.views.stock.report_stock_cartel",
+        "xlsx": "report.views.stock.report_stock_cartel",
+        "ods": "report.views.stock.report_stock_cartel",
+        "html": "report.views.stock.report_reactive_stock_html",
+        "pdf": "report.views.base.base_pdf",
+    },
 }
