@@ -1,4 +1,4 @@
-Módulo de Roles y Permisos - Replicación de la Estructura Jerárquica Institucional
+Artículo 9: Módulo de Roles y Permisos - Replicación de la Estructura Jerárquica Institucional
 ===========================================================================================================================
 
     •   El módulo de Roles y Permisos en Organilab permite la replicación de la estructura jerárquica institucional mediante el uso de roles, los cuales son configuraciones específicas de permisos diseñados para abordar una función específica. Por ejemplo, el rol de Administrador de Laboratorio es un rol comúnmente utilizado en Organilab.

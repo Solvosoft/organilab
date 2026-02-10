@@ -1,5 +1,5 @@
-Módulo 5: Creación y Administración de Salas y Muebles de Laboratorio
-========================================================================
+Artículo 5: Creación y Administración de Salas y Muebles de Laboratorio
+=================================================================================
 
 La plataforma de Organilab ofrece la capacidad de crear y administrar salas, muebles y estanterías de laboratorio, así como la posibilidad de agregar contenedores y reactivos a las estanterías.
 

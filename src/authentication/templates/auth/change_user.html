@@ -24,10 +24,20 @@
                            data-bs-toggle="modal" data-bs-target="#changepasswordmodal"
                            value="{% trans 'Change password' %}"/>
                 </div>
-
-
             </div>
-        </div>
+									{% if labs %}
+										 <div class="col-md-5">
+													<h2>{% trans 'Laboratories where you are affiliated' %}</h2>
+													<div class="container-fluid" data-bs-spy="scroll" style="height: 50vh; overflow: auto;">
+															<ul class="list-group list-group-flush" >
+																{% for lab in labs %}
+																	<li class="list-group-item">{{lab.name}}</li>
+																{% endfor %}
+														</ul>
+													</div>
+        		</div>
+									{% endif %}
+								</div>
     </form>
 
         <div id="changepasswordmodal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">

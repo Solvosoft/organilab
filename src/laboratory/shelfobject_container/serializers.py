@@ -10,30 +10,38 @@ from laboratory.shelfobject.serializers import CatalogDetailSerializer
 class ObjectContainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Object
-        fields = ['id', 'name']
+        fields = ["id", "name"]
+
 
 class ShelfContainerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shelf
-        fields = ['id', 'name']
+        fields = ["id", "name"]
+
 
 class ContainerFilter(FilterSet):
     creation_date = DateTimeFromToRangeFilter(
-        widget=DateTimeRangeTextWidget(attrs={'placeholder': 'YYYY/MM/DD HH:MM:SS'}))
-    created_by = CharFilter(field_name='created_by', method='filter_user')
+        widget=DateTimeRangeTextWidget(attrs={"placeholder": "YYYY/MM/DD HH:MM:SS"})
+    )
+    created_by = CharFilter(field_name="created_by", method="filter_user")
 
     def filter_user(self, queryset, name, value):
-        return queryset.filter(Q(created_by__first_name__icontains=value) | Q(
-            created_by__last_name__icontains=value) | Q(
-            created_by__username__icontains=value))
+        return queryset.filter(
+            Q(created_by__first_name__icontains=value)
+            | Q(created_by__last_name__icontains=value)
+            | Q(created_by__username__icontains=value)
+        )
+
     class Meta:
         model = ShelfObject
-        fields  = {'id': ['exact'],
-                   'object__name': ['icontains'],
-                   'status__description': ['icontains'],
-                   'measurement_unit__description': ['icontains'],
-                   'containershelfobject__object__name': ['icontains'],
-                   }
+        fields = {
+            "id": ["exact"],
+            "object__name": ["icontains"],
+            "status__description": ["icontains"],
+            "measurement_unit__description": ["icontains"],
+            "containershelfobject__object__name": ["icontains"],
+        }
+
 
 class ContainerListSerializer(serializers.ModelSerializer):
     object = ObjectContainerSerializer()
@@ -49,7 +57,7 @@ class ContainerListSerializer(serializers.ModelSerializer):
             name = obj.created_by.get_full_name()
             if not name:
                 name = obj.created_by.username
-        return name or ''
+        return name or ""
 
     def get_measurement_unit(self, obj):
         return obj.get_measurement_unit_display()
@@ -62,8 +70,17 @@ class ContainerListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = ['id', 'object', 'shelf', 'status', 'measurement_unit', 'created_by',
-                  'creation_date', 'containershelfobject']
+        fields = [
+            "id",
+            "object",
+            "shelf",
+            "status",
+            "measurement_unit",
+            "created_by",
+            "creation_date",
+            "containershelfobject",
+        ]
+
 
 class ContainerDataTableSerializer(serializers.Serializer):
     data = serializers.ListField(child=ContainerListSerializer(), required=True)

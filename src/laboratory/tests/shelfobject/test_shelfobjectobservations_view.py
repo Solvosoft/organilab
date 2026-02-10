@@ -10,7 +10,10 @@ class ShelfObjectObservationViewTest(ShelfObjectAPITest):
         Test for Shelf Object Observation view when user have permissions in their organization
         but don't have access to the specified laboratory/organization
         """
-        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         self.client.logout()
         self.client.force_login(self.user2)
         response = self.client.get(view_url)
@@ -21,7 +24,10 @@ class ShelfObjectObservationViewTest(ShelfObjectAPITest):
         Test for Shelf Object Observation view when user don't have any permissions and
         don't have access to the specified laboratory/organization
         """
-        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         self.client.logout()
         self.client.force_login(self.user3)
         response = self.client.get(view_url)
@@ -31,7 +37,10 @@ class ShelfObjectObservationViewTest(ShelfObjectAPITest):
         """
         Test for Shelf Object Observation view when anonymous user tries to access
         """
-        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         self.client.logout()
         response = self.client.get(view_url)
         self.assertEqual(response.status_code, 302)
@@ -40,17 +49,26 @@ class ShelfObjectObservationViewTest(ShelfObjectAPITest):
         """
         Test for Shelf Object Observation view to check if template being loaded is the correct one
         """
-        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         response = self.client.get(view_url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context[0].template_name, 'laboratory/shelfobject/shelfobject_observations.html')
+        self.assertEqual(
+            response.context[0].template_name,
+            "laboratory/shelfobject/shelfobject_observations.html",
+        )
 
     def test_shelfobject_observations_view_required_tables(self):
         """
         Test for Shelf Object Observation view to check if the html elements
         for the tables and forms are in the template
         """
-        view_url = reverse('laboratory:get_shelfobject_log', kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         response = self.client.get(view_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response=response, text='id="observationTable"')
@@ -61,17 +79,27 @@ class ShelfObjectObservationViewTest(ShelfObjectAPITest):
         """
         Test for Shelf Object Observation view check if the urls of the objects are loaded correctly
         """
-        view_url = reverse('laboratory:get_shelfobject_log',
-                           kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         response = self.client.get(view_url)
-        observation_table_url = reverse('laboratory:api-shelfobject-list-comments',
-                                        kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
-        shelf_availability_information = reverse('laboratory:api-shelfobject-shelf-availability-information',
-                                                 kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
-        change_status = reverse('laboratory:api-shelfobject-create-status',
-                                kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id})
+        observation_table_url = reverse(
+            "laboratory:api-shelfobject-list-comments",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
+        shelf_availability_information = reverse(
+            "laboratory:api-shelfobject-shelf-availability-information",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id},
+        )
+        change_status = reverse(
+            "laboratory:api-shelfobject-create-status",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id},
+        )
         observation_url = f"observation_table: '{observation_table_url}'"
-        shelf_url = f"shelf_availability_information: '{shelf_availability_information}'"
+        shelf_url = (
+            f"shelf_availability_information: '{shelf_availability_information}'"
+        )
         status_url = f"change_status: '{change_status}'"
         self.assertEqual(response.status_code, 200)
         self.assertContains(response=response, text=observation_url)
@@ -82,8 +110,10 @@ class ShelfObjectObservationViewTest(ShelfObjectAPITest):
         """
         Test for Shelf Object Observation view to verify if the forms are loaded correctly into the template
         """
-        view_url = reverse('laboratory:get_shelfobject_log',
-                           kwargs={'org_pk': self.org_pk, 'lab_pk': self.lab.id, 'pk': 1})
+        view_url = reverse(
+            "laboratory:get_shelfobject_log",
+            kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id, "pk": 1},
+        )
         response = self.client.get(view_url)
         self.assertContains(response=response, text='id="observation_form"')
         self.assertContains(response=response, text='id="status_form"')

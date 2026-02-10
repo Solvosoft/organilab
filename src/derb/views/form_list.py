@@ -13,11 +13,11 @@ from derb.models import CustomForm
 from laboratory.utils import organilab_logentry
 
 
-@method_decorator(permission_required('derb.view_customform'), name='dispatch')
+@method_decorator(permission_required("derb.view_customform"), name="dispatch")
 class FormList(ListView):
     model = CustomForm
     context_object_name = "forms"
-    template_name = 'formBuilder/form_list.html'
+    template_name = "formBuilder/form_list.html"
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -29,43 +29,46 @@ class FormList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['forms'] = self.get_queryset()
+        context["forms"] = self.get_queryset()
         return context
 
-@method_decorator(permission_required('derb.delete_customform'), name='dispatch')
+
+@method_decorator(permission_required("derb.delete_customform"), name="dispatch")
 class DeleteForm(DeleteView):
     model = CustomForm
 
     def form_valid(self, form):
         success_url = self.get_success_url()
-        organilab_logentry(self.request.user, self.object, DELETION, 'custom form')
+        organilab_logentry(self.request.user, self.object, DELETION, "custom form")
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
     # decir este formulario tiene x respuestas en el warning
     def get_success_url(self, **kwargs):
-        success_url =  reverse_lazy('derb:form_list', kwargs={'org_pk':self.org})
+        success_url = reverse_lazy("derb:form_list", kwargs={"org_pk": self.org})
         return success_url
 
-@permission_required('derb.add_customform')
+
+@permission_required("derb.add_customform")
 def CreateForm(request, org_pk):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
         empty_schema = {
-            "name": request.POST.get('name'),
+            "name": request.POST.get("name"),
             "status": "admin",
-            "components": []
+            "components": [],
         }
 
         custom_form = CustomForm.objects.create(
-            name=empty_schema['name'],
-            status=empty_schema['status'],
+            name=empty_schema["name"],
+            status=empty_schema["status"],
             schema=empty_schema,
-            organization=organization
+            organization=organization,
         )
-        url = reverse('derb:edit_view', args=[org_pk, custom_form.id])
-        organilab_logentry(request.user, custom_form, ADDITION, 'custom form')
+        url = reverse("derb:edit_view", args=[org_pk, custom_form.id])
+        organilab_logentry(request.user, custom_form, ADDITION, "custom form")
 
         return JsonResponse({"url": url})
+    return None

@@ -17,36 +17,40 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         self.lab = self.lab1_org1
         self.user = self.user1_org1
         self.client = self.client1_org1
-        self.shelf_object = ShelfObject.objects.get(pk=1)
+        self.shelf_object = ShelfObject.objects.get(pk=6)
         self.shelf_object_material = ShelfObject.objects.get(pk=4)
         self.shelf_object_equipment = ShelfObject.objects.get(pk=5)
         self.available_container = ShelfObject.objects.get(pk=3)
         self.container_for_cloning = Object.objects.get(pk=3)
         self.old_shelf = self.shelf_object.shelf
-        self.new_shelf_3 = Shelf.objects.get(pk=3)
+        self.new_shelf_3 = Shelf.objects.get(pk=1)
+        self.new_shelf_5 = Shelf.objects.get(pk=3)
         self.new_shelf_4 = Shelf.objects.get(pk=4)
         self.data_shelf_3 = {
             "lab_room": self.new_shelf_3.furniture.labroom.pk,
             "furniture": self.new_shelf_3.furniture.pk,
             "shelf": self.new_shelf_3.pk,
             "shelf_object": self.shelf_object.pk,
-            "container_select_option": 'use_source',
-            "container_for_cloning": '',
-            "available_container": ''
+            "container_select_option": "use_source",
+            "container_for_cloning": "",
+            "available_container": "",
         }
         self.data_shelf_4 = {
             "lab_room": self.new_shelf_4.furniture.labroom.pk,
             "furniture": self.new_shelf_4.furniture.pk,
             "shelf": self.new_shelf_4.pk,
-            "shelf_object": self.shelf_object.pk
+            "shelf_object": self.shelf_object.pk,
         }
         self.data_shelf_5 = {
             "lab_room": self.new_shelf_3.furniture.labroom.pk,
             "furniture": self.new_shelf_3.furniture.pk,
             "shelf": self.new_shelf_3.pk,
-            "shelf_object": self.shelf_object_material.pk
+            "shelf_object": self.shelf_object_material.pk,
         }
-        self.url = reverse("laboratory:api-shelfobject-move-shelfobject-to-shelf", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.url = reverse(
+            "laboratory:api-shelfobject-move-shelfobject-to-shelf",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
 
     def test_shelfobject_move_case1(self):
         """
@@ -61,13 +65,28 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         5) Check if pk shelfobject is not in old shelf.
         6) Check if pk shelfobject is in new shelf.
         """
+        data = self.data_shelf_3.copy()
+        data["shelf"] = 3
+        response = self.client.post(self.url, data=data)
         response = self.client.post(self.url, data=self.data_shelf_3)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertEqual(self.shelf_object.measurement_unit.pk , self.new_shelf_3.measurement_unit.pk)
-        self.assertNotIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertEqual(
+            self.shelf_object.measurement_unit.pk, self.new_shelf_3.measurement_unit.pk
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_3.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case2(self):
         """
@@ -84,10 +103,20 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         self.user = self.user2_org2
         response = self.client.post(self.url, data=self.data_shelf_3)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertFalse(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_3.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case3(self):
         """
@@ -104,11 +133,24 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         """
         response = self.client.post(self.url, data=self.data_shelf_4)
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertNotEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.new_shelf_4.furniture.labroom.laboratory.pk)
-        self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertNotEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk,
+            self.new_shelf_4.furniture.labroom.laboratory.pk,
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_4.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case4(self):
         """
@@ -127,11 +169,24 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         self.user = self.user2_org2
         response = self.client.post(self.url, data=self.data_shelf_4)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertNotEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.new_shelf_4.furniture.labroom.laboratory.pk)
-        self.assertIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertNotIn(self.shelf_object.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
+        self.assertFalse(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertNotEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk,
+            self.new_shelf_4.furniture.labroom.laboratory.pk,
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_4.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case5(self):
         """
@@ -147,14 +202,27 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         6) Check if pk shelfobject is in new shelf.
         """
         data = self.data_shelf_3
-        data['container_select_option'] = 'new_based_source'
+        data["shelf"] = 1
+        data["container_select_option"] = "new_based_source"
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertEqual(self.shelf_object.measurement_unit.pk , self.new_shelf_3.measurement_unit.pk)
-        self.assertNotIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertEqual(
+            self.shelf_object.measurement_unit.pk, self.new_shelf_3.measurement_unit.pk
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_3.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case6(self):
         """
@@ -171,17 +239,32 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         6) Check if pk shelfobject is in new shelf.
         """
         data = self.data_shelf_3
-        data.update({
-            'container_select_option': 'clone',
-            'container_for_cloning': self.container_for_cloning.pk
-        })
+        data.update(
+            {
+                "container_select_option": "clone",
+                "container_for_cloning": self.container_for_cloning.pk,
+                "shelf": 1,
+            }
+        )
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertEqual(self.shelf_object.measurement_unit.pk , self.new_shelf_3.measurement_unit.pk)
-        self.assertNotIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertEqual(
+            self.shelf_object.measurement_unit.pk, self.new_shelf_3.measurement_unit.pk
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_3.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case7(self):
         """
@@ -198,17 +281,32 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         6) Check if pk shelfobject is in new shelf.
         """
         data = self.data_shelf_3
-        data.update({
-            'container_select_option': 'available',
-            'available_container': self.available_container.pk
-        })
+        data.update(
+            {
+                "container_select_option": "available",
+                "available_container": self.available_container.pk,
+                "shelf": 1,
+            }
+        )
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertEqual(self.shelf_object.measurement_unit.pk , self.new_shelf_3.measurement_unit.pk)
-        self.assertNotIn(self.shelf_object.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object.shelf.furniture.labroom.laboratory.pk, self.lab.pk
+        )
+        self.assertEqual(
+            self.shelf_object.measurement_unit.pk, self.new_shelf_3.measurement_unit.pk
+        )
+        self.assertNotIn(
+            self.shelf_object.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object.pk,
+            list(self.new_shelf_3.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case8(self):
         """
@@ -222,12 +320,25 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         4) Check if pk shelfobject is not in old shelf.
         5) Check if pk shelfobject is in new shelf.
         """
-        response = self.client.post(self.url, data=self.data_shelf_5)
+        data = self.data_shelf_5.copy()
+        data["shelf"] = 3
+        response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object_material.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertNotIn(self.shelf_object_material.pk, list(self.old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object_material.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object_material.shelf.furniture.labroom.laboratory.pk,
+            self.lab.pk,
+        )
+        self.assertNotIn(
+            self.shelf_object_material.pk,
+            list(self.old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object_material.pk,
+            list(self.new_shelf_5.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case9(self):
         """
@@ -243,13 +354,24 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         """
         old_shelf = self.shelf_object_material.shelf
         data = self.data_shelf_4
-        data['shelf_object'] = self.shelf_object_material.pk
+        data["shelf_object"] = self.shelf_object_material.pk
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object_material.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertIn(self.shelf_object_material.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertNotIn(self.shelf_object_material.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object_material.shelf.furniture.labroom.laboratory.pk,
+            self.lab.pk,
+        )
+        self.assertIn(
+            self.shelf_object_material.pk,
+            list(old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertNotIn(
+            self.shelf_object_material.pk,
+            list(self.new_shelf_4.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case10(self):
         """
@@ -265,14 +387,24 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         """
         old_shelf = self.shelf_object_equipment.shelf
         data = self.data_shelf_4
-        data['shelf_object'] = self.shelf_object_equipment.pk
+        data["shelf_object"] = self.shelf_object_equipment.pk
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object_equipment.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertIn(self.shelf_object_equipment.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertNotIn(self.shelf_object_equipment.pk, list(self.new_shelf_4.get_objects().values_list('pk', flat=True)))
-
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object_equipment.shelf.furniture.labroom.laboratory.pk,
+            self.lab.pk,
+        )
+        self.assertIn(
+            self.shelf_object_equipment.pk,
+            list(old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertNotIn(
+            self.shelf_object_equipment.pk,
+            list(self.new_shelf_4.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case11(self):
         """
@@ -288,13 +420,25 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         """
         old_shelf = self.shelf_object_material.shelf
         data = self.data_shelf_3
-        data['shelf_object'] = self.shelf_object_material.pk
+        data["shelf"] = 3
+        data["shelf_object"] = self.shelf_object_material.pk
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertEqual(self.shelf_object_material.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-        self.assertNotIn(self.shelf_object_material.pk, list(old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object_material.pk, list(self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertEqual(
+            self.shelf_object_material.shelf.furniture.labroom.laboratory.pk,
+            self.lab.pk,
+        )
+        self.assertNotIn(
+            self.shelf_object_material.pk,
+            list(old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object_material.pk,
+            list(self.new_shelf_5.get_objects().values_list("pk", flat=True)),
+        )
 
     def test_shelfobject_move_case12(self):
         """
@@ -310,15 +454,22 @@ class ShelfObjectMoveViewTest(ShelfObjectSetUp):
         """
         old_shelf = self.shelf_object_equipment.shelf
         data = self.data_shelf_3
-        data['shelf_object'] = self.shelf_object_equipment.pk
+        data["shelf"] = 3
+        data["shelf_object"] = self.shelf_object_equipment.pk
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
-            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         self.assertEqual(
             self.shelf_object_equipment.shelf.furniture.labroom.laboratory.pk,
-            self.lab.pk)
-        self.assertNotIn(self.shelf_object_equipment.pk,
-                      list(old_shelf.get_objects().values_list('pk', flat=True)))
-        self.assertIn(self.shelf_object_equipment.pk, list(
-            self.new_shelf_3.get_objects().values_list('pk', flat=True)))
+            self.lab.pk,
+        )
+        self.assertNotIn(
+            self.shelf_object_equipment.pk,
+            list(old_shelf.get_objects().values_list("pk", flat=True)),
+        )
+        self.assertIn(
+            self.shelf_object_equipment.pk,
+            list(self.new_shelf_5.get_objects().values_list("pk", flat=True)),
+        )

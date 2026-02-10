@@ -24,40 +24,41 @@ class ReviewSubstanceViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = ReviewSubstance.objects.using(settings.READONLY_DATABASE)
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['created_by__username', 'comercial_name']
+    search_fields = ["created_by__username", "comercial_name"]
     filterset_class = ReviewSubstanceFilterSet
-    ordering_fields = ['creation_date', 'created_by']
-    ordering = ('creation_date',)
+    ordering_fields = ["creation_date", "created_by"]
+    ordering = ("creation_date",)
 
     def get_queryset(self):
-        queryset=super().get_queryset()
-        return queryset.annotate(
-            comercial_name=F('substance__comercial_name')
-        )
+        queryset = super().get_queryset()
+        return queryset.annotate(comercial_name=F("substance__comercial_name"))
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
         form = ValidateReviewSubstanceForm(self.request.GET)
         if form.is_valid():
 
-            showapprove = form.cleaned_data['showapprove'] or False
+            showapprove = form.cleaned_data["showapprove"] or False
         else:
             return queryset.none()
         filter_data = {
-            'substance__organization': self.organization,
-            'is_approved': showapprove
+            "substance__organization": self.organization,
+            "is_approved": showapprove,
         }
         return queryset.filter(**filter_data)
 
     def list(self, request, org_pk, *args, **kwargs):
         self.organization = get_object_or_404(
-                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-                pk=org_pk)
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+        )
         user_is_allowed_on_organization(request.user, self.organization)
         query_total = self.get_queryset()
         queryset = self.filter_queryset(query_total)
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': query_total.count(),
-                    'recordsFiltered': queryset.count(),
-                    'draw': self.request.GET.get('draw', 1)}
+        response = {
+            "data": data,
+            "recordsTotal": query_total.count(),
+            "recordsFiltered": queryset.count(),
+            "draw": self.request.GET.get("draw", 1),
+        }
         return Response(self.get_serializer(response).data)

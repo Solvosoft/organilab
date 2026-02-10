@@ -1,4 +1,4 @@
-Software Utilizado para la Construcción de Organilab - Django, Gentellela y Widgets
+Artículo 13: Software Utilizado para la Construcción de Organilab - Django, Gentellela y Widgets
 ========================================================================================================================================
 
 Organilab se construye utilizando una variedad de herramientas de software, incluyendo el marco de aplicaciones web Django, el tema de administración Gentellela y diversos widgets.

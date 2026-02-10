@@ -9,5 +9,5 @@ def upload_files(instance, filename):
     path = Path(filename)
     extension = path.suffix
     name = slugify(path.stem)
-    model_name= str(type(instance).__name__).lower()
+    model_name = str(type(instance).__name__).lower()
     return f"{model_name}/{date}/{name}{extension}"

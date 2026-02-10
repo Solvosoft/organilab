@@ -14,7 +14,6 @@ def lab_index(request, org_pk, lab_pk):
     if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
         raise Http404()
 
-    return render(request, 'laboratory/index.html',
-                  {'laboratory': int(lab_pk),
-                   'org_pk':org_pk})
-
+    return render(
+        request, "laboratory/index.html", {"laboratory": int(lab_pk), "org_pk": org_pk}
+    )

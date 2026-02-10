@@ -1,4 +1,4 @@
-Módulo 7: Reservas de Sustancias, Materiales y Equipos
+Artículo 7: Reservas de Sustancias, Materiales y Equipos
 ====================================================================
 
 La función **Reservas** de Organilab le permite reservar sustancias, materiales y equipos para tareas o experimentos específicos. Esto se puede hacer a través de dos métodos: Reserva Directa y Reserva de Solicitud.

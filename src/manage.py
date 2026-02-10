@@ -5,8 +5,7 @@ import logging
 
 if __name__ == "__main__":
 
-
-    if len(sys.argv) > 1 and sys.argv[1] == 'test':
+    if len(sys.argv) > 1 and sys.argv[1] == "test":
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "organilab.test_settings")
         logging.disable(logging.CRITICAL)
     else:

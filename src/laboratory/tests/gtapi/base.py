@@ -3,12 +3,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase, Client
 from django.urls import reverse
-
 from auth_and_perms.organization_utils import organization_can_change_laboratory
-from laboratory.models import OrganizationStructure, Laboratory, Furniture, ShelfObject, \
-    LaboratoryRoom, Shelf
+from laboratory.models import (
+    OrganizationStructure,
+    Laboratory,
+    Furniture,
+    ShelfObject,
+    LaboratoryRoom,
+    Shelf,
+)
 from laboratory.shelfobject.utils import get_available_containers_for_selection
 from laboratory.utils import check_user_access_kwargs_org_lab
+
 
 class TestCaseBase(TestCase):
     fixtures = ["gtapi/gtapi_data.json"]
@@ -33,10 +39,16 @@ class TestCaseBase(TestCase):
         self.profile4 = self.user4.profile
 
         # ORGS BY USER
-        self.user1_org1_list = OrganizationStructure.os_manager.filter_organization_by_user(
-            self.user1).distinct()
-        self.user2_org2_list = OrganizationStructure.os_manager.filter_organization_by_user(
-            self.user2).distinct()
+        self.user1_org1_list = (
+            OrganizationStructure.os_manager.filter_organization_by_user(
+                self.user1
+            ).distinct()
+        )
+        self.user2_org2_list = (
+            OrganizationStructure.os_manager.filter_organization_by_user(
+                self.user2
+            ).distinct()
+        )
 
         # LABS
         self.lab1_org1 = Laboratory.objects.get(name="Lab 1")
@@ -45,10 +57,12 @@ class TestCaseBase(TestCase):
 
         # INITIAL DATA
 
-        self.lab_contenttype = ContentType.objects.filter(app_label='laboratory',
-                                                          model='laboratory').first()
-        self.org_contenttype = ContentType.objects.filter(app_label='laboratory',
-                                                          model='organizationstructure').first()
+        self.lab_contenttype = ContentType.objects.filter(
+            app_label="laboratory", model="laboratory"
+        ).first()
+        self.org_contenttype = ContentType.objects.filter(
+            app_label="laboratory", model="organizationstructure"
+        ).first()
 
         self.client1 = Client()
         self.client2 = Client()
@@ -59,7 +73,7 @@ class TestCaseBase(TestCase):
         self.client3.force_login(self.user3)
         self.client4.force_login(self.user4)
 
-        #DEFAULT DATA
+        # DEFAULT DATA
         self.lab = self.lab1_org1
         self.org = self.org1
         self.user = self.user1
@@ -74,11 +88,12 @@ class TestCaseBase(TestCase):
             "page": 1,
             "laboratory": self.lab.pk,
             "organization": self.org.pk,
-            "shelf": self.shelf.pk
+            "shelf": self.shelf.pk,
         }
 
-
-    def check_tests(self, response, status_code, org_can_change, user_access, results_data=True):
+    def check_tests(
+        self, response, status_code, org_can_change, user_access, results_data=True
+    ):
         """
         CHECK TESTS
         1) Check response status code equal to expected status code.
@@ -97,7 +112,8 @@ class TestCaseBase(TestCase):
                 self.assertEqual(has_permission, org_can_change)
 
             check_user_access = check_user_access_kwargs_org_lab(
-            self.data["organization"], self.data["laboratory"], self.user)
+                self.data["organization"], self.data["laboratory"], self.user
+            )
             self.assertEqual(check_user_access, user_access)
 
         if response.content:
@@ -109,8 +125,14 @@ class TestCaseBase(TestCase):
 
         return results
 
-
-    def get_obj_by_shelfobject(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400):
+    def get_obj_by_shelfobject(
+        self,
+        user=None,
+        client=None,
+        org_can_manage=False,
+        user_access=False,
+        status_code=400,
+    ):
         """
         CHECK TESTS
         ...
@@ -128,18 +150,14 @@ class OrgDoesNotExists(TestCaseBase):
     def setUp(self):
         super().setUp()
         self.org = None
-        self.data.update({
-            "organization": 9867
-        })
+        self.data.update({"organization": 9867})
 
 
 class LabDoesNotExists(TestCaseBase):
     def setUp(self):
         super().setUp()
         self.lab = None
-        self.data.update({
-            "laboratory": 3678
-        })
+        self.data.update({"laboratory": 3678})
 
 
 class WithoutOrg(TestCaseBase):
@@ -161,9 +179,7 @@ class OrgCannotManageLab(TestCaseBase):
     def setUp(self):
         super().setUp()
         self.lab = self.lab2_org2
-        self.data.update({
-            "laboratory": self.lab.pk
-        })
+        self.data.update({"laboratory": self.lab.pk})
 
 
 class ShelfViewTest(TestCaseBase):
@@ -171,15 +187,20 @@ class ShelfViewTest(TestCaseBase):
     def setUp(self):
         super().setUp()
         self.url = reverse("shelf-list")
-        self.data.update({
-            "relfield": self.furniture.pk
-        })
+        self.data.update({"relfield": self.furniture.pk})
         del self.data["shelf"]
 
 
 class ShelfViewTestOrgCanManageLab(ShelfViewTest):
 
-    def get_obj_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_obj_by_shelfobject(
+        self,
+        user=None,
+        client=None,
+        user_access=False,
+        status_code=400,
+        results_data=True,
+    ):
         """
         CHECK TESTS
         ...
@@ -192,12 +213,16 @@ class ShelfViewTestOrgCanManageLab(ShelfViewTest):
             self.user = user
             self.client = client
         response = self.client.get(self.url, data=self.data)
-        results = self.check_tests(response, status_code, True, user_access, results_data)
+        results = self.check_tests(
+            response, status_code, True, user_access, results_data
+        )
 
         if results and "relfield" in self.data:
             available_shelves = list(
-                Shelf.objects.filter(furniture=self.data["relfield"]).values_list(
-                    "pk", flat=True).exclude(pk=self.shelfobject.shelf.pk))
+                Shelf.objects.filter(furniture=self.data["relfield"])
+                .values_list("pk", flat=True)
+                .exclude(pk=self.shelfobject.shelf.pk)
+            )
             self.assertTrue(results[0]["id"] in available_shelves)
 
 
@@ -206,15 +231,20 @@ class FurnitureViewTest(TestCaseBase):
     def setUp(self):
         super().setUp()
         self.url = reverse("furniture-list")
-        self.data.update({
-            "relfield": self.labroom.pk
-        })
+        self.data.update({"relfield": self.labroom.pk})
         del self.data["shelf"]
 
 
 class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
 
-    def get_obj_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_obj_by_shelfobject(
+        self,
+        user=None,
+        client=None,
+        user_access=False,
+        status_code=400,
+        results_data=True,
+    ):
         """
         CHECK TESTS
         ...
@@ -227,12 +257,16 @@ class FurnitureViewTestOrgCanManageLab(FurnitureViewTest):
             self.user = user
             self.client = client
         response = self.client.get(self.url, data=self.data)
-        results = self.check_tests(response, status_code, True, user_access, results_data)
+        results = self.check_tests(
+            response, status_code, True, user_access, results_data
+        )
 
         if results and "relfield" in self.data:
-            available_furniture = list(Furniture.objects.filter(labroom=self.data["relfield"]).values_list(
-                "pk", flat=True
-            ))
+            available_furniture = list(
+                Furniture.objects.filter(labroom=self.data["relfield"]).values_list(
+                    "pk", flat=True
+                )
+            )
             self.assertTrue(results[0]["id"] in available_furniture)
 
 
@@ -246,7 +280,14 @@ class LabRoomViewTest(TestCaseBase):
 
 class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
 
-    def get_obj_by_shelfobject(self, user=None, client=None, user_access=False, status_code=400, results_data=True):
+    def get_obj_by_shelfobject(
+        self,
+        user=None,
+        client=None,
+        user_access=False,
+        status_code=400,
+        results_data=True,
+    ):
         """
         CHECK TESTS
         ...
@@ -259,12 +300,16 @@ class LabRoomViewTestOrgCanManageLab(LabRoomViewTest):
             self.user = user
             self.client = client
         response = self.client.get(self.url, data=self.data)
-        results = self.check_tests(response, status_code, True, user_access, results_data)
+        results = self.check_tests(
+            response, status_code, True, user_access, results_data
+        )
 
         if results:
-            available_labroom = list(LaboratoryRoom.objects.filter(laboratory=self.lab).values_list(
-                "pk", flat=True
-            ))
+            available_labroom = list(
+                LaboratoryRoom.objects.filter(laboratory=self.lab).values_list(
+                    "pk", flat=True
+                )
+            )
             self.assertTrue(results[0]["id"] in available_labroom)
 
 
@@ -275,7 +320,15 @@ class ShelfObjectViewTest(TestCaseBase):
         self.url = reverse("available-container-search-list")
         del self.data["shelfobject"]
 
-    def get_available_container_by_lab_and_shelf(self, user=None, client=None, org_can_manage=False, user_access=False, status_code=400, same_lab=False):
+    def get_available_container_by_lab_and_shelf(
+        self,
+        user=None,
+        client=None,
+        org_can_manage=False,
+        user_access=False,
+        status_code=400,
+        same_lab=False,
+    ):
         """
         CHECK TESTS
         ...
@@ -290,12 +343,21 @@ class ShelfObjectViewTest(TestCaseBase):
         if "laboratory" in self.data and "shelf" in self.data:
             self.assertEqual(
                 self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk,
-                same_lab)
+                same_lab,
+            )
 
 
 class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
 
-    def get_available_container_by_lab_and_shelf(self, user=None, client=None, user_access=False, status_code=400, results_data=True, same_lab=False):
+    def get_available_container_by_lab_and_shelf(
+        self,
+        user=None,
+        client=None,
+        user_access=False,
+        status_code=400,
+        results_data=True,
+        same_lab=False,
+    ):
         """
         CHECK TESTS
         ...
@@ -308,14 +370,22 @@ class ShelfObjectViewTestOrgCanManageLab(ShelfObjectViewTest):
             self.user = user
             self.client = client
         response = self.client.get(self.url, data=self.data)
-        results = self.check_tests(response, status_code, True, user_access, results_data)
+        results = self.check_tests(
+            response, status_code, True, user_access, results_data
+        )
 
         if "laboratory" in self.data and "shelf" in self.data:
-            self.assertEqual(self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk, same_lab)
+            self.assertEqual(
+                self.data["laboratory"] == self.shelf.furniture.labroom.laboratory.pk,
+                same_lab,
+            )
 
         if results:
-            available_shelfobject = list(get_available_containers_for_selection(
-                self.lab.pk, self.shelf.pk).values_list("pk", flat=True))
+            available_shelfobject = list(
+                get_available_containers_for_selection(
+                    self.lab.pk, self.shelf.pk
+                ).values_list("pk", flat=True)
+            )
             self.assertTrue(results[0]["id"] in available_shelfobject)
 
 

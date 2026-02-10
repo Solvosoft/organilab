@@ -1,5 +1,5 @@
-Creación de plantillas de informes personalizadas con Organilab
-====================================================================
+Artículo 12: Creación de plantillas de informes personalizadas con Organilab
+========================================================================================
 
     Organilab ofrece una potente función para generar informes personalizados, lo que le permite crear plantillas de informes personalizadas que pueden utilizarse para generar rápidamente informes según las necesidades específicas de su laboratorio.
 

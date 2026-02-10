@@ -18,46 +18,163 @@
 </div>
 </div>
 
-<div class="row">
-<div class="col-md-12">
-    <div class="add-container float-end">
-        <a class="btn btn-outline-success" href="{% url 'laboratory:sustance_add' lab_pk=laboratory org_pk=org_pk %}"><i class="fa fa-plus" title="{% trans 'Add new Substance' %}"></i> {% trans 'Add' %}</a>
-    </div>
-    <br>
-  <table id="sustancetable" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th> </th>
-                <th>{% trans 'Name' %}</th>
-                <th>{% trans 'Cas code' %}</th>
-                <th>{% trans 'Actions' %}</th>
+	<div class="row">
+    <table class="table table-striped w-100 table-responsive" id="reactive_table"></table>
+</div>
 
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-  </table>
-</div>
-</div>
+{% url "laboratory:api-reactive-list" org_pk lab_pk as list_obj_url %}
+	{% trans 'Create Reactive' as create_obj_tittle %}
+
+{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class='modal-xl' %}
+
+{% url "laboratory:api-reactive-detail" org_pk lab_pk 0 as detail_obj_url %}
+	{% trans 'Update Reactive' as update_obj_tittle %}
+{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class='modal-xl' %}
+
+{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+{% trans 'Update Limits' as limit_obj_tittle %}
+
+{% include 'gentelella/blocks/modal_template.html' with form=limit_form id="create_limit_modal" title=limit_obj_tittle form_id="create_reactive_limit_form" url=detail_obj_url principal_class='modal-xl' %}
+
+
+
+
 {% endblock %}
 
 {% block js %}
 {{block.super}}
 
 <script>
+var object_urls = {
+    list_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
+    create_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
+    destroy_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}",
+    update_url: "{% url 'laboratory:api-reactive-detail' org_pk lab_pk 0 %}"
+}
+var limit_urls = {
+					get_limits: "{% url 'laboratory:api-reactive-get-reactive-limits' org_pk=org_pk lab_pk=lab_pk pk=0 %}",
+					add_limits: "{% url 'laboratory:api-reactive-add-limits' org_pk=org_pk lab_pk=lab_pk %}"
+					}
+datatable_inits = {
+    columns: [
+                {data: "id", name: "id", title: "ID", type: "string", visible: false},
+                {data: "combined_booleans", name: "combined_booleans", title: gettext("Status") , type: "boolean"},
+                {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
+                {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
+                {data: "synonym", name: "synonym", title: gettext("Synonym"), type: "string", visible: true},
+                {data: "maximum_limit_table", name: "maximum_limit_table", title: gettext("Maximum Limit"), type: "readonly", visible: true},
+                {data: "minimum_limit_table", name: "minimum_limit_table", title: gettext("Minimum Limit"), type: "readonly", visible: true},
+                {data: "measurement_unit_table", name: "measurement_unit_table", title: gettext("Measurement Unit"), type: "readonly", visible: true},
+                {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 
-(function(){
-    $("#sustancetable").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": "{% url 'laboratory:sustance_list_json' org_pk laboratory %}",
-        "language": {
-            "url": "{% get_datatables_translation %}"
-        }
-    });
-})(jQuery);
+],
+addfilter: true
+
+}
+
+var reactive_modalids = {
+    create: "#create_obj_modal",
+    destroy: "#delete_obj_modal",
+    update: "#update_obj_modal",
+}
+
+var reactive_actions = {
+    table_actions: [], // table_actions
+    object_actions: [
+					{
+						'name' : 'download',
+						'action' : 'download',
+						'title' : gettext('Download'),
+						'in_action_column' : true,
+						'i_class' : 'fa fa-download',
+					},
+					{
+						'name' : 'add_limits',
+						'action' : 'add_limits',
+						'title' : gettext('Limits'),
+						'in_action_column' : true,
+						'i_class' : 'fa fa-lock',
+						'success' : function(instance, data){
+							instance.datatable.ajax.reload();
+						}
+					}
+				],
+        title: gettext('Actions'),
+        className: "no-export-col"
+}
+
+icons = {
+    create: '<i class="fa fa-plus" aria-hidden="true"></i>',
+    clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+    detail: 'fa fa-eye',
+    update: 'fa fa-edit me-1 fa-lg',
+    destroy: 'fa fa-trash fa-lg',
+
+}
+
+let objconfig={
+    urls: object_urls,
+    datatable_element: "#reactive_table",
+    modal_ids: reactive_modalids,
+    actions: reactive_actions,
+    datatable_inits: datatable_inits,
+    add_filters: true,
+    relation_render: {'field_autocomplete': 'text'},
+    delete_display: data => data['name'],
+    create: "btn-success",
+    icons: icons
+}
+
+let crud=ObjectCRUD("reactivecrudobj", objconfig)
+crud.download = function(obj, action){
+	if (obj.security_sheet && obj.security_sheet.url){
+		const link = document.createElement('a');
+		link.href = obj.security_sheet.url;
+		link.download = obj.security_sheet.name
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}else{
+		console.error("No security sheet available")
+	}
+}
+
+
+
+crud.add_limits = function(obj, action){
+
+	$('#create_limit_modal').modal('show')
+	$("#create_limit_modal").find(".formadd").off("click")
+	document.getElementById('id_limit-object').value = obj.id;
+	add_url = limit_urls['add_limits']+"?reactive="+obj.id;
+	document.getElementById('create_reactive_limit_form').action =add_url;
+	document.getElementById('id_limit-maximum_limit').value = obj.maximum_limit;
+	document.getElementById('id_limit-minimum_limit').value = obj.minimum_limit;
+	$('#id_limit-measurement_unit').val(obj.measurement_unit).trigger('change');
+	$("#create_limit_modal").modal('show');
+
+	gtformequipment=GTBaseFormModal("#create_limit_modal", {},  {reload_table: false, type: "POST"});
+	gtformequipment.hide_modal = function(){
+					$(gtformequipment.form).find("ul.form_errors").remove();
+	};
+	gtformequipment.success = function(instance, data){
+					$("#create_limit_modal").modal('hide');
+	};
+	gtformequipment.show_modal = function(){};
+	gtformequipment.init();
+}
+
+crud.init();
+$('#create_limit_modal').on('hidden.bs.modal', function (){
+	crud.datatable.ajax.reload();
+})
+helptext_list = ["is_pure", "has_threshold", "is_dangerous", "threshold"]
+helptext_list.forEach(function(helptext){
+document.getElementById(`id_create-${helptext}_helptext`).classList.add("d-block");
+document.getElementById(`id_update-${helptext}_helptext`).classList.add("d-block");
+}
+ );
 </script>
-
 
 
 {% endblock %}

@@ -18,12 +18,17 @@ from academic.api import serializers, filterset
 from academic.api.forms import CommentProcedureStepForm
 from academic.models import CommentProcedureStep, ProcedureStep, MyProcedure, Procedure
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
-from auth_and_perms.organization_utils import user_is_allowed_on_organization, \
-    organization_can_change_laboratory
+from auth_and_perms.organization_utils import (
+    user_is_allowed_on_organization,
+    organization_can_change_laboratory,
+)
 from laboratory.models import OrganizationStructure, Laboratory
-from .serializers import ProcedureStepCommentSerializer, \
-    ProcedureStepCommentDatatableSerializer, \
-    ProcedureStepCommentFilterSet, ValidateUserAccessOrgSerializer
+from .serializers import (
+    ProcedureStepCommentSerializer,
+    ProcedureStepCommentDatatableSerializer,
+    ProcedureStepCommentFilterSet,
+    ValidateUserAccessOrgSerializer,
+)
 
 
 class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -33,97 +38,128 @@ class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewS
     queryset = CommentProcedureStep.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['comment', 'created_by__username',
-                     'created_by_at', ]  # for the global search
+    search_fields = [
+        "comment",
+        "created_by__username",
+        "created_by_at",
+    ]  # for the global search
     filterset_class = ProcedureStepCommentFilterSet
-    ordering_fields = ['created_by_at', ]
-    ordering = ('-created_by_at',)  # default order
+    ordering_fields = [
+        "created_by_at",
+    ]
+    ordering = ("-created_by_at",)  # default order
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        procedure_step = self.request.GET.get('procedure_step', None)
-        my_procedure = self.request.GET.get('my_procedure', None)
+        procedure_step = self.request.GET.get("procedure_step", None)
+        my_procedure = self.request.GET.get("my_procedure", None)
         if procedure_step:
-            queryset = queryset.filter(procedure_step=procedure_step,
-                                       my_procedure=my_procedure)
+            queryset = queryset.filter(
+                procedure_step=procedure_step, my_procedure=my_procedure
+            )
         else:
             queryset = queryset.filter(my_procedure=my_procedure)
         return queryset
 
     def list(self, request, org_pk, lab_pk, *args, **kwargs):
         self.organization = get_object_or_404(
-            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk)
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+        )
         self.laboratory = get_object_or_404(
-            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk
+        )
         records_total = self.get_queryset().count()
         queryset = self.filter_queryset(self.get_queryset())
         data = self.paginate_queryset(queryset)
-        response = {'data': data, 'recordsTotal': records_total,
-                    'recordsFiltered': queryset.count(),
-                    'draw': self.request.GET.get('draw', 1)}
+        response = {
+            "data": data,
+            "recordsTotal": records_total,
+            "recordsFiltered": queryset.count(),
+            "draw": self.request.GET.get("draw", 1),
+        }
         return Response(self.get_serializer(response).data)
 
 
-class ProcedureStepCommentAPI(mixins.ListModelMixin,
-                              mixins.RetrieveModelMixin,
-                              viewsets.GenericViewSet):
+class ProcedureStepCommentAPI(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     authentication_classes = [SessionAuthentication, BaseAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = CommentProcedureStep.objects.all()
     serializer_class = ProcedureStepCommentSerializer
     permissions_by_endpoint = {
-        "add_comment": ["academic.view_procedure", "academic.view_procedurestep",
-                        "academic.add_commentprocedurestep"],
-        "list_comments": ["academic.view_procedure", "academic.view_procedurestep",
-                          "academic.view_commentprocedurestep"],
-        "update_comment": ["academic.view_procedure", "academic.view_procedurestep",
-                           "academic.change_commentprocedurestep"],
-        "delete_comment": ["academic.view_procedure", "academic.view_procedurestep",
-                           "academic.delete_commentprocedurestep"]
+        "add_comment": [
+            "academic.view_procedure",
+            "academic.view_procedurestep",
+            "academic.add_commentprocedurestep",
+        ],
+        "list_comments": [
+            "academic.view_procedure",
+            "academic.view_procedurestep",
+            "academic.view_commentprocedurestep",
+        ],
+        "update_comment": [
+            "academic.view_procedure",
+            "academic.view_procedurestep",
+            "academic.change_commentprocedurestep",
+        ],
+        "delete_comment": [
+            "academic.view_procedure",
+            "academic.view_procedurestep",
+            "academic.delete_commentprocedurestep",
+        ],
     }
 
     def _check_permission_on_laboratory(self, request, org_pk, lab_pk, method_name):
         if request.user.has_perms(self.permissions_by_endpoint[method_name]):
             self.organization = get_object_or_404(
                 OrganizationStructure.objects.using(settings.READONLY_DATABASE),
-                pk=org_pk)
+                pk=org_pk,
+            )
             self.laboratory = get_object_or_404(
-                Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk)
+                Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk
+            )
             user_is_allowed_on_organization(request.user, self.organization)
-            organization_can_change_laboratory(self.laboratory, self.organization,
-                                               raise_exec=True)
+            organization_can_change_laboratory(
+                self.laboratory, self.organization, raise_exec=True
+            )
         else:
             raise PermissionDenied()
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=["post"])
     def add_comment(self, request, org_pk, lab_pk):
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'add_comment')
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "add_comment")
         serializer = ProcedureStepCommentSerializer(data=request.data)
         if serializer.is_valid():
-            procedure_step = get_object_or_404(ProcedureStep,
-                                               pk=request.data['procedure_step'])
-            my_procedure = get_object_or_404(MyProcedure,
-                                             pk=request.data['my_procedure'])
+            procedure_step = get_object_or_404(
+                ProcedureStep, pk=request.data["procedure_step"]
+            )
+            my_procedure = get_object_or_404(
+                MyProcedure, pk=request.data["my_procedure"]
+            )
 
             CommentProcedureStep.objects.create(
                 created_by=request.user,
-                comment=serializer.data['comment'],
+                comment=serializer.data["comment"],
                 procedure_step=procedure_step,
-                my_procedure=my_procedure
+                my_procedure=my_procedure,
             )
 
-            comments = self.get_queryset().filter(
-                procedure_step=procedure_step).order_by('pk')
-            template = render_to_string('academic/comment.html',
-                                        {'comments': comments, 'user': request.user},
-                                        request)
-            return Response({'data': template}, status=status.HTTP_201_CREATED)
+            comments = (
+                self.get_queryset().filter(procedure_step=procedure_step).order_by("pk")
+            )
+            template = render_to_string(
+                "academic/comment.html",
+                {"comments": comments, "user": request.user},
+                request,
+            )
+            return Response({"data": template}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=["get"])
     def list_comments(self, request, org_pk, lab_pk):
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'list_comments')
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "list_comments")
         queryset = self.get_queryset()
         comments = queryset.none()
 
@@ -132,17 +168,19 @@ class ProcedureStepCommentAPI(mixins.ListModelMixin,
 
             if form.is_valid():
                 comments = queryset.filter(
-                    procedure_step__pk=form.cleaned_data['procedure_step']).order_by(
-                    'pk')
+                    procedure_step__pk=form.cleaned_data["procedure_step"]
+                ).order_by("pk")
 
-        template = render_to_string('academic/comment.html',
-                                    {'comments': comments, 'user': request.user},
-                                    request)
-        return Response({'data': template})
+        template = render_to_string(
+            "academic/comment.html",
+            {"comments": comments, "user": request.user},
+            request,
+        )
+        return Response({"data": template})
 
-    @action(detail=True, methods=['put'])
+    @action(detail=True, methods=["put"])
     def update_comment(self, request, org_pk, lab_pk, pk=None):
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'update_comment')
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "update_comment")
         comment = None
 
         if pk:
@@ -152,38 +190,49 @@ class ProcedureStepCommentAPI(mixins.ListModelMixin,
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             if comment:
-                comment.comment = request.data['comment']
+                comment.comment = request.data["comment"]
                 comment.save()
-                query = self.get_queryset().filter(
-                                                procedure_step=comment.procedure_step).\
-                    order_by('pk')
-                template = render_to_string('academic/comment.html',
-                                            {'comments': query,
-                                                'user': request.user}, request)
+                query = (
+                    self.get_queryset()
+                    .filter(procedure_step=comment.procedure_step)
+                    .order_by("pk")
+                )
+                template = render_to_string(
+                    "academic/comment.html",
+                    {"comments": query, "user": request.user},
+                    request,
+                )
 
-                return Response({'data': template}, status=status.HTTP_200_OK)
+                return Response({"data": template}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['delete'])
+    @action(detail=True, methods=["delete"])
     def delete_comment(self, request, org_pk, lab_pk, pk=None):
-        self._check_permission_on_laboratory(request, org_pk, lab_pk, 'delete_comment')
+        self._check_permission_on_laboratory(request, org_pk, lab_pk, "delete_comment")
         if pk:
             comment = get_object_or_404(
-                CommentProcedureStep.objects.using(settings.READONLY_DATABASE), pk=pk)
+                CommentProcedureStep.objects.using(settings.READONLY_DATABASE), pk=pk
+            )
             procedure_step = comment.procedure_step
             comment.delete()
-            template = render_to_string('academic/comment.html',
-                                        {'comments': self.get_queryset().filter(
-                                            procedure_step=procedure_step).order_by(
-                                            'pk'), 'user': request.user}, request)
+            template = render_to_string(
+                "academic/comment.html",
+                {
+                    "comments": self.get_queryset()
+                    .filter(procedure_step=procedure_step)
+                    .order_by("pk"),
+                    "user": request.user,
+                },
+                request,
+            )
 
-            return Response({'data': template}, status=status.HTTP_200_OK)
+            return Response({"data": template}, status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@method_decorator(permission_required('academic.view_myprocedure'), name='dispatch')
+@method_decorator(permission_required("academic.view_myprocedure"), name="dispatch")
 class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -191,19 +240,23 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = MyProcedure.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['name', 'custom_procedure__title', 'status',
-                     'created_by__first_name', 'created_by__last_name',
-                     'created_by__username']
+    search_fields = [
+        "name",
+        "custom_procedure__title",
+        "status",
+        "created_by__first_name",
+        "created_by__last_name",
+        "created_by__username",
+    ]
     filterset_class = filterset.MyProcedureFilterSet
-    ordering_fields = ['pk']
-    ordering = ('-pk',)
+    ordering_fields = ["pk"]
+    ordering = ("-pk",)
     organization = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.organization:
-            queryset = queryset.filter(
-                        organization=self.organization).order_by('-pk')
+            queryset = queryset.filter(organization=self.organization).order_by("-pk")
         else:
             queryset = queryset.none()
         return queryset
@@ -212,63 +265,74 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
         self.organization = org_pk
         queryset = self.filter_queryset(self.get_queryset())
         validate_serializer = ValidateUserAccessOrgLabSerializer(
-            data={'laboratory': lab_pk,
-                  'organization': org_pk},
-            context={'user': self.request.user})
+            data={"laboratory": lab_pk, "organization": org_pk},
+            context={"user": self.request.user},
+        )
         if validate_serializer.is_valid():
             data = self.paginate_queryset(queryset)
-            response = {'data': data, 'recordsTotal': self.get_queryset().count(),
-                        'recordsFiltered': queryset.count(),
-                        'draw': self.request.GET.get('draw', 1)}
+            response = {
+                "data": data,
+                "recordsTotal": self.get_queryset().count(),
+                "recordsFiltered": queryset.count(),
+                "draw": self.request.GET.get("draw", 1),
+            }
             return Response(self.get_serializer(response).data)
         else:
-            return Response(validate_serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                validate_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
-@method_decorator(permission_required('academic.view_procedure'), name='dispatch')
+@method_decorator(permission_required("academic.view_procedure"), name="dispatch")
 class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
     serializer_class = serializers.ProcedureDataTableSerializer
     queryset = Procedure.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ['title', 'description']
+    search_fields = ["title", "description"]
     filterset_class = filterset.ProcedureFilterSet
-    ordering_fields = ['pk']
-    ordering = ('-pk',)
+    ordering_fields = ["pk"]
+    ordering = ("-pk",)
     organization = None
 
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        content = ContentType.objects.get(app_label="laboratory",
-                                          model="organizationstructure")
+        content = ContentType.objects.get(
+            app_label="laboratory", model="organizationstructure"
+        )
 
         if self.organization:
             queryset = queryset.filter(
-                object_id=self.organization,
-                content_type=content).order_by('-pk')
+                object_id=self.organization, content_type=content
+            ).order_by("-pk")
         else:
             queryset = queryset.none()
 
         return queryset
 
     def list(self, request, org_pk, *args, **kwargs):
-        self.organization=org_pk
+        self.organization = org_pk
         queryset = self.filter_queryset(self.get_queryset())
         validate_serializer = ValidateUserAccessOrgSerializer(
-            data={'organization': org_pk},
-            context={'user': self.request.user})
+            data={"organization": org_pk}, context={"user": self.request.user}
+        )
 
         if validate_serializer.is_valid():
-            user_is_allowed_on_organization(self.request.user, validate_serializer.validated_data["organization"])
+            user_is_allowed_on_organization(
+                self.request.user, validate_serializer.validated_data["organization"]
+            )
             data = self.paginate_queryset(queryset)
-            response = {'data': data, 'recordsTotal': self.get_queryset().count(),
-                        'recordsFiltered': queryset.count(),
-                        'draw': self.request.GET.get('draw', 1)}
+            response = {
+                "data": data,
+                "recordsTotal": self.get_queryset().count(),
+                "recordsFiltered": queryset.count(),
+                "draw": self.request.GET.get("draw", 1),
+            }
             return Response(self.get_serializer(response).data)
         else:
-            return Response(validate_serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                validate_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )

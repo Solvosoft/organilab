@@ -4,18 +4,33 @@ from laboratory.models import Shelf
 from laboratory.tests.utils import BaseLaboratorySetUpTest, ShelfObjectSetUp
 import json
 
-from laboratory.utils import check_user_access_kwargs_org_lab, get_laboratories_by_user_profile
+from laboratory.utils import (
+    check_user_access_kwargs_org_lab,
+    get_laboratories_by_user_profile,
+)
 
 
 class ShelfViewTest(BaseLaboratorySetUpTest):
 
     def test_update_shelf(self):
         shelf = Shelf.objects.first()
-        url = reverse("laboratory:shelf_edit", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelf.pk,
-                                                       "row": shelf.row(), "col": shelf.col()})
+        url = reverse(
+            "laboratory:shelf_edit",
+            kwargs={
+                "org_pk": self.org.pk,
+                "lab_pk": self.lab.pk,
+                "pk": shelf.pk,
+                "row": shelf.row(),
+                "col": shelf.col(),
+            },
+        )
 
-        #Checking by method get if initial data shelf exists
-        response_get = self.client.get(url, data={'furniture': shelf.furniture.pk}, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # Checking by method get if initial data shelf exists
+        response_get = self.client.get(
+            url,
+            data={"furniture": shelf.furniture.pk},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
         self.assertEqual(response_get.status_code, 200)
         self.assertContains(response_get, "Primer Estante")
 
@@ -31,11 +46,18 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
             "shelf--discard": False,
             "shelf--quantity": 3,
             "shelf--description": "Estante de muestras",
-            "shelf--measurement_unit": 59
+            "shelf--measurement_unit": 59,
         }
-        response_post = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response_post = self.client.post(
+            url, data=data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         self.assertEqual(response_post.status_code, 200)
-        self.assertIn("Estante central", json.loads(response_post.content)['content']['inner-fragments']['#shelfmodalbody'])
+        self.assertIn(
+            "Estante central",
+            json.loads(response_post.content)["content"]["inner-fragments"][
+                "#shelfmodalbody"
+            ],
+        )
 
     def test_create_shelf(self):
         data = {
@@ -51,18 +73,33 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
             "shelf--measurement_unit": 59,
             "shelf--in_where_laboratory": self.lab.pk,
         }
-        url = reverse("laboratory:shelf_create", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-        response = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = reverse(
+            "laboratory:shelf_create",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
+        response = self.client.post(
+            url, data=data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         self.assertIn("Muestras", list(Shelf.objects.values_list("name", flat=True)))
         self.assertEqual(response.status_code, 200)
 
     def test_delete_shelf(self):
         shelf = Shelf.objects.get(name="Noveno Estante")
-        url = reverse("laboratory:shelf_delete", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": shelf.pk,
-                                                         "row": shelf.row(), "col": shelf.col()})
-        response = self.client.post(url, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        url = reverse(
+            "laboratory:shelf_delete",
+            kwargs={
+                "org_pk": self.org.pk,
+                "lab_pk": self.lab.pk,
+                "pk": shelf.pk,
+                "row": shelf.row(),
+                "col": shelf.col(),
+            },
+        )
+        response = self.client.post(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.status_code, 200)
-        self.assertNotIn("Noveno Estante", list(Shelf.objects.values_list("name", flat=True)))
+        self.assertNotIn(
+            "Noveno Estante", list(Shelf.objects.values_list("name", flat=True))
+        )
 
     def test_add_shelf_type_catalog(self):
         url = reverse("laboratory:add_shelf_type_catalog")
@@ -71,7 +108,6 @@ class ShelfViewTest(BaseLaboratorySetUpTest):
 
 
 class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
-
     """
     This test does an availability information shelf request by get method and action 'shelf_availability_information'
         located in laboratory/api/shelfobject.py --> ShelfObjectViewSet generic view set class.
@@ -84,11 +120,11 @@ class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
         self.user = self.user1_org1
         self.client = self.client1_org1
         self.shelf = Shelf.objects.get(pk=1)
-        self.data = {
-            "shelf": self.shelf.pk
-        }
-        self.url = reverse("laboratory:api-shelfobject-shelf-availability-information", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
-
+        self.data = {"shelf": self.shelf.pk}
+        self.url = reverse(
+            "laboratory:api-shelfobject-shelf-availability-information",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
 
     def test_shelf_availability_information_case1(self):
         """
@@ -102,10 +138,11 @@ class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
         """
         response = self.client.get(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertIn(self.shelf.name, json.loads(response.content)['name'])
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertIn(self.shelf.name, json.loads(response.content)["name"])
         self.assertEqual(self.shelf.furniture.labroom.laboratory.pk, self.lab.pk)
-
 
     def test_get_shelf_availability_information_user_without_permissions(self):
         """
@@ -121,6 +158,11 @@ class ShelfAvailabilityInformationViewTest(ShelfObjectSetUp):
         self.user = self.user2_org2
         response = self.client.get(self.url, data=self.data)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
-        self.assertIn('detail', json.loads(response.content))
-        self.assertNotIn(self.shelf.furniture.labroom.laboratory.pk, get_laboratories_by_user_profile(self.user, self.org.pk))
+        self.assertFalse(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
+        self.assertIn("detail", json.loads(response.content))
+        self.assertNotIn(
+            self.shelf.furniture.labroom.laboratory.pk,
+            get_laboratories_by_user_profile(self.user, self.org.pk),
+        )

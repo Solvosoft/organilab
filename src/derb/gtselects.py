@@ -16,7 +16,7 @@ from laboratory.utils import get_pk_org_ancestors
 @register_lookups(prefix="informtemplate", basename="informtemplate")
 class CustomFormModelLookup(generics.RetrieveAPIView, BaseSelect2View):
     model = CustomForm
-    fields = ['name']
+    fields = ["name"]
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -34,5 +34,3 @@ class CustomFormModelLookup(generics.RetrieveAPIView, BaseSelect2View):
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
         self.org_pk = self.organization.pk
         return self.list(request, pk, **kwargs)
-
-

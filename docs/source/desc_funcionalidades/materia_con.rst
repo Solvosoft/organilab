@@ -1,4 +1,4 @@
-Modulo 4: Introducción de Materiales y Contenedores
+Artículo 4: Introducción de Materiales y Contenedores
 ====================================================================
 
 El módulo de Administración de Materiales de Organilab ofrece una plataforma integral para la gestión de materiales y contenedores de laboratorio, incluida una vista para la administración de materiales.

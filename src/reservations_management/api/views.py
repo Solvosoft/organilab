@@ -33,22 +33,19 @@ class ApiReservedProductsCRUD(APIView):
     def put(self, request, pk, format=None):
         reserved_product = self.get_object(pk)
         last_status = reserved_product.status
-        serializer = ReservedProductSerializer(
-            reserved_product, data=request.data
-        )
+        serializer = ReservedProductSerializer(reserved_product, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            if(serializer.initial_data['status'] == '1' and last_status == 0):
+            if serializer.initial_data["status"] == "1" and last_status == 0:
                 add_decrease_stock_task(reserved_product)
-                
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ApiListReservationReservedProduct(APIView):
-    
+
     def get(self, request, pk, format=None):
         reserved_products = ReservedProducts.objects.filter(reservation_id=pk)
-        serializer = ReservedProductSerializer(reserved_products,many= True)
+        serializer = ReservedProductSerializer(reserved_products, many=True)
         return Response(serializer.data)
- 

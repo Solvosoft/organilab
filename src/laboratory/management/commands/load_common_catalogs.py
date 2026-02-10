@@ -5,7 +5,7 @@ from laboratory.models import Catalog
 
 
 class Command(BaseCommand):
-    help = 'Create catalogs'
+    help = "Create catalogs"
 
     def handle(self, *args, **options):
         create_catalog(Catalog)

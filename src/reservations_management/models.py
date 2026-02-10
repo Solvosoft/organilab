@@ -48,33 +48,53 @@ DAYS = (
 
 
 class Reservations(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservation_user', verbose_name=_('User'))
-    status = models.SmallIntegerField(choices=RESERVATION_STATUS, default=REQUESTED, verbose_name=_('Status'))
-    comments = models.CharField(max_length=500, null=True, blank=True, verbose_name=_('Comments'))
-    is_massive = models.BooleanField(default=False, verbose_name=_('Is massive'))
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="reservation_user",
+        verbose_name=_("User"),
+    )
+    status = models.SmallIntegerField(
+        choices=RESERVATION_STATUS, default=REQUESTED, verbose_name=_("Status")
+    )
+    comments = models.CharField(
+        max_length=500, null=True, blank=True, verbose_name=_("Comments")
+    )
+    is_massive = models.BooleanField(default=False, verbose_name=_("Is massive"))
 
     class Meta:
-        ordering = ['status']
+        ordering = ["status"]
 
 
 class ReservedProducts(AbstractOrganizationRef):
     shelf_object = models.ForeignKey(ShelfObject, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='reserved_user', verbose_name=_('User'))
-    reservation = models.ForeignKey(Reservations, on_delete=models.CASCADE, null=True, verbose_name=_('Reservation'))
-    is_returnable = models.BooleanField(default=True, verbose_name=_('Is Returnable'))
-    amount_required = models.FloatField(verbose_name=_('Amount Required'))
-    amount_returned = models.FloatField(default=0, verbose_name=_('Amount Returned'))
-    initial_date = models.DateTimeField(verbose_name=_('Initial Date'))
-    final_date = models.DateTimeField(verbose_name=_('Final Date'))
-    status = models.SmallIntegerField(choices=PRODUCT_STATUS, default=SELECTED, verbose_name=_('Status'))
-    laboratory = models.ForeignKey(Laboratory, null=True, on_delete=models.CASCADE, verbose_name=_('Laboratory'))
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name="reserved_user",
+        verbose_name=_("User"),
+    )
+    reservation = models.ForeignKey(
+        Reservations, on_delete=models.CASCADE, null=True, verbose_name=_("Reservation")
+    )
+    is_returnable = models.BooleanField(default=True, verbose_name=_("Is Returnable"))
+    amount_required = models.FloatField(verbose_name=_("Amount Required"))
+    amount_returned = models.FloatField(default=0, verbose_name=_("Amount Returned"))
+    initial_date = models.DateTimeField(verbose_name=_("Initial Date"))
+    final_date = models.DateTimeField(verbose_name=_("Final Date"))
+    status = models.SmallIntegerField(
+        choices=PRODUCT_STATUS, default=SELECTED, verbose_name=_("Status")
+    )
+    laboratory = models.ForeignKey(
+        Laboratory, null=True, on_delete=models.CASCADE, verbose_name=_("Laboratory")
+    )
 
 
 class ReservationTasks(models.Model):
     reserved_product = models.ForeignKey(ReservedProducts, on_delete=models.CASCADE)
     celery_task = models.UUIDField(default=uuid.uuid4, editable=False)
     task_type = models.CharField(max_length=20)
-
 
 
 class ReservationRange(models.Model):

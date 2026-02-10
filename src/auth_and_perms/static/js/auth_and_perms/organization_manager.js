@@ -50,11 +50,11 @@ $('#id_laboratories').on('select2:select', function (e) {
     datatableuserpermelement.ajax.reload();
 });
 
-function add_rol_org(url, data){
-
+function add_rol_org(url, data, description){
      data = {
         'name': $(data[0]).val(),
-        'rol': $(data[1]).val()
+        'rol': $(data[1]).val(),
+        'description': description
     }
 
     if($("input[name='relate_rols']")[0].checked){
@@ -102,7 +102,8 @@ $("#saveroluserorg").on('click', function(){
     if(btnsave.data('copy')){
         copy_rol_org(url);
     }else{
-        add_rol_org(url, $("#addrolmodal div#add_rol_container").find('input'));
+        add_rol_org(url, $("#addrolmodal div#add_rol_container").find('input'),
+            $("#addrolmodal div#add_rol_container textarea#roldescription").val());
     }
 });
 
@@ -531,6 +532,8 @@ $(".rolbtnadd").on('click', function(){
 $("#addrolmodal").on('hidden.bs.modal', function () {
     $("#btn_copy_rol").removeAttr('data-url');
     $("#addrolmodal div#add_rol_container input#rolname").val('');
+    $("#addrolmodal div#add_rol_container textarea#roldescription").val('');
+    $("#addrolmodal div#add_rol_container textarea#roldescription").text('');
     $("#addrolmodal div#add_rol_container input[name='orgpk']").val('');
     $("#addrolmodal input[name='relate_rols']").prop('checked', true).trigger("click");
     $("#addrolmodal select").val(null).trigger('change');
@@ -587,6 +590,8 @@ $("#btn_copy_rol").on('click', function(e){
 $(document).ready(function(){
     $("#copy_rol_container").hide();
     $("#addrolmodal div#add_rol_container input#rolname").val('');
+    $("#addrolmodal div#add_rol_container textarea#roldescription").val('');
+    $("#addrolmodal div#add_rol_container textarea#roldescription").text('');
     $("#addrolmodal input[name='relate_rols']").prop('checked', true).trigger("click");
  });
 
@@ -788,3 +793,85 @@ $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         });
     }
 });
+
+
+function inerit_profile(elementid, contentTypeobj){
+    var element=$("#inerit_"+elementid)[0]
+    Swal.fire(
+    {
+        showCancelButton: true,
+        title:  gettext('Are you sure you want to add this profile into others  organizations?'),
+        icon:  'question',
+        html: element.dataset.profile + gettext(' from ') + element.dataset.org,
+        confirmButtonText: gettext('Yes'),
+    }
+    ).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+          $.ajax({
+              type: "POST",
+              url: inerit_profile_url,
+              data: {'profile': element.dataset.profileid,
+                      'app_label': element.dataset.appname,
+                      'model': element.dataset.model,
+                      'object_id': element.dataset.objectid,
+                      'organization': contentTypeobj
+                      },
+              headers: {'X-CSRFToken': getCookie('csrftoken')},
+              success: reload_datatables,
+            });
+          }
+    })
+}
+function get_roles_by_organization(rol_url, is_checked=false){
+    var div = "";
+        $.ajax({
+          type: "GET",
+          url: rol_url,
+          contentType: 'application/json',
+          headers: {'X-CSRFToken': getCookie('csrftoken')},
+          success: function(data) {
+            $("#rol_details_container").empty();
+            if (data.roles.length > 0){
+                data.roles.forEach(function(element) {
+                    div +=`<div class="list-group"><h6 class="mb-1 fw-bold">${element.name}</h6><br><p class="ms-2">${element.description}</p></div><hr>`
+                });
+                $("#rol_details_container").html(div);
+                if(!is_checked){
+                    $("#rol_details").modal('show');
+                }
+
+            }else{
+             Swal.fire({
+            icon: 'info',
+            title: gettext('No organization selected'),
+            text: gettext('You need to select a organization before using this tab.'),
+        });
+            }
+           }
+           });
+}
+
+
+ $(".rol_details_btn").on('click', function (e) {
+        let rol_url = roles_url.replace('/0', "/"+$(this).data('org'));
+        get_roles_by_organization(rol_url);
+ });
+
+ $(".open_rol_detail_modal").on('click', function(){
+    if($('.nodeorg:checked').val()){
+        $("#rol_details").modal('show');
+    }else{
+       Swal.fire({
+            icon: 'info',
+            title: gettext('No organization selected'),
+            text: gettext('You need to select a organization before using this tab.'),
+        });
+
+     }
+     });
+
+$(".nodeorg").on('ifChecked', function(e){
+    let rol_url = roles_url.replace('/0', "/"+$(this).val());
+    get_roles_by_organization(rol_url, is_checked=true);
+})

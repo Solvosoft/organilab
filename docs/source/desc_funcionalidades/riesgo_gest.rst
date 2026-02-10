@@ -1,4 +1,4 @@
-Módulo 11: Recopilación e información sistematizada de riesgos químicos - Reporte de incidentes en Organilab
+Artículo 11: Recopilación e información sistematizada de riesgos químicos - Reporte de incidentes en Organilab
 ========================================================================================================================================
 
 El módulo de Gestión de Riesgos Químicos de Organilab ofrece una solución integral para la administración y el seguimiento de riesgos químicos, incluido el reporte de incidentes y accidentes. Esta funcionalidad se puede acceder a través de los siguientes paneles:

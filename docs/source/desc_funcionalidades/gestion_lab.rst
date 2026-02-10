@@ -1,4 +1,4 @@
-Módulo de Gestión de Laboratorio
+Artículo 1: Módulo de Gestión de Laboratorio
 ====================================================================
 El módulo de Gestión de Laboratorio de Organilab ofrece una forma rápida y eficiente de administrar las ubicaciones de los laboratorios, incluyendo la creación de laboratorios, salas y mobiliario. Esta funcionalidad es accesible a través de dos paneles en la vista: el panel de Laboratorio y el panel de Administración. Ambos paneles son puntos de acceso directo y se corresponden con los menús en la esquina superior derecha de la vista.
 

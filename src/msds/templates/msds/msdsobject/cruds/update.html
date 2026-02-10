@@ -5,15 +5,15 @@
 	{% define_urlname_action 'msds_msdsobject_upate' %}
 {% endblock %}
 {% block content %}
-<div class="row">
-<div class="col-md-offset-3 col-md-6" >
-	<legend>{% trans 'Add new MSDS' %}</legend>
+<div class="row justify-content-center">
+	<div class="col-md-6">
+	<legend class="text-center">{% trans 'Update the MSDS' %}</legend>
 	<form method="post" action="{% url 'msds:msds_msdsobject_update' org_pk form.instance.pk %}"
 	enctype="multipart/form-data" role="form">
 	    {% csrf_token %}
-	    {{ form.as_horizontal }}
+	    {{ form }}
 	    <div class="form-group">
-	      <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+	      <button type="submit" class="btn btn-success">{% trans 'Submit' %}</button>
 	    </div>
 	</form>
 </div>

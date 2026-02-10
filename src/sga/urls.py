@@ -8,11 +8,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from .api.hdanger_category_viewset import HCodeCategoryViewSet
 from .api.labels_viewset import DisplayLabelViewSet
 from .api.recipients_viewset import RecipientSizeAPI
 from .api.review_flow_substance import ReviewSubstanceViewSet
 from .api.substance_viewset import SubstanceViewSet
 from .views import editor
+from .views.h_danger_category import HCategoryView
 from .views.substance import views as substance
 
 router = DefaultRouter()
@@ -20,7 +22,7 @@ router.register('api_substance', SubstanceViewSet, basename='api-substance')
 router.register('api_reviewsubstance', ReviewSubstanceViewSet, basename='api-reviewsubstance')
 router.register('api_labels', DisplayLabelViewSet, basename='api-labels')
 router.register('api_recipient_size', RecipientSizeAPI, basename='api-recipient-size')
-
+router.register('api_hcategory', HCodeCategoryViewSet, basename='api-hcategory')
 # SGA
 app_name = 'sga'
 
@@ -113,4 +115,5 @@ urlpatterns = [
          name='update_prudence_advice'),
     path('substance/provider/', substance.add_sga_provider, name='add_sga_provider'),
     path('substance/recipient/', substance.view_recipient_size, name='recipient_size'),
+    path('categoriesh/', HCategoryView.as_view(), name='categoriesh'),
 ]

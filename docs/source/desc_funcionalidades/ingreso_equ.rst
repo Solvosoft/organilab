@@ -1,5 +1,5 @@
-Ingreso de Equipos - Administración de Inventario y Tipo de Equipo
-====================================================================
+Artículo 3: Ingreso de Equipos - Administración de Inventario y Tipo de Equipo
+=================================================================================================
 
 El módulo de Administración de Equipos de Organilab ofrece una plataforma integral para la gestión de equipos de laboratorio, incluidos el inventario y el tipo de equipo.
 

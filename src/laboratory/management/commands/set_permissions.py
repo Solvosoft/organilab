@@ -4,12 +4,12 @@ from django.apps.registry import apps
 from django.contrib.contenttypes.management import create_contenttypes
 from django.contrib.auth.management import create_permissions
 
+
 class Command(BaseCommand):
-    help = 'Set permissions'
+    help = "Set permissions"
 
     def handle(self, *args, **options):
-
-        """"
+        """ "
         Obtiene los grupos de usuarios y el codename de sus permisos, elimina todos los permisos registrados
         y los regenera, agrega los permisos correspondientes a cada grupo verficando si el permiso existe.
 
@@ -19,20 +19,36 @@ class Command(BaseCommand):
         per_professor = None
         per_student = None
 
-        laboratory_administrator = Group.objects.filter(name="Laboratory Administrator").first()
+        laboratory_administrator = Group.objects.filter(
+            name="Laboratory Administrator"
+        ).first()
         professor = Group.objects.filter(name="Professor").first()
         student = Group.objects.filter(name="Student").first()
 
         if laboratory_administrator:
-            per_laboratory_administrator = list(Group.objects.filter(name="Laboratory Administrator").values_list('permissions__codename', flat=True))
-            per_laboratory_administrator += ['add_organizationstructure', 'change_organizationstructure',
-                                            'delete_organizationstructure', 'view_organizationstructure']
+            per_laboratory_administrator = list(
+                Group.objects.filter(name="Laboratory Administrator").values_list(
+                    "permissions__codename", flat=True
+                )
+            )
+            per_laboratory_administrator += [
+                "add_organizationstructure",
+                "change_organizationstructure",
+                "delete_organizationstructure",
+                "view_organizationstructure",
+            ]
         if professor:
-            per_professor = list(Group.objects.filter(name="Professor").values_list('permissions__codename', flat=True))
-
+            per_professor = list(
+                Group.objects.filter(name="Professor").values_list(
+                    "permissions__codename", flat=True
+                )
+            )
         if student:
-            per_student = list(Group.objects.filter(name="Student").values_list('permissions__codename', flat=True))
-
+            per_student = list(
+                Group.objects.filter(name="Student").values_list(
+                    "permissions__codename", flat=True
+                )
+            )
 
         Permission.objects.all().delete()
         for app_config in apps.get_app_configs():
@@ -58,10 +74,3 @@ class Command(BaseCommand):
                 permission = Permission.objects.filter(codename=per).first()
                 if permission:
                     student.permissions.add(permission)
-
-
-
-
-
-
-

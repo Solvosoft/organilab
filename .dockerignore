@@ -1,4 +1,17 @@
 */src/media
+media_prod
+media_una
+logs
+backups
+.tox
+.github
+.coveragerc
+.gitignore
+.pylintrc
+coverage.sh
+dev_migrate
+tox.ini
+TODO
 src/media
 src/*/tests
 src/organilab_test

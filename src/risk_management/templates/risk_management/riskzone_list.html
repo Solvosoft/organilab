@@ -13,6 +13,25 @@
   {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
   {%  has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
 
+
+<div class="clearfix">
+	<div class="row float-start">
+
+	<div class="btn-toolbar justify-content-between"  aria-label="Control button">
+		<div class="btn-group gap-3" role="group">
+				{% if perms.risk_management.view_regent %}
+			<a target="_blank" href="{% url 'riskmanagement:regents'  org_pk=org_pk  %}" class="btn btn-outline-secondary"><i class="fa fa-address-book"></i> {% trans 'Regents' %}</a>
+				{% endif %}
+			{% if perms.risk_management.view_buildings %}
+			<a  target="_blank" href="{% url 'riskmanagement:buildings_list' org_pk=org_pk %}" class="btn btn-outline-secondary"><i class="fa fa-building"></i> {% trans 'Buildings' %}</a>
+			{% endif %}
+			{% if perms.risk_management.view_structure %}
+			<a  target="_blank" href="{% url 'riskmanagement:structures_list' org_pk=org_pk %}" class="btn btn-outline-secondary"><i class="fa fa-building"></i> {% trans 'Structures' %}</a>
+			{% endif %}
+		</div>
+	</div>
+	</div>
+</div>
 <div class="row">
 	<div class="page-header col-xs-13" align="center">
 		<h3 class="heading-1"><span>{% trans 'Risk Zone Management'  %}</span></h3>
@@ -22,7 +41,7 @@
     <div class="container-fluid">
         <form metod="get" action="">
             <div class="form-group row justify-content-end">
-                <div class="offset-md-2 col-sm-8">
+                <div class="offset-md-9 col-sm-3">
                     <div class="input-group custom-search-form">
                         <input class="form-control" name="q" value="{{q}}" placeholder="{% trans 'Search...' %}" type="text">
                         <span class="input-group-btn">
