@@ -54,7 +54,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "laboratory": self.lab.pk,
         }
 
-        response = self.client.post(url, data=data,content_type = "application/json")
+        response = self.client.post(url, data=data, content_type="application/json")
         self.assertEqual(response.status_code, 201)
         self.assertTrue(Object.objects.filter(name=data["name"]).exists())
 
@@ -85,7 +85,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "laboratory": self.lab.pk,
         }
 
-        response = self.client.put(url, data=data,content_type = "application/json")
+        response = self.client.put(url, data=data, content_type="application/json")
         self.assertEqual(response.status_code, 200)
 
     def test_objectview_delete(self):
@@ -103,7 +103,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
         )
         self.assertRedirects(response, success_url)
 
-    #Materrial Object
+    # Materrial Object
     def test_objectview_create(self):
         total_obj = Object.objects.all().count()
         url = reverse(
@@ -191,67 +191,115 @@ class SustanceCharacteristicsViewTest(BaseLaboratorySetUpTest):
 
 class ObjectFeaturesViewTest(BaseLaboratorySetUpTest):
 
-    def test_update_objectfeature(self):
-        objfeature = ObjectFeatures.objects.first()
+    def test_list_objectfeature(self):
         url = reverse(
-            "laboratory:object_feature_update",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk},
-        )
-
-        response_get = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response_get.status_code, 200)
-        self.assertContains(response_get, "Es un reactivo en la industria química")
-
-        data = {
-            "name": "Reactivo 1",
-            "description": "Es un reactivo en la industria química empacado en saco de 50kg o bolsas de 2kg.",
-        }
-        response_post = self.client.post(
-            url, data=data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
-        success_url = reverse(
-            "laboratory:object_feature_create",
+            "laboratory:provider_view",
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
-        self.assertEqual(response_post.status_code, 302)
-        self.assertRedirects(response_post, success_url)
-        self.assertIn(
-            "Reactivo 1", list(ObjectFeatures.objects.values_list("name", flat=True))
-        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
-    def test_create_objectfeature(self):
+    def test_add_objectfeature(self):
+        url = reverse(
+            "laboratory:api-objectfeature-list",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
         data = {
             "name": "Guantes",
             "description": "Brinda protección en manos y brazos a la hora de manipular cualquier material que lo requiera.",
         }
+
+        response = self.client.post(url, data=data, content_type="application/json")
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(ObjectFeatures.objects.filter(name=data["name"]).exists())
+
+    def test_udpate_objectfeature(self):
+        objfeature = ObjectFeatures.objects.first()
         url = reverse(
-            "laboratory:object_feature_create",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+            "laboratory:api-objectfeature-detail",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk},
         )
-        response = self.client.post(url, data=data)
-        success_url = reverse(
-            "laboratory:object_feature_create",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, success_url)
-        self.assertIn(
-            "Guantes", list(ObjectFeatures.objects.values_list("name", flat=True))
-        )
+        data = {
+            "name": "Reactivo 1",
+            "description": "Es un reactivo en la industria química empacado en saco de 50kg o bolsas de 2kg.",
+        }
+
+        response = self.client.put(url, data=data, content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(ObjectFeatures.objects.filter(name=data["name"]).exists())
 
     def test_delete_objectfeature(self):
         objfeature = ObjectFeatures.objects.first()
         url = reverse(
-            "laboratory:object_feature_delete",
+            "laboratory:api-objectfeature-detail",
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk},
         )
-        response = self.client.post(url)
-        success_url = reverse(
-            "laboratory:object_feature_create",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, success_url)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(ObjectFeatures.objects.filter(pk=objfeature.pk).exists())
+
+    # def test_update_objectfeature(self):
+    #     objfeature = ObjectFeatures.objects.first()
+    #     url = reverse(
+    #         "laboratory:object_feature_update",
+    #         kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk},
+    #     )
+    #
+    #     response_get = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+    #     self.assertEqual(response_get.status_code, 200)
+    #     self.assertContains(response_get, "Es un reactivo en la industria química")
+    #
+    #     data = {
+    #         "name": "Reactivo 1",
+    #         "description": "Es un reactivo en la industria química empacado en saco de 50kg o bolsas de 2kg.",
+    #     }
+    #     response_post = self.client.post(
+    #         url, data=data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+    #     )
+    #     success_url = reverse(
+    #         "laboratory:object_feature_create",
+    #         kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+    #     )
+    #     self.assertEqual(response_post.status_code, 302)
+    #     self.assertRedirects(response_post, success_url)
+    #     self.assertIn(
+    #         "Reactivo 1", list(ObjectFeatures.objects.values_list("name", flat=True))
+    #     )
+
+    # def test_create_objectfeature(self):
+    #     data = {
+    #         "name": "Guantes",
+    #         "description": "Brinda protección en manos y brazos a la hora de manipular cualquier material que lo requiera.",
+    #     }
+    #     url = reverse(
+    #         "laboratory:object_feature_create",
+    #         kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+    #     )
+    #     response = self.client.post(url, data=data)
+    #     success_url = reverse(
+    #         "laboratory:object_feature_create",
+    #         kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+    #     )
+    #     self.assertEqual(response.status_code, 302)
+    #     self.assertRedirects(response, success_url)
+    #     self.assertIn(
+    #         "Guantes", list(ObjectFeatures.objects.values_list("name", flat=True))
+    #     )
+
+    # def test_delete_objectfeature(self):
+    #     objfeature = ObjectFeatures.objects.first()
+    #     url = reverse(
+    #         "laboratory:object_feature_delete",
+    #         kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk, "pk": objfeature.pk},
+    #     )
+    #     response = self.client.post(url)
+    #     success_url = reverse(
+    #         "laboratory:object_feature_create",
+    #         kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+    #     )
+    #     self.assertEqual(response.status_code, 302)
+    #     self.assertRedirects(response, success_url)
 
 
 class EquipmentViewTest(BaseLaboratorySetUpTest):

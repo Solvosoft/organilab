@@ -14,6 +14,7 @@ from laboratory.models import (
     Laboratory,
     UserOrganization,
     Provider,
+    ObjectFeatures,
 )
 import base64
 
@@ -57,6 +58,16 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
         ct2 = ContentType.objects.get_for_model(Provider)
         perm2 = Permission.objects.get(content_type=ct2, codename="delete_provider")
         self.user.user_permissions.add(perm2)
+        perm2 = Permission.objects.get(content_type=ct2, codename="view_provider")
+        self.user.user_permissions.add(perm2)
+        perm2 = Permission.objects.get(content_type=ct2, codename="change_provider")
+        self.user.user_permissions.add(perm2)
+
+        ct3 = ContentType.objects.get_for_model(ObjectFeatures)
+        perm4 = Permission.objects.get(
+            content_type=ct3, codename="change_objectfeatures"
+        )
+        self.user.user_permissions.add(perm4)
 
         self.client.force_login(self.user)
 
