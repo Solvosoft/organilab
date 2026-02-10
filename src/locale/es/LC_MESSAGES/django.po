@@ -1511,7 +1511,7 @@ msgid "Reason to spend"
 msgstr "Razón del gasto"
 
 msgid "Inform"
-msgstr "Información"
+msgstr "Informe"
 
 msgid "Log Entry"
 msgstr "Entrada de bitácora"
@@ -2285,7 +2285,7 @@ msgid "Submit"
 msgstr "Enviar"
 
 msgid "Delete Protocol"
-msgstr "Borrar Protocolo"
+msgstr "Eliminar Protocolo"
 
 msgid "Upload your Protocol"
 msgstr "Subir su Protocolo"
@@ -2374,8 +2374,22 @@ msgstr "Objetos reactivos precursores"
 msgid "Exposition report"
 msgstr "Reporte de exposición"
 
+# Reservations
 msgid "Reservations"
-msgstr "Mis reservaciones"
+msgstr "Reservaciones"
+
+msgid "View Reservations"
+msgstr "Ver Reservaciones"
+
+msgid "Add Reservations"
+msgstr "Agregar Reservaciones"
+
+msgid "Change Reservations"
+msgstr "Actualizar Reservaciones"
+
+msgid "Delete Reservations"
+msgstr "Eliminar Reservaciones"
+
 
 msgid "Complete the fields"
 msgstr "Complete los campos"
@@ -3360,7 +3374,7 @@ msgid "Warning Words"
 msgstr "Palabras de Advertencia"
 
 msgid "Prudence Advice"
-msgstr "Crear consejo de prudencia"
+msgstr "Consejo de prudencia"
 
 msgid "Size of recipients"
 msgstr "Tamaños de recipiente"
@@ -5064,3 +5078,186 @@ msgstr "Tarjeta"
 
 msgid "Viscuos Liquid"
 msgstr "Líquido viscoso"
+
+msgid "It belongs to the regulations of decree 44741"
+msgstr "Pertenece al reglamento del decreto 44741"
+
+msgid "Laboratories where you are affiliated"
+msgstr "Laboratorios en los que estás afiliado:"
+
+msgid "Faculty or dispatch"
+msgstr "Facultad o Despacho"
+
+msgid "Laboratory Processes View"
+msgstr "Vista de procesos de laboratorio"
+
+msgid "Create process"
+msgstr "Crear proceso"
+
+msgid "Update process"
+msgstr "Actualizar proceso"
+
+msgid "Laboratory Processes List"
+msgstr "Listado de procesos del laboratorio"
+
+msgid "Workplace"
+msgstr "Centro de trabajo"
+
+msgid "Processes"
+msgstr "Procesos"
+
+msgid "Container Entry Date"
+msgstr "Fecha de entrada del contenedor"
+
+msgid "Container Open Date"
+msgstr "Fecha de apertura del contenedor"
+
+msgid "Use"
+msgstr "Uso"
+
+msgid "Type Budget"
+msgstr "Tipo de presupuesto"
+
+msgid "ID Number"
+msgstr "Número de identificación"
+
+msgid "Substance name"
+msgstr "Nombre de la sustancia"
+
+msgid "Name of official"
+msgstr "Nombre del funcionario"
+
+msgid "Occupational Health Report"
+msgstr "Reporte de Salud Laboral"
+
+msgid "Show Roles information"
+msgstr "Mostrar información de roles"
+
+msgid "Add a description"
+msgstr "Agregar una descripción"
+
+msgid "Add a new rol"
+msgstr "Agregar un nuevo rol"
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "Help Text"
+msgstr "Texto de ayuda"
+
+msgid "Show descriptions of groups"
+msgstr "Mostrar descripciones de los grupos"
+
+msgid "Role updated successfully"
+msgstr "El rol fue actualizado exitosamente"
+
+msgid "Edit Role"
+msgstr "Editar Rol"
+
+msgid "Chemical inventory report"
+msgstr "Informe de inventario de sustancias químicas"
+
+msgid "UNA can access"
+msgstr "UNA puede acceder"
+
+msgid "High-risk establishment"
+msgstr "Establecimiento de alto riesgo"
+
+msgid "Health totals:"
+msgstr "Totales de salud:"
+
+msgid "Physical totals:"
+msgstr "Totales físicos:"
+
+msgid "Environmental totals:"
+msgstr "Totales ambientales:"
+
+msgid "Calculator"
+msgstr "Calculadora"
+
+msgid "Danger Categories of the list 4"
+msgstr "Categorías de peligro de la lista 4"
+
+msgid "Danger Substance of the list 3"
+msgstr "Sustancia de peligro de la lista 3"
+
+msgid "Sum of dangers categories"
+msgstr "Suma de categorías de peligro"
+
+msgid "Danger substance"
+msgstr "Sustancia de peligro"
+
+msgid "Break threshold"
+msgstr "Umbral superado"
+
+msgid "Regency Report"
+msgstr "Informe Regencial"
+
+msgid "Dangerous substance of the list 3"
+msgstr "Sustancia peligrosa de la lista 3"
+
+msgid "Dangerous categoies of the list 4"
+msgstr "Categorías peligrosas de la lista 4"
+
+msgid "Dangerous substance of the list 4"
+msgstr "Sustancia peligrosa de la lista 4"
+
+msgid "Danger category"
+msgstr "Categoría de peligro"
+
+msgid "Intitution can access"
+msgstr "Institución puede acceder"
+
+msgid "Consumption record"
+msgstr "Registro de consumo"
+
+msgid "List Reagents"
+msgstr "Listar Reactivos"
+
+msgid "Reorder Reactives"
+msgstr "Reordenar Reactivos"
+
+msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
+msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
+
+msgid "Quantity cannot be greater than the container object maximum limit: %(limit)s."
+msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(limit)s."
+
+msgid "Decrease"
+msgstr "Disminuir"
+
+msgid "Administrator: Manages organizations, users, permissions, laboratories, risk zones, and reports at the system level."
+msgstr "Administrador: Gestiona organizaciones, usuarios, permisos, laboratorios, zonas de riesgo y reportes a nivel sistema."
+
+msgid "Laboratory Administrator: Manages substance inventory and the physical structure of the laboratory (shelves, zones)."
+msgstr "Administrador de Laboratorio: Administra el inventario de sustancias y la estructura física del laboratorio (estantes, zonas)."
+
+msgid "Laboratory User: Executes procedures and adds or removes substances between shelves."
+msgstr "Usuario de Laboratorio: Ejecuta procedimientos y agregar o quitar sustancias entre estantes."
+
+msgid "User Profile Explanations"
+msgstr "Explicación de los perfiles de usuario"
+
+msgid "Was donated?"
+msgstr "Fue donado?"
+
+msgid "You have received this email because you have expiring reactives in the Organilab system."
+msgstr "Usted ha recibido este correo porque tiene reactivos próximos a vencer en el sistema Organilab."
+
+msgid "This message is to notify you that one or more reactives in the laboratory <strong>%(lab_name)s</strong> will expire tomorrow."
+msgstr "Este mensaje es para notificarle que uno o más reactivos en el laboratorio <strong>%(lab_name)s</strong> vencerán mañana."
+
+msgid "Expiring reactives"
+msgstr "Reactivos próximos a vencer"
+
+msgid "Expiration date:"
+msgstr "Fecha de vencimiento:"
+
+msgid "Available quantity:"
+msgstr "Cantidad disponible:"
+
+msgid "Please take the necessary measures with these reactives before they expire."
+msgstr "Por favor tome las medidas necesarias con estos reactivos antes de su vencimiento."
+
+msgid "Organilab: Expiring reactives notification"
+msgstr "Organilab: Notificación de reactivos por vencer"

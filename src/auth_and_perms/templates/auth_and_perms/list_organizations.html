@@ -107,6 +107,12 @@
                             <i class="fa fa-file-text-o"></i></a>
                     </li>
                     {% endif %}
+																				{% if perms.auth_and_perms.view_rol %}
+                    <li class="list-group-item">
+																						<a class="rol_details_btn" data-org="{{node.0.pk}}" title="{% trans 'Show Roles information' %}"> <i class="fa fa-info-circle"></i></a>
+                    </li>
+																				{% endif %}
+
                     {% if perms.auth_and_perms.change_rol %}
                     <li class="list-group-item" title="{% trans 'Change parent of organization' %}">
                         <a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"  title="{% trans 'Rol List' %}">
@@ -163,8 +169,11 @@
 <div class="tab-content mt-3" id="myTabContent">
         <input type="hidden" value="laboratory" id="id_typeofcontenttype" name="typeofcontenttype" \>
         <div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
-            <h5 class="text-center mb-5">{% trans 'Rol by laboratory' %}
-                <br><small class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</small></h5>
+ 								            <h5 class="text-center">{% trans 'Rol by laboratory' %}</h5>
+															<button type="button" title="{% trans 'Show Roles information' %}" class="btn float-start open_rol_detail_modal"><i aria-hidden="true" class="fa fa-info-circle"></i></button>
+															<h5 class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</h5>
+													<div class="clearfix"></div>
+
             <div class="row">
                 {{labform.as_horizontal}}
             </div>
@@ -179,8 +188,11 @@
         </div>
 
         <div class="tab-pane fade" id="byorgs" role="tabpanel" aria-labelledby="navbyorgs">
-            <h5 class="text-center mb-5 title">{% trans 'Rol in all organization' %}
-                <br><small class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</small></h5>
+									            <h5 class="text-center">{% trans 'Rol in all organization' %}</h5>
+															<button type="button" class="btn float-start open_rol_detail_modal"><i aria-hidden="true" class="fa fa-info-circle"></i></button>
+															<h5 class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</h5>
+													<div class="clearfix"></div>
+
             <div class="role table-responsive">
                 <button id="relateusertoorg"  type="button" class="btn btn-sm text-purple-400 w-100">
                     <i class="fa fa-user-plus" aria-hidden="true"></i>
@@ -190,8 +202,12 @@
         </div>
 								<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
 									<div class="jumbotron">
-										<h6>Help Text</h6>
+										<h6>{% trans 'Help Text' %}</h6>
 										<p>{% trans 'This section will assign permissions groups to some profile who belongs to selected organization. If you do not find the user in profile selector, could you add it from By organization tab.' %}</p>
+									<a class="btn btn-secondary-outline float-end" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+											<i class="fa fa-info-circle" aria-hidden="true"></i> {% trans 'Show descriptions of groups' %}
+									</a>
+										<div class="clearfix"></div>
 									</div>
 									<form method="post" id="groups_by_profile_form">
 										{% csrf_token %}
@@ -199,6 +215,18 @@
 										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
 																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
 										</form>
+
+							<div class="collapse" id="collapseExample">
+									<div class="card card-body">
+										{% for group in groups %}
+										<div class="list-group pt-2">
+											<h6 class="mb-2 fw-bold">{{group.group.name}}</h6>
+											<br>
+											<p class="ms-2">{{group.description | default_if_none:"No description"}}</p>
+										</div>
+										{% endfor %}
+									</div>
+							</div>
         </div>
 
 
@@ -207,7 +235,7 @@
 </div>
 </div>
 <div id="addrolmodal" class="modal fade" tabindex="-1" aria-labelledby="rolmodalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
             <form method="post">
@@ -229,6 +257,9 @@
                                 <input type="text" id="rolname" class="form-control" placeholder="{% trans 'Rol name' %}"/>
                                 <input type="hidden" name="orgpk" />
                             </div>
+																												<div class="form-group">
+																																<textarea id="roldescription" class="form-control" data-widget="TextInput" placeholder="{% trans 'Add a description' %}"></textarea>
+																															</div>
                             <div id="selectroldiv">
                                 <div class="form-group">
                                     <label for="id_relate_rols">{% trans 'Copy permissions from other roles?' %}:</label>
@@ -413,6 +444,20 @@
     </div>
 </div>
 
+<div id="rol_details"  class="modal fade" tabindex="-1" aria-labelledby="rol_details_label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title" id="rol_details_label">{% trans 'Roles' %}</h4>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<div class="container" id="rol_details_container" style="overflow-y: scroll; height: 600px;"></div>
+        </div>
+        </div>
+    </div>
+</div>
+
 {% url 'laboratory:organization_actions' as action_clone_url %}
 {% trans 'Actions for Organization' as action_clone_org %}
 {% include 'modal_template_submit_form.html' with form=actionwiform id="actionwimodal" title=action_clone_org form_id="actionwiform" url=action_clone_url %}
@@ -429,7 +474,9 @@ userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
 delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
 create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
 external_user_url = "{% url 'auth_and_perms:api-extuserinorg-detail' 0 %}";
-groups_by_profile = "{% url 'groupsbyprofile-list' %}"
+groups_by_profile = "{% url 'groupsbyprofile-list' %}";
+inerit_profile_url = "{% url 'auth_and_perms:api-userinorg-inerit-profile' %}";
+roles_url = "{% url 'auth_and_perms:get_roles_by_organization' 0 %}";
 </script>
 <script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 {% endblock%}
