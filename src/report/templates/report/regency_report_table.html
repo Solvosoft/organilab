@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load i18n laboratory %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block title %}{% trans 'Reports' %} {% endblock %}
+{% block pre_head %}
+    {% define_true 'use_datatables' %}
+	{% define_urlname_action 'can_do_report' %}
+{% endblock %}
+
+{% block content %}
+
+{% if perms.laboratory.do_report and perms.laboratory.view_object  %}
+<div class="offset-md-2 col-md-8">
+	<div class="page-header" align="center">
+		<h3 class="heading-1" ><span> {{obj_task.data.title}}  </span></h3>
+		{% if regency.break_health_total or regency.break_enviroment_total or regency.break_physical_total %}
+			<div class="text-center">
+				<h2>{% trans 'High-risk establishment' %}</h2>
+			</div>
+		{% endif %}
+	</div>
+<br>
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pills-list3-tab" data-bs-toggle="pill" data-bs-target="#pills-list3" type="button" role="tab" aria-controls="pills-list3" aria-selected="true">
+					{% trans "Danger Substance of the list 3" %}</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-list4-tab" data-bs-toggle="pill" data-bs-target="#pills-list4" type="button" role="tab" aria-controls="pills-list4" aria-selected="false">
+					{% trans "Danger Categories of the list 4" %}
+				</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-calculator-tab" data-bs-toggle="pill" data-bs-target="#pills-calculator" type="button" role="tab" aria-controls="pills-calculator" aria-selected="false">
+					{% trans "Sum of dangers categories" %}
+				</button>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-list3" role="tabpanel" aria-labelledby="pills-list3-tab">
+			<table id="table_3" class="display table table-striped table-bordered text-center dt-responsive"></table>
+		</div>
+  <div class="tab-pane fade" id="pills-list4" role="tabpanel" aria-labelledby="pills-list4-tab">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<table id="table_4" class="display table table-striped table-bordered text-center dt-responsive" style="width: 100%"></table>
+					</div>
+				</div>
+		</div>
+		</div>
+  <div class="tab-pane fade" id="pills-calculator" role="tabpanel" aria-labelledby="pills-calculator-tab">
+				<table id="table_5" class="display table table-striped table-bordered text-center dt-responsive" style="width: 100%">
+					<tbody>
+						<tr>
+							<td>{% trans 'Health totals:' %}</td>
+							<td>{{ regency.health_total }}</td>
+						</tr>
+						<tr>
+								<td>{% trans 'Physical totals:' %}</td>
+								<td>{{ regency.physical_total }}</td>
+						</tr>
+						<tr>
+								<td>{% trans 'Environmental totals:' %}</td>
+								<td>{{ regency.enviroment_total }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+</div>
+</div>
+
+{% endif %}
+
+{% endblock %}
+{% block js %}
+{{block.super}}
+
+<script>
+	const report_urls = {
+		list_url : '{% url "report:api-regency-list" org_pk=org_pk %}'+"?step=3&pk="+"{{ obj_task.pk }}",
+	}
+	const report_quarter_urls = {
+		list_url : '{% url "report:api-regency-list" org_pk=org_pk %}'+"?step=4&pk="+"{{ obj_task.pk }}",
+	}
+
+	</script>
+<script src="{% static 'js/regency_datatables.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

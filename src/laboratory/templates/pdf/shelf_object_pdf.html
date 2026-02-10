@@ -109,6 +109,16 @@ width: 100%;
                     <th class="bold">{% trans "Description" %}:</th>
                     <th class="thead">{{ obj.object.description|default_if_none:"" }}</th>
                 </tr>
+																<tr>
+                    <th class="bold">{% trans "Ingreso por donacion" %}:</th>
+                    <th class="thead">
+																							{% if obj.was_donated %}
+																											Sí
+																							{% else %}
+																											No
+																							{% endif %}
+																			</th>
+                </tr>
                 </thead>
             </table>
         </th>

@@ -95,8 +95,10 @@ from laboratory.shelfobject.serializers import (
     ShelfObjectGuarenteeFilter,
     ValidateShelfobjectEditSerializer,
     EditEquipmentShelfObjectSerializer,
-    EditEquimentShelfobjectCharacteristicSerializer, EditReactiveShelfObjectSerializer,
-    ReactiveShelfObjectDataSerializer, MaterialShelfObjectDataSerializer,
+    EditEquimentShelfobjectCharacteristicSerializer,
+    EditReactiveShelfObjectSerializer,
+    ReactiveShelfObjectDataSerializer,
+    MaterialShelfObjectDataSerializer,
     ShelfObjectMaterialLimitsSerializer,
 )
 
@@ -111,7 +113,8 @@ from laboratory.shelfobject.utils import (
     create_new_shelfobject_from_object_in,
     clone_shelfobject_to,
     save_shelfobject_characteristics,
-    delete_shelfobjects, get_shelf_object_expiration_date,
+    delete_shelfobjects,
+    get_shelf_object_expiration_date,
 )
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
@@ -229,13 +232,14 @@ class ShelfObjectCreateMethods:
             available_container,
         )
         expired_date = get_shelf_object_expiration_date(
-            serializer.validated_data.get("reactive_expiration_date", None))
+            serializer.validated_data.get("reactive_expiration_date", None)
+        )
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
             container=container,
-            reactive_expiration_date=expired_date
+            reactive_expiration_date=expired_date,
         )
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
             shelfobject.quantity = get_conversion_from_two_units(
@@ -319,14 +323,15 @@ class ShelfObjectCreateMethods:
             available_container,
         )
         expired_date = get_shelf_object_expiration_date(
-            serializer.validated_data.get("reactive_expiration_date", None))
+            serializer.validated_data.get("reactive_expiration_date", None)
+        )
 
         shelfobject = serializer.save(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             limits=limits,
             container=container,
-            reactive_expiration_date=expired_date
+            reactive_expiration_date=expired_date,
         )
 
         if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
@@ -1563,8 +1568,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     shelf_object.quantity = amount_converted
 
                     if shelf_object.shelf.measurement_unit:
-                        shelf_object.measurement_unit = shelf_object.shelf.measurement_unit
-
+                        shelf_object.measurement_unit = (
+                            shelf_object.shelf.measurement_unit
+                        )
 
                     save_object_by_action(
                         user, shelf_object, relobj, changed_data, CHANGE, object_repr
@@ -1767,18 +1773,26 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if shelf_object_serializer.is_valid():
             obj = shelf_object_serializer.save()
             if hasattr(shelf_object, "limits"):
-                serializer = self.serializer_class(data=request.data,
-                                                   instance=shelf_object.limits,
-                                               context={"source_laboratory_id": lab_pk,
-                                                        "shelfobject":shelf_object.pk,
-                                                        "type_id":shelf_object.object.type})
+                serializer = self.serializer_class(
+                    data=request.data,
+                    instance=shelf_object.limits,
+                    context={
+                        "source_laboratory_id": lab_pk,
+                        "shelfobject": shelf_object.pk,
+                        "type_id": shelf_object.object.type,
+                    },
+                )
             else:
-                serializer = self.serializer_class(data=request.data,
-                                                   context={"source_laboratory_id": lab_pk,
-                                                            "shelfobject":shelf_object.pk,
-                                                            "type_id":shelf_object.object.type})
+                serializer = self.serializer_class(
+                    data=request.data,
+                    context={
+                        "source_laboratory_id": lab_pk,
+                        "shelfobject": shelf_object.pk,
+                        "type_id": shelf_object.object.type,
+                    },
+                )
             if serializer.is_valid():
-                limit=serializer.save()
+                limit = serializer.save()
                 obj.limits = limit
                 obj.save()
                 utils.organilab_logentry(
@@ -1792,7 +1806,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             errors.update(shelf_object_serializer.errors)
 
         if errors:
-            return JsonResponse({"errors":errors}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(
             {"detail": _("Shelfobject was updated successfully.")},
@@ -1800,7 +1814,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
 
     @action(detail=True, methods=["get"])
-    def get_reactive_edit_data(self, request, org_pk, lab_pk,pk,**kwargs):
+    def get_reactive_edit_data(self, request, org_pk, lab_pk, pk, **kwargs):
         self._check_permission_on_laboratory(
             request, org_pk, lab_pk, "get_shelfobject_info"
         )
@@ -1854,18 +1868,26 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if shelfobject_serializer.is_valid():
             obj = shelfobject_serializer.save()
             if hasattr(shelfobject, "limits"):
-                serializer = self.serializer_class(data=request.data,
-                                                   instance=shelfobject.limits,
-                                               context={"source_laboratory_id": lab_pk,
-                                                        "shelfobject":shelfobject.pk,
-                                                        "type_id":shelfobject.object.type})
+                serializer = self.serializer_class(
+                    data=request.data,
+                    instance=shelfobject.limits,
+                    context={
+                        "source_laboratory_id": lab_pk,
+                        "shelfobject": shelfobject.pk,
+                        "type_id": shelfobject.object.type,
+                    },
+                )
             else:
-                serializer = self.serializer_class(data=request.data,
-                                                   context={"source_laboratory_id": lab_pk,
-                                                            "shelfobject":shelfobject.pk,
-                                                            "type_id":shelfobject.object.type})
+                serializer = self.serializer_class(
+                    data=request.data,
+                    context={
+                        "source_laboratory_id": lab_pk,
+                        "shelfobject": shelfobject.pk,
+                        "type_id": shelfobject.object.type,
+                    },
+                )
             if serializer.is_valid():
-                limit=serializer.save()
+                limit = serializer.save()
                 obj.limits = limit
                 obj.save()
                 return JsonResponse({}, status=status.HTTP_200_OK)
@@ -1873,7 +1895,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 errors = serializer.errors
         else:
             errors.update(shelfobject_serializer.errors)
-        return JsonResponse({"errors":errors}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SearchLabView(viewsets.GenericViewSet):
     """

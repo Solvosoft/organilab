@@ -110,7 +110,7 @@
 								<li class="list-group-item">
 									<a
 										href="{% url 'laboratory:sustance_list' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Reactive' %}</strong></a>
-																		/ <a
+									/ <a
 									href="{% url 'laboratory:object_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Material' %}</strong></a>
 									/ <a
 									href="{% url 'laboratory:equipment_list' org_pk laboratory %}"><strong>{% trans 'Equipment' %}</strong></a>
@@ -118,6 +118,14 @@
 									href="{% url 'laboratory:reactive_stock_list' org_pk laboratory %}"><strong>{% trans 'Reactive Stats' %}</strong></a>
 								</li>
 							{% endif %}
+
+							{% if perms.laboratory.view_shelfobject %}
+								<li class="list-group-item">
+									<a
+										href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Reorder Reactives' %}</strong></a>
+								</li>
+							{% endif %}
+
 							{% if perms.laboratory.add_objectfeatures %}
 								<li class="list-group-item">
 									<a
