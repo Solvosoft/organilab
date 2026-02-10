@@ -17,21 +17,19 @@ from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.chrome.service import Service
 
+
 class SeleniumBase(StaticLiveServerTestCase):
 
     @classmethod
     def setUpClass(cls):
         super(SeleniumBase, cls).setUpClass()
 
-        cls.timeout = 30
-
-        cls.ob = Screenshot.Screenshot()
+        cls.timeout = 5
         cls.options = webdriver.FirefoxOptions()
-        is_docker = os.getenv("DOCKER_ACTIVE","false").lower() == "true"
+        is_docker = os.getenv("DOCKER_ACTIVE", "false").lower() == "true"
 
         if is_docker:
-
-            driverpath = os.getenv("CHROMEDRIVER_DIR", '/usr/bin/chromedriver')
+            driverpath = os.getenv("CHROMEDRIVER_DIR", "/usr/bin/chromedriver")
             options = webdriver.ChromeOptions()
             options.add_argument("--no-sandbox")
             options.add_argument("--headless")
@@ -39,50 +37,52 @@ class SeleniumBase(StaticLiveServerTestCase):
             options.add_argument("--disable-gpu")
             options.add_argument("--remote-debugging-port=9222")
             service = Service(executable_path=driverpath)
-
             cls.selenium = webdriver.Chrome(options=options, service=service)
         else:
             cls.selenium = webdriver.Chrome()
+        cls.ob = Screenshot(cls.selenium)
         cls.selenium.set_window_size(1280, 720)
 
-        cls.tmp = Path(settings.BASE_DIR) / 'tmp'
-        cls.folder = '%s/%dx%d' % (cls.tmp, 120, 200)
+        cls.tmp = Path(settings.BASE_DIR) / "tmp"
+        cls.folder = "%s/%dx%d" % (cls.tmp, 120, 200)
         cls.dir = Path(settings.BASE_DIR) / cls.folder
-        cls.static_save_path = Path(settings.DOCS_SOURCE_DIR) / '_static'
-        cls.save_path_gif = cls.static_save_path / 'gif'
+        cls.static_save_path = Path(settings.DOCS_SOURCE_DIR) / "_static"
+        cls.save_path_gif = cls.static_save_path / "gif"
 
         if not cls.tmp.exists():
             cls.tmp.mkdir()
 
-        cls.cursor_script = '''
+        cls.cursor_script = """
             var cursor = document.createElement('i');
             cursor.style.position = 'absolute';
             cursor.style.zIndex = '9999';
             cursor.classList.add("fa", "fa-mouse-pointer", "text-danger", "fa-1x", "cursor_pointer");
             document.body.appendChild(cursor);
-        '''
+        """
 
-        cls.hide_cursor_script = '''
+        cls.hide_cursor_script = """
         var cursor = document.querySelector(".cursor_pointer");
         cursor.style.zIndex = '-1';
-        '''
+        """
 
-        cls.show_cursor_script = '''
+        cls.show_cursor_script = """
             if(!$('.cursor_pointer').length > 0){
-            '''
+            """
         cls.show_cursor_script += cls.cursor_script
-        cls.show_cursor_script += '''
+        cls.show_cursor_script += """
             }
             var cursor = document.querySelector(".cursor_pointer");
             cursor.style.zIndex = '9999';
-            '''
+            """
 
         cls.action = ActionChains(cls.selenium)
 
     def change_focus_tab(self, window_name):
         self.selenium.switch_to.window(window_name)
 
-    def get_format_increase_decrease_date(self, date, days, increase=True, format="%m/%d/%Y"):
+    def get_format_increase_decrease_date(
+        self, date, days, increase=True, format="%m/%d/%Y"
+    ):
         new_date = date + relativedelta(days=days)
         if not increase:
             new_date = date - relativedelta(days=days)
@@ -92,20 +92,24 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         Move the div that simulate a cursor
         """
-        return '''
+        return """
         var cursor = document.querySelector('.cursor_pointer');
                 cursor.style.left= '{}px';
                 cursor.style.top= '{}px';
-                '''.format(x, y)
-
+                """.format(
+            x, y
+        )
 
     def get_element_js_by_xpath(self, path):
-        return """
+        return (
+            """
             function getElementByXpath(path) {
               return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
             }
             var element = getElementByXpath("%s");
-            """ % path
+            """
+            % path
+        )
 
     def move_cursor(self, x, y):
         xy_position = self.move_cursor_script(x, y)
@@ -134,8 +138,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         if url:
             self.selenium.get(url)
 
-        self.folder = '%s/%dx%d' % (
-                self.tmp, 120, 100)
+        self.folder = "%s/%dx%d" % (self.tmp, 120, 100)
         self.dir = Path(settings.BASE_DIR) / self.folder
 
         path_with_folder_name = self.dir / folder_name
@@ -149,24 +152,28 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.dir = path_with_folder_name
 
     def create_screenshot(self, order=1, time_out=3, name="", save_screenshot=False):
-        extension_name = '%s.png' % name
-        order_name = '%r.png' % order
+        extension_name = "%s.png" % name
+        order_name = "%r.png" % order
         sleep(time_out)
         self.selenium.save_screenshot(
-                str(Path(self.dir / order_name).absolute().resolve()))
+            str(Path(self.dir / order_name).absolute().resolve())
+        )
 
         if save_screenshot:
             self.selenium.save_screenshot(
-                str(Path(self.static_save_path / extension_name).absolute().resolve()))
+                str(Path(self.static_save_path / extension_name).absolute().resolve())
+            )
 
         order += 1
         return order
 
     def get_gif_images(self, file_url):
         gif_images = []
-        folder_images = glob.glob('{}/*.png'.format(file_url))
-        tuple_images = [(int(image.split('/').pop().split('.')[0]), image) for image in
-                        folder_images]
+        folder_images = glob.glob("{}/*.png".format(file_url))
+        tuple_images = [
+            (int(image.split("/").pop().split(".")[0]), image)
+            for image in folder_images
+        ]
         sorted_images_list = [x[1] for x in sorted(tuple_images)]
 
         for filename in sorted_images_list:  # loop through all png files in the folder
@@ -179,14 +186,21 @@ class SeleniumBase(StaticLiveServerTestCase):
         gif_images = self.get_gif_images(file_url)
 
         # save as a gif
-        gif_name = '/%s%s' % (folder, '.gif')
-        gif_images[0].save(str(self.save_path_gif) + gif_name,
-                           save_all=True, append_images=gif_images[1:], optimize=False,
-                           duration=500, loop=0)
+        gif_name = "/%s%s" % (folder, ".gif")
+        gif_images[0].save(
+            str(self.save_path_gif) + gif_name,
+            save_all=True,
+            append_images=gif_images[1:],
+            optimize=False,
+            duration=500,
+            loop=0,
+        )
 
     def get_x_y_element(self, element):
-        return (element.location['x'] + element.size['width'] / 4,
-                element.location['y'] + element.size['height'] / 4)
+        return (
+            element.location["x"] + element.size["width"] / 4,
+            element.location["y"] + element.size["height"] / 4,
+        )
 
     def activate_move_cursor(self, element, cursor, hover):
         self.selenium.execute_script(self.cursor_script)
@@ -203,8 +217,10 @@ class SeleniumBase(StaticLiveServerTestCase):
         This function takes a screenshot to build a gif and save screenshot if it is
         necessary.
         """
-        if 'screenshot_name' in obj and obj['screenshot_name']:
-            order = self.create_screenshot(order=order, name=obj['screenshot_name'], save_screenshot=True)
+        if "screenshot_name" in obj and obj["screenshot_name"]:
+            order = self.create_screenshot(
+                order=order, name=obj["screenshot_name"], save_screenshot=True
+            )
         else:
             order = self.create_screenshot(order=order)
 
@@ -216,7 +232,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         Value can be quotation marks this is equal to clear an input.
         """
         if "value" in obj:
-            element.send_keys(obj['value'])
+            element.send_keys(obj["value"])
 
     def move_cursor_end(self, obj):
         """
@@ -229,11 +245,15 @@ class SeleniumBase(StaticLiveServerTestCase):
         if "reduce_length" in obj and obj["reduce_length"]:
             reduce_length = obj["reduce_length"]
 
-        move_cursor_end = self.get_element_js_by_xpath(obj["path"])+"""
+        move_cursor_end = (
+            self.get_element_js_by_xpath(obj["path"])
+            + """
             const end = element.value.length - %d;
             element.setSelectionRange(end, end);
             element.focus();
-        """ % (reduce_length)
+        """
+            % (reduce_length)
+        )
         self.selenium.execute_script(move_cursor_end)
 
     def set_css_element(self, target):
@@ -245,9 +265,12 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         Display hidden elements, for example in dropdowns or elements that are hidden.
         """
-        move_cursor =self.get_element_js_by_xpath(obj["active_hidden_elements"])+"""
+        move_cursor = (
+            self.get_element_js_by_xpath(obj["active_hidden_elements"])
+            + """
         element.click();
         """
+        )
         sleep(15)
         self.selenium.execute_script(move_cursor)
 
@@ -258,7 +281,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         if obj["extra_action"] == "setvalue":
             self.set_value_action(obj, element)
         elif obj["extra_action"] == "script":
-            self.selenium.execute_script(obj['value'])
+            self.selenium.execute_script(obj["value"])
         elif obj["extra_action"] == "sweetalert_comfirm":
             self.do_sweetaler_comfirm_action(obj, element)
         elif obj["extra_action"] == "clearinput":
@@ -267,9 +290,11 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.move_cursor_end(obj)
         elif obj["extra_action"] == "hover":
             self.selenium.execute_script(self.set_css_element(".component-btn-group"))
-        elif obj['extra_action'] == "drag_and_drop":
-            self.action.drag_and_drop(self.selenium.find_element(By.XPATH,obj["x"]),
-                                      self.selenium.find_element(By.XPATH,obj["y"])).perform()
+        elif obj["extra_action"] == "drag_and_drop":
+            self.action.drag_and_drop(
+                self.selenium.find_element(By.XPATH, obj["x"]),
+                self.selenium.find_element(By.XPATH, obj["y"]),
+            ).perform()
 
     def do_sweetaler_comfirm_action(self, obj, element):
         """
@@ -278,43 +303,43 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.action.move_to_element(element).perform()
         element.click()
         sleep(1)
-        self.selenium.execute_script(obj['comfirm'])
+        self.selenium.execute_script(obj["comfirm"])
         sleep(1)
-        self.selenium.execute_script(obj['comfirm'])
-
-
+        self.selenium.execute_script(obj["comfirm"])
 
     def do_action(self, obj, element):
         """
         This function applies the respective action by obj path.
         """
-        if 'extra_action' in obj:
+        if "extra_action" in obj:
             self.extra_action(obj, element)
         else:
             self.action.move_to_element(element).perform()
             element.click()
 
-    def apply_utils(self,obj):
+    def apply_utils(self, obj):
 
-        if 'scroll' in obj:
-            self.selenium.execute_script(obj['scroll'])
+        if "scroll" in obj:
+            self.selenium.execute_script(obj["scroll"])
 
-        if 'modalscroll' in obj:
-            self.selenium.execute_script(obj['scroll'])
+        if "modalscroll" in obj:
+            self.selenium.execute_script(obj["scroll"])
 
         if "active_hidden_elements" in obj:
             self.active_hidden_elements(obj)
 
         if "hover" in obj:
-            self.selenium.execute_script(self.set_css_element(obj['element']))
+            self.selenium.execute_script(self.set_css_element(obj["element"]))
 
-        if 'sleep' in obj:
-            if isinstance(obj['sleep'], int):
+        if "sleep" in obj:
+            if isinstance(obj["sleep"], int):
                 sleep(obj["sleep"])
             else:
                 sleep(15)
 
-    def take_screenshot_list(self, path_list, folder_name, cursor=True, hover=True, order=1):
+    def take_screenshot_list(
+        self, path_list, folder_name, cursor=True, hover=True, order=1
+    ):
         """
         This function does following steps:
             1. First, it will take the initial screenshot before any movement or action.
@@ -331,7 +356,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.create_screenshot(order=order)
         for obj in path_list:
             self.apply_utils(obj)
-            element = self.selenium.find_element(By.XPATH, obj['path'])
+            element = self.selenium.find_element(By.XPATH, obj["path"])
             order = self.create_screenshot(order=order)
             x, y = self.get_x_y_element(element)
             self.activate_move_cursor(element, cursor, hover)
@@ -342,16 +367,22 @@ class SeleniumBase(StaticLiveServerTestCase):
             order = self.create_screenshot(order=order)
         return order
 
-    def create_gif_process(self, path_list, folder_name, cursor=True, hover=True, order=1):
+    def create_gif_process(
+        self, path_list, folder_name, cursor=True, hover=True, order=1
+    ):
         self.take_screenshot_list(path_list, folder_name, cursor, hover, order)
         self.create_gif(self.dir, folder_name)
 
-    def create_gif_by_change_focus_tab(self, general_path_list, tab_name_list, folder_name):
+    def create_gif_by_change_focus_tab(
+        self, general_path_list, tab_name_list, folder_name
+    ):
         order = 0
         screenshot_order = 1
 
         for path_list in general_path_list:
-            screenshot_order = self.take_screenshot_list(path_list, folder_name, order=screenshot_order)
+            screenshot_order = self.take_screenshot_list(
+                path_list, folder_name, order=screenshot_order
+            )
 
             if len(tab_name_list) > 0 and order + 1 <= len(tab_name_list):
                 self.change_focus_tab(tab_name_list[order])
@@ -361,6 +392,7 @@ class SeleniumBase(StaticLiveServerTestCase):
 
     def force_login(self, user, driver, base_url):
         from django.conf import settings
+
         SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
         driver.get(base_url)
 
@@ -371,9 +403,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         session.save()
 
         cookie = {
-            'name': settings.SESSION_COOKIE_NAME,
-            'value': session.session_key,
-            'path': '/'
+            "name": settings.SESSION_COOKIE_NAME,
+            "value": session.session_key,
+            "path": "/",
         }
         driver.add_cookie(cookie)
         driver.refresh()
@@ -382,10 +414,10 @@ class SeleniumBase(StaticLiveServerTestCase):
     def tearDownClass(cls):
         cls.selenium.quit()
 
-        #Removing tmp directory
+        # Removing tmp directory
         try:
-             shutil.rmtree(cls.tmp)
+            shutil.rmtree(cls.tmp)
         except OSError as e:
-             print("Error: %s - %s." % (e.filename, e.strerror))
+            print("Error: %s - %s." % (e.filename, e.strerror))
 
         super(SeleniumBase, cls).tearDownClass()

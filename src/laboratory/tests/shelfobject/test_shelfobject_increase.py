@@ -1,3 +1,5 @@
+import json
+
 from django.urls import reverse
 
 from laboratory.models import ShelfObject, Provider
@@ -17,22 +19,31 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         self.lab = self.lab1_org1
         self.user = self.user1_org1
         self.client = self.client1_org1
-        self.shelf_object = ShelfObject.objects.get(pk=1)
+        self.shelf_object = ShelfObject.objects.get(pk=6)
         self.shelf_object_material = ShelfObject.objects.get(pk=4)
         self.shelf_object_equipment = ShelfObject.objects.get(pk=5)
         self.shelf = self.shelf_object.shelf
         self.provider = Provider.objects.get(pk=1)
         self.old_quantity = self.shelf_object.quantity
+
         self.data = {
             "amount": 2,
             "bill": "905678",
             "provider": self.provider.pk,
-            "shelf_object": self.shelf_object.pk
+            "shelf_object": self.shelf_object.pk,
+            "measurement_unit": self.shelf_object.measurement_unit.pk,
         }
-        self.total = self.shelf.get_total_refuse(
-            include_containers=False, measurement_unit=self.shelf_object.measurement_unit) \
-                     + self.data["amount"]
-        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject", kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.total = (
+            self.shelf.get_total_refuse(
+                include_containers=False,
+                measurement_unit=self.shelf_object.measurement_unit,
+            )
+            + self.data["amount"]
+        )
+        self.url = reverse(
+            "laboratory:api-shelfobject-fill-increase-shelfobject",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
 
     def test_shelfobject_increase_case1(self):
         """
@@ -48,7 +59,9 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
 
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         self.assertTrue(self.total <= self.shelf.quantity)
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
@@ -71,7 +84,9 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         self.user = self.user2_org2
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 403)
-        self.assertFalse(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertFalse(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         self.assertTrue(self.total <= self.shelf.quantity)
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
@@ -92,17 +107,18 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         5) Check if new quantity is equal to old quantity
         """
         self.provider = Provider.objects.get(pk=2)
-        self.data['provider'] = self.provider.pk
+        self.data["provider"] = self.provider.pk
         response = self.client.post(self.url, data=self.data)
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         self.assertTrue(self.total <= self.shelf.quantity)
 
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
         self.assertNotEqual(new_quantity, self.old_quantity + self.data["amount"])
         self.assertEqual(new_quantity, self.old_quantity)
-
 
     def test_shelfobject_increase_case4(self):
         """
@@ -118,12 +134,16 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         """
         data = self.data
         self.old_quantity = self.shelf_object_material.quantity
-        data['shelf_object'] = self.shelf_object_material.pk
-        self.total = self.shelf_object_material.shelf.get_total_refuse(
-            include_containers=False) + self.data["amount"]
+        data["shelf_object"] = self.shelf_object_material.pk
+        self.total = (
+            self.shelf_object_material.shelf.get_total_refuse(include_containers=False)
+            + self.data["amount"]
+        )
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         self.assertTrue(self.total <= self.shelf_object_material.shelf.quantity)
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
@@ -144,12 +164,16 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         """
         data = self.data
         self.old_quantity = self.shelf_object_equipment.quantity
-        data['shelf_object'] = self.shelf_object_equipment.pk
-        self.total = self.shelf_object_equipment.shelf.get_total_refuse(
-            include_containers=False) + self.data["amount"]
+        data["shelf_object"] = self.shelf_object_equipment.pk
+        self.total = (
+            self.shelf_object_equipment.shelf.get_total_refuse(include_containers=False)
+            + self.data["amount"]
+        )
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         self.assertTrue(self.total <= self.shelf_object_equipment.shelf.quantity)
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
@@ -168,15 +192,20 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         """
         data = self.data
         self.old_quantity = self.shelf_object_material.quantity
-        data['shelf_object'] = self.shelf_object_material.pk
+        data["shelf_object"] = self.shelf_object_material.pk
         self.total = self.shelf_object_material.shelf.get_total_refuse(
-            include_containers=False)
+            include_containers=False
+        )
         self.lab = self.lab3_org1
-        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject",
-                           kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.url = reverse(
+            "laboratory:api-shelfobject-fill-increase-shelfobject",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
         self.assertEqual(new_quantity, self.old_quantity)
@@ -193,15 +222,20 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
         """
         data = self.data
         self.old_quantity = self.shelf_object_equipment.quantity
-        data['shelf_object'] = self.shelf_object_equipment.pk
+        data["shelf_object"] = self.shelf_object_equipment.pk
         self.total = self.shelf_object_equipment.shelf.get_total_refuse(
-            include_containers=False)
+            include_containers=False
+        )
         self.lab = self.lab3_org1
-        self.url = reverse("laboratory:api-shelfobject-fill-increase-shelfobject",
-                           kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk})
+        self.url = reverse(
+            "laboratory:api-shelfobject-fill-increase-shelfobject",
+            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+        )
         response = self.client.post(self.url, data=data)
         self.assertEqual(response.status_code, 403)
-        self.assertTrue(check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user))
+        self.assertTrue(
+            check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
+        )
         shelf_object = ShelfObject.objects.get(pk=self.data["shelf_object"])
         new_quantity = shelf_object.quantity
         self.assertEqual(new_quantity, self.old_quantity)

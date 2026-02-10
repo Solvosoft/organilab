@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% load gtsettings %}
+{% load i18n %}
+{% load static %}
+
+{% block pre_head %}
+    {% define_urlname_action 'regent_crud' %}
+{% endblock %}
+
+{% block title %} {% trans 'Regents' %} {% endblock %}
+{% block content %}
+<input type="hidden" value="{{org_pk}}" id="org">
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h1 class="text-center"> {% trans 'List of Regents' %} </h1>
+			</div>
+
+			<div class="row mt-3 ">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table-regent">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    {% url "riskmanagement:api-regent-list" org_pk as list_obj_url %}
+    {% trans 'Register Regent' as create_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle  principal_class='modal-md' modal_class=create_obj_tittle url=list_obj_url %}
+
+    {% url "riskmanagement:api-regent-detail" org_pk 0 as detail_obj_url %}
+    {% trans 'Update Regent' as update_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle principal_class='modal-md' modal_class=update_obj_tittle url=detail_obj_url %}
+
+    {% trans 'Delete Regent' as delete_obj_tittle %}
+    {% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+	<script>
+		const object_urls = {
+			list_url: "{% url 'riskmanagement:api-regent-list' org_pk %}",
+			create_url: "{% url 'riskmanagement:api-regent-list' org_pk %}",
+			destroy_url: "{% url 'riskmanagement:api-regent-detail' org_pk 0 %}",
+			update_url: "{% url 'riskmanagement:api-regent-detail' org_pk 0 %}",
+		}
+
+		const selects2_url = {
+			user_url: "{% url 'user_organization-list' %}"+"?org_pk="+"{{org_pk}}",
+			laboratory_url: "{% url 'regent_laboratories-list' %}"+"?org_pk="+"{{org_pk}}",
+		}
+	</script>
+	<script src="{% static 'js/regents.js' %}?v={% get_organilab_version %}"></script>
+
+
+{% endblock %}

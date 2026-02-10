@@ -499,9 +499,39 @@
       "mitigation_actions": "djasdk",
       "recomendations": "dfjasdkfs",
       "notification_copy": "",
+      "risk_zone": 5,
       "laboratories": [
         1
       ]
     }
+  },
+  {
+  "model": "risk_management.buildings",
+  "pk": 1,
+  "fields": {
+    "organization": 1,
+    "creation_date": "2025-10-06T20:46:35.565Z",
+    "last_update": "2025-10-06T20:46:35.565Z",
+    "created_by": 1,
+    "name": "FCNE",
+    "is_asociaty_buildings": true,
+    "phone": "99999999999999",
+    "manager": 65,
+    "geolocation": "9.895804362670006,-84.1552734375",
+    "has_water_resources": false,
+    "has_nearby_sites": "",
+    "area": 0.0,
+    "plans": "",
+    "security_plan": "",
+    "regulatory_plans": "",
+    "emergency_plan": "",
+    "laboratories": [
+    ],
+    "nearby_buildings": [
+    ],
+    "regents": [
+    ],
+    "manager": 1
   }
+}
 ]

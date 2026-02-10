@@ -23,21 +23,56 @@ function configure_modal(data){
         'description': gettext('Description'),
         'model': gettext('Model'),
         'serie': gettext('Serie'),
-        'plaque': gettext('Plaque')
+        'plaque': gettext('Plaque'),
+        'type_budget': gettext('Type Budget'),
+        'container_entry_date': gettext('Container Entry Date'),
+        'container_open_date': gettext('Container Open Date'),
+        'reactive_expiration_date': gettext('Expiration Date'),
     }
     insert_substance_data(data.object.object_inst, tbody_instance, object_titles);
     insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')});
-
+    insert_substance_data({
+        ...data.object,
+        was_donated: data.object.was_donated ? gettext('Yes') : gettext('No')
+    }, tbody_instance, {
+        'was_donated': gettext('Donated income'),
+        'unit': gettext('Unit')
+    });
     if(data.object['object_features']){
         append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance);
     }
+    if (data.object["object_type"] == '0'){
+       if (data.object['pictograms']){
+        insert_image(data.object['pictograms'], tbody_instance);
+        }
+       if (data.object['physical_status']){
+           insert_substance_data(data.object, tbody_instance, {'physical_status': gettext('Physical Status')});
+        }
+       if (data.object['concentration']){
+            insert_substance_data(data.object, tbody_instance, {'concentration': gettext('Concentration')});
+        }
+        if (data.object['reactive_expiration_date']){
+            insert_substance_data(data.object, tbody_instance, {'reactive_expiration_date': gettext('Expiration Date')});
+        }
+        if (data.object['container_entry_date']){
+            insert_substance_data(data.object, tbody_instance, {'container_entry_date': gettext('Container Entry Date')});
+        }
+        if (data.object['container_open_date']){
+            insert_substance_data(data.object, tbody_instance, {'container_open_date': gettext('Container Open Date')});
+        }
+        if (data.object['type_budget']){
+            insert_substance_data(data.object, tbody_instance, {'type_budget': gettext('Type Budget')});
+        }
+      }
     if (data.object['substance_characteristics']){
         manage_substance_characteristics(data.object['substance_characteristics'], tbody_instance);
     }
     if (data.object['equipment_characteristics']){
         manage_equipment_characteristics(data.object['equipment_characteristics'], tbody_instance);
     }
-}
+
+ }
+
 
 /*
 Method that inserts the QR Code in the modal, if there is one available
@@ -216,5 +251,14 @@ function insert_data_url(data, inst, object_titles){
             html_object += `<td></td></tr>`
         }
     })
+    inst.append(html_object)
+}
+
+function insert_image(data, inst){
+    let html_object = `<tr><td class="shelfobject_titles">${gettext('Pictograms')}</td><td>`
+    data.forEach((obj)=>{
+        html_object += `<img src="${obj.pictogram}" class="p-2" width="100px" height="100px" />`
+    })
+    html_object += `</td></tr>`
     inst.append(html_object)
 }

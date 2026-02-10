@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags risk_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+ {% define_true  "use_chartjs" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<h1 class="text-center">{% trans 'Stats' %}</h1>
+</div>
+
+<div class="row">
+	<div class="col-md-12">
+		<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filtrocoll"
+        aria-expanded="false" aria-controls="collapseExample" style="margin-left:2%;margin-bottom:5%;">
+			{% trans 'View search filters' %}
+		</button>
+		<div class="collapse" id="filtrocoll">
+			<form id="form-risk" method="GET">
+				{{form}}
+				<div class="clearfix"></div>
+				<div class="row">
+					<div class="">
+						<button form="form-risk" type="submit" class="btn btn-success float-end">{% trans 'Filter' %}</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+<div class="row">\
+	<div class="col-md-12">
+		<ul class="list-group">
+			<li class="list-group-item">
+				<div class="clearfix"></div>
+				<ul class="nav nav-pills"  role="tablist">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link active" id="pills-di" data-bs-toggle="pill"
+														data-bs-target="#dangerindication"
+														type="button" role="tab" aria-controls="pills-di" aria-selected="true">
+							{% trans 'Danger Indication' %}
+						</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="pills-wo" data-bs-toggle="pill" data-bs-target="#whiteorgan" type="button" role="tab" aria-controls="pills-wo" >
+							{% trans 'White Organ' %}
+						</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="pills-pt" data-bs-toggle="pill" data-bs-target="#precursortype" type="button" role="tab" aria-controls="pills-pt" >
+							{% trans 'Precursor Type' %}</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="pills-sc" data-bs-toggle="pill" data-bs-target="#storageclass" type="button" role="tab" aria-controls="pills-sc" >
+							{% trans 'Storage Class' %}</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="pills-eucode" data-bs-toggle="pill" data-bs-target="#uecode" type="button" role="tab" aria-controls="pills-eucode" >
+							{% trans 'EU Code' %}</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="pills-nfpa" data-bs-toggle="pill" data-bs-target="#nfpa" type="button" role="tab" aria-controls="pills-nfpa" >
+							{% trans 'NFPA' %}</button>
+					</li>
+				</ul>
+				<div class="tab-content" id="pills-tabContent">
+					<div id="dangerindication" class="tab-pane fade show active">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=dangerindicationchart %}
+					</div>
+					<div id="whiteorgan" class="tab-pane fade">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=whiteorganchart %}
+					</div>
+					<div id="precursortype" class="tab-pane fade">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=precursortypechart %}
+					</div>
+					<div id="storageclass" class="tab-pane fade">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=storageclasschart %}
+					</div>
+					<div id="uecode" class="tab-pane fade">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=uecodechart %}
+					</div>
+					<div id="nfpa" class="tab-pane fade">
+						{% include 'gentelella/widgets/chartjs.html' with graph_url=nfpachart %}
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+{% endblock %}
+

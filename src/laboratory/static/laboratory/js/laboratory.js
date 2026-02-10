@@ -227,6 +227,7 @@ $(document).ready(function(){
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
             {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
             {data: "container", name: "container__object__name", title: gettext("Container"), type: "string", visible: true},
+            {data: "was_donated", name: "was_donated", title: gettext("Donated"), type: "boolean", render: objShowBool, visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: [
@@ -399,8 +400,8 @@ $(".check_limit").on('ifChanged', function(event){
 
 function show_hide_limits(e,prefix){
     if($(e).is(":checked")){
-        $(prefix+'minimum_limit').parent().parent().hide();
-        $(prefix+'maximum_limit').parent().parent().hide();
+        $(prefix+'minimum_limit').val(0).parent().parent().hide();
+        $(prefix+'maximum_limit').val(0).parent().parent().hide();
         $(prefix+'expiration_date').parent().parent().parent().hide();
     }else{
         $(prefix+'minimum_limit').parent().parent().show();
@@ -696,4 +697,139 @@ function updateContainerOfShelfObject(instance, event){
     }
     $('input[name="mc-shelf"]').val($('#id_shelf').val());
 }
+
+
+function editReactiveShelfObject(instance, event){
+    var modalid= $(instance).data('modalid');
+    form = $(instance).data('form');
+    let is_created = form_modals.hasOwnProperty(modalid);
+    edit_shelfobject_url = document.urls["edit_shelfobject"].replace('0',$(instance).data('shelfobject'))
+    document.getElementById(form).action = edit_shelfobject_url;
+    if(form_modals.hasOwnProperty(modalid)){
+        delete form_modals[modalid]
+        $("#edit_reactive_modal").find('.formadd').off('click');
+    }
+    show_me_modal(instance, event);
+    form_modals[modalid].type='PUT';
+    get_shelfobject_data($(instance).data('shelfobject'));
+
+}
+
+$(".lock_limits").on('ifChanged', function(event){
+
+    show_hide_limits(this,"#"+this.dataset.prefix)
+
+})
+
+function get_shelfobject_data(shelfobject){
+    edit_shelfobject_url = document.urls["get_shelfobject_data"].replace('0',shelfobject)
+    $.ajax({
+        url: edit_shelfobject_url,
+        type: "GET",
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        success: function(data){
+            document.querySelector("#id_edit-minimum_limit").value = data.minimum_limit;
+            document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
+            document.querySelector("#id_edit-description").value = data.description;
+            document.querySelector("#id_edit-batch").value = data.batch;
+            document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
+            $('#id_edit-physical_status').val(data.physical_status).trigger('change');
+            $('#id_edit-status').val(data.status).trigger('change');
+            $('#id_edit-type_budget').val(data.type_budget.id).trigger('change');
+            $('#id_edit-container_entry_date').val(data.container_entry_date).trigger('change');
+            $('#id_edit-container_open_date').val(data.container_open_date).trigger('change');
+            if(data.was_donated) {
+                if (!$("#id_edit-was_donated").parent().hasClass('checked')) {
+                    $("#id_edit-was_donated").parent().addClass('checked')
+                    $('#id_edit-was_donated').iCheck('check');
+                } else {
+                    $('#id_edit-was_donated').iCheck('check');
+                }
+            }
+        if(data.minimum_limit == 0 && data.maximum_limit == 0){
+            if(!$("#id_edit-without_limit").parent().hasClass('checked')){
+                $("#id_edit-without_limit").parent().addClass('checked')
+                $('#id_edit-without_limit').iCheck('check');
+            }else{
+                $('#id_edit-without_limit').iCheck('check');
+                }
+        }else if($("#id_edit-without_limit").parent().hasClass('checked')){
+            $("#id_edit-without_limit").parent().removeClass('checked')
+            $('#id_edit-without_limit').iCheck('uncheck');
+        }
+
+            $('#id_edit-pictograms').val(null).trigger('change');
+              if (data.pictograms.length > 0) {
+                  if (Array.isArray(data.pictograms)) {
+                        for (var x = 0; x < data.pictograms.length; x++) {
+                            $('#id_edit-pictograms option[value="' + data.pictograms[x]['id'] + '"]').remove();
+                            var newOption = new Option(data.pictograms[x]["text"], data.pictograms[x]['id'], true, true);
+                            $('#id_edit-pictograms').append(newOption);
+                        }
+                    }
+                    $('#id_edit-pictograms').trigger('change')
+                }
+
+         show_hide_limits($(".lock_limits"),"#id_edit-");
+
+
+        }
+    });
+}
+
+function editMaterialShelfObject(instance, event){
+    var modalid= $(instance).data('modalid');
+    form = $(instance).data('form');
+    let is_created = form_modals.hasOwnProperty(modalid);
+    edit_shelfobject_url = document.urls["edit_material_shelfobject"].replace('0',$(instance).data('shelfobject'))
+    document.getElementById(form).action = edit_shelfobject_url;
+    if(form_modals.hasOwnProperty(modalid)){
+        delete form_modals[modalid]
+        $("#edit_material_modal").find('.formadd').off('click');
+
+    }
+    show_me_modal(instance, event);
+    form_modals[modalid].type='PUT';
+    form_modals[modalid].action = edit_shelfobject_url;
+    get_material_shelfobject_data($(instance).data('shelfobject'));
+
+}
+
+function get_material_shelfobject_data(shelfobject){
+    edit_shelfobject_url = document.urls["get_shelfobject_limits"].replace('0',shelfobject)
+    $.ajax({
+        url: edit_shelfobject_url,
+        type: "GET",
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        success: function(data){
+        document.querySelector("#id_edit_material-description").value = data.description;
+        document.querySelector("#id_edit_material-minimum_limit").value = data.minimum_limit;
+        document.querySelector("#id_edit_material-maximum_limit").value = data.maximum_limit;
+        document.querySelector("#id_edit_material-expiration_date").value = data.expiration_date;
+        document.querySelector("#id_edit_material-batch").value = data.batch;
+        $('#id_edit_material-status').val(data.status).trigger('change');
+        if(data.was_donated) {
+            if (!$("#id_edit_material-was_donated").parent().hasClass('checked')) {
+                $("#id_edit_material-was_donated").parent().addClass('checked')
+                $('#id_edit_material-was_donated').iCheck('check');
+            } else {
+                $('#id_edit_material-was_donated').iCheck('check');
+            }
+        }
+        if(data.minimum_limit == 0 && data.maximum_limit == 0){
+            if(!$("#id_edit_material-without_limit").parent().hasClass('checked')){
+                $("#id_edit_material-without_limit").parent().addClass('checked')
+                $('#id_edit_material-without_limit').iCheck('check');
+            }else{
+                $('#id_edit_material-without_limit').iCheck('check');
+            }
+       }else if($("#id_edit_material-without_limit").parent().hasClass('checked')){
+            $("#id_edit_material-without_limit").parent().removeClass('checked')
+            $('#id_edit_material-without_limit').iCheck('uncheck');
+        }
+         show_hide_limits($(".lock_limits"),"#id_edit_material-");
+        }
+    });
+    }
+
 

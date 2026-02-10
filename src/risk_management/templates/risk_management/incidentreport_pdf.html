@@ -3,102 +3,110 @@
 {% block extra_css %}
 .incident_table tr {
 	font-family: "Arial", "sans-serif";
-	font-size: 0.8em;
+	font-size: 12px;
+}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		margin-top: 1em;
+		margin-bottom: 1em;
+		font-size: 11px;
+		font-family: Arial, sans-serif;
+	}
+
+	table th,
+	table td {
+		border: 1px solid #000;
+		padding: 4px 6px;
+		vertical-align: middle;
+	}
+
+	table thead th {
+		background-color: #f0f0f0;
+		text-align: center;
+	}
+
+p{
+  font-weight: bold;
+}
+.table-header{
+	background-color: #f0f0f0;
+	text-align: center;
+	font-weight: bold;
 }
 {% endblock %}
 {% block pdf_content %}
-<table>
-	<thead>
-	<tr>
-		<th>
-			<h2 style="margin-left: 45%;">{{title}}</h2>
-		</th>
-	</tr>
-	</thead>
-</table>
+<h3 style="text-align: center;">{{title}}</h3>
 {% for object in object_list %}
-<table class="incident_table">
-	<tr><td>
-		<b>{% trans 'Short Description' %}:</b>
-		<br>
-		<br>
-	</td></tr>
-	<tr style="margin-bottom: 15%;">
-		<td>{{object.short_description}}
-		<br>
-		<br>
+<table>
+	<tr class="table-header">
+		<td>{% trans 'Incident Date' %}</td>
+		<td>{% trans 'Laboratories' %}</td>
+		<td>{% trans 'Buildings' %}</td>
+	</tr>
+	<tr>
+		<td>{{object.incident_date|date}}</td>
+		<td>{% for lab in object.laboratories.all %} *{{lab.name}}<br>{% endfor %}</td>
+		<td>{% for building in object.buildings.all %} *{{building.name}}<br> {% endfor %}</td>
+	</tr>
+	<tr class="table-header">
+		<td colspan="3">
+		<p>{% trans 'Short Description' %}:</p>
 		</td>
 	</tr>
-</table>
-<table class="incident_table">
-	<tr style="margin-bottom: 15%;"><td>
-		<b>{% trans 'Incident Date' %}:</b>
-	<br>
-		<br>
-	</td></tr>
-	<tr style="margin-bottom: 15%;"><td>
-		{{object.incident_date|date}}
-	<br>
-		<br>
-	</td></tr>
-	</table>
-	<table class="incident_table">
 	<tr>
-		<td style="margin-bottom: 15%;"><b>{% trans 'Laboratories' %}:</b>
-		<br>
-		<br>
+		<td colspan="3">{{object.short_description|safe}}</td>
+	</tr>
+	<tr class="table-header">
+		<td colspan="3">
+			<p>{% trans 'Incident Causes' %}:</p>
 		</td>
 		</tr>
-		</table>
-		<table class="incident_table">
-				{% for lab in object.laboratories.all %}
-				<tr><td>* {{lab}}</td></tr>
-				{% endfor %}
-		</table>
-		<table class="incident_table">
 	<tr>
-		<td>
-			<br>
-			<b>{% trans 'Incident Causes' %}:</b></td>
-		</tr>
-	<tr>
-		<td>{{object.causes|safe}}</td>
+		<td colspan="3">{{object.causes|safe}}</td>
 	</tr>
-	<tr>
-		<td><b>{% trans 'Infraestructure Impact' %}:</b></td>
+	<tr class="table-header">
+		<td colspan="3">
+			<p>{% trans 'Infraestructure Impact' %}:</p>
+		</td>
 			</tr>
 	<tr>
-		<td>{{object.infraestructure_impact|safe}}</td>
+		<td colspan="3">{{object.infraestructure_impact|safe}}</td>
 	</tr>
-	<tr>
-		<td><b>{% trans 'People Impact (Employees, visitors, affected community)' %}:</b></td>
+	<tr class="table-header">
+		<td colspan="3">
+			<p>{% trans 'People Impact (Employees, visitors, affected community)' %}:</p>
+		</td>
 			</tr>
 	<tr>
-		<td>{{object.people_impact|safe}}</td>
+		<td colspan="3">{{object.people_impact|safe}}</td>
+	</tr>
+	<tr class="table-header">
+		<td colspan="3">
+			<p>{% trans 'Environmental Impact' %}:</p>
+		</td>
 	</tr>
 	<tr>
-		<td><b>{% trans 'Environmental Impact' %}:</b></td>
-			</tr>
-	<tr>
-		<td>{{object.environment_impact|safe }}</td>
+		<td colspan="3">{{object.environment_impact|safe }}</td>
 	</tr>
-	<tr>
-		<td><b>{% trans 'Result of the implementation of the Prevention, Preparation and Response Plan for Chemical Incidents' %}:</b></td>
+	<tr class="table-header">
+		<td colspan="3"><p>{% trans 'Result of the implementation of the Prevention, Preparation and Response Plan for Chemical Incidents' %}:</p></td>
 			</tr>
 	<tr>
-		<td>{{object.result_of_plans|safe }}</td>
+		<td colspan="3">{{object.result_of_plans|safe }}</td>
 	</tr>
-	<tr>
-		<td><b>{% trans 'Adopted measures to correct the situation and mitigate its effects' %}:</b></td>
+	<tr class="table-header">
+		<td colspan="3">
+			<p>{% trans 'Adopted measures to correct the situation and mitigate its effects' %}:</p></td>
 			</tr>
 	<tr>
-		<td>{{object.mitigation_actions|safe }}</td>
+		<td colspan="3">{{object.mitigation_actions|safe }}</td>
 	</tr>
-	<tr>
-		<td><b>{% trans 'Recommendations that describe in detail the actions to perform to mitigate the risk of similar incidents happening again' %}:</b></td>
+	<tr class="table-header">
+		<td colspan="3"><p>{% trans 'Recommendations that describe in detail the actions to perform to mitigate the risk of similar incidents happening again' %}:</p></td>
 			</tr>
 	<tr>
-		<td>{{object.recomendations|safe }}</td>
+		<td colspan="3">{{object.recomendations|safe }}</td>
 	</tr>
 </table>
 {% endfor %}

@@ -1,4 +1,16 @@
 [
+{
+    "model": "auth.permission",
+    "pk": 22,
+    "fields": {
+        "name": "Can shelfobject",
+        "content_type": [
+            "laboratory",
+            "shelfobject"
+        ],
+        "codename": "view_shelfobject"
+    }
+},
   {
     "model": "auth.user",
     "pk": 1,
@@ -14,7 +26,7 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": []
+      "user_permissions": [22]
     }
   },
   {
@@ -32,7 +44,7 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": []
+      "user_permissions": [22]
     }
   },
   {
@@ -50,7 +62,7 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": []
+      "user_permissions": [22]
     }
   },
   {
@@ -68,7 +80,7 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": []
+      "user_permissions": [22]
     }
   },
   {
