@@ -33,6 +33,7 @@ from laboratory.models import (
     ReactiveLimit,
     ObjectMaximumLimit,
     LaboratoryProcess,
+    MaterialCapacity,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -357,7 +358,7 @@ class AddTransferObjectForm(GTForm):
         self.fields["shelf"].queryset = shelf
 
 
-class ProviderForm(forms.ModelForm, GTForm):
+class ProviderForm(GTForm, forms.ModelForm):
     class Meta:
         model = Provider
         fields = ["name", "phone_number", "email", "legal_identity"]
@@ -369,7 +370,7 @@ class ProviderForm(forms.ModelForm, GTForm):
         }
 
 
-class ObjectFeaturesForm(forms.ModelForm, GTForm):
+class ObjectFeaturesForm(GTForm, forms.ModelForm):
     class Meta:
         model = ObjectFeatures
         fields = "__all__"
@@ -803,6 +804,218 @@ class ObservationShelfObjectForm(GTForm, forms.ModelForm):
         }
 
 
+class EquipmentForm(GTForm, forms.ModelForm):
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
+    use_manual = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Use manual")
+    )
+    calibration_required = forms.BooleanField(
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Is calibration required?"),
+    )
+    operation_voltage = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Operation voltage")
+    )
+    operation_amperage = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Operation amperage")
+    )
+    providers = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Provider.objects.none(),
+        required=False,
+        label=_("Providers"),
+    )
+    use_specials_conditions = forms.CharField(
+        widget=genwidgets.Textarea, required=False, label=_("Use specials conditions")
+    )
+    generate_pathological_waste = forms.BooleanField(
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Generate pathological waste?"),
+    )
+    clean_period_according_to_provider = forms.IntegerField(
+        widget=genwidgets.NumberInput,
+        required=False,
+        initial=0,
+        label=_("Clean period according to provider"),
+    )
+    instrumental_family = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Catalog.objects.none(),
+        blank=True,
+        required=False,
+        label=_("Instrumental family"),
+    )
+    equipment_type = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=EquipmentType.objects.all(),
+        blank=True,
+        required=False,
+        label=_("Equipment type"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        modal_id = kwargs.pop("modal_id")
+        laboratory_pk = kwargs.pop("laboratory_pk")
+        super(EquipmentForm, self).__init__(*args, **kwargs)
+        self.fields["model"].required = True
+        laboratory_id = "#id_%s-laboratory" % self.prefix
+        organization_id = "#id_%s-organization" % self.prefix
+
+        provider_not_available = Provider.objects.filter(laboratory__isnull=True)
+        providers_by_lab = Provider.objects.filter(
+            laboratory__pk=laboratory_pk
+        ).distinct()
+        provider_list = provider_not_available.union(providers_by_lab).order_by("name")
+        self.fields["providers"].queryset = provider_list
+
+        self.fields["instrumental_family"] = forms.ModelChoiceField(
+            widget=AutocompleteSelect(
+                "instrumentalfamily",
+                attrs={
+                    "data-dropdownparent": modal_id,
+                    "data-s2filter-laboratory": laboratory_id,
+                    "data-s2filter-organization": organization_id,
+                },
+            ),
+            queryset=Catalog.objects.none(),
+            blank=True,
+            required=False,
+            label=_("Instrumental family"),
+        )
+
+    class Meta:
+        model = Object
+        exclude = [
+            "is_container",
+            "is_dangerous",
+            "has_threshold",
+            "threshold",
+            "is_pure",
+        ]
+        widgets = {
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput,
+        }
+
+
+class EquipmentForm(GTForm, forms.ModelForm):
+    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
+    use_manual = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Use manual")
+    )
+    calibration_required = forms.BooleanField(
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Is calibration required?"),
+    )
+    operation_voltage = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Operation voltage")
+    )
+    operation_amperage = forms.CharField(
+        widget=genwidgets.TextInput, required=False, label=_("Operation amperage")
+    )
+    providers = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Provider.objects.none(),
+        required=False,
+        label=_("Providers"),
+    )
+    use_specials_conditions = forms.CharField(
+        widget=genwidgets.Textarea, required=False, label=_("Use specials conditions")
+    )
+    generate_pathological_waste = forms.BooleanField(
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Generate pathological waste?"),
+    )
+    clean_period_according_to_provider = forms.IntegerField(
+        widget=genwidgets.NumberInput,
+        required=False,
+        initial=0,
+        label=_("Clean period according to provider"),
+    )
+    instrumental_family = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=Catalog.objects.none(),
+        blank=True,
+        required=False,
+        label=_("Instrumental family"),
+    )
+    equipment_type = forms.ModelChoiceField(
+        widget=genwidgets.Select,
+        queryset=EquipmentType.objects.all(),
+        blank=True,
+        required=False,
+        label=_("Equipment type"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        modal_id = kwargs.pop("modal_id")
+        laboratory_pk = kwargs.pop("laboratory_pk")
+        super(EquipmentForm, self).__init__(*args, **kwargs)
+        self.fields["model"].required = True
+        laboratory_id = "#id_%s-laboratory" % self.prefix
+        organization_id = "#id_%s-organization" % self.prefix
+
+        provider_not_available = Provider.objects.filter(laboratory__isnull=True)
+        providers_by_lab = Provider.objects.filter(
+            laboratory__pk=laboratory_pk
+        ).distinct()
+        provider_list = provider_not_available.union(providers_by_lab).order_by("name")
+        self.fields["providers"].queryset = provider_list
+
+        self.fields["instrumental_family"] = forms.ModelChoiceField(
+            widget=AutocompleteSelect(
+                "instrumentalfamily",
+                attrs={
+                    "data-dropdownparent": modal_id,
+                    "data-s2filter-laboratory": laboratory_id,
+                    "data-s2filter-organization": organization_id,
+                },
+            ),
+            queryset=Catalog.objects.none(),
+            blank=True,
+            required=False,
+            label=_("Instrumental family"),
+        )
+
+    class Meta:
+        model = Object
+        exclude = [
+            "is_container",
+            "is_dangerous",
+            "has_threshold",
+            "threshold",
+            "is_pure",
+        ]
+        widgets = {
+            "features": genwidgets.SelectMultiple(),
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "is_public": genwidgets.YesNoInput,
+            "description": genwidgets.Textarea,
+            "type": genwidgets.HiddenInput,
+            "organization": genwidgets.HiddenInput,
+            "created_by": genwidgets.HiddenInput,
+            "model": genwidgets.TextInput,
+            "serie": genwidgets.TextInput,
+            "plaque": genwidgets.TextInput,
+        }
+
+
 class MaterialCapacityObjectForm(GTForm, forms.Form):
     capacity = forms.FloatField(
         required=False,
@@ -916,112 +1129,6 @@ class ObjectForm(MaterialCapacityObjectForm, forms.ModelForm):
         }
 
 
-class EquipmentForm(GTForm, forms.ModelForm):
-    laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
-    use_manual = forms.FileField(
-        widget=FileChunkedUpload, required=False, label=_("Use manual")
-    )
-    calibration_required = forms.BooleanField(
-        widget=genwidgets.YesNoInput,
-        required=False,
-        label=_("Is calibration required?"),
-    )
-    operation_voltage = forms.CharField(
-        widget=genwidgets.TextInput, required=False, label=_("Operation voltage")
-    )
-    operation_amperage = forms.CharField(
-        widget=genwidgets.TextInput, required=False, label=_("Operation amperage")
-    )
-    providers = forms.ModelMultipleChoiceField(
-        widget=genwidgets.SelectMultiple,
-        queryset=Provider.objects.none(),
-        required=False,
-        label=_("Providers"),
-    )
-    use_specials_conditions = forms.CharField(
-        widget=genwidgets.Textarea, required=False, label=_("Use specials conditions")
-    )
-    generate_pathological_waste = forms.BooleanField(
-        widget=genwidgets.YesNoInput,
-        required=False,
-        label=_("Generate pathological waste?"),
-    )
-    clean_period_according_to_provider = forms.IntegerField(
-        widget=genwidgets.NumberInput,
-        required=False,
-        initial=0,
-        label=_("Clean period according to provider"),
-    )
-    instrumental_family = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=Catalog.objects.none(),
-        blank=True,
-        required=False,
-        label=_("Instrumental family"),
-    )
-    equipment_type = forms.ModelChoiceField(
-        widget=genwidgets.Select,
-        queryset=EquipmentType.objects.all(),
-        blank=True,
-        required=False,
-        label=_("Equipment type"),
-    )
-
-    def __init__(self, *args, **kwargs):
-        modal_id = kwargs.pop("modal_id")
-        laboratory_pk = kwargs.pop("laboratory_pk")
-        super(EquipmentForm, self).__init__(*args, **kwargs)
-        self.fields["model"].required = True
-        laboratory_id = "#id_%s-laboratory" % self.prefix
-        organization_id = "#id_%s-organization" % self.prefix
-
-        provider_not_available = Provider.objects.filter(laboratory__isnull=True)
-        providers_by_lab = Provider.objects.filter(
-            laboratory__pk=laboratory_pk
-        ).distinct()
-        provider_list = provider_not_available.union(providers_by_lab).order_by("name")
-        self.fields["providers"].queryset = provider_list
-
-        self.fields["instrumental_family"] = forms.ModelChoiceField(
-            widget=AutocompleteSelect(
-                "instrumentalfamily",
-                attrs={
-                    "data-dropdownparent": modal_id,
-                    "data-s2filter-laboratory": laboratory_id,
-                    "data-s2filter-organization": organization_id,
-                },
-            ),
-            queryset=Catalog.objects.none(),
-            blank=True,
-            required=False,
-            label=_("Instrumental family"),
-        )
-
-    class Meta:
-        model = Object
-        exclude = [
-            "is_container",
-            "is_dangerous",
-            "has_threshold",
-            "threshold",
-            "is_pure",
-        ]
-        widgets = {
-            "features": genwidgets.SelectMultiple(),
-            "code": genwidgets.TextInput,
-            "name": genwidgets.TextInput,
-            "synonym": genwidgets.TextInput,
-            "is_public": genwidgets.YesNoInput,
-            "description": genwidgets.Textarea,
-            "type": genwidgets.HiddenInput,
-            "organization": genwidgets.HiddenInput,
-            "created_by": genwidgets.HiddenInput,
-            "model": genwidgets.TextInput,
-            "serie": genwidgets.TextInput,
-            "plaque": genwidgets.TextInput,
-        }
-
-
 class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
 
@@ -1126,6 +1233,94 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
         }
 
 
+class ObjectMaterialForm(GTForm, forms.ModelForm):
+
+    is_container = forms.BooleanField(
+        widget=genwidgets.YesNoInput(
+            shparent="p",
+            attrs={
+                "rel": [
+                    ".is_container",
+                ],
+            },
+        ),
+        label=_("Is Container?"),
+        initial=False,
+    )
+
+    capacity = forms.FloatField(
+        required=False,
+        widget=genwidgets.FloatInput(
+            attrs={
+                "step": f"{settings.DEFAULT_MIN_QUANTITY}",
+                "class": "is_container",
+            }
+        ),
+        min_value=settings.DEFAULT_MIN_QUANTITY,
+        initial=0.0,
+        label=_("Capacity"),
+    )
+    capacity_measurement_unit = forms.ModelChoiceField(
+        queryset=Catalog.objects.filter(key="units"),
+        required=False,
+        widget=genwidgets.Select(
+            attrs={
+                "class": "is_container",
+            }
+        ),
+        label=_("Capacity measurement unit"),
+    )
+    material_capacity = forms.CharField(
+        required=False,
+        widget=genwidgets.HiddenInput,
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_container = cleaned_data.get("is_container")
+        capacity = cleaned_data.get("capacity")
+        capacity_unit = cleaned_data.get("capacity_measurement_unit")
+
+        if is_container:
+            if capacity is None:
+                self.add_error("capacity", _("This field is required."))
+            elif capacity < 0:
+                self.add_error(
+                    "capacity",
+                    _("Ensure this value is greater than or equal to 1e-07."),
+                )
+            if capacity_unit is None:
+                self.add_error(
+                    "capacity_measurement_unit", _("This field is required.")
+                )
+        else:
+            cleaned_data.pop("capacity", None)
+            cleaned_data.pop("capacity_measurement_unit", None)
+
+        return cleaned_data
+
+    class Meta:
+        model = Object
+        fields = (
+            "code",
+            "name",
+            "synonym",
+            "description",
+            "features",
+            "is_public",
+            "is_container",
+        )
+        widgets = {
+            "code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "synonym": genwidgets.TextInput,
+            "description": genwidgets.Textarea,
+            "features": genwidgets.SelectMultiple(),
+            "is_public": genwidgets.YesNoInput,
+            "is_container": genwidgets.YesNoInput,
+        }
+
+
 class ChangeOrganizationParentForm(GTForm, forms.ModelForm):
     class Meta:
         model = OrganizationStructure
@@ -1173,7 +1368,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["type"], ["organization"], ["created_by"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
         [["description"]],
-        [["density"],["laboratory"]],
+        [["density"], ["laboratory"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1295,10 +1490,15 @@ class ReactiveForm(GTForm, forms.ModelForm):
         help_text=_("It belongs to the regulations of decree 44741"),
     )
     density = forms.FloatField(
-        widget=genwidgets.TextInput, required=False, label=_("Density"),
-        help_text=_("It belongs to the regulations of decree 44741, "
-                    "only use dot like 0.344 on decimal"),
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Density"),
+        help_text=_(
+            "It belongs to the regulations of decree 44741, "
+            "only use dot like 0.344 on decimal"
+        ),
     )
+
     def __init__(self, *args, **kwargs):
         kwargs.pop("modal_id")
         kwargs.pop("laboratory_pk")

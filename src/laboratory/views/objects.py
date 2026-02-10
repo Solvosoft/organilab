@@ -18,17 +18,25 @@ from django.urls import path
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from laboratory.forms import ObjectForm, ObjectUpdateForm, EquipmentForm, ReactiveForm, \
-    ReactiveLimitForm
+from laboratory.forms import (
+    ObjectForm,
+    ObjectUpdateForm,
+    EquipmentForm,
+    ReactiveForm,
+    ReactiveLimitForm,
+    ObjectMaterialForm,
+)
 from laboratory.models import (
     Laboratory,
     BlockedListNotification,
     OrganizationStructure,
     MaterialCapacity,
+    Object,
+    SustanceCharacteristics,
 )
-from laboratory.models import Object, SustanceCharacteristics
 from laboratory.utils import organilab_logentry, get_pk_org_ancestors_decendants
 from laboratory.views.djgeneric import CreateView, DeleteView, UpdateView, ListView
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 
 
 class ObjectView(object):
@@ -322,3 +330,20 @@ def view_reactive_list(request, org_pk, lab_pk):
         ),
     }
     return render(request, "laboratory/sustance/list.html", context=context)
+
+
+@permission_required("laboratory.view_object")
+def object_view(request, org_pk=0, lab_pk=0):
+    user_is_allowed_on_organization(request.user, org_pk)
+    lab = get_object_or_404(Laboratory, pk=lab_pk)
+
+    return render(
+        request,
+        "laboratory/object_list.html",
+        context={
+            "org_pk": org_pk,
+            "lab_pk": lab_pk,
+            "form_create": ObjectMaterialForm(prefix="create", render_type="as_p"),
+            "form_update": ObjectMaterialForm(prefix="update", render_type="as_p"),
+        },
+    )
