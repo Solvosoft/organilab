@@ -4,7 +4,14 @@ from django_filters import FilterSet, DateFromToRangeFilter, CharFilter
 from django.db.models.functions import Concat
 from djgentelella.fields.drfdatetime import DateRangeTextWidget
 
-from laboratory.models import EquipmentType, Catalog, Object, Protocol, Inform
+from laboratory.models import (
+    EquipmentType,
+    Catalog,
+    Object,
+    Protocol,
+    Inform,
+    ShelfObject,
+)
 from sga.models import Substance
 from django.db.models.expressions import Value
 
@@ -92,4 +99,36 @@ class ReactiveFilter(FilterSet):
             "name": ["icontains"],
             "code": ["icontains"],
             "synonym": ["icontains"],
+        }
+
+
+class ShelObjectReactiveFilter(FilterSet):
+    object_name = CharFilter(
+        field_name="object__name", lookup_expr="icontains", distinct=True
+    )
+    labroom_name = CharFilter(
+        field_name="shelf__furniture__labroom__name",
+        lookup_expr="icontains",
+        distinct=True,
+    )
+    shelf_name = CharFilter(
+        field_name="shelf__name", lookup_expr="icontains", distinct=True
+    )
+    furniture_name = CharFilter(
+        field_name="shelf__furniture__name", lookup_expr="icontains", distinct=True
+    )
+    container_name = CharFilter(
+        field_name="container__object__name", lookup_expr="icontains", distinct=True
+    )
+    measurement_description = CharFilter(
+        field_name="measurement_unit__description", lookup_expr="exact", distinct=True
+    )
+    measurement_key = CharFilter(
+        field_name="measurement_unit__key", lookup_expr="exact", distinct=True
+    )
+    class Meta:
+        model = ShelfObject
+        fields = {
+            "id": ["exact"],
+            "quantity": ["exact", "gte", "lte"],
         }
