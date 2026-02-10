@@ -11,6 +11,7 @@ from djgentelella.serializers import GTDateField, GTDateTimeField
 from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.db import transaction
 
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
@@ -34,7 +35,9 @@ from laboratory.models import (
     ReactiveLimit,
     ObjectMaximumLimit,
     LaboratoryProcess,
+    MaterialCapacity,
 )
+
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
@@ -1320,3 +1323,319 @@ class LaboratoryProcessDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+# Provider
+class ProviderSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    laboratory = GTS2SerializerBase(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_provider"),
+            "update": user.has_perm("laboratory.change_provider"),
+            "destroy": user.has_perm("laboratory.delete_provider"),
+            "list": user.has_perm("laboratory.view_provider"),
+        }
+
+    class Meta:
+        model = Provider
+        fields = "__all__"
+
+
+class ProviderDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ProviderSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ProviderValidateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False, max_length=225
+    )
+    phone_number = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=25
+    )
+    legal_identity = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=50
+    )
+    email = serializers.EmailField(
+        required=False, allow_blank=True, allow_null=True, max_length=100
+    )
+
+    class Meta:
+        model = Provider
+        fields = (
+            "name",
+            "phone_number",
+            "legal_identity",
+            "email",
+        )
+
+
+# ObjectFeatures
+class ObjectFeatureSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_objectfeatures"),
+            "update": user.has_perm("laboratory.change_objectfeatures"),
+            "destroy": user.has_perm("laboratory.delete_objectfeatures"),
+            "list": user.has_perm("laboratory.view_objectfeatures"),
+        }
+
+    class Meta:
+        model = ObjectFeatures
+        fields = "__all__"
+
+
+class ObjectFeatureDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ObjectFeatureSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ObjectFeatureValidateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False, max_length=150
+    )
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=300
+    )
+
+    class Meta:
+        model = ObjectFeatures
+        fields = (
+            "name",
+            "description",
+        )
+
+
+# Object
+class MaterialCapacitySerializer(serializers.ModelSerializer):
+    capacity_measurement_unit = GTS2SerializerBase(many=False)
+
+    class Meta:
+        model = MaterialCapacity
+        fields = "__all__"
+
+
+class ObjectSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    features = GTS2SerializerBase(many=True)
+    material_capacity = serializers.SerializerMethodField()
+    capacity = serializers.SerializerMethodField()
+    capacity_measurement_unit = serializers.SerializerMethodField()
+    has_relations_ShelfObject = serializers.SerializerMethodField()
+
+    def get_has_relations_ShelfObject(self, obj):
+        return ShelfObject.objects.filter(container__object=obj).exists()
+
+    def get_material_capacity(self, obj):
+        mc = getattr(obj, "materialcapacity", None)
+        return mc.id if mc else 0
+
+    def get_capacity(self, obj):
+        mc = getattr(obj, "materialcapacity", None)
+        return mc.capacity if mc else None
+
+    def get_capacity_measurement_unit(self, obj):
+        mc = getattr(obj, "materialcapacity", None)
+        unit = getattr(mc, "capacity_measurement_unit", None) if mc else None
+        if not unit:
+            return None
+        return GTS2SerializerBase(unit, many=False, context=self.context).data
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_object"),
+            "update": user.has_perm("laboratory.change_object"),
+            "destroy": user.has_perm("laboratory.delete_object"),
+            "list": user.has_perm("laboratory.view_object"),
+        }
+
+    class Meta:
+        model = Object
+        fields = "__all__"
+
+
+class ObjectDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ObjectSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ObjectValidateSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False, max_length=255
+    )
+    name = serializers.CharField(
+        required=True, allow_blank=False, allow_null=False, max_length=255
+    )
+    synonym = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=255
+    )
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True, max_length=300
+    )
+    is_public = serializers.BooleanField(default=True)
+
+    is_container = serializers.BooleanField(default=False)
+
+    features = serializers.PrimaryKeyRelatedField(
+        queryset=ObjectFeatures.objects.all(),
+        required=False,
+        many=True,
+        allow_null=True,
+        allow_empty=True,
+    )
+    capacity = serializers.FloatField(required=False, allow_null=True)
+    capacity_measurement_unit = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="units"),
+        required=False,
+        allow_null=True,
+        many=False,
+    )
+
+    type = serializers.CharField(default=Object.MATERIAL)
+
+    class Meta:
+        model = Object
+        fields = (
+            "code",
+            "name",
+            "synonym",
+            "description",
+            "features",
+            "is_public",
+            "is_container",
+            "type",
+            "capacity",
+            "capacity_measurement_unit",
+        )
+
+    def validate(self, attrs):
+        attrs["type"] = Object.MATERIAL
+        is_container = attrs.get("is_container", False)
+        # Si es container, capacity y unit son requeridos
+        if is_container:
+            if attrs.get("capacity") is None:
+                raise serializers.ValidationError(
+                    {"capacity": _("This field is required.")}
+                )
+            if attrs.get("capacity") is not None and attrs["capacity"] < 0:
+                raise serializers.ValidationError(
+                    {
+                        "capacity": _(
+                            "Ensure this value is greater than or equal to 1e-07."
+                        )
+                    }
+                )
+            if attrs.get("capacity_measurement_unit") is None:
+                raise serializers.ValidationError(
+                    {"capacity_measurement_unit": _("This field is required.")}
+                )
+        else:
+            # si no es container, ignora estos campos
+            attrs["capacity"] = None
+            attrs["capacity_measurement_unit"] = None
+
+        if self.instance and self.instance.pk:
+
+            has_rel = ShelfObject.objects.filter(
+                container__object=self.instance
+            ).exists()
+
+            # Si era contenedor y tiene relaciones, NO puede apagarse
+            if has_rel and self.instance.is_container and (is_container is False):
+                raise serializers.ValidationError(
+                    {
+                        "is_container": _(
+                            "Cannot change is container because this material is referenced by shelf objects."
+                        )
+                    }
+                )
+
+            if has_rel and is_container and "capacity_measurement_unit" in attrs:
+                try:
+                    mc = self.instance.materialcapacity  # OneToOne
+                except MaterialCapacity.DoesNotExist:
+                    mc = None
+
+                if (
+                    mc
+                    and attrs["capacity_measurement_unit"].pk
+                    != mc.capacity_measurement_unit_id
+                ):
+                    raise serializers.ValidationError(
+                        {
+                            "capacity_measurement_unit": _(
+                                "Cannot change measurement unit because this material is referenced by shelf objects."
+                            )
+                        }
+                    )
+
+        return attrs
+
+    @transaction.atomic
+    def create(self, validated_data):
+        features = validated_data.pop("features", [])
+        capacity = validated_data.pop("capacity", None)
+        unit = validated_data.pop("capacity_measurement_unit", None)
+        obj = Object.objects.create(**validated_data)
+        obj.features.set(features)
+
+        # Crear MaterialCapacity solo si es container
+        if obj.is_container:
+            MaterialCapacity.objects.update_or_create(
+                object=obj,
+                defaults={
+                    "capacity": capacity,
+                    "capacity_measurement_unit": unit,
+                },
+            )
+        else:
+            MaterialCapacity.objects.filter(object=obj).delete()
+
+        return obj
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        features = validated_data.pop("features", None)
+        capacity = validated_data.pop("capacity", None)
+        unit = validated_data.pop("capacity_measurement_unit", None)
+
+        # Forzar material siempre
+        validated_data["type"] = Object.MATERIAL
+
+        for k, v in validated_data.items():
+            setattr(instance, k, v)
+        instance.save()
+
+        if features is not None:
+            instance.features.set(features)
+
+        if instance.is_container:
+            has_rel = ShelfObject.objects.filter(container__object=instance).exists()
+
+            defaults = {"capacity": capacity}
+
+            # solo permite cambiar unit si NO tiene relaciones
+            if not has_rel:
+                defaults["capacity_measurement_unit"] = unit
+
+            MaterialCapacity.objects.update_or_create(
+                object=instance,
+                defaults=defaults,
+            )
+        else:
+            MaterialCapacity.objects.filter(object=instance).delete()
+
+        return instance

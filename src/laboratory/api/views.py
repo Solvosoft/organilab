@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
+from laboratory.utils import organilab_logentry
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Value, DateField, Q
 from django.http import JsonResponse
@@ -20,6 +21,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
+
 logger = logging.getLogger("organilab")
 
 from api.utils import AllPermissionOrganizationByAction
@@ -28,8 +30,16 @@ from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
 )
 from laboratory.api import serializers, filterset
-from laboratory.api.filterset import ProtocolFilterSet, LogEntryFilterSet, \
-    ShelObjectReactiveFilter
+
+from laboratory.api.filterset import (
+    ProtocolFilterSet,
+    LogEntryFilterSet,
+    ProviderFilter,
+    ObjectFeatureFilter,
+    ObjectFilter,
+    ShelObjectReactiveFilter,
+)
+
 from laboratory.api.forms import CommentInformForm
 from laboratory.api.serializers import (
     ReservedProductsSerializer,
@@ -41,6 +51,15 @@ from laboratory.api.serializers import (
     ValidateEquipmentCharacteristicsSerializer,
     ValidateReactiveCharacteristicsSerializer,
     GetReactiveLimitSerializer,
+    ProviderSerializer,
+    ProviderDataTableSerializer,
+    ProviderValidateSerializer,
+    ObjectFeatureSerializer,
+    ObjectFeatureDataTableSerializer,
+    ObjectFeatureValidateSerializer,
+    ObjectSerializer,
+    ObjectDataTableSerializer,
+    ObjectValidateSerializer,
 )
 from laboratory.forms import ObservationShelfObjectForm
 from laboratory.models import (
@@ -57,6 +76,8 @@ from laboratory.models import (
     EquipmentType,
     ReactiveLimit,
     LaboratoryProcess,
+    Provider,
+    ObjectFeatures,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -1194,6 +1215,326 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
         return super().perform_create(serializer)
 
 
+#  Provider
+class ProviderViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": ProviderDataTableSerializer,
+        "destroy": ProviderSerializer,
+        "create": ProviderValidateSerializer,
+        "update": ProviderValidateSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_provider"],
+        "create": ["laboratory.add_provider"],
+        "update": ["laboratory.change_provider"],
+        "destroy": ["laboratory.delete_provider"],
+    }
+
+    queryset = Provider.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name", "email", "phone_number", "legal_identity"]
+    filterset_class = ProviderFilter
+    ordering_fields = ["name"]
+    ordering = ("-creation_date",)
+
+    def get_queryset(self):
+        lab_pk = self.kwargs.get("lab_pk")
+
+        qs = Provider.objects.all()
+
+        if lab_pk:
+            qs = qs.filter(laboratory_id=lab_pk)
+
+        return qs
+
+    def get_lab_pk_or_error(self):
+        lab_pk = self.kwargs.get("lab_pk")
+        if not lab_pk:
+            raise ValidationError(
+                {"lab_pk": _("This endpoint requires lab_pk in the URL.")}
+            )
+        return lab_pk
+
+    def perform_create(self, serializer):
+        lab_pk = self.get_lab_pk_or_error()
+
+        provider = serializer.save(
+            laboratory_id=lab_pk,
+            created_by=self.request.user,
+        )
+
+        organilab_logentry(
+            self.request.user,
+            provider,
+            ADDITION,
+            "provider",
+            changed_data=[],  # no necesaria en create
+            relobj=lab_pk,  # para LabOrgLogEntry
+        )
+
+    def perform_update(self, serializer):
+        lab_pk = self.get_lab_pk_or_error()
+
+        provider_before = self.get_object()
+        before = {
+            "name": provider_before.name,
+            "phone_number": provider_before.phone_number,
+            "email": provider_before.email,
+            "legal_identity": provider_before.legal_identity,
+            "laboratory_id": provider_before.laboratory_id,
+        }
+
+        provider = serializer.save(laboratory_id=lab_pk)
+
+        after = {
+            "name": provider.name,
+            "phone_number": provider.phone_number,
+            "email": provider.email,
+            "legal_identity": provider.legal_identity,
+            "laboratory_id": provider.laboratory_id,
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            provider,
+            CHANGE,
+            "provider",
+            changed_data=changed_fields,
+            relobj=lab_pk,
+        )
+
+    def perform_destroy(self, instance):
+        lab_pk = self.get_lab_pk_or_error()
+
+        provider_id = instance.pk
+        provider_repr = str(instance)
+
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "provider",
+            changed_data=[],  # no aplica en delete
+            object_repr=provider_repr,
+            relobj=lab_pk,
+        )
+
+        instance.delete()
+
+
+#  ObjectFeature
+class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": ObjectFeatureDataTableSerializer,
+        "destroy": ObjectFeatureSerializer,
+        "create": ObjectFeatureValidateSerializer,
+        "update": ObjectFeatureValidateSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_objectfeatures"],
+        "create": ["laboratory.add_objectfeatures"],
+        "update": ["laboratory.change_objectfeatures"],
+        "destroy": ["laboratory.delete_objectfeatures"],
+    }
+
+    queryset = ObjectFeatures.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name", "description"]
+    filterset_class = ObjectFeatureFilter
+    ordering_fields = ["name"]
+    ordering = ("id",)
+
+    def get_lab_pk_or_error(self):
+        lab_pk = self.kwargs.get("lab_pk")
+        if not lab_pk:
+            raise ValidationError(
+                {"lab_pk": _("This endpoint requires lab_pk in the URL.")}
+            )
+        return lab_pk
+
+    def perform_create(self, serializer):
+        lab_pk = self.get_lab_pk_or_error()
+
+        objectfeatures = serializer.save()
+
+        organilab_logentry(
+            self.request.user,
+            objectfeatures,
+            ADDITION,
+            "objectfeatures",
+            changed_data=[],  # no necesaria en create
+            relobj=lab_pk,  # para LabOrgLogEntry
+        )
+
+    def perform_update(self, serializer):
+        lab_pk = self.get_lab_pk_or_error()
+
+        objectfeatures_before = self.get_object()
+
+        before = {
+            "name": objectfeatures_before.name,
+            "description": objectfeatures_before.description,
+        }
+
+        objectfeatures = serializer.save()
+
+        after = {
+            "name": objectfeatures.name,
+            "description": objectfeatures.description,
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            objectfeatures,
+            CHANGE,
+            "objectfeatures",
+            changed_data=changed_fields,
+            relobj=lab_pk,
+        )
+
+    def perform_destroy(self, instance):
+        lab_pk = self.get_lab_pk_or_error()
+
+        objectfeatures_id = instance.pk
+        objectfeatures_repr = str(instance)
+
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "objectfeatures",
+            changed_data=[],  # no aplica en delete
+            object_repr=objectfeatures_repr,
+            relobj=lab_pk,
+        )
+
+        instance.delete()
+
+
+#  Object
+class ObjectViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": ObjectDataTableSerializer,
+        "destroy": ObjectSerializer,
+        "create": ObjectValidateSerializer,
+        "update": ObjectValidateSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_object"],
+        "create": ["laboratory.add_object"],
+        "update": ["laboratory.change_object"],
+        "destroy": ["laboratory.delete_object"],
+    }
+
+    queryset = Object.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name", "code", "model", "serie", "plaque"]
+    filterset_class = ObjectFilter
+    ordering_fields = ["name"]
+    ordering = ("-creation_date",)
+
+    def get_queryset(self):
+        org_pk = self.kwargs.get("org_pk")
+        qs = Object.objects.all()
+
+        if org_pk:
+            qs = qs.filter(organization_id=org_pk, type=Object.MATERIAL)
+
+        return qs
+
+    def get_org_pk_or_error(self):
+        org_pk = self.kwargs.get("org_pk")
+        if not org_pk:
+            raise ValidationError(
+                {"org_pk": _("This endpoint requires org_pk in the URL.")}
+            )
+        return org_pk
+
+    def perform_create(self, serializer):
+        org_pk = self.get_org_pk_or_error()
+
+        object = serializer.save(
+            organization_id=org_pk,
+            created_by=self.request.user,
+        )
+
+        organilab_logentry(
+            self.request.user,
+            object,
+            ADDITION,
+            "object",
+            changed_data=[],  # no necesaria en create
+            relobj=org_pk,  # para LabOrgLogEntry
+        )
+
+    def perform_update(self, serializer):
+        org_pk = self.get_org_pk_or_error()
+
+        object_before = self.get_object()
+        before = {
+            "code": object_before.code,
+            "name": object_before.name,
+            "synonym": object_before.synonym,
+            "description": object_before.description,
+            "is_public": object_before.is_public,
+            "is_container": object_before.is_container,
+            "type": object_before.type,
+            "features": list(object_before.features.values_list("pk", flat=True)),
+        }
+
+        object = serializer.save()
+
+        after = {
+            "code": object.code,
+            "name": object.name,
+            "synonym": object.synonym,
+            "description": object.description,
+            "is_public": object.is_public,
+            "is_container": object.is_container,
+            "type": object.type,
+            "features": list(object.features.values_list("pk", flat=True)),
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            object,
+            CHANGE,
+            "object",
+            changed_data=changed_fields,
+            relobj=org_pk,
+        )
+
+    def perform_destroy(self, instance):
+        org_pk = self.get_org_pk_or_error()
+
+        object_id = instance.pk
+        object_repr = str(instance)
+
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "object",
+            changed_data=[],  # no aplica en delete
+            object_repr=object_repr,
+            relobj=org_pk,
+        )
+
+        instance.delete()
+
+
 class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": ShelObjectReactiveDataTableSerializer,
@@ -1216,7 +1557,7 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         "container__object__name",
         "quantity",
         "measurement_unit__description",
-        "measurement_unit__key"
+        "measurement_unit__key",
     ]
     filterset_class = filterset.ShelObjectReactiveFilter
     ordering_fields = ["id"]

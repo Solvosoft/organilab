@@ -7,9 +7,11 @@ from djgentelella.fields.drfdatetime import DateRangeTextWidget
 from laboratory.models import (
     EquipmentType,
     Catalog,
-    Object,
     Protocol,
     Inform,
+    Provider,
+    ObjectFeatures,
+    Object,
     ShelfObject,
 )
 from sga.models import Substance
@@ -42,6 +44,43 @@ class InstrumentalFamilyFilter(FilterSet):
     class Meta:
         model = Catalog
         fields = {"id": ["exact"], "description": ["icontains"]}
+
+
+class ProviderFilter(FilterSet):
+    class Meta:
+        model = Provider
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "phone_number": ["icontains"],
+            "email": ["icontains"],
+            "legal_identity": ["icontains"],
+            "laboratory__name": ["icontains"],
+        }
+
+
+class ObjectFeatureFilter(FilterSet):
+    class Meta:
+        model = ObjectFeatures
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "description": ["icontains"],
+        }
+
+
+class ObjectFilter(FilterSet):
+    class Meta:
+        model = Object
+        fields = {
+            "id": ["exact"],
+            "name": ["icontains"],
+            "code": ["icontains"],
+            "model": ["icontains"],
+            "serie": ["icontains"],
+            "plaque": ["icontains"],
+            "is_container": ["exact"],
+        }
 
 
 class EquipmentTypeFilter(FilterSet):
@@ -126,6 +165,7 @@ class ShelObjectReactiveFilter(FilterSet):
     measurement_key = CharFilter(
         field_name="measurement_unit__key", lookup_expr="exact", distinct=True
     )
+
     class Meta:
         model = ShelfObject
         fields = {

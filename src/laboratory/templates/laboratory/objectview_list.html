@@ -2,87 +2,109 @@
 {% load i18n laboratory %}
 {% load urlname_tags %}
 {% block pre_head %}
-{% define_urlname_action 'objectview_list' %}
+	{% define_urlname_action 'objectview_list' %}
 {% endblock %}
 {% block title %}
-{% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
+	{% if type_id == "0" %}
+		{% trans 'Reactive management' %}
+		{% elif type_id == "1" %}
+		{% trans 'Material management' %}
+		{% elif type_id == "2" %}
+		{% trans 'Equipment management' %}
+	{% else %}
+		{% trans 'Object management' %}
+	{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="col-md-offset-1 col-md-10">
-  <div class="page-header col-xs-12" align="center">
-    <h3 class="heading-1" >
+	<div class="col-md-offset-1 col-md-10">
+		<div class="page-header col-xs-12" align="center">
+			<h3 class="heading-1">
         <span>
-          {% if type_id == "0" %} {% trans 'Reactive management' %}{% elif type_id == "1" %}{% trans 'Material management' %}{% elif type_id == "2" %}{% trans 'Equipment management' %}{% else %} {% trans 'Object management' %} {% endif %}
+          {% if type_id == "0" %}
+											{% trans 'Reactive management' %}
+											{% elif type_id == "1" %}
+											{% trans 'Material management' %}
+											{% elif type_id == "2" %}
+											{% trans 'Equipment management' %}
+										{% else %}
+											{% trans 'Object management' %}
+										{% endif %}
         </span>
+			</h3>
+		</div>
+	</div>
 
-    </h3>
-  </div>
-</div>
+	{% if perms.laboratory.view_object or perms.laboratory.add_object or perms.laboratory.change_object  or perms.laboratory.delete_object %}
+{#		<div class="">#}
+{#			<form class="form-inline" method="GET" action="">#}
+{#				<div class="form-group">#}
+{#					<input type="text" name="q" value="{{ q }}" class="form-control">#}
+{#					<input type="hidden" name="type_id" value="{{ type_id }}" class="form-control">#}
+{#				</div>#}
+{#				<button type="submit" class="btn btn-info" style="margin-top:5px; color: white;"> {% trans 'Search' %} </button>#}
+{#			</form>#}
+{#		</div>#}
 
-{% if perms.laboratory.view_object or perms.laboratory.add_object or perms.laboratory.change_object  or perms.laboratory.delete_object  %}
-<div class="" >
-  <form class="form-inline" method="GET" action="">
-    <div class="form-group">
-      <input type="text" name="q" value="{{ q }}" class="form-control">
-      <input type="hidden" name="type_id" value="{{ type_id }}" class="form-control">
-    </div>
-    <button  type="submit" class="btn btn-info" style="margin-top:5px; color: white;"> {% trans 'Search' %} </button>
-  </form>
-</div>
-   {% if perms.laboratory.add_object %}
-<a class="btn btn-success float-end "
-   href="{% url 'laboratory:objectview_create' org_pk laboratory %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-  <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Add' %}
-</a>
-{% endif %}
-<br><br>
-<br><br>
-<div class="container-fluid" >
-  <ul class="list-group " >
-    {% for object in object_list %}
-    <li class="row list-group-item"  >
-      <div class="col-md-9"> {{ object }}</div>
-      <div class="col-md-3">
-        {% if perms.laboratory.change_object %}
-        <a class="btn btn-warning"
-           href="{% url 'laboratory:objectview_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-          <span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}
-        </a>
-        {% endif %}
-        {% if perms.laboratory.delete_object %}
-        <a class="btn btn-danger"
-           href="{% url 'laboratory:objectview_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% if type_id %}?type_id={{type_id}}{% endif %}">
-          <span class="fa fa-remove" aria-hidden="true"></span>{% trans 'Delete' %}
-        </a>
-        {% endif %}
-      </div>
-    </li>
-    {% endfor %}
-  </ul>
-  {% if is_paginated %}
-  <nav aria-label="...">
-    <ul class="pager">
-      {% if page_obj.has_previous %}
-      <li>
-        <a href="?page={{ page_obj.previous_page_number }}&type_id={{ type_id }}&q={{ q }}">{% trans 'Previous' %}</a>
-      </li>
-      {% endif %}
+{#		{% if perms.laboratory.add_object %}#}
+{#			<a class="btn btn-success float-end "#}
+{#						href="#}
+{#							{% url 'laboratory:objectview_create' org_pk laboratory %}{% if type_id %}?type_id={{ type_id }}{% endif %}">#}
+{#				<span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Add' %}#}
+{#			</a>#}
+{#		{% endif %}#}
+{#		<div class="container-fluid ">#}
+{#			<ul class="list-group ">#}
+{#				{% for object in object_list %}#}
+{#					<li class="row list-group-item">#}
+{#						<div class="col-md-9"> {{ object }}</div>#}
+{#						<div class="col-md-3">#}
+{#							{% if perms.laboratory.change_object %}#}
+{#								<a class="btn btn-warning"#}
+{#											href="#}
+{##}
+{#												{% url 'laboratory:objectview_update' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% if type_id %}?type_id={{ type_id }}{% endif %}">#}
+{#									<span class="fa fa-edit" aria-hidden="true"></span> {% trans 'Edit' %}#}
+{#								</a>#}
+{#							{% endif %}#}
+{#							{% if perms.laboratory.delete_object %}#}
+{#								<a class="btn btn-danger"#}
+{#											href="#}
+{##}
+{#												{% url 'laboratory:objectview_delete' lab_pk=laboratory pk=object.pk org_pk=org_pk %}{% if type_id %}?type_id={{ type_id }}{% endif %}">#}
+{#									<span class="fa fa-remove" aria-hidden="true"></span>{% trans 'Delete' %}#}
+{#								</a>#}
+{#							{% endif %}#}
+{#						</div>#}
+{#					</li>#}
+{#				{% endfor %}#}
+{#			</ul>#}
 
-      <li>
-        {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
-      </li>
+{#			{% if is_paginated %}#}
+{#				<nav aria-label="...">#}
+{#					<ul class="pager">#}
+{#						{% if page_obj.has_previous %}#}
+{#							<li>#}
+{#								<a href="?page={{ page_obj.previous_page_number }}&type_id={{ type_id }}&q={{ q }}">{% trans 'Previous' %}</a>#}
+{#							</li>#}
+{#						{% endif %}#}
+{##}
+{#						<li>#}
+{#							{% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.#}
+{#						</li>#}
+{##}
+{#						{% if page_obj.has_next %}#}
+{#							<li>#}
+{#								<a href="?page={{ page_obj.next_page_number }}&type_id={{ type_id }}&q={{ q }}">{% trans 'Next' %}</a>#}
+{#							</li>#}
+{#						{% endif %}#}
+{#					</ul>#}
+{#				</nav>#}
+{#			{% endif %}#}
 
-      {% if page_obj.has_next %}
-      <li>
-        <a href="?page={{ page_obj.next_page_number }}&type_id={{ type_id }}&q={{ q }}">{% trans 'Next' %}</a>
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
+
+{#		</div>#}
+	{% else %}
+		{% include 'laboratory/action_denied.html' %}
 	{% endif %}
-</div>
-{% else %}
-{% include 'laboratory/action_denied.html' %}
-{% endif %}
 {% endblock %}

@@ -5160,6 +5160,33 @@ msgstr "Informe de inventario de sustancias químicas"
 msgid "UNA can access"
 msgstr "UNA puede acceder"
 
+msgid "This endpoint requires lab_pk in the URL."
+msgstr "Este endpoint requiere lab_pk en la URL."
+
+msgid "Legal Identity"
+msgstr "Identidad Jurídica"
+
+msgid "Register Object Feature"
+msgstr "Registrar características de objetos"
+
+msgid "Update Object Feature"
+msgstr "Actualizar características de objetos"
+
+msgid "Delete Object Feature"
+msgstr "Eliminar características de objetos"
+
+msgid "Register Object"
+msgstr "Registrar Material"
+
+msgid "Delete Object"
+msgstr "Eliminar Material"
+
+msgid "Cannot change measurement unit because this material is referenced by shelf objects."
+msgstr "No se puede cambiar la unidad de medida porque este material está referenciado por objetos del estante."
+
+msgid "Cannot change is container because this material is referenced by shelf objects."
+msgstr "No se puede cambiar el contenedor porque este material está referenciado por objetos del estante."
+
 msgid "High-risk establishment"
 msgstr "Establecimiento de alto riesgo"
 
