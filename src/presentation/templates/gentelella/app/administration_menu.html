@@ -1,67 +1,69 @@
 {% load i18n shelf_position laboratory %}
 {% load urlname_tags %}
 {% if org_pk %}
-<li class="dropdown ">
-    <a id='management_id' href="#" role="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-        {% trans 'Administration' %}<span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu">
-        {% if perms.laboratory.delete_laboratory %}
-        <li><a href="{% url 'laboratory:mylabs' org_pk %}">
-            {% trans 'My laboratories' %} </a>
-        </li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        <li>
-            <a href="{% url 'laboratory:labindex' org_pk laboratory  %}">{% trans 'View laboratory' %} </a>
-        </li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        {% endif %}
-        {% if perms.laboratory.add_laboratory %}
-        <li><a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
-            {% trans 'Laboratory Management' %} </a></li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        {% endif %}
+	<li class="dropdown ">
+		<a id='management_id' href="#" role="button" class="dropdown-toggle" data-bs-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false">
+			{% trans 'Administration' %}<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			{% if perms.laboratory.delete_laboratory %}
+				<li><a href="{% url 'laboratory:mylabs' org_pk %}">
+					{% trans 'My laboratories' %} </a>
+				</li>
+				<li>
+					<hr class="dropdown-divider">
+				</li>
+				<li>
+					<a href="{% url 'laboratory:labindex' org_pk laboratory %}">{% trans 'View laboratory' %} </a>
+				</li>
+				<li>
+					<hr class="dropdown-divider">
+				</li>
+			{% endif %}
+			{% if perms.laboratory.add_laboratory %}
+				<li><a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
+					{% trans 'Laboratory Management' %} </a></li>
+				<li>
+					<hr class="dropdown-divider">
+				</li>
+			{% endif %}
 
-        {% if perms.laboratory.view_object %}
-        <li class="dropdown-submenu pull-left ">
-            <a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-                <li><a tabindex="-1" href="{% url 'laboratory:sustance_list' org_pk laboratory %}">{% trans 'Reactive' %}</a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:objectview_list' org_pk laboratory %}?type_id=1">
-                    {% trans 'Material' %}</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a tabindex="-1" href="{% url 'laboratory:equipment_list' org_pk laboratory %}">
-                    {% trans 'Equipment' %}</a></li>
-            </ul>
-        </li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        {% endif %}
-        {% if perms.laboratory.add_objectfeatures %}
-        <li><a href="{% url 'laboratory:object_feature_create' org_pk laboratory %}">
-            {% trans 'Object features management' %}</a></li>
-        <li>
-            <hr class="dropdown-divider">
-        </li>
-        {% endif %}
+			{% if perms.laboratory.view_object %}
+				<li class="dropdown-submenu pull-left ">
+					<a class="sub-menu" tabindex="-1" href="#">{% trans 'Object management' %}<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a tabindex="-1" href="{% url 'laboratory:sustance_list' org_pk laboratory %}">{% trans 'Reactive' %}</a>
+						</li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><a tabindex="-1" href="{% url 'laboratory:objectview_list' org_pk laboratory %}?type_id=1">
+							{% trans 'Material' %}</a></li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><a tabindex="-1" href="{% url 'laboratory:equipment_list' org_pk laboratory %}">
+							{% trans 'Equipment' %}</a></li>
+					</ul>
+				</li>
+				<li>
+					<hr class="dropdown-divider">
+				</li>
+			{% endif %}
+			{% if perms.laboratory.add_objectfeatures %}
+				<li>
+					<a href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Object features management' %}</strong></a>
+				</li>
 
-    </ul>
-</li>
-<li>
-    <hr class="dropdown-divider">
-</li>
+				<li>
+					<hr class="dropdown-divider">
+				</li>
+			{% endif %}
+
+		</ul>
+	</li>
+	<li>
+		<hr class="dropdown-divider">
+	</li>
 {% endif %}
