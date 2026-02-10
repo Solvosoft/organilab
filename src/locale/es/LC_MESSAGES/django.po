@@ -5157,6 +5157,54 @@ msgstr "Editar Rol"
 msgid "Chemical inventory report"
 msgstr "Informe de inventario de sustancias químicas"
 
+msgid "UNA can access"
+msgstr "UNA puede acceder"
+
+msgid "High-risk establishment"
+msgstr "Establecimiento de alto riesgo"
+
+msgid "Health totals:"
+msgstr "Totales de salud:"
+
+msgid "Physical totals:"
+msgstr "Totales físicos:"
+
+msgid "Environmental totals:"
+msgstr "Totales ambientales:"
+
+msgid "Calculator"
+msgstr "Calculadora"
+
+msgid "Danger Categories of the list 4"
+msgstr "Categorías de peligro de la lista 4"
+
+msgid "Danger Substance of the list 3"
+msgstr "Sustancia de peligro de la lista 3"
+
+msgid "Sum of dangers categories"
+msgstr "Suma de categorías de peligro"
+
+msgid "Danger substance"
+msgstr "Sustancia de peligro"
+
+msgid "Break threshold"
+msgstr "Umbral superado"
+
+msgid "Regency Report"
+msgstr "Informe Regencial"
+
+msgid "Dangerous substance of the list 3"
+msgstr "Sustancia peligrosa de la lista 3"
+
+msgid "Dangerous categoies of the list 4"
+msgstr "Categorías peligrosas de la lista 4"
+
+msgid "Dangerous substance of the list 4"
+msgstr "Sustancia peligrosa de la lista 4"
+
+msgid "Danger category"
+msgstr "Categoría de peligro"
+
 msgid "Intitution can access"
 msgstr "Institución puede acceder"
 
@@ -5192,36 +5240,6 @@ msgstr "Explicación de los perfiles de usuario"
 
 msgid "Was donated?"
 msgstr "Fue donado?"
-
-msgid "Consumption record"
-msgstr "Registro de consumo"
-
-msgid "List Reagents"
-msgstr "Listar Reactivos"
-
-msgid "Reorder Reactives"
-msgstr "Reordenar Reactivos"
-
-msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
-msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
-
-msgid "Quantity cannot be greater than the container object maximum limit: %(limit)s."
-msgstr "La cantidad no puede ser mayor que el límite máximo del contenedor: %(limit)s."
-
-msgid "Decrease"
-msgstr "Disminuir"
-
-msgid "Administrator: Manages organizations, users, permissions, laboratories, risk zones, and reports at the system level."
-msgstr "Administrador: Gestiona organizaciones, usuarios, permisos, laboratorios, zonas de riesgo y reportes a nivel sistema."
-
-msgid "Laboratory Administrator: Manages substance inventory and the physical structure of the laboratory (shelves, zones)."
-msgstr "Administrador de Laboratorio: Administra el inventario de sustancias y la estructura física del laboratorio (estantes, zonas)."
-
-msgid "Laboratory User: Executes procedures and adds or removes substances between shelves."
-msgstr "Usuario de Laboratorio: Ejecuta procedimientos y agregar o quitar sustancias entre estantes."
-
-msgid "User Profile Explanations"
-msgstr "Explicación de los perfiles de usuario"
 
 msgid "You have received this email because you have expiring reactives in the Organilab system."
 msgstr "Usted ha recibido este correo porque tiene reactivos próximos a vencer en el sistema Organilab."
