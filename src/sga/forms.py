@@ -7,6 +7,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 from djgentelella.widgets.tagging import TaggingInput
 
+from laboratory.models import Catalog
 from sga.models import (
     Substance,
     RecipientSize,
@@ -416,12 +417,21 @@ class ValidateReviewSubstanceForm(forms.Form):
 
 
 class HCategoryForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        self.fields["measurement_unit"].queryset = (Catalog.objects.
+                                                    filter(key="units",
+                                                           description__in=["Litros",
+                                                                            "Kilogramos",
+                                                                            "Libra"]))
     class Meta:
         model = HCodeCategory
-        fields = ["name", "threshold", "danger_category", "h_code"]
+        fields = ["name", "threshold","measurement_unit", "danger_category", "h_code"]
         widgets = {
             "name": genwidgets.TextInput,
             "threshold": genwidgets.TextInput,
             "danger_category": genwidgets.Select,
             "h_code": AutocompleteSelectMultiple("dangersearch", attrs={}),
+            "measurement_unit": genwidgets.Select,
         }

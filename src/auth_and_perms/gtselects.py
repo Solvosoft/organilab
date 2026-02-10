@@ -450,6 +450,7 @@ class RolUserOrgS2(generics.RetrieveAPIView, BaseSelect2View):
                     org.pk, org=org, rolfilters={"rol__isnull": False}
                 )
             )
+
         return self.model.objects.filter(pk__in=set(rols))
 
 

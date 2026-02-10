@@ -8,7 +8,7 @@ from djgentelella.widgets import core as djgenwidgets
 from django.core.exceptions import ValidationError
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, UserOrganization
+from laboratory.models import Laboratory, UserOrganization, OrganizationStructure
 
 
 class CreateUserForm(forms.ModelForm, GTForm):
@@ -54,7 +54,18 @@ class EditUserForm(forms.ModelForm, GTForm):
         max_length=25, label=_("Phone"), widget=djgenwidgets.TextInput
     )
     language = forms.ChoiceField(choices=settings.LANGUAGES, widget=djgenwidgets.Select)
+    identification = forms.CharField(label=_("Identification"), max_length=100, widget=djgenwidgets.TextInput, required=False)
     address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"))
+    workplace = forms.ModelMultipleChoiceField(
+        widget=djgenwidgets.SelectMultiple,
+        queryset=OrganizationStructure.objects.all(),
+        label=_("Workplace"),
+    )
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user", None)
+        super().__init__(*args, **kwargs)
+
+        self.fields["workplace"].queryset = OrganizationStructure.os_manager.filter_user(self.user)
 
     class Meta:
         model = User
@@ -64,6 +75,7 @@ class EditUserForm(forms.ModelForm, GTForm):
             "first_name": djgenwidgets.TextInput,
             "last_name": djgenwidgets.TextInput,
             "email": djgenwidgets.EmailMaskInput,
+
         }
 
 

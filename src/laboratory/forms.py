@@ -15,6 +15,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
+from djgentelella.widgets.tinymce import EditorTinymce
 
 from auth_and_perms.models import Profile, Rol
 from authentication.forms import PasswordChangeForm
@@ -31,6 +32,7 @@ from laboratory.models import (
     EquipmentType,
     ReactiveLimit,
     ObjectMaximumLimit,
+    LaboratoryProcess,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -63,6 +65,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
                 "name",
                 "coordinator",
                 "unit",
+                "faculty_dispatch",
                 "location",
                 "nearby_sites",
                 "description",
@@ -70,6 +73,7 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             [
                 "responsible",
                 "email",
+                "workplace",
                 "phone_number",
                 "area",
                 "water_resources_affected",
@@ -103,6 +107,8 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "responsible",
             "nearby_sites",
             "water_resources_affected",
+            "faculty_dispatch",
+            "workplace",
         ]
         widgets = {
             "name": genwidgets.TextInput,
@@ -118,6 +124,8 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
             "responsible": genwidgets.Select,
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
+            "faculty_dispatch": genwidgets.TextInput,
+            "workplace": genwidgets.SelectMultiple,
         }
 
 
@@ -135,6 +143,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
                 "name",
                 "coordinator",
                 "unit",
+                "faculty_dispatch",
                 "location",
                 "regent",
                 "nearby_sites",
@@ -142,6 +151,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             ],
             [
                 "responsible",
+                "workplace",
                 "email",
                 "phone_number",
                 "area",
@@ -171,6 +181,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "email",
             "location",
             "geolocation",
+            "workplace",
             "organization",
             "area",
             "description",
@@ -178,6 +189,8 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "responsible",
             "nearby_sites",
             "water_resources_affected",
+            "faculty_dispatch",
+            "workplace",
         ]
         widgets = {
             "name": genwidgets.TextInput,
@@ -193,6 +206,8 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             "responsible": genwidgets.Select,
             "nearby_sites": FileChunkedUpload,
             "water_resources_affected": FileChunkedUpload,
+            "faculty_dispatch": genwidgets.TextInput,
+            "workplace": genwidgets.SelectMultiple,
         }
 
 
@@ -984,7 +999,13 @@ class EquipmentForm(GTForm, forms.ModelForm):
 
     class Meta:
         model = Object
-        exclude = ["is_container", "is_dangerous", "has_threshold", "threshold"]
+        exclude = [
+            "is_container",
+            "is_dangerous",
+            "has_threshold",
+            "threshold",
+            "is_pure",
+        ]
         widgets = {
             "features": genwidgets.SelectMultiple(),
             "code": genwidgets.TextInput,
@@ -1152,7 +1173,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["type"], ["organization"], ["created_by"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
         [["description"]],
-        [["laboratory"]],
+        [["density"],["laboratory"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1253,7 +1274,10 @@ class ReactiveForm(GTForm, forms.ModelForm):
         widget=FileChunkedUpload, required=False, label=_("Sustance representation")
     )
     is_dangerous = forms.BooleanField(
-        widget=genwidgets.YesNoInput, required=False, label=_("Is dangerous?")
+        widget=genwidgets.YesNoInput,
+        required=False,
+        label=_("Is dangerous?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
     has_threshold = forms.BooleanField(
         widget=genwidgets.YesNoInput(
@@ -1262,24 +1286,25 @@ class ReactiveForm(GTForm, forms.ModelForm):
         ),
         required=False,
         label=_("Has threshold?"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
     threshold = forms.FloatField(
-        widget=genwidgets.TextInput, required=False, label=_("Threshold")
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Threshold"),
+        help_text=_("It belongs to the regulations of decree 44741"),
     )
-
+    density = forms.FloatField(
+        widget=genwidgets.TextInput, required=False, label=_("Density"),
+        help_text=_("It belongs to the regulations of decree 44741, "
+                    "only use dot like 0.344 on decimal"),
+    )
     def __init__(self, *args, **kwargs):
         kwargs.pop("modal_id")
         kwargs.pop("laboratory_pk")
         prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
-        self.fields["is_threshold"] = forms.BooleanField(
-            widget=genwidgets.YesNoInput(
-                shparent=".mb-3", attrs={"rel": [f"#id_{prefix}-threshold"]}
-            ),
-            required=False,
-            label=_("Has threshold?"),
-        )
 
     class Meta:
         model = Object
@@ -1372,3 +1397,13 @@ class ReactiveStockForm(GTForm, forms.Form):
             )
 
         self.fields["years"].choices = years_choices
+
+
+class LaboratoryProcessForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = LaboratoryProcess
+        fields = ["description", "laboratory"]
+        widgets = {
+            "laboratory": genwidgets.HiddenInput,
+            "description": EditorTinymce,
+        }

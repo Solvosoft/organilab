@@ -851,6 +851,15 @@ class HCodeCategory(models.Model):
     threshold = models.FloatField(
         null=True, blank=True, default=0.0, verbose_name=_("Threshold")
     )
+    measurement_unit = catalog.GTForeignKey(
+        "laboratory.Catalog",
+        related_name="measurementunit_hcode_category",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Measurement unit"),
+        key_name="key",
+        key_value="units",
+        null=True,
+    )
 
     def __str__(self):
         return self.danger_category
