@@ -15,7 +15,7 @@ class MsdsTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        permission = Permission.objects.get(codename="una_can_access")
+        permission = Permission.objects.get(codename="institution_can_access")
         self.user.user_permissions.add(permission)
         self.url_attr = {"org_pk": 1}
         self.client.force_login(self.user)

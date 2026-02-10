@@ -260,6 +260,12 @@ class SustanceCharacteristics(models.Model):
         null=True,
         blank=True,
     )
+    density = models.FloatField(
+        verbose_name=_("Density"),
+        help_text=_("t belongs to the regulations of decree 44741, "
+                    "only use dot like 0.344 on decimal"),
+        default=0,
+    )
 
     class Meta:
         verbose_name = _("Sustance characteristic")
@@ -333,12 +339,12 @@ class ShelfObject(models.Model):
         ("solid powder", _("Solid powder")),
         ("solid granular or crystalline", _("Solid granular or crystalline")),
         ("Gaseous", _("Gaseous")),
-        ("Tablets", _("Tablets")),
-        ("Lentils", _("Lentils")),
-        ("Granza", _("Granza")),
+        ("Tablets",_("Tablets")),
+        ("Lentils",_("Lentils")),
+        ("Granza",_("Granza")),
         ("card", _("Card")),
-        ("solid", _("Solid")),
-        ("colloidal", _("Colloidal")),
+        ("solid",_("Solid")),
+        ("colloidal",_("Colloidal")),
         ("viscuos liquid", _("Viscuos Liquid")),
         ("kit", _("Kit")),
     )
@@ -449,6 +455,7 @@ class ShelfObject(models.Model):
     container_open_date = models.DateField(
         blank=True, null=True, verbose_name=_("Container Open Date")
     )
+    was_donated = models.BooleanField(default=False, verbose_name=_("Was donated?"))
 
     @staticmethod
     def get_units(unit):
@@ -1626,6 +1633,7 @@ class MaterialCapacity(models.Model):
         key_value="units",
     )
     object = models.OneToOneField(Object, on_delete=models.CASCADE, null=True)
+
 
 
 class ObjectMaximumLimit(models.Model):

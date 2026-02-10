@@ -57,3 +57,26 @@ class ObjectChangeLogReportBuilder(models.Model):
     new_value = models.FloatField(default=0.0)
     old_value = models.FloatField(default=0.0)
     diff_value = models.FloatField(default=0.0)
+
+
+class RegencyReport(models.Model):
+    task_report = models.ForeignKey(TaskReport, on_delete=models.CASCADE)
+    organization = models.ForeignKey(
+        "laboratory.OrganizationStructure", on_delete=models.CASCADE
+    )
+    year = models.IntegerField()
+    physical_total = models.FloatField(null=True, blank=True, default=0.0)
+    break_physical_total = models.BooleanField(default=False)
+    enviroment_total = models.FloatField(null=True, blank=True, default=0.0)
+    break_enviroment_total = models.BooleanField(default=False)
+    health_total = models.FloatField(null=True, blank=True, default=0.0)
+    break_health_total = models.BooleanField(default=False)
+
+
+class RegencyReportBuilder(models.Model):
+    report = models.ForeignKey(RegencyReport, on_delete=models.CASCADE)
+    substance = models.ForeignKey("laboratory.Object", on_delete=models.DO_NOTHING)
+    danger_category = models.CharField(max_length=50)
+    danger_list = models.PositiveIntegerField(default=3)
+    total = models.FloatField(default=0.0)
+    break_threshold = models.BooleanField(default=False)

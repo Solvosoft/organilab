@@ -52,6 +52,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "storage_class": [135],
             "organization": self.org.pk,
             "laboratory": self.lab.pk,
+            "density": 1.0,
         }
 
         response = self.client.post(url, data=data, content_type="application/json")
@@ -83,6 +84,7 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
             "storage_class": [135],
             "organization": self.org.pk,
             "laboratory": self.lab.pk,
+            "density": 1.0,
         }
 
         response = self.client.put(url, data=data, content_type="application/json")

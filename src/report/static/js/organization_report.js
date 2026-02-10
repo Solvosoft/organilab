@@ -263,3 +263,51 @@ $('#id_lab_room').on('change', function(){
 $("#download-report").on("click", function(){
     $("#reportModal").modal('hide');
 });
+
+
+
+datatable_inits = {
+				columns: [
+						{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+						{data: "substance", name: "substance", title: gettext("Substance"), type: "string", visible: true,
+						render: selectobjprint({display_name: "text"})},
+						{data: "total", name: "total", title: gettext("Total"), type: "string", visible: true},
+						{data: "break_threshold", name: "break_threshold", title: gettext("Break threshold"), type: "string",
+						visible: true},
+						{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: false}
+			],
+
+
+			addfilter: false
+	}
+
+	var process_modalids = {}
+
+	var process_actions = {
+			table_actions: [],  //table_actions
+			object_actions: [],
+			title: gettext('Actions'),
+			className:  "no-export-col"
+	}
+
+	icons= {
+					clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+	}
+
+	let objconfig={
+		urls: object_urls,
+		datatable_element: "#table_3",
+		modal_ids: process_modalids,
+		actions: process_actions,
+		datatable_inits: datatable_inits,
+		add_filter: true,
+		relation_render: {'field_autocomplete': 'text' },
+		delete_display: data => data['pk'],
+		create: "btn-success",
+		icons: icons
+	}
+
+
+	let ocrud=ObjectCRUD("table_4", objconfig)
+	ocrud.init();
+

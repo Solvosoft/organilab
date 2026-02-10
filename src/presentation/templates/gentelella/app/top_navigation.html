@@ -18,7 +18,7 @@
 			{% endif %}
 
 			{% if org_pk %}
-				{% if perms.auth_and_perms.una_can_access %}
+				{% if perms.auth_and_perms.institution_can_access %}
 					<li id="tutorials">
 						<a href="{% url 'tutorials' org_pk %}"><strong>{% trans 'Tutorials' %}</strong></a>
 					</li>

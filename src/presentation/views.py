@@ -16,7 +16,7 @@ import logging
 logger = logging.getLogger("organilab")
 
 
-@permission_required("auth_and_perms.una_can_access")
+@permission_required("auth_and_perms.institution_can_access")
 def index_tutorial(request, org_pk):
     return render(request, "tutorial.html", context={"org_pk": org_pk})
 
@@ -25,7 +25,7 @@ def index_tutorial(request, org_pk):
 class FeedbackView(PermissionRequiredMixin, CreateView):
     template_name = "feedback/feedbackentry_form.html"
     model = FeedbackEntry
-    permission_required = "auth_and_perms.una_can_access"
+    permission_required = "auth_and_perms.institution_can_access"
     form_class = FeedbackEntryForm
 
     def get(self, request, *args, **kwargs):

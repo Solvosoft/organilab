@@ -1107,3 +1107,12 @@ msgstr "Características del objeto"
 
 msgid "Is Container?"
 msgstr "Es contenedor?"
+
+msgid "Labroom"
+msgstr "Sala de laboratorio"
+
+msgid "Furniture"
+msgstr "Mueble"
+
+msgid "Donated income"
+msgstr "Ingreso por donacion"

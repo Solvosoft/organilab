@@ -37,10 +37,12 @@ from laboratory.models import (
     LaboratoryProcess,
     MaterialCapacity,
 )
+
 from laboratory.models import Protocol
 from laboratory.utils import get_actions_by_perms, get_users_from_organization
 from organilab.settings import DATETIME_INPUT_FORMATS
 from reservations_management.models import ReservedProducts, Reservations
+from sga.api.serializers import ChoicesGTS2Serializer
 from sga.models import DangerIndication
 
 logger = logging.getLogger("organilab")
@@ -337,6 +339,7 @@ class ShelfObjectLaboratoryViewSerializer(
             "last_update",
             "created_by",
             "container",
+            "was_donated",
             "actions",
         ]
 
@@ -877,6 +880,7 @@ class ValidateReactiveCharacteristicsSerializer(serializers.ModelSerializer):
     img_representation = ChunkedFileField(
         allow_null=True, required=False, allow_empty_file=True
     )
+    density = serializers.FloatField(default=0.0, required=False)
 
     class Meta:
         model = SustanceCharacteristics
@@ -908,6 +912,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
     maximum_limit_table = serializers.SerializerMethodField()
     minimum_limit_table = serializers.SerializerMethodField()
     measurement_unit_table = serializers.SerializerMethodField()
+    density = serializers.SerializerMethodField()
 
     def get_reactive_limits(self, obj):
         lab = self.context["kwargs"].get("lab_pk", None)
@@ -1100,6 +1105,11 @@ class ReactiveSerializer(serializers.ModelSerializer):
                 return ChunkedFileField().to_representation(file_value)
             return None
 
+    def get_density(self, obj):
+        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
+            return obj.sustancecharacteristics.density
+        return None
+
     def get_combined_booleans(self, obj):
         is_public = (
             '<i class="fa fa-users fa-fw text-success"></i>'
@@ -1172,6 +1182,7 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "maximum_limit_table",
             "minimum_limit_table",
             "measurement_unit_table",
+            "density",
         ]
 
 

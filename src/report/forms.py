@@ -7,7 +7,13 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelectMultiple
 
 from auth_and_perms.models import Profile
-from laboratory.models import Laboratory, Furniture, LaboratoryRoom, Object
+from laboratory.models import (
+    Laboratory,
+    Furniture,
+    LaboratoryRoom,
+    Object,
+    ObjectLogChange,
+)
 from laboratory.utils import (
     get_laboratories_from_organization,
     get_users_from_organization,
@@ -85,6 +91,7 @@ class ValidateReportForm(ReportBase):
         org_pk = kwargs.pop("org_pk", None)
         super(ValidateReportForm, self).__init__(*args, **kwargs)
 
+
 class ReportObjectsBaseForm(ReportBase):
     all_labs_org = forms.BooleanField(
         help_text=_(
@@ -123,6 +130,7 @@ class ReportObjectForm(ReportObjectsBaseForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super(ReportObjectForm, self).__init__(*args, **kwargs)
+
 
 class LaboratoryRoomReportForm(ReportBase):
     objects_type = list(Object.TYPE_CHOICES)
@@ -262,6 +270,7 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
         org_pk = kwargs.pop("org_pk", None)
         super(ValidateLaboratoryRoomReportForm, self).__init__(*args, **kwargs)
 
+
 class ObjectLogChangeBaseForm(ReportBase):
     all_labs_org = forms.BooleanField(
         help_text=_(
@@ -304,6 +313,7 @@ class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super(ValidateObjectLogChangeReportForm, self).__init__(*args, **kwargs)
+
 
 class OrganizationReactiveForm(ReportBase):
     users = forms.ModelMultipleChoiceField(
@@ -431,6 +441,7 @@ class ReactiveReportForm(ReportBase):
         org_pk = kwargs.pop("org_pk", None)
         super(ReactiveReportForm, self).__init__(*args, **kwargs)
 
+
 class RiskZoneReportForm(ReportBase):
     risk_zone = forms.ModelMultipleChoiceField(
         widget=genwidgets.SelectMultiple,
@@ -457,7 +468,6 @@ class RiskZoneReportForm(ReportBase):
                 organization=org_pk
             )
 
-
     def clean_building(self):
         building = self.cleaned_data["building"]
 
@@ -470,6 +480,7 @@ class RiskZoneReportForm(ReportBase):
         if risk_zone.exists():
             return list(risk_zone.values_list("pk", flat=True))
         return []
+
 
 class ReactiveStockReportForm(ReportBase):
     format = forms.ChoiceField(
@@ -487,6 +498,50 @@ class ReactiveStockReportForm(ReportBase):
         super(ReactiveStockReportForm, self).__init__(*args, **kwargs)
 
 
+def get_years():
+    years = [
+        (i, i)
+        for i in ObjectLogChange.objects.all()
+        .values_list("update_time__year", flat=True)
+        .distinct()
+        .order_by("update_time__year")
+    ]
+    return years
+
+
+class RegencyReportForm(ReportBase):
+    laboratory = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Laboratory.objects.all(),
+        required=False,
+        label=_("Laboratories"),
+    )
+    years = forms.ChoiceField(
+        widget=genwidgets.Select,
+        choices=get_years(),
+        required=True,
+        label=_("Year"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(RegencyReportForm, self).__init__(*args, **kwargs)
+        self.fields["laboratory"].queryset = Laboratory.objects.filter(
+            organization__pk=org_pk
+        )
+
+    def clean_laboratory(self):
+        laboratory = self.cleaned_data["laboratory"]
+        organization = self.cleaned_data["organization"]
+        if laboratory:
+            return list(laboratory.values_list("pk", flat=True).distinct())
+        return list(
+            get_laboratories_from_organization(organization).values_list(
+                "pk", flat=True
+            )
+        )
+
+
 class ChemicalInventoryReportForm(ReportForm):
 
     def __init__(self, *args, **kwargs):
@@ -494,10 +549,13 @@ class ChemicalInventoryReportForm(ReportForm):
         super(ChemicalInventoryReportForm, self).__init__(*args, **kwargs)
         self.fields.pop("all_labs_org")
         if org_pk:
-            self.fields["laboratory"].widget=genwidgets.SelectMultiple(attrs={"class": "form-control"})
+            self.fields["laboratory"].widget = genwidgets.SelectMultiple(
+                attrs={"class": "form-control"}
+            )
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 organization=org_pk
             )
+
     def clean_laboratory(self):
         lab = self.cleaned_data["laboratory"]
         if lab.exists():
