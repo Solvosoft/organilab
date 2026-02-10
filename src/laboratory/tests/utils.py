@@ -9,7 +9,13 @@ from django.test import TestCase
 from django.test import Client
 
 from auth_and_perms.models import Rol, ProfilePermission
-from laboratory.models import OrganizationStructure, Laboratory, UserOrganization
+from laboratory.models import (
+    OrganizationStructure,
+    Laboratory,
+    UserOrganization,
+    Provider,
+    ObjectFeatures,
+)
 import base64
 
 from laboratory.tests.file_b64 import FILE_B64
@@ -48,6 +54,20 @@ class BaseLaboratorySetUpTest(BaseSetUpTest):
             content_type=ct, codename="can_manage_org_permissions"
         )
         self.user.user_permissions.add(perm)
+
+        ct2 = ContentType.objects.get_for_model(Provider)
+        perm2 = Permission.objects.get(content_type=ct2, codename="delete_provider")
+        self.user.user_permissions.add(perm2)
+        perm2 = Permission.objects.get(content_type=ct2, codename="view_provider")
+        self.user.user_permissions.add(perm2)
+        perm2 = Permission.objects.get(content_type=ct2, codename="change_provider")
+        self.user.user_permissions.add(perm2)
+
+        ct3 = ContentType.objects.get_for_model(ObjectFeatures)
+        perm4 = Permission.objects.get(
+            content_type=ct3, codename="change_objectfeatures"
+        )
+        self.user.user_permissions.add(perm4)
 
         self.client.force_login(self.user)
 

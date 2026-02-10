@@ -45,8 +45,17 @@ jobs:
         env:
           TOXENV: py${{matrix.python-version}}
 
-      - name: Coverage Badge
-        uses: tj-actions/coverage-badge-py@v2
+#      - name: Coverage Badge
+#        uses: tj-actions/coverage-badge-py@v2
+      - name: Install badge tool
+        run: pip install -U genbadge[coverage]
+
+      - name: Generate coverage.xml
+        run: coverage xml -o coverage.xml || true
+
+      - name: Generate coverage badge
+        run: genbadge coverage -i coverage.xml -o coverage.svg
+
 
       - name: Verify Changed files
         uses: tj-actions/verify-changed-files@v17
