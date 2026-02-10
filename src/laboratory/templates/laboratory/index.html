@@ -9,146 +9,155 @@
 	{% endif %}
 {% endblock %}
 {% block pre_head %}
-    {% define_urlname_action 'labindex' %}
+	{% define_urlname_action 'labindex' %}
 {% endblock %}
 
 {% load i18n static %}
 {% block content %}
-  {% if request.user.is_authenticated %}
+	{% if request.user.is_authenticated %}
 
-    <div class="row">
-      {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
-        <div id="index_labview_id" class="col-md-6">
-        <h3 class="text-center">
-          <strong>{% trans 'Laboratory view' %}</strong>
-        </h3>
-        </div>
-		  {% endif %}
-      {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
-        <div id="index_manage_id" class="col-md-6">
-          <h3 class="text-center">
-            <strong>{% trans 'Laboratory administration' %}</strong>
-          </h3>
-        </div>
-      {% endif %}
-    </div>
+		<div class="row">
+			{% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
+				<div id="index_labview_id" class="col-md-6">
+					<h3 class="text-center">
+						<strong>{% trans 'Laboratory view' %}</strong>
+					</h3>
+				</div>
+			{% endif %}
+			{% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
+				<div id="index_manage_id" class="col-md-6">
+					<h3 class="text-center">
+						<strong>{% trans 'Laboratory administration' %}</strong>
+					</h3>
+				</div>
+			{% endif %}
+		</div>
 
 		<br><br>
 
-    <div class="row">
-      {% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
-        <div class="col-md-6 text-center">
-          <div class="row">
-            <img src="{% static 'images/laboratory.png' %}"
-              alt="{% trans 'Laboratory view' %}"
-              class="img-thumbnail mx-auto"  style="width:15rem;">
-          </div>
-          <br>
-          <div class="row">
+		<div class="row">
+			{% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
+				<div class="col-md-6 text-center">
+					<div class="row">
+						<img src="{% static 'images/laboratory.png' %}"
+											alt="{% trans 'Laboratory view' %}"
+											class="img-thumbnail mx-auto" style="width:15rem;">
+					</div>
+					<br>
+					<div class="row">
 
-            <ul class="list-group">
-              {% if perms.laboratory.view_laboratory %}
-                <li class="list-group-item">
-                  <a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">
-                    <strong>{% trans 'Laboratory view' %}</strong>
-                  </a>
-                </li>
-              {% endif %}
-              {% if perms.academic.view_myprocedure %}
-                <li class="list-group-item">
-                  <a href="{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}">
-                    <strong>{% trans 'My procedures' %}</strong>
-                  </a>
-                </li>
-              {% endif %}
-													{% if perms.laboratory.view_laboratory_process %}
-                <li class="list-group-item">
-                  <a href="{% url 'laboratory:laboratory_process_list' org_pk=org_pk lab_pk=laboratory %}">
-                    <strong>{% trans 'Processes' %}</strong>
-                  </a>
-                </li>
-													{% endif %}
-              {% if perms.laboratory.view_protocol %}
-              <li class="list-group-item">
-                  <a href="{% url 'laboratory:protocol_list' org_pk=org_pk lab_pk=laboratory %}">
-                    <strong>{% trans 'Protocols' %}</strong>
-                  </a>
-                </li>
-              {% endif %}
-              {% if perms.laboratory.view_registeruserqr %}
-              <li class="list-group-item">
-                  <a href="{% url 'laboratory:list_register_user_qr' org_pk=org_pk lab_pk=laboratory %}">
-                    <strong>{% trans 'Register user' %}</strong>
-                  </a>
-                </li>
-              {% endif %}
+						<ul class="list-group">
+							{% if perms.laboratory.view_laboratory %}
+								<li class="list-group-item">
+									<a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">
+										<strong>{% trans 'Laboratory view' %}</strong>
+									</a>
+								</li>
+							{% endif %}
+							{% if perms.academic.view_myprocedure %}
+								<li class="list-group-item">
+									<a href="{% url 'academic:get_my_procedures' org_pk=org_pk lab_pk=laboratory %}">
+										<strong>{% trans 'My procedures' %}</strong>
+									</a>
+								</li>
+							{% endif %}
+							{% if perms.laboratory.view_laboratory_process %}
+								<li class="list-group-item">
+									<a href="{% url 'laboratory:laboratory_process_list' org_pk=org_pk lab_pk=laboratory %}">
+										<strong>{% trans 'Processes' %}</strong>
+									</a>
+								</li>
+							{% endif %}
+							{% if perms.laboratory.view_protocol %}
+								<li class="list-group-item">
+									<a href="{% url 'laboratory:protocol_list' org_pk=org_pk lab_pk=laboratory %}">
+										<strong>{% trans 'Protocols' %}</strong>
+									</a>
+								</li>
+							{% endif %}
+							{% if perms.laboratory.view_registeruserqr %}
+								<li class="list-group-item">
+									<a href="{% url 'laboratory:list_register_user_qr' org_pk=org_pk lab_pk=laboratory %}">
+										<strong>{% trans 'Register user' %}</strong>
+									</a>
+								</li>
+							{% endif %}
 
-            </ul>
-          </div>
-        </div>
-		  {% endif %}
-	    {% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
-        <div class="col-md-6 text-center">
-          <div class="row">
-            <img src="{% static 'images/management.png' %}"
-              alt="{% trans 'Laboratory administration' %}"
-             class="img-thumbnail mx-auto"  style="width:15rem;">
-          </div>
-          <br>
-          <div class="row">
+						</ul>
+					</div>
+				</div>
+			{% endif %}
+			{% if perms.laboratory.add_laboratoryroom or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_objectfeatures %}
+				<div class="col-md-6 text-center">
+					<div class="row">
+						<img src="{% static 'images/management.png' %}"
+											alt="{% trans 'Laboratory administration' %}"
+											class="img-thumbnail mx-auto" style="width:15rem;">
+					</div>
+					<br>
+					<div class="row">
 
-            <ul class="list-group">
-              {% if perms.laboratory.add_laboratoryroom %}
-                <li class="list-group-item">
-                  <a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
-                    <strong>{% trans 'Laboratory' %}</strong>
-                  </a>
-                </li>
-              {% endif %}
+						<ul class="list-group">
+							{% if perms.laboratory.add_laboratoryroom %}
+								<li class="list-group-item">
+									<a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
+										<strong>{% trans 'Laboratory' %}</strong>
+									</a>
+								</li>
+							{% endif %}
 
-                {% if perms.laboratory.view_object %}
-                <li class="list-group-item">
-                    <a  href="{% url 'laboratory:sustance_list' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Reactive' %}</strong></a>
-                    /  <a  href="{% url 'laboratory:objectview_list' org_pk laboratory %}?type_id=1"><strong>{% trans 'Material' %}</strong></a>
-                    /  <a  href="{% url 'laboratory:equipment_list' org_pk laboratory %}"><strong>{% trans 'Equipment' %}</strong></a>
-																	/  <a  href="{% url 'laboratory:reactive_stock_list' org_pk laboratory %}"><strong>{% trans 'Reactive Stats' %}</strong></a>
-                </li>
-              {% endif %}
-														{% if perms.laboratory.view_shelfobject %}
-																<li class="list-group-item">
-                  <a href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Reorder Reactives' %}</strong></a>
-                </li>
-														{% endif %}
-              {% if perms.laboratory.add_objectfeatures %}
-                <li class="list-group-item">
-                  <a href="{% url 'laboratory:object_feature_create' org_pk laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
-                </li>
-              {% endif %}
+							{% if perms.laboratory.view_object %}
+								<li class="list-group-item">
+									<a
+										href="{% url 'laboratory:sustance_list' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Reactive' %}</strong></a>
+									/ <a
+									href="{% url 'laboratory:object_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Material' %}</strong></a>
+									/ <a
+									href="{% url 'laboratory:equipment_list' org_pk laboratory %}"><strong>{% trans 'Equipment' %}</strong></a>
+									/ <a
+									href="{% url 'laboratory:reactive_stock_list' org_pk laboratory %}"><strong>{% trans 'Reactive Stats' %}</strong></a>
+								</li>
+							{% endif %}
 
-            {% if perms.laboratory.add_provider %}
-            <li class="list-group-item">
-                  <a href="{% url 'laboratory:list_provider' org_pk laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
-                </li>
-            {% endif %}
-            </ul>
-          </div>
-        </div>
-      {% endif %}
-    </div>
-  {% else %}
-    <div class="row">
-      <div class="col-md-offset-2 col-md-8">
-        <div class="jumbotron">
-          <h1>ORGANILAB</h1>
-          <p class="lead">
-            {% trans "Welcome to the Simple laboratory organizer" %}
-          </p>
-          <br/>
-          <p class="text-center">
-            <a class="btn btn-lg btn-success" href="{% url 'login' %}" role="button">{% trans "Login" %}</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  {% endif %}
+							{% if perms.laboratory.view_shelfobject %}
+								<li class="list-group-item">
+									<a
+										href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Reorder Reactives' %}</strong></a>
+								</li>
+							{% endif %}
+
+							{% if perms.laboratory.add_objectfeatures %}
+								<li class="list-group-item">
+									<a
+										href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
+								</li>
+							{% endif %}
+
+							{% if perms.laboratory.view_provider %}
+								<li class="list-group-item">
+									<a
+										href="{% url 'laboratory:provider_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Providers' %}</strong></a>
+								</li>
+							{% endif %}
+						</ul>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	{% else %}
+		<div class="row">
+			<div class="col-md-offset-2 col-md-8">
+				<div class="jumbotron">
+					<h1>ORGANILAB</h1>
+					<p class="lead">
+						{% trans "Welcome to the Simple laboratory organizer" %}
+					</p>
+					<br/>
+					<p class="text-center">
+						<a class="btn btn-lg btn-success" href="{% url 'login' %}" role="button">{% trans "Login" %}</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	{% endif %}
 {% endblock %}
