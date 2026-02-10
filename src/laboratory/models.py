@@ -101,9 +101,7 @@ class Object(AbstractOrganizationRef):
     )
     is_public = models.BooleanField(default=True, verbose_name=_("Share with others"))
     description = models.TextField(_("Description"), null=True, blank=True)
-
     features = models.ManyToManyField(ObjectFeatures, verbose_name=_("Object features"))
-
     model = models.CharField(_("Model"), max_length=50, null=True, blank=True)
     serie = models.CharField(_("Serie"), max_length=50, null=True, blank=True)
     plaque = models.CharField(_("Plaque"), max_length=50, null=True, blank=True)
@@ -262,6 +260,12 @@ class SustanceCharacteristics(models.Model):
         null=True,
         blank=True,
     )
+    density = models.FloatField(
+        verbose_name=_("Density"),
+        help_text=_("t belongs to the regulations of decree 44741, "
+                    "only use dot like 0.344 on decimal"),
+        default=0,
+    )
 
     class Meta:
         verbose_name = _("Sustance characteristic")
@@ -405,7 +409,6 @@ class ShelfObject(models.Model):
     created_by = models.ForeignKey(
         User, null=True, blank=True, verbose_name=_("Creator"), on_delete=models.CASCADE
     )
-
     shelf_object_url = models.TextField(null=True, verbose_name=_("Shelf Object Url"))
     shelf_object_qr = models.FileField(
         null=True, verbose_name=_("Shelf Object QR"), upload_to=upload_files
@@ -1276,7 +1279,7 @@ class Provider(BaseCreationObj):
     )
     email = models.EmailField(blank=True, verbose_name=_("Email"))
     legal_identity = models.CharField(
-        max_length=50, blank=True, default="", verbose_name=_("legal identity")
+        max_length=50, blank=True, default="", verbose_name=_("Legal Identity")
     )
     laboratory = models.ForeignKey(
         Laboratory, on_delete=models.CASCADE, blank=True, null=True
