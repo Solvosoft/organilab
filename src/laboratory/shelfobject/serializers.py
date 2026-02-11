@@ -535,6 +535,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
     reactive_expiration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
     )
+    was_donated = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = ShelfObject
@@ -558,6 +559,7 @@ class ReactiveShelfObjectSerializer(ContainerSerializer, serializers.ModelSerial
             "container_open_date",
             "type_budget",
             "reactive_expiration_date",
+            "was_donated",
         ]
 
     def validate(self, data):
@@ -620,6 +622,7 @@ class ReactiveRefuseShelfObjectSerializer(
     reactive_expiration_date = DateFieldWithEmptyString(
         input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
     )
+    was_donated = serializers.BooleanField(default=False, required=False)
     class Meta:
         model = ShelfObject
         fields = [
@@ -641,6 +644,7 @@ class ReactiveRefuseShelfObjectSerializer(
             "container_open_date",
             "type_budget",
             "reactive_expiration_date",
+            "was_donated",
         ]
 
     def validate(self, data):
