@@ -142,11 +142,9 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
     )
 
     def to_internal_value(self, data):
-        if 'initial_date' in data and isinstance(data['initial_date'], str):
-            data['initial_date'] = re.sub(r':\d{2}$', '', data['initial_date'])
-        if 'final_date' in data and isinstance(data['final_date'], str):
-            data['final_date'] = re.sub(r':\d{2}$', '', data['final_date'])
-
+        data = data.copy()
+        data['initial_date'] = re.sub(r'(:\d{2}):\d{2}$', r'\1', data['initial_date'])
+        data['final_date'] = re.sub(r'(:\d{2}):\d{2}$', r'\1', data['final_date'])
         return super().to_internal_value(data)
 
     def validate(self, data):
