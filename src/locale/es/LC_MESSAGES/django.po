@@ -5288,3 +5288,6 @@ msgstr "Por favor tome las medidas necesarias con estos reactivos antes de su ve
 
 msgid "Organilab: Expiring reactives notification"
 msgstr "Organilab: Notificación de reactivos por vencer"
+
+msgid "You won't be recieving notifications of this object anymore."
+msgstr "Ya no recibirás notificaciones de este objeto."
