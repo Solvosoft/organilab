@@ -1116,3 +1116,6 @@ msgstr "Mueble"
 
 msgid "Donated income"
 msgstr "Ingreso por donacion"
+
+msgid "Capacity"
+msgstr "Capacidad"
