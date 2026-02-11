@@ -14,12 +14,6 @@
 				<li>
 					<hr class="dropdown-divider">
 				</li>
-				<li>
-					<a href="{% url 'laboratory:labindex' org_pk laboratory %}">{% trans 'View laboratory' %} </a>
-				</li>
-				<li>
-					<hr class="dropdown-divider">
-				</li>
 			{% endif %}
 			{% if perms.laboratory.add_laboratory %}
 				<li><a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
