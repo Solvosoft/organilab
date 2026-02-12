@@ -5291,3 +5291,12 @@ msgstr "Organilab: Notificación de reactivos por vencer"
 
 msgid "You won't be recieving notifications of this object anymore."
 msgstr "Ya no recibirás notificaciones de este objeto."
+
+msgid "Update flashpoint"
+msgstr "Actualizar flashpoint"
+
+msgid "Update Flashpoint"
+msgstr "Actualizar punto de inflamación"
+
+msgid "ShelfObject Flashpoint"
+msgstr "Punto de inflamación del objeto de estante"

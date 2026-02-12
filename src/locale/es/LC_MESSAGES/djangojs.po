@@ -1119,3 +1119,9 @@ msgstr "Ingreso por donacion"
 
 msgid "Capacity"
 msgstr "Capacidad"
+
+msgid "Flashpoint"
+msgstr "Punto de inflamación"
+
+msgid "H Code"
+msgstr "Código H"

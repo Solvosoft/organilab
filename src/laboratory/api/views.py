@@ -78,6 +78,7 @@ from laboratory.models import (
     LaboratoryProcess,
     Provider,
     ObjectFeatures,
+    ShelfObjectObservation,
 )
 from laboratory.qr_utils import get_or_create_qr_shelf_object
 from laboratory.shelfobject.forms import ShelfObjectStatusForm
@@ -1213,6 +1214,73 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
 
         serializer.save(created_by=self.request.user)
         return super().perform_create(serializer)
+
+
+class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": serializers.ShelfObjectHcoderDataTableSerializer,
+        "update": serializers.ShelfObjectHcodeDetailSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_shelfobject"],
+        "update": ["laboratory.change_shelfobject"],
+    }
+
+    permission_classes = (PermissionByLaboratoryInOrganization,)
+
+    queryset = ShelfObject.objects.filter(
+        object__type=Object.REACTIVE,
+        object__sustancecharacteristics__h_code__code__in=[
+            "H220",
+            "H222",
+            "H223",
+            "H224",
+            "H225",
+            "H226",
+        ],
+    )
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["object__name", "object__sustancecharacteristics__h_code__code"]
+    ordering_fields = ["pk"]
+    filterset_class = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        lab = self.kwargs.get("lab_pk", 0)
+        if lab:
+            return queryset.filter(in_where_laboratory__pk=lab)
+
+        return queryset.none()
+
+    def perform_update(self, serializer):
+        lab_pk = self.kwargs.get("lab_pk", 0)
+        flaspoint_before = self.get_object()
+        before = {
+            "flashpoint": flaspoint_before.flashpoint,
+        }
+
+        flash = serializer.save()
+        after = {
+            "flashpoint": flash.flashpoint,
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            flash,
+            CHANGE,
+            "shelfobject",
+            changed_data=changed_fields,
+            relobj=lab_pk,
+        )
+        if changed_fields:
+            ShelfObjectObservation.objects.create(
+                description=f"Flashpoint changed from {before['flashpoint']} to {after['flashpoint']}",
+                shelf_object=flash,
+                created_by=self.request.user,
+            )
 
 
 #  Provider

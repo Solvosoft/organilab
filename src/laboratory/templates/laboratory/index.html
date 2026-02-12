@@ -119,10 +119,14 @@
 								</li>
 							{% endif %}
 
-							{% if perms.laboratory.view_shelfobject %}
+							{% if perms.laboratory.view_shelfobject and perms.laboratory.change_shelfobject %}
 								<li class="list-group-item">
 									<a
 										href="{% url 'laboratory:shel_objects_reactives' org_pk laboratory %}"><strong>{% trans 'Reorder Reactives' %}</strong></a>
+								</li>
+							<li class="list-group-item">
+									<a
+										href="{% url 'laboratory:shelf_object_hcode' org_pk laboratory %}"><strong>{% trans 'Reactives HCODE' %}</strong></a>
 								</li>
 							{% endif %}
 
