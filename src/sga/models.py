@@ -871,3 +871,47 @@ class Pictogram(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class DangerSubstance(models.Model):
+    cas_code = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("CAS code")
+    )
+    name = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("Name")
+    )
+    synonym = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("Synonym")
+    )
+    physical_status = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("Physical Status")
+    )
+    threshold = models.FloatField(
+        null=True, blank=True, default=0.0, verbose_name=_("Threshold")
+    )
+    measurement_unit = models.CharField(
+        max_length=25, null=True, blank=True, verbose_name=_("Measurement unit")
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class DangerSubstanceCategory(models.Model):
+    h_code = models.ForeignKey(DangerIndication, on_delete=models.DO_NOTHING)
+    category = models.CharField(max_length=25, null=True, blank=True)
+    section = models.CharField(max_length=10, null=True, blank=True)
+    process_condition = catalog.GTForeignKey(
+        "laboratory.Catalog",
+        related_name="process_condition",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Process Condition"),
+        key_name="key",
+        key_value="process_condition",
+        null=True,
+    )
+    note = models.CharField(max_length=255, null=True, blank=True)
+    threshold = models.FloatField(null=True, blank=True, default=0.0)
+
+    def __str__(self):
+        return self.note
