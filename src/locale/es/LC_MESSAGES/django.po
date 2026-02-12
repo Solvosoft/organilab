@@ -3137,6 +3137,9 @@ msgstr "Administración"
 msgid "View laboratory"
 msgstr "Ver laboratorio"
 
+msgid "Go to laboratory"
+msgstr "Ir al Laboratorio"
+
 msgid "All Rights Reserved."
 msgstr "Todos los Derechos Reservados."
 
