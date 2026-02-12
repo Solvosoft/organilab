@@ -15,7 +15,7 @@ def create_shelfobject_flashpoint(apps, schema_editor):
     ]
     for flashpoint in flashpoints:
         Catalog.objects.get_or_create(
-            key="flashpoint",
+            key="process_condition",
             description=flashpoint,
         )
 

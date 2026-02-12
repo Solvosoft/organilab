@@ -460,13 +460,13 @@ class ShelfObject(models.Model):
     was_donated = models.BooleanField(default=False, verbose_name=_("Was donated?"))
     flashpoint = catalog.GTForeignKey(
         Catalog,
-        related_name="flashpoint",
+        related_name="process_condition_shelfobject",
         blank=True,
         null=True,
         on_delete=models.DO_NOTHING,
-        verbose_name=_("Flashpoint"),
+        verbose_name=_("Process Condition"),
         key_name="key",
-        key_value="flashpoint",
+        key_value="process_condition",
     )
 
     @staticmethod
