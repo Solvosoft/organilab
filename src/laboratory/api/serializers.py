@@ -1639,3 +1639,72 @@ class ObjectValidateSerializer(serializers.ModelSerializer):
             MaterialCapacity.objects.filter(object=instance).delete()
 
         return instance
+
+
+class ShelfObjectHcodeSerializer(serializers.ModelSerializer):
+    object = GTS2SerializerBase(many=False)
+    labroom = serializers.SerializerMethodField()
+    furniture = serializers.SerializerMethodField()
+    shelf = serializers.SerializerMethodField()
+    cas_code = serializers.SerializerMethodField()
+    h_code = serializers.SerializerMethodField()
+    flashpoint = GTS2SerializerBase(many=False)
+    actions = serializers.SerializerMethodField()
+
+    def get_h_code(self, obj):
+        if hasattr(obj.object, "sustancecharacteristics"):
+            hcode = obj.object.sustancecharacteristics.h_code
+            if hcode:
+                return ", ".join(hcode.values_list("code", flat=True))
+        return None
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": False,
+            "update": user.has_perm("laboratory.change_shelfobject"),
+            "destroy": False,
+            "list": user.has_perm("laboratory.view_shelfobject"),
+        }
+
+    def get_labroom(self, obj):
+        if obj.shelf and obj.shelf.furniture and obj.shelf.furniture.labroom:
+            return obj.shelf.furniture.labroom.name
+        return None
+
+    def get_furniture(self, obj):
+        if obj.shelf and obj.shelf.furniture:
+            return obj.shelf.furniture.name
+        return None
+
+    def get_cas_code(self, obj):
+        return obj.object.cas_code
+
+    def get_shelf(self, obj):
+        if obj.shelf:
+            return obj.shelf.name
+        return None
+
+    class Meta:
+        model = ShelfObject
+        fields = "__all__"
+
+
+class ShelfObjectHcoderDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=ShelfObjectHcodeSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class ShelfObjectHcodeDetailSerializer(serializers.ModelSerializer):
+    flashpoint = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="flashpoint").using(
+            settings.READONLY_DATABASE
+        ),
+        required=True,
+    )
+
+    class Meta:
+        model = ShelfObject
+        fields = ["flashpoint"]

@@ -143,8 +143,8 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         data = data.copy()
-        data['initial_date'] = re.sub(r'(:\d{2}):\d{2}$', r'\1', data['initial_date'])
-        data['final_date'] = re.sub(r'(:\d{2}):\d{2}$', r'\1', data['final_date'])
+        data["initial_date"] = re.sub(r"(:\d{2}):\d{2}$", r"\1", data["initial_date"])
+        data["final_date"] = re.sub(r"(:\d{2}):\d{2}$", r"\1", data["final_date"])
         return super().to_internal_value(data)
 
     def validate(self, data):
@@ -270,7 +270,13 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         if hasattr(shelf_object, "container"):
             container = shelf_object.container
         errors = validate_measurement_unit_and_quantity(
-            shelf, shelf_object.object, amount, measurement_unit=measurement_unit, container=container, shelf_object=shelf_object, increase_unit=increase_unit
+            shelf,
+            shelf_object.object,
+            amount,
+            measurement_unit=measurement_unit,
+            container=container,
+            shelf_object=shelf_object,
+            increase_unit=increase_unit,
         )
 
         if increase_unit:
@@ -623,6 +629,7 @@ class ReactiveRefuseShelfObjectSerializer(
         input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
     )
     was_donated = serializers.BooleanField(default=False, required=False)
+
     class Meta:
         model = ShelfObject
         fields = [
@@ -2649,11 +2656,21 @@ class EditReactiveShelfObjectSerializer(serializers.ModelSerializer):
         input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
     )
     was_donated = serializers.BooleanField(default=False, required=False)
+
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "reactive_expiration_date", "physical_status",
-                  "pictograms","batch","type_budget", "container_entry_date",
-                  "container_open_date", "was_donated"]
+        fields = [
+            "status",
+            "description",
+            "reactive_expiration_date",
+            "physical_status",
+            "pictograms",
+            "batch",
+            "type_budget",
+            "container_entry_date",
+            "container_open_date",
+            "was_donated",
+        ]
 
     def validate(self, data):
         org_context = self.context["org_pk"]
@@ -2690,13 +2707,23 @@ class ReactiveShelfObjectDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "reactive_expiration_date", "physical_status",
-                  "pictograms","batch", "type_budget", "container_entry_date",
-                  "container_open_date", "was_donated"]
+        fields = [
+            "status",
+            "description",
+            "reactive_expiration_date",
+            "physical_status",
+            "pictograms",
+            "batch",
+            "type_budget",
+            "container_entry_date",
+            "container_open_date",
+            "was_donated",
+        ]
 
 
 class MaterialShelfObjectDataSerializer(serializers.ModelSerializer):
     was_donated = serializers.BooleanField(default=False, required=False)
+
     class Meta:
         model = ShelfObject
         fields = ["status", "description", "batch", "was_donated"]
@@ -2799,12 +2826,8 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
     def get_actions(self, obj):
         user = self.context["request"].user
         return {
-            "increase": user.has_perm(
-                "laboratory.change_shelfobject"
-            ),
-            "decrease": user.has_perm(
-                "laboratory.change_shelfobject"
-            ),
+            "increase": user.has_perm("laboratory.change_shelfobject"),
+            "decrease": user.has_perm("laboratory.change_shelfobject"),
         }
 
     class Meta:
@@ -2875,9 +2898,9 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
             measurement_unit=shelf_object.measurement_unit,
             container=container,
             shelf_object=shelf_object,
-            increase_unit=increase_unit
+            increase_unit=increase_unit,
         )
-        errors = {('amount' if k == 'quantity' else k): v for k, v in errors.items()}
+        errors = {("amount" if k == "quantity" else k): v for k, v in errors.items()}
         if hasattr(shelf_object, "limits") and shelf_object.limits is not None:
             converted_amount = get_conversion_from_two_units(
                 increase_unit, shelf_object.measurement_unit, amount
