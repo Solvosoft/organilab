@@ -5303,3 +5303,18 @@ msgstr "Actualizar punto de inflamación"
 
 msgid "ShelfObject Flashpoint"
 msgstr "Punto de inflamación del objeto de estante"
+
+msgid "Danger Substance"
+msgstr "Sustancia Peligrosa"
+
+msgid "Register Danger Substance"
+msgstr "Registrar Sustancia Peligrosa"
+
+msgid "Update Danger Substance"
+msgstr "Actualizar Sustancia Peligrosa"
+
+msgid "Delete Danger Substance"
+msgstr "Eliminar Sustancia Peligrosa"
+
+msgid "Dangerous Substances"
+msgstr "Sustancias peligrosas"
