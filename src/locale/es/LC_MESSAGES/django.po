@@ -5318,3 +5318,15 @@ msgstr "Eliminar Sustancia Peligrosa"
 
 msgid "Dangerous Substances"
 msgstr "Sustancias peligrosas"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Type Match"
+msgstr "Tipo de Coincidencia"
+
+msgid "Patron Name"
+msgstr "Nombre del Patrón"
+
+msgid "Especial Condition"
+msgstr "Condición Especial"
