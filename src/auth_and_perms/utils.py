@@ -64,7 +64,7 @@ def get_roles_in_html(user, lab, org):
 def send_email(request, user):
     schema = request.scheme + "://"
     context = {"user": user, "domain": schema + request.get_host()}
-    send_mail(
+    send_mail( #This method will be removed in django 7.0
         subject="Nuevo usuario creado en la plataforma",
         message="Por favor use un visor de html",
         recipient_list=[user.email],

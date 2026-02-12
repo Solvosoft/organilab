@@ -254,13 +254,13 @@ def organilab_logentry(
         else:
             change_message = "%s %s has been %s" % (str(object), model_name, action)
 
-    log_entry = LogEntry.objects.log_action(
+    log_entry = LogEntry.objects.create(
         user_id=user.id,
-        content_type_id=content_type.id,
-        object_id=object.pk,
-        object_repr=object_repr,
+        content_type=content_type,
+        object_id=str(object.pk),
+        object_repr=str(object_repr)[:200],
         action_flag=action_flag,
-        change_message=change_message,
+        change_message=str(change_message),
     )
 
     if relobj is None:
