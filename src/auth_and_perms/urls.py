@@ -60,21 +60,21 @@ urlpatterns = [
     ),
     path("end_switch_user", remove_impostor, name="remove_impostor"),
     path("login_bccr", fva_rest_authentication.login_with_bccr, name="login_with_bccr"),
-    path(
-        "create_profile_by_digital_signature/<int:pk>",
-        user_org_creation.create_profile_by_digital_signature,
-        name="create_profile_by_digital_signature",
-    ),
-    path(
-        "organization/registration",
-        user_org_creation.register_user_to_platform,
-        name="register_user_to_platform",
-    ),
-    path(
-        "registration/totp/<int:pk>/",
-        user_org_creation.create_profile_otp,
-        name="user_org_creation_totp",
-    ),
+    # path(
+    #     "create_profile_by_digital_signature/<int:pk>",
+    #     user_org_creation.create_profile_by_digital_signature,
+    #     name="create_profile_by_digital_signature",
+    # ),
+    # path(
+    #     "organization/registration",
+    #     user_org_creation.register_user_to_platform,
+    #     name="register_user_to_platform",
+    # ),
+    # path(
+    #     "registration/totp/<int:pk>/",
+    #     user_org_creation.create_profile_otp,
+    #     name="user_org_creation_totp",
+    # ),
     path(
         "registration/digitalsignature/checkstatus",
         fva_rest_authentication.check_signature_window_status_register,
