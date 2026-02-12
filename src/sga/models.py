@@ -884,10 +884,10 @@ class DangerSubstance(models.Model):
         null=True, blank=True, default=0.0, verbose_name=_("Threshold")
     )
     notes = models.TextField(null=True, blank=True, verbose_name=_("Notes"))
-    type_match = models.CharField(null=True, blank=True, max_length=255)
+    type_match = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Type Match"))
     h_codes_match = models.ManyToManyField(DangerIndication, verbose_name=_("H Codes"))
-    patron_name = models.CharField(null=True, blank=True, max_length=255)
-    especial_condition = models.CharField(null=True, blank=True, max_length=255)
+    patron_name = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Patron Name"))
+    especial_condition = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Especial Condition"))
 
     def __str__(self):
         return self.name
