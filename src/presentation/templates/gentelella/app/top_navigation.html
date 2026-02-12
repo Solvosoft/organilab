@@ -7,8 +7,13 @@
 			<a id="menu_toggle"><i class="fa fa-bars"></i></a>
 		</div>
 		{% if laboratory and org_pk %}
-			<ul class="nav navbar-nav float-start">
+			<ul class="nav navbar-nav float-start d-flex flex-row">
 				<li><a href="{% url 'laboratory:rooms_list' lab_pk=laboratory org_pk=org_pk %}">{% show_laboratory_name %}</a></li>
+				{% if perms.laboratory.delete_laboratory %}
+					<li>
+						<a href="{% url 'laboratory:labindex' org_pk laboratory %}">{% trans 'Go to laboratory' %} </a>
+					</li>
+				{% endif %}
 			</ul>
 		{% endif %}
 
