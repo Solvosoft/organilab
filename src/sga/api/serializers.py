@@ -20,7 +20,7 @@ from sga.models import (
     ReviewSubstance,
     DisplayLabel,
     WarningWord,
-    HCodeCategory, DangerSubstance,
+    HCodeCategory, DangerSubstance, DangerSubstanceCategory,
 )
 
 logger = logging.getLogger("organilab")
@@ -552,6 +552,7 @@ class DangerCategoryDataTableSerializer(serializers.Serializer):
 class DangerSubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     h_codes_match = GTS2SerializerBase(many=True)
+    type_match = ChoicesGTS2Serializer(choices=DangerSubstance.TYPE_CHOICES, many=False)
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -592,4 +593,47 @@ class DangerSubstanceValidateSerializer(serializers.ModelSerializer):
             "h_codes_match",
             "patron_name",
             "especial_condition",
+        ]
+
+class DangerSubstanceCategorySerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    h_code = GTS2SerializerBase(many=False)
+    process_condition = GTS2SerializerBase(many=False)
+    category = ChoicesGTS2Serializer(choices=DangerSubstanceCategory.CATEGORY_CHOICES, many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("sga.add_dangersubstancecategory"),
+            "update": user.has_perm("sga.change_dangersubstancecategory"),
+            "destroy": user.has_perm("sga.delete_dangersubstancecategory"),
+        }
+
+    class Meta:
+        model = DangerSubstanceCategory
+        fields = "__all__"
+
+class DangerSubstanceCategoryDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DangerSubstanceCategorySerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class DangerSubstanceCategoryValidateSerializer(serializers.ModelSerializer):
+    h_code = serializers.PrimaryKeyRelatedField(queryset=DangerIndication.objects.all(), required=True)
+    category = serializers.CharField(required=True)
+    section = serializers.CharField(required=False, allow_blank=True)
+    process_condition = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.all(), required=True)
+    note = serializers.CharField(required=False, allow_blank=True)
+    threshold = serializers.FloatField(required=False)
+
+    class Meta:
+        model = DangerSubstanceCategory
+        fields = [
+            "h_code",
+            "category",
+            "section",
+            "process_condition",
+            "note",
+            "threshold",
         ]
