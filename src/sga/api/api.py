@@ -3,10 +3,12 @@ from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import LimitOffsetPagination
 
-from sga.api.filterset import DangerSubstanceFilterSet
+from sga.api.filterset import DangerSubstanceFilterSet, DangerSubstanceCategoryFilterSet
 from sga.api.serializers import DangerSubstanceDataTableSerializer, \
-    DangerSubstanceValidateSerializer, DangerSubstanceSerializer
-from sga.models import DangerSubstance
+    DangerSubstanceValidateSerializer, DangerSubstanceSerializer, \
+    DangerSubstanceCategoryDataTableSerializer, \
+    DangerSubstanceCategoryValidateSerializer, DangerSubstanceCategorySerializer
+from sga.models import DangerSubstance, DangerSubstanceCategory
 
 
 class DangerSubstanceViewSet(AuthAllPermBaseObjectManagement):
@@ -30,3 +32,23 @@ class DangerSubstanceViewSet(AuthAllPermBaseObjectManagement):
     ordering_fields = ["cas_code", "name"]
     ordering = ("name",)
 
+class DangerSubstanceCategoryViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": DangerSubstanceCategoryDataTableSerializer,
+        "create": DangerSubstanceCategoryValidateSerializer,
+        "update": DangerSubstanceCategoryValidateSerializer,
+        "destroy": DangerSubstanceCategorySerializer,
+    }
+    perms = {
+        "list": ["sga.view_dangersubstancecategory"],
+        "create": ["sga.add_dangersubstancecategory"],
+        "update": ["sga.change_dangersubstancecategory"],
+        "destroy": ["sga.delete_dangersubstancecategory"],
+    }
+    queryset = DangerSubstanceCategory.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_class = DangerSubstanceCategoryFilterSet
+    search_fields = ["h_code"]
+    ordering_fields = ["category",]
+    ordering = ("h_code",)

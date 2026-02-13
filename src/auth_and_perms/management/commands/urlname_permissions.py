@@ -2972,4 +2972,26 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.delete_dangersubstance",
         }
     ],
+    "danger-substance-category-list": [
+        {
+            "name": "View Danger Substance Category",
+            "category": "Danger Substance Category",
+            "permission": "sga.view_dangersubstancecategory",
+        },
+        {
+            "name": "Add Danger Substance Category",
+            "category": "Danger Substance Category",
+            "permission": "sga.add_dangersubstancecategory",
+        },
+        {
+            "name": "Change Danger Substance Category",
+            "category": "Danger Substance Category",
+            "permission": "sga.change_dangersubstancecategory",
+        },
+        {
+            "name": "Delete Danger Substance Category",
+            "category": "Danger Substance Category",
+            "permission": "sga.delete_dangersubstancecategory",
+        }
+    ]
 }
