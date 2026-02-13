@@ -329,9 +329,9 @@ class EstablishmentLogs(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
-    physical = models.BooleanField(default=False)
-    health = models.BooleanField(default=False)
-    environmental = models.BooleanField(default=False)
+    physical = models.FloatField(default=False)
+    health = models.FloatField(default=False)
+    environmental = models.FloatField(default=False)
     establishment_status = models.CharField(
         max_length=50, null=True, blank=True, verbose_name=_("Establishment Status")
     )
