@@ -2950,4 +2950,26 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_catalog",
         }
     ],
+    "danger-subtance-list": [
+        {
+            "name": "View Danger Substance",
+            "category": "Danger Substance",
+            "permission": "sga.view_dangersubstance",
+        },
+        {
+            "name": "Add Danger Substance",
+            "category": "Danger Substance",
+            "permission": "sga.add_dangersubstance",
+        },
+        {
+            "name": "Change Danger Substance",
+            "category": "Danger Substance",
+            "permission": "sga.change_dangersubstance",
+        },
+        {
+            "name": "Delete Danger Substance",
+            "category": "Danger Substance",
+            "permission": "sga.delete_dangersubstance",
+        }
+    ],
 }

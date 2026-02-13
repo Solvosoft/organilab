@@ -20,7 +20,7 @@ from sga.models import (
     ReviewSubstance,
     DisplayLabel,
     WarningWord,
-    HCodeCategory,
+    HCodeCategory, DangerSubstance,
 )
 
 logger = logging.getLogger("organilab")
@@ -548,3 +548,48 @@ class DangerCategoryDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+class DangerSubstanceSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    h_codes_match = GTS2SerializerBase(many=True)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("sga.add_dangersubstance"),
+            "update": user.has_perm("sga.change_dangersubstance"),
+            "destroy": user.has_perm("sga.delete_dangersubstance"),
+        }
+
+    class Meta:
+        model = DangerSubstance
+        fields = "__all__"
+
+class DangerSubstanceDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DangerSubstanceSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+class DangerSubstanceValidateSerializer(serializers.ModelSerializer):
+    cas_code = serializers.CharField(required=False)
+    name = serializers.CharField(required=False)
+    threshold = serializers.FloatField(required=False)
+    notes = serializers.CharField(required=False, allow_blank=True)
+    type_match = serializers.CharField(required=False, allow_blank=True)
+    h_codes_match = serializers.PrimaryKeyRelatedField(queryset=DangerIndication.objects.all(), required=False, allow_empty=True, allow_null=True, many=True)
+    patron_name = serializers.CharField(required=False, allow_blank=True)
+    especial_condition = serializers.CharField(required=False, allow_blank=True)
+
+    class Meta:
+        model = DangerSubstance
+        fields = [
+            "cas_code",
+            "name",
+            "threshold",
+            "notes",
+            "type_match",
+            "h_codes_match",
+            "patron_name",
+            "especial_condition",
+        ]
