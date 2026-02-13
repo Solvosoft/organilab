@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.db.models import Sum
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
@@ -10,7 +11,7 @@ from report.models import (
     ObjectChangeLogReport,
     ObjectChangeLogReportBuilder,
 )
-from sga.models import HCodeCategory
+from sga.models import HCodeCategory, DangerSubstance
 
 
 def format_date(value):
@@ -266,3 +267,48 @@ def get_conversion_units_to_kilograms(unit, amount, density=None):
         elif unit.measurement_unit.description == "Libra":
             result = result * 0.4536 if density else result * density
     return result
+
+
+def get_inventory(objs, units, extra_filters={}):
+    dict_objs = []
+    for obj in objs:
+        total_shelfobjects = 0
+        density = getattr(obj.sustancecharacteristics, "density", None)
+        data = {}
+        for unit in units:
+            quantity = (
+                ObjectChangeLogReport.filter(
+                    object=obj, measurement_unit=unit, **extra_filters
+                )
+                .distinct()
+                .aggregate(Sum("diff_value", default=0))["diff_value__sum"]
+            )
+            if quantity > 0:
+                total_shelfobjects += get_conversion_units_to_kilograms(
+                    unit, quantity, density
+                )
+
+        data = {
+            "name": obj.name,
+            "cas": obj.cas_code,
+            "total": total_shelfobjects,
+            "h_codes": obj.sustancecharacteristics.h_code.values_list(
+                "code", flat=True
+            ),
+        }
+        dict_objs.append(data)
+    return dict_objs
+
+
+def validate_square_tree(data):
+    data_list = []
+    for obj in data:
+        danger_substances = DangerSubstance.objects.filter(cas_code=obj["cas"])
+        if danger_substances.exists():
+            for danger in danger_substances:
+                data = obj.copy()
+                data["threshold"] = danger.threshold
+                data_list.append(data)
+
+    # evaluate if break threshold
+    return data_list
