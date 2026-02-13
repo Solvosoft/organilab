@@ -880,27 +880,29 @@ class DangerSubstance(models.Model):
     name = models.CharField(
         max_length=255, null=True, blank=True, verbose_name=_("Name")
     )
-    synonym = models.CharField(
-        max_length=255, null=True, blank=True, verbose_name=_("Synonym")
-    )
-    physical_status = models.CharField(
-        max_length=255, null=True, blank=True, verbose_name=_("Physical Status")
-    )
     threshold = models.FloatField(
         null=True, blank=True, default=0.0, verbose_name=_("Threshold")
     )
-    measurement_unit = models.CharField(
-        max_length=25, null=True, blank=True, verbose_name=_("Measurement unit")
-    )
+    notes = models.TextField(null=True, blank=True, verbose_name=_("Notes"))
+    type_match = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Type Match"))
+    h_codes_match = models.ManyToManyField(DangerIndication, verbose_name=_("H Codes"))
+    patron_name = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Patron Name"))
+    especial_condition = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Especial Condition"))
 
     def __str__(self):
         return self.name
 
 
 class DangerSubstanceCategory(models.Model):
+    CATEGORY_CHOICES = (
+        ("health", _("Health")),
+        ("physical", _("Physical")),
+        ("environmental", _("Environmental")),
+    )
+
     h_code = models.ForeignKey(DangerIndication, on_delete=models.DO_NOTHING)
     category = models.CharField(max_length=25, null=True, blank=True)
-    section = models.CharField(max_length=10, null=True, blank=True)
+    section = models.CharField(max_length=15, null=True, blank=True, choices=CATEGORY_CHOICES)
     process_condition = catalog.GTForeignKey(
         "laboratory.Catalog",
         related_name="process_condition",
@@ -912,6 +914,10 @@ class DangerSubstanceCategory(models.Model):
     )
     note = models.CharField(max_length=255, null=True, blank=True)
     threshold = models.FloatField(null=True, blank=True, default=0.0)
+    measurement_unit = models.CharField(
+        max_length=25, null=True, default="Toneladas", blank=True,
+        verbose_name=_("Measurement unit")
+    )
 
     def __str__(self):
         return self.note
