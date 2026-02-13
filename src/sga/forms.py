@@ -19,7 +19,7 @@ from sga.models import (
     Label,
     SGAComplement,
     Provider,
-    HCodeCategory, DangerSubstance,
+    HCodeCategory, DangerSubstance, DangerSubstanceCategory,
 )
 
 
@@ -447,8 +447,22 @@ class DangerSubstanceForm(forms.ModelForm, GTForm):
             "name": genwidgets.TextInput,
             "threshold": genwidgets.TextInput,
             "notes": genwidgets.Textarea,
-            "type_match": genwidgets.TextInput,
+            "type_match": genwidgets.Select,
             "h_codes_match": AutocompleteSelectMultiple("dangersearch", attrs={}),
             "patron_name": genwidgets.TextInput,
             "especial_condition": genwidgets.TextInput,
+        }
+
+class DangerSubstanceCategoryForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = DangerSubstanceCategory
+        fields = ["h_code","category","section","process_condition",
+                  "note","threshold"]
+        widgets = {
+            "h_code": AutocompleteSelect("dangersearch", attrs={}),
+            "category": genwidgets.Select,
+            "section": genwidgets.TextInput,
+            "process_condition": genwidgets.Select,
+            "note": genwidgets.Textarea,
+            "threshold": genwidgets.TextInput,
         }

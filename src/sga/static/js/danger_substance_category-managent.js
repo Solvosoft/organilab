@@ -4,33 +4,42 @@ datatable_inits = {
     columns: [
         {data: "id", name: "id", title: "ID", type: "number", visible: false},
         {
-            data: "cas_code",
-            name: "cas_code",
-            title: gettext("Cas Code"),
+            data: "h_code",
+            name: "h_code",
+            title: gettext("H Code"),
+            render: selectobjprint({display_name: "text"}),
             type: "string",
             visible: true,
         },
         {
-            data: "name",
-            name: "name",
-            title: gettext("Name"),
-            type: "string",
-            visible: true
-        },
-        {
-            data: "notes",
-            name: "notes",
-            title: gettext("Notes"),
-            type: "string",
-            visible: true
-        },
-        {
-            data: "type_match",
-            name: "type_match",
-            title: gettext("Type Match"),
+            data: "category",
+            name: "category",
+            title: gettext("Category"),
             type: "string",
             visible: true,
             render: selectobjprint({display_name: "text"}),
+        },
+        {
+            data: "section",
+            name: "section",
+            title: gettext("Section"),
+            type: "string",
+            visible: true
+        },
+        {
+            data: "process_condition",
+            name: "process_condition__description",
+            title: gettext("Process Condition"),
+            render: selectobjprint({display_name: "text"}),
+            type: "string",
+            visible: true
+        },
+        {
+            data: "note",
+            name: "note",
+            title: gettext("Note"),
+            type: "string",
+            visible: true,
         },
         {
             data: "threshold",
@@ -40,16 +49,9 @@ datatable_inits = {
             visible: true,
         },
         {
-            data: "patron_name",
-            name: "patron_name",
-            title: gettext("Patron Name"),
-            type: "string",
-            visible: true,
-        },
-        {
-            data: "especial_condition",
-            name: "especial_condition",
-            title: gettext("Especial Condition"),
+            data: "measurement_unit",
+            name: "measurement_unit",
+            title: gettext("Measurement Unit"),
             type: "string",
             visible: true,
         },
@@ -95,7 +97,7 @@ const objconfig = {
     datatable_inits: datatable_inits,
     add_filter: true,
     relation_render: {'field_autocomplete': 'text'},
-    delete_display: data => `<span class="text-danger">${data.name} - ${data.cas_code}</span> <br> ${gettext("Are you sure you want to delete this Danger substance? <br> This action will delete all data related.")}`,
+    delete_display: data => `${gettext("Are you sure you want to delete this Danger substance category? <br> This action will delete all data related.")}`,
 
     create: "btn-success",
     icons: icons,

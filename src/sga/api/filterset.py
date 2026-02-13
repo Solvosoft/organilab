@@ -7,7 +7,7 @@ from django.db.models import Q
 from djgentelella.fields.drfdatetime import DateTimeRangeTextWidget
 
 from sga.models import ReviewSubstance, DisplayLabel, RecipientSize, HCodeCategory, \
-    DangerSubstance
+    DangerSubstance, DangerSubstanceCategory
 from sga.models import Substance
 
 
@@ -101,8 +101,21 @@ class DangerSubstanceFilterSet(FilterSet):
             "name": ["icontains"],
             "threshold": ["exact"],
             "notes": ["icontains"],
-            "type_match": ["exact"],
+            "type_match": ["icontains"],
             "h_codes_match": ["icontains"],
             "patron_name": ["icontains"],
             "especial_condition": ["icontains"],
+        }
+
+class DangerSubstanceCategoryFilterSet(FilterSet):
+    class Meta:
+        model = DangerSubstanceCategory
+        fields = {
+            "h_code": ["exact"],
+            "category": ["icontains"],
+            "section": ["icontains"],
+            "process_condition__description": ["icontains"],
+            "note": ["icontains"],
+            "threshold": ["exact"],
+            "measurement_unit": ["icontains"],
         }
