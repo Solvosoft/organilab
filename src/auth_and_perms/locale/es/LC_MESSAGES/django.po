@@ -1163,6 +1163,26 @@ msgstr "Ver unidad de medida"
 msgid "Unit Measurement"
 msgstr "Unidad de medida"
 
-
 msgid "Can manage organization permission structure"
 msgstr "Puede gestionar la estructura de permisos de la organización"
+
+msgid "View Danger Substance"
+msgstr "Ver Sustancia Peligrosa"
+
+msgid "Add Danger Substance"
+msgstr "Agregar Sustancia Peligrosa"
+
+msgid "Change Danger Substance"
+msgstr "Cambiar Sustancia Peligrosa"
+
+msgid "View Danger Substance Category"
+msgstr "Ver categoría de sustancia peligrosa"
+
+msgid "Add Danger Substance Category"
+msgstr "Agregar categoría de sustancia peligrosa"
+
+msgid "Change Danger Substance Category"
+msgstr "Cambiar categoría de sustancia peligrosa"
+
+msgid "Delete Danger Substance Category"
+msgstr "Eliminar categoría de sustancia peligrosa"

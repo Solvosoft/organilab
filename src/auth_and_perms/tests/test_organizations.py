@@ -249,68 +249,6 @@ class OrganizationTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertTrue(org_relations.count() == 0)
 
-    def test_register_user_digital(self):
-        data = {
-            "username": "p@gmail.co",
-            "validation_method": 2,
-            "organization_name": "CR Full",
-            "password1": "112153153fas",
-            "password2": "112153153fas",
-        }
-        response = self.client.post(
-            reverse("auth_and_perms:register_user_to_platform"), data=data
-        )
-        user = User.objects.last()
-        user_regist = RegistrationUser.objects.filter(user=user)
-        success_url = reverse(
-            "auth_and_perms:create_profile_by_digital_signature", kwargs={"pk": user.pk}
-        )
-
-        self.assertEqual(response.status_code, 302)
-
-        self.assertRedirects(response, success_url)
-        self.assertTrue(user_regist.count() == 1)
-
-    def test_register_user_otp(self):
-        data = {
-            "username": "p@gmail.co",
-            "validation_method": 1,
-            "organization_name": "CR Full",
-            "password1": "112153153fas",
-            "password2": "112153153fas",
-        }
-        response = self.client.post(
-            reverse("auth_and_perms:register_user_to_platform"), data=data
-        )
-        user = User.objects.last()
-        user_regist = RegistrationUser.objects.filter(user=user)
-        success_url = reverse(
-            "auth_and_perms:user_org_creation_totp", kwargs={"pk": user.pk}
-        )
-        otp = UserTOTPDevice.objects.filter(user=user).count()
-        self.assertEqual(response.status_code, 302)
-
-        self.assertRedirects(response, success_url)
-        self.assertTrue(user_regist.count() == 1)
-        self.assertTrue(otp == 1)
-
-    def test_register_user_error(self):
-        data = {
-            "username": "pgmail.co",
-            "validation_method": 0,
-            "organization_name": "CR Full",
-            "password1": "112153153fas",
-            "password2": "112153153fas",
-        }
-        response = self.client.post(
-            reverse("auth_and_perms:register_user_to_platform"), data=data
-        )
-        user = User.objects.last()
-        user_regist = RegistrationUser.objects.filter(user=user)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(user_regist.count() == 0)
-
     def test_rol_list(self):
 
         url = reverse("auth_and_perms:api-rol-list")

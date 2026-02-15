@@ -1116,3 +1116,43 @@ msgstr "Mueble"
 
 msgid "Donated income"
 msgstr "Ingreso por donacion"
+
+msgid "Capacity"
+msgstr "Capacidad"
+
+msgid "Flashpoint"
+msgstr "Punto de inflamación"
+
+msgid "H Code"
+msgstr "Código H"
+
+msgid "Cas Code"
+msgstr "Código CAS"
+
+msgid "Are you sure you want to delete this Danger substance? <br> This action will delete all data related."
+msgstr "¿Está seguro de que desea eliminar esta sustancia peligrosa? <br> Esta acción eliminará todos los datos relacionados."
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Type Match"
+msgstr "Tipo de Coincidencia"
+
+msgid "Patron Name"
+msgstr "Nombre del Patrón"
+
+msgid "Especial Condition"
+msgstr "Condición Especial"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Section"
+msgstr "Sección"
+
+msgid "Process Condition"
+msgstr "Condición de proceso"
+
+msgid "Are you sure you want to delete this Danger substance category? <br> This action will delete all data related."
+msgstr "¿Está seguro de que desea eliminar esta categoría de sustancia peligrosa? <br> Esta acción eliminará todos los datos relacionados."
+

@@ -23,6 +23,7 @@ from laboratory.views.objectlimits import ReactiveStockDashboard
 from laboratory.views.shelfobject import (
     view_equipment_shelfobject_detail,
     shelf_object_reagents,
+    shelf_object_hcode,
 )
 from sga.api.sga_components_viewsets import (
     WarningWordAPI,
@@ -55,6 +56,7 @@ from laboratory.api.views import (
     ObjectFeatureViewSet,
     ObjectViewSet,
     ShelObjectReactiveViewset,
+    ShelfObjectHcodeViewset,
 )
 from laboratory.functions import return_laboratory_of_shelf_id
 from laboratory.protocol.views import (
@@ -598,7 +600,12 @@ lab_process_router.register(
     LaboratoryProcessViewset,
     basename="api-laboratory-process",
 )
-
+shelfobject_hcode_router = DefaultRouter()
+shelfobject_hcode_router.register(
+    "api_shelfobject_hcode",
+    ShelfObjectHcodeViewset,
+    basename="api-shelfobject-hcode",
+)
 """MULTILAB"""
 urlpatterns += organization_urls + [
     path("<int:org_pk>/", include(organization_urls_org_pk)),
@@ -688,5 +695,14 @@ urlpatterns += organization_urls + [
         "<int:org_pk>/<int:lab_pk>/processes/list/",
         laboratory_process_list,
         name="laboratory_process_list",
+    ),
+    path(
+        "<int:org_pk>/<int:lab_pk>/shelfobject/hcode/",
+        include(shelfobject_hcode_router.urls),
+    ),
+    path(
+        "<int:org_pk>/<int:lab_pk>/shelfobject/hcode/list/",
+        shelf_object_hcode,
+        name="shelf_object_hcode",
     ),
 ]
