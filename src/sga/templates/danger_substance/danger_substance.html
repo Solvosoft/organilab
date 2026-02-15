@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% load gtsettings %}
+{% load organilab_tags %}
+{% block pre_head %}
+	{% define_urlname_action 'danger-subtance-list' %}
+{% endblock %}
+
+{% block title %}{% trans 'Danger Substance' %}{% endblock %}
+
+{% block content %}
+	<div class="card mt-2">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h1 class="text-center"> {% trans 'Dangerous Substances' %} </h1>
+			</div>
+
+			<div class="row mt-3 ">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="tableobj">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{% url "sga:api-danger-substance-list" org_pk as list_obj_url %}
+	{% trans 'Register Danger Substance' as create_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle principal_class='modal-l' modal_class=create_obj_tittle url=list_obj_url %}
+
+	{% url "sga:api-danger-substance-detail" org_pk 0 as detail_obj_url %}
+	{% trans 'Update Danger Substance' as update_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle principal_class='modal-l' modal_class=update_obj_tittle url=detail_obj_url %}
+
+	{% trans 'Delete Danger Substance' as delete_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+{% endblock %}
+
+{% block js %}
+	<script>
+		window.object_urls = {
+			list_url: "{% url 'sga:api-danger-substance-list' org_pk %}",
+			create_url: "{% url 'sga:api-danger-substance-list' org_pk %}",
+			destroy_url: "{% url 'sga:api-danger-substance-detail' org_pk 0 %}",
+			detail_url: "{% url 'sga:api-danger-substance-detail' org_pk 0 %}",
+		}
+	</script>
+	<script src="{% static 'js/dangersubstance-managent.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

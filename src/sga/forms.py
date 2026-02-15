@@ -19,7 +19,7 @@ from sga.models import (
     Label,
     SGAComplement,
     Provider,
-    HCodeCategory,
+    HCodeCategory, DangerSubstance, DangerSubstanceCategory,
 )
 
 
@@ -434,4 +434,35 @@ class HCategoryForm(GTForm, forms.ModelForm):
             "danger_category": genwidgets.Select,
             "h_code": AutocompleteSelectMultiple("dangersearch", attrs={}),
             "measurement_unit": genwidgets.Select,
+        }
+
+
+class DangerSubstanceForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = DangerSubstance
+        fields = ["cas_code", "name", "notes", "type_match", "h_codes_match",
+                  "threshold","patron_name", "especial_condition"]
+        widgets = {
+            "cas_code": genwidgets.TextInput,
+            "name": genwidgets.TextInput,
+            "threshold": genwidgets.TextInput,
+            "notes": genwidgets.Textarea,
+            "type_match": genwidgets.Select,
+            "h_codes_match": AutocompleteSelectMultiple("dangersearch", attrs={}),
+            "patron_name": genwidgets.TextInput,
+            "especial_condition": genwidgets.TextInput,
+        }
+
+class DangerSubstanceCategoryForm(forms.ModelForm, GTForm):
+    class Meta:
+        model = DangerSubstanceCategory
+        fields = ["h_code","category","section","process_condition",
+                  "note","threshold"]
+        widgets = {
+            "h_code": AutocompleteSelect("dangersearch", attrs={}),
+            "category": genwidgets.Select,
+            "section": genwidgets.TextInput,
+            "process_condition": genwidgets.Select,
+            "note": genwidgets.Textarea,
+            "threshold": genwidgets.TextInput,
         }

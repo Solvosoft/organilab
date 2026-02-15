@@ -354,7 +354,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "limit_quantity",
             "marked_as_discard",
             "description",
-            "was_donated"
+            "was_donated",
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -363,7 +363,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "description": genwidgets.Textarea,
             "marked_as_discard": genwidgets.CheckboxInput,
             "batch": genwidgets.TextInput,
-            "was_donated": genwidgets.CheckboxInput
+            "was_donated": genwidgets.CheckboxInput,
         }
 
 
@@ -422,7 +422,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "limit_quantity",
             "marked_as_discard",
             "description",
-            "was_donated"
+            "was_donated",
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -431,7 +431,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "description": genwidgets.Textarea,
             "marked_as_discard": forms.HiddenInput,
             "batch": genwidgets.TextInput,
-            "was_donated": genwidgets.CheckboxInput
+            "was_donated": genwidgets.CheckboxInput,
         }
 
 
@@ -1169,7 +1169,9 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         widget=genwidgets.Select,
     )
     marked_as_discard = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
-    was_donated = forms.BooleanField(widget=genwidgets.YesNoInput, required=False, label=_("Was donated?"))
+    was_donated = forms.BooleanField(
+        widget=genwidgets.YesNoInput, required=False, label=_("Was donated?")
+    )
 
     def __init__(self, *args, **kwargs):
         org = kwargs.pop("org_pk")
@@ -1234,6 +1236,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
             "was_donated": genwidgets.CheckboxInput,
         }
 
+
 class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
     def __init__(self, *args, **kwargs):
 
@@ -1248,10 +1251,21 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
     class Meta:
         model = ShelfObject
-        fields = ["reactive_expiration_date", "status", "physical_status","description",
-                  "batch","without_limit", "minimum_limit", "maximum_limit","pictograms",
-                  "type_budget", "container_entry_date", "container_open_date", "was_donated",
-                  ]
+        fields = [
+            "reactive_expiration_date",
+            "status",
+            "physical_status",
+            "description",
+            "batch",
+            "without_limit",
+            "minimum_limit",
+            "maximum_limit",
+            "pictograms",
+            "type_budget",
+            "container_entry_date",
+            "container_open_date",
+            "was_donated",
+        ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
             "status": genwidgets.Select,
@@ -1267,6 +1281,7 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "was_donated": genwidgets.CheckboxInput,
         }
 
+
 class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
@@ -1278,10 +1293,19 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             attrs={"class": "lock_limits", "data-prefix": "id_edit_material-"}
         )
         self.fields.pop("objecttype")
+
     class Meta:
         model = ShelfObject
-        fields = ["status", "description", "batch", "without_limit", "minimum_limit",
-                  "maximum_limit", "expiration_date", "was_donated"]
+        fields = [
+            "status",
+            "description",
+            "batch",
+            "without_limit",
+            "minimum_limit",
+            "maximum_limit",
+            "expiration_date",
+            "was_donated",
+        ]
         widgets = {
             "description": genwidgets.Textarea,
             "minimum_limit": genwidgets.TextInput,
@@ -1300,14 +1324,16 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
     amount = forms.IntegerField(
-        widget=genwidgets.NumberInput, min_value=settings.DEFAULT_MIN_QUANTITY,
-        label=_("Amount")
+        widget=genwidgets.NumberInput,
+        min_value=settings.DEFAULT_MIN_QUANTITY,
+        label=_("Amount"),
     )
 
     def __init__(self, *args, **kwargs):
         prefix = kwargs.get("prefix", "")
         super().__init__(*args, **kwargs)
-        self.fields["measurement_unit"] = forms.ModelChoiceField(widget=AutocompleteSelect(
+        self.fields["measurement_unit"] = forms.ModelChoiceField(
+            widget=AutocompleteSelect(
                 "catalogunitIncDec",
                 attrs={
                     "data-s2filter-shelf": f"#id_{prefix}-shelf",
@@ -1318,8 +1344,8 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
                     "data-s2filter-lab_pk": f"#id_{prefix}-laboratory",
                 },
             ),
-        label=_("Measurement unit"),
-        queryset=Catalog.objects.all(),
+            label=_("Measurement unit"),
+            queryset=Catalog.objects.all(),
         )
 
     class Meta:
@@ -1340,4 +1366,13 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
             "laboratory": genwidgets.HiddenInput,
             "organization": genwidgets.HiddenInput,
             "shelfobject": genwidgets.HiddenInput,
+        }
+
+
+class ShelfObjectFlashpointForm(GTForm, forms.ModelForm):
+    class Meta:
+        model = ShelfObject
+        fields = ["flashpoint"]
+        widgets = {
+            "flashpoint": genwidgets.Select,
         }

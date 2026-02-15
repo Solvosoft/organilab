@@ -871,3 +871,58 @@ class Pictogram(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class DangerSubstance(models.Model):
+    TYPE_CHOICES = (
+        ("cas", _("CAS")),
+        ("type_match", _("Type Match")),
+        ("patron_name", _("Patron Name")),
+    )
+    cas_code = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("CAS code")
+    )
+    name = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("Name")
+    )
+    threshold = models.FloatField(
+        null=True, blank=True, default=0.0, verbose_name=_("Threshold")
+    )
+    notes = models.TextField(null=True, blank=True, verbose_name=_("Notes"))
+    type_match = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Type Match"), choices=TYPE_CHOICES)
+    h_codes_match = models.ManyToManyField(DangerIndication, verbose_name=_("H Codes"))
+    patron_name = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Patron Name"))
+    especial_condition = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Especial Condition"))
+
+    def __str__(self):
+        return self.name
+
+
+class DangerSubstanceCategory(models.Model):
+    CATEGORY_CHOICES = (
+        ("health", _("Health")),
+        ("physical", _("Physical")),
+        ("environmental", _("Environmental")),
+    )
+
+    h_code = models.ForeignKey(DangerIndication, on_delete=models.DO_NOTHING, verbose_name=_("H Code"))
+    category = models.CharField(max_length=25, null=True, blank=True, verbose_name=_("Category"), choices=CATEGORY_CHOICES)
+    section = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("Section"))
+    process_condition = catalog.GTForeignKey(
+        "laboratory.Catalog",
+        related_name="process_condition",
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Process Condition"),
+        key_name="key",
+        key_value="process_condition",
+        null=True,
+    )
+    note = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Note"))
+    threshold = models.FloatField(null=True, blank=True, default=0.0, verbose_name=_("Threshold"))
+    measurement_unit = models.CharField(
+        max_length=25, null=True, default="Toneladas", blank=True,
+        verbose_name=_("Measurement unit")
+    )
+
+    def __str__(self):
+        return self.note
