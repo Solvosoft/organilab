@@ -573,8 +573,8 @@ class DangerSubstanceDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 class DangerSubstanceValidateSerializer(serializers.ModelSerializer):
-    cas_code = serializers.CharField(required=False)
-    name = serializers.CharField(required=False)
+    cas_code = serializers.CharField(required=False, allow_blank=True)
+    name = serializers.CharField(required=False, allow_blank=True)
     threshold = serializers.FloatField(required=False)
     notes = serializers.CharField(required=False, allow_blank=True)
     type_match = serializers.CharField(required=False, allow_blank=True)
@@ -623,7 +623,7 @@ class DangerSubstanceCategoryValidateSerializer(serializers.ModelSerializer):
     h_code = serializers.PrimaryKeyRelatedField(queryset=DangerIndication.objects.all(), required=True)
     category = serializers.CharField(required=True)
     section = serializers.CharField(required=False, allow_blank=True)
-    process_condition = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.all(), required=True)
+    process_condition = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.all(), required=True, allow_null=True, allow_empty=True)
     note = serializers.CharField(required=False, allow_blank=True)
     threshold = serializers.FloatField(required=False)
 
