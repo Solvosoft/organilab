@@ -1281,6 +1281,10 @@ class Laboratory(BaseCreationObj):
     def __repr__(self):
         return self.__str__()
 
+    def get_rooms(self):
+        rooms = LaboratoryRoom.objects.filter(laboratory=self)
+        return rooms
+
 
 class Provider(BaseCreationObj):
     name = models.CharField(
