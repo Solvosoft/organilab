@@ -1,18 +1,10 @@
 import re
 import logging
-import signal
+import threading
 
 logger = logging.getLogger(__name__)
 
 PDF_EXTRACT_TIMEOUT = 30
-
-
-class _PdfTimeout(Exception):
-    pass
-
-
-def _timeout_handler(signum, frame):
-    raise _PdfTimeout()
 
 
 UNICODE_SUBSCRIPT_MAP = {
@@ -205,21 +197,32 @@ def extract_msds_data(pdf_path):
         logger.error("pdfplumber is not installed. Run: pip install pdfplumber")
         return None
 
-    old_handler = signal.signal(signal.SIGALRM, _timeout_handler)
-    try:
-        signal.alarm(PDF_EXTRACT_TIMEOUT)
-        with pdfplumber.open(pdf_path) as pdf:
-            text = '\n'.join(page.extract_text() or '' for page in pdf.pages)
-        signal.alarm(0)
-    except _PdfTimeout:
+    result = {}
+
+    def _read():
+        try:
+            with pdfplumber.open(pdf_path) as pdf:
+                result['text'] = '\n'.join(
+                    page.extract_text() or '' for page in pdf.pages
+                )
+        except Exception as exc:
+            result['error'] = exc
+
+    reader = threading.Thread(target=_read, daemon=True)
+    reader.start()
+    reader.join(timeout=PDF_EXTRACT_TIMEOUT)
+
+    if reader.is_alive():
         logger.warning("Timeout reading PDF: %s", pdf_path)
         return None
-    except Exception:
-        logger.exception("Failed to read PDF: %s", pdf_path)
+
+    if 'error' in result:
+        logger.exception(
+            "Failed to read PDF: %s", pdf_path, exc_info=result['error']
+        )
         return None
-    finally:
-        signal.alarm(0)
-        signal.signal(signal.SIGALRM, old_handler)
+
+    text = result.get('text', '')
 
     if not text.strip():
         return None
