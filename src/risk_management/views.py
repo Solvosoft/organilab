@@ -1,6 +1,7 @@
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, F
+from django.db.models.functions import JSONObject
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -56,7 +57,7 @@ class ListZone(ListView):
             q = self.request.GET["q"]
             queryset = queryset.filter(
                 Q(name__icontains=q) | Q(laboratories__name__icontains=q)
-            ).distinct()
+            ).annotate(zone_pk=JSONObject(origen=F("pk"))).distinct()
 
         return queryset
 
@@ -69,6 +70,24 @@ class ListZone(ListView):
             context["pgparams"] = "?q=%s&" % (q,)
         else:
             context["pgparams"] = "?"
+
+        org_pk = self.kwargs["org_pk"]
+
+        x = ""
+        i = 0
+        for key in self.request.GET:
+            for data in self.request.GET.getlist(key):
+                if i > 0:
+                    x += f"&{key}={data}"
+                else:
+                    x += f"?{key}={data}"
+                i += 1
+
+        context["eslochart"] = reverse(
+            "eslochart-detail",
+            kwargs={"pk": org_pk}
+        ) + x
+
         return context
 
 
