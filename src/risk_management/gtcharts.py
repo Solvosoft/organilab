@@ -1,34 +1,27 @@
 import logging
+from django.utils import timezone
 from random import randint
+
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import permissions
-from django.db.models import Count, Sum, Q
 from django.utils.translation import gettext_lazy as _
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from djgentelella.chartjs import (
-    VerticalBarChart,
     HorizontalBarChart,
-    StackedBarChart,
-    LineChart,
-    PieChart,
-    DoughnutChart,
-    ScatterChart, ChartSerializer,
 )
 from djgentelella.groute import register_lookups
 from rest_framework.response import Response
 
 from laboratory.models import (
-    Laboratory,
-    SustanceCharacteristics,
     ShelfObject,
     Catalog,
-    Object,
     OrganizationStructure, BaseUnitValues,
 )
 from laboratory.utils_base_unit import get_conversion_units
 from risk_management.api.serializer import RiskZoneSerializer
-from risk_management.models import RiskZone, Buildings
+from risk_management.models import RiskZone, Buildings, EstablishmentLogs
 from sga.models import DangerIndication
 
 default_colors = [
@@ -797,5 +790,92 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
+            }
+        ]
+
+@register_lookups(prefix="eslo", basename="eslochart")
+class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ["risk_management.view_riskzone"]
+
+    def get_title(self):
+        return {"display": True, "text": _("Risk Categories Summary")}
+
+    def list(self, request):
+        raise Http404("Not found")
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        self.pk = request.GET.get('zone_pk')
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+    def get_options(self):
+        options = super().get_options()
+        options['plugins'] = {
+            'showDataLabels': True,
+            'datalabels': {
+                'anchor': 'end',
+                'align': 'end',
+                'offset': 4,
+                'clip': False,
+                'color': '#333',
+                'font': {
+                    'weight': 'bold',
+                    'size': 11
+                },
+            }
+        }
+        return options
+
+    def get_scales(self):
+        return {
+            'xAxes': [{
+                'ticks': {
+                    'min': 0,
+                    'max': 1,
+                    'stepSize': 0.1
+                }
+            }],
+            'yAxes': [{
+                'ticks': {}
+            }]
+        }
+
+    def get_labels(self):
+        return [_("Physical"), _("Health"), _("Environmental")]
+
+    def get_datasets(self):
+        today = timezone.now().date()
+        latest_log = EstablishmentLogs.objects.filter(
+            object_id=self.pk,
+            content_type=ContentType.objects.get_for_model(RiskZone),
+            date__date=today
+        ).order_by('-date').first()
+
+        if not latest_log:
+            latest_log = EstablishmentLogs.objects.filter(
+                object_id=self.pk,
+                content_type=ContentType.objects.get_for_model(RiskZone)
+            ).order_by('-date').first()
+
+        physical_value = latest_log.physical if latest_log else 0
+        health_value = latest_log.health if latest_log else 0
+        environmental_value = latest_log.environmental if latest_log else 0
+
+        self.index = randint(0, len(self.colors) - 1)
+        color_1 = self.get_color()
+        color_2 = self.get_color()
+        color_3 = self.get_color()
+
+        return [
+            {
+                "label": _("Risk Values"),
+                "backgroundColor": [color_1, color_2, color_3],
+                "borderColor": [color_1, color_2, color_3],
+                "borderWidth": 1,
+                "data": [physical_value, health_value, environmental_value],
             }
         ]

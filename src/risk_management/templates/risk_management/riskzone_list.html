@@ -70,7 +70,9 @@
                 <span class="fs-6 prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
                 <a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
             </div>
-
+																<div id="eslo" class="tab-pane fade show active">
+																		{% include 'gentelella/widgets/chartjs.html' with graph_url=eslochart extra_params=object.pk %}
+																</div>
                 <div class="col-md-3">
                 <div class="btn-group btn-group-sm float-end" role="group">
              {% if perm_change_riskzone %}
