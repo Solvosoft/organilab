@@ -28,22 +28,31 @@ def _normalize_subscripts(text):
 
 
 def _extract_cas_number(text):
-    # Only search section 1 (before section 2) to avoid matching CAS numbers
-    # from composition tables in section 3.
-    section1_match = re.search(
-        r'(?:SECCI[ÓO]N\s*2|Section\s*2)\b', text, re.IGNORECASE
-    )
-    section1_text = text[:section1_match.start()] if section1_match else text
-
     patterns = [
         r'CAS[-\s]*No\.?\s*[:\.]?\s*(\d{1,7}-\d{2}-\d)',
         r'N[ºúu](?:mero)?\s*CAS\s*\[?\s*(\d{1,7}-\d{2}-\d)',
         r'\bCAS\s+(\d{1,7}-\d{2}-\d)',
     ]
+
+    # Pass 1: Section 1 only (before Section 2) to avoid grabbing component
+    # CAS from composition tables when the main CAS is in Section 1.
+    sec2 = re.search(r'(?:SECCI[ÓO]N\s*2|Section\s*2)\b', text, re.IGNORECASE)
+    section1_text = text[:sec2.start()] if sec2 else text
     for pattern in patterns:
         match = re.search(pattern, section1_text)
         if match:
             return match.group(1)
+
+    # Pass 2: Section 3 only (fallback for mixtures like aqueous solutions
+    # where the CAS appears only in the composition table).
+    sec3 = re.search(r'(?:SECCI[ÓO]N\s*3|Section\s*3)\b', text, re.IGNORECASE)
+    sec4 = re.search(r'(?:SECCI[ÓO]N\s*4|Section\s*4)\b', text, re.IGNORECASE)
+    if sec3:
+        sec3_text = text[sec3.start():sec4.start() if sec4 else len(text)]
+        match = re.search(r'(\d{1,7}-\d{2}-\d)', sec3_text)
+        if match:
+            return match.group(1)
+
     return None
 
 
@@ -73,8 +82,8 @@ def _extract_molecular_formula(text):
 
     # Other formats: "Fórmula molecular Cd O4 S" or "Molecular Formula C3 H8 O"
     patterns = [
-        r'[Ff][óo]rmula\s+molecular\s+([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
-        r'(?:Molecular\s+)?[Ff]ormula\s+([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
+        r'[Ff][óo]rmula\s+molecular\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
+        r'(?:Molecular\s+)?[Ff]ormula\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
     ]
     for pattern in patterns:
         match = re.search(pattern, normalized)
