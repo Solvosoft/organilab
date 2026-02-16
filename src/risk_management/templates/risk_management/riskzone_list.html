@@ -2,120 +2,129 @@
 {% load i18n laboratory %}
 {% load urlname_tags %}
 {% block pre_head %}
-    {% define_urlname_action 'riskzone_list' %}
-    {% define_urlname_action 'riskzone_create' %}
-    {% define_urlname_action 'riskzone_delete' %}
-    {% define_urlname_action 'riskzone_detail' %}
-    {% define_urlname_action 'riskzone_update' %}
+	{% define_urlname_action 'riskzone_list' %}
+	{% define_urlname_action 'riskzone_create' %}
+	{% define_urlname_action 'riskzone_delete' %}
+	{% define_urlname_action 'riskzone_detail' %}
+	{% define_urlname_action 'riskzone_update' %}
 {% endblock %}
 {% block content %}
-  {%  has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
-  {%  has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
-  {%  has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
+	{% has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
+	{% has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
+	{% has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
 
 
-<div class="clearfix">
-	<div class="row float-start">
+	<div class="clearfix">
+		<div class="row float-start">
 
-	<div class="btn-toolbar justify-content-between"  aria-label="Control button">
-		<div class="btn-group gap-3" role="group">
-				{% if perms.risk_management.view_regent %}
-			<a target="_blank" href="{% url 'riskmanagement:regents'  org_pk=org_pk  %}" class="btn btn-outline-secondary"><i class="fa fa-address-book"></i> {% trans 'Regents' %}</a>
-				{% endif %}
-			{% if perms.risk_management.view_buildings %}
-			<a  target="_blank" href="{% url 'riskmanagement:buildings_list' org_pk=org_pk %}" class="btn btn-outline-secondary"><i class="fa fa-building"></i> {% trans 'Buildings' %}</a>
-			{% endif %}
-			{% if perms.risk_management.view_structure %}
-			<a  target="_blank" href="{% url 'riskmanagement:structures_list' org_pk=org_pk %}" class="btn btn-outline-secondary"><i class="fa fa-building"></i> {% trans 'Structures' %}</a>
-			{% endif %}
+			<div class="btn-toolbar justify-content-between" aria-label="Control button">
+				<div class="btn-group gap-3" role="group">
+					{% if perms.risk_management.view_regent %}
+						<a target="_blank" href="{% url 'riskmanagement:regents' org_pk=org_pk %}" class="btn btn-outline-secondary"><i
+							class="fa fa-address-book"></i> {% trans 'Regents' %}</a>
+					{% endif %}
+					{% if perms.risk_management.view_buildings %}
+						<a target="_blank" href="{% url 'riskmanagement:buildings_list' org_pk=org_pk %}"
+									class="btn btn-outline-secondary"><i class="fa fa-building"></i> {% trans 'Buildings' %}</a>
+					{% endif %}
+					{% if perms.risk_management.view_structure %}
+						<a target="_blank" href="{% url 'riskmanagement:structures_list' org_pk=org_pk %}"
+									class="btn btn-outline-secondary"><i class="fa fa-building"></i> {% trans 'Structures' %}</a>
+					{% endif %}
+				</div>
+			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="page-header col-xs-13" align="center">
+			<h3 class="heading-1"><span>{% trans 'Risk Zone Management' %}</span></h3>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="page-header col-xs-13" align="center">
-		<h3 class="heading-1"><span>{% trans 'Risk Zone Management'  %}</span></h3>
-	</div>
-</div>
-<div class="row mt-3">
-    <div class="container-fluid">
-        <form metod="get" action="">
-            <div class="form-group row justify-content-end">
-                <div class="offset-md-9 col-sm-3">
-                    <div class="input-group custom-search-form">
-                        <input class="form-control" name="q" value="{{q}}" placeholder="{% trans 'Search...' %}" type="text">
-                        <span class="input-group-btn">
+	<div class="row mt-3">
+		<div class="container-fluid">
+			<form metod="get" action="">
+				<div class="form-group row justify-content-end">
+					<div class="offset-md-9 col-sm-3">
+						<div class="input-group custom-search-form">
+							<input class="form-control" name="q" value="{{ q }}" placeholder="{% trans 'Search...' %}" type="text">
+							<span class="input-group-btn">
                             <button id="btnsearch" type="submit" class="btn btn-md btn-outline-secondary">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
-                    </div>
-                </div>
-            </div>
-            {% if perm_add_riskzone %}
-                <div class="form-group row justify-content-end">
-                    <div class="col-md-9">
-                        <a class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:riskzone_create' org_pk %}">
-                    <i class="fa fa-plus" aria-hidden="true"></i> {% trans 'New' %} </a>
-                    </div>
-                </div>
-            {% endif %}
-        </form>
-        <div class="row">
-      <ul class="list-group list-group-vertical ms-1">
-        {% for object in object_list %}
-          <li class="list-group-item">
-              <div class="row">
-                <div class="col-md-9 mb-2">
-                <span class="fs-6 prior_{{object.priority}} badge">{{object.laboratories.all.count}}</span>
-                <a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
-            </div>
-																<div id="eslo" class="tab-pane fade show active">
-																		{% include 'gentelella/widgets/chartjs.html' with graph_url=eslochart extra_params=object.pk %}
-																</div>
-                <div class="col-md-3">
-                <div class="btn-group btn-group-sm float-end" role="group">
-             {% if perm_change_riskzone %}
-              <a class="btn btn-outline-warning"
-                 href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}">
-              <i class="fa fa-edit" aria-hidden="true"></i> {% trans 'Update' %}</a>
-             {% endif %}
-             {% if perm_change_riskzone %}
-              <a class="btn btn-sm btn-outline-danger"
-                 href="{% url 'riskmanagement:riskzone_delete' org_pk object.pk %}">
-               <i class="fa fa-trash" aria-hidden="true"></i> {% trans 'Delete' %}</a>
-             {% endif %}
-            </div>
-            </div>
-              </div>
-          </li>
-        {% endfor %}
-      </ul>
+						</div>
+					</div>
+				</div>
+				{% if perm_add_riskzone %}
+					<div class="form-group row justify-content-end">
+						<div class="col-md-9">
+							<a class="btn btn-sm btn-outline-success float-end" href="{% url 'riskmanagement:riskzone_create' org_pk %}">
+								<i class="fa fa-plus" aria-hidden="true"></i> {% trans 'New' %} </a>
+						</div>
+					</div>
+				{% endif %}
+			</form>
+			<div class="row">
+				<div class="container-fluid">
+					<div class="row">
+						{% for object in object_list %}
+							<div class="col-md-4 mb-4 px-2">
+								<div class="card">
+									<div class="card-header">
+										<span class="fs-6 prior_{{ object.priority }} badge">{{ object.laboratories.all.count }}</span>
+										<a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
+									</div>
+									<div class="card-body">
+										<div style="width: 100%; height: 300px;">
+											{% include 'gentelella/widgets/chartjs.html' with graph_url=eslochart extra_params=object.pk %}
+										</div>
+									</div>
+									<div class="card-footer">
+										<div class="d-flex justify-content-between w-100" role="group">
+											{% if perm_change_riskzone %}
+												<a class="btn btn-sm btn-outline-warning"
+															href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}">
+													<i class="fa fa-edit" aria-hidden="true"></i> {% trans 'Update' %}
+												</a>
+											{% endif %}
+											{% if perm_change_riskzone %}
+												<a class="btn btn-sm btn-outline-danger"
+															href="{% url 'riskmanagement:riskzone_delete' org_pk object.pk %}">
+													<i class="fa fa-trash" aria-hidden="true"></i> {% trans 'Delete' %}
+												</a>
+											{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
 
-      {% if is_paginated %}
-        <nav aria-label="...">
-          <ul class="pager">
-            {% if page_obj.has_previous %}
-              <li>
-                <a href="{{pgparams}}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
-              </li>
-            {% endif %}
+				{% if is_paginated %}
+					<nav aria-label="...">
+						<ul class="pager">
+							{% if page_obj.has_previous %}
+								<li>
+									<a href="{{ pgparams }}page={{ page_obj.previous_page_number }}">{% trans 'Previous' %}</a>
+								</li>
+							{% endif %}
 
-            <li>
-              {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
-            </li>
+							<li>
+								{% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.paginator.num_pages }}.
+							</li>
 
-            {% if page_obj.has_next %}
-              <li>
-                <a href="{{pgparams}}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
-              </li>
-            {% endif %}
-          </ul>
-        </nav>
+							{% if page_obj.has_next %}
+								<li>
+									<a href="{{ pgparams }}page={{ page_obj.next_page_number }}">{% trans 'Next' %}</a>
+								</li>
+							{% endif %}
+						</ul>
+					</nav>
 
-      {% endif %}
-    </div>
-    </div>
+				{% endif %}
+			</div>
+		</div>
 
-</div>
+	</div>
 {% endblock %}

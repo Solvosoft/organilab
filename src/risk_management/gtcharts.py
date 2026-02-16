@@ -845,7 +845,7 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
         }
 
     def get_labels(self):
-        return [_("Physical"), _("Health"), _("Environmental")]
+        return [""]
 
     def get_datasets(self):
         today = timezone.now().date()
@@ -872,10 +872,24 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
 
         return [
             {
-                "label": _("Risk Values"),
-                "backgroundColor": [color_1, color_2, color_3],
-                "borderColor": [color_1, color_2, color_3],
+                "label": _("Physical"),
+                "backgroundColor": color_1,
+                "borderColor": color_1,
                 "borderWidth": 1,
-                "data": [physical_value, health_value, environmental_value],
+                "data": [physical_value],
+            },
+            {
+                "label": _("Health"),
+                "backgroundColor": color_2,
+                "borderColor": color_2,
+                "borderWidth": 1,
+                "data": [health_value],
+            },
+            {
+                "label": _("Environmental"),
+                "backgroundColor": color_3,
+                "borderColor": color_3,
+                "borderWidth": 1,
+                "data": [environmental_value],
             }
         ]
