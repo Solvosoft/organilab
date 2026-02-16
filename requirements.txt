@@ -30,3 +30,4 @@ sentry-sdk==2.49.0
 legacy-cgi==2.6.4
 coverage-badge==1.1.2
 setuptools<82
+pdfplumber
