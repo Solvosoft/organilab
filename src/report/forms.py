@@ -518,7 +518,7 @@ class RegencyReportForm(ReportBase):
     )
     years = forms.ChoiceField(
         widget=genwidgets.Select,
-        choices=get_years(),
+        choices=[],
         required=True,
         label=_("Year"),
     )
@@ -529,6 +529,7 @@ class RegencyReportForm(ReportBase):
         self.fields["laboratory"].queryset = Laboratory.objects.filter(
             organization__pk=org_pk
         )
+        self.fields["years"].choices = get_years()
 
     def clean_laboratory(self):
         laboratory = self.cleaned_data["laboratory"]
