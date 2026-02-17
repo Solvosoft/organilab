@@ -5,7 +5,12 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
-from laboratory.models import Furniture, BaseUnitValues, ObjectLogChange
+from laboratory.models import (
+    Furniture,
+    BaseUnitValues,
+    ObjectLogChange,
+    ObjectMaximumLimit,
+)
 from report.models import (
     DocumentReportStatus,
     ObjectChangeLogReport,
@@ -282,24 +287,29 @@ def get_inventory(objs, units, extra_filters={}):
         data = {}
         for unit in units:
             quantity = (
-                ObjectLogChange.objects.filter(
+                ObjectMaximumLimit.objects.filter(
                     object=obj, measurement_unit=unit, **extra_filters
                 )
                 .distinct()
-                .aggregate(Sum("diff_value", default=0))["diff_value__sum"]
+                .last()
+                .quantity
             )
             if quantity > 0:
                 total_shelfobjects += get_conversion_units_to_kilograms(
                     unit, quantity, density
                 )
-
+        h_codes = [
+            h_codes
+            for h_code in obj.sustancecharacteristics.h_code.values_list(
+                "code", flat=True
+            )
+        ]
         data = {
             "name": obj.name,
             "cas": obj.cas_code,
-            "total": total_shelfobjects,
-            "h_codes": obj.sustancecharacteristics.h_code.values_list(
-                "code", flat=True
-            ),
+            "cantidad_t": total_shelfobjects,
+            "h_codes": ";".join(h_codes),
+            "condicion_proceso": "",
         }
         dict_objs.append(data)
     return dict_objs
@@ -307,9 +317,7 @@ def get_inventory(objs, units, extra_filters={}):
 
 def evaluate_table_tree(data):
     data_list = []
-    print(data)
     for obj in data:
-
         obj["ratio"] = 0.0
         danger_substances = DangerSubstance.objects.filter(cas_code=obj["cas"])
         patron_names = DangerSubstance.objects.filter(type_match="nombre_patron")
