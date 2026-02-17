@@ -11,7 +11,12 @@ from report.models import (
     ObjectChangeLogReport,
     ObjectChangeLogReportBuilder,
 )
-from sga.models import HCodeCategory, DangerSubstance
+from sga.models import (
+    HCodeCategory,
+    DangerSubstance,
+    DangerSubstanceCategory,
+    DangerIndication,
+)
 
 
 def format_date(value):
@@ -300,15 +305,269 @@ def get_inventory(objs, units, extra_filters={}):
     return dict_objs
 
 
-def validate_square_tree(data):
+def evaluate_table_tree(data):
     data_list = []
     for obj in data:
+        obj["ratio"] = 0.0
         danger_substances = DangerSubstance.objects.filter(cas_code=obj["cas"])
+        patron_names = DangerSubstance.objects.filter(type_match="nombre_patron")
+        h_categories = DangerSubstance.objects.filter(type_match="h_categoria")
+        # Add threshold by cas code
         if danger_substances.exists():
             for danger in danger_substances:
                 data = obj.copy()
-                data["threshold"] = danger.threshold
+                data.update(
+                    threshold=danger.threshold,
+                    especial_condition=danger.especial_condition,
+                )
                 data_list.append(data)
+        else:
+            # Add threshold by nombre_patron
+            for patron_name in patron_names:
+                patrons = [
+                    p.strip().lower()
+                    for p in patron_name.patron_name.split(";")
+                    if p.strip()
+                ]
+                for patron in patrons:
+                    if patron in obj["name"].lower():
+                        data = obj.copy()
+                        data.update(
+                            threshold=patron_name.threshold,
+                            especial_condition=patron_name.especial_condition,
+                        )
+                    data_list.append(data)
+            # Add threshold by h_categoria
+            for h_category in h_categories.filter(h_codes_match__pk__in=obj["h_codes"]):
+                for h_code in h_category.h_codes_match.filter(pk__in=obj["h_codes"]):
+                    if h_code in obj["h_codes"]:
+                        data = obj.copy()
+                        data.update(
+                            threshold=h_category.threshold,
+                            especial_condition=h_category.especial_condition,
+                        )
+                        data_list.append(data)
 
-    # evaluate if break threshold
+    # evaluate is the substance nominated and extract ratio
+    for data in data_list:
+        nominate = False
+        ratio = 0.0
+        if "threshold" in data:
+            try:
+                nominate = True
+                ratio = data["total"] / data["threshold"]
+            except ZeroDivisionError:
+                ratio = 0.0
+        data.update(nominate=nominate, ratio=ratio)
+
     return data_list
+
+
+def evaluate_square_quarter(obj):
+    data_list = []
+    if obj["total"] <= 0:
+        return {"supera": False}
+    hcodes = obj["h_codes"]
+    especial_condition = obj["especial_condition"]
+    hcodes_list = DangerSubstanceCategory.objects.filter(
+        h_code__pk__in=hcodes
+    ).values_list("h_code__pk")
+    resuls_rows = []
+
+    if hcodes_list.exists():
+        for hcode in set(hcodes_list):
+            hcodes = DangerSubstanceCategory.objects.filter(h_code__pk=hcode)
+            conditions = hcodes.filter(process_condition__isnull=False)
+            if not conditions.exists():
+                for candition in conditions:
+                    resuls_rows.append(
+                        {
+                            "h_code": hcode,
+                            "process_condition": candition.process_condition,
+                            "category": candition.category,
+                            "threshold_cat": candition.threshold,
+                            "section": candition.section,
+                            "notes": candition.note,
+                        }
+                    )
+            elif especial_condition:
+                especial_condition_codes = hcodes_list.filter(
+                    process_condition=especial_condition
+                ).order_by("threshold")
+                if especial_condition_codes.exists():
+                    especial_condition_code = especial_condition_codes.first()
+                    resuls_rows.append(
+                        {
+                            "h_code": hcode,
+                            "process_condition": especial_condition,
+                            "category": especial_condition_code.category,
+                            "threshold_cat": especial_condition_code.threshold,
+                            "section": especial_condition_code.section,
+                            "notes": especial_condition_code.note,
+                        }
+                    )
+                else:
+                    for condition in especial_condition_codes:
+                        resuls_rows.append(
+                            {
+                                "h_code": hcode,
+                                "process_condition": condition.process_condition,
+                                "category": condition.category,
+                                "threshold_cat": condition.threshold,
+                                "section": condition.section,
+                                "notes": condition.note,
+                            }
+                        )
+
+            else:
+                hcode_low = hcodes.order_by("threshold").first()
+                resuls_rows.append(
+                    {
+                        "h_code": hcode,
+                        "process_condition": hcode_low.process_condition,
+                        "category": hcode_low.category,
+                        "threshold_cat": hcode_low.threshold,
+                        "section": hcode_low.section,
+                        "notes": hcode_low.note,
+                    }
+                )
+    else:
+        return {"supera": False}
+
+    for row in resuls_rows:
+        if row["threshold_cat"] > 0 and obj["total"] >= row["threshold_cat"] * 1000:
+            return {
+                "supera": True,
+                "h_code": row["h_code"],
+                "category": row["category"],
+                "threshold_cat": row["threshold_cat"],
+            }
+
+
+def substance_contributions(obj):
+    quantity = obj["total"]
+    hlist = obj["h_codes"]
+    details = []
+    globals_advert = []
+    especial_condition = obj["especial_condition"]
+    results = {
+        "contribuciones": {},
+        "detalle": [],
+        "regla_cruzada_salud": False,
+        "advertencias": [],
+    }
+
+    if hlist and quantity <= 0:
+        return results
+
+    if not DangerSubstanceCategory.objects.filter(h_code__pk__in=hlist).exists():
+        return results
+    filas_resueltas = []
+    advertencias = []
+    hcodes_list = DangerSubstanceCategory.objects.filter(h_code__pk__in=hlist)
+    resuls_rows = []
+
+    if hcodes_list.exists():
+        for hcode in hcodes_list.values_list("h_code__pk"):
+            hcodes = DangerSubstanceCategory.objects.filter(h_code__pk=hcode)
+            conditions = hcodes.filter(process_condition__isnull=False)
+            if not conditions.exists():
+                for candition in conditions:
+                    resuls_rows.append(
+                        {
+                            "h_code": hcode,
+                            "process_condition": candition.process_condition,
+                            "category": candition.category,
+                            "threshold_cat": candition.threshold,
+                            "section": candition.section,
+                            "notes": candition.note,
+                        }
+                    )
+            elif especial_condition:
+                especial_condition_codes = hcodes_list.filter(
+                    process_condition=especial_condition
+                ).order_by("threshold")
+                if especial_condition_codes.exists():
+                    especial_condition_code = especial_condition_codes.first()
+                    resuls_rows.append(
+                        {
+                            "h_code": hcode,
+                            "process_condition": especial_condition,
+                            "category": especial_condition_code.category,
+                            "threshold_cat": especial_condition_code.threshold,
+                            "section": especial_condition_code.section,
+                            "notes": especial_condition_code.note,
+                        }
+                    )
+                else:
+                    for condition in especial_condition_codes:
+                        resuls_rows.append(
+                            {
+                                "h_code": hcode,
+                                "process_condition": condition.process_condition,
+                                "category": condition.category,
+                                "threshold_cat": condition.threshold,
+                                "section": condition.section,
+                                "notes": condition.note,
+                            }
+                        )
+            else:
+                # Sin condición especificada → más conservador + advertencia
+                hcode_low = hcodes.order_by("threshold").first()
+                resuls_rows.append(
+                    {
+                        "h_code": hcode,
+                        "process_condition": hcode_low.process_condition,
+                        "category": hcode_low.category,
+                        "threshold_cat": hcode_low.threshold,
+                        "section": hcode_low.section,
+                        "notes": hcode_low.note,
+                    }
+                )
+                advertencias.append(
+                    f"{hcode}: condicion no especificada, "
+                    f"usando umbral mas bajo ({hcode_low.threshold}t)"
+                )
+
+        # Agrupar por categoría → tomar umbral mínimo por categoría
+        contribuciones_directas = {}
+        detalles = []
+
+        for category in ["Físico", "Salud", "Ambiental"]:
+            cat = hcodes_list.filter(category=category)
+            umbral_min = cat.threshold
+            if umbral_min > 0:
+                contrib = total / umbral_min
+                contribuciones_directas[category] = contrib
+                h_usados = ", ".join(
+                    set(cat.h_code.values_list("hcode__code", flat=True))
+                )
+                notas_usadas = ", ".join(set(cat.notas.values_list("notw", flat=True)))
+                detalle_str = f"{category}: {total}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
+                if notas_usadas:
+                    detalle_str += f" [{notas_usadas}]"
+                detalles.append(detalle_str)
+
+        if "Salud" not in contribuciones_directas:
+            umbral_min_global = hcodes_list.threshold
+            h_salud_sga = []
+            if umbral_min_global > 0:
+                contrib_salud = total / umbral_min_global
+                contribuciones_directas["Salud"] = contrib_salud
+                results["regla_cruzada_salud"] = True
+                for h in hlist:
+                    danger = DangerIndication.objects.filter(
+                        code=h, danger_type="Salud"
+                    ).first()
+                    if danger:
+                        h_salud_sga.append(h.danger_type)
+                detalles.append(
+                    f"Salud (inclusión C4): {total}/{umbral_min_global} = {contrib_salud:.4f} "
+                    f"(H-codes SGA salud: {', '.join(h_salud_sga) if h_salud_sga else 'ninguno'})"
+                )
+
+        results["contribuciones"] = contribuciones_directas
+        results["detalle"] = detalles
+        results["advertencias"] = advertencias
+
+    return results

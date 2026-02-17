@@ -18,6 +18,10 @@ from report.utils import (
     load_dataset_by_column,
     get_danger_categories,
     get_conversion_units_to_kilograms,
+    evaluate_table_tree,
+    evaluate_square_quarter,
+    get_inventory,
+    substance_contributions,
 )
 from risk_management.models import RiskZone
 
@@ -48,79 +52,140 @@ def get_dataset_report(report, column_list=None):
     }
 
     report_regency = RegencyReport.objects.create(**data)
-    reactive_list = []
+    objs = get_inventory(
+        objs,
+        units,
+        {
+            "update_time__year": 2025,
+            "organization_where_action_taken__pk": report.data["organization"],
+            "laboratory__pk__in": report.data["laboratory"],
+        },
+    )
+    inv_c3 = evaluate_table_tree(objs)
 
     for reactive in objs:
-        third_square = False
-        total_shelfobjects = 0
-        density = getattr(reactive.sustancecharacteristics, "density", None)
-
-        for unit in units:
-            quantity = (
-                logs.filter(object=reactive, measurement_unit=unit)
-                .distinct()
-                .aggregate(Sum("diff_value", default=0))["diff_value__sum"]
-            )
-            if quantity > 0:
-                total_shelfobjects += get_conversion_units_to_kilograms(
-                    unit, quantity, density
-                )  # list 3
-
-        reactive_list.append(
-            RegencyReportBuilder(
-                report=report_regency,
-                substance=reactive,
-                danger_category=3,
-                total=total_shelfobjects,
-                break_threshold=(reactive.threshold * 1000) < total_shelfobjects,
-            )
-        )
-
-        if not third_square and hasattr(reactive, "sustancecharacteristics"):
-            # list 4
-            danger_categories_list = get_danger_categories(
-                reactive,
-                total_shelfobjects,
-            )
-            if len(danger_categories_list) > 0:
-                if danger_categories_list[-1].threshold * 1000 < total_shelfobjects:
-                    danger_categories_list.append(_("Yes Exceeds Threshold"))
-                else:
-                    danger_categories_list.append(_("No Exceeds Threshold"))
-                fourth_list.extend(danger_categories_list)
-
-    total_fifth_list = {
-        "enviroment": {"substance": 0, "category_threshold": 0, "total": 0},
-        "health": {"substance": 0, "category_threshold": 0, "total": 0},
-        "physical": {"substance": 0, "category_threshold": 0, "total": 0},
-    }
-    if len(fourth_list) > 0:
-        for danger in fourth_list:
-            total_fifth_list[danger[2]]["substance"] += danger[3]
-            total_fifth_list[danger[2]]["category_threshold"] += danger[4]
-            try:
-                total_fifth_list[danger[2]]["total"] += danger[3] / danger[4]
-            except ZeroDivisionError:
-                total_fifth_list[danger[2]]["total"] = 0
-
-            reactive_list.append(
-                RegencyReportBuilder(
-                    report=report_regency,
-                    substance=reactive,
-                    danger_category=4,
-                    total=total_fifth_list[danger[2]]["total"],
+        inv_c3 = evaluate_table_tree(reactive)
+        exists_ratio = any(x["ratio"] >= 1.0 for x in inv_c3)
+        if exists_ratio:
+            details = []
+            for r in inv_c3:
+                details.append(
+                    {
+                        "nombre": r["name"],
+                        "cas": r["cas"],
+                        "total": float(r["total"]),
+                        "nominate": bool(r["nominate"]),
+                        "umbral_substamce": (
+                            None if r["threshold"] == 0.0 else float(r["threshold"])
+                        ),
+                        "ratio": (None if r["ratio"] == 0.0 else float(r["ratio"])),
+                        "h_codes": r["h_codes"],
+                        "contribuciones": {},
+                        "detalle_contribuciones": [],
+                        "regla_cruzada_salud": False,
+                    }
                 )
-            )
+            return {
+                "clasificacion": "riesgo mayor",
+                "criterio": "Al menos una sustancia nominada (Cuadro 3) cumple o supera su umbral.",
+                "sumatorias_por_categoria": {},
+                "detalles": details,
+                "trazabilidad": {},
+            }
+    for obj in inv_c3:
+        results = evaluate_square_quarter(obj)
+        if results["supera"]:
+            details = []
+            for r in inv_c3:
+                details.append(
+                    {
+                        "name": r["name"],
+                        "cas": r["cas"],
+                        "total": float(r["total"]),
+                        "nominate": bool(r["nominate"]),
+                        "threshol_c3": (
+                            None if r["threshold"] == 0.0 else float(r["threshold"])
+                        ),
+                        "ratio_c3": (
+                            None if r["ratio_c3"] == 0.0 else float(r["ratio_c3"])
+                        ),
+                        "h_codes": r["h_codes"],
+                        "contribuciones": {},
+                        "detalle_contribuciones": [],
+                        "regla_cruzada_salud": False,
+                        "paso4_supera": (
+                            r["nombre"] == obj["nombre"] and r["cas"] == obj["cas"]
+                        ),
+                    }
+                )
 
-        for danger in total_fifth_list:
-            total_fifth_list[danger]["category_threshold"] /= 1000
+            return {
+                "clasificacion": "riesgo mayor",
+                "criterio": (
+                    f"Sustancia '{obj['name']}' supera umbral individual del Cuadro 4 "
+                    f"({results['h_code']}: {obj['total']}t >= {results['threshold_cat']}t)."
+                ),
+                "sumatorias_por_categoria": {},
+                "detalles": details,
+                "trazabilidad": {},
+            }
+    # Paso 5: sumatoria por categoría usando Cuadro 4
+    sum_per_category = {"Físico": 0.0, "Salud": 0.0, "Ambiental": 0.0}
+    details = []
 
-    totals = 0
-    if reactive_list:
-        RegencyReportBuilder.objects.bulk_create(reactive_list)
-        totals = len(reactive_list)
+    advertencias_globales = []
 
-    return totals
+    for obj in inv_c3:
+        res_sust = substance_contributions(obj)
+
+        for cat, val in res_sust["contribuciones"].items():
+            if cat in sum_per_category:
+                sum_per_category[cat] += val
+
+        # Propagar advertencias con nombre de sustancia
+        for adv in res_sust.get("advertencias", []):
+            advertencias_globales.append(f"{obj['nombre']}: {adv}")
+
+        details.append(
+            {
+                "nombre": obj["nombre"],
+                "cas": obj["cas"],
+                "cantidad_t": float(obj["cantidad_t"]),
+                "nominada_c3": bool(obj["nominate"]),
+                "umbral_c3": (
+                    None if obj["threshold_cat"] else float(obj["threshold_cat"])
+                ),
+                "ratio_c3": None if obj["ratio"] else float(obj["ratio"]),
+                "h_codes": obj["h_codes"],
+                "contribuciones": res_sust["contribuciones"],
+                "detalle_contribuciones": res_sust["detalle"],
+                "regla_cruzada_salud": res_sust["regla_cruzada_salud"],
+                "advertencias": res_sust.get("advertencias", []),
+            }
+        )
+    # Redondear sumatorias
+    for cat in sum_per_category:
+        sum_per_category[cat] = round(sum_per_category[cat], 4)
+
+    criterio = "Sumatoria por categorías SGA (Cuadro 4) "
+    if any(v >= 1.0 for v in sum_per_category.values()):
+        clasif = "riesgo mayor"
+        criterio += "≥ 1 en al menos una categoría."
+    else:
+        clasif = "riesgo menor"
+        criterio += "< 1 en todas las categorías."
+
+    x = {
+        "clasificacion": clasif,
+        "criterio": criterio,
+        "sumatorias_por_categoria": sum_per_category,
+        "detalles": details,
+        "advertencias": advertencias_globales,
+        "trazabilidad": {},
+    }
+    for k, v in x.items():
+        print(k, v)
+    return x
 
 
 def get_dataset_report_x(report, column_list=None):
