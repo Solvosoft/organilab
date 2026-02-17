@@ -848,11 +848,9 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
         return [""]
 
     def get_datasets(self):
-        today = timezone.now().date()
         latest_log = EstablishmentLogs.objects.filter(
             object_id=self.pk,
             content_type=ContentType.objects.get_for_model(RiskZone),
-            date__date=today
         ).order_by('-date').first()
 
         if not latest_log:
