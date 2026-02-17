@@ -13,28 +13,28 @@ def get_inventory(filters={}):
     dict_objs = []
     objs_max = ObjectMaximumLimit.objects.filter(**filters)
     units = Catalog.objects.filter(
-            pk__in=objs_max.values_list("measurement_unit", flat=True)
+        pk__in=objs_max.values_list("measurement_unit", flat=True)
     ).distinct()
     objs = Object.objects.filter(
-         pk__in=objs_max.values_list("object__pk", flat=True),
-        ).distinct()
+        pk__in=objs_max.values_list("object__pk", flat=True),
+    ).distinct()
     for obj in objs:
-         total_shelfobjects = 0
-         density = getattr(obj.sustancecharacteristics, "density", None)
-         data = {}
-         for unit in units:
+        total_shelfobjects = 0
+        density = getattr(obj.sustancecharacteristics, "density", None)
+        data = {}
+        for unit in units:
             max_limit = (
-                    ObjectMaximumLimit.objects.filter(
-                        object=obj, measurement_unit=unit, **filters
-                    )
-                    .distinct()
-                    .last()
+                ObjectMaximumLimit.objects.filter(
+                    object=obj, measurement_unit=unit, **filters
                 )
+                .distinct()
+                .last()
+            )
             quantity = getattr(max_limit, "quantity", 0)
             if quantity > 0:
-                    total_shelfobjects += get_conversion_units_to_kilograms(
-                        unit, quantity, density
-                    )
+                total_shelfobjects += get_conversion_units_to_kilograms(
+                    unit, quantity, density
+                )
             h_codes = [
                 h_code
                 for h_code in obj.sustancecharacteristics.h_code.values_list(
@@ -51,57 +51,58 @@ def get_inventory(filters={}):
             dict_objs.append(data)
     return pd.DataFrame(dict_objs)
 
+
 def examples():
-        filters = {
-            "object__type": 0,
-            "laboratory__pk": 54,
-            "created_at__year": 2025,
-            "object__isnull": False,
-            "measurement_unit__isnull": False,
-        }
-        inv = get_inventory(filters)
-        inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
-        danger_substances = list(
-            DangerSubstance.objects.all()
-            .annotate(
-                cas=F("cas_code"),
-                umbral_t=F("threshold"),
-                tipo_match=F("type_match"),
-                nombre_patron=F("patron_name"),
-                condiciones_especiales=F("especial_condition"),
-                nombre=F("name"),
-            )
-            .values(
-                "nombre",
-                "cas",
-                "umbral_t",
-                "tipo_match",
-                "h_codes_match",
-                "nombre_patron",
-                "condiciones_especiales",
-            )
+    filters = {
+        "object__type": 0,
+        "laboratory__pk": 54,
+        "created_at__year": 2025,
+        "object__isnull": False,
+        "measurement_unit__isnull": False,
+    }
+    inv = get_inventory(filters)
+    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+    danger_substances = list(
+        DangerSubstance.objects.all()
+        .annotate(
+            cas=F("cas_code"),
+            umbral_t=F("threshold"),
+            tipo_match=F("type_match"),
+            nombre_patron=F("patron_name"),
+            condiciones_especiales=F("especial_condition"),
+            nombre=F("name"),
         )
-        c3 = cargar_cuadro3(pd.DataFrame(danger_substances))
-        danger_categories = list(
-            DangerSubstanceCategory.objects.all()
-            .annotate(
-                h_codes=F("h_code__code"),
-                categoria=F("category"),
-                seccion=F("section"),
-                condicion_proceso=F("process_condition"),
-                umbral_t=F("threshold"),
-            )
-            .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
+        .values(
+            "nombre",
+            "cas",
+            "umbral_t",
+            "tipo_match",
+            "h_codes_match",
+            "nombre_patron",
+            "condiciones_especiales",
         )
-        danger_categories_frame = pd.DataFrame(danger_categories)
-        danger_categories_frame.rename(
-            columns={"h_codes": "h_code"},
+    )
+    c3 = cargar_cuadro3(pd.DataFrame(danger_substances))
+    danger_categories = list(
+        DangerSubstanceCategory.objects.all()
+        .annotate(
+            h_codes=F("h_code__code"),
+            categoria=F("category"),
+            seccion=F("section"),
+            condicion_proceso=F("process_condition"),
+            umbral_t=F("threshold"),
         )
-        c4 = cargar_umbral_por_H(danger_categories_frame)
-        mapH_tipo = cargar_sga_referencia()
-        res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-        with open("zzz-json", "w", encoding="utf-8") as f:
-            json.dump(res, f, ensure_ascii=False, indent=2)
+        .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
+    )
+    danger_categories_frame = pd.DataFrame(danger_categories)
+    danger_categories_frame.rename(
+        columns={"h_codes": "h_code"},
+    )
+    c4 = cargar_umbral_por_H(danger_categories_frame)
+    mapH_tipo = cargar_sga_referencia()
+    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+    with open("zzz-json", "w", encoding="utf-8") as f:
+        json.dump(res, f, ensure_ascii=False, indent=2)
 
 
 _MAPA_TIPO_SGA = {
