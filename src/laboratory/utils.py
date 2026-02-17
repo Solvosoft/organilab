@@ -227,7 +227,6 @@ def organilab_logentry(
     content_type=None,
     relobj=None,
 ):
-
     if content_type is None:
         content_type = ContentType.objects.get_for_model(object)
 
@@ -416,16 +415,19 @@ def get_laboratories_from_organization_profile(rootpk, user):
     return Laboratory.objects.none()
 
 
-def get_laboratories_by_user_profile(user, org_pk):
+def get_laboratories_by_user_profile(user, org_pk, get_all=False):
     queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk)
-    rel_lab = get_all_laboratories_by_org(org_pk)
-    # rel_lab = OrganizationStructureRelations.objects.filter(
-    #     organization=org_pk,
-    #     content_type__app_label="laboratory",
-    #     content_type__model="laboratory",
-    # ).values_list("object_id", flat=True)
+    if get_all:
+        rel_lab = get_all_laboratories_by_org(org_pk)
+    else:
+        rel_lab = OrganizationStructureRelations.objects.filter(
+            organization=org_pk,
+            content_type__app_label="laboratory",
+            content_type__model="laboratory",
+        ).values_list("object_id", flat=True)
     filters = Q(organization__pk=org_pk, profile__user=user) | Q(pk__in=rel_lab)
     return list(queryset.filter(filters).distinct().values_list("pk", flat=True))
+
 
 def get_all_laboratories_by_org(org_pk):
     org = OrganizationStructure.objects.filter(pk=org_pk).first()
@@ -438,6 +440,7 @@ def get_all_laboratories_by_org(org_pk):
             Laboratory.objects.filter(organization=org).values_list("pk", flat=True)
         )
     return Laboratory.objects.filter(pk__in=lab_pks)
+
 
 def check_user_access_kwargs_org_lab(org, lab, user):
     user_access = False
@@ -596,7 +599,6 @@ class PermissionByOrganization(BasePermission):
         org_pk = view.kwargs.get("org_pk")
         dev = True
         if org_pk is None:
-
             return False
         view.organization = get_object_or_404(
             OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk

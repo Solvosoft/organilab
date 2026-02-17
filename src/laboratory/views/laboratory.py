@@ -225,7 +225,7 @@ class LaboratoryListView(ListView):
     ordering = ["name"]
 
     def get_queryset(self):
-        laboratories = get_laboratories_by_user_profile(self.request.user, self.org)
+        laboratories = get_laboratories_by_user_profile(self.request.user, self.org, True)
         pp = (
             ProfilePermission.objects.filter(
                 profile=self.request.user.profile,
