@@ -5330,3 +5330,19 @@ msgstr "Nombre del Patrón"
 
 msgid "Especial Condition"
 msgstr "Condición Especial"
+
+msgid "Dangerous Substance Categories"
+msgstr "Categorías de sustancias peligrosas"
+
+msgid "H Code"
+msgstr "Código H"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Section"
+msgstr "Sección"
+
+msgid "Process Condition"
+msgstr "Condición de proceso"
+
