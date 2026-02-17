@@ -1,3 +1,5 @@
+import json
+
 from django.core.files.base import ContentFile
 from django.db.models import Sum
 from django.utils.translation import gettext as _
@@ -63,28 +65,26 @@ def get_dataset_report(report, column_list=None):
     )
     inv_c3 = evaluate_table_tree(objs)
 
-    for reactive in objs:
-        inv_c3 = evaluate_table_tree(reactive)
-        exists_ratio = any(x["ratio"] >= 1.0 for x in inv_c3)
-        if exists_ratio:
-            details = []
-            for r in inv_c3:
-                details.append(
-                    {
-                        "nombre": r["name"],
-                        "cas": r["cas"],
-                        "total": float(r["total"]),
-                        "nominate": bool(r["nominate"]),
-                        "umbral_substamce": (
-                            None if r["threshold"] == 0.0 else float(r["threshold"])
-                        ),
-                        "ratio": (None if r["ratio"] == 0.0 else float(r["ratio"])),
-                        "h_codes": r["h_codes"],
-                        "contribuciones": {},
-                        "detalle_contribuciones": [],
-                        "regla_cruzada_salud": False,
-                    }
-                )
+    exists_ratio = any(x["ratio"] >= 1.0 for x in inv_c3)
+    if exists_ratio:
+        details = []
+        for r in inv_c3:
+            details.append(
+                {
+                    "nombre": r["name"],
+                    "cas": r["cas"],
+                    "total": float(r["total"]),
+                    "nominate": bool(r["nominate"]),
+                    "threshold_c3": (
+                        None if r["threshold"] == 0.0 else float(r["threshold"])
+                    ),
+                    "ratio": (None if r["ratio"] == 0.0 else float(r["ratio"])),
+                    "h_codes": r["h_codes"],
+                    "contribuciones": {},
+                    "detalle_contribuciones": [],
+                    "regla_cruzada_salud": False,
+                }
+            )
             return {
                 "clasificacion": "riesgo mayor",
                 "criterio": "Al menos una sustancia nominada (Cuadro 3) cumple o supera su umbral.",
@@ -103,7 +103,7 @@ def get_dataset_report(report, column_list=None):
                         "cas": r["cas"],
                         "total": float(r["total"]),
                         "nominate": bool(r["nominate"]),
-                        "threshol_c3": (
+                        "threshold_c3": (
                             None if r["threshold"] == 0.0 else float(r["threshold"])
                         ),
                         "ratio_c3": (
@@ -150,7 +150,7 @@ def get_dataset_report(report, column_list=None):
             {
                 "nombre": obj["nombre"],
                 "cas": obj["cas"],
-                "cantidad_t": float(obj["cantidad_t"]),
+                "cantidad_t": float(obj["total"]),
                 "nominada_c3": bool(obj["nominate"]),
                 "umbral_c3": (
                     None if obj["threshold_cat"] else float(obj["threshold_cat"])
@@ -183,8 +183,7 @@ def get_dataset_report(report, column_list=None):
         "advertencias": advertencias_globales,
         "trazabilidad": {},
     }
-    for k, v in x.items():
-        print(k, v)
+
     return x
 
 
