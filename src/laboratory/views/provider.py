@@ -14,6 +14,7 @@ def provider_view(request, org_pk=0, lab_pk=0):
         request,
         "laboratory/provider_list.html",
         context={
+            "laboratory": lab_pk,
             "org_pk": org_pk,
             "lab_pk": lab_pk,
             "form_create": ProviderForm(prefix="create", render_type="as_p"),
