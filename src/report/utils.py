@@ -5,7 +5,7 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext as _
 from djgentelella.models import Notification
 
-from laboratory.models import Furniture, BaseUnitValues
+from laboratory.models import Furniture, BaseUnitValues, ObjectLogChange
 from report.models import (
     DocumentReportStatus,
     ObjectChangeLogReport,
@@ -282,7 +282,7 @@ def get_inventory(objs, units, extra_filters={}):
         data = {}
         for unit in units:
             quantity = (
-                ObjectChangeLogReport.filter(
+                ObjectLogChange.objects.filter(
                     object=obj, measurement_unit=unit, **extra_filters
                 )
                 .distinct()
@@ -307,7 +307,9 @@ def get_inventory(objs, units, extra_filters={}):
 
 def evaluate_table_tree(data):
     data_list = []
+    print(data)
     for obj in data:
+
         obj["ratio"] = 0.0
         danger_substances = DangerSubstance.objects.filter(cas_code=obj["cas"])
         patron_names = DangerSubstance.objects.filter(type_match="nombre_patron")
@@ -537,13 +539,13 @@ def substance_contributions(obj):
             cat = hcodes_list.filter(category=category)
             umbral_min = cat.threshold
             if umbral_min > 0:
-                contrib = total / umbral_min
+                contrib = quantity / umbral_min
                 contribuciones_directas[category] = contrib
                 h_usados = ", ".join(
                     set(cat.h_code.values_list("hcode__code", flat=True))
                 )
                 notas_usadas = ", ".join(set(cat.notas.values_list("notw", flat=True)))
-                detalle_str = f"{category}: {total}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
+                detalle_str = f"{category}: {quantity}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
                 if notas_usadas:
                     detalle_str += f" [{notas_usadas}]"
                 detalles.append(detalle_str)
@@ -552,7 +554,7 @@ def substance_contributions(obj):
             umbral_min_global = hcodes_list.threshold
             h_salud_sga = []
             if umbral_min_global > 0:
-                contrib_salud = total / umbral_min_global
+                contrib_salud = quantity / umbral_min_global
                 contribuciones_directas["Salud"] = contrib_salud
                 results["regla_cruzada_salud"] = True
                 for h in hlist:
@@ -562,7 +564,7 @@ def substance_contributions(obj):
                     if danger:
                         h_salud_sga.append(h.danger_type)
                 detalles.append(
-                    f"Salud (inclusión C4): {total}/{umbral_min_global} = {contrib_salud:.4f} "
+                    f"Salud (inclusión C4): {quantity}/{umbral_min_global} = {contrib_salud:.4f} "
                     f"(H-codes SGA salud: {', '.join(h_salud_sga) if h_salud_sga else 'ninguno'})"
                 )
 
