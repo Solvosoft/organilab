@@ -1,21 +1,37 @@
 from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.conf import settings
-import os
-
-from django.db.models import Value, JSONField, F
-from django.db.models.functions import JSONObject
+from openpyxl.reader.excel import load_workbook
 
 from sga.models import DangerIndication, WarningClass, WarningWord
-from openpyxl import load_workbook
+import csv
+import os
+import pandas as pd
 
 
 class Command(BaseCommand):
+    help = "Import damger indications from CSV file"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "xlsx_file", type=str, help="Path to the XLSX file to import"
+        )
 
     def handle(self, *args, **options):
-        file = settings.BASE_DIR / "sga/management/commands/SGA_Codigos_H_y_P.xlsx"
 
-        wb = load_workbook(file)
+        xlsx_file = options["xlsx_file"]
+
+        if not os.path.exists(xlsx_file):
+            self.stdout.write(self.style.ERROR(f"File not found: {xlsx_file}"))
+            return
+
+        _MAPA_TIPO_SGA = {
+            "peligros físicos": "Físico",
+            "peligros para la salud": "Salud",
+            "peligros para el medio ambiente": "Ambiental",
+        }
+
+        wb = load_workbook(xlsx_file)
         ws = wb.worksheets[0]  # hoja activa
         _MAPA_TIPO_SGA = {
             "peligros físicos": "Físico",
