@@ -34,8 +34,10 @@
         {% endif %}
 
 
+
     {% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
-    {% include 'gentelella/app/administration_menu.html' %}
+					{% include 'gentelella/app/administration_menu.html' %}
+					{% include 'gentelella/app/laboratory_menu.html' %}
     {% endif %}
 
     {% if perms.laboratory.view_report or perms.laboratory.do_report %}

@@ -22,6 +22,7 @@ def objectfeatures_view(request, org_pk=0, lab_pk=0):
         context={
             "org_pk": org_pk,
             "lab_pk": lab_pk,
+            "laboratory": lab_pk,
             "form_create": ObjectFeaturesForm(prefix="create", render_type="as_p"),
             "form_update": ObjectFeaturesForm(prefix="update", render_type="as_p"),
         },

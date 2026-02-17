@@ -19,6 +19,7 @@ class ReactiveStockDashboard(TemplateView):
         context = super(ReactiveStockDashboard, self).get_context_data()
         context["org_pk"] = self.kwargs["org_pk"]
         context["lab_pk"] = self.kwargs["lab_pk"]
+        context["laboratory"] = self.kwargs["lab_pk"]
         x = ""
         i = 0
         for key in self.request.GET:
