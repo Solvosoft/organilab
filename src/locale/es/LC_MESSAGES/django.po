@@ -5351,3 +5351,6 @@ msgstr "Ambiental"
 
 msgid "Risk Categories Summary"
 msgstr "Resumen de Categorías de Riesgo"
+
+msgid "Establishment Status"
+msgstr "Estado del establecimiento"
