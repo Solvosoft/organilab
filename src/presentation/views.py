@@ -80,7 +80,7 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
 
 def index_organilab(request):
     if request.user.is_authenticated:
-        return redirect(reverse("auth_and_perms:select_organization_by_user"))
+        return redirect(reverse("laboratory:all_labs"))
     return render(request, "index.html")
 
 

@@ -79,6 +79,7 @@ from laboratory.views.informs import (
 from laboratory.views.laboratory import (
     LaboratoryListView,
     LaboratoryDeleteView,
+    AllLaboratoriesListView,
     laboratory_process_list,
 )
 from laboratory.views.logentry import get_logentry_from_organization
@@ -141,6 +142,7 @@ urlpatterns = [
         name="object_reservation",
     ),
     path("returnLabId", return_laboratory_of_shelf_id, name="get_lab_id"),
+    path("all_labs/", AllLaboratoriesListView.as_view(), name="all_labs"),
 ]
 
 lab_shelf_urls = [

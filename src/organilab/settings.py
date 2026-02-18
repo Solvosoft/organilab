@@ -228,7 +228,7 @@ FIXTURE_DIRS = os.getenv("FIXTURE_DIRS", str(BASE_DIR.parent / "fixtures/")).spl
 DOCS_SOURCE_DIR = os.getenv("DOCS_STATIC_DIR", str(BASE_DIR.parent / "docs/source/"))
 
 # Authentication settings
-LOGIN_REDIRECT_URL = reverse_lazy("auth_and_perms:select_organization_by_user")
+LOGIN_REDIRECT_URL = reverse_lazy("laboratory:all_labs")
 LOGOUT_REDIRECT_URL = reverse_lazy("index")
 
 # Email development settings
