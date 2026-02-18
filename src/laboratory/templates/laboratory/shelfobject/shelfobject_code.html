@@ -7,14 +7,14 @@
     {% define_urlname_action 'list_shelfobject' %}
 {% endblock %}
 
-{% block title %}{% trans 'Flashpoint' %}{% endblock %}
+{% block title %}{% trans 'Process Condition' %}{% endblock %}
 
 {% block content %}
 <h1 class="text-center"></h1>
 {% url "laboratory:api-shelfobject-hcode-detail" org_pk lab_pk 0 as detail_obj_url %}
-{% trans 'Update flashpoint' as update_obj_tittle %}
+{% trans 'Update process condition' as update_obj_tittle %}
 {% include 'gentelella/blocks/modal_template.html' with form=form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class="modal-lg" %}
-<h1 class="text-center">{% trans 'Update Flashpoint' %}</h1>
+<h1 class="text-center">{% trans 'Update Process Condition' %}</h1>
 
 <div class="row">
 	<table class="table table-striped w-100 table-responsive" id="tableshelfobject"></table>
