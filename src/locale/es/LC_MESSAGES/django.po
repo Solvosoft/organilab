@@ -5346,3 +5346,14 @@ msgstr "Sección"
 msgid "Process Condition"
 msgstr "Condición de proceso"
 
+msgid "Update process condition"
+msgstr "Actualizar condición de proceso"
+
+msgid "Process condition updated successfully"
+msgstr "La condición de proceso fue actualizada exitosamente"
+
+msgid "Process condition was not updated"
+msgstr "La condición de proceso no fue actualizada"
+
+msgid "Update Process Condition"
+msgstr "Actualizar Condición de Proceso"
