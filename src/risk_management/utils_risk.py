@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import F
 
 from laboratory.models import ObjectMaximumLimit, Object, Catalog
@@ -6,6 +7,7 @@ from typing import List, Dict, Optional, Tuple
 import math, json, argparse
 import pandas as pd
 
+from risk_management.models import EstablishmentLogs
 from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndication
 
 
@@ -46,7 +48,7 @@ def get_inventory(filters={}):
                 "cas": obj.cas_code,
                 "cantidad_t": total_shelfobjects,
                 "h_codes": ";".join(h_codes),
-                "condicion_proceso": "",
+                "condicion_proceso": obj.process_condition,
             }
             dict_objs.append(data)
     return pd.DataFrame(dict_objs)
@@ -140,8 +142,32 @@ def cargar_cas_h(path_csv: str) -> Dict[str, str]:
     return dict(zip(df["cas"], df["h_codes"]))
 
 
-def cargar_cuadro3(df: pd.DataFrame) -> pd.DataFrame:
+def cargar_cuadro3() -> pd.DataFrame:
     # df = pd.read_csv(path_csv, dtype=str).fillna("")
+    danger_substances = list(
+        DangerSubstance.objects.all()
+        .annotate(
+            cas=F("cas_code"),
+            umbral_t=F("threshold"),
+            tipo_match=F("type_match"),
+            nombre_patron=F("patron_name"),
+            condiciones_especiales=F("especial_condition"),
+            nombre=F("name"),
+        )
+        .values(
+            "nombre",
+            "cas",
+            "umbral_t",
+            "tipo_match",
+            "h_codes_match",
+            "nombre_patron",
+            "condiciones_especiales",
+        )
+    )
+    df = pd.DataFrame(danger_substances)
+    df.rename(
+        columns={"h_codes_match": "h_codes"},
+    )
     for col in ["cas", "nombre", "umbral_t"]:
 
         if col not in df.columns:
@@ -171,8 +197,23 @@ def cargar_cuadro3(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
 
-def cargar_umbral_por_H(df: pd.DataFrame) -> pd.DataFrame:
+def cargar_umbral_por_H() -> pd.DataFrame:
     # df = pd.read_csv(path_csv, dtype=str).fillna("")
+    danger_categories = list(
+        DangerSubstanceCategory.objects.all()
+        .annotate(
+            h_codes=F("h_code__code"),
+            categoria=F("category"),
+            seccion=F("section"),
+            condicion_proceso=F("process_condition"),
+            umbral_t=F("threshold"),
+        )
+        .values("h_code", "categoria", "seccion", "condicion_proceso", "umbral_t")
+    )
+    df = pd.DataFrame(danger_categories)
+    df.rename(
+        columns={"h_codes": "h_code"},
+    )
     for col in ["h_code", "umbral_t", "categoria"]:
         if col not in df.columns:
             raise ValueError(
@@ -537,3 +578,38 @@ def contribuciones_por_sustancia(
     resultado["detalle"] = detalles
     resultado["advertencias"] = advertencias
     return resultado
+
+
+def create_estableshment_logs_data(element, day, labs):
+    filters = {
+        "object__type": 0,
+        "created_at": day,
+        "object__isnull": False,
+        "measurement_unit__isnull": False,
+    }
+    if labs.exists():
+        filters.update({"laboratory__pk__in": labs})
+        inv = get_inventory(filters)
+        inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+        c3 = cargar_cuadro3()
+        c4 = cargar_umbral_por_H()
+        mapH_tipo = cargar_sga_referencia()
+        res = json.dumps(
+            clasificar_establecimiento(inv, c3, c4, mapH_tipo),
+            indent=2,
+        )
+        ct = ContentType.objects.filter(
+            app_label=element._meta.app_label,
+            model=element._meta.model_name,
+        ).first()
+        sumatories = res["sumatorias_por_categoria"]
+        EstablishmentLogs.objects.create(
+            content_type=ct,
+            object_id=element.pk,
+            data=res,
+            environmental=sumatories["Ambiental"],
+            health=sumatories["Salud"],
+            physical=sumatories["Físico"],
+            establishment_status=res["clasificacion"].capitalize(),
+            date=day,
+        )

@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
+from django.db.models import Sum
 
 from auth_and_perms.models import ProfilePermission
 from laboratory.models import (
@@ -17,8 +18,13 @@ from laboratory.models import (
     Laboratory,
     PrecursorReport,
     InformScheduler,
-    Furniture, Object, ObjectMaximumLimit, BlockedListNotification,
+    Furniture,
+    Object,
+    ObjectMaximumLimit,
+    BlockedListNotification,
+    Catalog,
 )
+from report.utils import get_conversion_units_to_kilograms
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import (
     create_informsperiods,
@@ -98,32 +104,97 @@ def remove_shelf_not_furniture():
         obj_pks = re.findall(r"\d+", furniture.dataconfig)
         furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
 
+
 @app.task()
 def add_maximum_object_stock_per_day():
     laboratories = Laboratory.objects.all()
+    process_condition = Catalog.objects.filter(key="process_condition")
+    units = [
+        "Litros",
+        "Mililitros",
+        "Miligramos",
+        "Kilogramos",
+        "Libra",
+        "Gramos",
+        "Toneladas",
+    ]
+    basic_unit = Catalog.object.get(key="units", description="Toneladas")
     for laboratory in laboratories:
-        objects = ShelfObject.objects.filter(in_where_laboratory=laboratory, object__type= Object.REACTIVE).values_list("object", flat=True)
-        objects = set(objects)
-        for obj in Object.objects.filter(pk__in=objects):
-            total = sum([get_conversion_units(shelfobject.measurement_unit, shelfobject.quantity)
-            for shelfobject in ShelfObject.objects.filter(in_where_laboratory=laboratory, object=obj)])
-            shelfobject = ShelfObject.objects.filter(in_where_laboratory=laboratory, object=obj).first()
-            data = {
-                "quantity": total,
-                "laboratory": laboratory,
+        objects = ShelfObject.objects.filter(
+            in_where_laboratory=laboratory, object__type=Object.REACTIVE
+        )
+        objs = set(objects.values_list("object", flat=True))
+        for obj in Object.objects.filter(pk__in=objs):
+            filters = {
                 "object": obj,
+                "laboratory__pk": laboratory.pk,
+                "measurement_unit__description__in": units,
+                "process_condition__isnull": True,
             }
-            if shelfobject:
-                data["measurement_unit"] = shelfobject.measurement_unit
-            ObjectMaximumLimit.objects.create(**data)
+            total = 0
+            shelfobjects = ShelfObject.objects.filter(**filters)
+            if shelfobjects.exists():
+                total = sum(
+                    [
+                        get_conversion_units_to_kilograms(
+                            shelfobject.measurement_unit, shelfobject.quantity
+                        )
+                        for shelfobject in shelfobjects.exclude(
+                            measurement_unit=basic_unit
+                        )
+                    ]
+                )
+                try:
+                    total = shelfobjects.filter(measurement_unit=basic_unit).aggregate(
+                        Sum("quantity")
+                    )["quantity__sum"] + (total / 1000)
+                except ZeroDivisionError:
+                    total = shelfobjects.aggregate(Sum("quantity"))["quantity__sum"]
+
+                ObjectMaximumLimit.objects.create(
+                    quantity=total,
+                    laboratory=laboratory,
+                    object=obj,
+                    measurement_unit=basic_unit,
+                    process_condition=process_condition,
+                )
+
+            filters.update({"process_condition__isnull": False})
+            shelfobjects = ShelfObject.objects.filter(**filters)
+            if shelfobjects.exists():
+                for process_condition in process_condition:
+                    total = sum(
+                        [
+                            get_conversion_units_to_kilograms(
+                                shelfobject.measurement_unit, shelfobject.quantity
+                            )
+                            for shelfobject in shelfobjects.filter(
+                                process_condition=process_condition,
+                            ).exclude(measurement_unit=basic_unit)
+                        ]
+                    )
+                    try:
+                        total = shelfobjects.filter(
+                            measurement_unit=basic_unit
+                        ).aggregate(Sum("quantity"))["quantity__sum"] + (total / 1000)
+                    except ZeroDivisionError:
+                        total = shelfobjects.aggregate(Sum("quantity"))["quantity__sum"]
+
+                    ObjectMaximumLimit.objects.create(
+                        quantity=total,
+                        laboratory=laboratory,
+                        object=obj,
+                        measurement_unit=basic_unit,
+                        process_condition=process_condition,
+                    )
+
 
 @app.task()
 def send_expiration_email():
     tomorrow = date.today() + timedelta(days=1)
     expiring_reactives = ShelfObject.objects.filter(
-        object__type=Object.REACTIVE,
-        reactive_expiration_date=tomorrow
-    ).select_related('object', 'shelf__furniture__labroom')
+        object__type=Object.REACTIVE, reactive_expiration_date=tomorrow
+    ).select_related("object", "shelf__furniture__labroom")
     reactives_by_lab = defaultdict(list)
     for reactive in expiring_reactives:
         lab = reactive.in_where_laboratory
@@ -132,27 +203,28 @@ def send_expiration_email():
 
     for lab, reactives in reactives_by_lab.items():
         blocked = BlockedListNotification.objects.filter(
-            laboratory=lab,
-            object__in=[r.object for r in reactives]
+            laboratory=lab, object__in=[r.object for r in reactives]
         )
         blocked_emails = list(blocked.values_list("user__email", flat=True))
         cc = ContentType.objects.get_for_model(Laboratory)
         user_ids = ProfilePermission.objects.filter(
-            content_type=cc,
-            object_id=lab.pk
+            content_type=cc, object_id=lab.pk
         ).values_list("profile__user", flat=True)
         users = User.objects.filter(id__in=user_ids)
-        emails = [user.email for user in users if
-                  user.email and user.email not in blocked_emails]
+        emails = [
+            user.email
+            for user in users
+            if user.email and user.email not in blocked_emails
+        ]
         if emails:
             schema = "https" if not settings.DEBUG else "http"
             domain = Site.objects.get_current().domain
             url = f"/lab/{lab.pk}/blocknotifications/"
             context = {
-                'laboratory': lab,
-                'shelf_object': reactives,
-                'blockurl': f"{schema}://{domain}{url}",
-                'domain': domain,
+                "laboratory": lab,
+                "shelf_object": reactives,
+                "blockurl": f"{schema}://{domain}{url}",
+                "domain": domain,
             }
             send_email_from_template(
                 "Expiring reactives",
