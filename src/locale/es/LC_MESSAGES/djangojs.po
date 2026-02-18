@@ -1156,3 +1156,5 @@ msgstr "Condición de proceso"
 msgid "Are you sure you want to delete this Danger substance category? <br> This action will delete all data related."
 msgstr "¿Está seguro de que desea eliminar esta categoría de sustancia peligrosa? <br> Esta acción eliminará todos los datos relacionados."
 
+msgid "CAS Code"
+msgstr "Código CAS"
