@@ -1372,7 +1372,7 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
 class ShelfObjectFlashpointForm(GTForm, forms.ModelForm):
     class Meta:
         model = ShelfObject
-        fields = ["flashpoint"]
+        fields = ["process_condition"]
         widgets = {
-            "flashpoint": genwidgets.Select,
+            "process_condition": genwidgets.Select,
         }
