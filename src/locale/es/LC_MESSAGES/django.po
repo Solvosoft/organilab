@@ -5346,3 +5346,11 @@ msgstr "Sección"
 msgid "Process Condition"
 msgstr "Condición de proceso"
 
+msgid "Environmental"
+msgstr "Ambiental"
+
+msgid "Risk Categories Summary"
+msgstr "Resumen de Categorías de Riesgo"
+
+msgid "Establishment Status"
+msgstr "Estado del establecimiento"
