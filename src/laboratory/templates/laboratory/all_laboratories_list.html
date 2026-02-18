@@ -1,7 +1,67 @@
 {% extends 'base.html' %}
-{% load i18n laboratory %}
+{% load i18n laboratory static %}
 
 {% block content %}
+  {# Pending Tasks Panel #}
+  <div class="row mb-3">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header" role="button" data-toggle="collapse" data-target="#pendingTasksBody"
+             aria-expanded="true" aria-controls="pendingTasksBody" style="cursor: pointer;">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+              <i class="fa fa-tasks"></i> {% trans "My Pending Tasks" %}
+              <span id="pending-tasks-count" class="badge bg-primary">0</span>
+            </h5>
+            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                    data-target="#createTaskModal" onclick="event.stopPropagation();">
+              <i class="fa fa-plus"></i> {% trans "New Task" %}
+            </button>
+          </div>
+        </div>
+        <div id="pendingTasksBody" class="collapse show">
+          <div class="card-body p-0">
+            <ul id="pending-tasks-list" class="list-group list-group-flush">
+              <li class="list-group-item text-muted text-center">{% trans "Loading..." %}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# Create Task Modal #}
+  <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog"
+       aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createTaskModalLabel">{% trans "New Task" %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="task-description">{% trans "Description" %} *</label>
+            <input type="text" class="form-control" id="task-description"
+                   placeholder="{% trans 'Task description' %}" required>
+            <div class="invalid-feedback">{% trans "Description is required." %}</div>
+          </div>
+          <div class="form-group mt-2">
+            <label for="task-link">{% trans "Link" %}</label>
+            <input type="url" class="form-control" id="task-link"
+                   placeholder="{% trans 'URL (optional)' %}">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+          <button type="button" class="btn btn-primary" id="btn-create-task">{% trans "Create" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row mb-3">
     <div class="col-sm-8">
       <label for="searchbox">{% trans "Search Laboratory" %}</label>
@@ -56,6 +116,7 @@
 {% endblock %}
 
 {% block js %}
+  <script src="{% static 'pending_tasks/js/user_tasks.js' %}"></script>
   <script>
     window.onload = function(){
       try{
