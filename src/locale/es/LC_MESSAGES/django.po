@@ -562,7 +562,7 @@ msgid "Copy Rols"
 msgstr "Copiar Roles"
 
 msgid "Rol name"
-msgstr "Nombre del role"
+msgstr "Nombre del rol"
 
 msgid "Copy permissions from other roles?"
 msgstr "¿Copiar permisos de otros roles?"
