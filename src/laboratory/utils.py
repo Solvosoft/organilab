@@ -434,12 +434,7 @@ def get_all_laboratories_by_org(org_pk):
     if org is None:
         return []
     all_orgs = org.descendants(include_self=True)
-    lab_pks = set()
-    for org in all_orgs:
-        lab_pks.update(
-            Laboratory.objects.filter(organization=org).values_list("pk", flat=True)
-        )
-    return Laboratory.objects.filter(pk__in=lab_pks)
+    return Laboratory.objects.filter(organization__in=all_orgs)
 
 
 def check_user_access_kwargs_org_lab(org, lab, user):

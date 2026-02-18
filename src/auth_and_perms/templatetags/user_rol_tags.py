@@ -16,7 +16,7 @@ def has_perm_in_org(context, org_pk, permission):
         return True
     app_label, codename = permission.split(".")
 
-    labs = get_laboratories_by_user_profile(user, org_pk)
+    labs = get_laboratories_by_user_profile(user, org_pk,)
 
     profile_in = ProfilePermission.objects.filter(
         profile=context["request"].user.profile
