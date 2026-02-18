@@ -95,7 +95,7 @@ class ProfileMiddleware:
             ):
                 raise Http404("Organization is inactive")
             # for my_labs selection and other steps without laboratory defined
-            laboratories = get_laboratories_by_user_profile(request.user, org_pk)
+            laboratories = get_laboratories_by_user_profile(request.user, org_pk, True)
             queryQ |= Q(
                 profile=user.profile,
                 object_id__in=laboratories,

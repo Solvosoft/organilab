@@ -6,477 +6,500 @@
 {% load gtsettings timejs %}
 
 {% block pre_head %}
-    {% define_urlname_action 'org_administrator' %}
-    {% define_true  "use_datatables" %}
+	{% define_urlname_action 'org_administrator' %}
+	{% define_true "use_datatables" %}
 {% endblock %}
 {# CSS #}
 {% block css %}
-<link href="{% static 'css/permission_table_style.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all"
-						xmlns="http://www.w3.org/1999/html">
+	<link href="{% static 'css/permission_table_style.css' %}?v={% get_organilab_version %}" rel="stylesheet" media="all"
+							xmlns="http://www.w3.org/1999/html">
 {% endblock css %}
 
 {% block content %}
-<div class="row">
-<div class="col">
+	<div class="row">
+		<div class="col">
 
-{% if perms.laboratory.add_organizationstructure %}
-<div class="row">
-    <div class="text-purple-400 text-center">
-        <span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
-    </div>
-</div>
-{% endif %}
+			{% if perms.laboratory.add_organizationstructure %}
+				<div class="row">
+					<div class="text-purple-400 text-center">
+						<span class="addOrgStructureEmpty"><i class="fa fa-plus"></i> {% trans 'Add organization' %}</span>
+					</div>
+				</div>
+			{% endif %}
 
-{% for node in nodes %}
-<div class="row">
-    <div class="{{node.1.0}}">
-        <div class="bs-callout bs-callout-{{node.1.1}}">
-            <div class="row" id="rols">
-                <div class="row">
-                    <div class="col-11">
-                    <h6 {%if node.0.active %} data-bs-toggle="collapse" data-bs-target="#collapse{{node.0.pk}}" class="w-100"
-																								{%else%}
-																								class="disabled text-decoration-line-through"
-																								{%endif%}
-                        role="button" aria-expanded="false" aria-controls="collapse{{node.0.pk}}"
-                    >{{node.0}}</h6>
-                    </div>
-                    <div class="col-1">
-																								{%if node.0.active %}
-                        		<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{node.0.pk}}" {% if not forloop0 %} selected {% endif %}/>
-                    				{%endif%}
-																				</div>
-                </div>
-                <div id="collapse{{node.0.pk}}" class="collapse">
-                    <div class="row">
-                        <ul>
-                            {% if perms.auth_and_perms.add_rol %}
-                            <li class="rolcontainer" rol="{{node.0.pk}}" title="{% trans 'Add new rol' %}"
-                                confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span
-                                    class="btn btn-sm btn-success rolbtnadd" data-id="{{node.0.pk}}" data-url="{% url 'auth_and_perms:copy_rols' node.0.pk %}"><i class="fa fa-plus"></i> {% trans 'Rol' %}</span>
-                            </li>
-                            {% endif %}
-                            {% if perms.auth_and_perms.add_profile %}
-                            <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-                                                        href="{% url 'auth_and_perms:add_user' node.0.pk %}"
-                                                        title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i>
-                                {% trans 'User' %}</a>
-                            </li>
-                            <li class="rolcontainer" title="{% trans 'Related Users' %}"><a
-                                    class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{node.0.pk}}"
-                                    data-url="{% url 'auth_and_perms:addusersorganization' node.0.pk %}"
-                                    data-appname="laboratory" data-model="organizationstructure"
-                                    data-objectid="{{node.0.pk}}"><i class="fa fa-users"></i> {% trans 'Related Users' %}</a></li>
-
-                            {% endif %}
-                            {% if perms.laboratory.add_laboratory %}
-                            <li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-                                                        href="{% url 'laboratory:create_lab' node.0.pk %}"
-                                                        title="{% trans 'Add Laboratory' %}">
-                                <i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
-                            <li class="rolcontainer" title="{% trans 'Related Users' %}"><a
-                                    data-href="{% url 'relorgbase-detail' node.0.pk %}"
-                                    data-org="{{node.0.pk}}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
-                                    type="button" data-id="{{node.0.pk}}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="float-end">
-                <ul class="list-group  list-group-horizontal-sm">
-                    <div class="role ">
-                        {% include 'auth_and_perms/organization_permission_table.html' with object=node.0 %}
-                    </div>
-                    {% if perms.laboratory.change_organizationstructure %}
-																				<li class="list-group-item">
-																					{% if not node.0.active %}
-																						<a class="orgactions" data-modal="#actionclonemodal" data-prefix="clone-" data-org="{{node.0.pk}}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
-																						</a>
-																					{% elif node.2  %}
-																							<a class="orgactions" data-modal="#actionwimodal" data-prefix="wi-" data-org="{{node.0.pk}}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
-																						</a>
-																					{% else %}
-																					<a class="orgactions" data-modal="#actionsmodal" data-prefix="" href="#{{node.0.pk}}" data-org="{{node.0.pk}}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
-																						</a>
-																					{% endif %}
-																				</li>
-                    <li class="list-group-item">
-                        <a class="loglist" href="{% url 'laboratory:logentry_list' node.0.pk %}"  title="{% trans 'Log List' %}">
-                            <i class="fa fa-file-text-o"></i></a>
-                    </li>
-                    {% endif %}
-																				{% if perms.auth_and_perms.view_rol %}
-                    <li class="list-group-item">
-																						<a class="rol_details_btn" data-org="{{node.0.pk}}" title="{% trans 'Show Roles information' %}"> <i class="fa fa-info-circle"></i></a>
-                    </li>
-																				{% endif %}
-
-                    {% if perms.auth_and_perms.change_rol %}
-                    <li class="list-group-item" title="{% trans 'Change parent of organization' %}">
-                        <a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"  title="{% trans 'Rol List' %}">
-                            <i class="fa fa-list-alt"></i></a>
-                    </li>
-                    {% endif %}
-
-
-                    {% if perms.laboratory.change_organizationstructure and node.0.active %}
-                    <li class="list-group-item">
-                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}"
-																														data-org="{{node.0.pk}}" data-display="{{node.0.node}}" title="{% trans 'Change parent of organization' %}">
-                            <i class="fa fa-sort-amount-desc text-secondary"></i></span>
-                    </li>
-                    {% endif %}
-                    {% if perms.laboratory.add_organizationstructure and node.0.active %}
-                    <li class="list-group-item">
-                        <span class="addOrgStructure" data-parent="{{node.0.pk}}"><i
-                                class="fa fa-plus  text-secondary" title="{% trans 'Add organization' %}"></i></span>
-                    </li>
-                    {% endif %}
-                    {% if perms.laboratory.delete_organizationstructure %}
-                    <li class="list-group-item">
-                        <a href="{% url 'laboratory:delete_organization' node.0.pk %}"><i
-                                class="fa fa-minus text-danger" title="{% trans 'Delete organization' %}"></i></a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% endfor %}
-
-</div>
-    <div class="col">
-
-        <div class="container" >
-
-            <ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link active" id="navbylabs"   data-bs-toggle="tab" data-bs-target="#bylabs" type="button" role="tab" aria-controls="bylabs" aria-selected="true">{% trans 'By laboratory' %}</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="navbyorgs"  data-bs-toggle="tab" data-bs-target="#byorgs" type="button" role="tab" aria-controls="byorgs" aria-selected="true">{% trans 'By organization' %}</a>
-  </li>
-		<li class="nav-item">
-    <a class="nav-link" id="navbyprofile"  data-bs-toggle="tab" data-bs-target="#byprofile" type="button" role="tab" aria-controls="byorgs" aria-selected="true">{% trans 'By profile' %}</a>
-  </li>
-</ul>
-
-
-<div class="tab-content mt-3" id="myTabContent">
-        <input type="hidden" value="laboratory" id="id_typeofcontenttype" name="typeofcontenttype" \>
-        <div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
- 								            <h5 class="text-center">{% trans 'Rol by laboratory' %}</h5>
-															<button type="button" title="{% trans 'Show Roles information' %}" class="btn float-start open_rol_detail_modal"><i aria-hidden="true" class="fa fa-info-circle"></i></button>
-															<h5 class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</h5>
-													<div class="clearfix"></div>
-
-            <div class="row">
-                {{labform.as_horizontal}}
-            </div>
-            <div class="row">
-                <button id="relateusertolab"  type="button" class="btn btn-sm text-purple-400">
-                    <i class="fa fa-user-plus" aria-hidden="true"></i>
-                    {% trans 'Relate user with this laboratory'%}</button>
-            </div>
-            <div class="role table-responsive">
-            <table   id="userpermelement" class="compact nowrap w-100"> </table>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="byorgs" role="tabpanel" aria-labelledby="navbyorgs">
-									            <h5 class="text-center">{% trans 'Rol in all organization' %}</h5>
-															<button type="button" class="btn float-start open_rol_detail_modal"><i aria-hidden="true" class="fa fa-info-circle"></i></button>
-															<h5 class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</h5>
-													<div class="clearfix"></div>
-
-            <div class="role table-responsive">
-                <button id="relateusertoorg"  type="button" class="btn btn-sm text-purple-400 w-100">
-                    <i class="fa fa-user-plus" aria-hidden="true"></i>
-                    {% trans 'Relate user with this organization'%}</button>
-            <table   id="orpermelement" class="compact nowrap w-100"> </table>
-            </div>
-        </div>
-								<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
-									<div class="jumbotron">
-										<h6>{% trans 'Help Text' %}</h6>
-										<p>{% trans 'This section will assign permissions groups to some profile who belongs to selected organization. If you do not find the user in profile selector, could you add it from By organization tab.' %}</p>
-									<a class="btn btn-secondary-outline float-end" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-											<i class="fa fa-info-circle" aria-hidden="true"></i> {% trans 'Show descriptions of groups' %}
-									</a>
-										<div class="clearfix"></div>
+			{% for node in nodes %}
+				<div class="row">
+					<div class="{{ node.1.0 }}">
+						<div class="bs-callout bs-callout-{{ node.1.1 }}">
+							<div class="row" id="rols">
+								<div class="row">
+									<div class="col-11">
+										<h6 {% if node.0.active %} data-bs-toggle="collapse" data-bs-target="#collapse{{ node.0.pk }}" class="w-100"
+										{% else %}
+																																					class="disabled text-decoration-line-through"
+										{% endif %}
+																																					role="button" aria-expanded="false" aria-controls="collapse{{ node.0.pk }}"
+										>{{ node.0 }}</h6>
 									</div>
-									<form method="post" id="groups_by_profile_form">
-										{% csrf_token %}
-										{{profile_group_form.as_horizontal}}
-										<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
-																		data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
-										</form>
-
-							<div class="collapse" id="collapseExample">
-									<div class="card card-body">
-										{% for group in groups %}
-										<div class="list-group pt-2">
-											<h6 class="mb-2 fw-bold">{{group.group.name}}</h6>
-											<br>
-											<p class="ms-2">{{group.description | default_if_none:"No description"}}</p>
-										</div>
-										{% endfor %}
+									<div class="col-1">
+										{% if node.0.active %}
+											<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{ node.0.pk }}"
+												{% if not forloop0 %} selected {% endif %}/>
+										{% endif %}
 									</div>
+								</div>
+								<div id="collapse{{ node.0.pk }}" class="collapse">
+									<div class="row">
+										<ul>
+											{% if perms.auth_and_perms.add_rol %}
+												<li class="rolcontainer" rol="{{ node.0.pk }}" title="{% trans 'Add new rol' %}"
+																confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span
+													class="btn btn-sm btn-success rolbtnadd" data-id="{{ node.0.pk }}"
+													data-url="{% url 'auth_and_perms:copy_rols' node.0.pk %}"><i
+													class="fa fa-plus"></i> {% trans 'Rol' %}</span>
+												</li>
+											{% endif %}
+											{% if perms.auth_and_perms.add_profile %}
+												<li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
+																																								href="{% url 'auth_and_perms:add_user' node.0.pk %}"
+																																								title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i>
+													{% trans 'User' %}</a>
+												</li>
+												<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
+													class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{ node.0.pk }}"
+													data-url="{% url 'auth_and_perms:addusersorganization' node.0.pk %}"
+													data-appname="laboratory" data-model="organizationstructure"
+													data-objectid="{{ node.0.pk }}"><i class="fa fa-users"></i> {% trans 'Related Users' %}</a></li>
+
+											{% endif %}
+											{% if perms.laboratory.add_laboratory %}
+												<li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
+																																								href="{% url 'laboratory:create_lab' node.0.pk %}"
+																																								title="{% trans 'Add Laboratory' %}">
+													<i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
+												<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
+													data-href="{% url 'relorgbase-detail' node.0.pk %}"
+													data-org="{{ node.0.pk }}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
+													type="button" data-id="{{ node.0.pk }}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}
+												</a></li>
+											{% endif %}
+										</ul>
+									</div>
+								</div>
 							</div>
-        </div>
+
+							<div class="float-end">
+								<ul class="list-group  list-group-horizontal-sm">
+									<div class="role ">
+										{% include 'auth_and_perms/organization_permission_table.html' with object=node.0 %}
+									</div>
+									{% if perms.laboratory.change_organizationstructure %}
+										<li class="list-group-item">
+											{% if not node.0.active %}
+												<a class="orgactions" data-modal="#actionclonemodal" data-prefix="clone-" data-org="{{ node.0.pk }}"
+															title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
+												</a>
+												{% elif node.2 %}
+												<a class="orgactions" data-modal="#actionwimodal" data-prefix="wi-" data-org="{{ node.0.pk }}"
+															title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
+												</a>
+											{% else %}
+												<a class="orgactions" data-modal="#actionsmodal" data-prefix="" href="#{{ node.0.pk }}"
+															data-org="{{ node.0.pk }}" title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
+												</a>
+											{% endif %}
+										</li>
+										<li class="list-group-item">
+											<a class="loglist" href="{% url 'laboratory:logentry_list' node.0.pk %}" title="{% trans 'Log List' %}">
+												<i class="fa fa-file-text-o"></i></a>
+										</li>
+									{% endif %}
+									{% if perms.auth_and_perms.view_rol %}
+										<li class="list-group-item">
+											<a class="rol_details_btn" data-org="{{ node.0.pk }}" title="{% trans 'Show Roles information' %}"> <i
+												class="fa fa-info-circle"></i></a>
+										</li>
+									{% endif %}
+
+									{% if perms.auth_and_perms.change_rol %}
+										<li class="list-group-item" title="{% trans 'Change parent of organization' %}">
+											<a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"
+														title="{% trans 'Rol List' %}">
+												<i class="fa fa-list-alt"></i></a>
+										</li>
+									{% endif %}
 
 
-</div>
-    </div>
-</div>
-</div>
-<div id="addrolmodal" class="modal fade" tabindex="-1" aria-labelledby="rolmodalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+									{% if perms.laboratory.change_organizationstructure and node.0.active %}
+										<li class="list-group-item">
+                        <span class="orgbyuser" data-formaction="{% url 'laboratory:update_organization' node.0.pk %}"
+																														data-org="{{ node.0.pk }}" data-display="{{ node.0.node }}"
+																														title="{% trans 'Change parent of organization' %}">
+                            <i class="fa fa-sort-amount-desc text-secondary"></i></span>
+										</li>
+									{% endif %}
+									{% if perms.laboratory.add_organizationstructure and node.0.active %}
+										<li class="list-group-item">
+                        <span class="addOrgStructure" data-parent="{{ node.0.pk }}"><i
+																									class="fa fa-plus  text-secondary" title="{% trans 'Add organization' %}"></i></span>
+										</li>
+									{% endif %}
+									{% if perms.laboratory.delete_organizationstructure %}
+										<li class="list-group-item">
+											<a href="{% url 'laboratory:delete_organization' node.0.pk %}"><i
+												class="fa fa-minus text-danger" title="{% trans 'Delete organization' %}"></i></a>
+										</li>
+									{% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
 
-            <form method="post">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h4 class="modal-title" id="rolmodalLabel">{% trans 'Rol' %}</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row" role="group">
-                        <div class="btn-group btn-toggle" role="group">
-                            <button id="btn_add_rol" type="button" class="btn btn-primary active" data-copy="false" data-url="{% url 'auth_and_perms:api-rol-list' %}">{% trans 'Add New Rol' %}</button>
-                            <button id="btn_copy_rol" type="button" class="btn btn-default" data-copy="true">{% trans 'Copy Rols' %}</button>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div id="add_rol_container">
-                            <div class="form-group">
-                                <input type="text" id="rolname" class="form-control" placeholder="{% trans 'Rol name' %}"/>
-                                <input type="hidden" name="orgpk" />
-                            </div>
-																												<div class="form-group">
-																																<textarea id="roldescription" class="form-control" data-widget="TextInput" placeholder="{% trans 'Add a description' %}"></textarea>
-																															</div>
-                            <div id="selectroldiv">
-                                <div class="form-group">
-                                    <label for="id_relate_rols">{% trans 'Copy permissions from other roles?' %}:</label>
-                                    No <input type="checkbox" id="id_relate_rols" name="relate_rols" data-widget="YesNoInput" /> Sí
-                                </div>
-                                <div id="rolS2container">
-                                    <select autocomplete="off" name="rols" multiple data-url="{% url 'roluserorgbase-list' %}"></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="copy_rol_container"><label>{% trans 'Select roles to copy' %} </label>
-                        </div>
+			{% endfor %}
 
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="button" id="saveroluserorg" class="btn btn-primary">{% trans 'Save changes' %}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="addOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="OrganizationmodalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" action="{% url 'laboratory:create_organization'  %}">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h4 class="modal-title" id="OrganizationmodalLabel">{% trans 'Create Organization' %}</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{addorgform.as_horizontal}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="relOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="relOrganizationmodalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" action="{% url 'auth_and_perms:add_contenttype_to_org' %}">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h4 class="modal-title" id="relOrganizationmodalLabel">{% trans 'Relate Organization with Permission objects' %}</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{ relorgform.as_p }}
+		</div>
+		<div class="col">
 
-                    <input type="hidden" id="relorg_organization" name="organization" value=""/>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div id="orgbyusermodal" class="modal fade" tabindex="-1" aria-labelledby="orgbyusermodalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="orgbyusermodalLabel">{% trans 'Change parent of organization' %}</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="" method="post">
-            <div class="modal-body">
+			<div class="container">
 
-                <div class="mb-3">
-                <label for="id_parent" class="form-label">{% trans 'Organization parent:' %}</label>
-                <select autocomplete="off"  placeholder="{% trans 'Select an organization to be parent of' %}" id="id_parent" name="parent" data-url="{% url 'orgbyuser-list' %}"></select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-            </div>
-                {% csrf_token %}
-            </form>
-        </div>
-    </div>
-</div>
-<div id="relprofilelabmodal" class="modal fade" tabindex="-1" aria-labelledby="relprofilelabmodalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="relprofilelabmodalLabel">{% trans 'Relate user to laboratory' %}</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-									<div class="modal-body">
-										<ul class="nav nav-tabs">
-  <li class="nav-item" role="presentation">
-			    <button class="nav-link active" id="profiorg-tab" data-bs-toggle="tab" data-bs-target="#profiorgtabbody" type="button" role="tab" aria-controls="profiorg" aria-selected="true">
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link active" id="navbylabs" data-bs-toggle="tab" data-bs-target="#bylabs" type="button" role="tab"
+									aria-controls="bylabs" aria-selected="true">{% trans 'By laboratory' %}</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="navbyorgs" data-bs-toggle="tab" data-bs-target="#byorgs" type="button" role="tab"
+									aria-controls="byorgs" aria-selected="true">{% trans 'By organization' %}</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="navbyprofile" data-bs-toggle="tab" data-bs-target="#byprofile" type="button" role="tab"
+									aria-controls="byorgs" aria-selected="true">{% trans 'By profile' %}</a>
+					</li>
+				</ul>
+
+
+				<div class="tab-content mt-3" id="myTabContent">
+					<input type="hidden" value="laboratory" id="id_typeofcontenttype" name="typeofcontenttype" \>
+					<div class="tab-pane fade show active" id="bylabs" role="tabpanel" aria-labelledby="navbylabs">
+						<h5 class="text-center">{% trans 'Rol by laboratory' %}</h5>
+						<button type="button" title="{% trans 'Show Roles information' %}" class="btn float-start open_rol_detail_modal">
+							<i aria-hidden="true" class="fa fa-info-circle"></i></button>
+						<h5 class="float-end">{% trans 'Add or restrict permission on this laboratory' %}</h5>
+						<div class="clearfix"></div>
+
+						<div class="row">
+							{{ labform.as_horizontal }}
+						</div>
+						<div class="row">
+							<button id="relateusertolab" type="button" class="btn btn-sm text-purple-400">
+								<i class="fa fa-user-plus" aria-hidden="true"></i>
+								{% trans 'Relate user with this laboratory' %}</button>
+						</div>
+						<div class="role table-responsive">
+							<table id="userpermelement" class="compact nowrap w-100"></table>
+						</div>
+					</div>
+
+					<div class="tab-pane fade" id="byorgs" role="tabpanel" aria-labelledby="navbyorgs">
+						<h5 class="text-center">{% trans 'Rol in all organization' %}</h5>
+						<button type="button" class="btn float-start open_rol_detail_modal"><i aria-hidden="true"
+																																																																													class="fa fa-info-circle"></i></button>
+						<h5 class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</h5>
+						<div class="clearfix"></div>
+
+						<div class="role table-responsive">
+							<button id="relateusertoorg" type="button" class="btn btn-sm text-purple-400 w-100">
+								<i class="fa fa-user-plus" aria-hidden="true"></i>
+								{% trans 'Relate user with this organization' %}</button>
+							<table id="orpermelement" class="compact nowrap w-100"></table>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
+						<div class="jumbotron">
+							<h6>{% trans 'Help Text' %}</h6>
+							<p>{% trans 'This section will assign permissions groups to some profile who belongs to selected organization. If you do not find the user in profile selector, could you add it from By organization tab.' %}</p>
+							<a class="btn btn-secondary-outline float-end" data-bs-toggle="collapse" href="#collapseExample" role="button"
+										aria-expanded="false" aria-controls="collapseExample">
+								<i class="fa fa-info-circle" aria-hidden="true"></i> {% trans 'Show descriptions of groups' %}
+							</a>
+							<div class="clearfix"></div>
+						</div>
+						<form method="post" id="groups_by_profile_form">
+							{% csrf_token %}
+							{{ profile_group_form.as_horizontal }}
+							<button type="button" class="btn btn-primary" id="savegroupsbyprofile" style="float: right; margin-right: 0px;"
+															data-url="{% url 'auth_and_perms:api_update_groups_by_profile' %}">{% trans 'Save changes' %}</button>
+						</form>
+
+						<div class="collapse" id="collapseExample">
+							<div class="card card-body">
+								{% for group in groups %}
+									<div class="list-group pt-2">
+										<h6 class="mb-2 fw-bold">{{ group.group.name }}</h6>
+										<br>
+										<p class="ms-2">{{ group.description | default_if_none:"No description"}}</p>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="addrolmodal" class="modal fade" tabindex="-1" aria-labelledby="rolmodalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+
+				<form method="post">
+					{% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title" id="rolmodalLabel">{% trans 'Rol' %}</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group row" role="group">
+							<div class="btn-group btn-toggle" role="group">
+								<button id="btn_add_rol" type="button" class="btn btn-primary active" data-copy="false"
+																data-url="{% url 'auth_and_perms:api-rol-list' %}">{% trans 'Add New Rol' %}</button>
+								<button id="btn_copy_rol" type="button" class="btn btn-default"
+																data-copy="true">{% trans 'Copy Rols' %}</button>
+							</div>
+						</div>
+						<div class="form-group row">
+							<div id="add_rol_container">
+								<div class="form-group">
+									<input type="text" id="rolname" class="form-control" placeholder="{% trans 'Rol name' %}"/>
+									<input type="hidden" name="orgpk"/>
+								</div>
+								<div class="form-group">
+									<textarea id="roldescription" class="form-control" data-widget="TextInput"
+																			placeholder="{% trans 'Add a description' %}"></textarea>
+								</div>
+								<div id="selectroldiv">
+									<div class="form-group">
+										<label for="id_relate_rols">{% trans 'Copy permissions from other roles?' %}:</label>
+										No <input type="checkbox" id="id_relate_rols" name="relate_rols" data-widget="YesNoInput"/> Sí
+									</div>
+									<div id="rolS2container">
+										<select autocomplete="off" name="rols" multiple data-url="{% url 'roluserorgbase-list' %}"></select>
+									</div>
+								</div>
+							</div>
+							<div id="copy_rol_container"><label>{% trans 'Select roles to copy' %} </label>
+							</div>
+
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+						<button type="button" id="saveroluserorg" class="btn btn-primary">{% trans 'Save changes' %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="addOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="OrganizationmodalLabel"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form method="post" action="{% url 'laboratory:create_organization' %}">
+					{% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title" id="OrganizationmodalLabel">{% trans 'Create Organization' %}</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						{{ addorgform.as_horizontal }}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+						<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="relOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="relOrganizationmodalLabel"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form method="post" action="{% url 'auth_and_perms:add_contenttype_to_org' %}">
+					{% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title"
+										id="relOrganizationmodalLabel">{% trans 'Relate Organization with Permission objects' %}</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						{{ relorgform.as_p }}
+
+						<input type="hidden" id="relorg_organization" name="organization" value=""/>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+						<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="orgbyusermodal" class="modal fade" tabindex="-1" aria-labelledby="orgbyusermodalLabel"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="orgbyusermodalLabel">{% trans 'Change parent of organization' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<form action="" method="post">
+					<div class="modal-body">
+
+						<div class="mb-3">
+							<label for="id_parent" class="form-label">{% trans 'Organization parent:' %}</label>
+							<select autocomplete="off" placeholder="{% trans 'Select an organization to be parent of' %}" id="id_parent"
+															name="parent" data-url="{% url 'orgbyuser-list' %}"></select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+						<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+					</div>
+					{% csrf_token %}
+				</form>
+			</div>
+		</div>
+	</div>
+	<div id="relprofilelabmodal" class="modal fade" tabindex="-1" aria-labelledby="relprofilelabmodalLabel"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="relprofilelabmodalLabel">{% trans 'Relate user to laboratory' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<ul class="nav nav-tabs">
+						<li class="nav-item" role="presentation">
+							<button class="nav-link active" id="profiorg-tab" data-bs-toggle="tab" data-bs-target="#profiorgtabbody"
+															type="button" role="tab" aria-controls="profiorg" aria-selected="true">
 								{% trans "From my organization" %}
 							</button>
-  </li>
-											{% if perms.auth_and_perms.can_add_external_user_in_org %}
-  <li class="nav-item" role="presentation">
-						    <button class="nav-link" id="profiorgextuser-tab" data-bs-toggle="tab" data-bs-target="#profiorgextuser" type="button" role="tab" aria-controls="profiorgextuser" aria-selected="true">
-								{% trans "External user" %}
-							</button>
-  </li>
-											{% endif %}
+						</li>
+						{% if perms.auth_and_perms.can_add_external_user_in_org %}
+							<li class="nav-item" role="presentation">
+								<button class="nav-link" id="profiorgextuser-tab" data-bs-toggle="tab" data-bs-target="#profiorgextuser"
+																type="button" role="tab" aria-controls="profiorgextuser" aria-selected="true">
+									{% trans "External user" %}
+								</button>
+							</li>
+						{% endif %}
 
 
-</ul>
+					</ul>
 
 
+					<div class="tab-content">
+						<div class="tab-pane active" id="profiorgtabbody" role="tabpanel" aria-labelledby="profiorg-tab">
+							<form id="relprofilelabform" action="" method="post">
+								<div class="profiletoorganization panel-body m-3">
+									{{ profileform.as_horizontal }}
+								</div>
 
-	<div class="tab-content">
-  <div class="tab-pane active" id="profiorgtabbody" role="tabpanel" aria-labelledby="profiorg-tab">
-   <form id="relprofilelabform" action="" method="post">
-            <div class="profiletoorganization panel-body m-3">
-                {{ profileform.as_horizontal }}
-            </div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+									<button id="relprofilewithlaboratorybtn" type="button"
+																	class="btn btn-primary">{% trans 'Save changes' %}</button>
+								</div>
+								{% csrf_token %}
+							</form>
+						</div>
+						{% if perms.auth_and_perms.can_add_external_user_in_org %}
+							<div class="tab-pane" id="profiorgextuser" role="tabpanel" aria-labelledby="profile-tab">
+								<div class="profixorgextuserbody m-3">
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button id="relprofilewithlaboratorybtn" type="button" class="btn btn-primary">{% trans 'Save changes' %}</button>
-            </div>
-			                {% csrf_token %}
-			</form>
-</div>
-		{% if perms.auth_and_perms.can_add_external_user_in_org %}
-  		<div class="tab-pane" id="profiorgextuser" role="tabpanel" aria-labelledby="profile-tab">
-			<div class="profixorgextuserbody m-3">
+									<div class="bs-callout bs-callout-warning" id="callout-navs-anchor-disabled">
+										<h4>{% trans "Important" %}</h4>
+										<p>{% trans "In this tab, you add the existing users in Organilab who are not associated with the organization, so you need to know the user's email address to add them." %}</p>
+										<p>{% trans "Once added, you can search for the profile in the organization tab to relate user to organization" %}</p>
+									</div>
+									<form id="externaluserform" class="form">
+										<div id="externaluserformcontainer" class="m-3">
+											{{ externaluserform.as_horizontal }}
+										</div>
+										{% csrf_token %}
+									</form>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+									<button id="relemailbtn" type="button" class="btn btn-primary">{% trans 'Find user' %}</button>
+								</div>
+							</div>
+						{% endif %}
+					</div>
 
-				<div class="bs-callout bs-callout-warning" id="callout-navs-anchor-disabled">
-    <h4>{% trans "Important" %}</h4>
-    <p>{% trans "In this tab, you add the existing users in Organilab who are not associated with the organization, so you need to know the user's email address to add them." %}</p>
-					<p>{% trans "Once added, you can search for the profile in the organization tab to relate user to organization" %}</p>
 				</div>
-				<form id="externaluserform" class="form">
-<div id="externaluserformcontainer" class="m-3">
-				{{ externaluserform.as_horizontal }}
-</div>
-					  {% csrf_token %}
-					</form>
 			</div>
-			            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                <button id="relemailbtn" type="button" class="btn btn-primary">{% trans 'Find user' %}</button>
-            </div>
 		</div>
-		{% endif %}
+	</div>
+	<div id="actionsmodal" class="modal fade" tabindex="-1" aria-labelledby="actionsmodalLabel"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form method="post" action="{% url 'laboratory:organization_actions' %}">
+					{% csrf_token %}
+					<div class="modal-header">
+						<h4 class="modal-title" id="actionsmodalLabel">{% trans 'Actions for Organization' %}</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						{{ actionform.as_horizontal }}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+						<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 
-								</div>
-        </div>
-    </div>
-</div>
-<div id="actionsmodal" class="modal fade" tabindex="-1" aria-labelledby="actionsmodalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" action="{% url 'laboratory:organization_actions'  %}">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h4 class="modal-title" id="actionsmodalLabel">{% trans 'Actions for Organization' %}</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    {{actionform.as_horizontal}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-                    <button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+	<div id="rol_details" class="modal fade" tabindex="-1" aria-labelledby="rol_details_label" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="rol_details_label">{% trans 'Roles' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="container" id="rol_details_container" style="overflow-y: scroll; height: 600px;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-<div id="rol_details"  class="modal fade" tabindex="-1" aria-labelledby="rol_details_label" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-									<div class="modal-header">
-										<h4 class="modal-title" id="rol_details_label">{% trans 'Roles' %}</h4>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<div class="container" id="rol_details_container" style="overflow-y: scroll; height: 600px;"></div>
-        </div>
-        </div>
-    </div>
-</div>
-
-{% url 'laboratory:organization_actions' as action_clone_url %}
-{% trans 'Actions for Organization' as action_clone_org %}
-{% include 'modal_template_submit_form.html' with form=actionwiform id="actionwimodal" title=action_clone_org form_id="actionwiform" url=action_clone_url %}
-{% include 'modal_template_submit_form.html' with form=actioncloneform id="actionclonemodal" title=action_clone_org form_id="actioncloneform" url=action_clone_url %}
+	{% url 'laboratory:organization_actions' as action_clone_url %}
+	{% trans 'Actions for Organization' as action_clone_org %}
+	{% include 'modal_template_submit_form.html' with form=actionwiform id="actionwimodal" title=action_clone_org form_id="actionwiform" url=action_clone_url %}
+	{% include 'modal_template_submit_form.html' with form=actioncloneform id="actionclonemodal" title=action_clone_org form_id="actioncloneform" url=action_clone_url %}
 
 
 {% endblock %}
 
 {% block js %}
-{{block.super}}
-<script>
-prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}";
-userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
-delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
-create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
-external_user_url = "{% url 'auth_and_perms:api-extuserinorg-detail' 0 %}";
-groups_by_profile = "{% url 'groupsbyprofile-list' %}";
-inerit_profile_url = "{% url 'auth_and_perms:api-userinorg-inerit-profile' %}";
-roles_url = "{% url 'auth_and_perms:get_roles_by_organization' 0 %}";
-</script>
-<script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
-{% endblock%}
+	{{ block.super }}
+	<script>
+		prolabor_api_url = "{% url 'auth_and_perms:api-prolaborg-list' %}";
+		userinorg_api_url = "{% url 'auth_and_perms:api-userinorg-list' %}";
+		delete_rol_profile_url = "{% url 'auth_and_perms:api-deluserorgcontt-list' %}";
+		create_profile_ctt_url = "{% url 'auth_and_perms:api-relusertocontenttype-list' %}";
+		external_user_url = "{% url 'auth_and_perms:api-extuserinorg-detail' 0 %}";
+		groups_by_profile = "{% url 'groupsbyprofile-list' %}";
+		inerit_profile_url = "{% url 'auth_and_perms:api-userinorg-inerit-profile' %}";
+		roles_url = "{% url 'auth_and_perms:get_roles_by_organization' 0 %}";
+	</script>
+	<script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}
