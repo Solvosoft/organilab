@@ -17,6 +17,7 @@ from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from weasyprint import HTML
 
@@ -45,6 +46,7 @@ from laboratory.models import (
 from laboratory.utils import (
     organilab_logentry,
     get_laboratories_by_user_profile,
+    get_all_user_laboratories,
     register_laboratory_contenttype,
     delete_profile_roles_related_to_laboratory,
     delete_relation_between_laboratory_with_other_models,
@@ -241,6 +243,48 @@ class LaboratoryListView(ListView):
         if q != "":
             queryset = queryset.filter(name__icontains=q)
         return queryset.order_by(*self.ordering)
+
+
+@method_decorator(login_required, name="dispatch")
+class AllLaboratoriesListView(TemplateView):
+    template_name = "laboratory/all_laboratories_list.html"
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        lab_list = get_all_user_laboratories(self.request.user)
+
+        search_fil = self.request.GET.get("search_fil", "")
+        if search_fil:
+            lab_list = [
+                item for item in lab_list
+                if search_fil.lower() in item["lab"].name.lower()
+            ]
+
+        # Manual pagination
+        page = self.request.GET.get("page", 1)
+        try:
+            page = int(page)
+        except (ValueError, TypeError):
+            page = 1
+
+        total = len(lab_list)
+        num_pages = max(1, (total + self.paginate_by - 1) // self.paginate_by)
+        page = max(1, min(page, num_pages))
+        start = (page - 1) * self.paginate_by
+        end = start + self.paginate_by
+
+        context["lab_list"] = lab_list[start:end]
+        context["search_fil"] = search_fil
+        context["page_obj"] = {
+            "number": page,
+            "num_pages": num_pages,
+            "has_previous": page > 1,
+            "has_next": page < num_pages,
+            "previous_page_number": page - 1,
+            "next_page_number": page + 1,
+        }
+        return context
 
 
 @method_decorator(permission_required("laboratory.delete_laboratory"), name="dispatch")

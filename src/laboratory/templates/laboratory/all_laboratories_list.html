@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n laboratory %}
+
+{% block content %}
+  <div class="row mb-3">
+    <div class="col-sm-8">
+      <label for="searchbox">{% trans "Search Laboratory" %}</label>
+      <form id="searchform" method="get" action="" accept-charset="utf-8">
+        <div class="input-group">
+          <input id="searchbox" name="search_fil" type="text" class="form-control" style="height:40px"
+                 value="{{ search_fil }}">
+          <span class="input-group-btn" style="height:40px; margin-left:20px;">
+            <button class="btn btn-primary" type="submit" style="margin-left:10px;">{% trans "Search" %}</button>
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-4 text-right" style="padding-top: 25px;">
+      <a href="{% url 'auth_and_perms:select_organization_by_user' %}" class="btn btn-default">
+        {% trans "Organization Management" %}
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    {% for item in lab_list %}
+      {% include 'laboratory/all_lab_card.html' with lab=item.lab org_pk=item.org_pk %}
+    {% empty %}
+      <div class="col-sm-12">
+        <p>{% trans "No laboratories found." %}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if lab_list %}
+    <nav aria-label="...">
+      <ul class="pager">
+        {% if page_obj.has_previous %}
+          <li>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_fil %}&search_fil={{ search_fil }}{% endif %}">{% trans 'Previous' %}</a>
+          </li>
+        {% endif %}
+
+        <li>
+          {% trans 'Page' %} {{ page_obj.number }} -- {{ page_obj.num_pages }}.
+        </li>
+
+        {% if page_obj.has_next %}
+          <li>
+            <a href="?page={{ page_obj.next_page_number }}{% if search_fil %}&search_fil={{ search_fil }}{% endif %}">{% trans 'Next' %}</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+{% endblock %}
+
+{% block js %}
+  <script>
+    window.onload = function(){
+      try{
+        var url_string = (window.location.href).toLowerCase();
+        var url = new URL(url_string);
+        var search_fil = url.searchParams.get("search_fil");
+        if(search_fil){
+          document.getElementById('searchbox').value = search_fil;
+        }
+      }catch(err){
+        //do nothing
+      }
+    }
+  </script>
+{% endblock %}

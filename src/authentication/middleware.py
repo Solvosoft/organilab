@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.http import Http404
 
 from auth_and_perms.models import ProfilePermission
+from auth_and_perms.org_hierarchy import get_ancestor_org_pks
 from laboratory.models import OrganizationStructure
 from laboratory.utils import get_laboratories_by_user_profile
 
@@ -103,12 +104,27 @@ class ProfileMiddleware:
                 content_type__model="laboratory",
             )
         if org_pk:
-            queryQ |= Q(
+            has_direct_org_perms = ProfilePermission.objects.filter(
                 profile=user.profile,
                 object_id=org_pk,
                 content_type__app_label="laboratory",
                 content_type__model="organizationstructure",
-            )
+            ).exists()
+            if has_direct_org_perms:
+                queryQ |= Q(
+                    profile=user.profile,
+                    object_id=org_pk,
+                    content_type__app_label="laboratory",
+                    content_type__model="organizationstructure",
+                )
+            else:
+                ancestor_org_pks = get_ancestor_org_pks(org_pk)
+                queryQ |= Q(
+                    profile=user.profile,
+                    object_id__in=ancestor_org_pks,
+                    content_type__app_label="laboratory",
+                    content_type__model="organizationstructure",
+                )
 
         profile_in = ProfilePermission.objects.filter(queryQ)
 

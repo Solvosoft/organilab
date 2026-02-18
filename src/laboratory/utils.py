@@ -428,6 +428,7 @@ def get_laboratories_by_user_profile(user, org_pk):
 
 
 def check_user_access_kwargs_org_lab(org, lab, user):
+    from auth_and_perms.org_hierarchy import get_ancestor_org_pks
     user_access = False
 
     if org:
@@ -435,8 +436,11 @@ def check_user_access_kwargs_org_lab(org, lab, user):
 
         if organization.exists():
             organization = organization.first()
+            ancestor_pks = get_ancestor_org_pks(organization.pk)
 
-            if organization.users.filter(pk=user.pk).exists():
+            if UserOrganization.objects.filter(
+                user=user, organization__pk__in=ancestor_pks, status=True
+            ).exists():
 
                 if lab:
                     laboratory = Laboratory.objects.filter(pk=lab)
@@ -470,6 +474,106 @@ def register_laboratory_contenttype(organization, laboratory):
         ).first(),
         object_id=lab_id,
     )
+
+
+def resolve_org_for_lab(user, lab):
+    """
+    Given a user and a laboratory, determine which organization context
+    to use for this user+lab combination.
+
+    Resolution order:
+    1. Find orgs where user has ProfilePermission (content_type=organizationstructure)
+    2. Check which of those orgs "have" this lab (via lab.organization or OrganizationStructureRelations)
+    3. If no direct match, check ancestors of the lab's orgs
+    4. Return the deepest (highest level) matching org, or lab.organization_id as fallback
+    """
+    from auth_and_perms.models import ProfilePermission
+
+    org_ct = ContentType.objects.filter(
+        app_label="laboratory", model="organizationstructure"
+    ).first()
+    lab_ct = ContentType.objects.filter(
+        app_label="laboratory", model="laboratory"
+    ).first()
+
+    if not org_ct or not lab_ct:
+        return lab.organization_id
+
+    # Get all org pks where user has ProfilePermission for orgs
+    user_org_pks = set(
+        ProfilePermission.objects.filter(
+            profile__user=user,
+            content_type=org_ct,
+        ).values_list("object_id", flat=True)
+    )
+
+    if not user_org_pks:
+        return lab.organization_id
+
+    # Get all org pks that "have" this lab (creator org + relations)
+    lab_org_pks = set()
+    lab_org_pks.add(lab.organization_id)
+
+    relation_org_pks = OrganizationStructureRelations.objects.filter(
+        content_type=lab_ct,
+        object_id=lab.pk,
+    ).values_list("organization_id", flat=True)
+    lab_org_pks.update(relation_org_pks)
+
+    # Direct match: user has permission in an org that has this lab
+    direct_match_pks = user_org_pks & lab_org_pks
+    if direct_match_pks:
+        best = OrganizationStructure.objects.filter(
+            pk__in=direct_match_pks
+        ).order_by("-level").first()
+        if best:
+            return best.pk
+
+    # Ancestor match: for each lab org, check if any ancestor is in user's orgs
+    for lab_org_pk in lab_org_pks:
+        lab_org = OrganizationStructure.objects.filter(pk=lab_org_pk).first()
+        if lab_org:
+            ancestor_pks = set(lab_org.ancestors().values_list("pk", flat=True))
+            ancestor_match = user_org_pks & ancestor_pks
+            if ancestor_match:
+                best = OrganizationStructure.objects.filter(
+                    pk__in=ancestor_match
+                ).order_by("-level").first()
+                if best:
+                    return best.pk
+
+    return lab.organization_id
+
+
+def get_all_user_laboratories(user):
+    """
+    Get all laboratories where the user has ProfilePermission,
+    along with the resolved org_pk for each lab.
+
+    Returns list of dicts: [{"lab": Laboratory, "org_pk": int}, ...]
+    """
+    from auth_and_perms.models import ProfilePermission
+
+    lab_ct = ContentType.objects.filter(
+        app_label="laboratory", model="laboratory"
+    ).first()
+
+    if not lab_ct:
+        return []
+
+    lab_pks = ProfilePermission.objects.filter(
+        profile__user=user,
+        content_type=lab_ct,
+    ).values_list("object_id", flat=True).distinct()
+
+    labs = Laboratory.objects.filter(pk__in=lab_pks).select_related("organization")
+
+    result = []
+    for lab in labs:
+        org_pk = resolve_org_for_lab(user, lab)
+        result.append({"lab": lab, "org_pk": org_pk})
+
+    return result
 
 
 def delete_profile_roles_related_to_laboratory(

@@ -4,7 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from auth_and_perms.models import ProfilePermission, Profile
-from laboratory.models import OrganizationStructureRelations, OrganizationStructure
+from auth_and_perms.org_hierarchy import get_ancestor_org_pks
+from laboratory.models import OrganizationStructureRelations, OrganizationStructure, UserOrganization
 
 
 def user_is_allowed_on_organization(user, organization):
@@ -12,11 +13,20 @@ def user_is_allowed_on_organization(user, organization):
         raise ObjectDoesNotExist("Organization not found")
     if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
-    if not organization.users.filter(pk=user.pk).exists():
+    if not user.is_authenticated:
         raise PermissionDenied(
             _("User %(user)s not allowed on organization %(organization)r ")
             % {"user": user, "organization": organization}
         )
+    ancestor_pks = get_ancestor_org_pks(organization.pk)
+    if not UserOrganization.objects.filter(
+        user=user, organization__pk__in=ancestor_pks, status=True
+    ).exists():
+        raise PermissionDenied(
+            _("User %(user)s not allowed on organization %(organization)r ")
+            % {"user": user, "organization": organization}
+        )
+
 
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
