@@ -63,6 +63,10 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         self.organization = pk
         return self.list(request, pk, **kwargs)
 
+    def get_root_organization(self, organization):
+        ancestors = organization.ancestors(include_self=True)
+        return ancestors.order_by("pk").first() or organization
+
     def list(self, request, *args, **kwargs):
         if self.organization is None:
             form = RelOrganizationPKIntForm(self.request.GET)
@@ -75,6 +79,7 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 pk=self.organization,
             )
         user_is_allowed_on_organization(self.request.user, self.organization)
+        self.root_organization = self.get_root_organization(self.organization)
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -83,7 +88,7 @@ class RolS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
-        queryset = queryset.filter(organizationstructure=self.organization)
+        queryset = queryset.filter(organizationstructure=self.root_organization)
         as_role = str2bool(self.request.GET.get("as_role"))
         if as_role:
             profilepermission = ProfilePermission.objects.filter(

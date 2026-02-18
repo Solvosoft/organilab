@@ -51,7 +51,7 @@
 								<div id="collapse{{ node.0.pk }}" class="collapse">
 									<div class="row">
 										<ul>
-											{% if perms.auth_and_perms.add_rol %}
+											{% if perms.auth_and_perms.add_rol and node.0.parent == None %}
 												<li class="rolcontainer" rol="{{ node.0.pk }}" title="{% trans 'Add new rol' %}"
 																confirmbtntext="{% trans 'Add' %}" data-addbtn="1"><span
 													class="btn btn-sm btn-success rolbtnadd" data-id="{{ node.0.pk }}"
@@ -60,28 +60,35 @@
 												</li>
 											{% endif %}
 											{% if perms.auth_and_perms.add_profile %}
-												<li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-																																								href="{% url 'auth_and_perms:add_user' node.0.pk %}"
-																																								title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i>
-													{% trans 'User' %}</a>
-												</li>
-												<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
-													class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{ node.0.pk }}"
-													data-url="{% url 'auth_and_perms:addusersorganization' node.0.pk %}"
-													data-appname="laboratory" data-model="organizationstructure"
-													data-objectid="{{ node.0.pk }}"><i class="fa fa-users"></i> {% trans 'Related Users' %}</a></li>
-
+												{% if node.0.parent == None %}
+													<li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
+																																									href="{% url 'auth_and_perms:add_user' node.0.pk %}"
+																																									title="{% trans 'Add User' %}"><i class="fa fa-user-plus"></i>
+														{% trans 'User' %}</a>
+													</li>
+												{% endif %}
+												{% if node.0.parent != None %}
+													<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
+														class="btn btn-sm btn-warning userbtnadd" type="button" data-id="{{ node.0.pk }}"
+														data-url="{% url 'auth_and_perms:addusersorganization' node.0.pk %}"
+														data-appname="laboratory" data-model="organizationstructure"
+														data-objectid="{{ node.0.pk }}"><i class="fa fa-users"></i> {% trans 'Related Users' %}</a></li>
+												{% endif %}
 											{% endif %}
 											{% if perms.laboratory.add_laboratory %}
-												<li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
-																																								href="{% url 'laboratory:create_lab' node.0.pk %}"
-																																								title="{% trans 'Add Laboratory' %}">
-													<i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
-												<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
-													data-href="{% url 'relorgbase-detail' node.0.pk %}"
-													data-org="{{ node.0.pk }}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
-													type="button" data-id="{{ node.0.pk }}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}
-												</a></li>
+												{% if node.0.parent == None %}
+													<li class="rolcontainer"><a class="btn btn-sm btn-primary" type="button"
+																																									href="{% url 'laboratory:create_lab' node.0.pk %}"
+																																									title="{% trans 'Add Laboratory' %}">
+														<i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
+												{% endif %}
+												{% if node.0.parent != None %}
+													<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
+														data-href="{% url 'relorgbase-detail' node.0.pk %}"
+														data-org="{{ node.0.pk }}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
+														type="button" data-id="{{ node.0.pk }}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}
+													</a></li>
+												{% endif %}
 											{% endif %}
 										</ul>
 									</div>
