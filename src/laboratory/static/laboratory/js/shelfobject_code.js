@@ -8,7 +8,7 @@ datatable_inits = {
 								{data: "furniture", name: "furniture", title: gettext("Furniture"), type: "String", visible: true},
 								{data: "shelf", name: "shelf", title: gettext("Shelf"), type: "String", visible: true},
 								{data: "h_code", name: "h_code", title: gettext("H Code"), type: "String", visible: true},
-								{data: "flashpoint", name: "flashpoint", title: gettext("Flashpoint"), type: "String", visible: true,
+								{data: "process_condition", name: "process_condition", title: gettext("Process Condition"), type: "String", visible: true,
 								render: selectobjprint({display_name: "text"})},
 								{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true}
 			],

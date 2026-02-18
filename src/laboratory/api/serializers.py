@@ -1648,7 +1648,7 @@ class ShelfObjectHcodeSerializer(serializers.ModelSerializer):
     shelf = serializers.SerializerMethodField()
     cas_code = serializers.SerializerMethodField()
     h_code = serializers.SerializerMethodField()
-    flashpoint = GTS2SerializerBase(many=False)
+    process_condition = GTS2SerializerBase(many=False)
     actions = serializers.SerializerMethodField()
 
     def get_h_code(self, obj):
@@ -1698,8 +1698,8 @@ class ShelfObjectHcoderDataTableSerializer(serializers.Serializer):
 
 
 class ShelfObjectHcodeDetailSerializer(serializers.ModelSerializer):
-    flashpoint = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.filter(key="flashpoint").using(
+    process_condition = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="process_condition").using(
             settings.READONLY_DATABASE
         ),
         required=True,
@@ -1707,4 +1707,4 @@ class ShelfObjectHcodeDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShelfObject
-        fields = ["flashpoint"]
+        fields = ["process_condition"]

@@ -1257,12 +1257,12 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
         lab_pk = self.kwargs.get("lab_pk", 0)
         flaspoint_before = self.get_object()
         before = {
-            "flashpoint": flaspoint_before.flashpoint,
+            "process_condition": flaspoint_before.process_condition,
         }
 
         flash = serializer.save()
         after = {
-            "flashpoint": flash.flashpoint,
+            "process_condition": flash.process_condition,
         }
 
         changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
@@ -1277,7 +1277,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
         )
         if changed_fields:
             ShelfObjectObservation.objects.create(
-                description=f"Flashpoint changed from {before['flashpoint']} to {after['flashpoint']}",
+                description=f"Process Codition changed from {before['process_condition']} to {after['process_condition']}",
                 shelf_object=flash,
                 created_by=self.request.user,
             )

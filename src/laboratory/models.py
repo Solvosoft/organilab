@@ -458,7 +458,7 @@ class ShelfObject(models.Model):
         blank=True, null=True, verbose_name=_("Container Open Date")
     )
     was_donated = models.BooleanField(default=False, verbose_name=_("Was donated?"))
-    flashpoint = catalog.GTForeignKey(
+    process_condition = catalog.GTForeignKey(
         Catalog,
         related_name="process_condition_shelfobject",
         blank=True,
@@ -1665,6 +1665,16 @@ class ObjectMaximumLimit(models.Model):
         key_value="units",
     )
     created_at = models.DateField(auto_now_add=True)
+    process_condition = catalog.GTForeignKey(
+        Catalog,
+        related_name="process_condition_object_maximum",
+        blank=True,
+        null=True,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Process Condition"),
+        key_name="key",
+        key_value="process_condition",
+    )
 
     def __str__(self):
         return f"{self.laboratory.name} {self.object} - {self.measurement_unit}"
