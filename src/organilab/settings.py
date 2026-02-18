@@ -105,7 +105,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    #"auth_and_perms.middleware.ProfileLanguageMiddleware",
+    # "auth_and_perms.middleware.ProfileLanguageMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -245,7 +245,7 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", None)  # a real email
 # the password of the real email
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", None)
 SERVER_EMAIL = os.getenv("SERVER_EMAIL", "sitio@organilab.org")
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 # Celery settings
 BROKER_URL = os.getenv("BROKER_URL", "amqp://guest:guest@localhost:5672/organilabvhost")
@@ -298,7 +298,11 @@ CELERYBEAT_SCHEDULE = {
     "shel_object_expiration_email": {
         "task": "laboratory.tasks.send_expiration_email",
         "schedule": crontab(minute=0, hour=7),
-    }
+    },
+    "create_establishment_logs": {
+        "task": "risk_management.tasks.create_establishment_logs_data",
+        "schedule": crontab(minute=0, hour=7),
+    },
 }
 
 INTERNAL_IPS = ("127.0.0.1",)
