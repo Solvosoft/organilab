@@ -14,44 +14,97 @@ from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndicatio
 def get_inventory(filters={}):
     dict_objs = []
     objs_max = ObjectMaximumLimit.objects.filter(**filters)
-    units = Catalog.objects.filter(
-        pk__in=objs_max.values_list("measurement_unit", flat=True)
-    ).distinct()
+
     objs = Object.objects.filter(
         pk__in=objs_max.values_list("object__pk", flat=True),
     ).distinct()
+
+    process_conditions = Catalog.objects.filter(
+        key="process_condition",
+    )
+
+    tons_unit = Catalog.objects.get(description="Toneladas")
+
     for obj in objs:
+        data = {}
         total_shelfobjects = 0
         density = getattr(obj.sustancecharacteristics, "density", None)
-        data = {}
-        for unit in units:
-            max_limit = (
-                ObjectMaximumLimit.objects.filter(
-                    object=obj, measurement_unit=unit, **filters
-                )
-                .distinct()
-                .last()
+        units = Catalog.objects.filter(
+            pk__in=objs_max.filter(object=obj).values_list(
+                "measurement_unit", flat=True
             )
-            quantity = getattr(max_limit, "quantity", 0)
-            if quantity > 0:
-                total_shelfobjects += get_conversion_units_to_kilograms(
-                    unit, quantity, density
-                )
-            h_codes = [
-                h_code
-                for h_code in obj.sustancecharacteristics.h_code.values_list(
-                    "code", flat=True
-                )
-            ]
+        ).distinct()
+        h_codes = [
+            h_code
+            for h_code in obj.sustancecharacteristics.h_code.values_list(
+                "code", flat=True
+            )
+        ]
+        # Extraer los objectos con procesos de condición
+        max_objs = ObjectMaximumLimit.objects.filter(
+            object=obj,
+            measurement_unit__in=units,
+            process_condition__in=process_conditions,
+        )
+        # Se sacan el ultimo registro del objeto deacuerdo a su proceso de condición
+        if max_objs.exists():
+            for process in process_conditions.filter(
+                pk__in=max_objs.values_list("process_condition", flat=True)
+            ):
+                max_obj = max_objs.filter(process_condition=process).last()
+                # Si es un ton, se suma la cantidad
+                if max_obj.measurement_unit == tons_unit:
+                    total_shelfobjects += objs_max.quantity
+                else:
+                    # Si no es un ton, se calcula la cantidad de sustancia en kilogramos
+                    try:
+                        total_shelfobjects += (
+                            get_conversion_units_to_kilograms(
+                                max_obj.measurement_unit, max_obj.quantity, density
+                            )
+                            / 1000
+                        )
+                    except ZeroDivisionError:
+                        total_shelfobjects += 0
+                data = {
+                    "nombre": obj.name,
+                    "cas": obj.cas_code,
+                    "cantidad_t": total_shelfobjects,
+                    "h_codes": ";".join(h_codes),
+                    "condicion_proceso": process.description,
+                }
+        else:
+            # Si no se encuentra ningun registro con proceso de condición, se saca el ultimo registro del objeto
+            max_obj = ObjectMaximumLimit.objects.filter(
+                object=obj, measurement_unit__in=units, process_condition__isnull=True
+            ).last()
+            if max_obj.measurement_unit == tons_unit:
+                total_shelfobjects += max_obj.quantity
+            else:
+                try:
+                    total_shelfobjects += (
+                        get_conversion_units_to_kilograms(
+                            max_obj.measurement_unit, max_obj.quantity, density
+                        )
+                        / 1000
+                    )
+                except ZeroDivisionError:
+                    total_shelfobjects += 0
+
             data = {
                 "nombre": obj.name,
                 "cas": obj.cas_code,
-                "cantidad_t": total_shelfobjects,
+                "cantidad_t": 0,
                 "h_codes": ";".join(h_codes),
-                "condicion_proceso": obj.process_condition,
+                "condicion_proceso": "",
             }
-            dict_objs.append(data)
-    return pd.DataFrame(dict_objs)
+        dict_objs.append(data)
+
+    dataframe = pd.DataFrame(dict_objs)
+    dataframe = dataframe.groupby(
+        ["nombre", "cas", "condicion_proceso", "h_codes"], as_index=False
+    ).agg(cantidad_t=("cantidad_t", "sum"))
+    return dataframe
 
 
 def examples():
