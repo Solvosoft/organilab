@@ -9,9 +9,10 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
-from laboratory.utils import check_user_access_kwargs_org_lab
+from laboratory.utils import (
+    check_user_access_kwargs_org,
+)
 from report.forms import TasksForm, RegencyReportForm
 from report.models import (
     TaskReport,
@@ -132,14 +133,15 @@ def base_pdf(report, uri):
 
 @login_required
 @permission_required("laboratory.do_report")
-def create_request_by_report(request, org_pk, lab_pk):
+def create_request_by_report(request, org_pk):
     response = {"result": False}
-    data = {"org_pk": org_pk, "lab_pk": lab_pk}
+    data = {"org_pk": org_pk}
     report_name_list = register.REPORT_FORMS.keys()
     status_code = 401
     reason = None
 
-    if check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+    if check_user_access_kwargs_org(org_pk, request.user):
+
         if (
             "report_name" in request.GET
             and request.GET["report_name"] in report_name_list
@@ -190,13 +192,12 @@ def create_request_by_report(request, org_pk, lab_pk):
 
 @login_required
 @permission_required("laboratory.do_report")
-def download_report(request, org_pk, lab_pk):
+def download_report(request, org_pk):
     response = {"result": False}
     status_code = 200
     reason = None
 
-    if check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
-
+    if check_user_access_kwargs_org(org_pk, request.user):
         if request.method == "GET":
             form = TasksForm(request.GET)
 
@@ -220,7 +221,7 @@ def download_report(request, org_pk, lab_pk):
                                         "report:report_table",
                                         kwargs={
                                             "org_pk": org_pk,
-                                            "lab_pk": lab_pk,
+                                            # "lab_pk": lab_pk,
                                             "pk": task.pk,
                                         },
                                     ),
@@ -233,7 +234,7 @@ def download_report(request, org_pk, lab_pk):
                                 reverse(
                                     "report:report_table",
                                     kwargs={
-                                        "lab_pk": lab_pk,
+                                        # "lab_pk": lab_pk,
                                         "org_pk": org_pk,
                                         "pk": task.pk,
                                     },
@@ -256,16 +257,17 @@ def download_report(request, org_pk, lab_pk):
 
 @login_required
 @permission_required("laboratory.do_report")
-def report_table(request, org_pk, lab_pk, pk):
-    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+def report_table(request, org_pk, pk):
+
+    if not check_user_access_kwargs_org(org_pk, request.user):
         raise Http404()
+
     task = get_object_or_404(
         TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
     )
     template_name = "report/general_reports.html"
     content = {
         "table": task.table_content,
-        "lab_pk": lab_pk,
         "org_pk": org_pk,
         "obj_task": task,
         "changelogreport": None,
@@ -498,7 +500,7 @@ def create_request_by_report_regency(request, org_pk):
     status_code = 401
     reason = None
 
-    if user_is_allowed_on_organization(request.user, org_pk):
+    if check_user_access_kwargs_org(org_pk, request.user):
         if (
             "report_name" in request.GET
             and request.GET["report_name"] in report_name_list
@@ -554,7 +556,7 @@ def download_report_regency(request, org_pk):
     status_code = 200
     reason = None
 
-    if user_is_allowed_on_organization(request.user, org_pk):
+    if check_user_access_kwargs_org(org_pk, request.user):
 
         if request.method == "GET":
             form = TasksForm(request.GET)
