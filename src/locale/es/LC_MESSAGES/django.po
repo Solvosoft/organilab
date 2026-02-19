@@ -5020,7 +5020,7 @@ msgstr "Cantidad anual máxima"
 msgid "Expiration date of the reagent"
 msgstr "Fecha de caducidad del reactivo"
 
-msgid "Stock Report"
+msgid "Reactive Stock Report"
 msgstr "Reporte de inventario de reactivos"
 
 msgid "Expiration Date"
@@ -5291,3 +5291,15 @@ msgstr "Organilab: Notificación de reactivos por vencer"
 
 msgid "You won't be recieving notifications of this object anymore."
 msgstr "Ya no recibirás notificaciones de este objeto."
+
+msgid "About precursor"
+msgstr "Sobre precursor"
+
+msgid "Risk Zone Report"
+msgstr "Reporte de zona de riesgo"
+
+msgid "Square 3"
+msgstr "Cuadro 3"
+
+msgid "Square 4"
+msgstr "Cuadro 4"
