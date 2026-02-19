@@ -102,7 +102,7 @@ REPORT_FORMS = {
         "html": "report.views.regency.report_regency_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.regency.report_regency_doc",
-        "xlsx": "report.views.regency.report_regency_doc",
+        "xlsx": "report.views.regency.report_regency_xlsx",
         "ods": "report.views.regency.report_regency_doc",
     },
     "chemicalinventory": {
