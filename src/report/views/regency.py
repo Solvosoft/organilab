@@ -22,10 +22,16 @@ from report.utils import (
     get_conversion_units_to_kilograms,
     evaluate_table_tree,
     evaluate_square_quarter,
-    get_inventory,
     substance_contributions,
 )
 from risk_management.models import RiskZone
+from risk_management.utils_risk import (
+    cargar_cuadro3,
+    cargar_sga_referencia,
+    clasificar_establecimiento,
+    cargar_umbral_por_H,
+    get_inventory,
+)
 
 
 def get_dataset_report(report, column_list=None):
@@ -54,15 +60,7 @@ def get_dataset_report(report, column_list=None):
     }
 
     report_regency = RegencyReport.objects.create(**data)
-    objs = get_inventory(
-        objs,
-        units,
-        {
-            "update_time__year": 2025,
-            "organization_where_action_taken__pk": report.data["organization"],
-            "laboratory__pk__in": report.data["laboratory"],
-        },
-    )
+    objs = get_inventory(filters)
     inv_c3 = evaluate_table_tree(objs)
 
     exists_ratio = any(x["ratio"] >= 1.0 for x in inv_c3)
@@ -378,53 +376,172 @@ def get_dataset_report_doc(report, column_list=None):
 
 
 def report_regency_html(report):
-    get_dataset_report(report)
-    record = RegencyReportBuilder.objects.filter(report__task_report=report).count()
-    return record
+    get_pdf_regency_table_content(report)
+    return 0
+
+
+def report_regency_xlsx(report):
+    builder = ExcelGraphBuilder()
+    builder.ws.title = "Resumen"
+    builder.wb.create_sheet("Sumatoria_categoría")
+    builder.wb.create_sheet("Detalle")
+
+    content = []
+    filters = {
+        "object__type": 0,
+        "created_at__year": report.data["years"],
+        "object__isnull": False,
+        "measurement_unit__isnull": False,
+        "laboratory__organization__pk": report.data["organization"],
+    }
+    if report.data["laboratory"]:
+        filters.update({"laboratory__pk__in": report.data["laboratory"]})
+    inv = get_inventory(filters)
+    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+    c3 = cargar_cuadro3()
+    c4 = cargar_umbral_por_H()
+    mapH_tipo = cargar_sga_referencia()
+    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+
+    builder.ws.append([_("Classification"), _("Criterion")])
+    builder.ws.append([str(res["clasificacion"]), str(res["criterio"])])
+    builder.style_header()
+    builder.autosize_columns()
+
+    sumatoria = res["sumatorias_por_categoria"]
+
+    builder.ws = builder.wb["Sumatoria_categoría"]
+    builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
+    builder.ws.append(
+        [
+            sumatoria["Físico"],
+            sumatoria["Salud"],
+            sumatoria["Ambiental"],
+        ]
+    )
+    builder.style_header()
+    builder.autosize_columns()
+
+    builder.ws = builder.wb["Detalle"]
+    builder.ws.append(
+        [
+            _("Name"),
+            _("Quantity"),
+            _("Nominated"),
+            _("Threshold"),
+            _("Ratio"),
+            _("H-codes"),
+            _("Cross rule"),
+            _("Detail"),
+            _("Warnings"),
+            _("Health contributions"),
+            _("Physical contributions"),
+            _("Environmental contributions"),
+        ]
+    )
+
+    for details in res["detalles"]:
+        builder.ws.append(
+            [
+                details["nombre"],
+                details["cas"],
+                details["cantidad_t"],
+                builder.safe_bool(details["nominada_c3"]),
+                details["umbral_c3"],
+                details["ratio_c3"],
+                details["h_codes"],
+                builder.safe_bool(details["regla_cruzada_salud"]),
+                (
+                    " | ".join(details["detalle_contribuciones"])
+                    if details["detalle_contribuciones"]
+                    else ""
+                ),
+                " | ".join(details["advertencias"] if details["advertencias"] else ""),
+                details["contribuciones"].get("Salud", 0.0),
+                details["contribuciones"].get("Físico", 0.0),
+                details["contribuciones"].get("Ambiental", 0.0),
+            ]
+        )
+    builder.style_header()
+    builder.autosize_columns()
+    builder.format_border_cell(len(res["detalles"]), 13)
+
+    report_name = get_report_name(report)
+    file = builder.save()
+    file_name = f"{report_name}.{report.file_type}"
+    file.seek(0)
+    doc = ContentFile(file.getvalue(), name=file_name)
+    report.file = doc
+    report.save()
+    return 0
 
 
 def report_regency_doc(report):
     builder = ExcelGraphBuilder()
-    totals, third_list, fourth_list = get_dataset_report_doc(report)
-    content = []
-    regency = RegencyReport.objects.filter(task_report=report).first()
-    break_threshold = if_break(third_list, 2)
-    if (
-        regency.break_physical_total
-        or regency.break_enviroment_total
-        or regency.break_health_total
-    ):
-        content.append([_("High-risk establishment")])
+    filters = {
+        "object__type": 0,
+        "created_at__year": report.data["years"],
+        "object__isnull": False,
+        "measurement_unit__isnull": False,
+        "laboratory__organization__pk": report.data["organization"],
+    }
+    if report.data["laboratory"]:
+        filters.update({"laboratory__pk__in": report.data["laboratory"]})
+    inv = get_inventory(filters)
+    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+    c3 = cargar_cuadro3()
+    c4 = cargar_umbral_por_H()
+    mapH_tipo = cargar_sga_referencia()
+    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+    sumatoria = res["sumatorias_por_categoria"]
+    content = [
+        [_("Classification"), _("Criterion")],
+        [str(res["clasificacion"]), str(res["criterio"])],
+        [],
+        ["Totals by category"],
+        [_("Physical"), _("Health"), _("Environmental")],
+        [sumatoria["Físico"], sumatoria["Salud"], sumatoria["Ambiental"]],
+    ]
+    content.append([], ["Details of the substances"])
+    content.append(
+        [
+            _("Name"),
+            _("Quantity"),
+            _("Nominated"),
+            _("Threshold"),
+            _("Ratio"),
+            _("H-codes"),
+            _("Cross rule"),
+            _("Detail"),
+            _("Warnings"),
+            _("Health contributions"),
+            _("Physical contributions"),
+            _("Environmental contributions"),
+        ]
+    )
 
-    content.append([_("Dangerous substance of the list 3")])
-    if third_list:
-
-        content.append([_("Danger substance"), _("Total"), _("Break threshold")])
-        content.extend(third_list)
-    else:
-        content.append([_("No data")])
-    content.append([])
-    if not break_threshold:
-        break_threshold = if_break(fourth_list, 3)
-        content.append([_("Dangerous substance of the list 4")])
-        if fourth_list:
-            content.append(
-                [
-                    _("Danger substance"),
-                    _("Total"),
-                    _("Danger category"),
-                    _("Break threshold"),
-                ]
-            )
-            content.extend(fourth_list)
-        else:
-            content.append([_("No data")])
-    content.append([])
-    if not break_threshold:
-        content.append("Sum of dangers categories")
-        content.append([_("Health totals:"), regency.health_total])
-        content.append([_("Physical totals:"), regency.physical_total])
-        content.append([_("Environmental totals:"), regency.enviroment_total])
+    for details in res["detalles"]:
+        content.append(
+            [
+                details["nombre"],
+                details["cas"],
+                details["cantidad_t"],
+                _("Yes") if details["nominada_c3"] else _("No"),
+                details["umbral_c3"],
+                details["ratio_c3"],
+                details["h_codes"],
+                _("Yes") if details["regla_cruzada_salud"] else _("No"),
+                (
+                    " | ".join(details["detalle_contribuciones"])
+                    if details["detalle_contribuciones"]
+                    else ""
+                ),
+                " | ".join(details["advertencias"] if details["advertencias"] else ""),
+                details["contribuciones"].get("Salud", 0.0),
+                details["contribuciones"].get("Físico", 0.0),
+                details["contribuciones"].get("Ambiental", 0.0),
+            ]
+        )
 
     report_name = get_report_name(report)
     content.insert(0, [report_name])
@@ -434,75 +551,102 @@ def report_regency_doc(report):
     doc = ContentFile(file.getvalue(), name=file_name)
     report.file = doc
     report.save()
-    return totals
-
-
-def if_break(datalist, col=2):
-    for i, row in enumerate(datalist):
-        if row[col] == "Si":
-            return True
-    return False
+    return len(content)
 
 
 def get_pdf_regency_table_content(report):
-    table_content = RegencyReportBuilder.objects.filter(report__task_report=report)
+    filters = {
+        "object__type": 0,
+        "created_at__year": report.data["years"],
+        "object__isnull": False,
+        "measurement_unit__isnull": False,
+        "laboratory__organization__pk": report.data["organization"],
+    }
+    if report.data["laboratory"]:
+        filters.update({"laboratory__pk__in": report.data["laboratory"]})
+    inv = get_inventory(filters)
+    inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
+    c3 = cargar_cuadro3()
+    c4 = cargar_umbral_por_H()
+    mapH_tipo = cargar_sga_referencia()
+    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+    sumatoria = res["sumatorias_por_categoria"]
     pdf_table = ""
-    regency = RegencyReport.objects.filter(task_report=report).first()
-    third_list = table_content.filter(danger_list=3, break_threshold=True).exists()
-    quarter_list = table_content.filter(danger_list=4, break_threshold=True).exists()
-    if (
-        third_list
-        or quarter_list
-        or regency.break_health_total
-        or regency.break_enviroment_total
-        or regency.break_physical_total
-    ):
-        pdf_table += "<h3>%s</h3>" % (_("High-risk establishment"))
-    pdf_table += "<h3>%s</h3><br>" % (_("Dangerous substance of the list 3"))
-    pdf_table += "<table id='pdf_table_report'><thead>"
-    pdf_table += "<tr>"
-    for col in [
-        _("Dangerous substance of the list 3"),
-        _("Total"),
-        _("Break threshold"),
-    ]:
+    pdf_table += "<h3>Resumen</h3><table id='pdf_table_report'><thead><tr>"
+    for col in [_("Classification"), _("Criterion")]:
         pdf_table += "<th>%s</th>" % (col)
     pdf_table += "</tr></thead><tbody>"
-    for data in table_content.filter(danger_list=3):
+    pdf_table += "<tr><td>%s</td><td>%s</td></tr></tbody></table>" % (
+        res["clasificacion"],
+        res["criterio"],
+    )
+    pdf_table += (
+        "<br><table id='pdf_table_report'><thead><tr><th>%s</th><th>%s</th><th>%s</th></tr></thead><tbody>"
+        % (_("Físico"), _("Salud"), _("Ambiental"))
+    )
+    pdf_table += "<tr><td>%s</td><td>%s</td><td>%s</td></tr></tbody></table>" % (
+        sumatoria["Físico"],
+        sumatoria["Salud"],
+        sumatoria["Ambiental"],
+    )
+    pdf_table += "</tr></thead></table><br>"
+    pdf_table += (
+        "<h3>Detalle de las sustancias</h3><table id='pdf_table_report'><thead><tr>"
+    )
+    pdf_table += (
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+        "<th>%s</th>"
+    ) % (
+        _("Nombre"),
+        _("CAS"),
+        _("Cantidad"),
+        _("Nominada"),
+        _("Umbral"),
+        _("Ratio"),
+        _("H-codes"),
+        _("Regla Cruzada"),
+        _("Detalle"),
+        _("Advertencias"),
+        _("Contribuciones en salud"),
+        _("Contribuciones en físico"),
+        _("Contribuciones en ambiente"),
+    )
+    pdf_table += "</tr></thead><tbody>"
+    for data in res["detalles"]:
         pdf_table += "<tr>"
-        pdf_table += "<td>%s</td>" % (data.substance.name)
-        pdf_table += "<td>%s</td>" % (data.total)
-        pdf_table += "<td>%s</td>" % (_("Yes") if data.break_threshold else _("No"))
-        pdf_table += "</tr>"
-
-        pdf_table += "</tbody></table><br><br>"
-    if not third_list:
-        pdf_table += "<h3>%s</h3><br>" % (_("Dangerous categories of the list 4"))
-        pdf_table += "<table id='pdf_table_report'><thead>"
-        pdf_table += "<tr>"
-        for col in [
-            _("Dangerous substance of the list 4"),
-            _("Total"),
-            _("Break threshold"),
-            _("Danger category"),
-        ]:
-            pdf_table += "<th>%s</th>" % (col)
-        pdf_table += "</tr></thead><tbody>"
-        for data in table_content.filter(danger_list=4):
-            pdf_table += "<tr>"
-            pdf_table += "<td>%s</td>" % (data.substance.name)
-            pdf_table += "<td>%s</td>" % (data.total)
-            pdf_table += "<td>%s</td>" % (_("Yes") if data.break_threshold else _("No"))
-            pdf_table += "<td>%s</td>" % (data.danger_category)
-            pdf_table += "</tr>"
-        pdf_table += "</tbody></table><br><br>"
-
-    if not quarter_list and not third_list:
-        pdf_table += "<p>%s</p>" % (_("Sum of dangers categories"))
-        pdf_table += "<p>%s %s</p>" % (_("Health totals:"), regency.health_total)
-        pdf_table += "<p>%s %s</p>" % (_("Physical totals:"), regency.physical_total)
-        pdf_table += "<p>%s %s</p>" % (
-            _("Environmental totals:"),
-            regency.enviroment_total,
+        pdf_table += "<td>%s</td>" % (data["nombre"])
+        pdf_table += "<td>%s</td>" % (data["cas"])
+        pdf_table += "<td>%s</td>" % (data["cantidad_t"])
+        pdf_table += "<td>%s</td>" % (_("Yes") if data["nominada_c3"] else _("No"))
+        pdf_table += "<td>%s</td>" % (data["umbral_c3"] if data["umbral_c3"] else "")
+        pdf_table += "<td>%s</td>" % (data["ratio_c3"] if data["ratio_c3"] else "")
+        pdf_table += "<td>%s</td>" % (data["h_codes"])
+        pdf_table += "<td>%s</td>" % (
+            _("Yes") if data["regla_cruzada_salud"] else _("No")
         )
+        pdf_table += "<td>%s</td>" % (
+            data["detalle_contribuciones"]
+            if data["detalle_contribuciones"]
+            else "No hay detalle"
+        )
+        pdf_table += "<td>%s</td>" % (
+            data["advertencias"] if data["advertencias"] else "No hay advertencias"
+        )
+        pdf_table += "<td>%s</td>" % (data["contribuciones"].get("Salud", 0.0))
+        pdf_table += "<td>%s</td>" % (data["contribuciones"].get("Físico", 0.0))
+        pdf_table += "<td>%s</td>" % data["contribuciones"].get("Ambiental", 0.0)
+        pdf_table += "</tr>"
+    pdf_table += "</tbody></table>"
+
     return pdf_table
