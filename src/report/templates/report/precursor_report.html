@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+
+{% load urlname_tags %}
+{% block pre_head %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'precursor_report' %}
+{% endblock %}
+
+{% block content %}
+	<div class="row justify-content-center">
+		<div class="col-md-8">
+			<h3 class="text-center">{% trans 'Precursor Report' %}</h3>
+		</div>
+	</div>
+
+	<div class="row mb-2">
+		<div class="col-12">
+			<form method="get" class="row g-2 align-items-end">
+
+				{{ filter_form.organization }}
+
+				<div class="col-md-5 col-sm-12">
+					<div>
+						<label for="{{ filter_form.laboratory.id_for_label }}" class="form-label mb-1">
+							{% trans "Laboratory" %}
+						</label>
+						{{ filter_form.laboratory }}
+					</div>
+
+					{# errores del campo #}
+					{% if filter_form.laboratory.errors %}
+						<div class="text-danger small">
+							{{ filter_form.laboratory.errors }}
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="col-auto">
+					<button type="submit" class="btn btn-sm btn-secondary" title="{% trans 'Filter' %}">
+						<i class="fa fa-filter" aria-hidden="true"></i>
+						<span class="d-none d-md-inline"> {% trans "Filter" %}</span>
+					</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-12 col-sm-12">
+			<div class="table-responsive">
+				<table id="logtable" class="table table-sm table-striped table-bordered align-middle">
+					<thead>
+					<tr>
+						<th class="text-center">{% trans 'Consecutive' %}</th>
+						<th class="text-center">{% trans 'Month' %}</th>
+						<th class="text-center">{% trans 'Date Range' %}</th>
+						<th class="text-center">{% trans 'Export' %}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for report in datalist %}
+
+						<tr>
+							<td class="text-center">{{ report.consecutive }}</td>
+							<td class="text-center">{{ report.get_month_display }} {{ report.year }}</td>
+							<td class="text-center">{{ report.get_date_range }}</td>
+							<td class="text-center">
+
+								<div class="d-flex justify-content-center	 align-items-center my-auto">
+									<a class="btn btn-sm btn-outline-success mb-0"
+												href="{% url 'report:precursor_report' org_pk=org_pk %}?format=xlsx&pk={{ report.pk }}">
+										<i class="fa fa-download"></i> Xlsx
+									</a>
+									<a class="btn btn-sm btn-outline-success mb-0"
+												href="{% url 'report:precursor_report' org_pk=org_pk %}?format=ods&pk={{ report.pk }}">
+										<i class="fa fa-download"></i> Ods
+									</a>
+									<a class="btn btn-sm btn-outline-success mb-0"
+												href="{% url 'report:precursor_report' org_pk=org_pk %}?format=xls&pk={{ report.pk }}">
+										<i class="fa fa-download"></i> Xls
+									</a>
+								</div>
+
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+
+
+	<script>
+
+		(function () {
+			$("#logtable").DataTable({
+				responsive: true,
+				order: [[0, 'desc']],
+				columnDefs: [
+					{
+						targets: 3,
+						width: "200px",
+						className: "text-center"
+					}
+				]
+			});
+		})(jQuery);
+	</script>
+
+
+
+{% endblock %}
