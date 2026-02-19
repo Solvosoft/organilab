@@ -153,7 +153,10 @@ def report_objectlogchange_doc(report):
 
 # report_reactive_precursor
 def get_dataset_reactive_precursor(report, column_list=None):
-    general = True if "all_labs_org" in report.data else False
+    # general = True if "all_labs_org" in report.data else False
+    # general = True si no hay labs o hay más de uno
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
     dataset = []
     lab = []
 
@@ -202,7 +205,10 @@ def get_dataset_reactive_precursor(report, column_list=None):
 
 
 def report_reactive_precursor_html(report):
-    general = True if "all_labs_org" in report.data else False
+    # general = True if "all_labs_org" in report.data else False
+    # general = True si no hay labs o hay más de uno
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
         {"name": "code", "title": _("Code")},
@@ -241,10 +247,15 @@ def report_reactive_precursor_doc(report):
             _("IMDG type"),
         ]
     ]
-    if "laboratory" in report.data:
-        labs = report.data["laboratory"]
-        if len(labs) > 1:
-            content[0].insert(0, _("Laboratory"))
+    # if "laboratory" in report.data:
+    #     labs = report.data["laboratory"]
+    #     if len(labs) > 1:
+    #         content[0].insert(0, _("Laboratory"))
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+    if not general:
+        # delete laboratory
+        content[0].pop(0)
 
     content = content + get_dataset_reactive_precursor(report, None)
 
@@ -313,7 +324,10 @@ def get_objects(report):
 def get_dataset_objects(report, column_list=None):
     dataset = []
     objects = get_objects(report)
-    general = True if "all_labs_org" in report.data else False
+    # general = True if "all_labs_org" in report.data else False
+    # general = True si no hay labs o hay más de uno
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
 
     for obj in objects:
         formula = "-"
@@ -346,7 +360,11 @@ def get_dataset_objects(report, column_list=None):
 
 
 def report_objects_html(report):
-    general = True if "all_labs_org" in report.data else False
+    # general = True if "all_labs_org" in report.data else False
+    # general = True si no hay labs o hay más de uno
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
         {"name": "code", "title": _("Code")},
@@ -381,6 +399,13 @@ def report_objects_doc(report):
             _("CAS id number"),
         ]
     ]
+
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
+    if not general:
+        # delete laboratory
+        content[0].pop(0)
 
     content = content + get_dataset_objects(report, None)
     record_total = len(content) - 1
@@ -434,7 +459,11 @@ def get_dataset_limit_objects(report, column_list=None):
 
 
 def report_limit_object_html(report):
-    general = True if "all_labs_org" in report.data else False
+    # general = True if "all_labs_org" in report.data else False
+    # general = True si no hay labs o hay más de uno
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
     columns_fields = columns + [
         {"name": "shelf", "title": _("Shelf")},
@@ -522,7 +551,9 @@ def get_dataset_report_organization_reactive(report, column_list=None):
             iarc = str(caracteristics.iarc) if caracteristics.iarc else ""
             data_column = {
                 "laboratory_name": reactive["laboratory__name"],
-                "name": reactive["user__first_name"]+" "+reactive["user__last_name"],
+                "name": reactive["user__first_name"]
+                + " "
+                + reactive["user__last_name"],
                 "code": reactive["object__code"],
                 "substance": reactive["object__name"],
                 "cas": caracteristics.cas_id_number,
