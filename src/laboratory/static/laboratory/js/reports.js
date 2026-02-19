@@ -1,4 +1,5 @@
 var filter =""
+
 function get_archive_status(){
     url=report_urls['report_status']+filter;
     $.ajax({
@@ -14,6 +15,7 @@ function get_archive_status(){
        }
     });
 }
+
 function load_errors(error_list, obj){
     ul_obj = "<ul class='errorlist report_form_errors'>";
     error_list.forEach((item)=>{
@@ -135,63 +137,10 @@ function get_doc_filter(){
 
 document.select_data = {
     relfield: '',
-    all_labs_org: false,
     organization: $("#id_organization").val(),
     laboratory: $("#id_laboratory").val(),
 }
 
-
-function add_data_to_select(select, selecteditems){
-    $(select).find('option').remove();
-    var value = [];
-
-    if(selecteditems){
-        return (data)=>{
-            let has_selected=false;
-            for(let x=0; x<data.results.length; x++){
-                if(data.results[x].selected || selecteditems.includes(String(data.results[x].id))){
-                    has_selected=true;
-                    if(selecteditems.includes(String(data.results[x].id))){
-                        data.results[x].selected = true;
-                        value.push(String(data.results[x].id));
-                    }
-                    var newOption = new Option(data.results[x].text, data.results[x].id, data.results[x].selected, data.results[x].selected);
-                    $(select).append(newOption)
-                }
-            }
-            if(!has_selected) {
-                $(select).val(null).trigger('change');
-            }else{
-                $(select).val(value).trigger('change');
-                if($(select)[0].name =='lab_room'){
-                    document.select_data.relfield = $(select).val().join(",");
-                }
-            }
-        }
-    }
-}
-
-
-function update_selects(form_element){
-    var select = $("#id_"+form_element);
-    var url = $(select).data('url');
-    var selecteditems = select.val();
-
-    if(selecteditems){
-        document.select_data[form_element] = selecteditems;
-    }
-
-    $.ajax({
-      type: "GET",
-      url: url,
-      data: document.select_data,
-      contentType: 'application/json',
-      headers: {'X-CSRFToken': getCookie('csrftoken')},
-      traditional: true,
-      success: add_data_to_select(select, selecteditems),
-      dataType: 'json'
-    });
-}
 
 function add_log_change_datatables(id, lab, obj, diff,unit,cas_code, url){
     if(cas_code==""){
@@ -234,30 +183,6 @@ function add_log_change_datatables(id, lab, obj, diff,unit,cas_code, url){
 	    }, addfilter=true,);
 
 }
-
-$('#id_all_labs_org').on('change', function(){
-    document.select_data.all_labs_org = false;
-     if($(this).is(":checked")){
-        document.select_data.all_labs_org = true;
-    }
-    update_selects("lab_room");
-});
-
-
-$(document).ready(function() {
-    update_selects("lab_room");
-});
-
-$('#id_lab_room').on('change', function(){
-    var value = $(this).val();
-    if(value){
-        document.select_data.relfield = value.join(",");
-    }else{
-        document.select_data.relfield = '';
-    }
-    update_selects("furniture");
-});
-
 
 
 $("#download-report").on("click", function(){
