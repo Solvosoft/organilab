@@ -9,9 +9,12 @@ import pandas as pd
 
 from risk_management.models import EstablishmentLogs
 from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndication
+from django.utils.translation import gettext as _
 
 
-def get_inventory(filters={}):
+def get_inventory(filters=None):
+    if filters is None:
+        filters = {}
     dict_objs = []
     objs_max = ObjectMaximumLimit.objects.filter(**filters)
 
@@ -605,9 +608,7 @@ def contribuciones_por_sustancia(
             notas_usadas = (
                 ", ".join(grupo["notas"].tolist()) if "notas" in grupo.columns else ""
             )
-            detalle_str = (
-                f"{cat}: {cantidad}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
-            )
+            detalle_str = f"{_(cat)}: {cantidad}/{umbral_min} = {contrib:.4f} (H-codes: {h_usados})"
             if notas_usadas:
                 detalle_str += f" [{notas_usadas}]"
             detalles.append(detalle_str)
