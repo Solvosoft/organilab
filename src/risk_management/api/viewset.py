@@ -254,3 +254,9 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
             created_by=self.request.user,
             organization=self.get_organization(),
         )
+
+class EstablishmentLogsViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = None
+    perms = {
+        "list": ["risk_management.view_establishmentlogs"],
+    }

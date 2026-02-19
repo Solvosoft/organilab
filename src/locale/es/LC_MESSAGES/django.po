@@ -5384,3 +5384,12 @@ msgstr "Detalle de las sustancias"
 
 msgid "Totals by category"
 msgstr "Sumatorias por categoría"
+
+msgid "Environmental"
+msgstr "Ambiental"
+
+msgid "Risk Categories Summary"
+msgstr "Resumen de Categorías de Riesgo"
+
+msgid "Establishment Status"
+msgstr "Estado del establecimiento"
