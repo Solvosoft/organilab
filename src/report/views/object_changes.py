@@ -1,18 +1,19 @@
 from django.conf import settings
 from django.db.models import Sum
-from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from laboratory.models import (
     Object,
     ObjectLogChange,
     Laboratory,
     Catalog,
-    Shelf,
     ShelfObject,
 )
 from laboratory.utils import get_user_laboratories
 from report.models import ObjectChangeLogReport, ObjectChangeLogReportBuilder
 from report.utils import filter_period
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 def resume_queryset(report, queryset, objs=None, log_filters=None):
@@ -21,6 +22,8 @@ def resume_queryset(report, queryset, objs=None, log_filters=None):
     builder = []
     total = 0
     doc_list = []
+    user_ids = set(queryset.values_list("user_id", flat=True))
+    user_map = User.objects.using(settings.READONLY_DATABASE).in_bulk(user_ids)
 
     for laboratory in laboratories:
         lab = Laboratory.objects.get(pk=laboratory)
@@ -47,9 +50,10 @@ def resume_queryset(report, queryset, objs=None, log_filters=None):
 
             for values in query_values:
 
+                user_obj = user_map.get(values.user_id)
                 object_builder = ObjectChangeLogReportBuilder(
                     report=object_log,
-                    user=values.user,
+                    user=user_obj,
                     old_value=values.old_value,
                     new_value=values.new_value,
                     diff_value=values.diff_value,
@@ -186,27 +190,34 @@ def get_queryset(report):
         .using(settings.READONLY_DATABASE)
         .order_by("update_time")
     )
-    labs = Laboratory.objects.all().using(settings.READONLY_DATABASE)
+
+    labs = report.data.get("laboratory", [])
+    general = not labs or len(labs) > 1
+
     filters = {}
     object_log_filters = {}
     if "period" in report.data:
         if report.data["period"]:
             query = filter_period(report.data["period"], query)
+
     if "precursor" in report.data:
         if report.data["precursor"]:
             query = query.filter(precursor=True)
             object_log_filters["precursor"] = True
-    if "all_labs_org" in report.data:
-        if report.data["all_labs_org"]:
-            labs = get_user_laboratories(report.created_by)
+
+    if general:
+        labs = get_user_laboratories(report.created_by)
+        query = query.filter(laboratory__in=labs)
+        filters["in_where_laboratory__in"] = labs
+    else:
+        lab_pk = labs[0] if labs else None
+        if lab_pk is not None:
+            query = query.filter(laboratory__pk=lab_pk)
+            filters["in_where_laboratory__pk"] = lab_pk
+        else:
             query = query.filter(laboratory__in=labs)
             filters["in_where_laboratory__in"] = labs
-        else:
-            query = query.filter(laboratory__pk=report.data["lab_pk"])
-            filters["in_where_laboratory__pk"] = report.data["lab_pk"]
-    else:
-        query = query.filter(laboratory__pk=report.data["lab_pk"])
-        filters["in_where_laboratory__pk__in"] = report.data["lab_pk"]
+
     obj = ShelfObject.objects.filter(**filters).using(settings.READONLY_DATABASE)
 
     return query, obj, object_log_filters
