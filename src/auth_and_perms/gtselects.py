@@ -441,15 +441,12 @@ class RolUserOrgS2(generics.RetrieveAPIView, BaseSelect2View):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        orgs = []
-        orgByuser = OrganizationStructure.os_manager.filter_user(self.request.user)
-        for org in orgByuser:
-            orgs += list(org.descendants())
-            orgs += list(org.ancestors())
-            orgs.append(org)
+        root_orgs = OrganizationStructure.os_manager.filter_user(
+            self.request.user
+        ).filter(parent__isnull=True)
 
         rols = []
-        for org in set(orgs):
+        for org in root_orgs:
             rols += list(
                 get_rols_from_organization(
                     org.pk, org=org, rolfilters={"rol__isnull": False}

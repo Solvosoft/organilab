@@ -416,7 +416,7 @@ def copy_rols(request, pk):
 @permission_required("auth_and_perms.view_rol")
 @require_http_methods(["GET"])
 def get_roles_by_organization(request, pk):
-    roles = get_object_or_404(OrganizationStructure, pk=pk).rol.all()
+    roles = get_object_or_404(OrganizationStructure, pk=pk).root.rol.all()
     roles = [
         {"name": role.name, "description": role.description if role.description else ""}
         for role in roles

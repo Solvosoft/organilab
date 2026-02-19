@@ -1194,7 +1194,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         )
         org = OrganizationStructure.objects.get(pk=org)
         self.fields["authorized_roles_to_use_equipment"].queryset = Rol.objects.filter(
-            pk__in=org.rol.values_list("pk", flat=True)
+            pk__in=org.root.rol.values_list("pk", flat=True)
         )
 
     field_order = [

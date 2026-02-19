@@ -1840,8 +1840,9 @@ class EquimentShelfobjectCharacteristicSerializer(serializers.ModelSerializer):
                 "pk", flat=True
             )
             fields["provider"].queryset = Provider.objects.filter(pk__in=providers)
+        org = OrganizationStructure.objects.get(pk=org)
         fields["authorized_roles_to_use_equipment"].queryset = Rol.objects.filter(
-            organizationstructure__pk=org
+            organizationstructure__pk=org.root.id
         )
         return fields
 

@@ -271,7 +271,7 @@ class OrganizationActionsFormview(FormView):
                 relobj=newinstance,
             )
 
-        for role in self.org.rol.all():
+        for role in self.org.root.rol.all():
             new_role = Rol.objects.create(name=role.name, color=role.color)
             new_role.permissions.add(*role.permissions.all())
             newinstance.rol.add(new_role)

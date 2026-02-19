@@ -535,7 +535,7 @@ class ShelfObjectCreateMethods:
                 "created_by": created_by.pk,
             }
         )
-        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data)
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data, context={"organization": organization_id})
 
         if equipment_serializer.is_valid():
             save_shelfobject_characteristics(equipment_serializer, created_by)
@@ -610,7 +610,7 @@ class ShelfObjectCreateMethods:
                 "created_by": created_by.pk,
             }
         )
-        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data)
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data, context={"organization": organization_id})
         if equipment_serializer.is_valid():
             save_shelfobject_characteristics(equipment_serializer, created_by)
         else:
