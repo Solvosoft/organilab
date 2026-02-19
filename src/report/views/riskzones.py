@@ -7,7 +7,9 @@ from report.utils import (
     filter_period,
     set_format_table_columns,
     get_report_name,
-    load_dataset_by_column, get_danger_categories, get_conversion_units_to_kilograms,
+    load_dataset_by_column,
+    get_danger_categories,
+    get_conversion_units_to_kilograms,
 )
 from risk_management.models import RiskZone
 from sga.models import HCodeCategory
@@ -27,7 +29,15 @@ def get_dataset_report_x(report, column_list=None):
     dataset = []
     filters = {"object__type": 0}
     risk_zones = RiskZone.objects.filter(organization__pk=report.data["organization"])
-    laboratories = []
+
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
+    if general:
+        filters["in_where_laboratory__in"] = laboratories
+    else:
+        filters["in_where_laboratory__pk"] = laboratories[0]
+
     if "risk_zone" in report.data:
         if len(report.data["risk_zone"]) > 0:
             laboratories = list(
@@ -52,17 +62,25 @@ def get_dataset_report_x(report, column_list=None):
                         ).values_list("buildings__laboratories", flat=True)
                     )
                 )
-    if len(laboratories) == 0 and len(report.data["building"]) == 0 and len(
-        report.data["risk_zone"]) == 0:
+    if (
+        len(laboratories) == 0
+        and len(report.data["building"]) == 0
+        and len(report.data["risk_zone"]) == 0
+    ):
         laboratories = risk_zones.values_list("buildings__laboratories", flat=True)
 
     filters.update({"in_where_laboratory__in": list(set(laboratories))})
+
     objsx = ShelfObject.objects.filter(**filters)
-    objs = Object.objects.filter(pk__in=objs.values_list("object__pk", flat=True),
-                                 has_threshold=True,
-                                 is_dangerous=True,
-                                 threshold__isnull=False).distinct()
-    units = Catalog.objects.filter(pk__in=objsx.values_list("measurement_unit", flat=True))
+    objs = Object.objects.filter(
+        pk__in=objs.values_list("object__pk", flat=True),
+        has_threshold=True,
+        is_dangerous=True,
+        threshold__isnull=False,
+    ).distinct()
+    units = Catalog.objects.filter(
+        pk__in=objsx.values_list("measurement_unit", flat=True)
+    )
     third_list = []
     fourth_list = []
     for reactive in objs:
@@ -72,44 +90,48 @@ def get_dataset_report_x(report, column_list=None):
         total_shelfobjects = 0
         reactive_list.append(reactive.name)
         for unit in units:
-            shelfobjects = ShelfObject.objects.filter(object=reactive, measurement_unit=unit).distinct()
+            shelfobjects = ShelfObject.objects.filter(
+                object=reactive, measurement_unit=unit
+            ).distinct()
             if shelfobjects.count() > 0:
                 total_shelfobjects += sum(
                     [
-                        get_conversion_units_to_kilograms(obj.measurement_unit, obj.quantity)
+                        get_conversion_units_to_kilograms(
+                            obj.measurement_unit, obj.quantity
+                        )
                         for obj in shelfobjects
                     ]
                 )
-        #list 3
+        # list 3
         reactive_list.append(reactive.threshold)
         reactive_list.append(total_shelfobjects)
         reactive_list.append(_("No Exceeds Threshold"))
 
-        if reactive.threshold*1000 < total_shelfobjects:
-            reactive_list[-1]=_("Yes Exceeds Threshold")
+        if reactive.threshold * 1000 < total_shelfobjects:
+            reactive_list[-1] = _("Yes Exceeds Threshold")
             third_square = True
         third_list.append(reactive_list)
 
         if not third_square and hasattr(reactive, "sustancecharacteristics"):
-            #list 4
+            # list 4
             danger_categories_list = get_danger_categories(reactive, total_shelfobjects)
             if len(danger_categories_list) > 0:
-                if danger_categories_list[-1].threshold*1000 < total_shelfobjects:
+                if danger_categories_list[-1].threshold * 1000 < total_shelfobjects:
                     danger_categories_list.append(_("Yes Exceeds Threshold"))
                 else:
                     danger_categories_list.append(_("No Exceeds Threshold"))
                 fourth_list.extend(danger_categories_list)
     total_fifth_list = {
-        "enviroment":{"substance":0,"category_threshold":0, "total":0},
-        "health":{"substance":0,"category_threshold":0, "total":0},
-        "physical":{"substance":0,"category_threshold":0, "total":0}
+        "enviroment": {"substance": 0, "category_threshold": 0, "total": 0},
+        "health": {"substance": 0, "category_threshold": 0, "total": 0},
+        "physical": {"substance": 0, "category_threshold": 0, "total": 0},
     }
     if len(fourth_list) > 0:
         for danger in fourth_list:
             total_fifth_list[danger[2]]["substance"] += danger[3]
             total_fifth_list[danger[2]]["category_threshold"] += danger[4]
             try:
-                total_fifth_list[danger[2]]["total"] += danger[3]/danger[4]
+                total_fifth_list[danger[2]]["total"] += danger[3] / danger[4]
             except ZeroDivisionError:
                 total_fifth_list[danger[2]]["total"] = 0
 
@@ -119,15 +141,23 @@ def get_dataset_report_x(report, column_list=None):
     context = {
         "total_fifth_list": total_fifth_list,
         "third_list": third_list,
-        "fourth_list": fourth_list
+        "fourth_list": fourth_list,
     }
-    return  context
+    return context
+
 
 def get_dataset_report(report, column_list=None):
     dataset = []
     filters = {"object__type": 0}
     risk_zones = RiskZone.objects.filter(organization__pk=report.data["organization"])
-    laboratories = []
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
+    if general:
+        filters["in_where_laboratory__in"] = laboratories
+    else:
+        filters["in_where_laboratory__pk"] = laboratories[0]
+
     if "risk_zone" in report.data:
         if len(report.data["risk_zone"]) > 0:
             laboratories = list(
@@ -152,7 +182,11 @@ def get_dataset_report(report, column_list=None):
                         ).values_list("buildings__laboratories", flat=True)
                     )
                 )
-    if len(laboratories) == 0 and len(report.data["building"]) == 0 and len(report.data["risk_zone"]) == 0:
+    if (
+        len(laboratories) == 0
+        and len(report.data["building"]) == 0
+        and len(report.data["risk_zone"]) == 0
+    ):
         laboratories = risk_zones.values_list("buildings__laboratories", flat=True)
 
     filters.update({"in_where_laboratory__in": list(set(laboratories))})
@@ -166,6 +200,7 @@ def get_dataset_report(report, column_list=None):
         dangerous = reactive.is_dangerous
         third_square = False
         third_column = ""
+
         shelfobjects = ShelfObject.objects.filter(object=reactive).distinct()
         total_shelfobjects = sum(
             [
@@ -173,9 +208,18 @@ def get_dataset_report(report, column_list=None):
                 for obj in shelfobjects
             ]
         )
+
         total_health = False
         total_physical = False
         total_enviroment = False
+
+        lab_names_txt = ", ".join(
+            ShelfObject.objects.filter(**filters, object=reactive)
+            .exclude(in_where_laboratory__isnull=True)
+            .order_by("in_where_laboratory_id")
+            .distinct("in_where_laboratory_id")
+            .values_list("in_where_laboratory__name", flat=True)
+        )
 
         if dangerous:
             third_column = _("Square 3") + " "
@@ -225,6 +269,7 @@ def get_dataset_report(report, column_list=None):
                 threshold = _("Yes Exceeds Threshold")
 
         data_column = {
+            "in_where_laboratory__name": lab_names_txt,
             "name": reactive.name,
             "cas_id": cas_id,
             "square": third_column,
@@ -240,6 +285,7 @@ def get_dataset_report(report, column_list=None):
 
 def report_risk_zone_html(report):
     columns_fields = [
+        {"name": "in_where_laboratory__name", "title": _("Laboratory")},
         {"name": "name", "title": _("Substance")},
         {"name": "cas_id", "title": _("CAS")},
         {"name": "square", "title": _("Table 4, 3 or none")},
@@ -260,6 +306,7 @@ def report_risk_zone_list_doc(report):
     builder = ExcelGraphBuilder()
     content = [
         [
+            _("Laboratory"),
             _("Substance"),
             _("CAS"),
             _("Table 4, 3 or none"),
