@@ -31,3 +31,4 @@ legacy-cgi==2.6.4
 coverage-badge==1.1.2
 setuptools<82
 pdfplumber
+pandas==3.0.0
