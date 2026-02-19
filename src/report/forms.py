@@ -530,6 +530,11 @@ class RegencyReportForm(ReportBase):
             organization__pk=org_pk
         )
         self.fields["years"].choices = get_years()
+        self.fields["format"].choices = (
+            ("xls", "XLS"),
+            ("xlsx", "XLSX"),
+            ("ods", "ODS"),
+        )
 
     def clean_laboratory(self):
         laboratory = self.cleaned_data["laboratory"]
