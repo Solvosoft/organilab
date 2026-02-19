@@ -87,18 +87,34 @@ def set_rol_administrator_on_org(
         type_in_organization=type_in_organization,
     )
 
-    group, _x = Group.objects.get_or_create(name="RegisterOrganization")
-    rol = Rol.objects.create(name=_("Organization Management"))
-    ct = ContentType.objects.filter(
-        app_label=organization._meta.app_label, model=organization._meta.model_name
-    ).first()
-    pp, none = ProfilePermission.objects.get_or_create(
-        profile=profile, content_type=ct, object_id=organization.pk
-    )
-    rol.permissions.add(*[x for x in group.permissions.all()])
-    pp.rol.add(rol)
-    organization.rol.add(rol)
-    set_profile_administrator(profile, rol)
+    if organization.parent is None:
+        group, _x = Group.objects.get_or_create(name="RegisterOrganization")
+        rol = Rol.objects.create(name=_("Organization Management"))
+        ct = ContentType.objects.filter(
+            app_label=organization._meta.app_label, model=organization._meta.model_name
+        ).first()
+        pp, _created = ProfilePermission.objects.get_or_create(
+            profile=profile, content_type=ct, object_id=organization.pk
+        )
+        rol.permissions.add(*[x for x in group.permissions.all()])
+        pp.rol.add(rol)
+        organization.rol.add(rol)
+        set_profile_administrator(profile, rol)
+    else:
+        root_org = organization.root
+        rol = Rol.objects.filter(
+            name=_("Organization Management"),
+            organizationstructure=root_org
+        ).first()
+        if rol:
+            ct = ContentType.objects.filter(
+                app_label=organization._meta.app_label,
+                model=organization._meta.model_name
+            ).first()
+            pp, _created = ProfilePermission.objects.get_or_create(
+                profile=profile, content_type=ct, object_id=organization.pk
+            )
+            pp.rol.add(rol)
 
 
 def create_user_organization(

@@ -199,7 +199,7 @@ class UpdateRolOrganizationProfilePermission(
             org = OrganizationStructure.objects.get(pk=pk)
             user_is_allowed_on_organization(request.user, org)
             action = serializer.data["mergeaction"]
-            rols = org.rol.filter(pk__in=serializer.data["rols"])
+            rols = org.root.rol.filter(pk__in=serializer.data["rols"])
 
             if serializer.data["as_role"]:
                 profile = Profile.objects.get(pk=serializer.data["profile"])
@@ -371,6 +371,7 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
         }
         return Response(self.get_serializer(response).data)
 
+    #TODO Metodo obsoleto, ya que ahora todos los permisos los maneja la root
     @action(detail=False, methods=["post"])
     def inerit_profile(self, request):
         serializer = ValidateProfileOrganizationSerializer(data=request.data)

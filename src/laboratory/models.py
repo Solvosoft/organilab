@@ -1148,6 +1148,13 @@ class OrganizationStructure(TreeNode):
             maxposition = self.position
         return maxposition
 
+    @property
+    def root(self):
+        ancestors = self.ancestors()
+        if ancestors.exists():
+            return ancestors.first()
+        return self
+
 
 class UserOrganization(models.Model):
     ADMINISTRATOR = 1

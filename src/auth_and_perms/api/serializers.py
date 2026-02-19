@@ -125,7 +125,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_rols(self, obj):
         contenttypeobj = self.context["view"].contenttypeobj
-        org = self.context["view"].organization
+        org = self.context["view"].organization.root
         rol = get_roles_in_html(obj.pk, contenttypeobj, org)
         if not rol:
             datatext = (

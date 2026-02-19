@@ -64,7 +64,7 @@ class OrganizationRolslLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org:
-            queryset = queryset.filter(pk__in=self.org.rol.values_list("pk", flat=True))
+            queryset = queryset.filter(pk__in=self.org.root.rol.values_list("pk", flat=True))
         else:
             queryset = queryset.none()
 
@@ -502,9 +502,8 @@ class OrganizationRolslLookup(BaseSelect2View):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         if self.org:
-            queryset = queryset.filter(pk__in=self.org.rol.values_list("pk", flat=True))
+            queryset = queryset.filter(pk__in=self.org.root.rol.values_list("pk", flat=True))
         else:
             queryset = queryset.none()
 

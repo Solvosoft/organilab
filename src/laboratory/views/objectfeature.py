@@ -14,7 +14,6 @@ from auth_and_perms.organization_utils import user_is_allowed_on_organization
 @permission_required("laboratory.view_objectfeatures")
 def objectfeatures_view(request, org_pk=0, lab_pk=0):
     user_is_allowed_on_organization(request.user, org_pk)
-    lab = get_object_or_404(Laboratory, pk=lab_pk)
 
     return render(
         request,

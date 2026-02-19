@@ -434,7 +434,16 @@ def get_all_laboratories_by_org(org_pk):
     if org is None:
         return []
     all_orgs = org.descendants(include_self=True)
-    return Laboratory.objects.filter(organization__in=all_orgs)
+    direct_labs = Laboratory.objects.filter(organization__in=all_orgs)
+
+    related_lab_ids = OrganizationStructureRelations.objects.filter(
+        organization__in=all_orgs,
+        content_type=ContentType.objects.get_for_model(Laboratory)
+    ).values_list("object_id", flat=True)
+
+    related_labs = Laboratory.objects.filter(pk__in=related_lab_ids)
+
+    return (direct_labs | related_labs).distinct()
 
 
 def check_user_access_kwargs_org_lab(org, lab, user):

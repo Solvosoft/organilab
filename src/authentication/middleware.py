@@ -1,9 +1,11 @@
+import re
 from builtins import getattr
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.http import Http404
+from django.urls import resolve
 
 from auth_and_perms.models import ProfilePermission
 from laboratory.models import OrganizationStructure
@@ -15,6 +17,11 @@ class ProfileMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        if request.resolver_match is None:
+            try:
+                request.resolver_match = resolve(request.path)
+            except:
+                pass
         response = self.get_response(request)
         return response
 
@@ -41,16 +48,21 @@ class ProfileMiddleware:
         if not hasattr(user, "profile"):
             raise Http404("User has not profile")
 
-        profile = user.profile
-        if "org_pk" in view_kwargs and view_kwargs["org_pk"]:
-            org_pk = view_kwargs["org_pk"]
-        elif "org_pk" in request.GET and request.GET["org_pk"]:
-            org_pk = request.GET["org_pk"]
+        resolved_kwargs = {}
+        if request.resolver_match:
+            resolved_kwargs = request.resolver_match.kwargs
 
-        if "lab_pk" in view_kwargs and view_kwargs["lab_pk"]:
-            lab_pk = view_kwargs["lab_pk"]
-        elif "lab_pk" in request.GET and request.GET["lab_pk"]:
-            lab_pk = request.GET["lab_pk"]
+        profile = user.profile
+        org_pk = (
+            view_kwargs.get("org_pk") or
+            resolved_kwargs.get("org_pk") or
+            request.GET.get("org_pk")
+        )
+        lab_pk = (
+            view_kwargs.get("lab_pk") or
+            resolved_kwargs.get("lab_pk") or
+            request.GET.get("lab_pk")
+        )
 
         if (
             hasattr(view_func, "view_class")
