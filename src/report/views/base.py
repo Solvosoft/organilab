@@ -104,7 +104,7 @@ def base_pdf(report, uri):
         ).count()
     elif report.type_report == "regency_report":
         datalist = get_pdf_regency_table_content(report)
-        total = RegencyReportBuilder.objects.filter(report__task_report=report).count()
+        columns = 13
     else:
         datalist = get_pdf_table_content(report.table_content)
         total = len(report.table_content["dataset"])

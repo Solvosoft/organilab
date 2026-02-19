@@ -5357,3 +5357,30 @@ msgstr "La condición de proceso no fue actualizada"
 
 msgid "Update Process Condition"
 msgstr "Actualizar Condición de Proceso"
+
+msgid "Criterion"
+msgstr "Criterio"
+
+msgid "Cross rule"
+msgstr "Regla cruzada"
+
+msgid "H-codes"
+msgstr "Códigos H"
+
+msgid "Warnings"
+msgstr "Advertencias"
+
+msgid "Health contributions"
+msgstr "Contribuciones de salud"
+
+msgid "Physical contributions"
+msgstr "Contribuciones físicas"
+
+msgid "Environmental contributions"
+msgstr "Contribuciones ambientales"
+
+msgid "Details of the substances"
+msgstr "Detalle de las sustancias"
+
+msgid "Totals by category"
+msgstr "Sumatorias por categoría"
