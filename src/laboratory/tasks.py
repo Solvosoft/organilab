@@ -118,7 +118,7 @@ def add_maximum_object_stock_per_day():
         "Gramos",
         "Toneladas",
     ]
-    basic_unit = Catalog.object.get(key="units", description="Toneladas")
+    basic_unit = Catalog.objects.get(key="units", description="Toneladas")
     for laboratory in laboratories:
         objects = ShelfObject.objects.filter(
             in_where_laboratory=laboratory, object__type=Object.REACTIVE
