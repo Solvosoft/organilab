@@ -5,18 +5,26 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
-from laboratory.models import LaboratoryRoom, Furniture, Shelf
+from auth_and_perms.api.serializers import (
+    ValidateUserAccessOrgLabSerializer,
+    ValidateOrganizationSerializer,
+)
+from laboratory.models import (
+    LaboratoryRoom,
+    Furniture,
+    Shelf,
+    Laboratory,
+)
 from laboratory.shelfobject.utils import (
-    get_available_objs_by_shelfobject,
     get_lab_room_queryset_by_filters,
     get_furniture_queryset_by_filters,
     get_shelf_queryset_by_filters,
 )
 from laboratory.utils import get_laboratories_from_organization
-from laboratory.utils_base_unit import get_base_unit, get_related_units_from_laboratory
-from report.api.serializers import ValidateUserAccessLabRoomSerializer
-from django.db.models import Q, Sum
+from laboratory.utils_base_unit import get_related_units_from_laboratory
+from report.api.serializers import (
+    ValidateUserAccessLabRoomSerializer,
+)
 
 
 class GPaginatorMoreElements(GPaginator):
@@ -128,6 +136,117 @@ class FurnitureLookup(BaseSelect2View):
             },
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+@register_lookups(prefix="labs_by_org", basename="labs_by_org")
+class LabsByOrgLookup(BaseSelect2View):
+    model = Laboratory
+    fields = ["name"]
+    ordering = ["name"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    organization, serializer = (None, None)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.organization:
+            return queryset.filter(organization__id=self.organization.pk)
+
+        return queryset.none()
+
+    def list(self, request, *args, **kwargs):
+        self.serializer = ValidateOrganizationSerializer(
+            data=request.GET, context={"user": request.user}
+        )
+
+        if self.serializer.is_valid():
+            self.organization = self.serializer.validated_data["organization"]
+            return super().list(request, *args, **kwargs)
+
+        return Response(
+            {
+                "status": "Bad request",
+                "errors": self.serializer.errors,
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@register_lookups(prefix="lab_room_ref", basename="lab_room_ref")
+class LabRoomRefLookup(BaseSelect2View):
+    model = LaboratoryRoom
+    fields = ["name"]
+    ordering = ["name"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    organization_id = None
+    laboratory_ids = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if len(self.laboratory_ids) > 0:
+            queryset = queryset.filter(laboratory__in=self.laboratory_ids)
+        else:
+            queryset = queryset.filter(laboratory__in=self.laboratory_ids).using(
+                settings.READONLY_DATABASE
+            )
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.laboratory_ids = self.request.GET.getlist(
+            "laboratory[]"
+        ) or self.request.GET.getlist("laboratory")
+        self.organization_id = self.request.GET.get("organization")
+
+        if len(self.laboratory_ids) == 0:
+            self.laboratory_ids = get_laboratories_from_organization(
+                self.organization_id
+            )
+
+        return super().list(request, *args, **kwargs)
+
+
+@register_lookups(prefix="furniture_ref", basename="furniture_ref")
+class FurnitureRefLookup(BaseSelect2View):
+    model = Furniture
+    fields = ["name"]
+    ref_field = "labroom"
+    ordering = ["name"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    organization_id = None
+    laboratory_ids = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if len(self.laboratory_ids) > 0:
+            queryset = queryset.filter(laboratory__in=self.laboratory_ids)
+        else:
+            queryset = queryset.filter(laboratory__in=self.laboratory_ids).using(
+                settings.READONLY_DATABASE
+            )
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        self.laboratory_ids = self.request.GET.getlist(
+            "laboratory[]"
+        ) or self.request.GET.getlist("laboratory")
+        self.organization_id = self.request.GET.get("organization")
+
+        if len(self.laboratory_ids) == 0:
+            self.laboratory_ids = get_laboratories_from_organization(
+                self.organization_id
+            )
+
+        return super().list(request, *args, **kwargs)
 
 
 @register_lookups(prefix="shelf", basename="shelf")
