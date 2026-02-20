@@ -173,11 +173,19 @@ class PrecursorsView(ReportListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         org_pk = self.kwargs["org_pk"]
-        data = self.request.GET if "laboratory" in self.request.GET else None
-        form = PrecursorFilterForm(data, org_pk=org_pk)
+
+        form = PrecursorFilterForm(self.request.GET or None, org_pk=org_pk)
         qs = PrecursorReport.objects.none()
 
-        if form.is_valid():
+        if not self.request.GET.get("laboratory"):
+            default_lab = form.fields["laboratory"].queryset.first()
+            if default_lab:
+                form.initial["laboratory"] = default_lab
+                qs = PrecursorReport.objects.filter(laboratory=default_lab).order_by(
+                    "-pk"
+                )
+
+        elif form.is_valid():
             lab = form.cleaned_data["laboratory"]
             qs = PrecursorReport.objects.filter(laboratory=lab).order_by("-pk")
 
