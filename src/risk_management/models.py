@@ -2,7 +2,10 @@ from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from location_field.models.plain import PlainLocationField
@@ -321,3 +324,25 @@ class Structure(AbstractOrganizationRef):
 
     def __str__(self):
         return self.name
+
+
+class EstablishmentLogs(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    physical = models.FloatField(default=False)
+    health = models.FloatField(default=False)
+    environmental = models.FloatField(default=False)
+    establishment_status = models.CharField(
+        max_length=50, null=True, blank=True, verbose_name=_("Establishment Status")
+    )
+    table_content = models.JSONField(null=True, blank=True)
+    date = models.DateTimeField(default=timezone.now, editable=True)
+
+    def __str__(self):
+        return self.establishment_status
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]

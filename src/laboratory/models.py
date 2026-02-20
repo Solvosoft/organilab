@@ -262,8 +262,10 @@ class SustanceCharacteristics(models.Model):
     )
     density = models.FloatField(
         verbose_name=_("Density"),
-        help_text=_("t belongs to the regulations of decree 44741, "
-                    "only use dot like 0.344 on decimal"),
+        help_text=_(
+            "t belongs to the regulations of decree 44741, "
+            "only use dot like 0.344 on decimal"
+        ),
         default=0,
     )
 
@@ -339,12 +341,12 @@ class ShelfObject(models.Model):
         ("solid powder", _("Solid powder")),
         ("solid granular or crystalline", _("Solid granular or crystalline")),
         ("Gaseous", _("Gaseous")),
-        ("Tablets",_("Tablets")),
-        ("Lentils",_("Lentils")),
-        ("Granza",_("Granza")),
+        ("Tablets", _("Tablets")),
+        ("Lentils", _("Lentils")),
+        ("Granza", _("Granza")),
         ("card", _("Card")),
-        ("solid",_("Solid")),
-        ("colloidal",_("Colloidal")),
+        ("solid", _("Solid")),
+        ("colloidal", _("Colloidal")),
         ("viscuos liquid", _("Viscuos Liquid")),
         ("kit", _("Kit")),
     )
@@ -456,6 +458,16 @@ class ShelfObject(models.Model):
         blank=True, null=True, verbose_name=_("Container Open Date")
     )
     was_donated = models.BooleanField(default=False, verbose_name=_("Was donated?"))
+    flashpoint = catalog.GTForeignKey(
+        Catalog,
+        related_name="process_condition_shelfobject",
+        blank=True,
+        null=True,
+        on_delete=models.DO_NOTHING,
+        verbose_name=_("Process Condition"),
+        key_name="key",
+        key_value="process_condition",
+    )
 
     @staticmethod
     def get_units(unit):
@@ -1269,6 +1281,10 @@ class Laboratory(BaseCreationObj):
     def __repr__(self):
         return self.__str__()
 
+    def get_rooms(self):
+        rooms = LaboratoryRoom.objects.filter(laboratory=self)
+        return rooms
+
 
 class Provider(BaseCreationObj):
     name = models.CharField(
@@ -1633,7 +1649,6 @@ class MaterialCapacity(models.Model):
         key_value="units",
     )
     object = models.OneToOneField(Object, on_delete=models.CASCADE, null=True)
-
 
 
 class ObjectMaximumLimit(models.Model):

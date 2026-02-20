@@ -1,10 +1,13 @@
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Q, Sum
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q, Sum, F
+from django.db.models.functions import JSONObject
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -28,7 +31,8 @@ from risk_management.forms import (
     UpdateRegentForm,
     RiskZoneListForm,
 )
-from risk_management.models import RiskZone, ZoneType, Buildings, Regent
+from risk_management.models import RiskZone, ZoneType, Buildings, Regent, \
+    EstablishmentLogs
 from laboratory.views.djgeneric import (
     ListView,
     CreateView,
@@ -56,7 +60,7 @@ class ListZone(ListView):
             q = self.request.GET["q"]
             queryset = queryset.filter(
                 Q(name__icontains=q) | Q(laboratories__name__icontains=q)
-            ).distinct()
+            ).annotate(zone_pk=JSONObject(origen=F("pk"))).distinct()
 
         return queryset
 
@@ -69,6 +73,33 @@ class ListZone(ListView):
             context["pgparams"] = "?q=%s&" % (q,)
         else:
             context["pgparams"] = "?"
+
+        org_pk = self.kwargs["org_pk"]
+
+        x = ""
+        i = 0
+        for key in self.request.GET:
+            for data in self.request.GET.getlist(key):
+                if i > 0:
+                    x += f"&{key}={data}"
+                else:
+                    x += f"?{key}={data}"
+                i += 1
+
+        context["eslochart"] = reverse(
+            "eslochart-detail",
+            kwargs={"pk": org_pk}
+        ) + x
+        for object in context["object_list"]:
+            latest_log = EstablishmentLogs.objects.filter(
+                object_id=object.pk,
+                content_type=ContentType.objects.get_for_model(RiskZone),
+            ).order_by('-date').first()
+            if latest_log:
+                object.status = latest_log.establishment_status
+            else:
+                object.status = "Desconocido"
+
         return context
 
 
