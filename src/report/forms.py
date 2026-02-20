@@ -174,7 +174,7 @@ class LaboratoryRoomReportForm(ReportForm):
     furniture = forms.ModelMultipleChoiceField(
         help_text=_("If you want to delimit this query select furnitures (Optional)"),
         widget=AutocompleteSelectMultiple(
-            "furniture",
+            "furniture_ref",
             attrs={
                 "data-related": "true",
                 "data-pos": 2,
