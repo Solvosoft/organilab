@@ -242,7 +242,7 @@ class FurnitureRefLookup(BaseSelect2View):
             self.laboratory_ids = get_laboratories_from_organization(
                 self.organization_id
             )
-            
+
         return super().list(request, *args, **kwargs)
 
 
