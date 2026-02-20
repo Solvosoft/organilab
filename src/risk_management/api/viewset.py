@@ -96,7 +96,7 @@ class BuildingViewSet(AuthAllPermBaseObjectManagement):
     perms = {
         "list": ["risk_management.view_building"],
         "create": ["risk_management.add_buildings"],
-        "update": [],
+        "update": ["risk_management.change_buildings"],
         "retrieve": [],
         "get_values_for_update": [],
         "detail_template": [],
@@ -159,7 +159,7 @@ class StructureViewSet(AuthAllPermBaseObjectManagement):
         "list": ["risk_management.view_structure"],
         "create": ["risk_management.add_structure"],
         "destroy": ["risk_management.delete_structure"],
-        "update": [],
+        "update": ["risk_management.change_structure"],
         "retrieve": [],
         "get_values_for_update": [],
         "detail_template": [],

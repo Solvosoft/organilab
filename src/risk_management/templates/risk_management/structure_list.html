@@ -7,7 +7,7 @@
 {% load static %}
 
 {% block pre_head %}
-    {% define_urlname_action 'structure_crud' %}
+	{% define_urlname_action 'structure_crud' %}
 {% endblock %}
 
 {% block title %} {% trans 'Structures' %} {% endblock %}
@@ -25,14 +25,18 @@
 			</div>
 		</div>
 	</div>
-    {% url "riskmanagement:api-structure-detail" org_pk 0 as detail_obj_url %}
-    {% trans 'Delete Structure' as delete_obj_tittle %}
-    {% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+	{% url "riskmanagement:api-structure-detail" org_pk 0 as detail_obj_url %}
+	{% trans 'Delete Structure' as delete_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
 {% endblock %}
 
 {% block js %}
 	{{ block.super }}
 	<script>
+		const has_perm = {
+			'create': {{ perms.risk_management.add_structure|yesno:"true,false" }},
+			'update': {{ perms.risk_management.change_structure|yesno:"true,false" }},
+		};
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-structure-list' org_pk %}",
 			destroy_url: "{% url 'riskmanagement:api-structure-detail' org_pk 0 %}",
@@ -40,10 +44,10 @@
 		const update_url = "{% url 'riskmanagement:structures_update' org_pk 0 %}";
 		const add_structure_url = "{% url 'riskmanagement:structures_create' org_pk %}";
 		const selects2_url = {
-			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
-			structure_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
-			laboratory_url: "{% url 'risk_laboratory-list' %}"+"?org_pk="+"{{org_pk}}",
-			structure_url: "{% url 'risk_structure-list' %}"+"?org_pk="+"{{org_pk}}",
+			manager_url: "{% url 'risk_users-list' %}" + "?org_pk=" + "{{org_pk}}",
+			structure_url: "{% url 'risk_building-list' %}" + "?org_pk=" + "{{org_pk}}",
+			laboratory_url: "{% url 'risk_laboratory-list' %}" + "?org_pk=" + "{{org_pk}}",
+			structure_url: "{% url 'risk_structure-list' %}" + "?org_pk=" + "{{org_pk}}",
 		}
 	</script>
 	<script src="{% static 'js/structure.js' %}?v={% get_organilab_version %}"></script>

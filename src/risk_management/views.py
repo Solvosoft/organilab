@@ -267,7 +267,7 @@ def add_zone_type_view(request, org_pk):
     return JsonResponse(data)
 
 
-@permission_required("risk_management.add_buildings")
+@permission_required("risk_management.view_buildings")
 def buildings_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     context = {"org_pk": org_pk}
