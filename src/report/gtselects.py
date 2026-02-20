@@ -221,17 +221,14 @@ class FurnitureRefLookup(BaseSelect2View):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     organization_id = None
-    laboratory_ids = None
+    laboratory_ids = []
 
     def get_queryset(self):
         queryset = super().get_queryset()
-
         if len(self.laboratory_ids) > 0:
-            queryset = queryset.filter(laboratory__in=self.laboratory_ids)
-        else:
-            queryset = queryset.filter(laboratory__in=self.laboratory_ids).using(
-                settings.READONLY_DATABASE
-            )
+            queryset = queryset.filter(
+                labroom__laboratory_id__in=self.laboratory_ids
+            ).using(settings.READONLY_DATABASE)
 
         return queryset
 
@@ -245,7 +242,7 @@ class FurnitureRefLookup(BaseSelect2View):
             self.laboratory_ids = get_laboratories_from_organization(
                 self.organization_id
             )
-
+            
         return super().list(request, *args, **kwargs)
 
 
