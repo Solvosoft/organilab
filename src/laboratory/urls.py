@@ -230,38 +230,10 @@ lab_reports_urls = [
         name="reports_shelf_objects",
     ),
     # HTML reports
-    # path('list/laboratory/', labroom.LaboratoryRoomReportView.as_view(), name='reports_laboratory'),
     path(
-        "list/furniture/",
-        furniture.FurnitureReportView.as_view(),
-        name="reports_furniture_detail",
-    ),
-    path("list/objects/", reports.ObjectList.as_view(), name="reports_objects_list"),
-    path(
-        "list/limited_shelf_objects/",
-        reports.LimitedShelfObjectList.as_view(),
-        name="reports_limited_shelf_objects_list",
-    ),
-    path(
-        "list/reactive_precursor_objects/",
-        reports.ReactivePrecursorObjectList.as_view(),
-        name="reactive_precursor_object_list",
-    ),
-    path("objectchanges/", reports.LogObjectView.as_view(), name="object_change_logs"),
-    path("precursors/", reports.PrecursorsView.as_view(), name="precursor_report"),
-    path(
-        "list/waste/report",
-        reports.DiscardShelfReportView.as_view(),
-        name="waste_report",
-    ),
-    path(
-        "list/reactive/report", reports.ReactiveReport.as_view(), name="reactive_report"
-    ),
-    path("risk_zone/", reports.RiskZoneReport.as_view(), name="risk_zone_report"),
-    path(
-        "reactive/stock/",
-        reports.ReactiveStockReport.as_view(),
-        name="reactive_stock_report",
+        "list/laboratory/",
+        labroom.LaboratoryRoomReportView.as_view(),
+        name="reports_laboratory",
     ),
     path(
         "reactives/",
