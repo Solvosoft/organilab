@@ -1,5 +1,6 @@
 var filter = ""
 
+
 function get_archive_status() {
     url = report_urls['report_status'] + filter;
     $.ajax({
@@ -8,10 +9,23 @@ function get_archive_status() {
         dataType: 'json',
         success: function (data) {
             $("#textstatus").html(data['text']);
+
+            if (data['state'] === 'FAILURE' || data['state'] === 'REVOKED') {
+                // console.error(data['error'])
+                show_error_message(gettext("Report failed"));
+                accept_request();
+                return;
+            }
+
             if (data['end'] != true) {
                 setTimeout(get_archive_status, 5000);
             }
 
+        },
+        error: function (xhr) {
+            // console.error(xhr.responseText)
+            show_error_message(gettext("Error checking report status"));
+            accept_request();
         }
     });
 }
@@ -104,6 +118,13 @@ function get_doc(pk, task) {
         type: "GET",
         dataType: 'json',
         success: function (data) {
+            if (data['state'] === 'FAILURE' || data['state'] === 'REVOKED') {
+                // console.error(data['error'])
+                // show_error_message(gettext("Report failed"));
+                accept_request();
+                return;
+            }
+
             if (data['result'] == true) {
                 if (data['type_report'] === 'html') {
                     open_new_window(data['url_file']);
