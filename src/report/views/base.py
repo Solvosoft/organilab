@@ -297,7 +297,6 @@ def report_status(request, org_pk):
         form = TasksForm(request.GET)
 
         if form.is_valid():
-            # result = TaskResult.objects.filter(task_id=form.cleaned_data["task"])
             result = TaskResult.objects.filter(
                 task_id=form.cleaned_data["task"]
             ).first()
@@ -307,7 +306,6 @@ def report_status(request, org_pk):
                 end = state in ("SUCCESS", "FAILURE", "REVOKED")
 
                 if state == "FAILURE":
-                    # puedes usar traceback o result.result (depende tu config)
                     tb = getattr(result, "traceback", None)
                     error = (tb or result.result or "")[:5000]
 
@@ -322,20 +320,6 @@ def report_status(request, org_pk):
                         text.description,
                     )
 
-            # if result.exists():
-            #     end = result.first().status == "SUCCESS"
-            #
-            # status = DocumentReportStatus.objects.filter(
-            #     report=form.cleaned_data["taskreport"]
-            # ).order_by("report_time")
-            #
-            # if status.exists():
-            #     for text in status:
-            #         description += "<li>%s %s </li>" % (
-            #             text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
-            #             text.description,
-            #         )
-    # return JsonResponse({"end": end, "text": description})
     return JsonResponse(
         {"end": end, "state": state, "text": description, "error": error}
     )
