@@ -48,6 +48,8 @@
 	{{ block.super }}
 
 	<script>
+		window.has_perm_create = {{ perms.laboratory.add_provider|yesno:"true,false" }};
+
 		const object_urls = {
 			list_url: "{% url 'laboratory:api-provider-list' org_pk lab_pk %}",
 			create_url: "{% url 'laboratory:api-provider-list' org_pk lab_pk %}",

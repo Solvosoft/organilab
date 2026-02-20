@@ -5,6 +5,7 @@ import qrcode.image.svg
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import PermissionDenied
 from django.core.files.base import ContentFile
 from django.db.models.query_utils import Q
 from django.http import Http404
@@ -576,8 +577,10 @@ class PermissionByLaboratoryInOrganization(BasePermission):
 def get_actions_by_perms(user, actions_list):
     actions = {}
     for action, perms in actions_list.items():
+
         actions[action] = all_permission(user, perms)
     return actions
+
 
 
 def remove_shelfobject_from_shelf(laboratory, shelf, user, organization):

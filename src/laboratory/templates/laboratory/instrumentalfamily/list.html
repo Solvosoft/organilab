@@ -53,10 +53,13 @@ datatable_inits = {
 		addfilter: true,
 		dom: table_default_dom
 }
+let has_perm = {{ perms.laboratory.add_catalog|yesno:"true,false" }};
 var instrumentalfamily_modalids = {
-	create: "#create_obj_modal",
 	destroy: "#delete_obj_modal",
 	update: "#update_obj_modal"
+}
+if (has_perm) {
+    instrumentalfamily_modalids.create = "#create_obj_modal";
 }
 
 var instrumentalfamily_actions = {

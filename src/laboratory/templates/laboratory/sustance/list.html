@@ -4,8 +4,6 @@
 {% block pre_head %}
     {% define_true  "use_datatables" %}
     {% define_urlname_action 'objectview_list' %}
-    {% define_urlname_action 'sustance_list_json' %}
-    {% define_urlname_action 'sustance_manage' %}
 {% endblock %}
 
 
@@ -45,6 +43,7 @@
 {{block.super}}
 
 <script>
+
 var object_urls = {
     list_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
     create_url: "{% url 'laboratory:api-reactive-list' org_pk lab_pk%}",
@@ -71,11 +70,15 @@ datatable_inits = {
 addfilter: true
 
 }
+let has_perm = {{ perms.laboratory.add_object|yesno:"true,false" }};
 
 var reactive_modalids = {
-    create: "#create_obj_modal",
     destroy: "#delete_obj_modal",
     update: "#update_obj_modal",
+}
+
+if (has_perm) {
+    reactive_modalids.create = "#create_obj_modal";
 }
 
 var reactive_actions = {
@@ -121,7 +124,6 @@ let objconfig={
     add_filters: true,
     relation_render: {'field_autocomplete': 'text'},
     delete_display: data => data['name'],
-    create: "btn-success",
     icons: icons
 }
 
@@ -138,8 +140,6 @@ crud.download = function(obj, action){
 		console.error("No security sheet available")
 	}
 }
-
-
 
 crud.add_limits = function(obj, action){
 
@@ -165,6 +165,7 @@ crud.add_limits = function(obj, action){
 }
 
 crud.init();
+
 $('#create_limit_modal').on('hidden.bs.modal', function (){
 	crud.datatable.ajax.reload();
 })
