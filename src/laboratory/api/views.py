@@ -915,6 +915,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object", "laboratory.view_object"],
         "update": ["laboratory.change_object", "laboratory.view_object"],
+        "detail": ["laboratory.view_object"],
         "destroy": ["laboratory.delete_object", "laboratory.view_object"],
         "add_limits": ["laboratory.add_object", "laboratory.view_object"],
         "get_reactive_limits": ["laboratory.view_object"],
@@ -1186,10 +1187,10 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
         "update": serializers.LaboratoryProcessUpdateSerializer,
     }
     perms = {
-        "list": ["laboratory.view_laboratory_process"],
-        "create": ["laboratory.add_laboratory_process"],
-        "update": ["laboratory.change_laboratory_process"],
-        "destroy": ["laboratory.delete_laboratory_process"],
+        "list": ["laboratory.view_laboratoryprocess"],
+        "create": ["laboratory.add_laboratoryprocess"],
+        "update": ["laboratory.change_laboratoryprocess"],
+        "destroy": ["laboratory.delete_laboratoryprocess"],
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)

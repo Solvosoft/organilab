@@ -21,7 +21,6 @@ datatable_inits = {
             render: selectobjprint({display_name: 'text'}),
             visible: false
         },
-
         {
             data: "actions",
             name: "actions",
@@ -36,9 +35,12 @@ datatable_inits = {
 }
 
 const modalids = {
-    create: "#create_obj_modal",
     destroy: "#delete_obj_modal",
     update: "#update_obj_modal",
+}
+
+if (has_perm_create) {
+    modalids.create = "#create_obj_modal";
 }
 
 const actions = {

@@ -44,6 +44,7 @@
 {% block js %}
 	{{ block.super }}
 	<script>
+	const has_perm = {{ perms.risk_management.add_regent|yesno:"true,false" }};
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-regent-list' org_pk %}",
 			create_url: "{% url 'riskmanagement:api-regent-list' org_pk %}",

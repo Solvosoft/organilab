@@ -48,6 +48,7 @@
 	{{ block.super }}
 
 	<script>
+	let has_perm_add_object = {{ perms.laboratory.add_object|yesno:"true,false" }};
 		const object_urls = {
 			list_url: "{% url 'laboratory:api-object-list' org_pk lab_pk %}",
 			create_url: "{% url 'laboratory:api-object-list' org_pk lab_pk %}",

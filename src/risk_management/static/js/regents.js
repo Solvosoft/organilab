@@ -48,9 +48,12 @@ datatable_inits = {
 }
 
 const modalids = {
-    create: "#create_obj_modal",
     destroy: "#delete_obj_modal",
     update: "#update_obj_modal",
+}
+
+if (has_perm){
+    modalids.create = "#create_obj_modal";
 }
 
 const actions = {

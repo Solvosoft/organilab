@@ -286,6 +286,11 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.add_shelfobject",
         },
         {
+            "name": "Update Shelf Object",
+            "category": "Shelf Object",
+            "permission": "laboratory.change_shelfobject",
+        },
+        {
             "name": "Delete Shelf Object",
             "category": "Shelf Object",
             "permission": "laboratory.delete_shelfobject",
