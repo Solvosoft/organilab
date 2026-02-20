@@ -53,28 +53,36 @@ const modalids = {
     destroy: "#delete_obj_modal",
 }
 
+let table_actions = [];
+let object_actions = [];
+
+if (has_perm.create){
+    table_actions.push({
+        action: function (data) {
+           window.location.href = add_building_url;
+        },
+        text: '<i class="fa fa-plus" aria-hidden="true"></i>',
+        className: "btn btn-sm btn-outline-success",
+        titleAttr: gettext("Create building"),
+    });
+}
+if (has_perm.update){
+    object_actions.push({
+        name: "update_building",
+        action: 'update_building',
+        in_action_column: true,
+        i_class: 'fa fa-edit',
+        method: 'GET',
+        title: gettext("Update"),
+        data_fn: function (data) {
+            return data;
+        }
+    })
+}
+
 const actions = {
-    table_actions: [
-            {
-            action: function (data) {
-               window.location.href = add_building_url;
-            },
-            text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-            className: "btn btn-sm btn-outline-success",
-            titleAttr: gettext("Create building"),
-    }],
-    object_actions: [
-            {
-            name: "update_building",
-            action: 'update_building',
-            in_action_column: true,
-            i_class: 'fa fa-edit',
-            method: 'GET',
-            title: gettext("Update"),
-            data_fn: function (data) {
-                return data;
-            }
-    }],
+    table_actions: table_actions,
+    object_actions: object_actions,
     title: 'Actions',
     className: "no-export-col"
 }

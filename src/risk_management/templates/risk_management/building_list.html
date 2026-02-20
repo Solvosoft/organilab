@@ -8,10 +8,10 @@
 
 
 {% block pre_head %}
-    {% define_urlname_action 'buildings_list' %}
-    {% define_urlname_action 'buildings_create' %}
-    {% define_urlname_action 'buildings_delete' %}
-    {% define_urlname_action 'buildings_update' %}
+	{% define_urlname_action 'buildings_list' %}
+	{% define_urlname_action 'buildings_create' %}
+	{% define_urlname_action 'buildings_delete' %}
+	{% define_urlname_action 'buildings_update' %}
 {% endblock %}
 
 {% block title %} {% trans 'Buildings' %} {% endblock %}
@@ -30,14 +30,18 @@
 			</div>
 		</div>
 	</div>
-    {% url "riskmanagement:api-building-detail" org_pk 0 as detail_obj_url %}
-    {% trans 'Delete Building' as delete_obj_tittle %}
-    {% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+	{% url "riskmanagement:api-building-detail" org_pk 0 as detail_obj_url %}
+	{% trans 'Delete Building' as delete_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
 {% endblock %}
 
 {% block js %}
 	{{ block.super }}
 	<script>
+		const has_perm ={
+			'create': {{ perms.risk_management.add_buildings|yesno:"true,false" }},
+			'update': {{ perms.risk_management.change_buildings|yesno:"true,false" }},
+		}
 		const object_urls = {
 			list_url: "{% url 'riskmanagement:api-building-list' org_pk %}",
 			destroy_url: "{% url 'riskmanagement:api-building-detail' org_pk 0 %}",
@@ -45,10 +49,10 @@
 		const update_url = "{% url 'riskmanagement:buildings_update' org_pk 0 %}"
 		const add_building_url = "{% url 'riskmanagement:buildings_create' org_pk %}"
 		const selects2_url = {
-			manager_url: "{% url 'risk_users-list' %}"+"?org_pk="+"{{org_pk}}",
-			regents_url: "{% url 'risk_regents-list' %}"+"?org_pk="+"{{org_pk}}",
-			buildings_url: "{% url 'risk_building-list' %}"+"?org_pk="+"{{org_pk}}",
-			laboratory_url: "{% url 'risk_laboratory-list' %}"+"?org_pk="+"{{org_pk}}",
+			manager_url: "{% url 'risk_users-list' %}" + "?org_pk=" + "{{org_pk}}",
+			regents_url: "{% url 'risk_regents-list' %}" + "?org_pk=" + "{{org_pk}}",
+			buildings_url: "{% url 'risk_building-list' %}" + "?org_pk=" + "{{org_pk}}",
+			laboratory_url: "{% url 'risk_laboratory-list' %}" + "?org_pk=" + "{{org_pk}}",
 		}
 	</script>
 	<script src="{% static 'js/buildings.js' %}?v={% get_organilab_version %}"></script>
