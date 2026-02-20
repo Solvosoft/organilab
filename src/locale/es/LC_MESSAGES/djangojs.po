@@ -1119,3 +1119,9 @@ msgstr "Ingreso por donacion"
 
 msgid "Capacity"
 msgstr "Capacidad"
+
+msgid "Report failed"
+msgstr "Reporte fallido"
+
+msgid "Error checking report status"
+msgstr "Error al comprobar el estado del informe"
