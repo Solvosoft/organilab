@@ -151,10 +151,7 @@ def report_objectlogchange_doc(report):
     return record_total
 
 
-# report_reactive_precursor
 def get_dataset_reactive_precursor(report, column_list=None):
-    # general = True if "all_labs_org" in report.data else False
-    # general = True si no hay labs o hay más de uno
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
     dataset = []
@@ -205,8 +202,6 @@ def get_dataset_reactive_precursor(report, column_list=None):
 
 
 def report_reactive_precursor_html(report):
-    # general = True if "all_labs_org" in report.data else False
-    # general = True si no hay labs o hay más de uno
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
     columns = [{"name": "laboratory", "title": _("Laboratory")}] if general else []
@@ -247,14 +242,10 @@ def report_reactive_precursor_doc(report):
             _("IMDG type"),
         ]
     ]
-    # if "laboratory" in report.data:
-    #     labs = report.data["laboratory"]
-    #     if len(labs) > 1:
-    #         content[0].insert(0, _("Laboratory"))
+
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
     if not general:
-        # delete laboratory
         content[0].pop(0)
 
     content = content + get_dataset_reactive_precursor(report, None)
@@ -282,7 +273,6 @@ def report_reactive_precursor_doc(report):
     return record_total
 
 
-# report_objects
 def get_object_elements(obj):
     features = ""
     danger = ""
@@ -324,8 +314,7 @@ def get_objects(report):
 def get_dataset_objects(report, column_list=None):
     dataset = []
     objects = get_objects(report)
-    # general = True if "all_labs_org" in report.data else False
-    # general = True si no hay labs o hay más de uno
+
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
 
@@ -360,8 +349,7 @@ def get_dataset_objects(report, column_list=None):
 
 
 def report_objects_html(report):
-    # general = True if "all_labs_org" in report.data else False
-    # general = True si no hay labs o hay más de uno
+
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
 
@@ -404,7 +392,6 @@ def report_objects_doc(report):
     general = not laboratories or len(laboratories) > 1
 
     if not general:
-        # delete laboratory
         content[0].pop(0)
 
     content = content + get_dataset_objects(report, None)
@@ -459,8 +446,6 @@ def get_dataset_limit_objects(report, column_list=None):
 
 
 def report_limit_object_html(report):
-    # general = True if "all_labs_org" in report.data else False
-    # general = True si no hay labs o hay más de uno
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
 

@@ -95,7 +95,6 @@ report_urls = [
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    # path("<int:org_pk>/<int:lab_pk>/", include(base_reports)),
     path("<int:org_pk>/", include(base_reports)),
     path("<int:org_pk>/", include(base_organization_reports)),
     path("reports/<int:org_pk>", include(report_urls)),

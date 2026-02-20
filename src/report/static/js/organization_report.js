@@ -11,7 +11,6 @@ function get_archive_status() {
             $("#textstatus").html(data['text']);
 
             if (data['state'] === 'FAILURE' || data['state'] === 'REVOKED') {
-                // console.error(data['error'])
                 show_error_message(gettext("Report failed"));
                 accept_request();
                 return;
@@ -23,7 +22,6 @@ function get_archive_status() {
 
         },
         error: function (xhr) {
-            // console.error(xhr.responseText)
             show_error_message(gettext("Error checking report status"));
             accept_request();
         }
@@ -119,8 +117,6 @@ function get_doc(pk, task) {
         dataType: 'json',
         success: function (data) {
             if (data['state'] === 'FAILURE' || data['state'] === 'REVOKED') {
-                // console.error(data['error'])
-                // show_error_message(gettext("Report failed"));
                 accept_request();
                 return;
             }
