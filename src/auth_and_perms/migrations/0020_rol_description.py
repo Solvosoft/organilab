@@ -4,35 +4,49 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+
 def create_group_description(apps, schema_editor):
-    GroupDescription = apps.get_model('auth_and_perms', 'GroupDescription')
-    Group = apps.get_model('auth', 'Group')
+    GroupDescription = apps.get_model("auth_and_perms", "GroupDescription")
+    Group = apps.get_model("auth", "Group")
     for group in Group.objects.all():
-        GroupDescription.objects.create(group=group)
+        if not hasattr(group, "groupdescription"):
+            GroupDescription.objects.create(group=group)
+
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth_and_perms', '0019_profile_workplace'),
+        ("auth_and_perms", "0019_profile_workplace"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='rol',
-            name='description',
+            model_name="rol",
+            name="description",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.CreateModel(
-            name='GroupDescription',
+            name="GroupDescription",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True,
-                                           serialize=False, verbose_name='ID')),
-                ('description', models.TextField(blank=True, null=True)),
-                ('group',
-                 models.OneToOneField(on_delete=django.db.models.deletion.CASCADE,
-                                      to='auth.group')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.TextField(blank=True, null=True)),
+                (
+                    "group",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE, to="auth.group"
+                    ),
+                ),
             ],
         ),
-        migrations.RunPython(create_group_description,
-                             reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(
+            create_group_description, reverse_code=migrations.RunPython.noop
+        ),
     ]

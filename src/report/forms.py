@@ -439,10 +439,18 @@ class RegencyReportForm(ReportForm):
 
     years = forms.ChoiceField(
         widget=genwidgets.Select,
-        choices=get_years(),
+        choices=[],
         required=True,
         label=_("Year"),
     )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(RegencyReportForm, self).__init__(*args, **kwargs)
+        self.fields["laboratory"].queryset = Laboratory.objects.filter(
+            organization__pk=org_pk
+        )
+        self.fields["years"].choices = get_years()
 
 
 class PrecursorFilterForm(GTForm):

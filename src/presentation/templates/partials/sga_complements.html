@@ -35,6 +35,16 @@
 					{% trans 'H Code Categories' %}
 				</a>
 			</li>
+			<li>
+				<a href="{% url 'sga:danger_substance' org_pk %}">
+					{% trans 'Dangerous Substances' %}
+				</a>
+			</li>
+			<li>
+				<a href="{% url 'sga:danger_substance_category' org_pk %}">
+					{% trans 'Dangerous Substance Categories' %}
+				</a>
+			</li>
 		</ul>
 	</li>
 {% endif %}

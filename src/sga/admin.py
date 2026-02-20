@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from sga.models import TemplateSGA, DisplayLabel, SecurityLeaf, SGAComplement, \
-    ReviewSubstance, Pictogram
+    ReviewSubstance, Pictogram, DangerSubstanceCategory, DangerSubstance
 from .models import DangerIndication, BuilderInformation, Substance, Label, \
     WarningClass, Component, WarningWord, PrudenceAdvice, \
     RecipientSize
@@ -45,3 +45,5 @@ admin.site.register(SecurityLeaf)
 admin.site.register(SGAComplement)
 admin.site.register(ReviewSubstance)
 admin.site.register(Pictogram)
+admin.site.register(DangerSubstanceCategory)
+admin.site.register(DangerSubstance)

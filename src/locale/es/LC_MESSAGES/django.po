@@ -3137,6 +3137,9 @@ msgstr "Administración"
 msgid "View laboratory"
 msgstr "Ver laboratorio"
 
+msgid "Go to laboratory"
+msgstr "Ir al Laboratorio"
+
 msgid "All Rights Reserved."
 msgstr "Todos los Derechos Reservados."
 
@@ -5292,6 +5295,7 @@ msgstr "Organilab: Notificación de reactivos por vencer"
 msgid "You won't be recieving notifications of this object anymore."
 msgstr "Ya no recibirás notificaciones de este objeto."
 
+
 msgid "About precursor"
 msgstr "Sobre precursor"
 
@@ -5303,3 +5307,63 @@ msgstr "Cuadro 3"
 
 msgid "Square 4"
 msgstr "Cuadro 4"
+
+msgid "Update flashpoint"
+msgstr "Actualizar flashpoint"
+
+msgid "Update Flashpoint"
+msgstr "Actualizar punto de inflamación"
+
+msgid "ShelfObject Flashpoint"
+msgstr "Punto de inflamación del objeto de estante"
+
+msgid "Danger Substance"
+msgstr "Sustancia Peligrosa"
+
+msgid "Register Danger Substance"
+msgstr "Registrar Sustancia Peligrosa"
+
+msgid "Update Danger Substance"
+msgstr "Actualizar Sustancia Peligrosa"
+
+msgid "Delete Danger Substance"
+msgstr "Eliminar Sustancia Peligrosa"
+
+msgid "Dangerous Substances"
+msgstr "Sustancias peligrosas"
+
+msgid "Notes"
+msgstr "Notas"
+
+msgid "Type Match"
+msgstr "Tipo de Coincidencia"
+
+msgid "Patron Name"
+msgstr "Nombre del Patrón"
+
+msgid "Especial Condition"
+msgstr "Condición Especial"
+
+msgid "Dangerous Substance Categories"
+msgstr "Categorías de sustancias peligrosas"
+
+msgid "H Code"
+msgstr "Código H"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Section"
+msgstr "Sección"
+
+msgid "Process Condition"
+msgstr "Condición de proceso"
+
+msgid "Environmental"
+msgstr "Ambiental"
+
+msgid "Risk Categories Summary"
+msgstr "Resumen de Categorías de Riesgo"
+
+msgid "Establishment Status"
+msgstr "Estado del establecimiento"
