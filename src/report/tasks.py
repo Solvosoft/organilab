@@ -16,5 +16,6 @@ def task_report(pk, absolute_uri):
     try:
         build_report(pk, absolute_uri)
     except Exception as e:
+        logger.exception("Report task failed (pk=%s)", pk)
         logger.error(str(e))
         raise ObjectDoesNotExist(_("Object doesn't exists"))

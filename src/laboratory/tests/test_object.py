@@ -142,8 +142,8 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
     def test_objects_list_report(self):
         data = {"type_id": "1"}
         url = reverse(
-            "laboratory:reports_objects_list",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+            "report:reports_objects_list",
+            kwargs={"org_pk": self.org.pk},
         )
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
@@ -151,8 +151,8 @@ class ObjectViewTest(BaseLaboratorySetUpTest):
     def test_precursor_report(self):
         data = {"consecutive": 1, "month": 2, "year": 2018}
         url = reverse(
-            "laboratory:precursor_report",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+            "report:precursor_report",
+            kwargs={"org_pk": self.org.pk},
         )
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)

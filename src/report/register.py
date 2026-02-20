@@ -1,7 +1,7 @@
 REPORT_FORMS = {
     "reactive_precursor": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ValidateReportForm",
+        "form": "report.forms.ReportForm",
         "html": "report.views.objects.report_reactive_precursor_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.objects.report_reactive_precursor_doc",
@@ -19,7 +19,7 @@ REPORT_FORMS = {
     },
     "report_objects": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ReportObjectForm",
+        "form": "report.forms.ReportForm",
         "html": "report.views.objects.report_objects_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.objects.report_objects_doc",
@@ -28,7 +28,7 @@ REPORT_FORMS = {
     },
     "report_limit_objects": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ValidateReportForm",
+        "form": "report.forms.ReportForm",
         "html": "report.views.objects.report_limit_object_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.objects.report_limit_object_doc",
@@ -37,7 +37,7 @@ REPORT_FORMS = {
     },
     "report_objectschanges": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ValidateObjectLogChangeReportForm",
+        "form": "report.forms.ObjectLogChangeBaseForm",
         "html": "report.views.objects.report_objectlogchange_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.objects.report_objectlogchange_doc",
@@ -73,7 +73,7 @@ REPORT_FORMS = {
     },
     "reactive_report": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ReactiveReportForm",
+        "form": "report.forms.ReportForm",
         "html": "report.views.reactive.report_reactive_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.reactive.report_reactive_list_doc",
@@ -107,7 +107,7 @@ REPORT_FORMS = {
     },
     "chemicalinventory": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ChemicalInventoryReportForm",
+        "form": "report.forms.ReportForm",
         "xls": "report.views.stock.report_stock_cartel",
         "xlsx": "report.views.stock.report_stock_cartel",
         "ods": "report.views.stock.report_stock_cartel",

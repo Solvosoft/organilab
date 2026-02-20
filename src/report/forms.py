@@ -1,10 +1,9 @@
 from django import forms
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_celery_results.models import TaskResult
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets import core as genwidgets
-from djgentelella.widgets.selects import AutocompleteSelectMultiple
+from djgentelella.widgets.selects import AutocompleteSelectMultiple, AutocompleteSelect
 
 from auth_and_perms.models import Profile
 from laboratory.models import (
@@ -20,6 +19,17 @@ from laboratory.utils import (
 )
 from report.models import TaskReport, DocumentReportStatus
 from risk_management.models import RiskZone, Buildings
+
+
+def get_years():
+    years = [
+        (i, i)
+        for i in ObjectLogChange.objects.all()
+        .values_list("update_time__year", flat=True)
+        .distinct()
+        .order_by("update_time__year")
+    ]
+    return years
 
 
 class ReportBase(GTForm):
@@ -57,95 +67,83 @@ class ReportBase(GTForm):
 
 
 class ReportForm(ReportBase):
-    all_labs_org = forms.BooleanField(
-        help_text=_(
-            "This option allows to expand this query to all laboratories of current organization"
+    laboratory = forms.ModelMultipleChoiceField(
+        widget=AutocompleteSelectMultiple(
+            "labs_by_org",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "lab_by_org",
+                "data-s2filter-organization": "#id_organization",
+            },
         ),
-        widget=genwidgets.YesNoInput,
-        label=_("All laboratories"),
+        queryset=Laboratory.objects.all(),
         required=False,
-    )
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=forms.HiddenInput, queryset=Laboratory.objects.all()
+        label=_("Laboratory"),
     )
 
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(ReportForm, self).__init__(*args, **kwargs)
 
-class ValidateReportForm(ReportBase):
-    all_labs_org = forms.BooleanField(
-        widget=genwidgets.YesNoInput, label=_("All laboratories"), required=False
-    )
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=genwidgets.SelectMultiple, queryset=Laboratory.objects.all()
-    )
+        if org_pk:
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                organization=org_pk
+            )
 
     def clean_laboratory(self):
         organization = self.cleaned_data["organization"]
-        all_labs_org = self.cleaned_data["all_labs_org"]
         laboratory = self.cleaned_data["laboratory"]
-        if all_labs_org:
+
+        if not laboratory:
             laboratory = get_laboratories_from_organization(organization)
 
         return list(laboratory.values_list("pk", flat=True))
 
+
+class ReportSimpleForm(ReportBase):
+    laboratory = forms.ModelChoiceField(
+        widget=AutocompleteSelect(
+            "labs_by_org",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "lab_by_org",
+                "data-s2filter-organization": "#id_organization",
+            },
+        ),
+        queryset=Laboratory.objects.all(),
+        required=True,
+        label=_("Laboratory"),
+    )
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
-        super(ValidateReportForm, self).__init__(*args, **kwargs)
+        super(ReportSimpleForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                organization=org_pk
+            )
+
+    def clean(self):
+        cleaned = super().clean()
+        lab = cleaned.get("laboratory")
+        if lab is not None:
+            cleaned["laboratory"] = [lab.pk]
+        return cleaned
 
 
 class ReportObjectsBaseForm(ReportBase):
-    all_labs_org = forms.BooleanField(
-        help_text=_(
-            "This option allows to expand this query to all laboratories of current organization"
-        ),
-        widget=genwidgets.YesNoInput,
-        label=_("All laboratories"),
-        required=False,
-    )
     object_type = forms.CharField(
         max_length=1, widget=genwidgets.HiddenInput(), required=False
     )
 
 
-class ReportObjectsForm(ReportObjectsBaseForm):
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=forms.HiddenInput, queryset=Laboratory.objects.all()
-    )
-
-
-class ReportObjectForm(ReportObjectsBaseForm):
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=genwidgets.SelectMultiple, queryset=Laboratory.objects.all()
-    )
-
-    def clean_laboratory(self):
-        organization = self.cleaned_data["organization"]
-        all_labs_org = self.cleaned_data["all_labs_org"]
-        laboratory = self.cleaned_data["laboratory"]
-
-        if all_labs_org:
-            laboratory = get_laboratories_from_organization(organization)
-
-        return list(laboratory.values_list("pk", flat=True))
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        super(ReportObjectForm, self).__init__(*args, **kwargs)
-
-
-class LaboratoryRoomReportForm(ReportBase):
+class LaboratoryRoomReportForm(ReportForm):
     objects_type = list(Object.TYPE_CHOICES)
     objects_type.insert(0, (None, _("All")))
-    all_labs_org = forms.BooleanField(
-        help_text=_(
-            "This option allows to expand this query to all laboratories of current organization"
-        ),
-        widget=genwidgets.YesNoInput,
-        label=_("All laboratories"),
-        required=False,
-    )
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=forms.HiddenInput, queryset=Laboratory.objects.all()
-    )
+
     object_type = forms.ChoiceField(
         choices=tuple(objects_type),
         label=_("Object type"),
@@ -160,14 +158,13 @@ class LaboratoryRoomReportForm(ReportBase):
             "If you want to delimit this query select laboratory rooms (Optional)"
         ),
         widget=AutocompleteSelectMultiple(
-            "lab_room",
+            "lab_room_ref",
             attrs={
                 "data-related": "true",
-                "data-pos": 0,
-                "data-groupname": "labroomreport",
+                "data-pos": 1,
+                "data-groupname": "lab_by_org",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-laboratory": "#id_laboratory",
-                "data-s2filter-all_labs_org": "#id_all_labs_org:checked",
             },
         ),
         queryset=LaboratoryRoom.objects.all(),
@@ -177,11 +174,11 @@ class LaboratoryRoomReportForm(ReportBase):
     furniture = forms.ModelMultipleChoiceField(
         help_text=_("If you want to delimit this query select furnitures (Optional)"),
         widget=AutocompleteSelectMultiple(
-            "furniture",
+            "furniture_ref",
             attrs={
                 "data-related": "true",
-                "data-pos": 1,
-                "data-groupname": "labroomreport",
+                "data-pos": 2,
+                "data-groupname": "lab_by_org",
                 "data-s2filter-organization": "#id_organization",
                 "data-s2filter-laboratory": "#id_laboratory",
             },
@@ -192,11 +189,7 @@ class LaboratoryRoomReportForm(ReportBase):
     )
 
 
-class ValidateLaboratoryRoomReportForm(ReportBase):
-    all_labs_org = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=forms.SelectMultiple, queryset=Laboratory.objects.all()
-    )
+class ValidateLaboratoryRoomReportForm(ReportForm):
     lab_room = forms.ModelMultipleChoiceField(
         widget=genwidgets.SelectMultiple,
         queryset=LaboratoryRoom.objects.all(),
@@ -216,31 +209,16 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
     )
     is_precursor = forms.BooleanField(widget=genwidgets.YesNoInput, required=False)
 
-    def clean_laboratory(self):
-        organization = self.cleaned_data["organization"]
-        all_labs_org = self.cleaned_data["all_labs_org"]
-        laboratory = self.cleaned_data["laboratory"]
-
-        if all_labs_org:
-            laboratory = get_laboratories_from_organization(organization)
-
-        return list(laboratory.values_list("pk", flat=True))
-
     def clean_lab_room(self):
-        organization = self.cleaned_data["organization"]
-        all_labs_org = self.cleaned_data["all_labs_org"]
+
         lab_room = self.cleaned_data["lab_room"]
         laboratory = self.cleaned_data["laboratory"]
-        if all_labs_org:
-            if not lab_room:
-                laboratory = get_laboratories_from_organization(organization)
-        else:
-            if lab_room:
-                lab_room = LaboratoryRoom.objects.filter(pk__in=lab_room)
-            laboratory = Laboratory.objects.filter(pk__in=laboratory)
 
-        if not lab_room:
+        if lab_room:
+            lab_room = LaboratoryRoom.objects.filter(pk__in=lab_room)
+        else:
             lab_room = LaboratoryRoom.objects.filter(laboratory__in=laboratory)
+
         return list(lab_room.values_list("pk", flat=True).distinct())
 
     def get_furniture(self, lab_room, laboratory):
@@ -251,19 +229,15 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
         return furniture
 
     def clean_furniture(self):
-        organization = self.cleaned_data["organization"]
-        all_labs_org = self.cleaned_data["all_labs_org"]
         lab_room = self.cleaned_data["lab_room"]
         furniture = self.cleaned_data["furniture"]
         laboratory = self.cleaned_data["laboratory"]
 
         if not furniture:
-            if all_labs_org:
-                laboratory = get_laboratories_from_organization(organization)
+            furniture = self.get_furniture(lab_room, laboratory)
+        else:
+            furniture = self.get_furniture(lab_room, laboratory)
 
-                furniture = self.get_furniture(lab_room, laboratory)
-            else:
-                furniture = self.get_furniture(lab_room, laboratory)
         return list(furniture.values_list("pk", flat=True).distinct())
 
     def __init__(self, *args, **kwargs):
@@ -271,15 +245,7 @@ class ValidateLaboratoryRoomReportForm(ReportBase):
         super(ValidateLaboratoryRoomReportForm, self).__init__(*args, **kwargs)
 
 
-class ObjectLogChangeBaseForm(ReportBase):
-    all_labs_org = forms.BooleanField(
-        help_text=_(
-            "This option allows to expand this query to all laboratories of current organization"
-        ),
-        widget=genwidgets.YesNoInput,
-        label=_("All laboratories"),
-        required=False,
-    )
+class ObjectLogChangeBaseForm(ReportSimpleForm):
     period = forms.CharField(
         widget=genwidgets.DateRangeInput, required=False, label=_("Period")
     )
@@ -289,30 +255,6 @@ class ObjectLogChangeBaseForm(ReportBase):
     resume = forms.BooleanField(
         widget=genwidgets.YesNoInput, required=False, label=_("Resume")
     )
-
-
-class ObjectLogChangeReportForm(ObjectLogChangeBaseForm):
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=forms.HiddenInput, queryset=Laboratory.objects.all()
-    )
-
-
-class ValidateObjectLogChangeReportForm(ObjectLogChangeBaseForm):
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=forms.SelectMultiple, queryset=Laboratory.objects.all()
-    )
-
-    def clean_laboratory(self):
-        organization = self.cleaned_data["organization"]
-        all_labs_org = self.cleaned_data["all_labs_org"]
-        laboratory = self.cleaned_data["laboratory"]
-        if all_labs_org:
-            laboratory = get_laboratories_from_organization(organization)
-        return list(laboratory.values_list("pk", flat=True).distinct())
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        super(ValidateObjectLogChangeReportForm, self).__init__(*args, **kwargs)
 
 
 class OrganizationReactiveForm(ReportBase):
@@ -367,27 +309,58 @@ class ValidateObjectTypeForm(GTForm):
 
 
 class ValidateFurnitureForm(GTForm):
+    organization = forms.IntegerField(required=False)
     furniture = forms.IntegerField()
-    laboratory = forms.IntegerField()
-
-    def clean(self):
-        cleaned_data = super().clean()
-        laboratory = cleaned_data.get("laboratory")
-        furniture = cleaned_data.get("furniture")
-
-        if not furniture or not laboratory:
-            self.add_error("furniture", _("Furniture is not allowed"))
-        else:
-            furniture_obj = Furniture.objects.filter(
-                pk=furniture, labroom__laboratory=laboratory
-            )
-            if not furniture_obj.exists():
-                self.add_error("furniture", _("Furniture is not allowed"))
-        return cleaned_data
+    laboratory = forms.ModelMultipleChoiceField(
+        queryset=Laboratory.objects.all(),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super(ValidateFurnitureForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields["organization"].initial = org_pk
+
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                organization_id=org_pk
+            )
+
+    def clean_organization(self):
+        org = (
+            self.cleaned_data.get("organization") or self.fields["organization"].initial
+        )
+        if not org:
+            raise forms.ValidationError(_("Organization is required"))
+        return int(org)
+
+    def clean_laboratory(self):
+        organization = self.cleaned_data["organization"]
+        laboratory = self.cleaned_data["laboratory"]
+
+        if not laboratory:
+            laboratory = get_laboratories_from_organization(organization)
+
+        return list(laboratory.values_list("pk", flat=True))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        labs = cleaned_data.get("laboratory")
+        furniture = cleaned_data.get("furniture")
+
+        if not furniture or not labs:
+            self.add_error("furniture", _("Furniture is not allowed"))
+            return cleaned_data
+
+        furniture_obj = Furniture.objects.filter(
+            pk=furniture, labroom__laboratory__in=labs
+        )
+
+        if not furniture_obj.exists():
+            self.add_error("furniture", _("Furniture is not allowed"))
+
+        return cleaned_data
 
 
 class TasksForm(GTForm):
@@ -403,46 +376,14 @@ class TasksForm(GTForm):
         return taskreport
 
 
-class DiscardShelfForm(ReportBase):
-    laboratory = forms.ModelChoiceField(
-        widget=genwidgets.Select, queryset=Laboratory.objects.all()
-    )
-    all_labs_organization = forms.BooleanField(
-        help_text=_(
-            "This option allows to expand this query to all laboratories of current organization"
-        ),
-        widget=genwidgets.YesNoInput,
-        label=_("All laboratories"),
-        required=False,
-    )
+class DiscardShelfForm(ReportForm):
+
     period = forms.CharField(
         widget=genwidgets.DateRangeInput, required=False, label=_("Period")
     )
 
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        super(DiscardShelfForm, self).__init__(*args, **kwargs)
 
-        if org_pk:
-            self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                organization=org_pk
-            )
-
-    def clean_laboratory(self):
-        lab = self.cleaned_data.get("laboratory")
-        if lab:
-            return lab.id
-        return lab
-
-
-class ReactiveReportForm(ReportBase):
-
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        super(ReactiveReportForm, self).__init__(*args, **kwargs)
-
-
-class RiskZoneReportForm(ReportBase):
+class RiskZoneReportForm(ReportForm):
     risk_zone = forms.ModelMultipleChoiceField(
         widget=genwidgets.SelectMultiple,
         queryset=RiskZone.objects.all(),
@@ -482,7 +423,7 @@ class RiskZoneReportForm(ReportBase):
         return []
 
 
-class ReactiveStockReportForm(ReportBase):
+class ReactiveStockReportForm(ReportForm):
     format = forms.ChoiceField(
         widget=genwidgets.Select,
         choices=(
@@ -493,29 +434,9 @@ class ReactiveStockReportForm(ReportBase):
         label=_("Format"),
     )
 
-    def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
-        super(ReactiveStockReportForm, self).__init__(*args, **kwargs)
 
+class RegencyReportForm(ReportForm):
 
-def get_years():
-    years = [
-        (i, i)
-        for i in ObjectLogChange.objects.all()
-        .values_list("update_time__year", flat=True)
-        .distinct()
-        .order_by("update_time__year")
-    ]
-    return years
-
-
-class RegencyReportForm(ReportBase):
-    laboratory = forms.ModelMultipleChoiceField(
-        widget=genwidgets.SelectMultiple,
-        queryset=Laboratory.objects.all(),
-        required=False,
-        label=_("Laboratories"),
-    )
     years = forms.ChoiceField(
         widget=genwidgets.Select,
         choices=[],
@@ -536,34 +457,41 @@ class RegencyReportForm(ReportBase):
             ("ods", "ODS"),
         )
 
-    def clean_laboratory(self):
-        laboratory = self.cleaned_data["laboratory"]
-        organization = self.cleaned_data["organization"]
-        if laboratory:
-            return list(laboratory.values_list("pk", flat=True).distinct())
-        return list(
-            get_laboratories_from_organization(organization).values_list(
-                "pk", flat=True
-            )
-        )
 
+class PrecursorFilterForm(GTForm):
+    organization = forms.IntegerField(
+        required=True,
+        widget=forms.HiddenInput(),
+    )
 
-class ChemicalInventoryReportForm(ReportForm):
+    laboratory = forms.ModelChoiceField(
+        widget=AutocompleteSelect(
+            "labs_by_org",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "lab_by_org",
+                "data-s2filter-organization": "#id_organization",
+            },
+        ),
+        queryset=Laboratory.objects.all(),
+        required=True,
+        label=_("Laboratory"),
+    )
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
-        super(ChemicalInventoryReportForm, self).__init__(*args, **kwargs)
-        self.fields.pop("all_labs_org")
-        if org_pk:
-            self.fields["laboratory"].widget = genwidgets.SelectMultiple(
-                attrs={"class": "form-control"}
-            )
-            self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                organization=org_pk
-            )
+        super().__init__(*args, **kwargs)
 
-    def clean_laboratory(self):
-        lab = self.cleaned_data["laboratory"]
-        if lab.exists():
-            return list(lab.values_list("pk", flat=True))
-        return []
+        if not org_pk:
+            return
+
+        qs = Laboratory.objects.filter(organization=org_pk)
+
+        self.fields["organization"].initial = org_pk
+        self.fields["laboratory"].queryset = qs
+
+        if not self.data.get("laboratory"):
+            first_lab = qs.first()
+            if first_lab:
+                self.initial["laboratory"] = first_lab

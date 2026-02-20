@@ -66,18 +66,9 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
 def report_discard_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [_("Shelf"), _("Object"), _("Amount"), _("Unit"), _("Date"), _("Creator")]
-    labs = []
     doc = []
 
-    if "laboratory" in report.data:
-        labs = [report.data["laboratory"]]
-
-    if "all_labs_organization" in report.data:
-        if report.data["all_labs_organization"]:
-            org_pk = report.data["organization"]
-            labs = Laboratory.objects.filter(organization=org_pk).values_list(
-                "pk", flat=True
-            )
+    labs = report.data.get("laboratory", [])
 
     for lab in labs:
         laboratory = Laboratory.objects.get(pk=lab)
@@ -102,17 +93,7 @@ def report_discard_object_doc(report):
 def get_dataset_report_discard_objects_html(report, column_list=None):
     dataset = []
     filters = {"shelf__discard": True}
-    labs = []
-
-    if "laboratory" in report.data:
-        labs = [report.data["laboratory"]]
-
-    if "all_labs_organization" in report.data:
-        if report.data["all_labs_organization"]:
-            org_pk = report.data["organization"]
-            labs = Laboratory.objects.filter(organization=org_pk).values_list(
-                "pk", flat=True
-            )
+    labs = report.data.get("laboratory", [])
 
     if "period" in report.data:
         dates = report.data["period"].split("-")
@@ -161,6 +142,7 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
 
 
 def report_discard_object_html(report):
+
     columns_fields = [
         {"name": "in_where_laboratory__name", "title": _("Laboratory")},
         {"name": "shelf__name", "title": _("Shelf")},
@@ -170,6 +152,7 @@ def report_discard_object_html(report):
         {"name": "created_by", "title": "User"},
         {"name": "creation_date", "title": _("Date")},
     ]
+
     columns_fields = set_format_table_columns(columns_fields)
     column_list = list(map(lambda x: x["name"], columns_fields))
     report.table_content = {

@@ -109,8 +109,8 @@ class FurnitureViewTest(BaseLaboratorySetUpTest):
     def test_furniture_report_detail(self):
         data = {"pk": 1, "format": "pdf"}
         url = reverse(
-            "laboratory:reports_furniture_detail",
-            kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
+            "report:reports_furniture_detail",
+            kwargs={"org_pk": self.org.pk},
         )
         response = self.client.get(url, data=data)
         self.assertEqual(response.status_code, 200)
