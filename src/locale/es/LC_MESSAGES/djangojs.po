@@ -1120,6 +1120,12 @@ msgstr "Ingreso por donacion"
 msgid "Capacity"
 msgstr "Capacidad"
 
+msgid "Report failed"
+msgstr "Reporte fallido"
+
+msgid "Error checking report status"
+msgstr "Error al comprobar el estado del informe"
+
 msgid "Flashpoint"
 msgstr "Punto de inflamación"
 
@@ -1155,4 +1161,3 @@ msgstr "Condición de proceso"
 
 msgid "Are you sure you want to delete this Danger substance category? <br> This action will delete all data related."
 msgstr "¿Está seguro de que desea eliminar esta categoría de sustancia peligrosa? <br> Esta acción eliminará todos los datos relacionados."
-

@@ -9,9 +9,10 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _, get_language
 
-from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import OrganizationStructure
-from laboratory.utils import check_user_access_kwargs_org_lab
+from laboratory.utils import (
+    check_user_access_kwargs_org,
+)
 from report.forms import TasksForm, RegencyReportForm
 from report.models import (
     TaskReport,
@@ -132,14 +133,15 @@ def base_pdf(report, uri):
 
 @login_required
 @permission_required("laboratory.do_report")
-def create_request_by_report(request, org_pk, lab_pk):
+def create_request_by_report(request, org_pk):
     response = {"result": False}
-    data = {"org_pk": org_pk, "lab_pk": lab_pk}
+    data = {"org_pk": org_pk}
     report_name_list = register.REPORT_FORMS.keys()
     status_code = 401
     reason = None
 
-    if check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+    if check_user_access_kwargs_org(org_pk, request.user):
+
         if (
             "report_name" in request.GET
             and request.GET["report_name"] in report_name_list
@@ -190,63 +192,61 @@ def create_request_by_report(request, org_pk, lab_pk):
 
 @login_required
 @permission_required("laboratory.do_report")
-def download_report(request, org_pk, lab_pk):
-    response = {"result": False}
+def download_report(request, org_pk):
+    response = {"result": False, "end": False, "state": "PENDING", "error": ""}
     status_code = 200
     reason = None
 
-    if check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+    if not check_user_access_kwargs_org(org_pk, request.user):
+        response["end"] = True
+        response["state"] = "FAILURE"
+        return JsonResponse(response, status=401, reason=_("Unauthorized"))
 
-        if request.method == "GET":
-            form = TasksForm(request.GET)
+    if request.method != "GET":
+        response["end"] = True
+        response["state"] = "FAILURE"
+        return JsonResponse(response, status=405)
 
-            if form.is_valid():
-                task = TaskReport.objects.filter(
-                    pk=form.cleaned_data["taskreport"]
-                ).first()
-                result = TaskResult.objects.filter(
-                    task_id=form.cleaned_data["task"]
-                ).first()
+    form = TasksForm(request.GET)
+    if not form.is_valid():
+        response["end"] = True
+        response["state"] = "FAILURE"
+        return JsonResponse(response, status=401, reason=_("Invalid form"))
 
-                if result:
-                    if task.status == _("Generated") and result.status == "SUCCESS":
-                        task.status = _("Delivered")
-                        task.save()
-                        response["result"] = True
-                        if task.file_type == "html":
-                            response.update(
-                                {
-                                    "url_file": reverse(
-                                        "report:report_table",
-                                        kwargs={
-                                            "org_pk": org_pk,
-                                            "lab_pk": lab_pk,
-                                            "pk": task.pk,
-                                        },
-                                    ),
-                                    "type_report": task.file_type,
-                                }
-                            )
-                            create_notification(
-                                request.user,
-                                f"{task.data['name']} {_('On screen')}".capitalize(),
-                                reverse(
-                                    "report:report_table",
-                                    kwargs={
-                                        "lab_pk": lab_pk,
-                                        "org_pk": org_pk,
-                                        "pk": task.pk,
-                                    },
-                                ),
-                            )
-                        else:
-                            file_name = f"{task.data['name']}.{task.file_type}"
-                            create_notification(request.user, file_name, task.file.url)
-                            response.update({"url_file": task.file.url})
-            else:
-                status_code = 401
-    else:
-        status_code = 401
+    task = TaskReport.objects.filter(pk=form.cleaned_data["taskreport"]).first()
+    result = TaskResult.objects.filter(task_id=form.cleaned_data["task"]).first()
+
+    if not result or not task:
+        return JsonResponse(response, status=200)
+
+    state = result.status or "PENDING"
+    response["state"] = state
+    response["end"] = state in ("SUCCESS", "FAILURE", "REVOKED")
+
+    if state in ("FAILURE", "REVOKED"):
+        tb = getattr(result, "traceback", None)
+        response["error"] = (tb or result.result or "")[:5000]
+        return JsonResponse(response, status=200)
+
+    if task.status == _("Generated") and state == "SUCCESS":
+        task.status = _("Delivered")
+        task.save()
+        response["result"] = True
+
+        if task.file_type == "html":
+            url_file = reverse(
+                "report:report_table", kwargs={"org_pk": org_pk, "pk": task.pk}
+            )
+            response.update({"url_file": url_file, "type_report": task.file_type})
+            create_notification(
+                request.user,
+                f"{task.data['name']} {_('On screen')}".capitalize(),
+                url_file,
+            )
+        else:
+            file_name = f"{task.data['name']}.{task.file_type}"
+            create_notification(request.user, file_name, task.file.url)
+            response.update({"url_file": task.file.url, "type_report": task.file_type})
 
     if status_code != 200 or status_code != 201:
         reason = _("Report can't be processed, try again or contact administrator")
@@ -256,16 +256,17 @@ def download_report(request, org_pk, lab_pk):
 
 @login_required
 @permission_required("laboratory.do_report")
-def report_table(request, org_pk, lab_pk, pk):
-    if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
+def report_table(request, org_pk, pk):
+
+    if not check_user_access_kwargs_org(org_pk, request.user):
         raise Http404()
+
     task = get_object_or_404(
         TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
     )
     template_name = "report/general_reports.html"
     content = {
         "table": task.table_content,
-        "lab_pk": lab_pk,
         "org_pk": org_pk,
         "obj_task": task,
         "changelogreport": None,
@@ -289,27 +290,39 @@ def report_table(request, org_pk, lab_pk, pk):
 def report_status(request, org_pk):
     end = False
     description = ""
+    state = "PENDING"
+    error = ""
 
     if request.method == "GET":
         form = TasksForm(request.GET)
 
         if form.is_valid():
-            result = TaskResult.objects.filter(task_id=form.cleaned_data["task"])
+            result = TaskResult.objects.filter(
+                task_id=form.cleaned_data["task"]
+            ).first()
 
-            if result.exists():
-                end = result.first().status == "SUCCESS"
+            if result:
+                state = result.status or "PENDING"
+                end = state in ("SUCCESS", "FAILURE", "REVOKED")
 
-            status = DocumentReportStatus.objects.filter(
+                if state == "FAILURE":
+                    tb = getattr(result, "traceback", None)
+                    error = (tb or result.result or "")[:5000]
+
+            status_qs = DocumentReportStatus.objects.filter(
                 report=form.cleaned_data["taskreport"]
             ).order_by("report_time")
 
-            if status.exists():
-                for text in status:
+            if status_qs.exists():
+                for text in status_qs:
                     description += "<li>%s %s </li>" % (
                         text.report_time.strftime("%m/%d/%Y, %H:%M:%S"),
                         text.description,
                     )
-    return JsonResponse({"end": end, "text": description})
+
+    return JsonResponse(
+        {"end": end, "state": state, "text": description, "error": error}
+    )
 
 
 @login_required
@@ -498,7 +511,7 @@ def create_request_by_report_regency(request, org_pk):
     status_code = 401
     reason = None
 
-    if user_is_allowed_on_organization(request.user, org_pk):
+    if check_user_access_kwargs_org(org_pk, request.user):
         if (
             "report_name" in request.GET
             and request.GET["report_name"] in report_name_list
@@ -554,7 +567,7 @@ def download_report_regency(request, org_pk):
     status_code = 200
     reason = None
 
-    if user_is_allowed_on_organization(request.user, org_pk):
+    if check_user_access_kwargs_org(org_pk, request.user):
 
         if request.method == "GET":
             form = TasksForm(request.GET)
