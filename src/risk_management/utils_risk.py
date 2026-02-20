@@ -104,9 +104,10 @@ def get_inventory(filters=None):
         dict_objs.append(data)
 
     dataframe = pd.DataFrame(dict_objs)
-    dataframe = dataframe.groupby(
-        ["nombre", "cas", "condicion_proceso", "h_codes"], as_index=False
-    ).agg(cantidad_t=("cantidad_t", "sum"))
+    if not dataframe.empty:
+        dataframe = dataframe.groupby(
+            ["nombre", "cas", "condicion_proceso", "h_codes"], as_index=False
+        ).agg(cantidad_t=("cantidad_t", "sum"))
     return dataframe
 
 
@@ -641,29 +642,37 @@ def create_estableshment_logs_data(element, day, labs):
         "object__isnull": False,
         "measurement_unit__isnull": False,
     }
-    if labs.exists():
+    if labs:
         filters.update({"laboratory__pk__in": labs})
         inv = get_inventory(filters)
         inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
         c3 = cargar_cuadro3()
         c4 = cargar_umbral_por_H()
         mapH_tipo = cargar_sga_referencia()
-        res = json.dumps(
-            clasificar_establecimiento(inv, c3, c4, mapH_tipo),
-            indent=2,
-        )
         ct = ContentType.objects.filter(
             app_label=element._meta.app_label,
             model=element._meta.model_name,
         ).first()
-        sumatories = res["sumatorias_por_categoria"]
-        EstablishmentLogs.objects.create(
-            content_type=ct,
-            object_id=element.pk,
-            data=res,
-            environmental=sumatories["Ambiental"],
-            health=sumatories["Salud"],
-            physical=sumatories["Físico"],
-            establishment_status=res["clasificacion"].capitalize(),
-            date=day,
-        )
+        if not inv.empty:
+            res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+            sumatories = res.get("sumatorias_por_categoria", {})
+            EstablishmentLogs.objects.create(
+                content_type=ct,
+                object_id=element.pk,
+                table_content=json.dumps(res, indent=2),
+                environmental=sumatories["Ambiental"],
+                health=sumatories["Salud"],
+                physical=sumatories["Físico"],
+                establishment_status=res["clasificacion"].capitalize(),
+                date=day,
+            )
+        else:
+            EstablishmentLogs.objects.create(
+                content_type=ct,
+                object_id=element.pk,
+                environmental=0.0,
+                health=0.0,
+                physical=0.0,
+                establishment_status="riesgo menor",
+                date=day,
+            )
