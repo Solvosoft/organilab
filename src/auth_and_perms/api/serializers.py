@@ -8,7 +8,7 @@ from django_filters import FilterSet
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
-
+from django.contrib.contenttypes.models import ContentType
 from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
 from auth_and_perms.organization_utils import organization_can_change_laboratory
 from auth_and_perms.utils import get_roles_in_html
@@ -17,7 +17,7 @@ from laboratory.models import (
     Laboratory,
     Shelf,
     ShelfObject,
-    Object,
+    Object, OrganizationStructureRelations,
 )
 from django.utils.translation import gettext_lazy as _
 import logging
@@ -371,9 +371,17 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
                     }
                 )
 
-            if shelf_object.in_where_laboratory.organization != organization:
+            is_related = OrganizationStructureRelations.objects.filter(
+                organization=organization,
+                content_type=ContentType.objects.get_for_model(Laboratory),
+                object_id=shelf_object.in_where_laboratory.pk
+            ).exists()
+
+            is_owner = shelf_object.in_where_laboratory.organization == organization
+
+            if not is_related and not is_owner:
                 logger.debug(
-                    f"ValidateUserAccessOrgLabSerializer --> shelfobject.in_where_laboratory.organization!= organization"
+                    f"ValidateUserAccessOrgLabSerializer --> laboratory not related to organization"
                 )
                 raise serializers.ValidationError(
                     {

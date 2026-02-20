@@ -1344,6 +1344,31 @@ class ObjectLogChange(models.Model):
         OrganizationStructure, on_delete=models.SET_NULL, null=True
     )
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+
+        if is_new and self.organization_where_action_taken:
+            root_org = self.organization_where_action_taken.root
+
+            if root_org and root_org.pk != self.organization_where_action_taken.pk:
+                ObjectLogChange.objects.create(
+                    object=self.object,
+                    laboratory=self.laboratory,
+                    user=self.user,
+                    old_value=self.old_value,
+                    new_value=self.new_value,
+                    diff_value=self.diff_value,
+                    precursor=self.precursor,
+                    measurement_unit=self.measurement_unit,
+                    subject=self.subject,
+                    provider=self.provider,
+                    bill=self.bill,
+                    type_action=self.type_action,
+                    note=self.note,
+                    organization_where_action_taken=root_org,
+                )
+
     def __str__(self):
         return self.object.name
 
