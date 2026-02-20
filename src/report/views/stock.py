@@ -6,17 +6,20 @@ from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils_base_unit import get_conversion_units
 from report.utils import (
     get_report_name,
-    load_dataset_by_column, set_format_table_columns,
+    load_dataset_by_column,
+    set_format_table_columns,
 )
 
 
-def get_stock_dataset(report, column_list=None):
+def get_stock_dataset(lab_pk, column_list=None):
     dataset = []
     filters = {"object__type": Object.REACTIVE}
     reactive_filters = dict()
-    if "lab_pk" in report.data:
-        filters["in_where_laboratory__pk"] = report.data["lab_pk"]
-        reactive_filters["in_where_laboratory__pk"] = report.data["lab_pk"]
+
+    if lab_pk:
+        filters["in_where_laboratory__pk"] = lab_pk
+        reactive_filters["in_where_laboratory__pk"] = lab_pk
+
     objs = (
         ShelfObject.objects.filter(**filters)
         .distinct("pk")
@@ -33,12 +36,13 @@ def get_stock_dataset(report, column_list=None):
         .distinct("pk")
         .values_list("container__pk", flat=True)
     )
-    containers = ShelfObject.objects.filter(container__pk__in=containers).values_list("container__pk", flat=True)
+    containers = ShelfObject.objects.filter(container__pk__in=containers).values_list(
+        "container__pk", flat=True
+    )
     reactives = []
     for container in containers:
         objs = (
-            ShelfObject.objects.filter(**filters,
-                                       container__pk=container)
+            ShelfObject.objects.filter(**filters, container__pk=container)
             .distinct("pk")
             .values_list("object__pk", flat=True)
         )
@@ -54,7 +58,9 @@ def get_stock_dataset(report, column_list=None):
 
                 amount = sum(
                     [
-                        get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
+                        get_conversion_units(
+                            shelfobj.measurement_unit, shelfobj.quantity
+                        )
                         for shelfobj in shelfobjects
                     ]
                 )
@@ -98,11 +104,15 @@ def get_stock_dataset(report, column_list=None):
                     "max_measurement_unit": "",
                     "expiration_date": expiration_date,
                 }
-            obj_item = list(data_column.values())
 
             if column_list:
                 obj_item = load_dataset_by_column(column_list, data_column)
-            if len(obj_item) > 0:
+            else:
+                obj_item = list(data_column.values())
+
+            obj_item = [("" if v is None else v) for v in obj_item]
+
+            if obj_item:
                 dataset.append(obj_item)
 
     for obj in object_no_containers:
@@ -153,11 +163,15 @@ def get_stock_dataset(report, column_list=None):
             "max_measurement_unit": "",
             "expiration_date": expiration_date,
         }
-        obj_item = list(data_column.values())
 
         if column_list:
             obj_item = load_dataset_by_column(column_list, data_column)
-        if len(obj_item) > 0:
+        else:
+            obj_item = list(data_column.values())
+
+        obj_item = [("" if v is None else v) for v in obj_item]
+
+        if obj_item:
             dataset.append(obj_item)
 
     return dataset
@@ -165,7 +179,7 @@ def get_stock_dataset(report, column_list=None):
 
 def report_stock(report):
     builder = ExcelGraphBuilder()
-    content = [
+    columns = [
         [
             _("Name"),
             _("CAS Number"),
@@ -182,25 +196,37 @@ def report_stock(report):
             _("Expiration date of the reagent"),
         ]
     ]
-    laboratory = Laboratory.objects.get(pk=report.data["lab_pk"])
-    headers = [
+    content = [
+        [""],
         [
-            "",
             "Invetario de sustancias químicas",
             "Fecha: " + now().strftime("%d/%m/%Y"),
         ],
-        ["Datos del usuario"],
-        [
-            "Nombre del coordinador",
-            laboratory.coordinator,
-            "Laboratorio o centro de trabajo",
-            laboratory.name,
-            "Unidad Académica o Administrativa",
-            laboratory.unit,
-        ],
-        ["Teléfono", laboratory.phone_number, "Email", laboratory.email],
     ]
-    content = headers + content + get_stock_dataset(report, None)
+    laboratories = report.data.get("laboratory", [])
+
+    for lab in laboratories:
+        laboratory = Laboratory.objects.get(pk=lab)
+        headers = [
+            [""],
+            [""],
+            [
+                "Laboratorio o centro de trabajo",
+                laboratory.name if laboratory.name else "N/A",
+            ],
+            [
+                "Nombre del coordinador",
+                laboratory.coordinator if laboratory.coordinator else "N/A",
+            ],
+            [
+                "Unidad Académica o Administrativa",
+                laboratory.unit if laboratory.unit else "N/A",
+            ],
+            ["Teléfono", laboratory.phone_number if laboratory.phone_number else "N/A"],
+            ["Email", laboratory.email if laboratory.email else "N/A"],
+        ]
+        content += headers + columns + get_stock_dataset(lab, None)
+
     record_total = len(content) - 1
     report_name = get_report_name(report)
     content.insert(0, [report_name])
@@ -219,26 +245,30 @@ def get_stock_cartel_dataset(report, column_list=None):
     dataset = []
     filters = {
         "object__type": Object.REACTIVE,
-        "in_where_laboratory__organization__pk": report.data["organization"]
-               }
-    reactive_filters = dict()
-    if "laboratory" in report.data:
-        if len(report.data["laboratory"]) > 0:
-            filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
-            reactive_filters["in_where_laboratory__pk__in"] = report.data["laboratory"]
-            del filters["in_where_laboratory__organization__pk"]
+    }
 
-    objs = (
-        ShelfObject.objects.filter(**filters)
-        .distinct("pk")
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
+    if general:
+        filters["in_where_laboratory__in"] = laboratories
+    else:
+        filters["in_where_laboratory__pk"] = laboratories[0]
+
+    objs = ShelfObject.objects.filter(**filters).distinct("pk")
+    units = Catalog.objects.filter(
+        pk__in=objs.values_list("measurement_unit", flat=True)
     )
-    units = Catalog.objects.filter(pk__in=objs.values_list("measurement_unit", flat=True))
-    base_units = BaseUnitValues.objects.filter(measurement_unit__in=units).values_list("measurement_unit_base", flat=True)
+    base_units = BaseUnitValues.objects.filter(measurement_unit__in=units).values_list(
+        "measurement_unit_base", flat=True
+    )
     physical_status_list = list(dict(ShelfObject.PHYSICAL_STATUS).keys())
     physical_status_list.insert(0, "")
 
     for unit in set(base_units):
-        filters["measurement_unit__pk__in"] = BaseUnitValues.objects.filter(measurement_unit_base__pk=unit).values_list("measurement_unit", flat=True)
+        filters["measurement_unit__pk__in"] = BaseUnitValues.objects.filter(
+            measurement_unit_base__pk=unit
+        ).values_list("measurement_unit", flat=True)
         filters["object__isnull"] = False
         shelfobjs = (
             ShelfObject.objects.filter(**filters)
@@ -250,15 +280,27 @@ def get_stock_cartel_dataset(report, column_list=None):
         for obj in set(shelfobjs):
             for physical_status in physical_status_list:
                 status = ""
-                physical = "physical_status" if physical_status!="" else "physical_status__isnull"
-                filters[physical] = physical_status if physical=="physical_status" else True
+                physical = (
+                    "physical_status"
+                    if physical_status != ""
+                    else "physical_status__isnull"
+                )
+                filters[physical] = (
+                    physical_status if physical == "physical_status" else True
+                )
 
-                amount = sum([
-                    get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
-                    for shelfobj in ShelfObject.objects.filter(object__pk=obj,**filters)
-                    ])
+                amount = sum(
+                    [
+                        get_conversion_units(
+                            shelfobj.measurement_unit, shelfobj.quantity
+                        )
+                        for shelfobj in ShelfObject.objects.filter(
+                            object__pk=obj, **filters
+                        )
+                    ]
+                )
 
-                shelfobj = ShelfObject.objects.filter(object__pk=obj,**filters).first()
+                shelfobj = ShelfObject.objects.filter(object__pk=obj, **filters).first()
                 del filters[physical]
 
                 if shelfobj:
@@ -266,24 +308,38 @@ def get_stock_cartel_dataset(report, column_list=None):
                     if shelfobj.physical_status:
                         status = shelfobj.get_physical_status_display()
 
+                    lab_name = (
+                        shelfobj.in_where_laboratory.name
+                        if shelfobj.in_where_laboratory
+                        else ""
+                    )
+
                     data_column = {
-                            "substance_name": shelfobj.object.name,
-                            "cas_id": cas_id,
-                            "quantity": amount,
-                            "measurement_unit": Catalog.objects.get(pk=unit).description,
-                            "physical_status": status,
-                            "storage_class": shelfobj.object.get_storage_class,
-                        }
-                    obj_item = list(data_column.values())
+                        "in_where_laboratory__name": lab_name,
+                        "substance_name": shelfobj.object.name,
+                        "cas_id": cas_id,
+                        "quantity": amount,
+                        "measurement_unit": Catalog.objects.get(pk=unit).description,
+                        "physical_status": status,
+                        "storage_class": shelfobj.object.get_storage_class,
+                    }
 
                     if column_list:
                         obj_item = load_dataset_by_column(column_list, data_column)
-                    if len(obj_item) > 0:
+                    else:
+                        obj_item = list(data_column.values())
+
+                    obj_item = [("" if v is None else v) for v in obj_item]
+
+                    if obj_item:
                         dataset.append(obj_item)
+
     return dataset
+
 
 def report_reactive_stock_html(report):
     columns_fields = [
+        {"name": "in_where_laboratory__name", "title": _("Laboratory")},
         {"name": "substance_name", "title": _("Substance")},
         {"name": "cas_id", "title": _("CAS Number")},
         {"name": "quantity", "title": _("Quantity")},
@@ -305,6 +361,7 @@ def report_stock_cartel(report):
     builder = ExcelGraphBuilder()
     content = [
         [
+            _("Laboratory"),
             _("Substance name"),
             _("CAS Number"),
             _("Quantity"),
