@@ -300,8 +300,8 @@ CELERYBEAT_SCHEDULE = {
         "schedule": crontab(minute=0, hour=7),
     },
     "create_establishment_logs": {
-        "task": "risk_management.tasks.create_establishment_logs_data",
-        "schedule": crontab(minute=0, hour=7),
+        "task": "risk_management.tasks.create_establishment_reports",
+        "schedule": crontab(minute=45, hour=16),
     },
 }
 
