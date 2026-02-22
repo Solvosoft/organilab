@@ -61,7 +61,6 @@ def save_increase_decrease_shelf_object(
     new = old - converted_amount
     action_taken = _("Object was decreased")
 
-
     if is_increase_process:
 
         new = old + converted_amount
@@ -771,6 +770,7 @@ def save_shelfobject_characteristics(characteristic, user):
 def delete_shelfobjects(shelfobject, user, laboratory):
     organilab_logentry(user, shelfobject, DELETION, relobj=laboratory)
     shelfobject.delete()
+
 
 def get_shelf_object_expiration_date(expired_date):
     date = now().date()

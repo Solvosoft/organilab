@@ -93,6 +93,7 @@ class HCategoryFilterSet(FilterSet):
             "measurement_unit": ["exact"],
         }
 
+
 class DangerSubstanceFilterSet(FilterSet):
     class Meta:
         model = DangerSubstance
@@ -107,7 +108,9 @@ class DangerSubstanceFilterSet(FilterSet):
             "especial_condition": ["icontains"],
         }
 
+
 class DangerSubstanceCategoryFilterSet(FilterSet):
+
     class Meta:
         model = DangerSubstanceCategory
         fields = {

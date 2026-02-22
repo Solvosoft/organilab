@@ -490,7 +490,7 @@ class DangerCategoryActionsSerializer(serializers.ModelSerializer):
         required=True,
         queryset=Catalog.objects.
         using(settings.READONLY_DATABASE).
-        filter(key="units", description__in=["Litros","Kilogramos","Libra"]),
+        filter(key="units", description__in=["Litros", "Kilogramos", "Libra"]),
     )
 
     class Meta:
@@ -549,6 +549,7 @@ class DangerCategoryDataTableSerializer(serializers.Serializer):
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
 class DangerSubstanceSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     h_codes_match = GTS2SerializerBase(many=True)
@@ -566,13 +567,17 @@ class DangerSubstanceSerializer(serializers.ModelSerializer):
         model = DangerSubstance
         fields = "__all__"
 
+
 class DangerSubstanceDataTableSerializer(serializers.Serializer):
+
     data = serializers.ListField(child=DangerSubstanceSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
 class DangerSubstanceValidateSerializer(serializers.ModelSerializer):
+
     cas_code = serializers.CharField(required=False, allow_blank=True)
     name = serializers.CharField(required=False, allow_blank=True)
     threshold = serializers.FloatField(required=False)
@@ -595,7 +600,9 @@ class DangerSubstanceValidateSerializer(serializers.ModelSerializer):
             "especial_condition",
         ]
 
+
 class DangerSubstanceCategorySerializer(serializers.ModelSerializer):
+
     actions = serializers.SerializerMethodField()
     h_code = GTS2SerializerBase(many=False)
     process_condition = GTS2SerializerBase(many=False)
@@ -613,13 +620,17 @@ class DangerSubstanceCategorySerializer(serializers.ModelSerializer):
         model = DangerSubstanceCategory
         fields = "__all__"
 
+
 class DangerSubstanceCategoryDataTableSerializer(serializers.Serializer):
+
     data = serializers.ListField(child=DangerSubstanceCategorySerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
 
+
 class DangerSubstanceCategoryValidateSerializer(serializers.ModelSerializer):
+
     h_code = serializers.PrimaryKeyRelatedField(queryset=DangerIndication.objects.all(), required=True)
     category = serializers.CharField(required=True)
     section = serializers.CharField(required=False, allow_blank=True)

@@ -255,6 +255,7 @@ class IncidentViewSet(AuthAllPermBaseObjectManagement):
             organization=self.get_organization(),
         )
 
+
 class EstablishmentLogsViewSet(AuthAllPermBaseObjectManagement):
     serializer_class = None
     perms = {

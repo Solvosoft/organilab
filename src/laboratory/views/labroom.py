@@ -235,7 +235,7 @@ class LaboratoryRoomsList(ListView):
             )
         )
         context["edit_form"] = EditReactiveForm(prefix="edit",
-                                                         )
+                                                )
         context["edit_material_form"] = EditMaterialForm(prefix="edit_material",
                                                          )
         context["options"] = ["Reservation", "Add", "Transfer", "Substract"]

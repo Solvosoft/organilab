@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
     def init(self):
         self.parent_org = OrganizationStructure.objects.get(pk=178)
-        self.child_org = OrganizationStructure.objects.filter(pk__in=[26,45,108])
+        self.child_org = OrganizationStructure.objects.filter(pk__in=[26, 45, 108])
 
     def merge_laboratories(self):
         lab_contenttype = ContentType.objects.filter(app_label="laboratory",
@@ -64,23 +64,22 @@ class Command(BaseCommand):
          update(organization_where_action_taken=self.parent_org))
 
         (Inform.objects.filter(organization__in=self.child_org,
-                              content_type=org_contenttype).
+                               content_type=org_contenttype).
          update(organization=self.parent_org, object_id=self.parent_org.pk))
 
         (Inform.objects.filter(organization__in=self.child_org,
-                              content_type=lab_contenttype).
+                               content_type=lab_contenttype).
          update(organization=self.parent_org))
 
         (LabOrgLogEntry.objects.filter(content_type=org_contenttype).
          update(object_id=self.parent_org.pk))
 
-
         (RegisterUserQR.objects.filter(organization_creator__in=self.child_org,
-                                      content_type=lab_contenttype).
+                                       content_type=lab_contenttype).
          update(organization_creator=self.parent_org))
 
         (RegisterUserQR.objects.filter(organization_register__in=self.child_org,
-                                      content_type=lab_contenttype).
+                                       content_type=lab_contenttype).
          update(organization_register=self.parent_org))
 
         (InformScheduler.objects.filter(organization__in=self.child_org).
@@ -90,7 +89,7 @@ class Command(BaseCommand):
          update(organization=self.parent_org))
 
         (OrganizationStructureRelations.objects.filter(organization__in=self.child_org,
-                                                      content_type=lab_contenttype).
+                                                       content_type=lab_contenttype).
          update(organization=self.parent_org))
 
     def merge_risks_management(self):
@@ -117,8 +116,8 @@ class Command(BaseCommand):
                                                  model="organizationstructure").first()
         lab_contenttype = ContentType.objects.filter(app_label="laboratory",
                                                      model="laboratory").first()
-        pp=ProfilePermission.objects.filter(object_id__in=self.child_org.values_list("pk", flat=True),
-                                         content_type=contenttype)
+        pp = ProfilePermission.objects.filter(object_id__in=self.child_org.values_list("pk", flat=True),
+                                              content_type=contenttype)
         for p in pp:
             p.object_id = self.parent_org.pk
             self.parent_org.rol.add(*p.rol.all())
@@ -132,8 +131,8 @@ class Command(BaseCommand):
             profiles_lab = Profile.objects.filter(user__in=users_lab).distinct()
 
             for p in ProfilePermission.objects.filter(object_id__in=child.laboratory_set.all().values_list("pk", flat=True),
-                                         content_type=lab_contenttype,
-                                                        profile__in=profiles_lab):
+                                                      content_type=lab_contenttype,
+                                                      profile__in=profiles_lab):
                 self.parent_org.rol.add(*p.rol.all())
                 self.parent_org.save()
 
@@ -151,10 +150,10 @@ class Command(BaseCommand):
 
     def merge_academic(self):
         org_contenttype = (ContentType.objects.filter(app_label="laboratory",
-                                                     model="organizationstructure").
+                                                      model="organizationstructure").
                            first())
         (MyProcedure.objects.filter(organization__in=self.child_org,
-                                   content_type=org_contenttype).
+                                    content_type=org_contenttype).
          update(organization=self.parent_org, object_id=self.parent_org.pk))
 
     def merge_sga(self):
@@ -175,7 +174,6 @@ class Command(BaseCommand):
 
     def delete_organizations(self):
         self.child_org.delete()
-
 
     def handle(self, *args, **options):
         self.init()
