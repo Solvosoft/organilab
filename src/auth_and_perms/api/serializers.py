@@ -518,6 +518,7 @@ class ValidateLabOrgObjectSerializer(serializers.Serializer):
         allow_empty=False,
     )
 
+
 class ValidateProfileOrganizationSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(
         queryset=Profile.objects.using(settings.READONLY_DATABASE),
@@ -532,4 +533,3 @@ class ValidateProfileOrganizationSerializer(serializers.Serializer):
     app_label = serializers.CharField()
     model = serializers.CharField()
     object_id = serializers.IntegerField()
-

@@ -32,6 +32,7 @@ class DangerSubstanceViewSet(AuthAllPermBaseObjectManagement):
     ordering_fields = ["cas_code", "name"]
     ordering = ("name",)
 
+
 class DangerSubstanceCategoryViewSet(AuthAllPermBaseObjectManagement):
     serializer_class = {
         "list": DangerSubstanceCategoryDataTableSerializer,

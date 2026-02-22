@@ -11,6 +11,7 @@ def get_incidents(building):
     total = IncidentReport.objects.filter(buildings=building).count()
     return total
 
+
 @register.simple_tag()
 def get_incidents_by_zone(zone_pk):
     return zone_pk

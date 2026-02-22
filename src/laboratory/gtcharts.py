@@ -85,6 +85,7 @@ class BaseChart:
             self.filters["object__pk__in"] = serializer.validated_data["object"]
             self.filters["laboratory__pk"] = serializer.validated_data["laboratory"]
 
+
 class LaboratoryPermission(permissions.BasePermission):
 
     def has_permission(self, request, view):
@@ -98,7 +99,7 @@ class ObjectLimitsClassChart(BaseChart, LineChart):
     obj = ""
 
     def get_title(self):
-        return {"display": True, "text": _("Monthly limit history %s")%self.obj}
+        return {"display": True, "text": _("Monthly limit history %s") % self.obj}
 
     def list(self, request):
         raise Http404("Not found")

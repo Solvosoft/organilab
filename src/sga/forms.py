@@ -425,9 +425,10 @@ class HCategoryForm(GTForm, forms.ModelForm):
                                                            description__in=["Litros",
                                                                             "Kilogramos",
                                                                             "Libra"]))
+
     class Meta:
         model = HCodeCategory
-        fields = ["name", "threshold","measurement_unit", "danger_category", "h_code"]
+        fields = ["name", "threshold", "measurement_unit", "danger_category", "h_code"]
         widgets = {
             "name": genwidgets.TextInput,
             "threshold": genwidgets.TextInput,
@@ -441,7 +442,7 @@ class DangerSubstanceForm(forms.ModelForm, GTForm):
     class Meta:
         model = DangerSubstance
         fields = ["cas_code", "name", "notes", "type_match", "h_codes_match",
-                  "threshold","patron_name", "especial_condition"]
+                  "threshold", "patron_name", "especial_condition"]
         widgets = {
             "cas_code": genwidgets.TextInput,
             "name": genwidgets.TextInput,
@@ -453,11 +454,12 @@ class DangerSubstanceForm(forms.ModelForm, GTForm):
             "especial_condition": genwidgets.TextInput,
         }
 
+
 class DangerSubstanceCategoryForm(forms.ModelForm, GTForm):
     class Meta:
         model = DangerSubstanceCategory
-        fields = ["h_code","category","section","process_condition",
-                  "note","threshold"]
+        fields = ["h_code", "category", "section", "process_condition",
+                  "note", "threshold"]
         widgets = {
             "h_code": AutocompleteSelect("dangersearch", attrs={}),
             "category": genwidgets.Select,

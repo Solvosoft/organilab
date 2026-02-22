@@ -18,6 +18,7 @@ class DangerGModelLookup(BaseSelect2View):
     model = DangerIndication
     fields = ["code", "description"]
 
+
 @register_lookups(prefix="catalogsga", basename="catalogsga")
 class CatalogUnitLookup(BaseSelect2View):
     model = Catalog
@@ -32,6 +33,6 @@ class CatalogUnitLookup(BaseSelect2View):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(key="units",
-                                                 description__in=["Litros","Kilogramos",
+                                                 description__in=["Litros", "Kilogramos",
                                                                   "Libra"])
         return queryset
