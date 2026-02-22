@@ -34,6 +34,11 @@ COMPAT_LABELS = {
     '-': '-',
 }
 
+COMPAT_LABEL_COLORS = {
+    COMPAT_LABELS[code]: ODS_STYLES[COMPAT_TO_STYLE[code]]
+    for code in COMPAT_TO_STYLE
+}
+
 # H-code -> hazard class mapping (based on SGA Annex 3, Rev.6)
 H_CODE_TO_CLASS = {
     # Physical Hazards (Part 2)

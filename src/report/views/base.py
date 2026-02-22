@@ -107,7 +107,19 @@ def base_pdf(report, uri):
         datalist = get_pdf_regency_table_content(report)
         total = RegencyReportBuilder.objects.filter(report__task_report=report).count()
     else:
-        datalist = get_pdf_table_content(report.table_content)
+        cell_style_fn = None
+        if report.type_report == "compatibility_report":
+            from risk_management.compatibility_utils import COMPAT_LABEL_COLORS
+
+            def compat_style_fn(col_idx, value):
+                if col_idx == 5:
+                    color = COMPAT_LABEL_COLORS.get(str(value))
+                    if color:
+                        text_color = '#FFFFFF' if color in ('#FF0000', '#D9D9D9') else '#000000'
+                        return ' style="background-color:%s;color:%s;font-weight:bold;"' % (color, text_color)
+                return ''
+            cell_style_fn = compat_style_fn
+        datalist = get_pdf_table_content(report.table_content, cell_style_fn=cell_style_fn)
         total = len(report.table_content["dataset"])
         if total > 0:
             columns = len(report.table_content["dataset"][0])
