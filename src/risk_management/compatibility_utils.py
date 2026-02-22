@@ -270,6 +270,36 @@ def collect_h_codes(lab_substances):
     return sorted(all_codes)
 
 
+def build_hcode_substance_map(zone):
+    """Build a mapping from H-code to substance/lab/shelf details.
+
+    Returns: {h_code: [{"substance": str, "lab": str, "shelf": str}, ...]}
+    """
+    hcode_map = {}
+    for lab in zone.laboratories.all():
+        shelf_objects = ShelfObject.objects.filter(
+            in_where_laboratory=lab,
+            object__type=Object.REACTIVE
+        ).select_related(
+            'object', 'shelf'
+        ).prefetch_related(
+            'object__sustancecharacteristics__h_code'
+        )
+        for so in shelf_objects:
+            obj = so.object
+            if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+                h_codes = list(
+                    obj.sustancecharacteristics.h_code.values_list('code', flat=True)
+                )
+                shelf_name = so.shelf.name if so.shelf else ''
+                entry = {"substance": obj.name, "lab": lab.name, "shelf": shelf_name}
+                for code in h_codes:
+                    if code not in hcode_map:
+                        hcode_map[code] = []
+                    hcode_map[code].append(entry)
+    return hcode_map
+
+
 def build_compatibility_matrix(h_codes):
     """Build NxN compatibility matrix for the given H-codes."""
     matrix = {}
