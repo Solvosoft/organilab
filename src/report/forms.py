@@ -453,6 +453,55 @@ class RegencyReportForm(ReportForm):
         self.fields["years"].choices = get_years()
 
 
+class CompatibilityReportForm(ReportBase):
+    format = forms.ChoiceField(
+        widget=genwidgets.Select,
+        choices=(
+            ("html", _("On screen")),
+            ("pdf", _("PDF")),
+            ("ods", "ODS"),
+        ),
+        required=False,
+        label=_("Format"),
+    )
+    risk_zone = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=RiskZone.objects.all(),
+        label=_("Risk Zones"),
+        required=False,
+    )
+    building = forms.ModelMultipleChoiceField(
+        widget=genwidgets.SelectMultiple,
+        queryset=Buildings.objects.all(),
+        label=_("Buildings"),
+        required=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(CompatibilityReportForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields["risk_zone"].queryset = RiskZone.objects.filter(
+                organization=org_pk
+            )
+            self.fields["building"].queryset = Buildings.objects.filter(
+                organization=org_pk
+            )
+
+    def clean_building(self):
+        building = self.cleaned_data["building"]
+        if building.exists():
+            return list(building.values_list("pk", flat=True))
+        return []
+
+    def clean_risk_zone(self):
+        risk_zone = self.cleaned_data["risk_zone"]
+        if risk_zone.exists():
+            return list(risk_zone.values_list("pk", flat=True))
+        return []
+
+
 class PrecursorFilterForm(GTForm):
     organization = forms.IntegerField(
         required=True,
