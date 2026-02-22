@@ -34,7 +34,7 @@ def get_conversion_units(unit, amount):
 def get_conversion_from_two_units(shelfobject_unit, shelf_unit, amount):
     query = BaseUnitValues.objects.filter(measurement_unit=shelfobject_unit)
     query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
-    if shelf_unit==None:
+    if shelf_unit is None:
         return amount
     if query.exists() and query2.exists():
         unit1 = query.first()

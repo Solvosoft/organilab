@@ -18,6 +18,7 @@ def user_is_allowed_on_organization(user, organization):
             % {"user": user, "organization": organization}
         )
 
+
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
     if laboratory.organization == organization:
         return True

@@ -386,7 +386,7 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
 
             descendants = serializer.validated_data['organization'].descendants(include_self=False)
             org_vinculate = UserOrganization.objects.filter(user=serializer.validated_data['profile'].user,
-                                                             organization=serializer.validated_data['organization']).first().type_in_organization
+                                                            organization=serializer.validated_data['organization']).first().type_in_organization
 
             for org in descendants:
                 obj, created = ProfilePermission.objects.get_or_create(
@@ -400,7 +400,6 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
                     for rol in user_pp.rol.filter(organizationstructure=organization):
                         org.rol.add(rol)
                         obj.rol.add(rol)
-
 
                 UserOrganization.objects.get_or_create(
                     organization=serializer.validated_data['organization'],

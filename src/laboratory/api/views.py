@@ -22,8 +22,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.translation import gettext_lazy as _
 
-logger = logging.getLogger("organilab")
-
 from api.utils import AllPermissionOrganizationByAction
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
@@ -96,6 +94,8 @@ from laboratory.utils import (
 )
 from reservations_management.models import ReservedProducts
 from rest_framework.exceptions import PermissionDenied
+
+logger = logging.getLogger("organilab")
 
 
 class ApiReservedProductsCRUD(APIView):

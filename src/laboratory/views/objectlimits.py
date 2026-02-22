@@ -8,13 +8,16 @@ from laboratory.forms import ReactiveStockForm
 from laboratory.models import Object
 from laboratory.utils import check_user_access_kwargs_org_lab
 
+
 @method_decorator(permission_required("laboratory.view_object"), name="dispatch")
 class ReactiveStockDashboard(TemplateView):
     template_name = "laboratory/objectlimit/dashboard.html"
+
     def get(self, request, *args, **kwargs):
         if not check_user_access_kwargs_org_lab(self.kwargs.get("org_pk", None), self.kwargs.get("lab_pk", None), request.user):
             raise Http404()
         return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(ReactiveStockDashboard, self).get_context_data()
         context["org_pk"] = self.kwargs["org_pk"]
@@ -28,7 +31,7 @@ class ReactiveStockDashboard(TemplateView):
             else:
                 x += f"?{key}={data}"
             i += 1
-        if i>0:
+        if i > 0:
             x += "&laboratory=" + str(self.kwargs["lab_pk"])
         else:
             x += "?laboratory=" + str(self.kwargs["lab_pk"])

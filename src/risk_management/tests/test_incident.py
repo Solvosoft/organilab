@@ -14,7 +14,7 @@ class IncidentReportTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.get(pk=1)
-        self.url_attr = {"org_pk": 1, "risk":5}
+        self.url_attr = {"org_pk": 1, "risk": 5}
         self.client.force_login(self.user)
 
     def test_get_incident(self):
@@ -97,7 +97,6 @@ class IncidentReportTest(TestCase):
         incidents = IncidentReport.objects.count()
         self.assertEqual(response.status_code, 204)
         self.assertTrue(pre_incident > incidents)
-
 
     def test_report_incident(self):
         self.url_attr["pk"] = 4

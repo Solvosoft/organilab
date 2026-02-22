@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand
 from laboratory.models import ShelfObject, ObjectLogChange
 
 
-
 class Command(BaseCommand):
 
     help = "Add Shelf Object Id in ObjectLogChange"
@@ -27,7 +26,6 @@ class Command(BaseCommand):
 
         container.save()
         ShelfObject.objects.filter(pk__in=containers_delete).delete()
-
 
     def handle(self, *args, **options):
         self.update_shelf_object()
