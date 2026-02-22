@@ -50,6 +50,7 @@ class Command(BaseCommand):
               427
             ]
         }
+
     def create_rol(self):
         rol = Rol.objects.create(name=self.data["name"], color=self.data["color"])
         for perm in self.data["permissions"]:

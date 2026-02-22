@@ -149,7 +149,6 @@ class DangerIndicationAPITests(TestCase):
         self.assertFalse('recordsTotal' in result)
         self.assertEqual(result['detail'], expected)
 
-
     def test_add_danger_indication(self):
         data = {
             "code": "H999",
