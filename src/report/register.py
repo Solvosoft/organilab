@@ -105,6 +105,13 @@ REPORT_FORMS = {
         "xlsx": "report.views.regency.report_regency_doc",
         "ods": "report.views.regency.report_regency_doc",
     },
+    "compatibility_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.CompatibilityReportForm",
+        "html": "report.views.riskzones.report_compatibility_html",
+        "pdf": "report.views.base.base_pdf",
+        "ods": "report.views.riskzones.report_compatibility_ods",
+    },
     "chemicalinventory": {
         "task": "report.tasks.task_report",
         "form": "report.forms.ReportForm",

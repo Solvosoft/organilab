@@ -91,12 +91,17 @@ report_urls = [
         reports_org.ReactiveStockReport.as_view(),
         name="reactive_stock_report",
     ),
+    path(
+        "compatibility/",
+        reports_org.CompatibilityReport.as_view(),
+        name="compatibility_report",
+    ),
 ]
 
 urlpatterns = [
     path("api/", include(router.urls)),
     path("<int:org_pk>/", include(base_reports)),
     path("<int:org_pk>/", include(base_organization_reports)),
-    path("reports/<int:org_pk>", include(report_urls)),
+    path("reports/<int:org_pk>/", include(report_urls)),
     path("api/reports/<int:org_pk>/", include(router_report.urls)),
 ]

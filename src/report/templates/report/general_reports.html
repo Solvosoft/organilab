@@ -17,6 +17,26 @@
 		<h3 class="heading-1" ><span> {{obj_task.data.title}}  </span></h3>
 	</div>
 </div>
+{% if obj_task.table_content.diagnostic %}
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">{{ obj_task.table_content.diagnostic.message }}</h4>
+    <p>{{ obj_task.table_content.diagnostic.detail }}</p>
+    {% with stats=obj_task.table_content.diagnostic.stats %}
+    {% if stats %}
+    <hr>
+    <p class="mb-0">
+        <strong>{% trans 'Diagnostic' %}:</strong>
+        {% trans 'Buildings' %}: {{ stats.buildings }},
+        {% trans 'Risk Zones' %}: {{ stats.risk_zones }},
+        {% trans 'Laboratories' %}: {{ stats.laboratories }},
+        {% trans 'Reactives' %}: {{ stats.reactives }},
+        {% trans 'Reactives with H-codes' %}: {{ stats.reactives_with_h_codes }},
+        {% trans 'Unique H-codes' %}: {{ stats.unique_h_codes }}
+    </p>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endif %}
 <table id="table_id" class="display table table-striped table-bordered text-center dt-responsive">
 
 </table>
