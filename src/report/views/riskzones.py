@@ -15,6 +15,7 @@ from risk_management.compatibility_utils import (
     get_zone_substances,
     collect_h_codes,
     build_compatibility_matrix,
+    build_hcode_substance_map,
     get_h_code_compatibility,
     get_compatibility_reason,
     H_CODE_TO_CLASS,
@@ -369,6 +370,12 @@ def report_compatibility_html(report):
         {"name": "h_code_b", "title": _("H-Code B")},
         {"name": "compatibility", "title": _("Compatibility")},
         {"name": "reason", "title": _("Reason")},
+        {"name": "substances_a", "title": _("Substances A")},
+        {"name": "substances_b", "title": _("Substances B")},
+        {"name": "laboratory_a", "title": _("Laboratory A")},
+        {"name": "shelf_a", "title": _("Shelf A")},
+        {"name": "laboratory_b", "title": _("Laboratory B")},
+        {"name": "shelf_b", "title": _("Shelf B")},
     ]
 
     columns_fields = set_format_table_columns(columns_fields)
@@ -392,6 +399,8 @@ def report_compatibility_html(report):
             if len(all_h_codes) < 2:
                 continue
 
+            hcode_map = build_hcode_substance_map(zone)
+
             for i, code_a in enumerate(all_h_codes):
                 for code_b in all_h_codes[i + 1:]:
                     compat = get_h_code_compatibility(code_a, code_b)
@@ -404,6 +413,9 @@ def report_compatibility_html(report):
                         if class_a and class_b:
                             reason = get_compatibility_reason(class_a, class_b)
 
+                    entries_a = hcode_map.get(code_a, [])
+                    entries_b = hcode_map.get(code_b, [])
+
                     data_column = {
                         "building": building.name,
                         "zone": zone.name,
@@ -411,6 +423,12 @@ def report_compatibility_html(report):
                         "h_code_b": code_b,
                         "compatibility": compat_label,
                         "reason": reason,
+                        "substances_a": "; ".join(e["substance"] for e in entries_a),
+                        "substances_b": "; ".join(e["substance"] for e in entries_b),
+                        "laboratory_a": "; ".join(sorted(set(e["lab"] for e in entries_a))),
+                        "shelf_a": "; ".join(sorted(set(e["shelf"] for e in entries_a if e["shelf"]))),
+                        "laboratory_b": "; ".join(sorted(set(e["lab"] for e in entries_b))),
+                        "shelf_b": "; ".join(sorted(set(e["shelf"] for e in entries_b if e["shelf"]))),
                     }
 
                     if column_list:
