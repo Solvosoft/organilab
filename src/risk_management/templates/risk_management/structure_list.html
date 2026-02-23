@@ -45,7 +45,7 @@
 		const add_structure_url = "{% url 'riskmanagement:structures_create' org_pk %}";
 		const selects2_url = {
 			manager_url: "{% url 'risk_users-list' %}" + "?org_pk=" + "{{org_pk}}",
-			structure_url: "{% url 'risk_building-list' %}" + "?org_pk=" + "{{org_pk}}",
+			buildings_url: "{% url 'risk_building-list' %}" + "?org_pk=" + "{{org_pk}}",
 			laboratory_url: "{% url 'risk_laboratory-list' %}" + "?org_pk=" + "{{org_pk}}",
 			structure_url: "{% url 'risk_structure-list' %}" + "?org_pk=" + "{{org_pk}}",
 		}
