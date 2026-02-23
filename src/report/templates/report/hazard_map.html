@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block title %}{% trans 'Hazard Map' %}{% endblock %}
+{% block pre_head %}
+    {% define_urlname_action 'can_do_report' %}
+{% endblock %}
+
+{% block content %}
+{% if perms.laboratory.do_report and perms.laboratory.view_object %}
+
+<div class="offset-md-1 col-md-10">
+    <div class="page-header text-center">
+        <h3 class="heading-1">{{ obj_task.data.title }}</h3>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header"><h5>{% trans 'Legend' %}</h5></div>
+    <div class="card-body d-flex flex-wrap">
+        <span class="badge p-2 mr-3 mb-2" style="background-color:#00B050;color:#000;">{% trans 'Compatible' %}</span>
+        <span class="badge p-2 mr-3 mb-2" style="background-color:#FFD700;color:#000;">{% trans 'Caution' %}</span>
+        <span class="badge p-2 mr-3 mb-2" style="background-color:#FF0000;color:#fff;">{% trans 'Incompatible' %}</span>
+        <span class="badge p-2 mr-3 mb-2" style="background-color:#D9D9D9;color:#000;">{% trans 'No data' %}</span>
+    </div>
+</div>
+
+{% for lab_data in map_data %}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">{{ lab_data.laboratory }}</h4>
+        {% if lab_data.tonnage %}
+        <span class="badge bg-info text-dark p-2">
+            {% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})
+        </span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+
+    {% for room in lab_data.rooms %}
+    <div class="mb-4">
+        <h5 class="text-muted">{{ room.name }}</h5>
+
+        {% for furniture in room.furniture_list %}
+        <div class="mb-3">
+            <h6>{{ furniture.name }}</h6>
+            {% if furniture.grid %}
+            <table class="table table-bordered text-center" style="table-layout:fixed;">
+                {% for row in furniture.grid %}
+                <tr>
+                    {% for cell in row %}
+                    <td style="vertical-align:top; padding:4px;">
+                        {% for shelf in cell.shelves %}
+                        <div class="p-1 mb-1 rounded" style="background-color:{{ shelf.color }}; {% if shelf.compat_code == 'R' %}color:#fff;{% endif %}" title="{{ shelf.worst_pair }}">
+                            <strong>{{ shelf.name }}</strong>
+                            {% if shelf.substances %}
+                            <br>
+                            {% for sub in shelf.substances %}
+                                <small>{{ sub }}</small>{% if not forloop.last %}<br>{% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <span class="text-muted">-</span>
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p class="text-muted">{% trans 'No shelf layout configured for this furniture.' %}</p>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-muted">{% trans 'No furniture in this room.' %}</p>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <p class="text-muted">{% trans 'No rooms in this laboratory.' %}</p>
+    {% endfor %}
+
+    </div>
+</div>
+{% empty %}
+<div class="alert alert-info">{% trans 'No laboratory data available.' %}</div>
+{% endfor %}
+
+{% for lab_data in map_data %}
+{% if lab_data.alerts %}
+<div class="card mb-4 border-danger">
+    <div class="card-header bg-danger text-white">
+        <h5>{% trans 'Incompatibility Alerts' %} - {{ lab_data.laboratory }}</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>{% trans 'Shelf A' %}</th>
+                    <th>{% trans 'H-Code A' %}</th>
+                    <th>{% trans 'Shelf B' %}</th>
+                    <th>{% trans 'H-Code B' %}</th>
+                    <th>{% trans 'Reason' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in lab_data.alerts %}
+                <tr>
+                    <td>{{ alert.shelf_a }}</td>
+                    <td>{{ alert.code_a }}</td>
+                    <td>{{ alert.shelf_b }}</td>
+                    <td>{{ alert.code_b }}</td>
+                    <td>{{ alert.reason }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+{% endblock %}

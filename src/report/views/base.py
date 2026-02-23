@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, QueryDict
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -170,6 +170,23 @@ def create_request_by_report(request, org_pk):
                     if form.is_valid():
                         data.update(form.cleaned_data)
 
+                        if (
+                            form.cleaned_data.get("report_name") == "hazard_map_report"
+                            and form.cleaned_data.get("format") == "html"
+                        ):
+                            base_url = reverse(
+                                "report:hazard_map_visual",
+                                kwargs={"org_pk": org_pk},
+                            )
+                            params = QueryDict(mutable=True)
+                            for lab_pk in form.cleaned_data.get("laboratory", []):
+                                params.appendlist("laboratory", str(lab_pk))
+                            params["title"] = form.cleaned_data.get("title", "")
+                            redirect_url = "%s?%s" % (base_url, params.urlencode())
+                            response["result"] = True
+                            response["redirect_url"] = redirect_url
+                            return JsonResponse(response, status=200)
+
                         task = TaskReport.objects.create(
                             created_by=request.user,
                             type_report=form.cleaned_data["report_name"],
@@ -294,6 +311,9 @@ def report_table(request, org_pk, pk):
         content["regency_report"] = RegencyReportBuilder.objects.filter(
             report__task_report=task
         )
+    elif task.type_report == "hazard_map_report":
+        template_name = "report/hazard_map.html"
+        content["map_data"] = task.table_content.get("map_data", [])
     return render(request, template_name=template_name, context=content)
 
 
@@ -491,6 +511,9 @@ def report_organization_table(request, org_pk, pk):
     if task.type_report == "regency_report":
         template_name = "report/regency_report_table.html"
         content["regency_report"] = RegencyReport.objects.filter(pk=task.pk).first()
+    elif task.type_report == "hazard_map_report":
+        template_name = "report/hazard_map.html"
+        content["map_data"] = task.table_content.get("map_data", [])
     return render(request, template_name=template_name, context=content)
 
 

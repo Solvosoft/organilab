@@ -502,6 +502,50 @@ class CompatibilityReportForm(ReportBase):
         return []
 
 
+class HazardMapReportForm(ReportBase):
+    format = forms.ChoiceField(
+        widget=genwidgets.Select,
+        choices=(
+            ("html", _("On screen")),
+            ("pdf", _("PDF")),
+        ),
+        required=False,
+        label=_("Format"),
+    )
+    laboratory = forms.ModelMultipleChoiceField(
+        widget=AutocompleteSelectMultiple(
+            "labs_by_org",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "lab_by_org",
+                "data-s2filter-organization": "#id_organization",
+            },
+        ),
+        queryset=Laboratory.objects.all(),
+        label=_("Laboratories"),
+        required=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        super(HazardMapReportForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                organization=org_pk
+            )
+
+    def clean_laboratory(self):
+        organization = self.cleaned_data["organization"]
+        laboratory = self.cleaned_data["laboratory"]
+
+        if not laboratory:
+            laboratory = get_laboratories_from_organization(organization)
+
+        return list(laboratory.values_list("pk", flat=True))
+
+
 class PrecursorFilterForm(GTForm):
     organization = forms.IntegerField(
         required=True,
