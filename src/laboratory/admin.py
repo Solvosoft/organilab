@@ -26,11 +26,21 @@ class Object_Admin(admin.ModelAdmin):
     search_fields = ["name"]
     list_display = ("code", "name", "type", "is_precursor")
 
+class UserOrganizationInline(admin.TabularInline):
+    model = models.UserOrganization
+    extra = 1
+    autocomplete_fields = ['user']
 
 class OrganizationStrutureAdmin(admin.ModelAdmin):
     search_fields = ["name", "laboratory__name"]
     list_display = ["name", "laboratories"]
     mptt_level_indent = 20
+    inlines = [UserOrganizationInline]
+
+    def get_users(self, obj):
+        return ", ".join([u.username for u in obj.users.all()])
+
+    get_users.short_description = "Users"
 
 
 @admin.action(description="Run new informs utilities")
@@ -111,7 +121,6 @@ class BaseUnittAdmin(admin.ModelAdmin):
 
 class ObjectLogAdmin(admin.ModelAdmin):
     list_display = ["object", "update_time"]
-
 
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
