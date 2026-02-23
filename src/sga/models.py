@@ -95,6 +95,7 @@ class DangerIndication(models.Model):
     prudence_advice = models.ManyToManyField(
         PrudenceAdvice, verbose_name=_("Prudence advice")
     )
+    danger_type = models.CharField(max_length=25, default="", blank=True)
 
     def __str__(self):
         return "(%s) %s" % (self.code, self.description)
@@ -889,10 +890,20 @@ class DangerSubstance(models.Model):
         null=True, blank=True, default=0.0, verbose_name=_("Threshold")
     )
     notes = models.TextField(null=True, blank=True, verbose_name=_("Notes"))
-    type_match = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Type Match"), choices=TYPE_CHOICES)
+    type_match = models.CharField(
+        null=True,
+        blank=True,
+        max_length=255,
+        verbose_name=_("Type Match"),
+        choices=TYPE_CHOICES,
+    )
     h_codes_match = models.ManyToManyField(DangerIndication, verbose_name=_("H Codes"))
-    patron_name = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Patron Name"))
-    especial_condition = models.CharField(null=True, blank=True, max_length=255, verbose_name=_("Especial Condition"))
+    patron_name = models.CharField(
+        null=True, blank=True, max_length=255, verbose_name=_("Patron Name")
+    )
+    especial_condition = models.CharField(
+        null=True, blank=True, max_length=255, verbose_name=_("Especial Condition")
+    )
 
     def __str__(self):
         return self.name
@@ -905,9 +916,19 @@ class DangerSubstanceCategory(models.Model):
         ("environmental", _("Environmental")),
     )
 
-    h_code = models.ForeignKey(DangerIndication, on_delete=models.DO_NOTHING, verbose_name=_("H Code"))
-    category = models.CharField(max_length=25, null=True, blank=True, verbose_name=_("Category"), choices=CATEGORY_CHOICES)
-    section = models.CharField(max_length=15, null=True, blank=True, verbose_name=_("Section"))
+    h_code = models.ForeignKey(
+        DangerIndication, on_delete=models.DO_NOTHING, verbose_name=_("H Code")
+    )
+    category = models.CharField(
+        max_length=25,
+        null=True,
+        blank=True,
+        verbose_name=_("Category"),
+        choices=CATEGORY_CHOICES,
+    )
+    section = models.CharField(
+        max_length=15, null=True, blank=True, verbose_name=_("Section")
+    )
     process_condition = catalog.GTForeignKey(
         "laboratory.Catalog",
         related_name="process_condition",
@@ -917,11 +938,18 @@ class DangerSubstanceCategory(models.Model):
         key_value="process_condition",
         null=True,
     )
-    note = models.CharField(max_length=255, null=True, blank=True, verbose_name=_("Note"))
-    threshold = models.FloatField(null=True, blank=True, default=0.0, verbose_name=_("Threshold"))
+    note = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name=_("Note")
+    )
+    threshold = models.FloatField(
+        null=True, blank=True, default=0.0, verbose_name=_("Threshold")
+    )
     measurement_unit = models.CharField(
-        max_length=25, null=True, default="Toneladas", blank=True,
-        verbose_name=_("Measurement unit")
+        max_length=25,
+        null=True,
+        default="Toneladas",
+        blank=True,
+        verbose_name=_("Measurement unit"),
     )
 
     def __str__(self):

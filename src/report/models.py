@@ -52,7 +52,7 @@ class ObjectChangeLogReport(models.Model):
 
 class ObjectChangeLogReportBuilder(models.Model):
     report = models.ForeignKey(ObjectChangeLogReport, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     update_time = models.DateTimeField()
     new_value = models.FloatField(default=0.0)
     old_value = models.FloatField(default=0.0)

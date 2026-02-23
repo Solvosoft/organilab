@@ -1,3 +1,8 @@
+17/02/2026
+Command to update and add danger indications
+
+    - python manage.py load_danger_indications
+
 16/12/2025
 Command to merge some organizations into one
 

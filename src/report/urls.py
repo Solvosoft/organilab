@@ -3,6 +3,8 @@ from django.urls import path, include
 
 from report.api.views import ReportDataViewSet, ReportDataLogViewSet, RegencyViewSet
 from report.views import base
+from report.views import reports_org
+from report.views import riskzones
 
 base_reports = [
     path("create/", base.create_request_by_report, name="create_report_request"),
@@ -50,12 +52,67 @@ app_name = "report"
 
 report_urls = [
     path("regency/", base.regency_report, name="regency_report"),
+    path(
+        "list/furniture/",
+        reports_org.FurnitureReportView.as_view(),
+        name="reports_furniture_detail",
+    ),
+    path(
+        "list/objects/", reports_org.ObjectList.as_view(), name="reports_objects_list"
+    ),
+    path(
+        "list/limited_shelf_objects/",
+        reports_org.LimitedShelfObjectList.as_view(),
+        name="reports_limited_shelf_objects_list",
+    ),
+    path(
+        "list/reactive_precursor_objects/",
+        reports_org.ReactivePrecursorObjectList.as_view(),
+        name="reactive_precursor_object_list",
+    ),
+    path(
+        "objectchanges/",
+        reports_org.LogObjectView.as_view(),
+        name="object_change_logs",
+    ),
+    path("precursors/", reports_org.PrecursorsView.as_view(), name="precursor_report"),
+    path(
+        "list/waste/report",
+        reports_org.DiscardShelfReportView.as_view(),
+        name="waste_report",
+    ),
+    path(
+        "list/reactive/report",
+        reports_org.ReactiveReport.as_view(),
+        name="reactive_report",
+    ),
+    path("risk_zone/", reports_org.RiskZoneReport.as_view(), name="risk_zone_report"),
+    path(
+        "reactive/stock/",
+        reports_org.ReactiveStockReport.as_view(),
+        name="reactive_stock_report",
+    ),
+    path(
+        "compatibility/",
+        reports_org.CompatibilityReport.as_view(),
+        name="compatibility_report",
+    ),
+    path(
+        "hazard_map/",
+        reports_org.HazardMapReport.as_view(),
+        name="hazard_map_report",
+    ),
+    path(
+        "hazard_map/visual/",
+        riskzones.hazard_map_visual_view,
+        name="hazard_map_visual",
+    ),
 ]
 
 urlpatterns = [
     path("api/", include(router.urls)),
-    path("<int:org_pk>/<int:lab_pk>/", include(base_reports)),
+    path("<int:org_pk>/", include(base_reports)),
     path("<int:org_pk>/", include(base_organization_reports)),
-    path("reports/<int:org_pk>", include(report_urls)),
-    path("api/reports/<int:org_pk>", include(router_report.urls)),
+    path("reports/<int:org_pk>/", include(report_urls)),
+    path("api/reports/<int:org_pk>/", include(router_report.urls)),
 ]

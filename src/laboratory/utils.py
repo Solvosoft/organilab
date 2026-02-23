@@ -474,6 +474,25 @@ def check_user_access_kwargs_org_lab(org, lab, user):
     return user_access
 
 
+def check_user_access_kwargs_org(org, user):
+    user_access = False
+
+    if not isinstance(org, (str, int)):
+        return user_access
+
+    if org:
+        organization = OrganizationStructure.objects.filter(pk=org)
+
+        if organization.exists():
+            organization = organization.first()
+
+            if organization.users.filter(pk=user.pk).exists():
+
+                user_access = True
+
+    return user_access
+
+
 def save_object_by_action(user, obj, relobj, changed_data, action_flag, object_repr):
     obj.save()
     organilab_logentry(
