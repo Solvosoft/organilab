@@ -5,81 +5,89 @@
 {% load organilab_tags %}
 {% block title %}{% trans 'Reports' %} {% endblock %}
 {% block pre_head %}
-    {% define_true 'use_datatables' %}
+	{% define_true 'use_datatables' %}
 	{% define_urlname_action 'can_do_report' %}
 {% endblock %}
 
 {% block content %}
 
-{% if perms.laboratory.do_report and perms.laboratory.view_object  %}
-<div class="offset-md-2 col-md-8">
-	<div class="page-header" align="center">
-		<h3 class="heading-1" ><span> {{obj_task.data.title}}  </span></h3>
-	</div>
-</div>
-{% if obj_task.table_content.diagnostic %}
-<div class="alert alert-warning" role="alert">
-    <h4 class="alert-heading">{{ obj_task.table_content.diagnostic.message }}</h4>
-    <p>{{ obj_task.table_content.diagnostic.detail }}</p>
-    {% with stats=obj_task.table_content.diagnostic.stats %}
-    {% if stats %}
-    <hr>
-    <p class="mb-0">
-        <strong>{% trans 'Diagnostic' %}:</strong>
-        {% trans 'Buildings' %}: {{ stats.buildings }},
-        {% trans 'Risk Zones' %}: {{ stats.risk_zones }},
-        {% trans 'Laboratories' %}: {{ stats.laboratories }},
-        {% trans 'Reactives' %}: {{ stats.reactives }},
-        {% trans 'Reactives with H-codes' %}: {{ stats.reactives_with_h_codes }},
-        {% trans 'Unique H-codes' %}: {{ stats.unique_h_codes }}
-    </p>
-    {% endif %}
-    {% endwith %}
-</div>
-{% endif %}
-<table id="table_id" class="display table table-striped table-bordered text-center dt-responsive">
+	{% if perms.laboratory.do_report and perms.laboratory.view_object %}
+		<div class="row">
+			<div class="offset-md-2 col-md-8">
+				<div class="page-header" align="center">
+					<h3 class="heading-1"><span> {{ obj_task.data.title }}  </span></h3>
+				</div>
+			</div>
+		</div>
 
-</table>
-{% endif %}
+		{% if obj_task.table_content.diagnostic %}
+			<div class="row">
+				<div class="offset-md-2 col-md-8">
+					<div class="alert alert-warning my-2" role="alert">
+						<h4 class="alert-heading">{{ obj_task.table_content.diagnostic.message }}</h4>
+						<p class="mb-0 pb-0">{{ obj_task.table_content.diagnostic.detail }}</p>
+						{% with stats=obj_task.table_content.diagnostic.stats %}
+							{% if stats %}
+								<hr>
+								<p class="mb-0 pb-0">
+									<strong>{% trans 'Diagnostic' %}:</strong>
+									{% trans 'Buildings' %}: {{ stats.buildings }},
+									{% trans 'Risk Zones' %}: {{ stats.risk_zones }},
+									{% trans 'Laboratories' %}: {{ stats.laboratories }},
+									{% trans 'Reactives' %}: {{ stats.reactives }},
+									{% trans 'Reactives with H-codes' %}: {{ stats.reactives_with_h_codes }},
+									{% trans 'Unique H-codes' %}: {{ stats.unique_h_codes }}
+								</p>
+							{% endif %}
+						{% endwith %}
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		<table id="table_id" class="display table table-striped table-bordered text-center dt-responsive">
+
+		</table>
+	{% endif %}
 
 {% endblock %}
 {% block js %}
-{{block.super}}
-{{obj_task.table_content|json_script:"columns"}}
-<script>
+	{{ block.super }}
+	{{ obj_task.table_content|json_script:"columns"}}
+	<script>
 
-        var dtOptions = {
-           responsive: true,
-          columns: JSON.parse(document.getElementById('columns').textContent)['columns'],
-          	dom: "<'d-flex justify-content-between'<'m-2'l>" +
-       "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
-       "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
+		var dtOptions = {
+			responsive: true,
+			columns: JSON.parse(document.getElementById('columns').textContent)['columns'],
+			dom: "<'d-flex justify-content-between'<'m-2'l>" +
+				"<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
+				"<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
 
 			ajax: {
 				url: "{% url "report:api-report-detail" obj_task.pk  %}",
 				type: 'GET',
-				data: function(dataTableParams, settings) {
+				data: function (dataTableParams, settings) {
 					return formatDataTableParams(dataTableParams, settings);
 				}
 			}
-	    };
+		};
 
-        {% if obj_task.type_report == "compatibility_report" %}
-        var compatColors = {
-            'Compatible': '#00B050',
-            'Precauci\u00f3n': '#FFD700',
-            'Incompatible': '#FF0000'
-        };
-        dtOptions.createdRow = function(row, data, dataIndex) {
-            var val = data[4];
-            if (val in compatColors) {
-                var bg = compatColors[val];
-                var fg = (bg === '#FF0000') ? '#FFFFFF' : '#000000';
-                $('td', row).eq(4).css({'background-color': bg, 'color': fg, 'font-weight': 'bold'});
-            }
-        };
-        {% endif %}
+		{% if obj_task.type_report == "compatibility_report" %}
+			var compatColors = {
+				'Compatible': '#00B050',
+				'Precauci\u00f3n': '#FFD700',
+				'Incompatible': '#FF0000'
+			};
+			dtOptions.createdRow = function (row, data, dataIndex) {
+				var val = data[4];
+				if (val in compatColors) {
+					var bg = compatColors[val];
+					var fg = (bg === '#FF0000') ? '#FFFFFF' : '#000000';
+					$('td', row).eq(4).css({'background-color': bg, 'color': fg, 'font-weight': 'bold'});
+				}
+			};
+		{% endif %}
 
-        datatableelement=createDataTable('#table_id', '{% url "report:api-report-detail" obj_task.pk %}', dtOptions, addfilter=true);
-</script>
+		datatableelement = createDataTable('#table_id', '{% url "report:api-report-detail" obj_task.pk %}', dtOptions, addfilter = true);
+	</script>
 {% endblock %}

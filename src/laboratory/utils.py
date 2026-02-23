@@ -146,31 +146,37 @@ def get_profile_by_organization(organization):
     return Profile.objects.filter(user__in=users)
 
 
+# def get_laboratories_from_organization(rootpk):
+#     organization = OrganizationStructure.objects.filter(pk=rootpk).first()
+#     if organization:
+#         desendants = list(
+#             OrganizationStructure.objects.filter(pk=rootpk)
+#             .descendants(include_self=True, of=organization)
+#             .values_list("pk", flat=True)
+#         )
+#         labs = list(
+#             OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
+#             .filter(
+#                 organization__in=desendants,
+#                 content_type__app_label="laboratory",
+#                 content_type__model="laboratory",
+#             )
+#             .values_list("object_id", flat=True)
+#         )
+#         labs += list(
+#             organization.laboratory_set.using(settings.READONLY_DATABASE)
+#             .all()
+#             .values_list("pk", flat=True)
+#         )
+#
+#         return Laboratory.objects.filter(pk__in=labs).distinct()
+#     return Laboratory.objects.none()
+
+
 def get_laboratories_from_organization(rootpk):
     organization = OrganizationStructure.objects.filter(pk=rootpk).first()
-    if organization:
-        desendants = list(
-            OrganizationStructure.objects.filter(pk=rootpk)
-            .descendants(include_self=True, of=organization)
-            .values_list("pk", flat=True)
-        )
-        labs = list(
-            OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
-            .filter(
-                organization__in=desendants,
-                content_type__app_label="laboratory",
-                content_type__model="laboratory",
-            )
-            .values_list("object_id", flat=True)
-        )
-        labs += list(
-            organization.laboratory_set.using(settings.READONLY_DATABASE)
-            .all()
-            .values_list("pk", flat=True)
-        )
 
-        return Laboratory.objects.filter(pk__in=labs).distinct()
-    return Laboratory.objects.none()
+    return organization.get_my_laboratories
 
 
 def get_cas(object, default=None):

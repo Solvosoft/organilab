@@ -73,7 +73,11 @@
 									</div>
 									<div class="card-body">
 										<div style="width: 100%; height: 300px;">
-											{% include 'gentelella/widgets/chartjs.html' with graph_url=eslochart data_zone=object.pk %}
+											{% with zone_pk=object.pk|stringformat:"s" %}
+												{% with dataparams='data-zone="'|add:zone_pk|add:'"' %}
+													{% include 'gentelella/widgets/chartjs.html' with graph_url=eslochart dataparams=dataparams %}
+												{% endwith %}
+											{% endwith %}
 										</div>
 										<div class="mt-3">
 											<label>{% trans 'Establishment Status' %}: {{ object.status }} </label>
@@ -128,3 +132,4 @@
 
 	</div>
 {% endblock %}
+

@@ -87,8 +87,9 @@ class ReportForm(ReportBase):
         super(ReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
+            lab_ids = get_laboratories_from_organization(org_pk)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                organization=org_pk
+                pk__in=lab_ids
             )
 
     def clean_laboratory(self):
@@ -122,8 +123,9 @@ class ReportSimpleForm(ReportBase):
         super(ReportSimpleForm, self).__init__(*args, **kwargs)
 
         if org_pk:
+            lab_ids = get_laboratories_from_organization(org_pk)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                organization=org_pk
+                pk__in=lab_ids
             )
 
     def clean(self):
@@ -322,9 +324,9 @@ class ValidateFurnitureForm(GTForm):
 
         if org_pk:
             self.fields["organization"].initial = org_pk
-
+            lab_ids = get_laboratories_from_organization(org_pk)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                organization_id=org_pk
+                pk__in=lab_ids
             )
 
     def clean_organization(self):
@@ -447,9 +449,13 @@ class RegencyReportForm(ReportForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super(RegencyReportForm, self).__init__(*args, **kwargs)
-        self.fields["laboratory"].queryset = Laboratory.objects.filter(
-            organization__pk=org_pk
-        )
+
+        if org_pk:
+            lab_ids = get_laboratories_from_organization(org_pk)
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                pk__in=lab_ids
+            )
+
         self.fields["years"].choices = get_years()
         self.fields["format"].choices = (
             ("xls", "XLS"),
@@ -537,8 +543,9 @@ class HazardMapReportForm(ReportBase):
         super(HazardMapReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
+            lab_ids = get_laboratories_from_organization(org_pk)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                organization=org_pk
+                pk__in=lab_ids
             )
 
     def clean_laboratory(self):
@@ -579,12 +586,9 @@ class PrecursorFilterForm(GTForm):
         if not org_pk:
             return
 
-        qs = Laboratory.objects.filter(organization=org_pk)
-
-        self.fields["organization"].initial = org_pk
-        self.fields["laboratory"].queryset = qs
-
-        if not self.data.get("laboratory"):
-            first_lab = qs.first()
-            if first_lab:
-                self.initial["laboratory"] = first_lab
+        if org_pk:
+            self.fields["organization"].initial = org_pk
+            lab_ids = get_laboratories_from_organization(org_pk)
+            self.fields["laboratory"].queryset = Laboratory.objects.filter(
+                pk__in=lab_ids
+            )
