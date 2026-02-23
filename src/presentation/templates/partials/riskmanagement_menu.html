@@ -53,7 +53,7 @@
 				{% trans 'Statistics' %}</a>
 			</li>
 			{% if perms.laboratory.do_report %}
-				<li><a href="{% url 'riskmanagement:risk_report' org_pk %}"
+				<li><a href="{% url 'report:risk_zone_report' org_pk %}"
 											title="{% trans 'Risk zone report' %}">
 					<i class="fa fa-list" aria-hidden="true"></i>
 					{% trans 'Risk zone report' %}</a>

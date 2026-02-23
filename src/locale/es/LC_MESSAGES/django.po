@@ -5406,3 +5406,6 @@ msgstr "Resumen de Categorías de Riesgo"
 
 msgid "Establishment Status"
 msgstr "Estado del establecimiento"
+
+msgid "Linking laboratories of the parent organization"
+msgstr "Relacionar de laboratorios de la organización principal"
