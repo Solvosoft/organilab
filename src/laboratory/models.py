@@ -1155,6 +1155,11 @@ class OrganizationStructure(TreeNode):
             return ancestors.first()
         return self
 
+    @property
+    def get_my_laboratories(self):
+       return OrganizationStructureRelations.objects.filter(
+           organization=self, content_type=ContentType.objects.get_for_model(Laboratory)
+       ).values_list("object_id", flat=True)
 
 class UserOrganization(models.Model):
     ADMINISTRATOR = 1
