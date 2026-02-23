@@ -15,10 +15,11 @@ class ModelViewSet(mixins.RetrieveModelMixin,
                    mixins.ListModelMixin,
                    GenericViewSet):
     """
-    A viewset that provides default `create()`, `retrieve()`, `update()`,
+    A viewset that provides `retrieve()`, `update()`,
     `partial_update()`, `destroy()` and `list()` actions.
     """
     pass
+
 
 class BaseObjectManagement(ModelViewSet):
     serializer_class = {
@@ -28,14 +29,8 @@ class BaseObjectManagement(ModelViewSet):
         'get_values_for_update': None
     }
 
-    # authentication_classes = (TokenAuthentication, SessionAuthentication)
-    # queryset =
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # search_fields = ['name', 'num_children', ]  # for the global search
-    # filterset_class = PersonFilterSet
-    # ordering_fields = ['name', 'num_children', 'born_date', 'last_time']
-    # ordering = ('-num_children',)  # default order
     operation_type = ''
 
     def get_serializer_class(self):
@@ -68,6 +63,7 @@ class BaseObjectManagement(ModelViewSet):
             "template": "Name: {{it.name}}"
         }
         return Response(data)
+
 
 class AuthAllPermBaseObjectWithoutCreate(BaseObjectManagement):
     authentication_classes = (TokenAuthentication, SessionAuthentication)
