@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-	<div class="page-header text-center"><h1>				{% trans 'Material management' %}</h1></div>
+	<div class="page-header text-center"><h1>    {% trans 'Material management' %}</h1></div>
 
 	{% if perms.laboratory.view_object or perms.laboratory.add_object or perms.laboratory.change_object  or perms.laboratory.delete_object %}
 		<section class="">
@@ -29,7 +29,7 @@
 		{% include 'laboratory/action_denied.html' %}
 	{% endif %}
 
-		{# Modales de acciones #}
+	{# Modales de acciones #}
 	{% url "laboratory:api-object-list" org_pk lab_pk as list_obj_url %}
 	{% trans 'Register Object' as create_obj_tittle %}
 	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle modal_class=create_obj_tittle url=list_obj_url %}
@@ -48,7 +48,7 @@
 	{{ block.super }}
 
 	<script>
-	let has_perm_add_object = {{ perms.laboratory.add_object|yesno:"true,false" }};
+		let has_perm_add_object = {{ perms.laboratory.add_object|yesno:"true,false" }};
 		const object_urls = {
 			list_url: "{% url 'laboratory:api-object-list' org_pk lab_pk %}",
 			create_url: "{% url 'laboratory:api-object-list' org_pk lab_pk %}",
