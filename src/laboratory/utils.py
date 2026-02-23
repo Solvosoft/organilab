@@ -601,7 +601,6 @@ def get_actions_by_perms(user, actions_list):
     return actions
 
 
-
 def remove_shelfobject_from_shelf(laboratory, shelf, user, organization):
     shelfobjects = ShelfObject.objects.filter(shelf=shelf).distinct()
     for shelfobject in shelfobjects:

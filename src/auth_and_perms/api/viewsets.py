@@ -371,7 +371,7 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
         }
         return Response(self.get_serializer(response).data)
 
-    #TODO Metodo obsoleto, ya que ahora todos los permisos los maneja la root
+    # TODO Metodo obsoleto, ya que ahora todos los permisos los maneja la root
     @action(detail=False, methods=["post"])
     def inerit_profile(self, request):
         serializer = ValidateProfileOrganizationSerializer(data=request.data)
