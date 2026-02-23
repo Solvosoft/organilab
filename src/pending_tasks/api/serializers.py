@@ -29,6 +29,7 @@ class PendingTaskSerializer(serializers.ModelSerializer):
         model = PendingTask
         fields = ['id', 'description', 'creation_date', 'status', 'status_display', 'link', 'profile', 'rols']
 
+
 class PendingTaskValidateSerializer(serializers.ModelSerializer):
     description = serializers.CharField(required=False)
     profile = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all(), required=False, allow_null=True, allow_empty=True)
@@ -37,13 +38,15 @@ class PendingTaskValidateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PendingTask
-        fields = '__all__'
+        fields = ['id', 'description', 'status', 'profile', 'rols', 'link']
+
 
 class PendingTaskListSerializer(serializers.Serializer):
     data = serializers.ListField(child=PendingTaskSerializer(), required=True)
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
 
 class ProfileValidateSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), required=True)
@@ -56,6 +59,7 @@ class ProfileValidateSerializer(serializers.Serializer):
                 {'task': _('Task already assigned to another user')}
             )
         return data
+
 
 class SessionProfileValidateSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), required=True)
@@ -70,21 +74,22 @@ class SessionProfileValidateSerializer(serializers.Serializer):
             )
         return data
 
+
 class CurrentStatusValidateSerializer(SessionProfileValidateSerializer):
     profile = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.using(settings.READONLY_DATABASE), required=True)
+
     def validate(self, data):
         data = super().validate(data)
         task = self.context.get('task')
-        if task.status != 0:
+        if task.status != PendingTask.PENDING:
             logger.debug(f'CurrentStatusValidateSerializer --> Task {task.id} is not pending')
             raise serializers.ValidationError(
                 {'task': _('Task is not pending')}
             )
         return data
 
+
 class NewStatusValidateSerializer(SessionProfileValidateSerializer):
     profile = serializers.PrimaryKeyRelatedField(
         queryset=Profile.objects.using(settings.READONLY_DATABASE), required=True)
     status = serializers.IntegerField(min_value=0, max_value=2)
-
-
