@@ -1,12 +1,10 @@
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from django.utils.text import slugify
-from django.utils.timezone import now
 from djgentelella.widgets import core as genwidgets
 
 from presentation.utils import build_qr_instance
-from report.forms import LaboratoryRoomReportForm, ValidateFurnitureForm
+
 from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
 from ..utils import organilab_logentry
 
@@ -26,56 +24,8 @@ from django_ajax.decorators import ajax
 
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom, Shelf
 from laboratory.shelf_utils import get_dataconfig
-from .djgeneric import ListView, CreateView, UpdateView, DeleteView
+from .djgeneric import CreateView, UpdateView, DeleteView
 from django.utils.translation import gettext_lazy as _
-
-
-@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
-class FurnitureReportView(ListView):
-    model = Furniture
-    template_name = "report/base_report_form_view.html"
-
-    def get_queryset(self):
-        return Furniture.objects.filter(labroom__laboratory=self.lab)
-
-    def get_context_data(self, **kwargs):
-        context = super(FurnitureReportView, self).get_context_data(**kwargs)
-        lab_obj = get_object_or_404(Laboratory, pk=self.lab)
-        title = _("Objects by Furniture Report")
-        initial_data = {
-            "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
-            "title": title,
-            "organization": self.org,
-            "report_name": "report_furniture",
-            "laboratory": lab_obj,
-            "all_labs_org": False,
-        }
-
-        if self.request.method == "GET":
-            furniture_form = ValidateFurnitureForm(self.request.GET)
-            if furniture_form.is_valid():
-                furniture = Furniture.objects.get(
-                    pk=furniture_form.cleaned_data["furniture"]
-                )
-                lab_obj = get_object_or_404(
-                    Laboratory, pk=furniture_form.cleaned_data["laboratory"]
-                )
-                initial_data.update(
-                    {
-                        "furniture": furniture,
-                        "lab_room": furniture.labroom,
-                        "laboratory": lab_obj,
-                    }
-                )
-
-        context.update(
-            {
-                "title_view": title,
-                "report_urlnames": ["reports_furniture_detail"],
-                "form": LaboratoryRoomReportForm(initial=initial_data),
-            }
-        )
-        return context
 
 
 @method_decorator(permission_required("laboratory.add_furniture"), name="dispatch")

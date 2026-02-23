@@ -3,7 +3,6 @@ from django.utils.translation import gettext as _
 from laboratory.models import ShelfObject
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import (
-    filter_period,
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
@@ -13,8 +12,14 @@ from report.utils import (
 def get_dataset_report_reactive(report, column_list=None):
     dataset = []
     filters = {"object__type": 0}
-    if "lab_pk" in report.data:
-        filters["in_where_laboratory__pk"] = report.data["lab_pk"]
+
+    laboratories = report.data.get("laboratory", [])
+    general = not laboratories or len(laboratories) > 1
+
+    if general:
+        filters["in_where_laboratory__in"] = laboratories
+    else:
+        filters["in_where_laboratory__pk"] = laboratories[0]
 
     objs = ShelfObject.objects.filter(**filters).distinct("pk").order_by("pk")
     for reactive in objs:
@@ -22,6 +27,9 @@ def get_dataset_report_reactive(report, column_list=None):
         health = ""
         enviroment = ""
         cas_id = ""
+        lab_name = (
+            reactive.in_where_laboratory.name if reactive.in_where_laboratory else ""
+        )
         if hasattr(reactive.object, "sustancecharacteristics"):
             physical = " ".join(
                 reactive.object.sustancecharacteristics.h_code.filter(
@@ -49,6 +57,7 @@ def get_dataset_report_reactive(report, column_list=None):
             reactive.get_physical_status_display() if reactive.physical_status else ""
         )
         data_column = {
+            "in_where_laboratory__name": lab_name,
             "name": reactive.object.name,
             "cas_id": cas_id,
             "location": location,
@@ -70,6 +79,7 @@ def get_dataset_report_reactive(report, column_list=None):
 
 def report_reactive_html(report):
     columns_fields = [
+        {"name": "in_where_laboratory__name", "title": _("Laboratory")},
         {"name": "name", "title": _("Name")},
         {"name": "cas_id", "title": _("CAS")},
         {"name": "location", "title": _("Location")},
@@ -95,6 +105,7 @@ def report_reactive_list_doc(report):
     builder = ExcelGraphBuilder()
     content = [
         [
+            _("Laboratory"),
             _("Name"),
             _("CAS"),
             _("Location"),

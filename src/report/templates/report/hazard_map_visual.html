@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block title %}{% trans 'Hazard Map' %}{% endblock %}
+{% block pre_head %}
+    {% define_urlname_action 'can_do_report' %}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex align-items-center justify-content-between flex-wrap mb-3">
+    <h3 class="heading-1 mb-0">{{ title }}</h3>
+    <div class="d-flex align-items-center flex-wrap gap-2">
+        <span class="badge" style="background-color:#00B050;color:#000;">{% trans 'Compatible' %}</span>
+        <span class="badge" style="background-color:#FFD700;color:#000;">{% trans 'Caution' %}</span>
+        <span class="badge" style="background-color:#FF0000;color:#fff;">{% trans 'Incompatible' %}</span>
+        <span class="badge" style="background-color:#D9D9D9;color:#000;">{% trans 'No data' %}</span>
+    </div>
+</div>
+
+{% for lab_data in map_data %}
+
+{% if lab_data.alerts %}
+<div class="card mb-4 border-danger">
+    <div class="card-header bg-danger text-white" role="button" data-bs-toggle="collapse" data-bs-target="#labAlerts{{ lab_data.laboratory_pk }}" aria-expanded="true" aria-controls="labAlerts{{ lab_data.laboratory_pk }}" style="cursor:pointer;">
+        <h5 class="mb-0">
+            <i class="fa fa-chevron-down me-2 collapse-icon" style="font-size:.8em;"></i>
+            {% trans 'Incompatibility Alerts' %} - {{ lab_data.laboratory }}
+        </h5>
+    </div>
+    <div id="labAlerts{{ lab_data.laboratory_pk }}" class="collapse show">
+    <div class="card-body">
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>{% trans 'Shelf A' %}</th>
+                    <th>{% trans 'H-Code A' %}</th>
+                    <th>{% trans 'Shelf B' %}</th>
+                    <th>{% trans 'H-Code B' %}</th>
+                    <th>{% trans 'Reason' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alert in lab_data.alerts %}
+                <tr>
+                    <td><a href="{% url 'laboratory:rooms_list' org_pk lab_data.laboratory_pk %}?labroom={{ alert.labroom_a_pk }}&furniture={{ alert.furniture_a_pk }}&shelf={{ alert.shelf_a_pk }}" target="_blank">{{ alert.shelf_a }}</a></td>
+                    <td>{{ alert.code_a }}</td>
+                    <td><a href="{% url 'laboratory:rooms_list' org_pk lab_data.laboratory_pk %}?labroom={{ alert.labroom_b_pk }}&furniture={{ alert.furniture_b_pk }}&shelf={{ alert.shelf_b_pk }}" target="_blank">{{ alert.shelf_b }}</a></td>
+                    <td>{{ alert.code_b }}</td>
+                    <td>{{ alert.reason }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card mb-4">
+    <div class="card-header" role="button" data-bs-toggle="collapse" data-bs-target="#labSummary{{ lab_data.laboratory_pk }}" aria-expanded="true" aria-controls="labSummary{{ lab_data.laboratory_pk }}" style="cursor:pointer;">
+        <h5 class="mb-0">
+            <i class="fa fa-chevron-down me-2 collapse-icon" style="font-size:.8em;"></i>
+            {% trans 'Summary Map' %} - {{ lab_data.laboratory }}
+        </h5>
+    </div>
+    <div id="labSummary{{ lab_data.laboratory_pk }}" class="collapse show">
+    <div class="card-body">
+    {% for room in lab_data.rooms %}
+        <div class="mb-3">
+            <small class="text-muted fw-bold">{{ room.name }}</small>
+            {% for furniture in room.furniture_list %}
+            <div class="mb-2">
+                <small class="text-muted">{{ furniture.name }}</small>
+                {% if furniture.grid %}
+                {% for row in furniture.grid %}
+                <div class="d-flex mb-1">
+                    {% for cell in row %}
+                    <div class="d-flex flex-column me-2">
+                        {% for shelf in cell.shelves %}
+                        <div class="d-flex align-items-center mb-1" style="min-width:120px;" title="{{ shelf.name }}{% if shelf.worst_pair %} — {{ shelf.worst_pair }}{% endif %}">
+                            <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background-color:{{ shelf.color }};flex-shrink:0;"></span>
+                            <small class="ms-1 text-truncate">{{ shelf.name }}</small>
+                        </div>
+                        {% empty %}
+                        <small class="text-muted">-</small>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% empty %}
+            <small class="text-muted">-</small>
+            {% endfor %}
+        </div>
+    {% empty %}
+    <p class="text-muted">{% trans 'No rooms in this laboratory.' %}</p>
+    {% endfor %}
+    </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center" role="button" data-bs-toggle="collapse" data-bs-target="#labDetail{{ lab_data.laboratory_pk }}" aria-expanded="false" aria-controls="labDetail{{ lab_data.laboratory_pk }}" style="cursor:pointer;">
+        <h4 class="mb-0">
+            <i class="fa fa-chevron-right me-2 collapse-icon" style="font-size:.8em;"></i>
+            {{ lab_data.laboratory }}
+        </h4>
+        {% if lab_data.tonnage %}
+        <span class="badge bg-info text-dark p-2">
+            {% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})
+        </span>
+        {% endif %}
+    </div>
+    <div id="labDetail{{ lab_data.laboratory_pk }}" class="collapse">
+    <div class="card-body">
+
+    {% for room in lab_data.rooms %}
+    <div class="mb-4">
+        <h5 class="text-muted">{{ room.name }}</h5>
+
+        {% for furniture in room.furniture_list %}
+        <div class="mb-3">
+            <h6>{{ furniture.name }}</h6>
+            {% if furniture.grid %}
+            <div class="container">
+                {% for row in furniture.grid %}
+                <div class="row shelfrow mb-2">
+                    {% for cell in row %}
+                    <div class="col shelves_rows">
+                        {% for shelf in cell.shelves %}
+                        <div class="input-group mb-1">
+                            <div class="input-group-text" style="background-color:{{ shelf.color }}; min-width:12px;" title="{{ shelf.worst_pair }}">
+                                &nbsp;
+                            </div>
+                            <div class="card flex-grow-1">
+                                <div class="card-body p-2">
+                                    <strong>{{ shelf.name }}</strong>
+                                    {% if shelf.substances %}
+                                    <br>
+                                    {% for sub in shelf.substances %}
+                                        <small class="text-muted">{{ sub }}</small>{% if not forloop.last %}<br>{% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <span class="text-muted">-</span>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">{% trans 'No shelf layout configured for this furniture.' %}</p>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p class="text-muted">{% trans 'No furniture in this room.' %}</p>
+        {% endfor %}
+    </div>
+    {% empty %}
+    <p class="text-muted">{% trans 'No rooms in this laboratory.' %}</p>
+    {% endfor %}
+
+    </div>
+    </div>
+</div>
+
+{% empty %}
+<div class="alert alert-info">{% trans 'No laboratory data available.' %}</div>
+{% endfor %}
+
+<script>
+document.querySelectorAll('.collapse').forEach(function(el){
+    el.addEventListener('show.bs.collapse', function(){
+        var icon = this.previousElementSibling.querySelector('.collapse-icon');
+        if(icon){ icon.classList.replace('fa-chevron-right','fa-chevron-down'); }
+    });
+    el.addEventListener('hide.bs.collapse', function(){
+        var icon = this.previousElementSibling.querySelector('.collapse-icon');
+        if(icon){ icon.classList.replace('fa-chevron-down','fa-chevron-right'); }
+    });
+});
+</script>
+
+{% endblock %}

@@ -785,6 +785,7 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
         request, "laboratory/register_user_qr/login_register_user.html", context=context
     )
 
+
 @login_required()
 @permission_required("laboratory.view_laboratoryprocess")
 def laboratory_process_list(request, org_pk, lab_pk):

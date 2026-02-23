@@ -2,19 +2,141 @@
 {% load i18n static laboratory %}
 {% load urlname_tags %}
 {% block pre_head %}
-    {% define_urlname_action 'report_reactive_presence' %}
+	{% define_urlname_action 'report_reactive_presence' %}
 {% endblock %}
 {% block content %}
 
-<div class="row">
-    <div class="col-md-10">
-        <div class="bs-callout bs-callout-info">
-            <h4 class="w-100" >{{organization}}</h4>
-            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'laboratory:organizationreactivepresence' org_pk  %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Occupational Health Report' %}</a>
-            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}" href="{% url 'report:regency_report' org_pk  %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Regency Report' %}</a>
-            <a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Chemical inventory report' %}" href="{% url 'laboratory:chemicalinventory' org_pk  %}" target="_blank"><i class="fa fa-medkit"></i> {% trans 'Chemical inventory report' %}</a>
-        </div>
-    </div>
-</div>
+	<div class="row">
+		<div class="col-md-10">
+			<div class="bs-callout bs-callout-info">
+				<h4 class="w-100 py-3">{{ organization }}</h4>
+
+				<section class="my-3">
+					<h5 class="text-secondary pb-2"> {% trans 'Informs' %} </h5>
+
+					<a class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}"
+								href="{% url 'report:regency_report' org_pk %}" target="_blank"><i
+						class="fa fa-file-text-o"></i> {% trans 'Regency Report' %}</a>
+
+					<a class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="{% trans 'Chemical inventory report' %}"
+								href="{% url 'laboratory:chemicalinventory' org_pk %}" target="_blank"><i
+						class="fa fa-file-text-o"></i> {% trans 'Chemical inventory report' %}</a>
+				</section>
+
+				<hr>
+				<section class="my-3">
+					<h5 class="text-secondary pb-2"> {% trans 'Reports' %} </h5>
+
+					<a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}"
+								href="{% url 'laboratory:organizationreactivepresence' org_pk %}" target="_blank">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Occupational Health Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank" href="{% url 'report:reports_furniture_detail' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Furnitures' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank" href="{% url 'report:reactive_precursor_object_list' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Reactive precursor objects' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank" href="{% url 'report:object_change_logs' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Object changes' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:reports_limited_shelf_objects_list' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Limited shelf objects' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:precursor_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Precursor Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank" href="{% url 'report:waste_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Waste Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank" href="{% url 'report:reactive_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Reactive Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank" href="{% url 'report:risk_zone_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Risk Zone Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:reactive_stock_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Reactive Stock Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:compatibility_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Compatibility Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:hazard_map_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Compatibility Laboratory' %}
+					</a>
+
+					<div class="btn-group">
+						<button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+														aria-expanded="false">
+							<i class="fa fa-file-text"></i>
+							{% trans 'Objects' %}
+						</button>
+						<ul class="dropdown-menu">
+							<li>
+								<a class="dropdown-item" target="_blank" href="{% url 'report:reports_objects_list' org_pk %}?type_id=0">
+									{% trans 'Reactive' %}
+								</a>
+							</li>
+							<li>
+								<hr class="dropdown-divider">
+							</li>
+							<li>
+								<a class="dropdown-item" target="_blank" href="{% url 'report:reports_objects_list' org_pk %}?type_id=1">
+									{% trans 'Material' %}
+								</a>
+							</li>
+							<li>
+								<hr class="dropdown-divider">
+							</li>
+							<li>
+								<a class="dropdown-item" target="_blank" href="{% url 'report:reports_objects_list' org_pk %}?type_id=2">
+									{% trans 'Equipment' %}
+								</a>
+							</li>
+							<li>
+								<hr class="dropdown-divider">
+							</li>
+							<li>
+								<a class="dropdown-item" target="_blank" href="{% url 'report:reports_objects_list' org_pk %}">
+									General
+								</a>
+							</li>
+						</ul>
+					</div>
+
+				</section>
+
+
+			</div>
+		</div>
+	</div>
 
 {% endblock %}
