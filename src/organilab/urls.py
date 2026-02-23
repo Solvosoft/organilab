@@ -50,7 +50,6 @@ def check_ok(request):
         division_by_zero = 1 / 0
     return HttpResponse("ok")
 
-
 urlpatterns = (
     urls_djgentelela
     + auth_urls
@@ -90,6 +89,7 @@ urlpatterns = (
         path("admin/", admin.site.urls),
         path("async_notifications/", include("async_notifications.urls")),
         path("report/", include((report_urls, "report"), namespace="report")),
+        path('pending_tasks/', include('pending_tasks.urls', namespace='pending_tasks')),
     ]
 )
 
