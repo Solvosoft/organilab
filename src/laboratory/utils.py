@@ -125,20 +125,33 @@ def get_rols_from_organization(rootpk, rolfilters={}, org=None):
 
 
 def get_users_from_organization(rootpk, userfilters={}, org=None):
+    from django.contrib.contenttypes.models import ContentType
+    from django.db.models import Q
+
     if org is None:
         org = OrganizationStructure.objects.filter(pk=rootpk).first()
+
     orgs = list(
         OrganizationStructure.objects.filter(pk=rootpk)
         .descendants(of=org, include_self=True)
         .values_list("pk", flat=True)
     )
-    # orgs = org.descendants(include_self=True) .value_list('pk', flat=True)
 
-    query = UserOrganization.objects.filter(
-        organization__in=orgs, user__isnull=False, status=True
-    )
+    user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
 
-    return query.values_list("user", flat=True)
+    related_user_org_ids = OrganizationStructureRelations.objects.filter(
+        organization__in=orgs,
+        content_type=user_org_content_type,
+    ).values_list("object_id", flat=True)
+
+    # Query combinado con values_list para obtener PKs de usuarios
+    users = UserOrganization.objects.filter(
+        Q(organization__in=orgs) | Q(pk__in=related_user_org_ids),
+        user__isnull=False,
+        status=True
+    ).values_list("user", flat=True)  # <-- Esto faltaba
+
+    return list(set(users))
 
 
 def get_profile_by_organization(organization):
