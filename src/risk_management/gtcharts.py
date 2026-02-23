@@ -112,6 +112,7 @@ class LaboratoryPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.has_perms(view.django_permissions_list)
 
+
 @register_lookups(prefix="dangerIndication", basename="dangerindicationchart")
 class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
     permission_classes = [LaboratoryPermission]
@@ -170,11 +171,11 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
                 base_unit = BaseUnitValues.objects.filter(
                     measurement_unit=obj.measurement_unit).first()
                 if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                     kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
+                    kilo_amount += get_conversion_units(obj.measurement_unit,
+                                                        obj.quantity)
                 elif base_unit and base_unit.measurement_unit_base.description == "Litros":
                     litro_amount += get_conversion_units(obj.measurement_unit,
-                                                          obj.quantity)
+                                                         obj.quantity)
                 elif base_unit and base_unit.measurement_unit_base.description == "Libra":
                     libra_amount += get_conversion_units(obj.measurement_unit,)
                 else:
@@ -792,6 +793,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
                 "data": self.libra_data,
             }
         ]
+
 
 @register_lookups(prefix="eslo", basename="eslochart")
 class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):

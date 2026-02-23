@@ -62,12 +62,11 @@ class DerbAPITest(TestCase):
         self.client.post(
             reverse(
                 "riskmanagement:api-incident-list",
-                kwargs={"org_pk": 1,"risk": risk.pk},
+                kwargs={"org_pk": 1, "risk": risk.pk},
             ),
             data=data,
             content_type="application/json",
         )
-
 
     def test_lab_api_by_user(self):
         response = self.client.get(
