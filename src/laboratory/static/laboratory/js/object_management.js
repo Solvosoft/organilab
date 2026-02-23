@@ -63,14 +63,12 @@ datatable_inits = {
     addfilter: true,
 }
 
-let has_perm = window.has_perm_add_object || false;
-
 const modalids = {
     destroy: "#delete_obj_modal",
     update: "#update_obj_modal",
 }
 
-if (has_perm) {
+if (has_perm_add_object) {
     modalids.create = "#create_obj_modal";
 }
 
