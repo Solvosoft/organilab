@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from auth_and_perms.permissions import HasUNAAccess
+from auth_and_perms.permissions import HasInstitutionAccess
 from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from . import serializers
@@ -23,7 +23,7 @@ from django.utils.translation import gettext_lazy as _
 
 class SubstanceViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication]
-    permission_classes = [IsAuthenticated, HasUNAAccess]
+    permission_classes = [IsAuthenticated, HasInstitutionAccess]
     serializer_class = serializers.SubstanceDataTableSerializer
     queryset = Substance.objects.using(settings.READONLY_DATABASE)
     pagination_class = LimitOffsetPagination
