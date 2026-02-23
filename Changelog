@@ -1,3 +1,8 @@
+23/02/2026
+Repair laboratories and users
+
+    - python manage.py repair_laboratories
+
 17/02/2026
 Command to update and add danger indications
 

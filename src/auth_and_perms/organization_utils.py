@@ -4,19 +4,36 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from auth_and_perms.models import ProfilePermission, Profile
-from laboratory.models import OrganizationStructureRelations, OrganizationStructure
+from laboratory.models import OrganizationStructureRelations, OrganizationStructure, \
+    UserOrganization
 
 
 def user_is_allowed_on_organization(user, organization):
+    from django.contrib.contenttypes.models import ContentType
+
     if organization is None:
         raise ObjectDoesNotExist("Organization not found")
+
     if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
-    if not organization.users.filter(pk=user.pk).exists():
-        raise PermissionDenied(
-            _("User %(user)s not allowed on organization %(organization)r ")
-            % {"user": user, "organization": organization}
-        )
+    if organization.users.filter(pk=user.pk).exists():
+        return True
+    user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
+    user_org_ids = UserOrganization.objects.filter(user=user).values_list('pk',
+                                                                          flat=True)
+    has_relation = OrganizationStructureRelations.objects.filter(
+        organization=organization,
+        content_type=user_org_content_type,
+        object_id__in=user_org_ids
+    ).exists()
+
+    if has_relation:
+        return True
+
+    raise PermissionDenied(
+        _("User %(user)s not allowed on organization %(organization)r ")
+        % {"user": user, "organization": organization}
+    )
 
 
 def organization_can_change_laboratory(laboratory, organization, raise_exec=False):
