@@ -48,7 +48,7 @@ from laboratory.models import (
     OrganizationStructure,
     Laboratory,
     UserOrganization,
-    ShelfObject,
+    ShelfObject, OrganizationStructureRelations,
 )
 from laboratory.utils import (
     get_profile_by_organization,
@@ -335,18 +335,27 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering = ("-user",)  # default order
 
     def get_queryset(self):
-        users = (
-            self.organization.users.using(settings.READONLY_DATABASE)
-            .filter(
-                userorganization__type_in_organization__in=[
-                    UserOrganization.ADMINISTRATOR,
-                    UserOrganization.LABORATORY_MANAGER,
-                ],
-            )
-            .values_list("pk", flat=True)
-        )
 
-        return self.queryset.filter(user__in=users).distinct().order_by("pk")
+        user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
+
+        related_user_org_ids = OrganizationStructureRelations.objects.using(
+            settings.READONLY_DATABASE
+        ).filter(
+            organization=self.organization,
+            content_type=user_org_content_type,
+        ).values_list("object_id", flat=True)
+
+        users = UserOrganization.objects.using(settings.READONLY_DATABASE).filter(
+            Q(organization=self.organization) | Q(pk__in=related_user_org_ids),
+            type_in_organization__in=[
+                UserOrganization.ADMINISTRATOR,
+                UserOrganization.LABORATORY_MANAGER,
+            ],
+            user__isnull=False,
+        ).values_list("user", flat=True).distinct()
+
+        return Profile.objects.using(settings.READONLY_DATABASE).filter(
+            user__pk__in=users)
 
     def list(self, request, *args, **kwargs):
         form = OrganizationForViewsetForm(request.GET)
