@@ -2,12 +2,17 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 from .models import Regent, Structure
-from laboratory.models import OrganizationStructureRelations, Laboratory
+from laboratory.models import (
+    OrganizationStructureRelations,
+    Laboratory,
+    OrganizationStructure,
+)
 from laboratory.utils import get_user_laboratories, get_users_from_organization
 from risk_management.models import RiskZone, IncidentReport, ZoneType, Buildings
 from djgentelella.widgets import core as djgentelella
@@ -162,6 +167,7 @@ class BuildingsForm(GTForm, forms.ModelForm):
         self.fields["geolocation"].label = _("Geolocation")
 
         if org_pk:
+            organization = get_object_or_404(OrganizationStructure, pk=org_pk)
             self.fields["regents"].queryset = Regent.objects.filter(
                 organization__pk=org_pk
             )
@@ -173,7 +179,7 @@ class BuildingsForm(GTForm, forms.ModelForm):
                     organization__pk=org_pk
                 ).exclude(pk=instance.pk)
                 self.fields["laboratories"].queryset = Laboratory.objects.filter(
-                    organization__pk=org_pk
+                    pk__in=organization.get_my_laboratories
                 )
 
             else:
@@ -184,7 +190,7 @@ class BuildingsForm(GTForm, forms.ModelForm):
                     organization__pk=org_pk
                 )
                 self.fields["laboratories"].queryset = Laboratory.objects.filter(
-                    organization__pk=org_pk
+                    pk__in=organization.get_my_laboratories
                 ).exclude(pk__in=labs)
 
             self.fields["manager"].queryset = User.objects.filter(

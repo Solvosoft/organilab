@@ -7,8 +7,9 @@ from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 
 from laboratory.gtselects import GPaginatorMoreElements
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory, OrganizationStructure
 from risk_management.models import RiskZone, Buildings
+from django.utils.translation import gettext_lazy as _
 
 
 @register_lookups(prefix="risk_laboratories", basename="risk_laboratories")
@@ -28,10 +29,9 @@ class RiskLaboraratory(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org and self.risk:
-            risk = get_object_or_404(RiskZone, pk=self.risk)
+            organization = get_object_or_404(OrganizationStructure, pk=self.org)
             queryset = queryset.filter(
-                organization__pk=self.org,
-                pk__in=risk.buildings.all().values_list("laboratories__pk", flat=True),
+                pk__in=organization.get_my_laboratories
             ).distinct()
         else:
             queryset = queryset.none()
@@ -112,7 +112,11 @@ class RegentLaboraratory(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org:
-            queryset = queryset.filter(organization__pk=self.org).distinct()
+            organization = get_object_or_404(OrganizationStructure, pk=self.org)
+
+            queryset = queryset.filter(
+                pk__in=organization.get_my_laboratories
+            ).distinct()
         else:
             queryset = queryset.none()
 

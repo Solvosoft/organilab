@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from djgentelella.groute import register_lookups
 from djgentelella.permission_management import (
@@ -29,6 +30,7 @@ from laboratory.models import (
     ShelfObject,
     EquipmentType,
     Laboratory,
+    OrganizationStructure,
 )
 from laboratory.shelfobject.serializers import (
     ValidateUserAccessShelfSerializer,
@@ -64,7 +66,9 @@ class OrganizationRolslLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org:
-            queryset = queryset.filter(pk__in=self.org.root.rol.values_list("pk", flat=True))
+            queryset = queryset.filter(
+                pk__in=self.org.root.rol.values_list("pk", flat=True)
+            )
         else:
             queryset = queryset.none()
 
@@ -455,9 +459,7 @@ class ObjectProvidersLookup(BaseSelect2View):
     obj = None
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
-    perms = {
-        "list": ["laboratory.view_provider"]
-    }
+    perms = {"list": ["laboratory.view_provider"]}
     permission_classes = (AnyPermissionByAction,)
 
     def get_queryset(self):
@@ -503,7 +505,9 @@ class OrganizationRolslLookup(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.org:
-            queryset = queryset.filter(pk__in=self.org.root.rol.values_list("pk", flat=True))
+            queryset = queryset.filter(
+                pk__in=self.org.root.rol.values_list("pk", flat=True)
+            )
         else:
             queryset = queryset.none()
 
@@ -824,7 +828,12 @@ class RiskLaboratorylLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-            queryset = Laboratory.objects.filter(organization__pk=self.organization)
+            organization = get_object_or_404(
+                OrganizationStructure, pk=self.organization
+            )
+            queryset = Laboratory.objects.filter(
+                pk__in=organization.get_my_laboratories
+            )
         else:
             queryset = queryset.none()
 
