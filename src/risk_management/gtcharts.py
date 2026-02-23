@@ -807,7 +807,7 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
     def retrieve(self, request, pk):
         self.request = request
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
-        self.pk = request.GET.get('zone_pk')
+        self.pk = request.GET.get('extraParams')
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)
