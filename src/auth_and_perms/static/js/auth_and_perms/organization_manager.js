@@ -842,11 +842,7 @@ function get_roles_by_organization(rol_url, is_checked=false){
                 }
 
             }else{
-             Swal.fire({
-            icon: 'info',
-            title: gettext('No organization selected'),
-            text: gettext('You need to select a organization before using this tab.'),
-        });
+                $("#rol_details_container").html("<h6>No roles found</h6>");
             }
            }
            });
