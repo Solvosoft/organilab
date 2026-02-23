@@ -112,6 +112,12 @@ REPORT_FORMS = {
         "pdf": "report.views.base.base_pdf",
         "ods": "report.views.riskzones.report_compatibility_ods",
     },
+    "hazard_map_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.HazardMapReportForm",
+        "html": "report.views.riskzones.report_hazard_map_html",
+        "pdf": "report.views.riskzones.report_hazard_map_pdf",
+    },
     "chemicalinventory": {
         "task": "report.tasks.task_report",
         "form": "report.forms.ReportForm",

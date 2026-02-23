@@ -1,7 +1,18 @@
+import json
+from io import BytesIO
+
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.files.base import ContentFile
+from django.http import Http404
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import gettext as _
-from laboratory.models import ShelfObject, Object, Catalog
+from weasyprint import HTML
+
+from laboratory.models import Laboratory, ShelfObject, Object, Catalog
 from laboratory.report_utils import ExcelGraphBuilder
+from laboratory.utils import check_user_access_kwargs_org
 from laboratory.utils_base_unit import get_conversion_units
 from report.utils import (
     filter_period,
@@ -545,3 +556,82 @@ def report_compatibility_ods(report):
     report.file = ContentFile(file_io.getvalue(), name="%s.ods" % report_name)
     report.save()
     return buildings_qs.count()
+
+
+def report_hazard_map_html(report):
+    """Generate HTML hazard map report data for laboratories."""
+    from risk_management.hazard_map_utils import build_lab_hazard_map
+
+    org_pk = report.data.get("organization") or report.data.get("org_pk")
+    lab_pks = report.data.get("laboratory", [])
+
+    if lab_pks:
+        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk)
+    else:
+        labs = Laboratory.objects.filter(organization=org_pk)
+
+    map_data = []
+    for lab in labs:
+        lab_map = build_lab_hazard_map(lab)
+        map_data.append(lab_map)
+
+    report.table_content = {"map_data": map_data}
+    report.save()
+    return len(map_data)
+
+
+def report_hazard_map_pdf(report, uri):
+    """Generate PDF hazard map report."""
+    map_data = report.table_content.get("map_data", [])
+    report_name = get_report_name(report)
+    title = report.data.get("title", report_name)
+
+    context = {
+        "map_data": map_data,
+        "user": report.created_by,
+        "title": title,
+        "datetime": timezone.now(),
+    }
+
+    html = render_to_string("report/hazard_map_pdf.html", context=context)
+    file = BytesIO()
+    HTML(string=html, base_url=uri, encoding="utf-8").write_pdf(file)
+    file_name = "%s.pdf" % report_name
+    file.seek(0)
+    content = ContentFile(file.getvalue(), name=file_name)
+    report.file = content
+    report.save()
+    file.close()
+    return len(map_data)
+
+
+@login_required
+@permission_required("laboratory.view_report")
+def hazard_map_visual_view(request, org_pk):
+    """Direct HTML view for hazard map (bypasses Celery)."""
+    from risk_management.hazard_map_utils import build_lab_hazard_map
+
+    if not check_user_access_kwargs_org(org_pk, request.user):
+        raise Http404()
+
+    lab_pks = request.GET.getlist("laboratory")
+    title = request.GET.get("title", _("Compatibility Laboratory"))
+
+    if lab_pks:
+        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk)
+    else:
+        labs = Laboratory.objects.filter(organization=org_pk)
+
+    if not labs.exists():
+        raise Http404()
+
+    map_data = []
+    for lab in labs:
+        map_data.append(build_lab_hazard_map(lab))
+
+    context = {
+        "map_data": map_data,
+        "title": title,
+        "org_pk": org_pk,
+    }
+    return render(request, "report/hazard_map_visual.html", context)

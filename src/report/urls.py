@@ -4,6 +4,7 @@ from django.urls import path, include
 from report.api.views import ReportDataViewSet, ReportDataLogViewSet, RegencyViewSet
 from report.views import base
 from report.views import reports_org
+from report.views import riskzones
 
 base_reports = [
     path("create/", base.create_request_by_report, name="create_report_request"),
@@ -95,6 +96,16 @@ report_urls = [
         "compatibility/",
         reports_org.CompatibilityReport.as_view(),
         name="compatibility_report",
+    ),
+    path(
+        "hazard_map/",
+        reports_org.HazardMapReport.as_view(),
+        name="hazard_map_report",
+    ),
+    path(
+        "hazard_map/visual/",
+        riskzones.hazard_map_visual_view,
+        name="hazard_map_visual",
     ),
 ]
 
