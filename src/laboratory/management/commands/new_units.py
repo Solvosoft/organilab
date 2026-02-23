@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand
 from laboratory.models import Catalog, BaseUnitValues
 
 
-
 class Command(BaseCommand):
 
     help = "Create Libra unit"

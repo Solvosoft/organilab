@@ -61,6 +61,7 @@ class EditUserForm(forms.ModelForm, GTForm):
         queryset=OrganizationStructure.objects.all(),
         label=_("Workplace"),
     )
+
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
