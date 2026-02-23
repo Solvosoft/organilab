@@ -1170,7 +1170,8 @@ class OrganizationStructure(TreeNode):
 
         return OrganizationStructureRelations.objects.filter(
             organization_id__in=org_ids,
-            content_type=lab_content_type
+            content_type=lab_content_type,
+            organization__active=True
         ).values_list("object_id", flat=True).distinct()
 
 class UserOrganization(models.Model):
