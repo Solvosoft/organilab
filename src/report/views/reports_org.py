@@ -31,7 +31,10 @@ from report.forms import (
     LaboratoryRoomReportForm,
     ValidateFurnitureForm,
     PrecursorFilterForm,
+    CompatibilityReportForm,
+    HazardMapReportForm,
 )
+from laboratory.models import Laboratory
 from risk_management.models import RiskZone
 
 
@@ -427,6 +430,62 @@ class FurnitureReportView(ListView):
                 "title_view": title,
                 "report_urlnames": ["reports_furniture_detail"],
                 "form": LaboratoryRoomReportForm(initial=initial_data),
+            }
+        )
+        return context
+
+
+@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+class CompatibilityReport(ListView):
+    model = RiskZone
+    template_name = "report/base_report_form_view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CompatibilityReport, self).get_context_data(**kwargs)
+        title = _("SGA Compatibility Table")
+        context.update(
+            {
+                "title_view": title,
+                "report_urlnames": ["compatibility_report"],
+                "form": CompatibilityReportForm(
+                    initial={
+                        "name": slugify(
+                            title + " " + now().strftime("%x").replace("/", "-")
+                        ),
+                        "title": title,
+                        "organization": self.org,
+                        "report_name": "compatibility_report",
+                    },
+                    org_pk=self.org,
+                ),
+            }
+        )
+        return context
+
+
+@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+class HazardMapReport(ListView):
+    model = Laboratory
+    template_name = "report/base_report_form_view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(HazardMapReport, self).get_context_data(**kwargs)
+        title = _("Compatibility Laboratory")
+        context.update(
+            {
+                "title_view": title,
+                "report_urlnames": ["hazard_map_report"],
+                "form": HazardMapReportForm(
+                    initial={
+                        "name": slugify(
+                            title + " " + now().strftime("%x").replace("/", "-")
+                        ),
+                        "title": title,
+                        "organization": self.org,
+                        "report_name": "hazard_map_report",
+                    },
+                    org_pk=self.org,
+                ),
             }
         )
         return context

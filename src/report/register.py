@@ -105,6 +105,19 @@ REPORT_FORMS = {
         "xlsx": "report.views.regency.report_regency_xlsx",
         "ods": "report.views.regency.report_regency_doc",
     },
+    "compatibility_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.CompatibilityReportForm",
+        "html": "report.views.riskzones.report_compatibility_html",
+        "pdf": "report.views.base.base_pdf",
+        "ods": "report.views.riskzones.report_compatibility_ods",
+    },
+    "hazard_map_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.HazardMapReportForm",
+        "html": "report.views.riskzones.report_hazard_map_html",
+        "pdf": "report.views.riskzones.report_hazard_map_pdf",
+    },
     "chemicalinventory": {
         "task": "report.tasks.task_report",
         "form": "report.forms.ReportForm",

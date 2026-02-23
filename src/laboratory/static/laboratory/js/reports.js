@@ -67,7 +67,6 @@ $('#send').on('click', function () {
     $(this).attr('disabled', true);
     $("#button-text").text(gettext('Loading the report may take a few minutes...'));
     document.querySelector('#spiner').classList.add('spinner-border', 'spinner-border-sm');
-    setTimeout(get_archive_status, 1000);
 
     $.ajax({
         url: url,
@@ -75,10 +74,16 @@ $('#send').on('click', function () {
         dataType: 'json',
         success: function (data) {
             $('ul.report_form_errors').remove();
+            if (data['redirect_url']) {
+                open_new_window(data['redirect_url']);
+                accept_request();
+                return;
+            }
             if (data['result']) {
                 $("#diverrormessage").hide();
                 $("#textstatus").html("");
                 $(".statuspanel").removeClass("d-none");
+                setTimeout(get_archive_status, 1000);
                 get_doc(data['report'], data['celery_id']);
             } else if (data['form_errors']) {
                 form_field_errors(data['form_errors']);
