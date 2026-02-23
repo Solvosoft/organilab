@@ -429,7 +429,7 @@ class FurnitureReportView(ListView):
             {
                 "title_view": title,
                 "report_urlnames": ["reports_furniture_detail"],
-                "form": LaboratoryRoomReportForm(initial=initial_data),
+                "form": LaboratoryRoomReportForm(initial=initial_data, org_pk=self.org),
             }
         )
         return context

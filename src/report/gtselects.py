@@ -152,7 +152,8 @@ class LabsByOrgLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-            return queryset.filter(organization__id=self.organization.pk)
+            lab_ids = get_laboratories_from_organization(self.organization.pk)
+            return queryset.filter(pk__in=lab_ids)
 
         return queryset.none()
 
