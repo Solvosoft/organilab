@@ -1,0 +1,157 @@
+{% extends 'report/base_pdf.html' %}
+{% load i18n %}
+
+{% block extra_css %}
+.hazard-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-bottom: 10px;
+}
+.hazard-grid td {
+    border: 1px solid #333;
+    padding: 4px;
+    vertical-align: top;
+    font-size: 0.7em;
+    text-align: center;
+}
+.shelf-cell {
+    padding: 3px;
+    margin-bottom: 2px;
+    border-radius: 3px;
+}
+.shelf-cell strong {
+    display: block;
+    font-size: 0.9em;
+}
+.shelf-cell small {
+    display: block;
+    font-size: 0.75em;
+}
+h3.lab-title {
+    font-size: 1.1em;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 3px;
+}
+h4.room-title {
+    font-size: 0.95em;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    color: #444;
+}
+h5.furniture-title {
+    font-size: 0.85em;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    color: #666;
+}
+.legend-table {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.legend-table td {
+    padding: 3px 10px;
+    font-size: 0.8em;
+    font-weight: bold;
+    border: 1px solid #333;
+}
+.alerts-section {
+    margin-top: 10px;
+    page-break-inside: avoid;
+}
+.alerts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.7em;
+}
+.alerts-table th, .alerts-table td {
+    border: 1px solid #333;
+    padding: 3px 5px;
+    text-align: left;
+}
+.alerts-table th {
+    background-color: #FF0000;
+    color: #FFFFFF;
+}
+.tonnage-info {
+    font-size: 0.85em;
+    margin-bottom: 8px;
+    color: #333;
+}
+{% endblock %}
+
+{% block pdf_content %}
+<table class="legend-table">
+    <tr>
+        <td style="background-color:#00B050;">{% trans 'Compatible' %}</td>
+        <td style="background-color:#FFD700;">{% trans 'Caution' %}</td>
+        <td style="background-color:#FF0000;color:#fff;">{% trans 'Incompatible' %}</td>
+        <td style="background-color:#D9D9D9;">{% trans 'No data' %}</td>
+    </tr>
+</table>
+
+{% for lab_data in map_data %}
+<h3 class="lab-title">{{ lab_data.laboratory }}</h3>
+
+{% if lab_data.tonnage %}
+<p class="tonnage-info">{% trans 'Total reactive weight' %}: {{ lab_data.tonnage.kilograms }} kg ({{ lab_data.tonnage.tons }} {% trans 'tons' %})</p>
+{% endif %}
+
+{% for room in lab_data.rooms %}
+<h4 class="room-title">{{ room.name }}</h4>
+
+{% for furniture in room.furniture_list %}
+<h5 class="furniture-title">{{ furniture.name }}</h5>
+{% if furniture.grid %}
+<table class="hazard-grid">
+    {% for row in furniture.grid %}
+    <tr>
+        {% for cell in row %}
+        <td>
+            {% for shelf in cell.shelves %}
+            <div class="shelf-cell" style="background-color:{{ shelf.color }};{% if shelf.compat_code == 'R' %}color:#fff;{% endif %}">
+                <strong>{{ shelf.name }}</strong>
+                {% for sub in shelf.substances %}
+                <small>{{ sub }}</small>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% if lab_data.alerts %}
+<div class="alerts-section">
+    <table class="alerts-table">
+        <thead>
+            <tr>
+                <th>{% trans 'Shelf A' %}</th>
+                <th>{% trans 'H-Code A' %}</th>
+                <th>{% trans 'Shelf B' %}</th>
+                <th>{% trans 'H-Code B' %}</th>
+                <th>{% trans 'Reason' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alert in lab_data.alerts %}
+            <tr>
+                <td>{{ alert.shelf_a }}</td>
+                <td>{{ alert.code_a }}</td>
+                <td>{{ alert.shelf_b }}</td>
+                <td>{{ alert.code_b }}</td>
+                <td>{{ alert.reason }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %}

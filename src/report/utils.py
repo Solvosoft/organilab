@@ -78,7 +78,7 @@ def set_format_table_columns(columns_fields):
     return columns
 
 
-def get_pdf_table_content(table_content):
+def get_pdf_table_content(table_content, cell_style_fn=None):
     pdf_table = "<table id='pdf_table_report'><thead>"
     if "columns" and "dataset" in table_content:
         pdf_table += "<tr>"
@@ -92,10 +92,13 @@ def get_pdf_table_content(table_content):
             row.insert(0, i)
             i += 1
             pdf_table += "<tr>"
-            for item in row:
-                pdf_table += "<td>%s</td>" % (item)
+            for col_idx, item in enumerate(row):
+                style_attr = ''
+                if cell_style_fn:
+                    style_attr = cell_style_fn(col_idx, item)
+                pdf_table += "<td%s>%s</td>" % (style_attr, item)
             pdf_table += "</tr>"
-        "</tbody></table>"
+        pdf_table += "</tbody></table>"
     else:
         pdf_table = ""
     return pdf_table

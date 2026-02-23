@@ -81,6 +81,18 @@
 						{% trans 'Reactive Stock Report' %}
 					</a>
 
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:compatibility_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Compatibility Report' %}
+					</a>
+
+					<a class="btn btn-primary btn-sm" target="_blank"
+								href="{% url 'report:hazard_map_report' org_pk %}">
+						<i class="fa fa-file-text"></i>
+						{% trans 'Compatibility Laboratory' %}
+					</a>
+
 					<div class="btn-group">
 						<button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
 														aria-expanded="false">
