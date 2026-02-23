@@ -8,7 +8,9 @@ from django.db.models import F
 from laboratory.models import ObjectMaximumLimit, Object, Catalog
 from report.utils import get_conversion_units_to_kilograms
 from typing import List, Dict, Optional, Tuple
-import math, json, argparse
+import math
+import json
+import argparse
 import pandas as pd
 
 from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndication

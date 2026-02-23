@@ -112,6 +112,7 @@ class BaseUnittAdmin(admin.ModelAdmin):
 class ObjectLogAdmin(admin.ModelAdmin):
     list_display = ["object", "update_time"]
 
+
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
 admin.site.register(models.LaboratoryRoom)
@@ -137,4 +138,3 @@ admin.site.register(models.ObjectMaximumLimit)
 admin.site.register(models.ReactiveLimit)
 admin.site.register(models.ShelfObjectEquipmentCharacteristics)
 admin.site.site_header = _("Organilab Administration site")
-

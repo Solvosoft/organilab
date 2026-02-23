@@ -32,7 +32,7 @@ class ProfileLanguageMiddleware:
                 if reguser.registration_method == 1:
                     return redirect(
                         reverse("index")
-                        #reverse("auth_and_perms:user_org_creation_totp", args=[user.pk])
+                        # reverse("auth_and_perms:user_org_creation_totp", args=[user.pk])
                     )
                 if reguser.registration_method == 2:
                     return redirect(

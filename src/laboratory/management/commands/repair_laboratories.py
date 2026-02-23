@@ -41,7 +41,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         dry_run = options["dry_run"]
 
-
         laboratories = Laboratory.objects.select_related("organization").exclude(
             organization__isnull=True
         )

@@ -101,6 +101,7 @@ def remove_shelf_not_furniture():
         obj_pks = re.findall(r"\d+", furniture.dataconfig)
         furniture.shelf_set.all().exclude(pk__in=obj_pks).delete()
 
+
 @app.task()
 def add_maximum_object_stock_per_day():
     laboratories = Laboratory.objects.all()

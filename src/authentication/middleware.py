@@ -20,7 +20,7 @@ class ProfileMiddleware:
         if request.resolver_match is None:
             try:
                 request.resolver_match = resolve(request.path)
-            except:
+            except Exception:
                 pass
         response = self.get_response(request)
         return response
