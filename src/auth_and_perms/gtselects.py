@@ -532,20 +532,10 @@ class UsersByOrganization(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-
-            user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-
-            related_user_org_ids = OrganizationStructureRelations.objects.using(
+            user_ids = UserOrganization.objects.using(
                 settings.READONLY_DATABASE
             ).filter(
                 organization=self.organization,
-                content_type=user_org_content_type,
-            ).values_list("object_id", flat=True)
-
-            # Usuarios directos + relacionados
-            user_ids = UserOrganization.objects.using(
-                settings.READONLY_DATABASE).filter(
-                Q(organization=self.organization) | Q(pk__in=related_user_org_ids),
                 user__isnull=False,
             ).values_list("user", flat=True).distinct()
 

@@ -891,21 +891,13 @@ class RiskUsersOrganizations(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        queryset = super().get_queryset()
-
         if self.org:
-            user_org_contenttype = ContentType.objects.get_for_model(UserOrganization)
-            related_user_org_ids = OrganizationStructureRelations.objects.filter(
+            user_ids = UserOrganization.objects.filter(
                 organization_id=self.org,
-                content_type=user_org_contenttype,
-            ).values_list("object_id", flat=True)
-            related_user_ids = UserOrganization.objects.filter(
-                pk__in=related_user_org_ids,
                 user__isnull=False,
-            ).values_list("user", flat=True)
-            queryset = queryset.filter(
-                Q(organizationstructure__pk=self.org) | Q(pk__in=related_user_ids)
-            ).distinct()
+            ).values_list("user", flat=True).distinct()
+
+            queryset = queryset.filter(pk__in=user_ids).distinct()
         else:
             queryset = queryset.none()
 

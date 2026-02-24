@@ -125,7 +125,6 @@ def get_rols_from_organization(rootpk, rolfilters={}, org=None):
 
 
 def get_users_from_organization(rootpk, userfilters={}, org=None):
-
     if org is None:
         org = OrganizationStructure.objects.filter(pk=rootpk).first()
 
@@ -135,21 +134,13 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
         .values_list("pk", flat=True)
     )
 
-    user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-
-    related_user_org_ids = OrganizationStructureRelations.objects.filter(
-        organization__in=orgs,
-        content_type=user_org_content_type,
-    ).values_list("object_id", flat=True)
-
-    # Query combinado con values_list para obtener PKs de usuarios
     users = UserOrganization.objects.filter(
-        Q(organization__in=orgs) | Q(pk__in=related_user_org_ids),
+        organization__in=orgs,
         user__isnull=False,
         status=True
-    ).values_list("user", flat=True)  # <-- Esto faltaba
+    ).values_list("user", flat=True).distinct()
 
-    return list(set(users))
+    return list(users)
 
 
 def get_profile_by_organization(organization):
@@ -453,8 +444,6 @@ def get_all_laboratories_by_org(org_pk):
 
 
 def check_user_access_kwargs_org_lab(org, lab, user):
-    from django.contrib.contenttypes.models import ContentType
-
     user_access = False
 
     if org:
@@ -463,27 +452,10 @@ def check_user_access_kwargs_org_lab(org, lab, user):
         if organization.exists():
             organization = organization.first()
 
-            has_access = False
-
-            if organization.users.filter(pk=user.pk).exists():
-                has_access = True
-
-            if not has_access:
-                root_org = organization.root
-                if root_org and root_org.users.filter(pk=user.pk).exists():
-                    has_access = True
-
-            if not has_access:
-                user_org_content_type = ContentType.objects.get_for_model(
-                    UserOrganization)
-                user_org_ids = UserOrganization.objects.filter(user=user).values_list(
-                    'pk', flat=True)
-
-                has_access = OrganizationStructureRelations.objects.filter(
-                    organization=organization,
-                    content_type=user_org_content_type,
-                    object_id__in=user_org_ids
-                ).exists()
+            has_access = UserOrganization.objects.filter(
+                user=user,
+                organization=organization
+            ).exists()
 
             if has_access:
                 if lab:
