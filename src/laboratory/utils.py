@@ -125,9 +125,6 @@ def get_rols_from_organization(rootpk, rolfilters={}, org=None):
 
 
 def get_users_from_organization(rootpk, userfilters={}, org=None):
-    from django.contrib.contenttypes.models import ContentType
-    from django.db.models import Q
-
     if org is None:
         org = OrganizationStructure.objects.filter(pk=rootpk).first()
 
@@ -137,21 +134,13 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
         .values_list("pk", flat=True)
     )
 
-    user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-
-    related_user_org_ids = OrganizationStructureRelations.objects.filter(
-        organization__in=orgs,
-        content_type=user_org_content_type,
-    ).values_list("object_id", flat=True)
-
-    # Query combinado con values_list para obtener PKs de usuarios
     users = UserOrganization.objects.filter(
-        Q(organization__in=orgs) | Q(pk__in=related_user_org_ids),
+        organization__in=orgs,
         user__isnull=False,
         status=True
-    ).values_list("user", flat=True)  # <-- Esto faltaba
+    ).values_list("user", flat=True).distinct()
 
-    return list(set(users))
+    return list(users)
 
 
 def get_profile_by_organization(organization):
@@ -436,7 +425,7 @@ def get_laboratories_from_organization_profile(rootpk, user):
 
 
 def get_laboratories_by_user_profile(user, org_pk, get_all=False):
-    queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk)
+    queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk, relate_labs_org_parent=True)
     if get_all:
         rel_lab = get_all_laboratories_by_org(org_pk)
     else:
@@ -463,8 +452,12 @@ def check_user_access_kwargs_org_lab(org, lab, user):
         if organization.exists():
             organization = organization.first()
 
-            if organization.users.filter(pk=user.pk).exists():
+            has_access = UserOrganization.objects.filter(
+                user=user,
+                organization=organization
+            ).exists()
 
+            if has_access:
                 if lab:
                     laboratory = Laboratory.objects.filter(pk=lab)
 
@@ -477,7 +470,8 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                         if can_change and lab in user_labs:
                             user_access = True
                 else:
-                    user_access = True  # REPORT VIEWS WITH LAB = 0
+                    user_access = True
+
     return user_access
 
 

@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
@@ -9,7 +10,6 @@ from laboratory.models import OrganizationStructureRelations, OrganizationStruct
 
 
 def user_is_allowed_on_organization(user, organization):
-    from django.contrib.contenttypes.models import ContentType
 
     if organization is None:
         raise ObjectDoesNotExist("Organization not found")

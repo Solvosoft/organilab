@@ -97,18 +97,16 @@ class Command(BaseCommand):
         }
 
     def migrate_user_organizations(self, dry_run):
-        """Migra los UserOrganization al root."""
+        """Migra los UserOrganization al root creando nuevos registros."""
         self.stdout.write(
             self.style.HTTP_INFO("\n=== MIGRANDO USUARIOS DE ORGANIZACIÓN ===\n"))
 
-        user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
         user_orgs = UserOrganization.objects.select_related(
             "organization", "user"
         ).exclude(organization__isnull=True)
 
         total = user_orgs.count()
-        migrated = 0
-        relations_created = 0
+        root_created = 0
         skipped = 0
 
         self.stdout.write(f"Procesando {total} usuarios de organización...")
@@ -140,28 +138,36 @@ class Command(BaseCommand):
             )
             self.stdout.write(
                 f"  [{user_org.pk}] {user_display} ({type_display}): "
-                f"{original_org.name} -> {root_org.name}"
+                f"{original_org.name} -> Crear en root: {root_org.name}"
             )
 
             if not dry_run:
-                relations_created = self.create_organization_relation(
-                    original_org, user_org, user_org_content_type, relations_created
-                )
-                relations_created = self.create_organization_relation(
-                    root_org, user_org, user_org_content_type, relations_created
-                )
+                existing = UserOrganization.objects.filter(
+                    user=user_org.user,
+                    organization=root_org,
+                ).first()
 
-                user_org.organization = root_org
-                user_org.save(update_fields=["organization"])
-                migrated += 1
-                self.stdout.write(
-                    self.style.SUCCESS(f"    ✓ Organización cambiada a {root_org.name}")
-                )
+                if existing:
+                    self.stdout.write(
+                        self.style.NOTICE(
+                            f"    - UserOrganization ya existía en root ({root_org.name})")
+                    )
+                else:
+                    UserOrganization.objects.create(
+                        user=user_org.user,
+                        organization=root_org,
+                        type_in_organization=user_org.type_in_organization,
+                        status=user_org.status,
+                    )
+                    root_created += 1
+                    self.stdout.write(
+                        self.style.SUCCESS(
+                            f"    ✓ Nuevo UserOrganization creado en root ({root_org.name})")
+                    )
 
         return {
             "total": total,
-            "migrated": migrated,
-            "relations_created": relations_created,
+            "root_created": root_created,
             "skipped": skipped,
         }
 
@@ -185,13 +191,12 @@ class Command(BaseCommand):
 
         self.stdout.write("\nUsuarios de Organización:")
         self.stdout.write(f"  Total: {user_stats['total']}")
-        self.stdout.write(f"  Migrados: {user_stats['migrated']}")
-        self.stdout.write(f"  Relaciones creadas: {user_stats['relations_created']}")
+        self.stdout.write(f"  Relaciones creadas: {user_stats['root_created']}")
         self.stdout.write(f"  Saltados: {user_stats['skipped']}")
 
-        total_migrated = lab_stats['migrated'] + user_stats['migrated']
+        total_migrated = lab_stats['migrated']
         total_relations = lab_stats['relations_created'] + user_stats[
-            'relations_created']
+            'root_created']
 
         self.stdout.write("\nTotales:")
         self.stdout.write(f"  Objetos migrados: {total_migrated}")
