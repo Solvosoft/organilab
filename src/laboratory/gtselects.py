@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from djgentelella.groute import register_lookups
@@ -30,7 +32,7 @@ from laboratory.models import (
     ShelfObject,
     EquipmentType,
     Laboratory,
-    OrganizationStructure,
+    OrganizationStructure, UserOrganization, OrganizationStructureRelations,
 )
 from laboratory.shelfobject.serializers import (
     ValidateUserAccessShelfSerializer,
@@ -889,8 +891,21 @@ class RiskUsersOrganizations(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
 
+        queryset = super().get_queryset()
+
         if self.org:
-            queryset = queryset.filter(organizationstructure__pk=self.org).distinct()
+            user_org_contenttype = ContentType.objects.get_for_model(UserOrganization)
+            related_user_org_ids = OrganizationStructureRelations.objects.filter(
+                organization_id=self.org,
+                content_type=user_org_contenttype,
+            ).values_list("object_id", flat=True)
+            related_user_ids = UserOrganization.objects.filter(
+                pk__in=related_user_org_ids,
+                user__isnull=False,
+            ).values_list("user", flat=True)
+            queryset = queryset.filter(
+                Q(organizationstructure__pk=self.org) | Q(pk__in=related_user_ids)
+            ).distinct()
         else:
             queryset = queryset.none()
 

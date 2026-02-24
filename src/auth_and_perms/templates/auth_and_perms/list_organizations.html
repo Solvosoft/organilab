@@ -121,14 +121,14 @@
 												<i class="fa fa-file-text-o"></i></a>
 										</li>
 									{% endif %}
-									{% if perms.auth_and_perms.view_rol %}
+									{% if perms.auth_and_perms.view_rol and node.0.parent == none %}
 										<li class="list-group-item">
 											<a class="rol_details_btn" data-org="{{ node.0.pk }}" title="{% trans 'Show Roles information' %}"> <i
 												class="fa fa-info-circle"></i></a>
 										</li>
 									{% endif %}
 
-									{% if perms.auth_and_perms.change_rol %}
+									{% if perms.auth_and_perms.change_rol and node.0.parent == none %}
 										<li class="list-group-item" title="{% trans 'Change parent of organization' %}">
 											<a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"
 														title="{% trans 'Rol List' %}">
