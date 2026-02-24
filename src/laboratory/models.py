@@ -988,12 +988,14 @@ class OrganizationStructureManager(models.Manager):
         Returns all organizations that user has access also the current organization
         will be excluded.
         """
-        qparams = Q(
-            pk__in=user.userorganization_set.values_list("organization", flat=True)
-        ) | Q(users=user)
-        organizations = (
-            OrganizationStructure.objects.filter(qparams).exclude(pk=org_pk).distinct()
-        )
+        org_ids = UserOrganization.objects.filter(
+            user=user
+        ).values_list("organization_id", flat=True)
+
+        organizations = OrganizationStructure.objects.filter(
+            pk__in=org_ids
+        ).exclude(pk=org_pk).distinct()
+
         return organizations
 
     def get_children(self, org_id):
@@ -1002,26 +1004,16 @@ class OrganizationStructureManager(models.Manager):
         )
 
     def filter_organization_by_user(self, user, descendants=True, ancestors=False):
-        from django.contrib.contenttypes.models import ContentType
-
-        user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-
-        direct_orgs = OrganizationStructure.objects.filter(users=user)
-
-        user_org_ids = UserOrganization.objects.filter(user=user).values_list('pk',
-                                                                              flat=True)
-        relation_org_ids = OrganizationStructureRelations.objects.filter(
-            content_type=user_org_content_type,
-            object_id__in=user_org_ids
+        user_org_ids = UserOrganization.objects.filter(
+            user=user
         ).values_list('organization_id', flat=True)
 
-        relation_orgs = OrganizationStructure.objects.filter(pk__in=relation_org_ids)
-
-        organizations = (direct_orgs | relation_orgs).distinct()
+        organizations = OrganizationStructure.objects.filter(pk__in=user_org_ids)
 
         pks = set()
 
         for org in organizations:
+
             pks.add(org.pk)
 
             if descendants:
@@ -1077,7 +1069,6 @@ class OrganizationStructureManager(models.Manager):
         contenttype = ContentType.objects.filter(
             app_label="laboratory", model="laboratory"
         ).first()
-
         if relate_labs_org_parent:
             orgs = self.get_user_organizations(user, org_pk)
         else:
@@ -1088,7 +1079,6 @@ class OrganizationStructureManager(models.Manager):
                 ancestors=ancestors,
                 org_pk=org_pk,
             )
-
         labs_related = set(
             OrganizationStructureRelations.objects.filter(
                 organization__in=orgs,
@@ -1098,7 +1088,6 @@ class OrganizationStructureManager(models.Manager):
         labs_in_orgs = set(
             orgs.exclude(laboratory=None).values_list("laboratory", flat=True)
         )
-
         pks = labs_related.union(labs_in_orgs)
         return contenttype.model_class().objects.filter(pk__in=pks)
 

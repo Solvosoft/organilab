@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, Case, When
 from django.http import Http404
 from djgentelella.groute import register_lookups
@@ -31,7 +32,7 @@ from laboratory.models import (
     Laboratory,
     OrganizationStructure,
     OrganizationStructureRelations,
-    Object,
+    Object, UserOrganization,
 )
 from laboratory.utils import (
     get_profile_by_organization,
@@ -317,7 +318,7 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
 
     def get_queryset(self):
 
-        if self.organization.parent:
+        if self.organization.root.pk == self.organization.pk:
             labs = OrganizationStructure.os_manager.filter_labs_by_user(
                 self.request.user, ancestors=True, org_pk=self.organization.pk
             )
@@ -531,11 +532,16 @@ class UsersByOrganization(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-            queryset = (
-                self.organization.users.all()
-                .using(settings.READONLY_DATABASE)
-                .distinct()
-            )
+            user_ids = UserOrganization.objects.using(
+                settings.READONLY_DATABASE
+            ).filter(
+                organization=self.organization,
+                user__isnull=False,
+            ).values_list("user", flat=True).distinct()
+
+            queryset = User.objects.using(settings.READONLY_DATABASE).filter(
+                pk__in=user_ids
+            ).distinct()
         else:
             queryset = queryset.none()
 
