@@ -335,18 +335,8 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering = ("-user",)  # default order
 
     def get_queryset(self):
-
-        user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-
-        related_user_org_ids = OrganizationStructureRelations.objects.using(
-            settings.READONLY_DATABASE
-        ).filter(
-            organization=self.organization,
-            content_type=user_org_content_type,
-        ).values_list("object_id", flat=True)
-
         users = UserOrganization.objects.using(settings.READONLY_DATABASE).filter(
-            Q(organization=self.organization) | Q(pk__in=related_user_org_ids),
+            organization=self.organization,
             type_in_organization__in=[
                 UserOrganization.ADMINISTRATOR,
                 UserOrganization.LABORATORY_MANAGER,
