@@ -17,6 +17,7 @@ from tree_queries.fields import TreeNodeForeignKey
 from tree_queries.models import TreeNode
 from tree_queries.query import TreeQuerySet
 
+from auth_and_perms.models import ProfilePermission
 from presentation.models import AbstractOrganizationRef
 from sga.models import Pictogram
 from . import catalog
@@ -1004,35 +1005,42 @@ class OrganizationStructureManager(models.Manager):
         )
 
     def filter_organization_by_user(self, user, descendants=True, ancestors=False):
-        user_org_ids = UserOrganization.objects.filter(
+
+        user_org_ids = set(UserOrganization.objects.filter(
             user=user
-        ).values_list('organization_id', flat=True)
+        ).values_list('organization_id', flat=True))
 
-        organizations = OrganizationStructure.objects.filter(pk__in=user_org_ids)
+        org_content_type = ContentType.objects.get_for_model(OrganizationStructure)
+        orgs_with_permissions = set(ProfilePermission.objects.filter(
+            profile=user.profile,
+            content_type=org_content_type
+        ).values_list('object_id', flat=True))
 
-        pks = set()
+        base_org_ids = orgs_with_permissions | user_org_ids
+
+        if not base_org_ids:
+            return OrganizationStructure.objects.none()
+
+        organizations = OrganizationStructure.objects.filter(pk__in=base_org_ids)
+
+        pks = set(base_org_ids)
 
         for org in organizations:
+            if org.pk in orgs_with_permissions:
+                if descendants:
+                    descendant_pks = org.descendants(include_self=False).values_list('pk',
+                                                                                     flat=True)
+                    pks.update(descendant_pks)
 
-            pks.add(org.pk)
+            # if ancestors:
+            #     ancestor_pks = org.ancestors(include_self=False).values_list('pk',
+            #                                                                  flat=True)
+            #     pks.update(ancestor_pks)
 
-            if descendants:
-                descendant_pks = org.descendants(include_self=False).values_list('pk',
-                                                                                 flat=True)
-                pks.update(descendant_pks)
-
-            if ancestors:
-                ancestor_pks = org.ancestors(include_self=False).values_list('pk',
-                                                                             flat=True)
-                pks.update(ancestor_pks)
-
-        if pks:
-            return OrganizationStructure.objects.filter(pk__in=pks)
-
-        return OrganizationStructure.objects.none()
+        return OrganizationStructure.objects.filter(pk__in=pks).distinct()
 
     def filter_user_orgs(
-        self, user, org=None, descendants=True, include_self=True, ancestors=False
+        self, user, org=None, descendants=True, include_self=True, #ancestors=False
     ):
         organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
@@ -1045,12 +1053,12 @@ class OrganizationStructureManager(models.Manager):
                     if sons.pk not in pks:
                         pks.append(sons.pk)
 
-            if ancestors:
-                for parent in org.descendants(include_self=include_self).filter(
-                    users=user
-                ):
-                    if parent.pk not in pks:
-                        pks.append(parent.pk)
+            # if ancestors:
+            #     for parent in org.descendants(include_self=include_self).filter(
+            #         users=user
+            #     ):
+            #         if parent.pk not in pks:
+            #             pks.append(parent.pk)
 
         if pks:
             return OrganizationStructure.objects.filter(pk__in=pks)
