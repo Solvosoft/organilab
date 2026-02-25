@@ -1134,6 +1134,36 @@ class OrganizationStructure(TreeNode):
     def __repr__(self):
         return self.__str__()
 
+    def get_effective_org_for_profile(self, profile):
+        """
+        Si el usuario no tiene ProfilePermission directo en esta organización,
+        busca en los ancestros la primera org donde sí tenga permisos.
+
+        Retorna la instancia de OrganizationStructure o None.
+        """
+        has_direct_permission = ProfilePermission.objects.filter(
+            profile=profile,
+            object_id=self.pk,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+        ).exists()
+
+        if has_direct_permission:
+            return self
+
+        for ancestor in reversed(list(self.ancestors())):
+            has_ancestor_permission = ProfilePermission.objects.filter(
+                profile=profile,
+                object_id=ancestor.pk,
+                content_type__app_label="laboratory",
+                content_type__model="organizationstructure",
+            ).exists()
+
+            if has_ancestor_permission:
+                return ancestor
+
+        return None
+
     @property
     def laboratories(self):
         # TODO: Delete this

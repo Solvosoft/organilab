@@ -446,29 +446,20 @@ def get_all_laboratories_by_org(org_pk):
 def check_user_access_kwargs_org_lab(org, lab, user):
     user_access = False
 
+    if not hasattr(user, 'profile'):
+        return user_access
+
     if org:
-        organization = OrganizationStructure.objects.filter(pk=org)
+        organization = OrganizationStructure.objects.filter(pk=org).first()
 
-        if organization.exists():
-            organization = organization.first()
+        if organization:
+            effective_org = organization.get_effective_org_for_profile(user.profile)
 
-            has_access = UserOrganization.objects.filter(
-                user=user,
-                organization=organization
-            ).exists()
-
-            if has_access:
+            if effective_org:
                 if lab:
-                    laboratory = Laboratory.objects.filter(pk=lab)
-
-                    if laboratory.exists():
-                        can_change = organization_can_change_laboratory(
-                            laboratory.first(), organization
-                        )
-                        user_labs = get_laboratories_by_user_profile(user, org)
-
-                        if can_change and lab in user_labs:
-                            user_access = True
+                    lab_ids = list(organization.get_my_laboratories)
+                    if lab in lab_ids:
+                        user_access = True
                 else:
                     user_access = True
 
