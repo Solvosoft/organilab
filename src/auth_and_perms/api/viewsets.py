@@ -472,15 +472,42 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
     permission_classes = [IsAuthenticated]
 
     def delete_profile_from_organization(self, user, organization):
+        is_root = organization.root.pk == organization.pk
+        descendant_orgs = []
 
-        labs = get_laboratories_from_organization(organization.pk)
-        pps = ProfilePermission.objects.filter(
+        if is_root:
+            org_ids = [organization.pk]
+            descendant_orgs = list(organization.descendants())
+            org_ids.extend([org.pk for org in descendant_orgs])
+        else:
+            org_ids = [organization.pk]
+
+        for org_pk in org_ids:
+            labs = get_laboratories_from_organization(org_pk)
+            pps = ProfilePermission.objects.filter(
+                profile=user.profile,
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+                object_id__in=labs.values_list("pk", flat=True),
+            )
+            for pp in pps:
+                organilab_logentry(
+                    user,
+                    pp,
+                    DELETION,
+                    "profilepermission",
+                    changed_data=[],
+                    relobj=organization,
+                )
+            pps.delete()
+
+        pps_orgs = ProfilePermission.objects.filter(
             profile=user.profile,
             content_type__app_label="laboratory",
-            content_type__model="laboratory",
-            object_id__in=labs.values_list("pk", flat=True),
+            content_type__model="organizationstructure",
+            object_id__in=org_ids,
         )
-        for pp in pps:
+        for pp in pps_orgs:
             organilab_logentry(
                 user,
                 pp,
@@ -489,8 +516,13 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 changed_data=[],
                 relobj=organization,
             )
-        pps.delete()
-        organization.users.remove(user)  # only remove relation
+        pps_orgs.delete()
+
+        organization.users.remove(user)
+        if is_root:
+            for desc_org in descendant_orgs:
+                desc_org.users.remove(user)
+
         organilab_logentry(
             user, user, DELETION, "user", changed_data=[], relobj=organization
         )
