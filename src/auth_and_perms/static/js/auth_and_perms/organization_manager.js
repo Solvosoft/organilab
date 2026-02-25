@@ -138,6 +138,7 @@ function send_create_profile_on_conttentype(data){
                                 icon: 'success',
                                 timer: 1500,
                               });
+                              $("#relprofilelabmodal").modal('hide');
                               return response.json();
                         }
                         return Promise.reject(response);  // then it will go to the catch if it is an error code
