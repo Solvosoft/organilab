@@ -32,7 +32,9 @@ from laboratory.models import (
     ShelfObject,
     EquipmentType,
     Laboratory,
-    OrganizationStructure, UserOrganization, OrganizationStructureRelations,
+    OrganizationStructure,
+    UserOrganization,
+    OrganizationStructureRelations,
 )
 from laboratory.shelfobject.serializers import (
     ValidateUserAccessShelfSerializer,
@@ -744,7 +746,7 @@ class UserseslLookup(BaseSelect2View):
 
         if self.organization:
             queryset = User.objects.filter(
-                pk__in=get_users_from_organization(self.organization)
+                pk__in=get_users_from_organization(self.organization.root.pk)
             )
         else:
             queryset = queryset.none()
@@ -753,7 +755,9 @@ class UserseslLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
-
+        self.organization = OrganizationStructure.objects.filter(
+            pk=self.organization
+        ).first()
         return super().list(request, *args, **kwargs)
 
 
@@ -774,7 +778,7 @@ class RegentslLookup(BaseSelect2View):
 
         if self.organization:
             queryset = Regent.objects.filter(
-                user__pk__in=get_users_from_organization(self.organization)
+                user__pk__in=get_users_from_organization(self.organization.root.pk)
             )
         else:
             queryset = queryset.none()
@@ -783,7 +787,9 @@ class RegentslLookup(BaseSelect2View):
 
     def list(self, request, *args, **kwargs):
         self.organization = self.request.GET.get("org_pk", None)
-
+        self.organization = OrganizationStructure.objects.filter(
+            pk=self.organization
+        ).first()
         return super().list(request, *args, **kwargs)
 
 
@@ -892,12 +898,17 @@ class RiskUsersOrganizations(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org:
-            user_ids = UserOrganization.objects.filter(
-                organization_id=self.org,
-                user__isnull=False,
-            ).values_list("user", flat=True).distinct()
+            root = get_object_or_404(OrganizationStructure, pk=self.org)
+            user_ids = (
+                UserOrganization.objects.filter(
+                    organization=root.root,
+                    user__isnull=False,
+                )
+                .values_list("user", flat=True)
+                .distinct()
+            )
 
-            queryset = queryset.filter(pk__in=user_ids).distinct()
+            queryset = queryset.filter(pk__in=user_ids).distinct("pk")
         else:
             queryset = queryset.none()
 
