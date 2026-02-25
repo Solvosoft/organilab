@@ -225,18 +225,11 @@ class LaboratoryListView(ListView):
     ordering = ["name"]
 
     def get_queryset(self):
-        laboratories = get_laboratories_by_user_profile(self.request.user, self.org, True)
-        pp = (
-            ProfilePermission.objects.filter(
-                profile=self.request.user.profile,
-                content_type__app_label=self.model._meta.app_label,
-                content_type__model=self.model._meta.model_name,
-                object_id__in=laboratories,
-            )
-            .distinct("object_id")
-            .values_list("object_id", flat=True)
-        )
-        queryset = self.model.objects.filter(pk__in=pp)
+        organization = OrganizationStructure.objects.filter(pk=self.org).first()
+        if organization is None:
+            return self.model.objects.none()
+        lab_ids = organization.get_my_laboratories
+        queryset = self.model.objects.filter(pk__in=lab_ids)
         q = self.request.GET.get("search_fil", "")
         if q != "":
             queryset = queryset.filter(name__icontains=q)
