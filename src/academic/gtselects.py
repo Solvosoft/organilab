@@ -34,7 +34,7 @@ class ProcedureGModelLookup(BaseSelect2View):
 
         queryset = super().get_queryset()
         if self.org_pk:
-            organizations = get_pk_org_ancestors(self.org_pk.pk)
+            organizations = get_pk_org_ancestors(self.org_pk.pk, self.request.user)
             content_type = ContentType.objects.get(
                 app_label="laboratory", model="organizationstructure"
             )
