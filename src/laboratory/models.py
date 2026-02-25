@@ -989,13 +989,15 @@ class OrganizationStructureManager(models.Manager):
         Returns all organizations that user has access also the current organization
         will be excluded.
         """
-        org_ids = UserOrganization.objects.filter(
-            user=user
-        ).values_list("organization_id", flat=True)
+        org_ids = UserOrganization.objects.filter(user=user).values_list(
+            "organization_id", flat=True
+        )
 
-        organizations = OrganizationStructure.objects.filter(
-            pk__in=org_ids
-        ).exclude(pk=org_pk).distinct()
+        organizations = (
+            OrganizationStructure.objects.filter(pk__in=org_ids)
+            .exclude(pk=org_pk)
+            .distinct()
+        )
 
         return organizations
 
@@ -1006,15 +1008,18 @@ class OrganizationStructureManager(models.Manager):
 
     def filter_organization_by_user(self, user, descendants=True, ancestors=False):
 
-        user_org_ids = set(UserOrganization.objects.filter(
-            user=user
-        ).values_list('organization_id', flat=True))
+        user_org_ids = set(
+            UserOrganization.objects.filter(user=user).values_list(
+                "organization_id", flat=True
+            )
+        )
 
         org_content_type = ContentType.objects.get_for_model(OrganizationStructure)
-        orgs_with_permissions = set(ProfilePermission.objects.filter(
-            profile=user.profile,
-            content_type=org_content_type
-        ).values_list('object_id', flat=True))
+        orgs_with_permissions = set(
+            ProfilePermission.objects.filter(
+                profile=user.profile, content_type=org_content_type
+            ).values_list("object_id", flat=True)
+        )
 
         base_org_ids = orgs_with_permissions | user_org_ids
 
@@ -1028,8 +1033,9 @@ class OrganizationStructureManager(models.Manager):
         for org in organizations:
             if org.pk in orgs_with_permissions:
                 if descendants:
-                    descendant_pks = org.descendants(include_self=False).values_list('pk',
-                                                                                     flat=True)
+                    descendant_pks = org.descendants(include_self=False).values_list(
+                        "pk", flat=True
+                    )
                     pks.update(descendant_pks)
 
             # if ancestors:
@@ -1040,7 +1046,11 @@ class OrganizationStructureManager(models.Manager):
         return OrganizationStructure.objects.filter(pk__in=pks).distinct()
 
     def filter_user_orgs(
-        self, user, org=None, descendants=True, include_self=True, #ancestors=False
+        self,
+        user,
+        org=None,
+        descendants=True,
+        include_self=True,  # ancestors=False
     ):
         organizations = OrganizationStructure.objects.filter(users=user)
         pks = []
@@ -1207,18 +1217,22 @@ class OrganizationStructure(TreeNode):
 
         if not self.root:
             return OrganizationStructureRelations.objects.filter(
-                organization=self,
-                content_type=lab_content_type
+                organization=self, content_type=lab_content_type
             ).values_list("object_id", flat=True)
 
         org_ids = list(self.descendants().values_list("pk", flat=True))
         org_ids.append(self.pk)
 
-        return OrganizationStructureRelations.objects.filter(
-            organization_id__in=org_ids,
-            content_type=lab_content_type,
-            organization__active=True
-        ).values_list("object_id", flat=True).distinct()
+        return (
+            OrganizationStructureRelations.objects.filter(
+                organization_id__in=org_ids,
+                content_type=lab_content_type,
+                organization__active=True,
+            )
+            .values_list("object_id", flat=True)
+            .distinct()
+        )
+
 
 class UserOrganization(models.Model):
     ADMINISTRATOR = 1
