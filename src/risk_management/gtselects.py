@@ -71,8 +71,8 @@ class RiskBuildings(BaseSelect2View):
 
         if self.org and self.risk:
             risk = get_object_or_404(RiskZone, pk=self.risk)
+
             queryset = queryset.filter(
-                organization__pk=self.org,
                 pk__in=risk.buildings.values_list("pk", flat=True),
             ).distinct()
         else:
