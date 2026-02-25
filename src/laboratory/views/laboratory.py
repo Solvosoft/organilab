@@ -225,18 +225,34 @@ class LaboratoryListView(ListView):
     ordering = ["name"]
 
     def get_queryset(self):
-        laboratories = get_laboratories_by_user_profile(self.request.user, self.org, True)
-        pp = (
-            ProfilePermission.objects.filter(
-                profile=self.request.user.profile,
-                content_type__app_label=self.model._meta.app_label,
-                content_type__model=self.model._meta.model_name,
-                object_id__in=laboratories,
-            )
-            .distinct("object_id")
-            .values_list("object_id", flat=True)
-        )
-        queryset = self.model.objects.filter(pk__in=pp)
+        organization = OrganizationStructure.objects.filter(pk=self.org).first()
+        if organization is None:
+            return self.model.objects.none()
+
+        user = self.request.user
+        profile = getattr(user, 'profile', None)
+
+        has_org_permission = ProfilePermission.objects.filter(
+            profile=profile,
+            object_id=organization.pk,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+            rol__isnull=False,
+        ).exists()
+
+        if has_org_permission:
+            lab_ids = organization.get_my_laboratories
+        else:
+            lab_ids = list(ProfilePermission.objects.filter(
+                profile=profile,
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+                rol__isnull=False,
+            ).values_list('object_id', flat=True))
+            org_lab_ids = organization.get_my_laboratories
+            lab_ids = [lab_id for lab_id in lab_ids if lab_id in org_lab_ids]
+
+        queryset = self.model.objects.filter(pk__in=lab_ids)
         q = self.request.GET.get("search_fil", "")
         if q != "":
             queryset = queryset.filter(name__icontains=q)
