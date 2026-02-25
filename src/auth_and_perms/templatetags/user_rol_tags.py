@@ -2,8 +2,11 @@ from django import template
 from django.db.models import Q
 
 from auth_and_perms.models import ProfilePermission, Rol
-from laboratory.models import OrganizationStructureRelations, Laboratory, \
-    OrganizationStructure
+from laboratory.models import (
+    OrganizationStructureRelations,
+    Laboratory,
+    OrganizationStructure,
+)
 from laboratory.utils import get_laboratories_by_user_profile
 
 register = template.Library()
@@ -64,3 +67,10 @@ def organization_any_permission_required(context, *args, **kwargs):
             return True
 
     return False
+
+
+@register.simple_tag(takes_context=True)
+def user_has_roles_in_organization(context, org_pk):
+    user = context["request"].user
+    organization = OrganizationStructure.objects.filter(pk=org_pk).first()
+    return organization.get_effective_org_for_profile(user.profile)

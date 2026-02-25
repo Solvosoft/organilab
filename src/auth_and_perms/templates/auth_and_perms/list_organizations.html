@@ -127,8 +127,8 @@
 												class="fa fa-info-circle"></i></a>
 										</li>
 									{% endif %}
-
-									{% if perms.auth_and_perms.change_rol and node.0.parent == none %}
+									{% user_has_roles_in_organization node.0.pk as has_roles_in_org %}
+									{% if perms.auth_and_perms.change_rol and node.0.parent == none and has_roles_in_org %}
 										<li class="list-group-item" title="{% trans 'Change parent of organization' %}">
 											<a class="loglist" href="{% url 'auth_and_perms:list_rol_by_org' node.0.pk %}"
 														title="{% trans 'Rol List' %}">
