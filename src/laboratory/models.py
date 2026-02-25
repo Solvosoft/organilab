@@ -1136,8 +1136,8 @@ class OrganizationStructure(TreeNode):
 
     def get_effective_org_for_profile(self, profile):
         """
-        Si el usuario no tiene ProfilePermission directo en esta organización,
-        busca en los ancestros la primera org donde sí tenga permisos.
+        Si el usuario no tiene ProfilePermission (con roles) directo en esta organización,
+        busca en los ancestros la primera org donde sí tenga permisos con roles.
 
         Retorna la instancia de OrganizationStructure o None.
         """
@@ -1146,6 +1146,7 @@ class OrganizationStructure(TreeNode):
             object_id=self.pk,
             content_type__app_label="laboratory",
             content_type__model="organizationstructure",
+            rol__isnull=False,
         ).exists()
 
         if has_direct_permission:
@@ -1157,6 +1158,7 @@ class OrganizationStructure(TreeNode):
                 object_id=ancestor.pk,
                 content_type__app_label="laboratory",
                 content_type__model="organizationstructure",
+                rol__isnull=False,
             ).exists()
 
             if has_ancestor_permission:
