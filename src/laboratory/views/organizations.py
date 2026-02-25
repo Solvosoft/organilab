@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 from django import forms
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
 from django.contrib.auth.decorators import permission_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -354,11 +355,62 @@ class OrganizationUpdateView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.was_root = self.object.root.pk == self.object.pk
+        self.old_root = self.object.root
         user_is_allowed_on_organization(request.user, self.object)
         return super().post(request, *args, **kwargs)
 
+    def transfer_resources_to_new_root(self, old_org, new_root):
+        """Transfiere users, roles y laboratorios al nuevo root."""
+        for rol in old_org.rol.all():
+            new_root.rol.add(rol)
+            organilab_logentry(
+                self.request.user,
+                rol,
+                CHANGE,
+                "rol",
+                changed_data=["organizationstructure"],
+            )
+
+        for user in old_org.users.all():
+            new_root.users.add(user)
+            UserOrganization.objects.get_or_create(
+                user=user,
+                organization=new_root,
+                defaults={'type_in_organization': UserOrganization.LABORATORY_USER}
+            )
+            organilab_logentry(
+                self.request.user,
+                user,
+                CHANGE,
+                "user",
+                changed_data=["organization"],
+            )
+
+        lab_content_type = ContentType.objects.get_for_model(Laboratory)
+        for lab in old_org.laboratory_set.all():
+            OrganizationStructureRelations.objects.get_or_create(
+                organization=new_root,
+                content_type=lab_content_type,
+                object_id=lab.pk,
+            )
+            organilab_logentry(
+                self.request.user,
+                lab,
+                CHANGE,
+                "laboratory",
+                changed_data=["organization_relation"],
+            )
+
     def form_valid(self, form):
+        new_parent = form.cleaned_data.get('parent')
+
         response = super().form_valid(form)
+
+        if self.was_root and new_parent is not None:
+            new_root = new_parent.root
+            self.transfer_resources_to_new_root(self.old_root, new_root)
+
         organilab_logentry(
             self.request.user,
             self.object,
