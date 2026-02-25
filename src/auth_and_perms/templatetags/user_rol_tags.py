@@ -2,7 +2,8 @@ from django import template
 from django.db.models import Q
 
 from auth_and_perms.models import ProfilePermission, Rol
-from laboratory.models import OrganizationStructureRelations, Laboratory
+from laboratory.models import OrganizationStructureRelations, Laboratory, \
+    OrganizationStructure
 from laboratory.utils import get_laboratories_by_user_profile
 
 register = template.Library()
@@ -16,7 +17,17 @@ def has_perm_in_org(context, org_pk, permission):
         return True
     app_label, codename = permission.split(".")
 
-    labs = get_laboratories_by_user_profile(user, org_pk,)
+    try:
+        org = OrganizationStructure.objects.get(pk=org_pk)
+    except OrganizationStructure.DoesNotExist:
+        return False
+
+    effective_org = org.get_effective_org_for_profile(user.profile)
+
+    if effective_org is None:
+        return False
+
+    labs = get_laboratories_by_user_profile(user, org_pk)
 
     profile_in = ProfilePermission.objects.filter(
         profile=context["request"].user.profile
@@ -24,7 +35,7 @@ def has_perm_in_org(context, org_pk, permission):
         Q(
             content_type__app_label="laboratory",
             content_type__model="organizationstructure",
-            object_id=org_pk,
+            object_id=effective_org.pk,
         )
         | Q(
             content_type__app_label="laboratory",
