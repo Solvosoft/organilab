@@ -134,11 +134,13 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
         .values_list("pk", flat=True)
     )
 
-    users = UserOrganization.objects.filter(
-        organization__in=orgs,
-        user__isnull=False,
-        status=True
-    ).values_list("user", flat=True).distinct()
+    users = (
+        UserOrganization.objects.filter(
+            organization__in=orgs, user__isnull=False, status=True
+        )
+        .values_list("user", flat=True)
+        .distinct()
+    )
 
     return list(users)
 
@@ -284,13 +286,19 @@ def organilab_logentry(
             )
 
 
-def get_pk_org_ancestors(org_pk):
+def get_pk_org_ancestors(org_pk, descendants=True):
     organization = OrganizationStructure.objects.filter(pk=org_pk)
     pks = []
     if organization.exists():
         organization = organization.first()
         pks.append(organization.pk)
-        pks = pks + list(organization.ancestors().values_list("pk", flat=True))
+        if descendants:
+            pks = pks + list(organization.descendants().values_list("pk", flat=True))
+        else:
+            pks = pks + list(organization.acestors().values_list("pk", flat=True))
+        pks = UserOrganization.objects.filter(
+            organization__in=pks, user__isnull=False
+        ).values_list("organization", flat=True)
     return pks
 
 
@@ -425,7 +433,9 @@ def get_laboratories_from_organization_profile(rootpk, user):
 
 
 def get_laboratories_by_user_profile(user, org_pk, get_all=False):
-    queryset = OrganizationStructure.os_manager.filter_labs_by_user(user, org_pk=org_pk, relate_labs_org_parent=True)
+    queryset = OrganizationStructure.os_manager.filter_labs_by_user(
+        user, org_pk=org_pk, relate_labs_org_parent=True
+    )
     if get_all:
         rel_lab = get_all_laboratories_by_org(org_pk)
     else:
@@ -446,7 +456,7 @@ def get_all_laboratories_by_org(org_pk):
 def check_user_access_kwargs_org_lab(org, lab, user):
     user_access = False
 
-    if not hasattr(user, 'profile'):
+    if not hasattr(user, "profile"):
         return user_access
 
     if org:
