@@ -2953,7 +2953,7 @@ URLNAME_PERMISSIONS = {
             "name": "View Unit Measurement",
             "category": "Unit Measurement",
             "permission": "laboratory.view_catalog",
-        }
+        },
     ],
     "danger-subtance-list": [
         {
@@ -2975,7 +2975,7 @@ URLNAME_PERMISSIONS = {
             "name": "Delete Danger Substance",
             "category": "Danger Substance",
             "permission": "sga.delete_dangersubstance",
-        }
+        },
     ],
     "danger-substance-category-list": [
         {
@@ -2997,6 +2997,28 @@ URLNAME_PERMISSIONS = {
             "name": "Delete Danger Substance Category",
             "category": "Danger Substance Category",
             "permission": "sga.delete_dangersubstancecategory",
-        }
-    ]
+        },
+    ],
+    "list_precursor_report_values": [
+        {
+            "name": "Add Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.add_precursorreportvalues",
+        },
+        {
+            "name": "Change Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.change_precursorreportvalues",
+        },
+        {
+            "name": "Delete Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.delete_precursorreportvalues",
+        },
+        {
+            "name": "View Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.view_precursorreportvalues",
+        },
+    ],
 }

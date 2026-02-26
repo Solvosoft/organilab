@@ -12,6 +12,7 @@ from laboratory.models import (
     LaboratoryRoom,
     Object,
     ObjectLogChange,
+    PrecursorReportValues,
 )
 from laboratory.utils import (
     get_laboratories_from_organization,
@@ -32,7 +33,7 @@ def get_years():
     return years
 
 
-class ReportBase(GTForm):
+class ReportBase(GTForm, forms.ModelForm):
     name = forms.CharField(
         max_length=100,
         label=_("File Name"),
@@ -592,3 +593,69 @@ class PrecursorFilterForm(GTForm):
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
+
+
+class PrecursorReportValuesViewForm(GTForm, forms.ModelForm):
+
+    default_render_type = "as_grid"
+
+    grid_representation = [
+        [["object"], ["measurement_unit"]],
+        [["quantity"], ["previous_balance"], ["new_income"]],
+        [["month_expense"], ["final_balance"], ["stock"]],
+        [["bills"], ["providers"]],
+        [
+            ["reason_to_spend"],
+        ],
+    ]
+
+    object = forms.ModelChoiceField(
+        queryset=Object.objects.filter(
+            type=0,
+            sustancecharacteristics__is_precursor=True,
+        ),
+        required=True,
+        widget=genwidgets.Select,
+        label=_("Object"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        precusor_pk = kwargs.pop("precusor_pk", None)
+        org_pk = kwargs.pop("org_pk", None)
+        super(PrecursorReportValuesViewForm, self).__init__(*args, **kwargs)
+
+        if org_pk:
+            self.fields["object"].queryset = Object.objects.filter(
+                organization__pk=org_pk,
+                type=0,
+                sustancecharacteristics__is_precursor=True,
+            )
+
+    class Meta:
+        model = PrecursorReportValues
+        fields = [
+            "precursor_report",
+            "object",
+            "measurement_unit",
+            "quantity",
+            "previous_balance",
+            "new_income",
+            "bills",
+            "providers",
+            "stock",
+            "month_expense",
+            "final_balance",
+            "reason_to_spend",
+        ]
+        widgets = {
+            "measurement_unit": genwidgets.Select,
+            "quantity": genwidgets.NumberInput,
+            "previous_balance": genwidgets.NumberInput,
+            "new_income": genwidgets.NumberInput,
+            "bills": genwidgets.TextInput,
+            "providers": genwidgets.TextInput,
+            "stock": genwidgets.NumberInput,
+            "month_expense": genwidgets.NumberInput,
+            "final_balance": genwidgets.NumberInput,
+            "reason_to_spend": genwidgets.Textarea,
+        }

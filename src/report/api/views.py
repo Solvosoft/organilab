@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from laboratory.utils import (
     PermissionByOrganization,
 )
-from report.api.filterset import ObjectChangeLogFilterSet
+from report.api.filterset import ObjectChangeLogFilterSet, PrecursorReportValuesFilter
 from report.models import (
     TaskReport,
     ObjectChangeLogReportBuilder,
@@ -29,10 +29,16 @@ from report.api.serializers import (
     ObjectChangeDataTableSerializer,
     ValidateObjectChangeFilters,
     RegencyDataTableSerializer,
+    PrecursorReportValuesDataTableSerializer,
+    PrecursorReportValuesSerializer,
+    PrecursorReportValuesValidateSerializer,
 )
 from django.db import connection
 
 from report.utils import filter_period, format_date
+from laboratory.models import PrecursorReportValues
+from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
+from laboratory.utils import organilab_logentry
 
 
 class ReportDataViewSet(viewsets.ViewSet):
@@ -363,3 +369,128 @@ class RegencyViewSet(AuthAllPermBaseObjectManagement):
         self.report = RegencyReport.objects.filter(task_report=task).first()
         self.step = request.GET.get("step", None)
         return super().list(request, *args, **kwargs)
+
+
+class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": PrecursorReportValuesDataTableSerializer,
+        "destroy": PrecursorReportValuesSerializer,
+        "create": PrecursorReportValuesValidateSerializer,
+        "update": PrecursorReportValuesValidateSerializer,
+    }
+
+    perms = {
+        "list": ["laboratory.view_precursorreportvalues"],
+        "create": ["laboratory.add_precursorreportvalues"],
+        "update": ["laboratory.change_precursorreportvalues"],
+        "destroy": ["laboratory.delete_precursorreportvalues"],
+    }
+
+    queryset = PrecursorReportValues.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["id", "object__name"]
+    filterset_class = PrecursorReportValuesFilter
+    ordering_fields = ["pk"]
+    ordering = "object__name"
+
+    def get_queryset(self):
+        precusor_pk = self.get_precursor_pk_or_error()
+
+        qs = PrecursorReportValues.objects.all()
+
+        if precusor_pk:
+            qs = qs.filter(precursor_report_id=precusor_pk)
+
+        return qs
+
+    def get_precursor_pk_or_error(self):
+        precusor_pk = self.kwargs.get("precusor_pk")
+        if not precusor_pk:
+            raise ValidationError(
+                {"precusor_pk": _("This endpoint requires precusor_pk in the URL.")}
+            )
+        return precusor_pk
+
+    def get_org_pk_or_error(self):
+        org_pk = self.kwargs.get("org_pk")
+        if not org_pk:
+            raise ValidationError(
+                {"org_pk": _("This endpoint requires org_pk in the URL.")}
+            )
+        return org_pk
+
+    def perform_create(self, serializer):
+        precusor_pk = self.get_precursor_pk_or_error()
+        precusor_value = serializer.save(precursor_report_id=precusor_pk)
+
+        organilab_logentry(
+            self.request.user,
+            precusor_value,
+            ADDITION,
+            "precursorreportvalues",
+            changed_data=[],
+            relobj=precusor_pk,
+        )
+
+    def perform_update(self, serializer):
+        precusor_pk = self.get_precursor_pk_or_error()
+
+        precusor_value_before = self.get_object()
+        before = {
+            "object_id": precusor_value_before.object_id,
+            "measurement_unit_id": precusor_value_before.measurement_unit_id,
+            "quantity": precusor_value_before.quantity,
+            "previous_balance": precusor_value_before.previous_balance,
+            "new_income": precusor_value_before.new_income,
+            "bills": precusor_value_before.bills,
+            "providers": precusor_value_before.providers,
+            "stock": precusor_value_before.stock,
+            "month_expense": precusor_value_before.month_expense,
+            "final_balance": precusor_value_before.final_balance,
+            "reason_to_spend": precusor_value_before.reason_to_spend,
+        }
+
+        precusor_value = serializer.save(precursor_report_id=precusor_pk)
+
+        after = {
+            "object_id": precusor_value.object_id,
+            "measurement_unit_id": precusor_value.measurement_unit_id,
+            "quantity": precusor_value.quantity,
+            "previous_balance": precusor_value.previous_balance,
+            "new_income": precusor_value.new_income,
+            "bills": precusor_value.bills,
+            "providers": precusor_value.providers,
+            "stock": precusor_value.stock,
+            "month_expense": precusor_value.month_expense,
+            "final_balance": precusor_value.final_balance,
+            "reason_to_spend": precusor_value.reason_to_spend,
+        }
+
+        changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+
+        organilab_logentry(
+            self.request.user,
+            precusor_value,
+            CHANGE,
+            "precursorreportvalues",
+            changed_data=changed_fields,
+            relobj=precusor_pk,
+        )
+
+    def perform_destroy(self, instance):
+        precusor_pk = self.get_precursor_pk_or_error()
+        precusor_value_id = instance.pk
+        precusor_value_repr = str(instance)
+
+        organilab_logentry(
+            self.request.user,
+            instance,
+            DELETION,
+            "precursorreportvalues",
+            changed_data=[],
+            object_repr=precusor_value_repr,
+            relobj=precusor_pk,
+        )
+
+        instance.delete()

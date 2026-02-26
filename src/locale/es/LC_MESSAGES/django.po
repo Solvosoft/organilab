@@ -5409,3 +5409,15 @@ msgstr "Estado del establecimiento"
 
 msgid "Linking laboratories of the parent organization"
 msgstr "Relacionar de laboratorios de la organización principal"
+
+msgid "Precursor Report Values"
+msgstr "Valores del informe de precursores"
+
+msgid "Register Precursor Report Values"
+msgstr "Registrar valores del informe de precursores"
+
+msgid "Update Precursor Report Values"
+msgstr "Actualizar valores del informe de precursores"
+
+msgid "Delete Precursor Report Values"
+msgstr "Eliminar valores del informe de precursores"
