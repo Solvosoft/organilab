@@ -53,7 +53,8 @@
 							<div class="col-md-4"></div>
 							<div class="col-md-4">
 								<div class="btn-group" role="group" aria-label="...">
-									<div id="f{{object.pk}}" class="hidden">
+										{% if perms.laboratory.view_furniture %}
+								<div id="f{{object.pk}}" class="hidden">
 										<ul class="list-group">
 											{% for furniture in object.furniture_set.all %}
 												<li class="list-group-item">
@@ -63,7 +64,6 @@
 										</ul>
 									</div>
 
-									{% if perms.laboratory.view_furniture %}
 									<button type="button" class="btn btn-sm btn-outline-success"
 											data-bs-container="body" data-bs-toggle="popover"
 											data-content="f{{object.pk}}"
