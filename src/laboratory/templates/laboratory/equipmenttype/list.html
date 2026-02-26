@@ -31,6 +31,7 @@
 {{block.super}}
 <script>
 window.name = "equipmenttypelistview";
+let has_perm = {{ perms.laboratory.add_equipmenttype|yesno:"true,false" }};
 
 var object_urls = {
 	list_url: "{% url 'laboratory:api-equipmenttype-list' org_pk lab_pk %}",
@@ -54,7 +55,7 @@ datatable_inits = {
 		addfilter: true,
 		dom: table_default_dom
 }
-let has_perm = {{ perms.laboratory.add_object|yesno:"true,false" }};
+
 var equipmenttype_modalids = {
 	destroy: "#delete_obj_modal",
 	update: "#update_obj_modal"

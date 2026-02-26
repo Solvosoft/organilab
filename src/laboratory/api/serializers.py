@@ -672,7 +672,13 @@ class EquipmentTypeSerializer(serializers.ModelSerializer):
     delete_msg = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
-        return {}
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_equipmenttype"),
+            "update": user.has_perm("laboratory.change_equipmenttype"),
+            "destroy": user.has_perm("laboratory.delete_equipmenttype"),
+            "list": user.has_perm("laboratory.view_equipmenttype"),
+        }
 
     def get_delete_msg(self, obj):
         delete_msg = (
@@ -707,7 +713,13 @@ class InstrumentalFamilySerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
 
     def get_actions(self, obj):
-        return {}
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_catalog"),
+            "update": user.has_perm("laboratory.change_catalog"),
+            "destroy": user.has_perm("laboratory.delete_catalog"),
+            "list": user.has_perm("laboratory.view_catalog"),
+        }
 
     class Meta:
         model = Catalog
@@ -1442,7 +1454,7 @@ class ObjectSerializer(serializers.ModelSerializer):
 
     def get_capacity(self, obj):
         mc = getattr(obj, "materialcapacity", None)
-        return mc.capacity if mc else None
+        return mc.capacity if mc else 0.0
 
     def get_capacity_measurement_unit(self, obj):
         mc = getattr(obj, "materialcapacity", None)

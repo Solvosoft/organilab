@@ -219,60 +219,63 @@ $(document).ready(function(){
 
     searchLaboratory.init();
 
-    datatableelement=createDataTable('#shelfobjecttable', document.url_shelfobject, {
+    var shelfObjectButtons = [
+        {
+            action: tableObject.addObject,
+            text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
+            titleAttr: gettext('Create Equipment'),
+            className: 'btn-sm btn-success ml-4',
+            attr: {
+                'data-type': '2'
+            },
+        },
+        {
+            action: tableObject.addObject,
+            text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
+            titleAttr: gettext('Create Material'),
+            className: 'btn-sm btn-success ml-4',
+            attr: {
+                'data-type': '1'
+            }
+        },
+        {
+            action: tableObject.addObject,
+            text: '<i class="fa fa-flask" aria-hidden="true"></i>',
+            titleAttr: gettext('Create Substance'),
+            className: 'btn-sm btn-success ml-4',
+            attr: {
+                'data-type': '0'
+            }
+        },
+        {
+            action: tableObject.redirectContainer,
+            text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
+            titleAttr: gettext('Containers'),
+            className: 'btn-sm btn-success ml-4'
+        },
+    ];
+
+    if (has_perm) {
+        shelfObjectButtons.push({
+            action: tableObject.showTransfers,
+            text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
+            titleAttr: gettext('Transfer In'),
+            className: 'btn-sm btn-success ml-4'
+        });
+    }
+
+    datatableelement = createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: true},
             {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
-            {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true },
+            {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
             {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
             {data: "container", name: "container__object__name", title: gettext("Container"), type: "string", visible: true},
             {data: "was_donated", name: "was_donated", title: gettext("Donated"), type: "boolean", render: objShowBool, visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
-        buttons: [
-            {
-                action: tableObject.addObject,
-                text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
-                titleAttr: gettext('Create Equipment'),
-                className: 'btn-sm btn-success ml-4',
-                attr :{
-                    'data-type':'2'
-
-                },
-            },
-            {
-                action: tableObject.addObject,
-                text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
-                titleAttr: gettext('Create Material'),
-                className: 'btn-sm btn-success ml-4',
-                attr :{
-                    'data-type':'1'
-                }
-            },
-            {
-                action: tableObject.addObject,
-                text: '<i class="fa fa-flask" aria-hidden="true"></i>',
-                titleAttr: gettext('Create Substance'),
-                className: 'btn-sm btn-success ml-4',
-                attr :{
-                    'data-type':'0'
-                }
-
-            },
-            {
-                action: tableObject.redirectContainer,
-                text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
-                titleAttr: gettext('Containers'),
-                className: 'btn-sm btn-success ml-4'
-            },
-            {
-                action: tableObject.showTransfers,
-                text: '<i class="fa fa-exchange" aria-hidden="true"></i>',
-                titleAttr: gettext('Transfer In'),
-                className: 'btn-sm btn-success ml-4'
-            },
-        ],
+        buttons: shelfObjectButtons,
         dom: "<'d-flex justify-content-between'<'m-2'l>" +
         "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
         "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
@@ -280,7 +283,7 @@ $(document).ready(function(){
             url: document.url_shelfobject,
             type: 'GET',
             data: function(dataTableParams, settings) {
-                var data= formatDataTableParams(dataTableParams, settings);
+                var data = formatDataTableParams(dataTableParams, settings);
                 data['organization'] = $('#id_organization').val();
                 data['laboratory'] = $('#id_laboratory').val();
                 data['shelf'] = tableObject.get_active_shelf(show_alert=false);
