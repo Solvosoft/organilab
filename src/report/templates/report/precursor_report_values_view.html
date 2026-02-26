@@ -53,8 +53,8 @@
 		const object_urls = {
 			list_url: "{% url 'report:api-precursor-report-values-list' org_pk precusor_pk %}",
 			create_url: "{% url 'report:api-precursor-report-values-list' org_pk precusor_pk %}",
-			destroy_url: "{% url "report:api-precursor-report-values-detail" org_pk precusor_pk 0 %}",
-			update_url: "{% url "report:api-precursor-report-values-detail" org_pk precusor_pk  0 %}",
+			destroy_url: "{% url 'report:api-precursor-report-values-detail' org_pk precusor_pk 0 %}",
+			update_url: "{% url 'report:api-precursor-report-values-detail' org_pk precusor_pk  0 %}",
 		}
 	</script>
 	<script src="{% static '/js/precursor_report_values_management.js' %}?v={% get_organilab_version %}"></script>
