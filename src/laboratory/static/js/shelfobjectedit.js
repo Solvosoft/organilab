@@ -77,15 +77,31 @@ function shelfObjectDetail(obj,){
     let url = $(obj).data('url')
     fetch(url, {
         headers: {'X-CSRFToken': getCookie('csrftoken')}})
-        .then(response => response.json())
+        .then(response => {
+            if (response.status === 403) {
+                Swal.fire({
+                    title: gettext('Error'),
+                    text: gettext('You do not have permission to perform this action.'),
+                    icon: 'error'
+                })
+                return Promise.reject('Forbidden')
+            }
+            return response.json()
+        })
         .then(data => {
-            configure_modal(data)
-            $('#detail_modal_container').modal('show')
-        }).catch(error => Swal.fire({
-                                title: gettext('Error'),
-                                text: gettext('An error has occurred'),
-                                icon: 'error'
-                            }))
+            if (data) {
+                configure_modal(data)
+                $('#detail_modal_container').modal('show')
+            }
+        }).catch(error => {
+            if (error !== 'Forbidden') {
+                Swal.fire({
+                    title: gettext('Error'),
+                    text: gettext('An error has occurred'),
+                    icon: 'error'
+                })
+            }
+        })
 }
 
 function processResponseshelfobjectUpdate(dat) {

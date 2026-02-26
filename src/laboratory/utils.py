@@ -486,13 +486,10 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                 else:
                     user_access = True
             elif lab:
-                # Usuario no tiene permisos sobre organizaciones, verificar PP sobre el laboratorio
                 lab_ids = list(organization.get_my_laboratories)
                 if lab in lab_ids and user_has_pp_on_laboratory(user, lab):
                     user_access = True
             else:
-                # Usuario no tiene permisos sobre organizaciones ni se especificó lab
-                # Verificar si tiene PP sobre algún laboratorio de la organización
                 lab_ids = list(organization.get_my_laboratories)
                 for lab_id in lab_ids:
                     if user_has_pp_on_laboratory(user, lab_id):
