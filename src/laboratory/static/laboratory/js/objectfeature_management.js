@@ -26,10 +26,13 @@ datatable_inits = {
     addfilter: true,
 }
 
-const modalids = {
-    create: "#create_obj_modal",
+var modalids = {
     destroy: "#delete_obj_modal",
     update: "#update_obj_modal",
+}
+
+if (has_perm) {
+    modalids.create = "#create_obj_modal";
 }
 
 const actions = {

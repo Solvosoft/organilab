@@ -34,4 +34,15 @@
   <script src="{% static 'js/organilab.js' %}?v={% get_organilab_version %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax-plugin.min.js' %}"></script>
+  <script>
+    $(document).on('select2:open', () => {
+      const searchField = document.querySelector(
+        '.select2-container--open .select2-search__field'
+      );
+
+      if (searchField) {
+        searchField.focus();
+      }
+    });
+  </script>
 {% endblock %}
