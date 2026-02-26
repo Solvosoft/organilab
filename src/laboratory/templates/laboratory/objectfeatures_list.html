@@ -54,6 +54,8 @@
 			destroy_url: "{% url "laboratory:api-objectfeature-detail" org_pk lab_pk 0 %}",
 			update_url: "{% url "laboratory:api-objectfeature-detail" org_pk lab_pk 0 %}",
 		}
+		let has_perm = {{ perms.laboratory.add_objectfeatures|yesno:"true,false" }};
+
 	</script>
 	<script src="{% static '/laboratory/js/objectfeature_management.js' %}?v={% get_organilab_version %}"></script>
 

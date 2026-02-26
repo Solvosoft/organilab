@@ -22,6 +22,8 @@ class MyProcedureForm(forms.ModelForm, GTForm):
                 url="custom_procedure_template",
                 attrs={
                     "data-s2filter-organization": "#organization",
+                    "data-s2filter-org_pk": "#organization",
+                    "data-s2filter-lab_pk": "#laboratory",
                     "data-dropdownparent": "#add_my_procedures",
                     "required": True,
                 },

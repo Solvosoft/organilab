@@ -1201,3 +1201,10 @@ msgstr "Ver valor del informe de precursores"
 
 msgid "Precursor Report Value"
 msgstr "Valor del informe de precursores"
+
+msgid "View Catalog"
+msgstr "Ver Catálogo"
+
+msgid "Catalog"
+msgstr "Catálogo"
+

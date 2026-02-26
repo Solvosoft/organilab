@@ -23,7 +23,7 @@
     </li>
    {% endif %}
 
-   {% if perms.laboratory.view_laboratory_process %}
+   {% if perms.laboratory.view_laboratoryprocess %}
     <li><a href="{% url 'laboratory:laboratory_process_list' org_pk=org_pk lab_pk=laboratory %}">
      {% trans 'Processes' %}</a></li>
     <li>
