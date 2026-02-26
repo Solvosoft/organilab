@@ -328,7 +328,7 @@ URLNAME_PERMISSIONS = {
         {
             "name": "View Register User",
             "category": "Register User",
-            "permission": "laboratory.view_registeruserqr"
+            "permission": "laboratory.view_registeruserqr",
         },
     ],
     "list_provider": [

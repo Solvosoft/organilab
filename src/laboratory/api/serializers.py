@@ -1442,7 +1442,7 @@ class ObjectSerializer(serializers.ModelSerializer):
 
     def get_capacity(self, obj):
         mc = getattr(obj, "materialcapacity", None)
-        return mc.capacity if mc else None
+        return mc.capacity if mc else 0.0
 
     def get_capacity_measurement_unit(self, obj):
         mc = getattr(obj, "materialcapacity", None)
