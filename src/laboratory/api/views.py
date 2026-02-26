@@ -1417,7 +1417,7 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
     search_fields = ["name", "description"]
     filterset_class = ObjectFeatureFilter
     ordering_fields = ["name"]
-    ordering = ("id",)
+    ordering = ("name",)
 
     def get_lab_pk_or_error(self):
         lab_pk = self.kwargs.get("lab_pk")
