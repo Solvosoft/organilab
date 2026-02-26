@@ -3029,4 +3029,26 @@ URLNAME_PERMISSIONS = {
             "permission": "sga.delete_dangersubstancecategory",
         },
     ],
+    "list_precursor_report_values": [
+        {
+            "name": "Add Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.add_precursorreportvalues",
+        },
+        {
+            "name": "Change Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.change_precursorreportvalues",
+        },
+        {
+            "name": "Delete Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.delete_precursorreportvalues",
+        },
+        {
+            "name": "View Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.view_precursorreportvalues",
+        },
+    ],
 }

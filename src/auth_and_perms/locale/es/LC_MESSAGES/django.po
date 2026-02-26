@@ -1187,8 +1187,24 @@ msgstr "Cambiar categoría de sustancia peligrosa"
 msgid "Delete Danger Substance Category"
 msgstr "Eliminar categoría de sustancia peligrosa"
 
+msgid "Add Precursor Report Value"
+msgstr "Agregar valor del informe de precursores"
+
+msgid "Change Precursor Report Value"
+msgstr "Modificar valor del informe de precursores"
+
+msgid "Delete Precursor Report Value"
+msgstr "Eliminar valor del informe de precursores"
+
+msgid "View Precursor Report Value"
+msgstr "Ver valor del informe de precursores"
+
+msgid "Precursor Report Value"
+msgstr "Valor del informe de precursores"
+
 msgid "View Catalog"
 msgstr "Ver Catálogo"
 
 msgid "Catalog"
 msgstr "Catálogo"
+
