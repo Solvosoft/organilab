@@ -345,5 +345,6 @@ def object_view(request, org_pk=0, lab_pk=0):
             "lab_pk": lab_pk,
             "form_create": ObjectMaterialForm(prefix="create", render_type="as_p"),
             "form_update": ObjectMaterialForm(prefix="update", render_type="as_p"),
+            "laboratory": lab_pk,
         },
     )
