@@ -310,6 +310,11 @@ URLNAME_PERMISSIONS = {
             "category": "Laboratory Process",
             "permission": "laboratory.view_laboratoryprocess",
         },
+        {
+            "name": "View Protocol",
+            "category": "Protocol",
+            "permission": "laboratory.view_protocol",
+        },
     ],
     "list_provider": [
         {
@@ -2953,7 +2958,7 @@ URLNAME_PERMISSIONS = {
             "name": "View Unit Measurement",
             "category": "Unit Measurement",
             "permission": "laboratory.view_catalog",
-        }
+        },
     ],
     "danger-subtance-list": [
         {
@@ -2975,7 +2980,7 @@ URLNAME_PERMISSIONS = {
             "name": "Delete Danger Substance",
             "category": "Danger Substance",
             "permission": "sga.delete_dangersubstance",
-        }
+        },
     ],
     "danger-substance-category-list": [
         {
@@ -2997,6 +3002,6 @@ URLNAME_PERMISSIONS = {
             "name": "Delete Danger Substance Category",
             "category": "Danger Substance Category",
             "permission": "sga.delete_dangersubstancecategory",
-        }
-    ]
+        },
+    ],
 }

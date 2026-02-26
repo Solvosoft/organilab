@@ -31,7 +31,8 @@ from laboratory.forms import (
     RegisterUserQRForm,
     RegisterForm,
     LoginForm,
-    PasswordCodeForm, LaboratoryProcessForm,
+    PasswordCodeForm,
+    LaboratoryProcessForm,
 )
 from laboratory.models import (
     Laboratory,
@@ -230,7 +231,7 @@ class LaboratoryListView(ListView):
             return self.model.objects.none()
 
         user = self.request.user
-        profile = getattr(user, 'profile', None)
+        profile = getattr(user, "profile", None)
 
         has_org_permission = ProfilePermission.objects.filter(
             profile=profile,
@@ -243,12 +244,14 @@ class LaboratoryListView(ListView):
         if has_org_permission:
             lab_ids = organization.get_my_laboratories
         else:
-            lab_ids = list(ProfilePermission.objects.filter(
-                profile=profile,
-                content_type__app_label="laboratory",
-                content_type__model="laboratory",
-                rol__isnull=False,
-            ).values_list('object_id', flat=True))
+            lab_ids = list(
+                ProfilePermission.objects.filter(
+                    profile=profile,
+                    content_type__app_label="laboratory",
+                    content_type__model="laboratory",
+                    rol__isnull=False,
+                ).values_list("object_id", flat=True)
+            )
             org_lab_ids = organization.get_my_laboratories
             lab_ids = [lab_id for lab_id in lab_ids if lab_id in org_lab_ids]
 
@@ -811,7 +814,10 @@ def laboratory_process_list(request, org_pk, lab_pk):
         context={
             "org_pk": org_pk,
             "lab_pk": lab_pk,
-            "create_form": LaboratoryProcessForm(prefix="create", initial={"laboratory": lab_pk}),
+            "create_form": LaboratoryProcessForm(
+                prefix="create", initial={"laboratory": lab_pk}
+            ),
             "update_form": LaboratoryProcessForm(prefix="update"),
+            "laboratory": lab_pk,
         },
     )
