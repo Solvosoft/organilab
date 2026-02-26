@@ -7,7 +7,7 @@
    {% trans 'Administration' %}<span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
-   {% if perms.laboratory.add_laboratory %}
+   {% if perms.laboratory.add_laboratoryroom %}
     <li><a href="{% url 'laboratory:rooms_create' org_pk laboratory %}">
      {% trans 'Laboratory Management' %} </a></li>
     <li>
@@ -56,7 +56,7 @@
     </li>
    {% endif %}
 
-   {% if perms.laboratory.add_objectfeatures %}
+   {% if perms.laboratory.add_objectfeatures and perms.laboratory.view_objectfeatures %}
     <li>
      <a href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=laboratory %}">{% trans 'Object features management' %}</a>
     </li>

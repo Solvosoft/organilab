@@ -143,6 +143,11 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.change_shelf",
         },
         {
+            "name": "View Transfer",
+            "category": "Transfer",
+            "permission": "laboratory.view_tranferobject",
+        },
+        {
             "name": "Add Transfer",
             "category": "Transfer",
             "permission": "laboratory.add_tranferobject",
@@ -162,6 +167,11 @@ URLNAME_PERMISSIONS = {
             "category": "Contracts",
             "permission": "laboratory.can_view_contract",
         },
+        {
+            "name": "View Catalog",
+            "category": "Catalog",
+            "permission": "laboratory.view_catalog",
+        }
     ],
     "laboratory_update": [
         {
