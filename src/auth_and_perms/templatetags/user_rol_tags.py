@@ -26,26 +26,31 @@ def has_perm_in_org(context, org_pk, permission):
         return False
 
     effective_org = org.get_effective_org_for_profile(user.profile)
-
-    if effective_org is None:
-        return False
-
     labs = get_laboratories_by_user_profile(user, org_pk)
 
-    profile_in = ProfilePermission.objects.filter(
-        profile=context["request"].user.profile
-    ).filter(
-        Q(
-            content_type__app_label="laboratory",
-            content_type__model="organizationstructure",
-            object_id=effective_org.pk,
+    if effective_org is None:
+        profile_in = ProfilePermission.objects.filter(
+            Q(
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+                object_id__in=labs,
+            )
         )
-        | Q(
-            content_type__app_label="laboratory",
-            content_type__model="laboratory",
-            object_id__in=labs,
+    else:
+        profile_in = ProfilePermission.objects.filter(
+            profile=context["request"].user.profile
+        ).filter(
+            Q(
+                content_type__app_label="laboratory",
+                content_type__model="organizationstructure",
+                object_id=effective_org.pk,
+            )
+            | Q(
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+                object_id__in=labs,
+            )
         )
-    )
     rols = profile_in.filter(rol__isnull=False).values_list("rol", flat=True)
     rolsquery = Rol.objects.filter(
         pk__in=rols,

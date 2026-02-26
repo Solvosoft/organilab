@@ -14,7 +14,7 @@ from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 from djgentelella.permission_management import all_permission
 from rest_framework.permissions import BasePermission
-from auth_and_perms.models import Profile, User
+from auth_and_perms.models import Profile, User, ProfilePermission
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
     organization_can_change_laboratory,
@@ -453,6 +453,19 @@ def get_all_laboratories_by_org(org_pk):
     return org.get_my_laboratories if org else []
 
 
+def user_has_pp_on_laboratory(user, lab_pk):
+    """
+    Verifica si el usuario tiene un ProfilePermission con rol en el laboratorio.
+    """
+    lab_content_type = ContentType.objects.get_for_model(Laboratory)
+    return ProfilePermission.objects.filter(
+        profile__user=user,
+        content_type=lab_content_type,
+        object_id=lab_pk,
+        rol__isnull=False
+    ).exists()
+
+
 def check_user_access_kwargs_org_lab(org, lab, user):
     user_access = False
 
@@ -472,6 +485,17 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                         user_access = True
                 else:
                     user_access = True
+            elif lab:
+                lab_ids = list(organization.get_my_laboratories)
+                if lab in lab_ids and user_has_pp_on_laboratory(user, lab):
+                    user_access = True
+            else:
+                lab_ids = list(organization.get_my_laboratories)
+                for lab_id in lab_ids:
+                    if user_has_pp_on_laboratory(user, lab_id):
+                        user_access = True
+                        break
+
 
     return user_access
 
