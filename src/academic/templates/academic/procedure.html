@@ -87,6 +87,7 @@
 					</ul>
 				</div>
 
+				<input type="hidden" id="laboratory" name="laboratory" value={{ laboratory }}>
 				<div class="modal-footer">
 					<button class="btn btn-danger" data-bs-dismiss="modal" type="button"><i class="fa fa-times-circle-o"
 																																																																													aria-hidden="true"></i> {% trans 'Close' %}
@@ -100,7 +101,7 @@
 {% endblock %}
 {% block js %}
 	<script>
-		has_perm = {{ perms.academic.add_myprocedure|yesno:"true,false" }};
+		has_perm = {% if perms.academic.add_myprocedure and perms.academic.view_procedure %}true{% else %}false{% endif %};
 		document.urls = {
 			add_reservation: "{% url 'academic:generate_reservation' lab_pk=laboratory org_pk=org_pk %}",
 			remove_procedure: "{% url 'academic:remove_my_procedure' lab_pk=laboratory pk=0 org_pk=org_pk %}",
