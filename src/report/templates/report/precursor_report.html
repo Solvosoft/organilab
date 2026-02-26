@@ -58,6 +58,7 @@
 						<th class="text-center">{% trans 'Month' %}</th>
 						<th class="text-center">{% trans 'Date Range' %}</th>
 						<th class="text-center">{% trans 'Export' %}</th>
+						<th class="text-center">{% trans 'Actions' %}</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -68,7 +69,6 @@
 							<td class="text-center">{{ report.get_month_display }} {{ report.year }}</td>
 							<td class="text-center">{{ report.get_date_range }}</td>
 							<td class="text-center">
-
 								<div class="d-flex justify-content-center	 align-items-center my-auto">
 									<a class="btn btn-sm btn-outline-success mb-0"
 												href="{% url 'report:precursor_report' org_pk=org_pk %}?format=xlsx&pk={{ report.pk }}">
@@ -83,7 +83,12 @@
 										<i class="fa fa-download"></i> Xls
 									</a>
 								</div>
-
+							</td>
+							<td class="text-center">
+								<a class="btn btn-sm btn-outline-warning mb-0"
+											href="{% url 'report:precursor_report_values_view' org_pk=org_pk precusor_pk=report.pk  %}">
+									<i class="fa fa-pencil-square-o"></i> {% trans 'Update' %}
+								</a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -107,7 +112,7 @@
 				columnDefs: [
 					{
 						targets: 3,
-						width: "200px",
+						width: "300px",
 						className: "text-center"
 					}
 				]
