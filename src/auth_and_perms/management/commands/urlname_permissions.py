@@ -231,6 +231,11 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.view_laboratory",
         },
         {
+            "name": "Change Laboratory",
+            "category": "Laboratory",
+            "permission": "laboratory.change_laboratory",
+        },
+        {
             "name": "View Procedure",
             "category": "Procedure",
             "permission": "academic.view_procedure",
@@ -269,6 +274,11 @@ URLNAME_PERMISSIONS = {
             "name": "Add Object",
             "category": "Object",
             "permission": "laboratory.add_object",
+        },
+        {
+            "name": "View Object Features",
+            "category": "Object Features",
+            "permission": "laboratory.view_objectfeatures",
         },
         {
             "name": "Add Object Features",
@@ -314,6 +324,11 @@ URLNAME_PERMISSIONS = {
             "name": "View Protocol",
             "category": "Protocol",
             "permission": "laboratory.view_protocol",
+        },
+        {
+            "name": "View Register User",
+            "category": "Register User",
+            "permission": "laboratory.view_registeruserqr"
         },
     ],
     "list_provider": [
