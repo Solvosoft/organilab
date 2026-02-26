@@ -399,9 +399,10 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
 
         qs = PrecursorReportValues.objects.all()
 
-        if precusor_pk:
-            qs = qs.filter(precursor_report_id=precusor_pk)
+        if not precusor_pk:
+            return PrecursorReportValues.objects.none()
 
+        qs = qs.filter(precursor_report_id=precusor_pk)
         return qs
 
     def get_precursor_pk_or_error(self):
