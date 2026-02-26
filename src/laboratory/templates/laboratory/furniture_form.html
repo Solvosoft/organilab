@@ -55,7 +55,8 @@
               {{ dataconfig|safe }}
             </table>
             <div class="btn-toolbar p-2" role="toolbar" aria-label="...">
-              <div class="btn-group" role="group" aria-label="...">
+             {% if perms.laboratory.add_shelf %}
+													<div class="btn-group" role="group" aria-label="...">
                 <button id="btnAddRow" class="btn btn-success"  type="button" onclick="addRow()">
                   <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Row' %}
                 </button>
@@ -63,6 +64,8 @@
                   <span class="fa fa-plus" aria-hidden="true"></span> {% trans 'Column' %}
                 </button>
               </div>
+													{% endif %}
+													{% if perms.laboratory.delete_shelf %}
               <div class="btn-group" role="group" aria-label="...">
                 <button class="btn btn-warning" type="button" onclick="deleteRows()">
                   <span class="fa fa-minus" aria-hidden="true"></span> {% trans 'Row' %}
@@ -71,6 +74,7 @@
                   <span class="fa fa-minus" aria-hidden="true"></span> {% trans 'Column' %}
                 </button>
               </div>
+													{% endif %}
 
               <div id="save_button2" class="btn-group" role="group" aria-label="...">
                 <button class="btn btn-success" type="submit"> {% trans 'Save' %}</button>

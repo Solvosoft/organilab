@@ -36,7 +36,7 @@
 		<br><br>
 
 		<div class="row">
-			{% if perms.academic.view_procedure or perms.laboratory.view_laboratory %}
+			{% if perms.academic.view_procedure or perms.laboratory.view_laboratoryroom %}
 				<div class="col-md-6 text-center">
 					<div class="row">
 						<img src="{% static 'images/laboratory.png' %}"
@@ -130,7 +130,7 @@
 								</li>
 							{% endif %}
 
-							{% if perms.laboratory.add_objectfeatures %}
+							{% if perms.laboratory.add_objectfeatures and perms.laboratory.view_objectfeatures %}
 								<li class="list-group-item">
 									<a
 										href="{% url 'laboratory:objectfeatures_view' org_pk=org_pk lab_pk=laboratory %}"><strong>{% trans 'Object features' %}</strong></a>
