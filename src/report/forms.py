@@ -33,7 +33,7 @@ def get_years():
     return years
 
 
-class ReportBase(GTForm, forms.ModelForm):
+class ReportBase(GTForm, forms.Form):
     name = forms.CharField(
         max_length=100,
         label=_("File Name"),
