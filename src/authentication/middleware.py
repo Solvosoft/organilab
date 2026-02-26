@@ -116,9 +116,12 @@ class ProfileMiddleware:
 
             effective_org = org.get_effective_org_for_profile(user.profile)
 
-            if effective_org is None:
-                raise PermissionDenied(
-                    "No tiene permisos en esta organización ni en sus ancestros"
+            if effective_org is not None:
+                queryQ |= Q(
+                    profile=user.profile,
+                    object_id=effective_org.pk,
+                    content_type__app_label="laboratory",
+                    content_type__model="organizationstructure",
                 )
 
             if not lab_pk:
@@ -131,13 +134,6 @@ class ProfileMiddleware:
                     content_type__app_label="laboratory",
                     content_type__model="laboratory",
                 )
-
-            queryQ |= Q(
-                profile=user.profile,
-                object_id=effective_org.pk,
-                content_type__app_label="laboratory",
-                content_type__model="organizationstructure",
-            )
 
         profile_in = ProfilePermission.objects.filter(queryQ)
 
