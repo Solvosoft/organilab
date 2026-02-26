@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+{% block pre_head %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'list_precursor_report_values' %}
+{% endblock %}
+{% block title %}{% trans 'Precursor Report Values' %}{% endblock %}
+
+{% block content %}
+	<div class="page-header text-center"><h1>{% trans 'Precursor Report Values' %}</h1></div>
+
+	<section class="my-3">
+		{% if perms.laboratory.view_precursorreportvalues %}
+
+			<div class="row mt-3 ">
+				<div class="col-12">
+					<table class="table table-hover table-striped w-100 table-responsive" id="table">
+					</table>
+				</div>
+			</div>
+
+		{% else %}
+			{% include 'laboratory/action_denied.html' %}
+		{% endif %}
+	</section>
+	<div>
+	</div>
+
+	{# Modales de acciones #}
+	{% url "report:api-precursor-report-values-list" org_pk precusor_pk as list_obj_url %}
+	{% trans 'Register Precursor Report Values' as create_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" principal_class='modal-xl' title=create_obj_tittle modal_class=create_obj_tittle url=list_obj_url %}
+
+	{% url "report:api-precursor-report-values-detail" org_pk precusor_pk 0 as detail_obj_url %}
+	{% trans 'Update Precursor Report Values' as update_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" principal_class='modal-xl' title=update_obj_tittle url=detail_obj_url %}
+
+	{% trans 'Delete Precursor Report Values' as delete_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
+
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+
+	<script>
+		window.has_perm_create = {{ perms.laboratory.add_precursorreportvalues|yesno:"true,false" }};
+
+		const object_urls = {
+			list_url: "{% url 'report:api-precursor-report-values-list' org_pk precusor_pk %}",
+			create_url: "{% url 'report:api-precursor-report-values-list' org_pk precusor_pk %}",
+			destroy_url: "{% url "report:api-precursor-report-values-detail" org_pk precusor_pk 0 %}",
+			update_url: "{% url "report:api-precursor-report-values-detail" org_pk precusor_pk  0 %}",
+		}
+	</script>
+	<script src="{% static '/js/precursor_report_values_management.js' %}?v={% get_organilab_version %}"></script>
+
+{% endblock %}
+

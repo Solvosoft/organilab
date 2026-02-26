@@ -4,7 +4,14 @@ from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 
 from auth_and_perms.api.serializers import ValidateUserAccessOrgLabSerializer
-from laboratory.models import LaboratoryRoom, Laboratory, Object, Catalog
+from laboratory.models import (
+    LaboratoryRoom,
+    Laboratory,
+    Object,
+    Catalog,
+    PrecursorReportValues,
+    PrecursorReport,
+)
 from laboratory.utils import get_actions_by_perms
 from report.models import ObjectChangeLogReportBuilder, RegencyReportBuilder
 
@@ -113,3 +120,72 @@ class RegencyDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+# PrecursorReportValues
+class PrecursorReportValuesSerializer(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+    object = GTS2SerializerBase(many=False)
+    precursor_report = GTS2SerializerBase(many=False)
+    measurement_unit = GTS2SerializerBase(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        return {
+            "create": user.has_perm("laboratory.add_precursorreportvalues"),
+            "update": user.has_perm("laboratory.change_precursorreportvalues"),
+            "destroy": user.has_perm("laboratory.delete_precursorreportvalues"),
+            "list": user.has_perm("laboratory.view_precursorreportvalues"),
+        }
+
+    class Meta:
+        model = PrecursorReportValues
+        fields = "__all__"
+
+
+class PrecursorReportValuesDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=PrecursorReportValuesSerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class PrecursorReportValuesValidateSerializer(serializers.ModelSerializer):
+    precursor_report = serializers.PrimaryKeyRelatedField(
+        queryset=PrecursorReport.objects.all(), required=False
+    )
+    object = serializers.PrimaryKeyRelatedField(
+        queryset=Object.objects.filter(
+            type=0, sustancecharacteristics__is_precursor=True
+        ),
+        required=True,
+    )
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="units"), required=True
+    )
+    quantity = serializers.FloatField(required=True)
+    previous_balance = serializers.FloatField(required=True)
+    new_income = serializers.FloatField(required=True)
+    bills = serializers.CharField(required=False, allow_blank=True, max_length=200)
+    providers = serializers.CharField(required=False, allow_blank=True, max_length=200)
+    stock = serializers.FloatField(required=True)
+    month_expense = serializers.FloatField(required=True)
+    final_balance = serializers.FloatField(required=True)
+    reason_to_spend = serializers.CharField(required=False, allow_blank=True)
+
+    class Meta:
+        model = PrecursorReportValues
+        fields = (
+            "precursor_report",
+            "object",
+            "measurement_unit",
+            "quantity",
+            "previous_balance",
+            "new_income",
+            "bills",
+            "providers",
+            "stock",
+            "month_expense",
+            "final_balance",
+            "reason_to_spend",
+        )

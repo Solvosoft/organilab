@@ -1164,3 +1164,24 @@ msgstr "¿Está seguro de que desea eliminar esta categoría de sustancia peligr
 
 msgid "CAS Code"
 msgstr "Código CAS"
+
+msgid "Previous Balance"
+msgstr "Saldo anterior"
+
+msgid "New Income"
+msgstr "Nuevo ingreso"
+
+msgid "Bills"
+msgstr "Facturas"
+
+msgid "Stock"
+msgstr "Existencia"
+
+msgid "Month Expense"
+msgstr "Gasto mensual"
+
+msgid "Final Balance"
+msgstr "Saldo final"
+
+msgid "Reason to Spend"
+msgstr "Motivo del gasto"
