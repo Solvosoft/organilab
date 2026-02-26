@@ -402,8 +402,7 @@ class PrecursorReportValuesViewSet(AuthAllPermBaseObjectManagement):
         if not precusor_pk:
             return PrecursorReportValues.objects.none()
 
-        qs = qs.filter(precursor_report_id=precusor_pk)
-        return qs
+        return qs.filter(precursor_report_id=precusor_pk)
 
     def get_precursor_pk_or_error(self):
         precusor_pk = self.kwargs.get("precusor_pk")
