@@ -58,7 +58,7 @@
 		window.name = "equipmentlistview";
 
 		const selects2_api_urls = {
-			equipmenttype: "{% url 'equipmenttype-list' %}" + "?organization=" + "{{org_pk}}" + "&laboratory=" + "{{lab_pk}}"
+			equipmenttype: "{% url 'equipmenttype-list' %}" + "?organization=" + "{{org_pk}}" + "&laboratory=" + "{{lab_pk}}"+"&lab_pk="+"{{lab_pk}}"+"&org_pk="+"{{org_pk}}"
 		}
 
 		var object_urls = {
