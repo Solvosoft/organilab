@@ -802,7 +802,7 @@ class EquipmentTypeManagementViewset(AuthAllPermBaseObjectManagement):
     search_fields = ["id", "description", "name"]  # for the global search
     filterset_class = filterset.EquipmentTypeFilter
     ordering_fields = ["description", "name"]
-    ordering = ("id",)  # default order
+        ordering = ("name",)  # default order
     operation_type = ""
     org_pk, lab_pk, org = None, None, None
 

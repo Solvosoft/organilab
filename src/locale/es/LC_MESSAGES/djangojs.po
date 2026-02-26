@@ -1167,3 +1167,6 @@ msgstr "Código CAS"
 
 msgid "You do not have permission to perform this action."
 msgstr "No tienes los permisos necesarios para realizar esta acción."
+
+msgid "Equipment Type"
+msgstr "Tipo de Equipo"
