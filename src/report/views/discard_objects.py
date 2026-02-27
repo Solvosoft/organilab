@@ -1,7 +1,7 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 
-from laboratory.models import Laboratory, ShelfObject
+from laboratory.models import Laboratory, ShelfObject, OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import (
     set_format_table_columns,
@@ -67,8 +67,11 @@ def report_discard_object_doc(report):
     builder = ExcelGraphBuilder()
     content = [_("Shelf"), _("Object"), _("Amount"), _("Unit"), _("Date"), _("Creator")]
     doc = []
-
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     labs = report.data.get("laboratory", [])
+    labs = organization.get_my_laboratories if len(labs) == 0 else labs
 
     for lab in labs:
         laboratory = Laboratory.objects.get(pk=lab)
@@ -93,8 +96,11 @@ def report_discard_object_doc(report):
 def get_dataset_report_discard_objects_html(report, column_list=None):
     dataset = []
     filters = {"shelf__discard": True}
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     labs = report.data.get("laboratory", [])
-
+    labs = organization.get_my_laboratories if len(labs) == 0 else labs
     if "period" in report.data:
         dates = report.data["period"].split("-")
         if len(dates) == 2:
@@ -104,7 +110,7 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
 
     for lab in labs:
         shelfobjects = (
-            ShelfObject.objects.filter(**filters, in_where_laboratory=lab)
+            ShelfObject.objects.filter(**filters, in_where_laboratory__pk=lab)
             .values(
                 "shelf",
                 "shelf__name",
