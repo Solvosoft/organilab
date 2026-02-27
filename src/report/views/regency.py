@@ -1,5 +1,7 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
+
+from laboratory.models import OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import get_report_name
 from risk_management.utils_risk import (
@@ -21,17 +23,20 @@ def report_regency_xlsx(report):
     builder.ws.title = "Resumen"
     builder.wb.create_sheet("Sumatoria_categoría")
     builder.wb.create_sheet("Detalle")
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
 
-    content = []
     filters = {
         "object__type": 0,
         "created_at__year": report.data["years"],
         "object__isnull": False,
         "measurement_unit__isnull": False,
-        "laboratory__organization__pk": report.data["organization"],
+        "laboratory__pk__in": organization.get_my_laboratories,
     }
     if report.data["laboratory"]:
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
+
     inv = get_inventory(filters)
     inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
     c3 = cargar_cuadro3()
@@ -115,15 +120,19 @@ def report_regency_xlsx(report):
 
 def report_regency_doc(report):
     builder = ExcelGraphBuilder()
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     filters = {
         "object__type": 0,
         "created_at__year": report.data["years"],
         "object__isnull": False,
         "measurement_unit__isnull": False,
-        # "laboratory__organization__pk": report.data["organization"],
+        "laboratory__pk__in": organization.get_my_laboratories,
     }
     if report.data["laboratory"]:
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
+
     inv = get_inventory(filters)
     inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
     c3 = cargar_cuadro3()
