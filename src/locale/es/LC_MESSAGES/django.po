@@ -5421,3 +5421,30 @@ msgstr "Actualizar valores del informe de precursores"
 
 msgid "Delete Precursor Report Values"
 msgstr "Eliminar valores del informe de precursores"
+
+msgid "Page not available"
+msgstr "Página no disponible"
+
+msgid "We couldn’t find that page"
+msgstr "No pudimos encontrar esa página"
+
+msgid "It may not exist, it may have moved, or you may not have permission to view it."
+msgstr "Puede que no exista, que haya sido movida o que no tenga permisos para verla."
+
+msgid "Access issue"
+msgstr "Problema de acceso"
+
+msgid "If you believe this is an error, contact the administrator or try again with another account."
+msgstr "Si considera que esto es un error, contacte al administrador o intente nuevamente con otra cuenta."
+
+msgid "Path"
+msgstr "Ruta"
+
+msgid "Referrer"
+msgstr "Referencia"
+
+msgid "Go back"
+msgstr "Volver"
+
+msgid "Error code"
+msgstr "Código de error"
