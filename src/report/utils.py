@@ -10,6 +10,7 @@ from laboratory.models import (
     BaseUnitValues,
     ObjectLogChange,
     ObjectMaximumLimit,
+    OrganizationStructure,
 )
 from report.models import (
     DocumentReportStatus,
@@ -93,7 +94,7 @@ def get_pdf_table_content(table_content, cell_style_fn=None):
             i += 1
             pdf_table += "<tr>"
             for col_idx, item in enumerate(row):
-                style_attr = ''
+                style_attr = ""
                 if cell_style_fn:
                     style_attr = cell_style_fn(col_idx, item)
                 pdf_table += "<td%s>%s</td>" % (style_attr, item)
@@ -106,8 +107,15 @@ def get_pdf_table_content(table_content, cell_style_fn=None):
 
 def get_furniture_queryset_by_filters(report):
     furniture, lab_room, lab = [], [], []
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     if "laboratory" in report.data:
-        lab = report.data["laboratory"]
+        lab = (
+            report.data["laboratory"]
+            if len(report.data["laboratory"]) > 0
+            else organization.get_my_laboratories
+        )
 
     if "lab_room" in report.data:
         lab_room = report.data["lab_room"]
