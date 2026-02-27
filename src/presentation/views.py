@@ -86,3 +86,12 @@ def index_organilab(request):
 
 def general_information(request):
     return render(request, "general_information.html")
+
+
+@login_required
+def error_view(request):
+
+    return render(
+        request,
+        "error_view.html",
+    )
