@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n static laboratory %}
 {% load urlname_tags %}
+{% load user_rol_tags %}
 {% block pre_head %}
 	{% define_urlname_action 'report_reactive_presence' %}
 {% endblock %}
@@ -10,7 +11,8 @@
 		<div class="col-md-10">
 			<div class="bs-callout bs-callout-info">
 				<h4 class="w-100 py-3">{{ organization }}</h4>
-
+				{% user_has_roles_in_organization org_pk as has_roles_in_organization %}
+				{% if has_roles_in_organization %}
 				<section class="my-3">
 					<h5 class="text-secondary pb-2"> {% trans 'Informs' %} </h5>
 
@@ -133,7 +135,11 @@
 					</div>
 
 				</section>
-
+				{% else %}
+				<section class="my-3 text-center">
+					<h3>{% trans 'You do not have access to this organization's reports' %}</h3>
+				</section>
+				{% endif %}
 
 			</div>
 		</div>
