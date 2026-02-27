@@ -643,6 +643,21 @@ URLNAME_PERMISSIONS = {
             "category": "Risk Zone",
             "permission": "risk_management.view_riskzone",
         },
+        {
+            "name": "View Regent",
+            "category": "Regent",
+            "permission": "risk_management.view_regent",
+        },
+        {
+            "name": "View Structure",
+            "category": "Structure",
+            "permission": "risk_management.view_structure",
+        },
+        {
+            "name": "View Building",
+            "category": "Building",
+            "permission": "risk_management.view_buildings",
+        },
     ],
     "riskzone_create": [
         {

@@ -17,8 +17,12 @@
       <div class="card">
         <div class="card-header">
           <h2 class="float-start">{% trans 'My Informs' %}</h2>
+									{% if perms.laboratory.add_inform %}
            <a class="btn btn-outline-success float-end create_btn"  data-bs-toggle="modal"
-            data-bs-target="#add_inform" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>  <ul class="nav navbar-right panel_toolbox"></ul>
+            data-bs-target="#add_inform" type="button"><i class="fa fa-plus" aria-hidden="true"></i></a>
+									{% endif %}
+									<ul class="nav navbar-right panel_toolbox"></ul>
+
           <div class="clearfix"></div>
         </div>
         <div class="card-body">
@@ -39,8 +43,13 @@
                 <td>{{inform.custom_form.name}}</td>
                 <td>{{inform.created_by}}</td>
                 <td>{% trans inform.status %}</td>
-                <td><a class="btn btn-outline-success" href="{% url 'laboratory:complete_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+                <td>
+																	{% if perms.laboratory.change_inform %}
+																	<a class="btn btn-outline-success" href="{% url 'laboratory:complete_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
+																	{% endif %}
+																	{% if perms.laboratory.delete_inform %}
                 <a class="btn btn-outline-danger" href="{% url 'laboratory:remove_inform' lab_pk=laboratory pk=inform.pk org_pk=org_pk %}"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+															{% endif %}
               </tr>
             {% endfor %}
 
