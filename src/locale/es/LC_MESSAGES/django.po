@@ -5451,3 +5451,6 @@ msgstr "Volver"
 
 msgid "Error code"
 msgstr "Código de error"
+
+msgid "Update process condition of reagents"
+msgstr "Actualizar condición de proceso de reactivos"
