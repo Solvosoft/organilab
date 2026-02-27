@@ -63,20 +63,23 @@ class PrudenceAdviceSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         action = ""
+        user = self.context["request"].user
 
-        action += """<a title='%s' class="pe-2" onclick="edit_prudence_advice('%d')">
-        <i class="fa fa-edit text-warning" aria-hidden="true"></i>
-        </a>""" % (
-            _("Edit"),
-            obj.pk,
-        )
+        if user.has_perm("sga.change_prudenceadvice"):
+            action += """<a title='%s' class="pe-2" onclick="edit_prudence_advice('%d')">
+            <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+            </a>""" % (
+                _("Edit"),
+                obj.pk,
+            )
 
-        action += """<a title='%s' class="pe-2" onclick="delete_prudence_advice('%d')">
-        <i class="fa fa-close text-danger" aria-hidden="true"></i>
-        </a>""" % (
-            _("Delete"),
-            obj.pk,
-        )
+        if user.has_perm("sga.delete_prudenceadvice"):
+            action += """<a title='%s' class="pe-2" onclick="delete_prudence_advice('%d')">
+            <i class="fa fa-close text-danger" aria-hidden="true"></i>
+            </a>""" % (
+                _("Delete"),
+                obj.pk,
+            )
 
         return action
 
@@ -289,21 +292,23 @@ class WarningWordSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         org_pk = self.context["view"].kwargs.get("org_pk")
+        user = self.context["request"].user
         action = ""
 
-        action += """<a title='%s' class="pe-2" onclick="edit_warning_word('%d')">
-        <i class="fa fa-edit text-warning" aria-hidden="true"></i>
-        </a>""" % (
-            _("Edit"),
-            obj.pk,
-        )
-
-        action += """<a title='%s' class="pe-2" onclick="delete_warning_word(%d)">
-        <i class="fa fa-close text-danger" aria-hidden="true"></i>
-        </a>""" % (
-            _("Delete"),
-            obj.pk,
-        )
+        if user.has_perm("sga.change_warningword"):
+            action += """<a title='%s' class="pe-2" onclick="edit_warning_word('%d')">
+            <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+            </a>""" % (
+                _("Edit"),
+                obj.pk,
+            )
+        if user.has_perm("sga.delete_warningword"):
+            action += """<a title='%s' class="pe-2" onclick="delete_warning_word(%d)">
+            <i class="fa fa-close text-danger" aria-hidden="true"></i>
+            </a>""" % (
+                _("Delete"),
+                obj.pk,
+            )
 
         return action
 
@@ -424,20 +429,22 @@ class RecipientSizeDataSerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         action = ""
+        user = self.context["request"].user
 
-        action += """<a title='%s' class="text-center pe-2" onclick="edit_recipient_size('%d')">
-        <i class="fa fa-edit" aria-hidden="true"></i>
-        </a>""" % (
-            _("Edit"),
-            obj.pk,
-        )
-
-        action += """<a title='%s' class=" text-center pe-2" onclick="delete_recipient_size('%d')">
-        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
-        </a>""" % (
-            _("Delete"),
-            obj.pk,
-        )
+        if user.has_perm("sga.change_recipientsize"):
+            action += """<a title='%s' class="text-center pe-2" onclick="edit_recipient_size('%d')">
+            <i class="fa fa-edit" aria-hidden="true"></i>
+            </a>""" % (
+                _("Edit"),
+                obj.pk,
+            )
+        if user.has_perm("sga.delete_recipientsize"):
+            action += """<a title='%s' class=" text-center pe-2" onclick="delete_recipient_size('%d')">
+            <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+            </a>""" % (
+                _("Delete"),
+                obj.pk,
+            )
 
         return action
 
@@ -520,15 +527,15 @@ class DangerCategorySerializer(serializers.ModelSerializer):
 
     def get_actions(self, obj):
         user = self.context["request"].user
-        add_perm = True if user.has_perm("risk_management.add_hcodecategory") else False
+        add_perm = True if user.has_perm("sga.add_hcodecategory") else False
         delele_perm = (
-            True if user.has_perm("risk_management.delete_hcodecategory") else False
+            True if user.has_perm("sga.delete_hcodecategory") else False
         )
         view_perm = (
-            True if user.has_perm("risk_management.view_hcodecategory") else False
+            True if user.has_perm("sga.view_hcodecategory") else False
         )
         update_perm = (
-            True if user.has_perm("risk_management.change_hcodecategory") else False
+            True if user.has_perm("sga.change_hcodecategory") else False
         )
 
         return {

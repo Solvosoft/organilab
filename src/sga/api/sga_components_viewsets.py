@@ -295,7 +295,10 @@ class PrudenceAdviceTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
     filterset_fields = ['code', 'name', 'prudence_advice_help']
     ordering_fields = ['code']
     permissions_by_endpoint = {
-        "list": ["sga.view_prudenceadvice"]
+        "list": ["sga.view_prudenceadvice"],
+        "create": ["sga.view_prudenceadvice", "sga.add_prudenceadvice"],
+        "update": ["sga.view_prudenceadvice", "sga.change_prudenceadvice"],
+        "destroy": ["sga.view_prudenceadvice", "sga.delete_prudenceadvice"]
     }
 
     def _check_permission_on_organization(self, request, org_pk, method_name):

@@ -584,7 +584,7 @@ def view_warning_words(request, org_pk):
     )
 
 
-@permission_required("auth_and_perms.institution_can_access")
+@permission_required("auth_and_perms.institution_can_access", "sga.view_recipientsize")
 def view_recipient_size(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
