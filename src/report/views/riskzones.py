@@ -50,6 +50,7 @@ def get_hcode_threshold(hcodes_quantity, quantity):
                 return True
     return result
 
+
 def get_dataset_report(report, column_list=None):
     dataset = []
     filters = {"object__type": 0}

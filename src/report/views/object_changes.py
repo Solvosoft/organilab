@@ -210,7 +210,7 @@ def get_queryset(report):
             object_log_filters["precursor"] = True
 
     if general:
-        labs  = labs if len(labs) > 1 else organization.get_my_laboratories
+        labs = labs if len(labs) > 1 else organization.get_my_laboratories
         query = query.filter(laboratory__pk__in=labs)
         filters["in_where_laboratory__pk__in"] = labs
     else:
