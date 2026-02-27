@@ -115,6 +115,17 @@ function delete_prudence_advice(pk) {
     });
 }
 
+buttons = []
+if (has_perm.create){
+    buttons.push({
+        text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
+        action: function() {
+            add_prudence_advice();
+        },
+        className: 'btn btn-success'
+    });
+}
+
 datatableelement=createDataTable('#prudenceadvicetable', document.url_advices_table, {
     columns: [
         {data: "code", name: "code", title: gettext("Code"), type: "string", visible: true},
@@ -122,15 +133,7 @@ datatableelement=createDataTable('#prudenceadvicetable', document.url_advices_ta
         {data: "prudence_advice_help", name: "prudence_advice_help", title: gettext("Help message"), defaultContent:gettext("Unknown"), type: "string", visible: true},
         {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, sortable: false}
     ],
-    buttons: [
-        {
-            text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
-            action: function() {
-                add_prudence_advice();
-            },
-            className: 'btn btn-success'
-        }
-    ],
+    buttons: buttons,
     dom: "<'d-flex justify-content-between'<'m-2'l>" +
     "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
     "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",

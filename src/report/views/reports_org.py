@@ -40,7 +40,7 @@ from laboratory.models import Laboratory
 from risk_management.models import RiskZone
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class ObjectList(ListView):
     model = Object
     template_name = "report/base_report_form_view.html"
@@ -88,7 +88,7 @@ class ObjectList(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class LimitedShelfObjectList(ListView):
     model = ShelfObject
     template_name = "report/base_report_form_view.html"
@@ -113,7 +113,7 @@ class LimitedShelfObjectList(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class ReactivePrecursorObjectList(ListView):
     model = Object
     template_name = "report/base_report_form_view.html"
@@ -143,7 +143,7 @@ class ReactivePrecursorObjectList(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class LogObjectView(ReportListView):
     model = ObjectLogChange
     template_name = "report/base_report_form_view.html"
@@ -170,7 +170,7 @@ class LogObjectView(ReportListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class PrecursorsView(ReportListView):
     model = PrecursorReport
     template_name = "report/precursor_report.html"
@@ -314,7 +314,7 @@ class DiscardShelfReportView(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class ReactiveReport(ListView):
     model = ShelfObject
     template_name = "report/base_report_form_view.html"
@@ -341,7 +341,7 @@ class ReactiveReport(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class RiskZoneReport(ListView):
     model = RiskZone
     template_name = "report/base_report_form_view.html"
@@ -369,7 +369,7 @@ class RiskZoneReport(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class ReactiveStockReport(ListView):
     model = ShelfObject
     template_name = "report/base_report_form_view.html"
@@ -437,7 +437,7 @@ class FurnitureReportView(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class CompatibilityReport(ListView):
     model = RiskZone
     template_name = "report/base_report_form_view.html"
@@ -465,7 +465,7 @@ class CompatibilityReport(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class HazardMapReport(ListView):
     model = Laboratory
     template_name = "report/base_report_form_view.html"
@@ -493,7 +493,7 @@ class HazardMapReport(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
 class PrecursorReportValuesView(ListView):
     model = PrecursorReportValues
     template_name = "report/precursor_report_values_view.html"

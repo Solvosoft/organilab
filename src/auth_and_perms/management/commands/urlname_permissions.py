@@ -63,6 +63,16 @@ URLNAME_PERMISSIONS = {
             "permission": "reservations_management.view_reservations",
         },
         {
+            "name": "Add Reservation",
+            "category": "Reservations",
+            "permission": "reservations_management.add_reservations",
+        },
+        {
+            "name": "Can Request Reservations",
+            "category": "Reservations",
+            "permission": "reservations_management.add_reservedproducts",
+        },
+        {
             "name": "Add Furniture",
             "category": "Furniture",
             "permission": "laboratory.add_furniture",
@@ -1151,6 +1161,11 @@ URLNAME_PERMISSIONS = {
         },
     ],
     "reservations_list": [
+        {
+          "name": "Add Reservation",
+          "category": "Reservations",
+          "permission": "laboratory.add_objectfeatures",
+        },
         {
             "name": "List my reservations",
             "category": "Reservations",
