@@ -29,7 +29,7 @@
 					</a>
 				</li>
 			{% endif %}
-			{% if perms.auth_and_perms.institution_can_access %}
+			{% if perms.auth_and_perms.institution_can_access and perms.sga.view_recipientsize %}
 				<li>
 					<a href="{% url 'sga:recipient_size' org_pk %}">
 						{% trans 'Size of recipients' %}

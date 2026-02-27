@@ -39,7 +39,11 @@
 {% endblock %}
 
 {% block js %}
+
 	<script>
+		const has_perm = {
+			"create": {{ perms.sga.add_dangersubstancecategory|yesno:"true,false" }},
+		}
 		window.object_urls = {
 			list_url: "{% url 'sga:api-danger-substance-category-list' org_pk %}",
 			create_url: "{% url 'sga:api-danger-substance-category-list' org_pk %}",

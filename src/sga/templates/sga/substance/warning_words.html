@@ -23,9 +23,7 @@
 {% block js %}
 	<script>
 		const has_perm = {
-			"create": {{ perms.sga.add_warningword|yesno}:"true,false" }},
-			"update": {{ perms.sga.change_warningword|yesno}:"true,false" }},
-			"delete": {{ perms.sga.delete_warningword|yesno}:"true,false"}}
+			"create": {{ perms.sga.add_warningword|yesno:"true,false" }},
 		}
 		document.url_warnings_table = '{% url "laboratory:api-warnings-table-list" org_pk=org_pk%}'
 		document.url_add_warning_word = '{% url 'laboratory:api-warning-word-list' org_pk=org_pk %}'
