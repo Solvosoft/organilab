@@ -10,4 +10,5 @@ urlpatterns = [
     path("tutorial/<int:org_pk>", views.index_tutorial, name="tutorials"),
     path("feedback", views.FeedbackView.as_view(), name="feedback"),
     path("check_ok", do_checks, name="check_ok"),
+    path("error", views.error_view, name="error_view"),
 ]

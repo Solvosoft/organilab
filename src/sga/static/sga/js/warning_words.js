@@ -124,21 +124,24 @@ function delete_warning_word(pk){
     });
 }
 
+buttons = []
+if (has_perm.create){
+    buttons.push({
+        text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
+        action: function() {
+            add_warning_word();
+        },
+        className: 'btn btn-success'
+    });
+}
+
 datatableelement=createDataTable('#warningwordtable', document.url_warnings_table, {
     columns: [
         {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
         {data: "weigth", name: "weigth", title: gettext("Weight"), type: "string", visible: true},
         {data: "actions", name: "actions", title: gettext('Actions'), type: "string", visible: true, sortable: false, filterable: false}
     ],
-    buttons: [
-        {
-            text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
-            action: function() {
-                add_warning_word();
-            },
-            className: 'btn btn-success'
-        }
-    ],
+    buttons: buttons,
     dom: "<'d-flex justify-content-between'<'m-2'l>" +
     "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
     "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",

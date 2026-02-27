@@ -151,6 +151,17 @@ function delete_recipient_size(pk){
     });
 }
 
+buttons = []
+if (has_perm.create){
+    buttons.push({
+        text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
+        action: function() {
+            add_recipient_size();
+        },
+        className: 'btn btn-success'
+    });
+}
+
 datatableelement=createDataTable('#recipienttable', document.urls["table_url"], {
     columns: [
         {data: "name", name: "name", title: gettext("Name"), type: "string", visible: true},
@@ -160,15 +171,7 @@ datatableelement=createDataTable('#recipienttable', document.urls["table_url"], 
         {data: "width_unit", name: "width_unit", title: gettext("Width Unit"), type: "string", visible: true},
         {data: "actions", name: "actions", title: gettext('Actions'), type: "string", visible: true, sortable: false, filterable: false}
     ],
-    buttons: [
-        {
-            text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
-            action: function() {
-                add_recipient_size();
-            },
-            className: 'btn btn-success'
-        }
-    ],
+    buttons:buttons,
     dom: "<'d-flex justify-content-between'<'m-2'l>" +
     "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
     "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
