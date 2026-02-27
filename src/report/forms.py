@@ -440,11 +440,8 @@ class ReactiveStockReportForm(ReportForm):
 
 class RegencyReportForm(ReportForm):
 
-    years = forms.ChoiceField(
-        widget=genwidgets.Select,
-        choices=[],
-        required=True,
-        label=_("Year"),
+    period = forms.CharField(
+        widget=genwidgets.DateRangeInput, required=False, label=_("Period")
     )
 
     def __init__(self, *args, **kwargs):
@@ -457,7 +454,6 @@ class RegencyReportForm(ReportForm):
                 pk__in=lab_ids
             )
 
-        self.fields["years"].choices = get_years()
         self.fields["format"].choices = (
             ("xls", "XLS"),
             ("xlsx", "XLSX"),
@@ -659,3 +655,10 @@ class PrecursorReportValuesViewForm(GTForm, forms.ModelForm):
             "final_balance": genwidgets.NumberInput,
             "reason_to_spend": genwidgets.Textarea,
         }
+
+
+class ObjectReportForm(ReportForm):
+
+    object_type = forms.CharField(
+        max_length=1, widget=genwidgets.HiddenInput(), required=False
+    )

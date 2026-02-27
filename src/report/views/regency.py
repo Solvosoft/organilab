@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from laboratory.models import OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import get_report_name
+from report.utils import get_report_name, format_date
 from risk_management.utils_risk import (
     cargar_cuadro3,
     cargar_sga_referencia,
@@ -29,13 +29,19 @@ def report_regency_xlsx(report):
 
     filters = {
         "object__type": 0,
-        "created_at__year": report.data["years"],
         "object__isnull": False,
         "measurement_unit__isnull": False,
         "laboratory__pk__in": organization.get_my_laboratories,
     }
     if report.data["laboratory"]:
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
+    if "period" in report.data:
+        if report.data["period"]:
+            dates = report.data["period"].split("-")
+            if len(dates) == 2:
+                dates[0] = format_date(dates[0].strip())
+                dates[1] = format_date(dates[1].strip())
+                filters.update({"created_at__range": dates})
 
     inv = get_inventory(filters)
     inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
@@ -125,11 +131,18 @@ def report_regency_doc(report):
     ).first()
     filters = {
         "object__type": 0,
-        "created_at__year": report.data["years"],
         "object__isnull": False,
         "measurement_unit__isnull": False,
         "laboratory__pk__in": organization.get_my_laboratories,
     }
+    if "period" in report.data:
+        if report.data["period"]:
+            dates = report.data["period"].split("-")
+            if len(dates) == 2:
+                dates[0] = format_date(dates[0].strip())
+                dates[1] = format_date(dates[1].strip())
+                filters.update({"created_at__range": dates})
+
     if report.data["laboratory"]:
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
 
