@@ -597,10 +597,10 @@ def report_hazard_map_html(report):
     org_pk = report.data.get("organization") or report.data.get("org_pk")
     lab_pks = report.data.get("laboratory", [])
     org_pk = OrganizationStructure.objects.filter(pk=org_pk).first()
+    labs = list(set(org_pk.get_my_laboratories))
     if lab_pks:
-        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk.root)
-    else:
-        labs = Laboratory.objects.filter(organization=org_pk.root)
+        labs = lab_pks
+    labs = Laboratory.objects.filter(pk__in=labs)
 
     map_data = []
     for lab in labs:
@@ -645,15 +645,13 @@ def hazard_map_visual_view(request, org_pk):
 
     if not check_user_access_kwargs_org(org_pk, request.user):
         raise Http404()
-    print(111)
-
     lab_pks = request.GET.getlist("laboratory")
     title = request.GET.get("title", _("Compatibility Laboratory"))
     org_pk = OrganizationStructure.objects.filter(pk=org_pk).first()
+    labs = list(set(org_pk.get_my_laboratories))
     if lab_pks:
-        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk.root)
-    else:
-        labs = Laboratory.objects.filter(organization=org_pk.root)
+        labs = lab_pks
+    labs = Laboratory.objects.filter(pk__in=labs)
 
     if not labs.exists():
         raise Http404()

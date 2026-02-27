@@ -156,9 +156,17 @@ def get_dataset_reactive_precursor(report, column_list=None):
     general = not laboratories or len(laboratories) > 1
     dataset = []
     lab = []
-
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     if "laboratory" in report.data:
-        lab = report.data["laboratory"]
+        lab = (
+            report.data["laboratory"]
+            if len(report.data["laboratory"]) > 0
+            else organization.get_my_laboratories
+        )
+    else:
+        lab = organization.get_my_laboratories
 
     for lab_pk in lab:
         if lab:
@@ -245,6 +253,12 @@ def report_reactive_precursor_doc(report):
 
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
+    laboratories = (
+        organization.get_my_laboratories if len(laboratories) == 0 else laboratories
+    )
     if not general:
         content[0].pop(0)
 
@@ -417,8 +431,16 @@ def get_limited_shelf_objects(query):
 
 def get_dataset_limit_objects(report, column_list=None):
     dataset = []
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     if "laboratory" in report.data:
-        labs = Laboratory.objects.filter(pk__in=report.data["laboratory"])
+        labs = (
+            report.data["laboratory"]
+            if len(report.data["laboratory"]) > 0
+            else organization.get_my_laboratories
+        )
+        labs = Laboratory.objects.filter(pk__in=labs)
         for lab in labs:
             shelf_objects = ShelfObject.objects.filter(
                 shelf__furniture__labroom__laboratory=lab

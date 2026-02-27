@@ -7,6 +7,7 @@ from laboratory.models import (
     Laboratory,
     Catalog,
     ShelfObject,
+    OrganizationStructure,
 )
 from laboratory.utils import get_user_laboratories
 from report.models import ObjectChangeLogReport, ObjectChangeLogReportBuilder
@@ -193,6 +194,9 @@ def get_queryset(report):
 
     labs = report.data.get("laboratory", [])
     general = not labs or len(labs) > 1
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
 
     filters = {}
     object_log_filters = {}
@@ -206,17 +210,18 @@ def get_queryset(report):
             object_log_filters["precursor"] = True
 
     if general:
-        labs = get_user_laboratories(report.created_by)
-        query = query.filter(laboratory__in=labs)
-        filters["in_where_laboratory__in"] = labs
+        labs  = labs if len(labs) > 1 else organization.get_my_laboratories
+        query = query.filter(laboratory__pk__in=labs)
+        filters["in_where_laboratory__pk__in"] = labs
     else:
         lab_pk = labs[0] if labs else None
         if lab_pk is not None:
             query = query.filter(laboratory__pk=lab_pk)
             filters["in_where_laboratory__pk"] = lab_pk
         else:
-            query = query.filter(laboratory__in=labs)
-            filters["in_where_laboratory__in"] = labs
+            labs = organization.get_my_laboratories
+            query = query.filter(laboratory__pk__in=labs)
+            filters["in_where_laboratory__pk__in"] = labs
 
     obj = ShelfObject.objects.filter(**filters).using(settings.READONLY_DATABASE)
 

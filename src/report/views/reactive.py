@@ -1,6 +1,6 @@
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
-from laboratory.models import ShelfObject
+from laboratory.models import ShelfObject, OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
 from report.utils import (
     set_format_table_columns,
@@ -15,9 +15,13 @@ def get_dataset_report_reactive(report, column_list=None):
 
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
-
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
     if general:
-        filters["in_where_laboratory__in"] = laboratories
+        filters["in_where_laboratory__pk__in"] = (
+            laboratories if len(laboratories) > 1 else organization.get_my_laboratories
+        )
     else:
         filters["in_where_laboratory__pk"] = laboratories[0]
 
