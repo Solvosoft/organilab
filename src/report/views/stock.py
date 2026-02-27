@@ -1,7 +1,14 @@
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from laboratory.models import ShelfObject, Laboratory, BaseUnitValues, Object, Catalog
+from laboratory.models import (
+    ShelfObject,
+    Laboratory,
+    BaseUnitValues,
+    Object,
+    Catalog,
+    OrganizationStructure,
+)
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils_base_unit import get_conversion_units
 from report.utils import (
@@ -204,6 +211,11 @@ def report_stock(report):
         ],
     ]
     laboratories = report.data.get("laboratory", [])
+    if len(laboratories) == 0:
+        organization = OrganizationStructure.objects.filter(
+            pk=report.data["organization"]
+        ).first()
+        laboratories = list(set(organization.get_my_laboratories))
 
     for lab in laboratories:
         laboratory = Laboratory.objects.get(pk=lab)
@@ -246,12 +258,18 @@ def get_stock_cartel_dataset(report, column_list=None):
     filters = {
         "object__type": Object.REACTIVE,
     }
+    organization = OrganizationStructure.objects.filter(
+        pk=report.data["organization"]
+    ).first()
 
     laboratories = report.data.get("laboratory", [])
     general = not laboratories or len(laboratories) > 1
 
     if general:
-        filters["in_where_laboratory__in"] = laboratories
+        filters["in_where_laboratory__pk__in"] = (
+            laboratories if len(laboratories) > 1 else organization.get_my_laboratories
+        )
+        print(filters["in_where_laboratory__pk__in"])
     else:
         filters["in_where_laboratory__pk"] = laboratories[0]
 
