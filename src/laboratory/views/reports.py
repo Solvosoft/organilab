@@ -22,6 +22,7 @@ from laboratory.forms import H_CodeForm
 from laboratory.models import (
     ShelfObject,
     OrganizationStructure,
+    UserOrganization,
 )
 
 from laboratory.views.djgeneric import ListView, ReportListView
@@ -156,11 +157,15 @@ def getLevelClass(level):
 
 @permission_required("laboratory.view_report")
 def report_index(request, org_pk):
-    org = (
-        OrganizationStructure.os_manager.filter_user(request.user)
-        .filter(pk=org_pk)
-        .first()
-    )
+
+    user_perms = UserOrganization.objects.filter(
+        organization=org_pk, user=request.user
+    ).first()
+
+    if not user_perms:
+        raise Http404
+
+    org = OrganizationStructure.objects.filter(pk=org_pk).first()
     if not org:
         raise Http404
 
