@@ -292,10 +292,10 @@ class OrganizationReactiveForm(ReportBase):
         users = self.cleaned_data["users"]
 
         if not users:
-            users = get_users_from_organization(organization)
+            users = list(set(get_users_from_organization(organization)))
         else:
-            users = users.values_list("user__pk", flat=True)
-        return list(users.distinct())
+            users = list(set(users.values_list("user__pk", flat=True)))
+        return users
 
 
 class ValidateObjectTypeForm(GTForm):
