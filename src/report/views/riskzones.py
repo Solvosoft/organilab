@@ -10,7 +10,13 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from weasyprint import HTML
 
-from laboratory.models import Laboratory, ShelfObject, Object, Catalog
+from laboratory.models import (
+    Laboratory,
+    ShelfObject,
+    Object,
+    Catalog,
+    OrganizationStructure,
+)
 from laboratory.report_utils import ExcelGraphBuilder
 from laboratory.utils import check_user_access_kwargs_org
 from laboratory.utils_base_unit import get_conversion_units
@@ -363,9 +369,9 @@ def _get_compatibility_buildings(report):
         buildings_qs = buildings_qs.filter(pk__in=buildings_filter)
     elif risk_zones:
         building_pks = list(
-            RiskZone.objects.filter(
-                pk__in=risk_zones
-            ).values_list("buildings", flat=True)
+            RiskZone.objects.filter(pk__in=risk_zones).values_list(
+                "buildings", flat=True
+            )
         )
         buildings_qs = buildings_qs.filter(pk__in=building_pks)
 
@@ -413,7 +419,7 @@ def report_compatibility_html(report):
             hcode_map = build_hcode_substance_map(zone)
 
             for i, code_a in enumerate(all_h_codes):
-                for code_b in all_h_codes[i + 1:]:
+                for code_b in all_h_codes[i + 1 :]:
                     compat = get_h_code_compatibility(code_a, code_b)
                     compat_label = COMPAT_LABELS.get(compat, compat)
 
@@ -436,10 +442,18 @@ def report_compatibility_html(report):
                         "reason": reason,
                         "substances_a": "; ".join(e["substance"] for e in entries_a),
                         "substances_b": "; ".join(e["substance"] for e in entries_b),
-                        "laboratory_a": "; ".join(sorted(set(e["lab"] for e in entries_a))),
-                        "shelf_a": "; ".join(sorted(set(e["shelf"] for e in entries_a if e["shelf"]))),
-                        "laboratory_b": "; ".join(sorted(set(e["lab"] for e in entries_b))),
-                        "shelf_b": "; ".join(sorted(set(e["shelf"] for e in entries_b if e["shelf"]))),
+                        "laboratory_a": "; ".join(
+                            sorted(set(e["lab"] for e in entries_a))
+                        ),
+                        "shelf_a": "; ".join(
+                            sorted(set(e["shelf"] for e in entries_a if e["shelf"]))
+                        ),
+                        "laboratory_b": "; ".join(
+                            sorted(set(e["lab"] for e in entries_b))
+                        ),
+                        "shelf_b": "; ".join(
+                            sorted(set(e["shelf"] for e in entries_b if e["shelf"]))
+                        ),
                     }
 
                     if column_list:
@@ -488,18 +502,24 @@ def _build_compatibility_diagnostic(buildings_qs, risk_zone_pks):
             labs = zone.laboratories.all()
             total_labs += labs.count()
             for lab in labs:
-                shelf_objects = ShelfObject.objects.filter(
-                    in_where_laboratory=lab,
-                    object__type=Object.REACTIVE
-                ).select_related('object').prefetch_related(
-                    'object__sustancecharacteristics__h_code'
+                shelf_objects = (
+                    ShelfObject.objects.filter(
+                        in_where_laboratory=lab, object__type=Object.REACTIVE
+                    )
+                    .select_related("object")
+                    .prefetch_related("object__sustancecharacteristics__h_code")
                 )
                 total_reactives += shelf_objects.count()
                 for so in shelf_objects:
                     obj = so.object
-                    if hasattr(obj, 'sustancecharacteristics') and obj.sustancecharacteristics:
+                    if (
+                        hasattr(obj, "sustancecharacteristics")
+                        and obj.sustancecharacteristics
+                    ):
                         h_codes = list(
-                            obj.sustancecharacteristics.h_code.values_list('code', flat=True)
+                            obj.sustancecharacteristics.h_code.values_list(
+                                "code", flat=True
+                            )
                         )
                         if h_codes:
                             total_with_h_codes += 1
@@ -513,16 +533,28 @@ def _build_compatibility_diagnostic(buildings_qs, risk_zone_pks):
         detail = _("Assign laboratories to the risk zones.")
     elif total_reactives == 0:
         msg = _("Laboratories found but no reactive substances registered.")
-        detail = _("Register reactive substances (ShelfObjects of type Reactive) in the laboratories.")
+        detail = _(
+            "Register reactive substances (ShelfObjects of type Reactive) in the laboratories."
+        )
     elif total_with_h_codes == 0:
-        msg = _("Reactive substances found but none have H-codes (danger indications) assigned.")
-        detail = _("Edit each reactive substance and assign H-codes via Substance Characteristics (SGA).")
+        msg = _(
+            "Reactive substances found but none have H-codes (danger indications) assigned."
+        )
+        detail = _(
+            "Edit each reactive substance and assign H-codes via Substance Characteristics (SGA)."
+        )
     elif len(unique_h_codes) < 2:
-        msg = _("Only one unique H-code found across all zones. At least 2 different H-codes are needed to compare compatibility.")
+        msg = _(
+            "Only one unique H-code found across all zones. At least 2 different H-codes are needed to compare compatibility."
+        )
         detail = _("Assign different H-codes to the reactive substances.")
     else:
-        msg = _("No compatibility pairs generated. Each zone needs at least 2 different H-codes within the same zone.")
-        detail = _("Ensure at least one risk zone contains substances with 2 or more different H-codes.")
+        msg = _(
+            "No compatibility pairs generated. Each zone needs at least 2 different H-codes within the same zone."
+        )
+        detail = _(
+            "Ensure at least one risk zone contains substances with 2 or more different H-codes."
+        )
 
     return {
         "message": str(msg),
@@ -564,11 +596,11 @@ def report_hazard_map_html(report):
 
     org_pk = report.data.get("organization") or report.data.get("org_pk")
     lab_pks = report.data.get("laboratory", [])
-
+    org_pk = OrganizationStructure.objects.filter(pk=org_pk).first()
     if lab_pks:
-        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk)
+        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk.root)
     else:
-        labs = Laboratory.objects.filter(organization=org_pk)
+        labs = Laboratory.objects.filter(organization=org_pk.root)
 
     map_data = []
     for lab in labs:
@@ -613,14 +645,15 @@ def hazard_map_visual_view(request, org_pk):
 
     if not check_user_access_kwargs_org(org_pk, request.user):
         raise Http404()
+    print(111)
 
     lab_pks = request.GET.getlist("laboratory")
     title = request.GET.get("title", _("Compatibility Laboratory"))
-
+    org_pk = OrganizationStructure.objects.filter(pk=org_pk).first()
     if lab_pks:
-        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk)
+        labs = Laboratory.objects.filter(pk__in=lab_pks, organization=org_pk.root)
     else:
-        labs = Laboratory.objects.filter(organization=org_pk)
+        labs = Laboratory.objects.filter(organization=org_pk.root)
 
     if not labs.exists():
         raise Http404()
@@ -632,6 +665,6 @@ def hazard_map_visual_view(request, org_pk):
     context = {
         "map_data": map_data,
         "title": title,
-        "org_pk": org_pk,
+        "org_pk": org_pk.pk,
     }
     return render(request, "report/hazard_map_visual.html", context)

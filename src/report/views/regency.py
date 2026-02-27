@@ -120,7 +120,7 @@ def report_regency_doc(report):
         "created_at__year": report.data["years"],
         "object__isnull": False,
         "measurement_unit__isnull": False,
-        #"laboratory__organization__pk": report.data["organization"],
+        # "laboratory__organization__pk": report.data["organization"],
     }
     if report.data["laboratory"]:
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
@@ -139,7 +139,8 @@ def report_regency_doc(report):
         [_("Physical"), _("Health"), _("Environmental")],
         [sumatoria["Físico"], sumatoria["Salud"], sumatoria["Ambiental"]],
     ]
-    content.append([], ["Details of the substances"])
+    content.append([])
+    content.append(["Details of the substances"])
     content.append(
         [
             _("Name"),
