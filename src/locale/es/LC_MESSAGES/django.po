@@ -5422,5 +5422,5 @@ msgstr "Actualizar valores del informe de precursores"
 msgid "Delete Precursor Report Values"
 msgstr "Eliminar valores del informe de precursores"
 
-msgid "You do not have access to this organization's reports"
+msgid "You do not have access to this organization reports"
 msgstr "No tiene acceso a los informes de esta organización"
