@@ -1,3 +1,13 @@
+27/02/2026
+Command to load cuadro4
+
+    python manage.py load_danger_substances_category cuadro4_h_umbral.csv
+
+27/02/2026
+Command to upload cuadro3
+
+    - python manage.py load_danger_substances cuadro3.csv
+
 23/02/2026
 Repair laboratories and users
 
@@ -6,7 +16,7 @@ Repair laboratories and users
 17/02/2026
 Command to update and add danger indications
 
-    - python manage.py load_danger_indications
+    - python manage.py load_danger_indications SGA_Codigos_H_P.xlsx
 
 16/12/2025
 Command to merge some organizations into one
