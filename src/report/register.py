@@ -19,7 +19,7 @@ REPORT_FORMS = {
     },
     "report_objects": {
         "task": "report.tasks.task_report",
-        "form": "report.forms.ReportForm",
+        "form": "report.forms.ObjectReportForm",
         "html": "report.views.objects.report_objects_html",
         "pdf": "report.views.base.base_pdf",
         "xls": "report.views.objects.report_objects_doc",

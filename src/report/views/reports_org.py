@@ -34,6 +34,7 @@ from report.forms import (
     CompatibilityReportForm,
     HazardMapReportForm,
     PrecursorReportValuesViewForm,
+    ObjectReportForm,
 )
 from laboratory.models import Laboratory
 from risk_management.models import RiskZone
@@ -71,7 +72,7 @@ class ObjectList(ListView):
             {
                 "title_view": title_view,
                 "report_urlnames": ["reports_objects_list"],
-                "form": ReportForm(
+                "form": ObjectReportForm(
                     initial={
                         "name": slugify(
                             title_view + " " + now().strftime("%x").replace("/", "-")
