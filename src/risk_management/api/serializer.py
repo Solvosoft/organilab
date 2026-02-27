@@ -6,7 +6,7 @@ from djgentelella.serializers.selects import GTS2SerializerBase
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from laboratory.models import Laboratory
+from laboratory.models import Laboratory, OrganizationStructure
 from laboratory.utils import get_users_from_organization
 from risk_management.models import (
     Regent,
@@ -40,12 +40,14 @@ class AddRegentSerializer(serializers.ModelSerializer):
     def get_fields(self, *args, **kwargs):
         fields = super().get_fields(*args, **kwargs)
         organization = self.context.get("org_pk", None)
-        fields["user"].queryset = User.objects.filter(
-            pk__in=get_users_from_organization(organization)
-        )
-        fields["laboratories"].queryset = Laboratory.objects.filter(
-            organization__pk=organization
-        )
+        root = OrganizationStructure.objects.filter(pk=organization).first()
+        if root:
+            fields["user"].queryset = User.objects.filter(
+                pk__in=get_users_from_organization(root.root.pk)
+            )
+            fields["laboratories"].queryset = Laboratory.objects.filter(
+                organization=root.root
+            )
 
         return fields
 

@@ -4,7 +4,9 @@
         <div class="card">
             <div class="card-header">
                 <p class="float-start" style="color:red"><strong>{% trans 'List of comments' %}</strong></p>
+													{% if perms.laboratory.add_commentinform %}
                 <button class="btn btn-success float-end" onclick="save_comment()"><i class="fa fa-plus" aria-hidden="true"></i></button>
+													{% endif %}
                 <div class="clearfix"></div>
             </div>
             <div class="card-body">
