@@ -143,6 +143,11 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.change_shelf",
         },
         {
+            "name": "View Transfer",
+            "category": "Transfer",
+            "permission": "laboratory.view_tranferobject",
+        },
+        {
             "name": "Add Transfer",
             "category": "Transfer",
             "permission": "laboratory.add_tranferobject",
@@ -162,6 +167,11 @@ URLNAME_PERMISSIONS = {
             "category": "Contracts",
             "permission": "laboratory.can_view_contract",
         },
+        {
+            "name": "View Catalog",
+            "category": "Catalog",
+            "permission": "laboratory.view_catalog",
+        }
     ],
     "laboratory_update": [
         {
@@ -3032,6 +3042,28 @@ URLNAME_PERMISSIONS = {
             "name": "Delete Danger Substance Category",
             "category": "Danger Substance Category",
             "permission": "sga.delete_dangersubstancecategory",
+        },
+    ],
+    "list_precursor_report_values": [
+        {
+            "name": "Add Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.add_precursorreportvalues",
+        },
+        {
+            "name": "Change Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.change_precursorreportvalues",
+        },
+        {
+            "name": "Delete Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.delete_precursorreportvalues",
+        },
+        {
+            "name": "View Precursor Report Value",
+            "category": "Precursor Report Value",
+            "permission": "laboratory.view_precursorreportvalues",
         },
     ],
 }

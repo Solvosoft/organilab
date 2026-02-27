@@ -33,6 +33,7 @@ from report.forms import (
     PrecursorFilterForm,
     CompatibilityReportForm,
     HazardMapReportForm,
+    PrecursorReportValuesViewForm,
 )
 from laboratory.models import Laboratory
 from risk_management.models import RiskZone
@@ -485,6 +486,46 @@ class HazardMapReport(ListView):
                         "report_name": "hazard_map_report",
                     },
                     org_pk=self.org,
+                ),
+            }
+        )
+        return context
+
+
+@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+class PrecursorReportValuesView(ListView):
+    model = PrecursorReportValues
+    template_name = "report/precursor_report_values_view.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.precusor_pk = kwargs.get("precusor_pk")
+        self.org_pk = kwargs.get("org_pk")
+
+    def get_queryset(self):
+        if self.precusor_pk:
+            return PrecursorReportValues.objects.filter(pk=self.precusor_pk)
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(PrecursorReportValuesView, self).get_context_data(**kwargs)
+        title = _("Precursor Report Values")
+        context.update(
+            {
+                "title_view": title,
+                "org_pk": self.org_pk,
+                "precusor_pk": self.precusor_pk,
+                "form_create": PrecursorReportValuesViewForm(
+                    prefix="create",
+                    render_type="as_grid",
+                    precusor_pk=self.precusor_pk,
+                    org_pk=self.org_pk,
+                ),
+                "form_update": PrecursorReportValuesViewForm(
+                    prefix="update",
+                    render_type="as_grid",
+                    precusor_pk=self.precusor_pk,
+                    org_pk=self.org_pk,
                 ),
             }
         )

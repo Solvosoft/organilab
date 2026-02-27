@@ -1,7 +1,12 @@
 from rest_framework.routers import DefaultRouter
 from django.urls import path, include
 
-from report.api.views import ReportDataViewSet, ReportDataLogViewSet, RegencyViewSet
+from report.api.views import (
+    ReportDataViewSet,
+    ReportDataLogViewSet,
+    RegencyViewSet,
+    PrecursorReportValuesViewSet,
+)
 from report.views import base
 from report.views import reports_org
 from report.views import riskzones
@@ -47,6 +52,13 @@ router.register("api_report_log", ReportDataLogViewSet, basename="api-report-log
 
 router_report = DefaultRouter()
 router_report.register("api_regency", RegencyViewSet, basename="api-regency")
+
+router_precursor_report_values = DefaultRouter()
+router_precursor_report_values.register(
+    "api_precursor_report_values",
+    PrecursorReportValuesViewSet,
+    basename="api-precursor-report-values",
+)
 
 app_name = "report"
 
@@ -107,6 +119,11 @@ report_urls = [
         riskzones.hazard_map_visual_view,
         name="hazard_map_visual",
     ),
+    path(
+        "precursor-values-list/<int:precusor_pk>/",
+        reports_org.PrecursorReportValuesView.as_view(),
+        name="precursor_report_values_view",
+    ),
 ]
 
 urlpatterns = [
@@ -114,5 +131,9 @@ urlpatterns = [
     path("<int:org_pk>/", include(base_reports)),
     path("<int:org_pk>/", include(base_organization_reports)),
     path("reports/<int:org_pk>/", include(report_urls)),
+    path(
+        "api/reports/<int:org_pk>/precusor/<int:precusor_pk>/",
+        include(router_precursor_report_values.urls),
+    ),
     path("api/reports/<int:org_pk>/", include(router_report.urls)),
 ]

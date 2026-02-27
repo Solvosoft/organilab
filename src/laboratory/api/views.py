@@ -2,7 +2,6 @@ import logging
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
-from laboratory.utils import organilab_logentry
 from django.contrib.auth.decorators import permission_required
 from django.db.models import Value, DateField, Q
 from django.http import JsonResponse
