@@ -23,7 +23,7 @@
 {% if laboratory and org_pk %}
 
 
-	{% if perms.djreservation.add_reservation %}
+	{% if perms.reservations_management.add_reservations %}
 		<li id="reservation_list_id"><a
 			href="{% url 'laboratory:my_reservations' org_pk laboratory %}">{% trans 'My reservations' %} </a>
 		</li>

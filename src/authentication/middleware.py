@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.urls import resolve
 from rest_framework.exceptions import PermissionDenied
 
@@ -109,10 +110,7 @@ class ProfileMiddleware:
             ):
                 raise Http404("Organization is inactive")
 
-            try:
-                org = OrganizationStructure.objects.get(pk=org_pk)
-            except OrganizationStructure.DoesNotExist:
-                raise Http404("Organization not found")
+            org = get_object_or_404(OrganizationStructure, pk=org_pk)
 
             effective_org = org.get_effective_org_for_profile(user.profile)
 

@@ -20,9 +20,8 @@ def has_perm_in_org(context, org_pk, permission):
         return True
     app_label, codename = permission.split(".")
 
-    try:
-        org = OrganizationStructure.objects.get(pk=org_pk)
-    except OrganizationStructure.DoesNotExist:
+    org = OrganizationStructure.objects.filter(pk=org_pk).first()
+    if org is None:
         return False
 
     effective_org = org.get_effective_org_for_profile(user.profile)

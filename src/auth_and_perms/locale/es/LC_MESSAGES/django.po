@@ -1208,3 +1208,8 @@ msgstr "Ver Catálogo"
 msgid "Catalog"
 msgstr "Catálogo"
 
+msgid "Add Reservation"
+msgstr "Agregar Reservaciones"
+
+msgid "Can Request Reservations"
+msgstr "Puede Solicitar Reservaciones"
