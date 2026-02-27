@@ -117,25 +117,28 @@ class MyProcedureSerializer(serializers.ModelSerializer):
         }
         action = ""
         url = reverse("academic:complete_my_procedure", kwargs=procedure_kwargs)
-        action += """ <a title='%s' class="pe-2" href='%s'><i class="fa fa-edit text-success" aria-hidden="true"></i>
-        </a>""" % (
-            _("Edit"),
-            url,
-        )
-        action += """ <a title='%s' class="pe-2 open_modal" data-url="%s" onclick="get_procedure(this)"><i class="fa fa-book"></i></a>
+        user = self.context["request"].user
+        if user.has_perm("academic.change_myprocedure"):
+            action += """ <a title='%s' class="pe-2" href='%s'><i class="fa fa-edit text-success" aria-hidden="true"></i>
+            </a>""" % (
+                _("Edit"),
+                url,
+            )
+        if user.has_perm("academic.view_procedure"):
+            action += """ <a title='%s' class="pe-2 open_modal" data-url="%s" onclick="get_procedure(this)"><i class="fa fa-book"></i></a>
         """ % (
-            _("Reserved"),
-            reverse(
-                "academic:get_procedure",
-                kwargs={"org_pk": org_pk, "pk": obj.custom_procedure.pk},
-            ),
-        )
-        action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger"
-        aria-hidden="true"></i></a>""" % (
-            _("Delete"),
-            obj.pk,
-        )
-
+                _("Reserved"),
+                reverse(
+                    "academic:get_procedure",
+                    kwargs={"org_pk": org_pk, "pk": obj.custom_procedure.pk},
+                ),
+            )
+        if user.has_perm("academic.delete_myprocedure"):
+            action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger"
+            aria-hidden="true"></i></a>""" % (
+                _("Delete"),
+                obj.pk,
+            )
         return action
 
     class Meta:

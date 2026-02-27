@@ -1,5 +1,7 @@
 from django import forms
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.forms import ModelForm
 from django.utils.translation import gettext_lazy as _
 from djgentelella.forms.forms import GTForm
@@ -10,6 +12,7 @@ from djgentelella.widgets.selects import (
     AutocompleteSelectMultiple,
     AutocompleteSelectMultipleImage,
 )
+from auth_and_perms.models import ProfilePermission
 from auth_and_perms.models import Profile, Rol
 from laboratory import utils
 from laboratory.models import (
@@ -113,10 +116,37 @@ class TransferOutShelfObjectForm(GTForm):
         lab = kwargs.pop("lab_send")
         org = kwargs.pop("org")
         super(TransferOutShelfObjectForm, self).__init__(*args, **kwargs)
-        orgs = utils.get_pk_org_ancestors_decendants(users, org)
 
-        self.fields["laboratory"].queryset = users.profile.laboratories.filter(
-            organization__in=orgs
+        organization = OrganizationStructure.objects.filter(pk=org).first()
+        if organization is None:
+            self.fields["laboratory"].queryset = Laboratory.objects.none()
+            return
+
+        profile = users.profile
+        has_org_permission = ProfilePermission.objects.filter(
+            profile=profile,
+            object_id=organization.pk,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+            rol__isnull=False,
+        ).exists()
+
+        if has_org_permission:
+            lab_ids = organization.get_my_laboratories
+        else:
+            lab_ids = list(
+                ProfilePermission.objects.filter(
+                    profile=profile,
+                    content_type__app_label="laboratory",
+                    content_type__model="laboratory",
+                    rol__isnull=False,
+                ).values_list("object_id", flat=True)
+            )
+            org_lab_ids = organization.get_my_laboratories
+            lab_ids = [lab_id for lab_id in lab_ids if lab_id in org_lab_ids]
+
+        self.fields["laboratory"].queryset = Laboratory.objects.filter(
+            pk__in=lab_ids
         ).exclude(pk=lab)
 
 
