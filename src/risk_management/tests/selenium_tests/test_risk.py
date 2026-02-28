@@ -77,6 +77,62 @@ class RiskSeleniumBase(SeleniumBase):
         self.selenium.get(url)
         self.wait_for_page_ready()
 
+    def navigate_to_buildings_list(self):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:buildings_list", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_buildings_create(self):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:buildings_create", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_buildings_update(self, pk):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:buildings_update", kwargs={"org_pk": 1, "pk": pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_regents_list(self):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:regents", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_structures_list(self):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:structures_list", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_structures_create(self):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:structures_create", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_structures_update(self, pk):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:structures_update", kwargs={"org_pk": 1, "pk": pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_zone_dashboard(self):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:zone_dashboard", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
 
 @tag("selenium")
 class RiskSeleniumTest(RiskSeleniumBase):
@@ -124,18 +180,17 @@ class RiskSeleniumTest(RiskSeleniumBase):
         """
         self.navigate_to_riskzone_create()
         path_list = [
-            {"path": "//*[@id='id_name']", "extra_action": "clearinput"},
+            {"path": "//*[@id='id_name']", "extra_action": "clearinput", "wait_ready": True},
             {
                 "path": "//*[@id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Bodega de equipos",
             },
             {
-                "path": "//div[contains(@class, 'form-group')]//span[contains(@class, 'select2-selection')]",
-                "sleep": 2,
-            },
-            {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": "//*[@id='id_num_workers']",
+                "extra_action": "script",
+                "value": "$('#id_buildings').val(['1']).trigger('change');",
+                "sleep": 1,
             },
             {"path": "//*[@id='id_num_workers']", "extra_action": "clearinput"},
             {
@@ -305,7 +360,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         path_list = [
             {
                 "path": "//*[@id='table-incidents_wrapper']//button[contains(@class, 'btn-outline-success') or contains(@class, 'btn-success')]",
-                "sleep": 2,
+                "sleep": 3,
             },
             {
                 "path": "//input[@id='id_create-short_description']",
@@ -314,7 +369,59 @@ class RiskSeleniumTest(RiskSeleniumBase):
                 "value": "Jose dejo caer una bascula al 13 hrs.",
             },
             {
+                "path": "//input[@id='id_create-incident_date']",
+                "extra_action": "setvalue",
+                "value": "2026-01-15",
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-causes")){tinymce.get("id_create-causes").setContent("<p>Descuido al manipular el equipo</p>");}',
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(200)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-people_impact")){tinymce.get("id_create-people_impact").setContent("<p>Ninguno</p>");}',
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-infraestructure_impact")){tinymce.get("id_create-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-environment_impact")){tinymce.get("id_create-environment_impact").setContent("<p>Ninguno</p>");}',
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-result_of_plans")){tinymce.get("id_create-result_of_plans").setContent("<p>Se activó protocolo de emergencia</p>");}',
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(600)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-mitigation_actions")){tinymce.get("id_create-mitigation_actions").setContent("<p>Capacitación del personal</p>");}',
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_create-recomendations")){tinymce.get("id_create-recomendations").setContent("<p>Usar guantes y seguir protocolo</p>");}',
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(800)",
+                "sleep": 1,
+            },
+            {
                 "path": "//*[@id='create_obj_modal']//button[contains(@class, 'formadd')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(0)",
             },
         ]
         self.create_gif_process(path_list, "add_incidents")
@@ -330,8 +437,9 @@ class RiskSeleniumTest(RiskSeleniumBase):
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
             {
-                "path": "//*[@id='table-incidents']//tbody/tr[1]//i[contains(@class, 'fa-edit') or contains(@class, 'fa-pencil')]",
+                "path": "//*[@id='table-incidents']//tbody/tr[1]//i[contains(@class, 'fa-pencil-square-o')]",
                 "wait_ready": True,
+                "sleep": 5,
             },
             {
                 "path": "//input[@id='id_update-short_description']",
@@ -344,7 +452,59 @@ class RiskSeleniumTest(RiskSeleniumBase):
                 "value": "Jose dejo caer una bascula al 13 hrs.",
             },
             {
+                "path": "//input[@id='id_update-incident_date']",
+                "extra_action": "setvalue",
+                "value": "2026-01-15",
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(200)",
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-causes")){tinymce.get("id_update-causes").setContent("<p>Descuido al manipular el equipo</p>");}',
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-people_impact")){tinymce.get("id_update-people_impact").setContent("<p>Ninguno</p>");}',
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(400)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-infraestructure_impact")){tinymce.get("id_update-infraestructure_impact").setContent("<p>Daño menor en equipo</p>");}',
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-environment_impact")){tinymce.get("id_update-environment_impact").setContent("<p>Ninguno</p>");}',
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(600)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-result_of_plans")){tinymce.get("id_update-result_of_plans").setContent("<p>Se activó protocolo de emergencia</p>");}',
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-mitigation_actions")){tinymce.get("id_update-mitigation_actions").setContent("<p>Capacitación del personal</p>");}',
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(800)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": 'if(typeof tinymce!=="undefined"&&tinymce.get("id_update-recomendations")){tinymce.get("id_update-recomendations").setContent("<p>Usar guantes y seguir protocolo</p>");}',
+                "sleep": 1,
+            },
+            {
                 "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-footer')]//button[contains(@class, 'formadd')]",
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(0)",
             },
         ]
         self.create_gif_process(path_list, "update_incidents")
@@ -360,8 +520,9 @@ class RiskSeleniumTest(RiskSeleniumBase):
         self.navigate_to_riskzone_detail(pk=5)
         path_list = [
             {
-                "path": "//*[@id='table-incidents']//tbody/tr[1]//i[contains(@class, 'fa-trash') or contains(@class, 'fa-remove')]",
+                "path": "//*[@id='table-incidents']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
                 "wait_ready": True,
+                "sleep": 5,
             },
             {
                 "path": "//*[@id='delete_obj_modal']//div[contains(@class, 'modal-footer')]//button[contains(@class, 'formadd') or contains(@class, 'btn-primary')]",
@@ -390,3 +551,330 @@ class RiskSeleniumTest(RiskSeleniumBase):
             },
         ]
         self.create_gif_process(path_list, "download_incidents")
+
+    # --- Buildings CRUD Tests ---
+
+    def test_view_buildings(self):
+        """Test viewing the buildings list page.
+
+        Flow: Navigate to buildings list -> Verify page heading is visible.
+
+        GIF: docs/source/_static/gif/view_buildings.gif
+        """
+        self.navigate_to_buildings_list()
+        path_list = [
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "sleep": 3,
+            },
+        ]
+        self.create_gif_process(path_list, "view_buildings")
+
+    def test_add_building(self):
+        """Test creating a new building.
+
+        Flow: Navigate to building create form -> Fill name and phone
+        -> Submit -> Verify return to list.
+
+        GIF: docs/source/_static/gif/add_building.gif
+        """
+        self.navigate_to_buildings_create()
+        path_list = [
+            {"path": "//*[@id='id_name']", "extra_action": "clearinput", "wait_ready": True},
+            {
+                "path": "//*[@id='id_name']",
+                "extra_action": "setvalue",
+                "value": "Edificio Nuevo",
+            },
+            {
+                "path": "//*[@id='id_phone']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//*[@id='id_phone']",
+                "extra_action": "setvalue",
+                "value": "22334455",
+            },
+            {
+                "path": "//button[@type='submit' or @id='btnsave']",
+            },
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "wait_ready": True,
+            },
+        ]
+        self.create_gif_process(path_list, "add_building")
+
+    def test_edit_building(self):
+        """Test editing an existing building from DataTable.
+
+        Flow: Navigate to buildings list -> Click edit icon on first row
+        (redirects to form page) -> Modify name -> Submit.
+
+        GIF: docs/source/_static/gif/edit_building.gif
+        """
+        self.navigate_to_buildings_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-building']//tbody/tr[1]//i[contains(@class, 'fa-edit')]",
+                "sleep": 5,
+            },
+            {
+                "path": "//*[@id='id_name']",
+                "extra_action": "clearinput",
+                "wait_ready": True,
+            },
+            {
+                "path": "//*[@id='id_name']",
+                "extra_action": "setvalue",
+                "value": "Edificio Modificado",
+            },
+            {
+                "path": "//button[@type='submit' or @id='btnsave']",
+            },
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "wait_ready": True,
+            },
+        ]
+        self.create_gif_process(path_list, "edit_building")
+
+    def test_delete_building(self):
+        """Test deleting a building from DataTable.
+
+        Flow: Navigate to buildings list -> Click delete icon on first
+        row -> Confirm deletion in modal.
+
+        GIF: docs/source/_static/gif/delete_building.gif
+        """
+        self.navigate_to_buildings_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-building']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "sleep": 5,
+            },
+            {
+                "path": "//*[@id='delete_obj_modal']//div[contains(@class, 'modal-footer')]//button[contains(@class, 'formadd') or contains(@class, 'btn-primary')]",
+                "sleep": 2,
+            },
+        ]
+        self.create_gif_process(path_list, "delete_building")
+
+    # --- Regents CRUD Tests ---
+
+    def test_view_regents(self):
+        """Test viewing the regents list page.
+
+        Flow: Navigate to regents list -> Verify page heading is visible.
+
+        GIF: docs/source/_static/gif/view_regents.gif
+        """
+        self.navigate_to_regents_list()
+        path_list = [
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "sleep": 3,
+            },
+        ]
+        self.create_gif_process(path_list, "view_regents")
+
+    def test_add_regent(self):
+        """Test creating a new regent via modal.
+
+        Flow: Navigate to regents list -> Click create button in DataTable
+        toolbar -> Fill user (autocomplete), type_regent, laboratories
+        in modal -> Submit.
+
+        GIF: docs/source/_static/gif/add_regent.gif
+        """
+        self.navigate_to_regents_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-regent_wrapper']//button[contains(@class, 'btn-outline-success') or contains(@class, 'btn-success')]",
+                "sleep": 3,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": (
+                    "var $sel = $('#id_create-user');"
+                    "var opt = new Option('admin - Organilab Admin', '1', true, true);"
+                    "$sel.append(opt).trigger('change');"
+                ),
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//select[@id='id_create-type_regent']",
+                "extra_action": "script",
+                "value": "$('#id_create-type_regent').val('chemical').trigger('change');",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'formadd')]",
+            },
+        ]
+        self.create_gif_process(path_list, "add_regent")
+
+    def test_edit_regent(self):
+        """Test editing an existing regent from DataTable via modal.
+
+        Flow: Navigate to regents list -> Click edit icon on first row
+        -> Modify type_regent in modal -> Submit.
+
+        GIF: docs/source/_static/gif/edit_regent.gif
+        """
+        self.navigate_to_regents_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-regent']//tbody/tr[1]//i[contains(@class, 'fa-edit')]",
+                "sleep": 5,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_update-type_regent').val('chemical_engineer').trigger('change');",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='update_obj_modal']//div[contains(@class, 'modal-footer')]//button[contains(@class, 'formadd')]",
+            },
+        ]
+        self.create_gif_process(path_list, "edit_regent")
+
+    def test_delete_regent(self):
+        """Test deleting a regent from DataTable.
+
+        Flow: Navigate to regents list -> Click delete icon on first
+        row -> Confirm deletion in modal.
+
+        GIF: docs/source/_static/gif/delete_regent.gif
+        """
+        self.navigate_to_regents_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-regent']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "sleep": 5,
+            },
+            {
+                "path": "//*[@id='delete_obj_modal']//div[contains(@class, 'modal-footer')]//button[contains(@class, 'formadd') or contains(@class, 'btn-primary')]",
+                "sleep": 2,
+            },
+        ]
+        self.create_gif_process(path_list, "delete_regent")
+
+    # --- Structures CRUD Tests ---
+
+    def test_view_structures(self):
+        """Test viewing the structures list page.
+
+        Flow: Navigate to structures list -> Verify page heading is visible.
+
+        GIF: docs/source/_static/gif/view_structures.gif
+        """
+        self.navigate_to_structures_list()
+        path_list = [
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "sleep": 3,
+            },
+        ]
+        self.create_gif_process(path_list, "view_structures")
+
+    def test_add_structure(self):
+        """Test creating a new structure.
+
+        Flow: Navigate to structure create form -> Fill name -> Submit
+        -> Verify return to list.
+
+        GIF: docs/source/_static/gif/add_structure.gif
+        """
+        self.navigate_to_structures_create()
+        path_list = [
+            {"path": "//*[@id='id_name']", "extra_action": "clearinput", "wait_ready": True},
+            {
+                "path": "//*[@id='id_name']",
+                "extra_action": "setvalue",
+                "value": "Estructura Sur",
+            },
+            {
+                "path": "//button[@type='submit' or @id='btnsave']",
+            },
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "wait_ready": True,
+            },
+        ]
+        self.create_gif_process(path_list, "add_structure")
+
+    def test_edit_structure(self):
+        """Test editing an existing structure from DataTable.
+
+        Flow: Navigate to structures list -> Click edit icon on first row
+        (redirects to form page) -> Modify name -> Submit.
+
+        GIF: docs/source/_static/gif/edit_structure.gif
+        """
+        self.navigate_to_structures_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-structure']//tbody/tr[1]//i[contains(@class, 'fa-edit')]",
+                "sleep": 5,
+            },
+            {
+                "path": "//*[@id='id_name']",
+                "extra_action": "clearinput",
+                "wait_ready": True,
+            },
+            {
+                "path": "//*[@id='id_name']",
+                "extra_action": "setvalue",
+                "value": "Estructura Modificada",
+            },
+            {
+                "path": "//button[@type='submit' or @id='btnsave']",
+            },
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "wait_ready": True,
+            },
+        ]
+        self.create_gif_process(path_list, "edit_structure")
+
+    def test_delete_structure(self):
+        """Test deleting a structure from DataTable.
+
+        Flow: Navigate to structures list -> Click delete icon on first
+        row -> Confirm deletion in modal.
+
+        GIF: docs/source/_static/gif/delete_structure.gif
+        """
+        self.navigate_to_structures_list()
+        path_list = [
+            {
+                "path": "//*[@id='table-structure']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "sleep": 5,
+            },
+            {
+                "path": "//*[@id='delete_obj_modal']//div[contains(@class, 'modal-footer')]//button[contains(@class, 'formadd') or contains(@class, 'btn-primary')]",
+                "sleep": 2,
+            },
+        ]
+        self.create_gif_process(path_list, "delete_structure")
+
+    # --- Dashboard Test ---
+
+    def test_view_zone_dashboard(self):
+        """Test viewing the zone dashboard page.
+
+        Flow: Navigate to zone dashboard -> Verify page heading is visible.
+
+        GIF: docs/source/_static/gif/view_zone_dashboard.gif
+        """
+        self.navigate_to_zone_dashboard()
+        path_list = [
+            {
+                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "sleep": 3,
+            },
+        ]
+        self.create_gif_process(path_list, "view_zone_dashboard")

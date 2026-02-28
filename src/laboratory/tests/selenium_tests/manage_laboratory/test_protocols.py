@@ -81,6 +81,8 @@ class ProtocolsSeleniumTest(SeleniumBase):
         path_list = [
             {
                 "path": "//a[contains(@class, 'btn-outline-success') and contains(@href, '/protocols/create')]",
+                "wait_ready": True,
+                "sleep": 1,
             },
             {
                 "path": "//*[@id='id_name']",
@@ -102,7 +104,7 @@ class ProtocolsSeleniumTest(SeleniumBase):
                 "value": "Evitar tocar envases",
             },
             {
-                "path": "//form//*[contains(@class, 'chunkedvalue')]",
+                "path": "//form",
                 "extra_action": "script",
                 "value": script,
             },
@@ -135,7 +137,8 @@ class ProtocolsSeleniumTest(SeleniumBase):
         path_list = [
             {
                 "path": "//table[@id='protocolTable']//tbody/tr[1]//a[contains(@class, 'btn-outline-warning')]",
-                "sleep": 2,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
                 "path": "//*[@id='id_name']",
@@ -148,7 +151,7 @@ class ProtocolsSeleniumTest(SeleniumBase):
                 "value": "Radiación",
             },
             {
-                "path": "//form//*[contains(@class, 'chunkedvalue')]",
+                "path": "//form",
                 "extra_action": "script",
                 "value": script,
             },

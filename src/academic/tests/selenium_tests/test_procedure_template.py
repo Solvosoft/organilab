@@ -35,7 +35,8 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         path_list = [
             {
                 "path": "//div[contains(@class, 'dt-buttons')]//button[contains(@class, 'btn-success')]",
-                "sleep": 5,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
                 "path": "//input[@name='title']",

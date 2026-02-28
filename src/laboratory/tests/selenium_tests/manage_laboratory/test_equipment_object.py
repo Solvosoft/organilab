@@ -21,7 +21,7 @@ class EquipmentDropdowmSeleniumTest(ObjectSeleniumBase):
         self.navigate_to_lab_index()
         path_list = [
             {
-                "path": "//a[contains(@href, '/equipment')]",
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/equipment')]",
             },
         ]
         self.create_gif_process(path_list, "view_equipment_dropdown")

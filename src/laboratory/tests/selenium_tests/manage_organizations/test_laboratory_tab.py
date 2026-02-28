@@ -128,7 +128,7 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
             + [
                 {"path": "//span[contains(@class,'applyasrole')]", "sleep": 2},
                 {
-                    "path": "//*[@id='modal1']//span[contains(@class, 'select2-selection')]//button[contains(@class, 'select2-selection__clear')]",
+                    "path": "//*[@id='modal1']//span[contains(@class, 'select2-selection')]",
                     "sleep": 1,
                 },
                 {
@@ -151,12 +151,9 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = self.select_laboratory_tab_lab + [
             {
-                "path": "//*[@id='userpermelement']//tbody/tr[1]/td[1]",
+                "path": "//*[@id='userpermelement']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
                 "scroll": "window.scrollTo(0, 250)",
-                "sleep": 2,
-            },
-            {
-                "path": "//*[@id='userpermelement']//tbody//span[contains(@class, 'deleterelation')]/i",
+                "sleep": 3,
             },
             {
                 "path": "//button[contains(@class, 'swal2-confirm')]",
@@ -176,12 +173,9 @@ class LaboratoryTabTest(ManageOrganizationsSeleniumTest):
         """
         path_list = self.select_laboratory_tab_lab + [
             {
-                "path": "//*[@id='userpermelement']//tbody/tr[1]/td[1]",
+                "path": "//*[@id='userpermelement']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
                 "scroll": "window.scrollTo(0, 250)",
-                "sleep": 2,
-            },
-            {
-                "path": "//*[@id='userpermelement']//tbody//span[contains(@class, 'deleterelation')]/i",
+                "sleep": 3,
             },
             {
                 "path": "//*[@id='swal2-checkbox']",

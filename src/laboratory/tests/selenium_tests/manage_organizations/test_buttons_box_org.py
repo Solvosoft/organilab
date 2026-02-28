@@ -15,13 +15,12 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/deactivate_org.gif
         """
         path_list = [
-            {"path": self.org_actions_icon(1)},
+            {"path": self.org_actions_icon(1), "sleep": 1},
             {
-                "path": "//*[@id='actionsmodal']//span[contains(@class, 'select2-selection')]",
-                "sleep": 2,
-            },
-            {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_actions').val('1').trigger('change');",
+                "sleep": 3,
             },
             {"path": self.get_submit_button_path("actionsmodal")},
         ]
@@ -36,13 +35,12 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/clone_org.gif
         """
         path_list = [
-            {"path": self.org_actions_icon(1)},
+            {"path": self.org_actions_icon(1), "sleep": 1},
             {
-                "path": "//*[@id='actionsmodal']//span[contains(@class, 'select2-selection')]",
-                "sleep": 2,
-            },
-            {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_actions').val('2').trigger('change');",
+                "sleep": 3,
             },
             {"path": self.get_submit_button_path("actionsmodal")},
         ]
@@ -57,13 +55,12 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/change_org_name.gif
         """
         path_list = [
-            {"path": self.org_actions_icon(1)},
+            {"path": self.org_actions_icon(1), "sleep": 1},
             {
-                "path": "//*[@id='actionsmodal']//span[contains(@class, 'select2-selection')]",
-                "sleep": 2,
-            },
-            {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[3]",
+                "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_actions').val('3').trigger('change');",
+                "sleep": 3,
             },
             {
                 "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]//input[@type='text']",
@@ -103,7 +100,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         """
         path_list = [
             {
-                "path": "//a[contains(@class, 'loglist') and contains(@href, 'list_rol_by_org')]",
+                "path": "//a[contains(@class, 'loglist') and contains(@href, '/rols/list/')]",
             },
         ]
         self.create_gif_process(path_list, "view_org_roles")
