@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
-class ObjectSeleniumBase(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class ObjectSeleniumBase(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -108,6 +108,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_materials")
 
+    @modifies_db
     def test_add_object_material(self):
         """Test creating a new material object via modal.
 
@@ -161,6 +162,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_material_object")
 
+    @modifies_db
     def test_edit_object_material(self):
         """Test editing an existing material object via DataTable and modal.
 
@@ -215,6 +217,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "update_material_object")
 
+    @modifies_db
     def test_add_object_material_is_container(self):
         """Test creating a material object that is a container via modal.
 
@@ -289,6 +292,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_material_container_object")
 
+    @modifies_db
     def test_delete_material(self):
         """Test deleting a material object via DataTable and modal.
 
@@ -361,6 +365,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_reactive_objects")
 
+    @modifies_db
     def test_add_reactive_object(self):
         """Test creating a new reactive/substance object via modal.
 
@@ -431,6 +436,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_reactive_object")
 
+    @modifies_db
     def test_edit_reactive_object(self):
         """Test editing an existing reactive/substance object via modal.
 
@@ -508,6 +514,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "update_reactive_object")
 
+    @modifies_db
     def test_delete_reactive(self):
         """Test deleting a reactive/substance object via modal.
 
@@ -588,6 +595,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_object_features_dropdown")
 
+    @modifies_db
     def test_add_object_features(self):
         """Test adding a new object feature via DataTable modal.
 
@@ -627,6 +635,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_object_features")
 
+    @modifies_db
     def test_edit_object_features(self):
         """Test editing an existing object feature via DataTable modal.
 
@@ -666,6 +675,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_object_features")
 
+    @modifies_db
     def test_delete_object_features(self):
         """Test deleting an object feature via DataTable modal.
 

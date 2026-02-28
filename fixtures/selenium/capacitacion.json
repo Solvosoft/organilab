@@ -1387,5 +1387,380 @@
             ],
             "object_id": 1
         }
+    },
+
+    {
+        "model": "risk_management.zonetype",
+        "pk": 1,
+        "fields": {
+            "name": "Zona de Almacenamiento Quimico"
+        }
+    },
+    {
+        "model": "risk_management.zonetype",
+        "pk": 2,
+        "fields": {
+            "name": "Zona de Trabajo General"
+        }
+    },
+    {
+        "model": "risk_management.riskzone",
+        "pk": 1,
+        "fields": {
+            "organization": 4,
+            "name": "Zona de Reactivos Peligrosos",
+            "laboratories": [1],
+            "buildings": [],
+            "num_workers": 5,
+            "zone_type": 1,
+            "priority": 1
+        }
+    },
+    {
+        "model": "risk_management.riskzone",
+        "pk": 2,
+        "fields": {
+            "organization": 4,
+            "name": "Zona de Trabajo Practico",
+            "laboratories": [1],
+            "buildings": [],
+            "num_workers": 20,
+            "zone_type": 2,
+            "priority": 2
+        }
+    },
+
+    {
+        "model": "sga.warningword",
+        "pk": 1,
+        "fields": {
+            "name": "Peligro",
+            "weigth": 1
+        }
+    },
+    {
+        "model": "sga.warningword",
+        "pk": 2,
+        "fields": {
+            "name": "Atencion",
+            "weigth": 2
+        }
+    },
+    {
+        "model": "sga.dangerindication",
+        "pk": 1,
+        "fields": {
+            "code": "H314",
+            "description": "Provoca quemaduras graves en la piel y lesiones oculares graves",
+            "warning_words": 1,
+            "warning_class": [],
+            "warning_category": [],
+            "prudence_advice": [],
+            "danger_type": "physical"
+        }
+    },
+    {
+        "model": "sga.dangerindication",
+        "pk": 2,
+        "fields": {
+            "code": "H331",
+            "description": "Toxico en caso de inhalacion",
+            "warning_words": 1,
+            "warning_class": [],
+            "warning_category": [],
+            "prudence_advice": [],
+            "danger_type": "health"
+        }
+    },
+    {
+        "model": "sga.dangerindication",
+        "pk": 3,
+        "fields": {
+            "code": "H290",
+            "description": "Puede ser corrosivo para los metales",
+            "warning_words": 2,
+            "warning_class": [],
+            "warning_category": [],
+            "prudence_advice": [],
+            "danger_type": "physical"
+        }
+    },
+    {
+        "model": "sga.substance",
+        "pk": 1,
+        "fields": {
+            "organization": 4,
+            "comercial_name": "Acido Clorhidrico 37%",
+            "uipa_name": "Hydrogen chloride",
+            "brand": "Merck",
+            "status": 2,
+            "components_sga": [],
+            "danger_indications": [1, 2, 3],
+            "synonymous": "Acido muriatico, HCl",
+            "agrochemical": false,
+            "description": "Acido clorhidrico concentrado al 37% grado analitico"
+        }
+    },
+    {
+        "model": "sga.substancecharacteristics",
+        "pk": 1,
+        "fields": {
+            "substance": 1,
+            "bioaccumulable": false,
+            "molecular_formula": "HCl",
+            "cas_id_number": "7647-01-0",
+            "is_precursor": true,
+            "h_code": [1, 2, 3],
+            "valid_molecular_formula": true,
+            "seveso_list": false,
+            "number_index": "017-002-01-X",
+            "number_ce": "231-595-7",
+            "molecular_weight": "36.46",
+            "concentration": "37"
+        }
+    },
+
+    {
+        "model": "laboratory.sustancecharacteristics",
+        "pk": 1,
+        "fields": {
+            "obj": 1,
+            "bioaccumulable": false,
+            "molecular_formula": "HCl",
+            "cas_id_number": "7647-01-0",
+            "is_precursor": true,
+            "h_code": [1, 2, 3],
+            "valid_molecular_formula": true,
+            "seveso_list": false,
+            "density": 1.19
+        }
+    },
+
+    {
+        "model": "laboratory.precursorreportvalues",
+        "pk": 1,
+        "fields": {
+            "precursor_report": 1,
+            "object": 1,
+            "measurement_unit": 62,
+            "quantity": 5.0,
+            "previous_balance": 8.0,
+            "new_income": 2.0,
+            "bills": "FAC-2026-001",
+            "providers": "Merck Costa Rica",
+            "stock": 5.0,
+            "month_expense": 5.0,
+            "final_balance": 5.0,
+            "reason_to_spend": "Practicas de laboratorio de quimica general"
+        }
+    },
+    {
+        "model": "laboratory.precursorreportvalues",
+        "pk": 2,
+        "fields": {
+            "precursor_report": 1,
+            "object": 4,
+            "measurement_unit": 66,
+            "quantity": 2.0,
+            "previous_balance": 3.0,
+            "new_income": 1.0,
+            "bills": "FAC-2026-002",
+            "providers": "Sigma-Aldrich",
+            "stock": 2.0,
+            "month_expense": 2.0,
+            "final_balance": 2.0,
+            "reason_to_spend": "Preparacion de soluciones"
+        }
+    },
+    {
+        "model": "laboratory.precursorreport",
+        "pk": 1,
+        "fields": {
+            "month": 1,
+            "year": 2026,
+            "laboratory": 1,
+            "consecutive": 1,
+            "month_belong": 1
+        }
+    },
+
+    {
+        "model": "reservations_management.reservations",
+        "pk": 1,
+        "fields": {
+            "user": 4,
+            "status": 0,
+            "comments": "Reservacion para practica de laboratorio",
+            "is_massive": false
+        }
+    },
+    {
+        "model": "reservations_management.reservations",
+        "pk": 2,
+        "fields": {
+            "user": 4,
+            "status": 1,
+            "comments": "Reservacion aprobada para clase de quimica",
+            "is_massive": false
+        }
+    },
+    {
+        "model": "reservations_management.reservedproducts",
+        "pk": 1,
+        "fields": {
+            "organization": 4,
+            "shelf_object": 1,
+            "user": 4,
+            "reservation": 1,
+            "is_returnable": true,
+            "amount_required": 0.5,
+            "amount_returned": 0,
+            "initial_date": "2026-02-01T08:00:00Z",
+            "final_date": "2026-02-01T12:00:00Z",
+            "status": 0,
+            "laboratory": 1
+        }
+    },
+    {
+        "model": "reservations_management.reservedproducts",
+        "pk": 2,
+        "fields": {
+            "organization": 4,
+            "shelf_object": 3,
+            "user": 4,
+            "reservation": 1,
+            "is_returnable": true,
+            "amount_required": 1.0,
+            "amount_returned": 0,
+            "initial_date": "2026-02-01T08:00:00Z",
+            "final_date": "2026-02-01T12:00:00Z",
+            "status": 0,
+            "laboratory": 1
+        }
+    },
+    {
+        "model": "reservations_management.reservedproducts",
+        "pk": 3,
+        "fields": {
+            "organization": 4,
+            "shelf_object": 1,
+            "user": 4,
+            "reservation": 2,
+            "is_returnable": true,
+            "amount_required": 1.0,
+            "amount_returned": 0,
+            "initial_date": "2026-02-15T08:00:00Z",
+            "final_date": "2026-02-15T17:00:00Z",
+            "status": 1,
+            "laboratory": 1
+        }
+    },
+    {
+        "model": "reservations_management.reservedproducts",
+        "pk": 4,
+        "fields": {
+            "organization": 4,
+            "shelf_object": 2,
+            "user": 4,
+            "reservation": 2,
+            "is_returnable": false,
+            "amount_required": 0.1,
+            "amount_returned": 0,
+            "initial_date": "2026-02-15T08:00:00Z",
+            "final_date": "2026-02-15T17:00:00Z",
+            "status": 1,
+            "laboratory": 1
+        }
+    },
+
+    {
+        "model": "laboratory.blockedlistnotification",
+        "pk": 1,
+        "fields": {
+            "laboratory": 1,
+            "user": 2,
+            "object": 1
+        }
+    },
+
+    {
+        "model": "django_celery_beat.intervalschedule",
+        "pk": 1,
+        "fields": {
+            "every": 24,
+            "period": "hours"
+        }
+    },
+    {
+        "model": "django_celery_beat.crontabschedule",
+        "pk": 1,
+        "fields": {
+            "minute": "0",
+            "hour": "6",
+            "day_of_week": "*",
+            "day_of_month": "*",
+            "month_of_year": "*",
+            "timezone": "America/Costa_Rica"
+        }
+    },
+    {
+        "model": "django_celery_beat.crontabschedule",
+        "pk": 2,
+        "fields": {
+            "minute": "0",
+            "hour": "0",
+            "day_of_week": "*",
+            "day_of_month": "1",
+            "month_of_year": "*",
+            "timezone": "America/Costa_Rica"
+        }
+    },
+    {
+        "model": "django_celery_beat.periodictask",
+        "pk": 1,
+        "fields": {
+            "name": "Notificar limite de inventario",
+            "task": "laboratory.tasks.notify_about_product_limit_reach",
+            "interval": null,
+            "crontab": 1,
+            "enabled": true,
+            "description": "Envia alertas cuando productos alcanzan su limite minimo de inventario"
+        }
+    },
+    {
+        "model": "django_celery_beat.periodictask",
+        "pk": 2,
+        "fields": {
+            "name": "Generar reportes de precursores",
+            "task": "laboratory.tasks.create_precursor_reports",
+            "interval": null,
+            "crontab": 2,
+            "enabled": true,
+            "description": "Genera reportes mensuales de sustancias precursoras"
+        }
+    },
+    {
+        "model": "django_celery_beat.periodictask",
+        "pk": 3,
+        "fields": {
+            "name": "Notificar expiracion de reactivos",
+            "task": "laboratory.tasks.send_expiration_email",
+            "interval": null,
+            "crontab": 1,
+            "enabled": true,
+            "description": "Envia alertas sobre reactivos proximos a expirar"
+        }
+    },
+    {
+        "model": "django_celery_beat.periodictask",
+        "pk": 4,
+        "fields": {
+            "name": "Limpieza de sesiones expiradas",
+            "task": "django.contrib.sessions.tasks.clearsessions",
+            "interval": 1,
+            "crontab": null,
+            "enabled": true,
+            "description": "Elimina sesiones expiradas de la base de datos"
+        }
     }
 ]

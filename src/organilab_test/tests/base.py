@@ -19,6 +19,7 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -84,7 +85,7 @@ class SeleniumBase(StaticLiveServerTestCase):
 
         cls.hide_cursor_script = """
         var cursor = document.querySelector(".cursor_pointer");
-        cursor.style.zIndex = '-1';
+        if (cursor) { cursor.style.zIndex = '-1'; }
         """
 
         cls.show_cursor_script = """
@@ -94,7 +95,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.show_cursor_script += """
             }
             var cursor = document.querySelector(".cursor_pointer");
-            cursor.style.zIndex = '9999';
+            if (cursor) { cursor.style.zIndex = '9999'; }
             """
 
         cls.action = ActionChains(cls.selenium)
@@ -149,8 +150,10 @@ class SeleniumBase(StaticLiveServerTestCase):
         """
         return """
         var cursor = document.querySelector('.cursor_pointer');
+        if (cursor) {{
                 cursor.style.left= '{}px';
                 cursor.style.top= '{}px';
+        }}
                 """.format(
             x, y
         )
@@ -182,7 +185,13 @@ class SeleniumBase(StaticLiveServerTestCase):
                 self.move_cursor(x, y)
 
     def hover_effect(self, element):
-        self.action.move_to_element(element).perform()
+        try:
+            self.action.move_to_element(element).perform()
+        except ElementNotInteractableException:
+            from selenium.webdriver.support import expected_conditions as EC
+            WebDriverWait(self.selenium, 5).until(EC.visibility_of(element))
+            self.action = ActionChains(self.selenium)
+            self.action.move_to_element(element).perform()
 
     def create_directory_path(self, url=None, folder_name=""):
         """
@@ -381,8 +390,11 @@ class SeleniumBase(StaticLiveServerTestCase):
         if "extra_action" in obj:
             self.extra_action(obj, element)
         else:
-            self.action.move_to_element(element).perform()
-            element.click()
+            try:
+                self.action.move_to_element(element).perform()
+                element.click()
+            except ElementClickInterceptedException:
+                self.selenium.execute_script("arguments[0].click();", element)
 
     def apply_utils(self, obj):
 
@@ -512,6 +524,63 @@ class SeleniumBase(StaticLiveServerTestCase):
 
         self.create_gif(self.dir, folder_name)
 
+    # --- Permission helpers ---
+
+    @classmethod
+    def create_user_with_profile(
+        cls, username, email, password='testpass123',
+        first_name='', last_name='',
+        id_card='000000000', phone_number='',
+        job_position='', language='es'
+    ):
+        from django.contrib.auth.models import User
+        from auth_and_perms.models import Profile
+        user = User.objects.create_user(
+            username=username, email=email, password=password,
+            first_name=first_name, last_name=last_name
+        )
+        Profile.objects.create(
+            user=user, id_card=id_card, phone_number=phone_number,
+            job_position=job_position, language=language
+        )
+        return user
+
+    @classmethod
+    def create_role(cls, name, permission_codenames):
+        from auth_and_perms.models import Rol
+        from django.contrib.auth.models import Permission
+        rol = Rol.objects.create(name=name)
+        if permission_codenames:
+            perms = Permission.objects.filter(codename__in=permission_codenames)
+            rol.permissions.set(perms)
+        return rol
+
+    @classmethod
+    def assign_roles_to_user(cls, user, target_object, roles):
+        from auth_and_perms.models import ProfilePermission
+        from django.contrib.contenttypes.models import ContentType
+        ct = ContentType.objects.get_for_model(target_object)
+        pp, _ = ProfilePermission.objects.get_or_create(
+            profile=user.profile,
+            content_type=ct,
+            object_id=target_object.pk,
+        )
+        pp.rol.add(*roles)
+        return pp
+
+    @classmethod
+    def grant_all_roles(cls, user, organization):
+        from auth_and_perms.models import Rol
+        return cls.assign_roles_to_user(user, organization, list(Rol.objects.all()))
+
+    @classmethod
+    def add_user_to_organization(cls, user, organization, user_type=3):
+        from laboratory.models import UserOrganization
+        UserOrganization.objects.get_or_create(
+            user=user, organization=organization,
+            defaults={'type_in_organization': user_type, 'status': True}
+        )
+
     def force_login(self, user, driver, base_url):
         from django.conf import settings
 
@@ -541,3 +610,82 @@ class SeleniumBase(StaticLiveServerTestCase):
         # The tmp/ directory is ephemeral and can be cleaned up by CI
         # or manually after a test run.
         super(SeleniumBase, cls).tearDownClass()
+
+
+def modifies_db(test_method):
+    """Marca un test que modifica la base de datos.
+    El siguiente test en la clase recibirá un reload completo de fixtures."""
+    test_method._modifies_db = True
+    return test_method
+
+
+class OptimizedSeleniumBase(SeleniumBase):
+    """SeleniumBase con carga de fixtures optimizada.
+
+    - Carga fixtures UNA VEZ en el primer test de la clase
+    - NO hace flush entre tests a menos que el test anterior esté marcado con @modifies_db
+    - Fallback: always_reload_fixtures = True restaura el comportamiento original
+    """
+
+    always_reload_fixtures = False
+    _class_fixtures_loaded = False
+    _needs_reload = False
+
+    @classmethod
+    def setUpClass(cls):
+        cls._class_fixtures_loaded = False
+        cls._needs_reload = False
+        super().setUpClass()
+
+    @classmethod
+    def _fixture_setup(cls):
+        if cls._class_fixtures_loaded and not cls._needs_reload and not cls.always_reload_fixtures:
+            return
+
+        from django.core.management import call_command
+        from django.db import connections
+        for db_name in cls._databases_names(include_mirrors=False):
+            if cls.reset_sequences:
+                cls._reset_sequences(db_name)
+            if cls.serialized_rollback and hasattr(
+                connections[db_name], "_test_serialized_contents"
+            ):
+                from django.apps import apps
+                if cls.available_apps is not None:
+                    apps.unset_available_apps()
+                connections[db_name].creation.deserialize_db_from_string(
+                    connections[db_name]._test_serialized_contents
+                )
+                if cls.available_apps is not None:
+                    apps.set_available_apps(cls.available_apps)
+            if cls.fixtures:
+                call_command("loaddata", *cls.fixtures, verbosity=0, database=db_name)
+
+        cls._class_fixtures_loaded = True
+        cls._needs_reload = False
+
+    def _fixture_teardown(self):
+        test_method = getattr(self, self._testMethodName, None)
+        did_modify = (
+            self.always_reload_fixtures
+            or getattr(test_method, '_modifies_db', False)
+        )
+
+        if did_modify:
+            from django.core.management import call_command
+            from django.db import connections
+            for db_name in self._databases_names(include_mirrors=False):
+                inhibit_post_migrate = (
+                    self.available_apps is not None
+                    or (
+                        self.serialized_rollback
+                        and hasattr(connections[db_name], "_test_serialized_contents")
+                    )
+                )
+                call_command(
+                    "flush", verbosity=0, interactive=False,
+                    database=db_name, reset_sequences=False,
+                    allow_cascade=self.available_apps is not None,
+                    inhibit_post_migrate=inhibit_post_migrate,
+                )
+            self.__class__._needs_reload = True

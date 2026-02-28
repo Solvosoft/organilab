@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
-class RiskSeleniumBase(SeleniumBase):
-    fixtures = ["selenium/risk_management.json"]
+class RiskSeleniumBase(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/risk_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -169,6 +169,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_risk_sidebar")
 
+    @modifies_db
     def test_add_risk(self):
         """Test creating a new risk zone.
 
@@ -214,6 +215,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_risk")
 
+    @modifies_db
     def test_edit_risk(self):
         """Test editing an existing risk zone.
 
@@ -240,6 +242,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "edit_risk")
 
+    @modifies_db
     def test_remove_risk(self):
         """Test deleting a risk zone.
 
@@ -260,6 +263,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "remove_risk")
 
+    @modifies_db
     def test_add_zone_type(self):
         """Test adding a new zone type from within the risk zone form.
 
@@ -347,6 +351,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_incidents")
 
+    @modifies_db
     def test_add_incident(self):
         """Test creating a new incident report from the zone detail page.
 
@@ -426,6 +431,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_incidents")
 
+    @modifies_db
     def test_edit_incident(self):
         """Test editing an existing incident report from zone detail.
 
@@ -509,6 +515,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "update_incidents")
 
+    @modifies_db
     def test_remove_incident(self):
         """Test deleting an incident report from zone detail.
 
@@ -570,6 +577,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_buildings")
 
+    @modifies_db
     def test_add_building(self):
         """Test creating a new building.
 
@@ -605,6 +613,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_building")
 
+    @modifies_db
     def test_edit_building(self):
         """Test editing an existing building from DataTable.
 
@@ -639,6 +648,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "edit_building")
 
+    @modifies_db
     def test_delete_building(self):
         """Test deleting a building from DataTable.
 
@@ -678,6 +688,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_regents")
 
+    @modifies_db
     def test_add_regent(self):
         """Test creating a new regent via modal.
 
@@ -715,6 +726,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_regent")
 
+    @modifies_db
     def test_edit_regent(self):
         """Test editing an existing regent from DataTable via modal.
 
@@ -741,6 +753,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "edit_regent")
 
+    @modifies_db
     def test_delete_regent(self):
         """Test deleting a regent from DataTable.
 
@@ -780,6 +793,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_structures")
 
+    @modifies_db
     def test_add_structure(self):
         """Test creating a new structure.
 
@@ -806,6 +820,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_structure")
 
+    @modifies_db
     def test_edit_structure(self):
         """Test editing an existing structure from DataTable.
 
@@ -840,6 +855,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         ]
         self.create_gif_process(path_list, "edit_structure")
 
+    @modifies_db
     def test_delete_structure(self):
         """Test deleting a structure from DataTable.
 

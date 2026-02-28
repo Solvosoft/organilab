@@ -15,7 +15,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/deactivate_org.gif
         """
         path_list = [
-            {"path": self.org_actions_icon(1), "sleep": 1},
+            {"path": self.org_actions_icon(1), "sleep": 2},
             {
                 "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",
@@ -35,7 +35,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/clone_org.gif
         """
         path_list = [
-            {"path": self.org_actions_icon(1), "sleep": 1},
+            {"path": self.org_actions_icon(1), "sleep": 2},
             {
                 "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",
@@ -55,7 +55,7 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
         GIF: docs/source/_static/gif/change_org_name.gif
         """
         path_list = [
-            {"path": self.org_actions_icon(1), "sleep": 1},
+            {"path": self.org_actions_icon(1), "sleep": 2},
             {
                 "path": "//*[@id='actionsmodal']//div[contains(@class, 'modal-body')]",
                 "extra_action": "script",

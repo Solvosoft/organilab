@@ -117,6 +117,58 @@ class CapacitacionSeleniumBase(SeleniumBase):
         )
         self.selenium.get(url)
 
+    def navigate_to_risk_zone_list(self, org_pk):
+        url = self.live_server_url + str(
+            reverse("risk_management:riskzone_list", kwargs={"org_pk": org_pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_reports(self, org_pk):
+        url = self.live_server_url + str(
+            reverse("laboratory:reports", kwargs={"org_pk": org_pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_precursor_report(self, org_pk):
+        url = self.live_server_url + str(
+            reverse("report:precursor_report", kwargs={"org_pk": org_pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_msds_create(self, org_pk):
+        url = self.live_server_url + str(
+            reverse("msds:msds_msdsobject_create", kwargs={"org_pk": org_pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_manage_reservation(self, org_pk, reservation_pk):
+        url = self.live_server_url + str(
+            reverse(
+                "reservations_management:manage_reservation",
+                kwargs={"org_pk": org_pk, "pk": reservation_pk},
+            )
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_block_notification(self, lab_pk, obj_pk):
+        url = self.live_server_url + str(
+            reverse(
+                "laboratory:block_notification",
+                kwargs={"lab_pk": lab_pk, "obj_pk": obj_pk},
+            )
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_admin(self, path=""):
+        url = self.live_server_url + "/admin/" + path
+        self.selenium.get(url)
+
     def navigate_to_rooms_create(self, org_pk, lab_pk):
         url = self.live_server_url + str(
             reverse("laboratory:rooms_create", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})

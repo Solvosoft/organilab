@@ -2,12 +2,12 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class ProviderSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class ProviderSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -40,6 +40,7 @@ class ProviderSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "view_providers")
 
+    @modifies_db
     def test_add_provider(self):
         """Test adding a new provider via the create modal.
 
@@ -107,6 +108,7 @@ class ProviderSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_provider")
 
+    @modifies_db
     def test_update_provider(self):
         """Test updating an existing provider via the update modal.
 

@@ -75,3 +75,81 @@ class Cap3SubstancesTest(CapacitacionSeleniumBase):
             },
         ]
         self.create_gif_process(path_list, "cap3_view_msds")
+
+
+@tag("selenium")
+class Cap3ClassificationAndMSDSTest(CapacitacionSeleniumBase):
+    """Capitulo 3: Clasificacion SGA, MSDS y precursores."""
+
+    def test_sga_classification_form(self):
+        """Escenario 3.4: Ver formulario de clasificacion SGA con codigos H y P."""
+        self.navigate_to_sga_step_two(org_pk=4, pk=1)
+
+        path_list = [
+            # Capturar formulario de clasificacion SGA
+            {
+                "path": "//body",
+                "wait_ready": True,
+            },
+            # Scroll para mostrar los codigos H y P
+            {
+                "path": "//body",
+                "scroll": "window.scrollTo(0, 300)",
+                "screenshot_name": "cap3_sga_classification",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap3_sga_classification")
+
+    def test_upload_msds_form(self):
+        """Escenario 3.5: Ver formulario para subir hoja de seguridad."""
+        self.navigate_to_msds_create(org_pk=4)
+
+        path_list = [
+            # Capturar formulario de subida de MSDS
+            {
+                "path": "//body",
+                "wait_ready": True,
+                "screenshot_name": "cap3_msds_upload_form",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap3_msds_upload_form")
+
+    def test_precursor_config_and_report(self):
+        """Escenario 3.6: Ver configuracion de precursor y reporte mensual."""
+        # Ver reporte de precursores
+        self.navigate_to_precursor_report(org_pk=4)
+
+        path_list = [
+            # Capturar vista del reporte de precursores
+            {
+                "path": "//body",
+                "wait_ready": True,
+                "screenshot_name": "cap3_precursor_report",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap3_precursor_report")
+
+        # Ver configuracion de precursor en caracteristicas de sustancia
+        self.navigate_to_sga_step_two(org_pk=4, pk=1)
+
+        path_list_config = [
+            # Capturar la seccion de precursor en el formulario
+            {
+                "path": "//body",
+                "wait_ready": True,
+                "scroll": "window.scrollTo(0, document.body.scrollHeight)",
+            },
+            {
+                "path": "//body",
+                "screenshot_name": "cap3_precursor_config",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list_config, "cap3_precursor_config")

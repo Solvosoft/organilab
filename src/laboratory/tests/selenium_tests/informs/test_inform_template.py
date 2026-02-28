@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 # Formio builder sidebar component buttons (text-based selectors)
 FORMIO_TEXT_FIELD = "//span[contains(@class, 'btn') and contains(., 'Text Field')]"
@@ -32,8 +32,8 @@ FORM_TABLE_DELETE_ROW = "//table[@id='form_table']//tbody/tr[{row}]//a[contains(
 
 
 @tag("selenium")
-class InformsSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class InformsSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -93,6 +93,7 @@ class InformsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "view_inform_templates")
 
+    @modifies_db
     def test_create_inform_template(self):
         """Test creating a new inform template via SweetAlert input.
 
@@ -126,6 +127,7 @@ class InformsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_inform_template")
 
+    @modifies_db
     def test_update_name_inform_template(self):
         """Test renaming an existing inform template.
 
@@ -164,6 +166,7 @@ class InformsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "update_name_inform_template")
 
+    @modifies_db
     def test_remove_element(self):
         """Test removing a form element from an inform template.
 
@@ -204,6 +207,7 @@ class InformsSeleniumTest(SeleniumBase):
         self.create_gif_process(path_list, "remove_inform_template_element")
         self.view_form()
 
+    @modifies_db
     def test_add_textfield_derb(self):
         """Test adding a text field component to an inform template.
 
@@ -250,6 +254,7 @@ class InformsSeleniumTest(SeleniumBase):
         ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "edit_textfield_inform_template")
 
+    @modifies_db
     def test_add_textfield_calendar_derb(self):
         """Test adding a text field with calendar widget to an inform template.
 
@@ -317,6 +322,7 @@ class InformsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_calendar_inform_template")
 
+    @modifies_db
     def test_add_number_derb(self):
         """Test adding a number field component to an inform template.
 
@@ -364,6 +370,7 @@ class InformsSeleniumTest(SeleniumBase):
         ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "number_input_inform_template")
 
+    @modifies_db
     def test_add_password_derb(self):
         """Test adding a password field component to an inform template.
 
@@ -403,6 +410,7 @@ class InformsSeleniumTest(SeleniumBase):
         ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "password_input_inform_template")
 
+    @modifies_db
     def test_add_checkbox_derb(self):
         """Test adding a checkbox component to an inform template.
 
@@ -450,6 +458,7 @@ class InformsSeleniumTest(SeleniumBase):
         ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "checkbox_input_inform_template")
 
+    @modifies_db
     def test_add_radio_derb(self):
         """Test adding a radio button component to an inform template.
 
@@ -530,6 +539,7 @@ class InformsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "view_inform_template")
 
+    @modifies_db
     def test_delete_inform_template(self):
         """Test deleting an inform template.
 

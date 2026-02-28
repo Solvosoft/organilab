@@ -2,12 +2,12 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 from laboratory.models import OrganizationStructure
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class FurnitureSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class FurnitureSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -20,6 +20,7 @@ class FurnitureSeleniumTest(SeleniumBase):
             user=self.user, driver=self.selenium, base_url=self.live_server_url
         )
 
+    @modifies_db
     def test_create_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -52,6 +53,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_furniture")
 
+    @modifies_db
     def test_update_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -85,6 +87,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "update_furniture")
 
+    @modifies_db
     def test_move_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -113,6 +116,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "move_furniture")
 
+    @modifies_db
     def test_delete_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -135,6 +139,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "delete_furniture")
 
+    @modifies_db
     def test_add_furniture_type(self):
         self.selenium.get(
             url=self.live_server_url

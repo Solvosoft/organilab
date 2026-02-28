@@ -126,3 +126,44 @@ class Cap2InventoryTest(CapacitacionSeleniumBase):
             },
         ]
         self.create_gif_process(path_list, "cap2_view_objects")
+
+
+@tag("selenium")
+class Cap2ReportsTest(CapacitacionSeleniumBase):
+    """Capitulo 2: Reportes del laboratorio."""
+
+    def test_view_reports_menu(self):
+        """Escenario 2.6: Ver menu de reportes del laboratorio."""
+        self.navigate_to_reports(org_pk=4)
+
+        path_list = [
+            # Capturar vista del menu de reportes
+            {
+                "path": "//body",
+                "wait_ready": True,
+                "screenshot_name": "cap2_reports_menu",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap2_reports_menu")
+
+    def test_view_pdf_report(self):
+        """Escenario 2.7: Ver opciones de generacion de reporte PDF."""
+        self.navigate_to_reports(org_pk=4)
+
+        path_list = [
+            # Navegar a la seccion de reportes de inventario
+            {
+                "path": "//body",
+                "wait_ready": True,
+            },
+            # Capturar la pagina de opciones de reporte
+            {
+                "path": "//body",
+                "screenshot_name": "cap2_pdf_report",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap2_pdf_report")
