@@ -809,7 +809,13 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
     def retrieve(self, request, pk):
         self.request = request
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
-        self.pk = int(request.GET.get('zone'))
+        zone_param = request.GET.get('zone')
+        if zone_param is None:
+            raise Http404("Zone parameter is required")
+        try:
+            self.pk = int(zone_param)
+        except (ValueError, TypeError):
+            raise Http404("Invalid zone parameter")
         data = self.get_graph_data()
         serializer = self.serializer_class(data)
         return Response(serializer.data)

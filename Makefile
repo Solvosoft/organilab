@@ -1,4 +1,4 @@
-.PHONY: help clean clean-pyc clean-build list test  docs release sdist
+.PHONY: help clean clean-pyc clean-build list test test-parallel test-selenium test-selenium-4 docs release sdist
 
 # Variables
 setup_version := `python src/organilab/__init__.py`
@@ -74,8 +74,17 @@ clean: ##  - remove build artifacts and remove Python file artifacts
 test: ##  - run tests quickly with the default Python
 	cd src && python manage.py test  --no-input --exclude-tag=selenium
 
+test-parallel: ## - run tests in parallel (auto-detect workers)
+	cd src && python manage.py test --no-input --exclude-tag=selenium --parallel -v 2
+
 single-test: ## Run Django tests (optional: TEST=path.to.test, example: make single-test TEST=laboratory.tests.test_provider.ProviderViewTest)
 	cd src && python manage.py test $(TEST) --no-input --exclude-tag=selenium
+
+test-selenium: ## Run Selenium tests (optional: TEST=path.to.test, example: make test-selenium TEST=laboratory.tests.selenium_tests)
+	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
+
+test-selenium-parallel: ## Run Selenium tests with 4 workers (optional: TEST=path.to.test)
+	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 20 -v 2
 
 docs: ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
@@ -85,7 +94,7 @@ docs: ##  - generate Sphinx HTML documentation, including API docs
 	sphinx-build -b html ./docs/source ./docs/build/
 
 docs_full: ##  - generate full docs, Sphinx HTML documentation, including API docs
-	cd src && python manage.py test  --no-input --tag=selenium && cd ..
+	cd src && python manage.py test  --no-input --tag=selenium --parallel 12  && cd ..
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2

@@ -1,6 +1,9 @@
 import glob
 import os
+import re
 import shutil
+import sys
+import threading
 from importlib import import_module
 from pathlib import Path
 from time import sleep
@@ -16,9 +19,27 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class SeleniumBase(StaticLiveServerTestCase):
+    screenshot_delay = 3
+    _server_exceptions = []
+    _server_exceptions_lock = threading.Lock()
+
+    @classmethod
+    def _on_request_exception(cls, sender, request, **kwargs):
+        exc_type, exc_value, exc_tb = sys.exc_info()
+        import traceback as tb_module
+        entry = {
+            'url': request.path if request else 'unknown',
+            'method': request.method if request else 'unknown',
+            'exception_type': exc_type.__name__ if exc_type else 'unknown',
+            'exception_value': str(exc_value) if exc_value else '',
+            'traceback': tb_module.format_exception(exc_type, exc_value, exc_tb),
+        }
+        with cls._server_exceptions_lock:
+            cls._server_exceptions.append(entry)
 
     @classmethod
     def setUpClass(cls):
@@ -44,13 +65,14 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.selenium.set_window_size(1280, 720)
 
         cls.tmp = Path(settings.BASE_DIR) / "tmp"
-        cls.folder = "%s/%dx%d" % (cls.tmp, 120, 200)
+        cls.screenshot_size = "1280x720"
+        cls.folder = "%s/%s" % (cls.tmp, cls.screenshot_size)
         cls.dir = Path(settings.BASE_DIR) / cls.folder
         cls.static_save_path = Path(settings.DOCS_SOURCE_DIR) / "_static"
         cls.save_path_gif = cls.static_save_path / "gif"
 
-        if not cls.tmp.exists():
-            cls.tmp.mkdir()
+        cls.tmp.mkdir(exist_ok=True)
+        cls.save_path_gif.mkdir(parents=True, exist_ok=True)
 
         cls.cursor_script = """
             var cursor = document.createElement('i');
@@ -76,6 +98,39 @@ class SeleniumBase(StaticLiveServerTestCase):
             """
 
         cls.action = ActionChains(cls.selenium)
+
+    def setUp(self):
+        super().setUp()
+        with self._server_exceptions_lock:
+            self._server_exceptions.clear()
+        from django.core.signals import got_request_exception
+        got_request_exception.connect(
+            self._on_request_exception,
+            dispatch_uid='selenium_test_exception_handler'
+        )
+
+    def tearDown(self):
+        from django.core.signals import got_request_exception
+        got_request_exception.disconnect(
+            dispatch_uid='selenium_test_exception_handler'
+        )
+        with self._server_exceptions_lock:
+            exceptions = list(self._server_exceptions)
+            self._server_exceptions.clear()
+        if exceptions:
+            messages = []
+            for exc in exceptions:
+                tb_str = ''.join(exc['traceback'])
+                messages.append(
+                    "Server error on %s %s: %s: %s\n%s"
+                    % (exc['method'], exc['url'], exc['exception_type'],
+                       exc['exception_value'], tb_str)
+                )
+            self.fail(
+                "Server returned %d unhandled exception(s) during test:\n\n%s"
+                % (len(exceptions), '\n---\n'.join(messages))
+            )
+        super().tearDown()
 
     def change_focus_tab(self, window_name):
         self.selenium.switch_to.window(window_name)
@@ -138,20 +193,19 @@ class SeleniumBase(StaticLiveServerTestCase):
         if url:
             self.selenium.get(url)
 
-        self.folder = "%s/%dx%d" % (self.tmp, 120, 100)
+        self.folder = "%s/%s" % (self.tmp, self.screenshot_size)
         self.dir = Path(settings.BASE_DIR) / self.folder
 
         path_with_folder_name = self.dir / folder_name
 
-        if not self.dir.exists():
-            self.dir.mkdir()
-
-        if not path_with_folder_name.exists():
-            path_with_folder_name.mkdir()
+        self.dir.mkdir(exist_ok=True)
+        path_with_folder_name.mkdir(exist_ok=True)
 
         self.dir = path_with_folder_name
 
-    def create_screenshot(self, order=1, time_out=3, name="", save_screenshot=False):
+    def create_screenshot(self, order=1, time_out=None, name="", save_screenshot=False):
+        if time_out is None:
+            time_out = self.screenshot_delay
         extension_name = "%s.png" % name
         order_name = "%r.png" % order
         sleep(time_out)
@@ -261,6 +315,19 @@ class SeleniumBase(StaticLiveServerTestCase):
             $(".component-btn-group").first().css("display", "block");
             """
 
+    def wait_for_page_ready(self, timeout=10):
+        try:
+            WebDriverWait(self.selenium, timeout).until(
+                lambda driver: driver.find_element(
+                    By.TAG_NAME, 'body'
+                ).get_attribute('data-organilab-ready') == 'true'
+            )
+        except Exception:
+            sleep(2)
+        self.selenium.execute_script(
+            "document.body.removeAttribute('data-organilab-ready');"
+        )
+
     def active_hidden_elements(self, obj):
         """
         Display hidden elements, for example in dropdowns or elements that are hidden.
@@ -271,7 +338,7 @@ class SeleniumBase(StaticLiveServerTestCase):
         element.click();
         """
         )
-        sleep(15)
+        sleep(obj.get("active_hidden_timeout", 5))
         self.selenium.execute_script(move_cursor)
 
     def extra_action(self, obj, element):
@@ -331,11 +398,60 @@ class SeleniumBase(StaticLiveServerTestCase):
         if "hover" in obj:
             self.selenium.execute_script(self.set_css_element(obj["element"]))
 
-        if "sleep" in obj:
+        if "wait_ready" in obj:
+            timeout = obj["wait_ready"] if isinstance(obj["wait_ready"], int) else 10
+            self.wait_for_page_ready(timeout=timeout)
+        elif "sleep" in obj:
             if isinstance(obj["sleep"], int):
                 sleep(obj["sleep"])
             else:
                 sleep(15)
+
+    def assert_no_server_error(self, context_msg=''):
+        try:
+            page_source = self.selenium.page_source
+        except Exception:
+            return
+
+        if not page_source:
+            return
+
+        is_debug_500 = (
+            '<div id="traceback">' in page_source
+            or ('<header id="summary">' in page_source and 'Exception Type:' in page_source)
+        )
+        is_production_500 = '<title>Server Error (500)</title>' in page_source
+
+        if is_debug_500 or is_production_500:
+            current_url = self.selenium.current_url
+            error_detail = ''
+            if is_debug_500:
+                title_match = re.search(r'<title>([^<]+)</title>', page_source)
+                value_match = re.search(r'<pre class="exception_value">([^<]+)</pre>', page_source)
+                if title_match:
+                    error_detail += 'Exception: %s' % title_match.group(1)
+                if value_match:
+                    error_detail += '\nValue: %s' % value_match.group(1)
+
+            with self._server_exceptions_lock:
+                signal_exceptions = list(self._server_exceptions)
+                self._server_exceptions.clear()
+
+            signal_detail = ''
+            if signal_exceptions:
+                for exc in signal_exceptions:
+                    tb_str = ''.join(exc['traceback'])
+                    signal_detail += '\n--- Server traceback ---\n%s' % tb_str
+
+            msg = 'Server Error (500) at: %s' % current_url
+            if context_msg:
+                msg += '\nDuring: %s' % context_msg
+            if error_detail:
+                msg += '\n%s' % error_detail
+            if signal_detail:
+                msg += signal_detail
+
+            self.fail(msg)
 
     def take_screenshot_list(
         self, path_list, folder_name, cursor=True, hover=True, order=1
@@ -356,6 +472,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.create_screenshot(order=order)
         for obj in path_list:
             self.apply_utils(obj)
+            self.assert_no_server_error(
+                context_msg='before finding element: %s' % obj.get('path', '?')
+            )
             element = self.selenium.find_element(By.XPATH, obj["path"])
             order = self.create_screenshot(order=order)
             x, y = self.get_x_y_element(element)
@@ -365,6 +484,9 @@ class SeleniumBase(StaticLiveServerTestCase):
             self.do_action(obj, element)
             self.hide_show_cursor(cursor, x=x, y=y)
             order = self.create_screenshot(order=order)
+            self.assert_no_server_error(
+                context_msg='after action on: %s' % obj.get('path', '?')
+            )
         return order
 
     def create_gif_process(
@@ -413,11 +535,9 @@ class SeleniumBase(StaticLiveServerTestCase):
     @classmethod
     def tearDownClass(cls):
         cls.selenium.quit()
-
-        # Removing tmp directory
-        try:
-            shutil.rmtree(cls.tmp)
-        except OSError as e:
-            print("Error: %s - %s." % (e.filename, e.strerror))
-
+        # Do not remove tmp/ or its subdirectories here.
+        # In parallel mode, multiple workers share the same tmp/ tree
+        # and removing it would break other workers' screenshot writes.
+        # The tmp/ directory is ephemeral and can be cleaned up by CI
+        # or manually after a test run.
         super(SeleniumBase, cls).tearDownClass()

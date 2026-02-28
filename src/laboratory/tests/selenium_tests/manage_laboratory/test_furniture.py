@@ -99,7 +99,7 @@ class FurnitureSeleniumTest(SeleniumBase):
             {
                 "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div/span/span[1]/span"
             },
-            {"path": ".//span/span/span[2]/ul/li[3]"},
+            {"path": ".//span/span/span[2]/ul/li[2]"},
             {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
                 "path": ".//*[@id='id_name']",
