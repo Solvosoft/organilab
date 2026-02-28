@@ -2,12 +2,12 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 from laboratory.models import OrganizationStructure
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class ShelvesSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class ShelvesSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -20,6 +20,7 @@ class ShelvesSeleniumTest(SeleniumBase):
             user=self.user, driver=self.selenium, base_url=self.live_server_url
         )
 
+    @modifies_db
     def test_create_shelf(self):
         self.selenium.get(
             url=self.live_server_url
@@ -61,6 +62,7 @@ class ShelvesSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_shelf")
 
+    @modifies_db
     def test_add_cols_rows(self):
         self.selenium.get(
             url=self.live_server_url
@@ -92,6 +94,7 @@ class ShelvesSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "manage_rows_cols")
 
+    @modifies_db
     def test_remove_row_with_shelf(self):
         self.selenium.get(
             url=self.live_server_url
@@ -110,6 +113,7 @@ class ShelvesSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "manage_rows_cols_shelf")
 
+    @modifies_db
     def test_update_shelf(self):
         self.selenium.get(
             url=self.live_server_url
@@ -143,6 +147,7 @@ class ShelvesSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "update_shelf")
 
+    @modifies_db
     def test_delete_shelf(self):
         self.selenium.get(
             url=self.live_server_url

@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class MyProcedureSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class MyProcedureSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -46,6 +46,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "view_my_procedure")
 
+    @modifies_db
     def test_add_my_procedure(self):
         """Test adding a new personal procedure.
 
@@ -84,6 +85,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_my_procedure")
 
+    @modifies_db
     def test_delete_myprocedure(self):
         """Test deleting a personal procedure.
 
@@ -108,6 +110,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "delete_myprocedure")
 
+    @modifies_db
     def test_myprocedure_reservation(self):
         """Test creating a reservation for a personal procedure.
 
@@ -178,6 +181,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "myprocedure_reservation")
 
+    @modifies_db
     def test_add_observation_my_procedure(self):
         """Test adding an observation to a personal procedure.
 
@@ -217,6 +221,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_my_procedure_observation")
 
+    @modifies_db
     def test_update_observation_my_procedure(self):
         """Test updating an observation on a personal procedure.
 
@@ -261,6 +266,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "update_my_procedure_observation")
 
+    @modifies_db
     def test_delete_observation_my_procedure(self):
         """Test deleting an observation from a personal procedure.
 
@@ -320,6 +326,7 @@ class MyProcedureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "finalize_my_procedure")
 
+    @modifies_db
     def test_review_myprocedure(self):
         """Test reviewing and finalizing a personal procedure.
 

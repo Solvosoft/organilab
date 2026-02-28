@@ -8,12 +8,12 @@ from django.utils.timezone import now
 from djgentelella.models import ChunkedUpload
 
 from laboratory.tests.utils import get_file_bytes
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class ProtocolsSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class ProtocolsSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -57,6 +57,7 @@ class ProtocolsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "view_protocols")
 
+    @modifies_db
     def test_create_protocol(self):
         """Test creating a new protocol with file upload.
 
@@ -114,6 +115,7 @@ class ProtocolsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_protocol")
 
+    @modifies_db
     def test_update_protocol(self):
         """Test updating an existing protocol.
 
@@ -161,6 +163,7 @@ class ProtocolsSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "update_protocol")
 
+    @modifies_db
     def test_delete_protocol(self):
         """Test deleting a protocol.
 

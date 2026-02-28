@@ -2,11 +2,11 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
-class InformSeleniumBase(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class InformSeleniumBase(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -57,6 +57,7 @@ class InformSeleniumTest(InformSeleniumBase):
         ]
         self.create_gif_process(path_list, "view_inform")
 
+    @modifies_db
     def test_add_inform(self):
         """Test adding a new inform.
 
@@ -90,6 +91,7 @@ class InformSeleniumTest(InformSeleniumBase):
         ]
         self.create_gif_process(path_list, "add_inform")
 
+    @modifies_db
     def test_review_inform(self):
         """Test reviewing an inform and sending it for review.
 
@@ -131,6 +133,7 @@ class InformSeleniumTest(InformSeleniumBase):
         self.create_gif_process(path_list, "review_inform")
         self.finalize_inform()
 
+    @modifies_db
     def test_remove_inform(self):
         """Test removing an inform from the list.
 
@@ -151,6 +154,7 @@ class InformSeleniumTest(InformSeleniumBase):
         ]
         self.create_gif_process(path_list, "remove_inform")
 
+    @modifies_db
     def test_crud_inform_observation(self):
         """Test adding an observation/comment to an inform.
 

@@ -2,12 +2,12 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class ProcedureTemplateSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/procedure_templates.json"]
+class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/procedure_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -25,6 +25,7 @@ class ProcedureTemplateSeleniumTest(SeleniumBase):
         self.selenium.get(url)
         self.wait_for_page_ready()
 
+    @modifies_db
     def test_procedure_crud(self):
         """Test full CRUD cycle for procedure templates.
 

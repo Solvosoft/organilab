@@ -3,12 +3,12 @@ from django.test import tag
 from django.urls import reverse
 
 from laboratory.models import OrganizationStructure
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class LabRoomSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class LabRoomSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -148,6 +148,7 @@ class LabRoomSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "delete_room")
 
+    @modifies_db
     def test_laboratory_room_crud(self):
         """Test full CRUD cycle for laboratory rooms.
 

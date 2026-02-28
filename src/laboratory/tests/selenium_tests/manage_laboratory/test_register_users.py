@@ -2,11 +2,11 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
-class LaboratorySeleniumBase(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class LaboratorySeleniumBase(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -57,6 +57,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         ]
         self.create_gif_process(path_list, "view_register_user_QR")
 
+    @modifies_db
     def test_create_register_user_qr(self):
         """Test creating a new register user QR entry.
 
@@ -101,6 +102,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         ]
         self.create_gif_process(path_list, "create_register_user_QR")
 
+    @modifies_db
     def test_update_register_user_qr(self):
         """Test updating an existing register user QR entry.
 
@@ -135,6 +137,7 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
         ]
         self.create_gif_process(path_list, "update_register_user_QR")
 
+    @modifies_db
     def test_delete_register_user_qr(self):
         """Test deleting a register user QR entry.
 
