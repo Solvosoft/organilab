@@ -49,3 +49,8 @@ LOGGING = {
         },
     },
 }
+
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
+
+TESTING_MODE = True
