@@ -102,7 +102,7 @@ class OrganizationTabTest(ManageOrganizationsSeleniumTest):
         path_list = self.tab_org + [
             {"path": "//span[contains(@class,'applyasrole')]", "sleep": 2},
             {
-                "path": "//*[@id='modal1']//span[contains(@class, 'select2-selection')]//button[contains(@class, 'select2-selection__clear')]",
+                "path": "//*[@id='modal1']//span[contains(@class, 'select2-selection')]",
                 "sleep": 1,
             },
             {

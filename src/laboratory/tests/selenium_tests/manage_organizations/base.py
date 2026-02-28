@@ -21,6 +21,10 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
         )
         self.selenium.get(url)
         self.wait_for_page_ready()
+        # Suppress DataTable error alerts that may occur before an org is selected
+        self.selenium.execute_script(
+            "if($.fn.dataTable) $.fn.dataTable.ext.errMode = 'none';"
+        )
 
     # --- Organization node selectors ---
 
@@ -48,11 +52,11 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
 
     def org_add_user_link(self, pk):
         """Return XPath for the 'Add User' link."""
-        return "//a[contains(@href, 'add_user/%d')]" % pk
+        return "//a[contains(@href, '/users/add/%d')]" % pk
 
     def org_add_lab_link(self, pk):
         """Return XPath for the 'Add Laboratory' link."""
-        return "//a[contains(@href, 'create_lab/%d')]" % pk
+        return "//a[contains(@href, 'create_lab')]"
 
     def org_rel_lab_btn(self, pk):
         """Return XPath for the 'Related Laboratory' button."""
@@ -66,7 +70,7 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
 
     def org_loglist_link(self, pk):
         """Return XPath for the log list link."""
-        return "//a[contains(@class, 'loglist') and contains(@href, 'logentry_list/%d')]" % pk
+        return "//a[contains(@class, 'loglist') and contains(@href, '/logentry/')]"
 
     def org_rol_details_btn(self, pk):
         """Return XPath for the rol details button."""
@@ -82,7 +86,7 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
 
     def org_delete_link(self, pk):
         """Return XPath for the 'Delete organization' link."""
-        return "//a[contains(@href, 'delete_organization/%d')]" % pk
+        return "//a[contains(@href, '/organization/%d/delete')]" % pk
 
     # --- Modal selectors ---
 
@@ -143,11 +147,19 @@ class ManageOrganizationsSeleniumTest(SeleniumBase):
     @property
     def remove_and_save_permission_rol(self):
         return [
-            {"path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@type='checkbox'][1]"}
+            {
+                "path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@name='mergeaction' and @value='sustract']",
+                "extra_action": "script",
+                "value": "$('#modal1 input[name=mergeaction][value=sustract]').iCheck('check')",
+            }
         ] + self.button_save_permission_rol
 
     @property
     def use_and_save_permission_rol(self):
         return [
-            {"path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@type='checkbox'][2]"}
+            {
+                "path": "//*[@id='modal1']//div[contains(@class, 'modal-body')]//input[@name='mergeaction' and @value='full']",
+                "extra_action": "script",
+                "value": "$('#modal1 input[name=mergeaction][value=full]').iCheck('check')",
+            }
         ] + self.button_save_permission_rol

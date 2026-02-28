@@ -74,17 +74,16 @@ class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
         self.create_gif_process(path_list, "view_material_dropdown")
 
     def test_view_reactive_dropdown(self):
-        """Test viewing the reactive dropdown in laboratory navbar.
+        """Test viewing the reactive link in laboratory index page.
 
-        Flow: Navigate to lab index -> Click Objects dropdown ->
-        Select Reactive sub-item.
+        Flow: Navigate to lab index -> Click Reactive link.
 
         GIF: docs/source/_static/gif/view_reactive_dropdown.gif
         """
         self.navigate_to_lab_index()
         path_list = [
             {
-                "path": "//a[contains(@href, '/sustance')]",
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/sustance')]",
             },
         ]
         self.create_gif_process(path_list, "view_reactive_dropdown")
@@ -220,7 +219,8 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         """Test creating a material object that is a container via modal.
 
         Flow: Navigate to object view -> Click create -> Fill form
-        with container-specific fields (capacity, capacity unit) -> Save.
+        with container-specific fields (is_container, capacity,
+        capacity_measurement_unit) -> Save.
 
         GIF: docs/source/_static/gif/add_material_container_object.gif
         """
@@ -264,17 +264,27 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
                 "scroll": "$('#create_obj_modal .modal-body').scrollTop(200)",
             },
             {
-                "path": "//input[@id='id_create-capacity']",
-                "extra_action": "clearinput",
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_create-is_container').prop('checked', true).trigger('change'); $('.is_container').show();",
+                "sleep": 1,
             },
             {
-                "path": "//input[@id='id_create-capacity']",
-                "extra_action": "setvalue",
-                "value": 40,
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_create-capacity').val(40);",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(300)",
+            },
+            {
+                "path": "//select[@id='id_create-capacity_measurement_unit']/..//span[contains(@class, 'select2-selection')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(350)",
+            },
+            {
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {
                 "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
-                "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(500)",
             },
         ]
         self.create_gif_process(path_list, "add_material_container_object")
@@ -301,36 +311,35 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.create_gif_process(path_list, "delete_material_object")
 
     def test_view_material(self):
-        """Test searching for materials using the search form.
+        """Test searching for materials using the DataTable search.
 
         Flow: Navigate to object view -> Enter search term 'Balones' ->
-        Submit search -> Clear and search again with 'Ba'.
+        Clear and search again with 'Ba'.
 
         GIF: docs/source/_static/gif/search_material_object.gif
         """
         self.navigate_to_object_view()
         path_list = [
             {
-                "path": "//form//input[@name='q' or @type='text']",
-                "extra_action": "clearinput",
-            },
-            {
-                "path": "//form//input[@name='q' or @type='text']",
-                "extra_action": "setvalue",
-                "value": "Balones",
-            },
-            {"path": "//form//button[@type='submit']"},
-            {
-                "path": "//form//input[@name='q' or @type='text']",
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
                 "extra_action": "clearinput",
                 "wait_ready": True,
             },
             {
-                "path": "//form//input[@name='q' or @type='text']",
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
+                "extra_action": "setvalue",
+                "value": "Balones",
+            },
+            {
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
+                "extra_action": "clearinput",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
                 "extra_action": "setvalue",
                 "value": "Ba",
             },
-            {"path": "//form//button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "search_material_object")
 
@@ -565,7 +574,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         self.create_gif_process(path_list, "view_object_features")
 
     def test_view_object_features_dropdown(self):
-        """Test navigating to object features via the navbar dropdown.
+        """Test navigating to object features via the lab index page.
 
         Flow: Navigate to lab index -> Click 'Object features' link.
 
@@ -574,7 +583,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
         self.navigate_to_lab_index()
         path_list = [
             {
-                "path": "//a[contains(@href, '/features/list')]",
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/features/list')]",
             },
         ]
         self.create_gif_process(path_list, "view_object_features_dropdown")

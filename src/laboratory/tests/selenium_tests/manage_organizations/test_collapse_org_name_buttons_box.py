@@ -59,11 +59,15 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
                 "value": "Administrar Laboratorio",
             },
             {
-                "path": "//*[@id='id_relate_rols']",
+                "path": "//*[@id='selectroldiv']",
+                "extra_action": "script",
+                "value": "$('#id_relate_rols').iCheck('check');",
+                "wait_ready": True,
+                "sleep": 1,
             },
             {
                 "path": "//*[@id='rolS2container']//span[contains(@class, 'select2-selection')]",
-                "sleep": 1,
+                "sleep": 2,
             },
             {
                 "path": "//ul[contains(@class, 'select2-results__options')]/li",
@@ -179,14 +183,14 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
             {"path": self.org_node_h6(2), "sleep": 1},
             {"path": self.org_userbtnadd(2), "sleep": 1},
             {
-                "path": "//*[@id='modaluser1']//span[contains(@class, 'select2-selection')]",
+                "path": "//*[@id='modaluser2']//span[contains(@class, 'select2-selection')]",
                 "sleep": 2,
             },
             {
                 "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {
-                "path": "//*[@id='modaluser1']//button[@type='submit']",
+                "path": "//*[@id='modaluser2']//button[@type='submit']",
             },
         ]
         self.create_gif_process(path_list, "relate_user_to_org_from_button_box")

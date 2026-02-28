@@ -77,14 +77,14 @@ class RegisterUserQRSeleniumTest(LaboratorySeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {
                 "path": "//select[@id='id_organization_register']/..//span[contains(@class, 'select2-selection')]",
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {
                 "path": "//*[@id='id_code']",

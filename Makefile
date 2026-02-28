@@ -1,4 +1,4 @@
-.PHONY: help clean clean-pyc clean-build list test test-parallel test-selenium test-selenium-4 docs release sdist
+.PHONY: help clean clean-pyc clean-build list test test-parallel test-selenium test-selenium-4 test-selenium-xvfb docs release sdist
 
 # Variables
 setup_version := `python src/organilab/__init__.py`
@@ -85,6 +85,9 @@ test-selenium: ## Run Selenium tests (optional: TEST=path.to.test, example: make
 
 test-selenium-parallel: ## Run Selenium tests with 4 workers (optional: TEST=path.to.test)
 	cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 20 -v 2
+
+test-selenium-xvfb: ## Run Selenium tests with virtual display via xvfb-run (optional: TEST=path.to.test)
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2"
 
 docs: ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2

@@ -124,8 +124,14 @@ class FurnitureSeleniumTest(SeleniumBase):
                 "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
             },
             {"path": ".//div[3]/div[2]/ul/li[1]/a"},
-            {"path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[3]/a"},
-            {"path": ".//div[1]/div/div[3]/div/div/form/input[2]"},
+            {
+                "path": "//a[contains(@class, 'btn-danger') and contains(@href, 'delete')]",
+                "wait_ready": True,
+            },
+            {
+                "path": "//input[@type='submit']",
+                "wait_ready": True,
+            },
         ]
         self.create_gif_process(path_list, "delete_furniture")
 
