@@ -1,0 +1,40 @@
+h_code,umbral_t,categoria,seccion,notas,condicion_proceso
+H300,5,Salud,H,H1 Toxicidad aguda cat 1,
+H310,5,Salud,H,H1 Toxicidad aguda cat 1,
+H330,5,Salud,H,H1 Toxicidad aguda cat 1,
+H301,50,Salud,H,H2 Toxicidad aguda cat 2-3,
+H311,50,Salud,H,H2 Toxicidad aguda cat 2-3,
+H331,50,Salud,H,H2 Toxicidad aguda cat 2-3,
+H370,50,Salud,H,H3 STOT exposicion unica,
+H200,10,Físico,P,P1a Explosivos,
+H201,10,Físico,P,P1a Explosivos,
+H202,10,Físico,P,P1a Explosivos,
+H203,10,Físico,P,P1a Explosivos,
+H205,10,Físico,P,P1a Explosivos,
+H204,50,Físico,P,P1b Explosivos,
+H220,10,Físico,P,P2 Gases inflamables,
+H221,10,Físico,P,P2 Gases inflamables (agregado por analogía con H220 - no explícito en Cuadro 4 del decreto),
+H222,150,Físico,P,P3a Aerosoles con gas/liquido inflamable,gas_inflamable_cat12
+H222,5000,Físico,P,P3b Aerosoles sin gas/liquido inflamable,normal
+H223,150,Físico,P,P3a Aerosoles con gas/liquido inflamable,gas_inflamable_cat12
+H223,5000,Físico,P,P3b Aerosoles sin gas/liquido inflamable,normal
+H270,50,Físico,P,P4 Gases comburentes,
+H224,10,Físico,P,P5a Liquidos inflamables cat 1,
+H225,10,Físico,P,P5a Sobre punto de ebullicion,sobre_punto_ebullicion
+H225,50,Físico,P,P5b Condiciones elevadas T/P,elevada
+H225,5000,Físico,P,P5c Condiciones normales,normal
+H226,10,Físico,P,P5a Sobre punto de ebullicion,sobre_punto_ebullicion
+H226,50,Físico,P,P5b Condiciones elevadas T/P,elevada
+H226,5000,Físico,P,P5c Condiciones normales,normal
+H240,10,Físico,P,P6a Autorreactivos / peroxidos organicos,
+H241,10,Físico,P,P6a Autorreactivos / peroxidos organicos,
+H242,50,Físico,P,P6b Autorreactivos / peroxidos organicos,
+H250,50,Físico,P,P7 Piroforicos,
+H271,50,Físico,P,P8 Comburentes,
+H272,50,Físico,P,P8 Comburentes,
+H400,100,Ambiental,E,E1 Peligro acuatico agudo/cronico 1,
+H410,100,Ambiental,E,E1 Peligro acuatico agudo/cronico 1,
+H411,200,Ambiental,E,E2 Peligro acuatico cronico 2,
+EUH014,100,Físico,O,O1 Reacciona violentamente con el agua,
+H260,100,Físico,O,O2 En contacto con agua libera gases inflamables,
+EUH029,50,Salud,O,O3 En contacto con agua libera gases toxicos,
