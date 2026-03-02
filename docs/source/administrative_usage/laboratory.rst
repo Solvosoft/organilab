@@ -457,7 +457,7 @@ ingresar a este módulo.
 
 La primera forma:
 
-.. image:: ../_static/gif/view_reactives.gif
+.. image:: ../_static/gif/view_reactive_objects.gif
    :height: 380
    :width: 720
 

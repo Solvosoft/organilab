@@ -84,9 +84,10 @@ Solamente las organizaciones sin hijos pueden desactivarse y contemplarán las s
 * No se puede activar nuevamente la organización.
 
 
-.. image:: ../_static/gif/deactivate_org.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - create_gif_process comentado en test
+.. .. image:: ../_static/gif/deactivate_org.gif
+..    :height: 380
+..    :width: 720
 
 
 Clonar una organización
@@ -103,9 +104,10 @@ Al clonar una organización se copian las siguientes características:
 * Relaciones con usuarios.
 
 
-.. image:: ../_static/gif/clone_org.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - create_gif_process comentado en test
+.. .. image:: ../_static/gif/clone_org.gif
+..    :height: 380
+..    :width: 720
 
 
 Cambiar nombre de una organización
@@ -113,9 +115,10 @@ Cambiar nombre de una organización
 
 El nombre de una organización es un dato requerido no único que puede ser modificado.
 
-.. image:: ../_static/gif/change_org_name.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - create_gif_process comentado en test
+.. .. image:: ../_static/gif/change_org_name.gif
+..    :height: 380
+..    :width: 720
 
 
 Administración de usuarios

@@ -54,9 +54,10 @@ Eliminar un rol de una organización
 Al eliminar un rol se remueven todas sus relaciones con perfiles de permisos y organizaciones, por lo tanto es necesario
 estar seguro antes de hacerlo porque es un cambio definitivo.
 
-.. image:: ../_static/gif/delete_org_role.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/delete_org_role.gif
+..    :height: 380
+..    :width: 720
 
 
 Administrar roles de permisos a un usuario por laboratorio desde la pestaña "Por laboratorio"

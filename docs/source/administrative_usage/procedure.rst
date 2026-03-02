@@ -219,9 +219,10 @@ Permisos requeridos:
 
 **Ejemplo de creación de observación**:
 
-.. image:: ../_static/gif/add_observation.gif
-    :width: 700
-    :height: 400
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/add_observation.gif
+..     :width: 700
+..     :height: 400
 
 Eliminar observación
 ----------------------
@@ -242,9 +243,10 @@ Permisos Requeridos:
 
 Ejemplo de eliminación de observación:
 
-.. image:: ../_static/gif/remove_observation.gif
-    :width: 700
-    :height: 400
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/remove_observation.gif
+..     :width: 700
+..     :height: 400
 
 Eliminar paso
 --------------------

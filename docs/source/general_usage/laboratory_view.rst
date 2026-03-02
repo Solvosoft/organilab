@@ -27,17 +27,19 @@ opciones de contenedor que se mostrarán en los siguientes gifs a continuación.
 1. Reactivo con contenedor clonado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/create_shelfobject_reactive_with_clone_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/create_shelfobject_reactive_with_clone_container.gif
+..    :height: 380
+..    :width: 720
 
 
 2. Reactivo con contenedor seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/create_shelfobject_reactive_with_use_selected_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/create_shelfobject_reactive_with_use_selected_container.gif
+..    :height: 380
+..    :width: 720
 
 
 De tipo material
@@ -48,9 +50,10 @@ sean contenedores definitivos pueden ser elementos que se utilicen para realizar
 solo uso que son desechables o las buretas que también son recipientes (Utilizados de manera breve) y que no equivalen
 a un elemento de mayor capacidad de almacenaje por mayor tiempo como lo es un galón.
 
-.. image:: ../_static/gif/create_shelfobject_material.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/create_shelfobject_material.gif
+..    :height: 380
+..    :width: 720
 
 
 De tipo equipo
@@ -59,9 +62,10 @@ De tipo equipo
 Los equipos en laboratorio son todos los elementos que se utilizan para facilitar las prácticas y que son parte de un
 ambiente de laboratorio como lo son las balanzas, el microscopio y embudos.
 
-.. image:: ../_static/gif/create_shelfobject_equipment.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/create_shelfobject_equipment.gif
+..    :height: 380
+..    :width: 720
 
 Explicación de campos exclusivos a objetos de estantería de tipo equipo:
 
@@ -78,9 +82,10 @@ Ver los contenedores del estante
 La lista de contenedores por estante muestra todos los contenedores en uso y también los que se encuentran disponibles
 dentro de ese estante.
 
-.. image:: ../_static/gif/view_containers_by_shelf.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/view_containers_by_shelf.gif
+..    :height: 380
+..    :width: 720
 
 
 Transferencia de objetos de estante al laboratorio (Importación)
@@ -105,41 +110,46 @@ de distintas unidades de medida.
 1. Objeto en estante con contenedor nuevo basado en el seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_clone_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_clone_container.gif
+..    :height: 380
+..    :width: 720
 
 
 2. Objeto en estante con contenedor seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_available_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_available_container.gif
+..    :height: 380
+..    :width: 720
 
 
 3. Objeto en estante con movimiento de contenedor desde el laboratorio fuente (Tranferencia de reactivo con su contenedor)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_use_source_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_use_source_container.gif
+..    :height: 380
+..    :width: 720
 
 
 4. Objeto en estante con nuevo contenedor actual en el laboratorio fuente (Réplica del contenedor en el que estaba)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/approve_transfer_in_shelfobject_with_new_based_source_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/approve_transfer_in_shelfobject_with_new_based_source_container.gif
+..    :height: 380
+..    :width: 720
 
 
 Rechazo de la transferencia
 -----------------------------------------------
 
-.. image:: ../_static/gif/deny_transfer_in_shelfobject.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/deny_transfer_in_shelfobject.gif
+..    :height: 380
+..    :width: 720
 
 
 Acciones del objeto en el estante
@@ -151,9 +161,10 @@ Ver detalle del objeto en el estante
 En el detalle del objeto en el estante se puede visualizar la información general de este y descargar su QR con enlace
 a este mismo.
 
-.. image:: ../_static/gif/view_shelfobject_detail.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/view_shelfobject_detail.gif
+..    :height: 380
+..    :width: 720
 
 
 
@@ -163,9 +174,10 @@ Reservar un objeto en el estante
 Las reservas de un objeto en el estante permiten realizar la solicitud de uso de un elemento del laboratorio para uso de
 procedimientos estudiantiles u otros fines.
 
-.. image:: ../_static/gif/reserve_shelfobject.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/reserve_shelfobject.gif
+..    :height: 380
+..    :width: 720
 
 
 Incrementar un objeto en el estante
@@ -173,9 +185,10 @@ Incrementar un objeto en el estante
 
 Con el fin de incrementar el stock de un elemento en laboratorio cuando es requerido.
 
-.. image:: ../_static/gif/increase_shelfobject.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/increase_shelfobject.gif
+..    :height: 380
+..    :width: 720
 
 
 Transferir un objeto en el estante a otro laboratorio (Exportación)
@@ -188,17 +201,19 @@ se pueden tranferir cualquier tipo de objeto y de ser necesario este puede marca
 Transferir un objeto en el estante a otro laboratorio
 --------------------------------------------------------------------------
 
-.. image:: ../_static/gif/transfer_out_shelfobject.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/transfer_out_shelfobject.gif
+..    :height: 380
+..    :width: 720
 
 
 Transferir un objeto en el estante como desecho a otro laboratorio
 --------------------------------------------------------------------------
 
-.. image:: ../_static/gif/transfer_out_shelfobject_refuse.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/transfer_out_shelfobject_refuse.gif
+..    :height: 380
+..    :width: 720
 
 
 Decrementar un objeto en el estante
@@ -206,9 +221,10 @@ Decrementar un objeto en el estante
 
 Sustracción de un objeto en el estante debido a acondicionamiento de la sala de laboratorio, solicitudes, reservas, etc.
 
-.. image:: ../_static/gif/decrease_shelfobject.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/decrease_shelfobject.gif
+..    :height: 380
+..    :width: 720
 
 
 Actualizar contenedor del objeto en el estante (Reactivo)
@@ -221,17 +237,19 @@ cantidad de un reactivo supera la capacidad de almacenaje de su contenedor actua
 1. Opciones de contenedor --> Crear nuevo basado en el seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/manage_shelfobject_container_clone.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/manage_shelfobject_container_clone.gif
+..    :height: 380
+..    :width: 720
 
 
 2. Opciones de contenedor --> Usar seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/manage_shelfobject_container_available.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/manage_shelfobject_container_available.gif
+..    :height: 380
+..    :width: 720
 
 
 Mover un objeto en el estante a otro estante (Dentro del mismo laboratorio)
@@ -248,33 +266,37 @@ para administrar el contenedor de los objetos en estante.
 1. Opciones de contenedor --> Crear nuevo basado en el seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/move_shelfobject_with_clone_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/move_shelfobject_with_clone_container.gif
+..    :height: 380
+..    :width: 720
 
 
 2. Opciones de contenedor --> Usar seleccionado
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/move_shelfobject_with_available_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/move_shelfobject_with_available_container.gif
+..    :height: 380
+..    :width: 720
 
 
 3. Opciones de contenedor --> Mover el contenedor desde el laboratorio fuente
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/move_shelfobject_with_use_source_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/move_shelfobject_with_use_source_container.gif
+..    :height: 380
+..    :width: 720
 
 
 4. Opciones de contenedor --> Crear uno nuevo a partir del contenedor actual en el laboratorio fuente
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/move_shelfobject_with_new_based_source_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/move_shelfobject_with_new_based_source_container.gif
+..    :height: 380
+..    :width: 720
 
 
 Ver la bitácora de un objeto en el estante
@@ -283,9 +305,10 @@ Ver la bitácora de un objeto en el estante
 La bitácora es una pieza fundamental porque contiene las observaciones sobre los distintos cambios que pudo haber
 sufrido este a lo largo de su existencia dentro del laboratorio, como cambios de estado, incrementos, decrementos, etc.
 
-.. image:: ../_static/gif/view_shelfobject_logs.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente de regenerar por tests Selenium
+.. .. image:: ../_static/gif/view_shelfobject_logs.gif
+..    :height: 380
+..    :width: 720
 
 
 Descargar PDF de la información de un objeto en el estante
@@ -294,9 +317,10 @@ Descargar PDF de la información de un objeto en el estante
 El PDF del objeto en el estante permite apreciar toda la información relevante a este, como lo es modelo, placa, serie,
 tipo, características, ubicación dentro del estante y mucho más.
 
-.. image:: ../_static/gif/download_shelfobject_info.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/download_shelfobject_info.gif
+..    :height: 380
+..    :width: 720
 
 
 Eliminar un objeto en el estante
@@ -308,17 +332,19 @@ El siguiente gif muestra como se realiza la eliminación de un reactivo, aplica 
 1. Eliminar reactivo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/delete_shelfobject.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/delete_shelfobject.gif
+..    :height: 380
+..    :width: 720
 
 
 2. Eliminar reactivo y su contenedor (Solo los objetos de tipo reactivo tienen contenedor)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. image:: ../_static/gif/delete_shelfobject_and_its_container.gif
-   :height: 380
-   :width: 720
+.. TODO: imagen pendiente - test file sin prefijo test_ (no descubierto por Django)
+.. .. image:: ../_static/gif/delete_shelfobject_and_its_container.gif
+..    :height: 380
+..    :width: 720
 
 
 
