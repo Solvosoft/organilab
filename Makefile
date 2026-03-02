@@ -104,7 +104,7 @@ docs: ##  - generate Sphinx HTML documentation, including API docs
 	sphinx-build -b html ./docs/source ./docs/build/
 
 docs_full: ##  - generate full docs, Sphinx HTML documentation, including API docs
-	cd src && python manage.py test  --no-input --tag=selenium --parallel 12  && cd ..
+	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test  --no-input --tag=selenium --parallel 12"
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
