@@ -4,117 +4,126 @@
 {% load urlname_tags %}
 {% load organilab_tags %}
 {% block pre_head %}
-    {% define_true "use_datatables" as use_datatables %}
-    {% define_urlname_action 'form_list' %}
-    {% define_urlname_action 'delete_form' %}
-    {% define_urlname_action 'edit_view' %}
-    {% define_urlname_action 'create_form' %}
-    {% define_urlname_action 'preview_form' %}
+	{% define_true "use_datatables" as use_datatables %}
+	{% define_urlname_action 'form_list' %}
+	{% define_urlname_action 'delete_form' %}
+	{% define_urlname_action 'edit_view' %}
+	{% define_urlname_action 'create_form' %}
+	{% define_urlname_action 'preview_form' %}
 {% endblock %}
 
 {% block title %}{% trans 'Report Template List' %}{% endblock %}
 
 {% block content %}
-        <div class="float-end">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Button actions">
+	<div class="float-end">
+		<div class="btn-group btn-group-sm" role="group" aria-label="Button actions">
 
-        {% if perms.derb.add_customform %}
-                <button title="{% trans 'Create Inform Template' %}"
-                        type="button"
-                        class="btn btn-outline-primary create_btn" >{% trans 'Create Inform Template' %}</button>
-        {% endif %}
-            </div>
-        </div>
-<div class="card-title titles">
-    <div class="row" >
+			{% if perms.derb.add_customform %}
+				<button title="{% trans 'Create Inform Template' %}"
+												type="button"
+												class="btn btn-outline-primary create_btn">{% trans 'Create Inform Template' %}</button>
+			{% endif %}
+		</div>
+	</div>
+	<div class="card-title titles">
+		<div class="row">
 
-        <div class="col-md-6" >
-            <h1 >
-                {% trans 'Informs Templates' %}
-            </h1>
-        </div>
+			<div class="col-md-6">
+				<h1>
+					{% trans 'Informs Templates' %}
+				</h1>
+			</div>
 
-    </div>
-</div>
-<br>
+		</div>
+	</div>
+	<br>
 
-<div align="center">
-    <div id="forms" style="width: 90%;">
-        {% csrf_token %}
-        <table class="table table-hover table" id="form_table">
-            <thead>
-            <tr>
-                <th>
-                    {% trans 'Name' %}
-                </th>
+	<div align="center">
+		<div id="forms" style="width: 90%;">
+			{% csrf_token %}
+			<table class="table table-hover table" id="form_table">
+				<thead>
+				<tr>
+					<th>
+						{% trans 'Name' %}
+					</th>
 
-                <th>
-                    {% trans 'Status' %}
-                </th>
+					<th>
+						{% trans 'Status' %}
+					</th>
 
-                <th>
-                    &nbsp;
-                </th>
-            </tr>
-            </thead>
-            <tbody>
+					<th>
+						&nbsp;
+					</th>
+				</tr>
+				</thead>
+				<tbody>
 
-            {% for form in forms %}
+				{% for form in forms %}
 
-            <tr id="tr_{{ form.id }}">
+					<tr id="tr_{{ form.id }}">
 
-                <td>
-                    {{form.name}}
-                </td>
+						<td>
+							{{ form.name }}
+						</td>
 
-                <td id="n">
-                    {{ form.status}}
-                </td>
+						<td id="n">
+							{{ form.status }}
+						</td>
 
-                <td style="width: 120px">
-                    <a title="{% trans 'Preview inform template' %}" class="btn btn-sm btn-outline-info preview_btn" form_id="{{ form.id }}" href="{% url 'derb:preview_form' org_pk form.id %}"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}" data-url="{% url 'derb:edit_view' org_pk form.id %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                    <a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}" form_name="{{form.name}}" data-url="{% url 'derb:delete_form' org_pk form.id %}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+						<td style="width: 120px">
+							<a title="{% trans 'Preview inform template' %}" class="btn btn-sm btn-outline-info preview_btn"
+										form_id="{{ form.id }}" href="{% url 'derb:preview_form' org_pk form.id %}"><i class="fa fa-eye"
+																																																																																									aria-hidden="true"></i></a>
+							{% if perms.derb.change_customform %}
+								<a title="{% trans 'Edit' %}" class="btn btn-sm btn-outline-warning edit_btn" form_id="{{ form.id }}"
+											data-url="{% url 'derb:edit_view' org_pk form.id %}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+							{% endif %}
+							{% if perms.derb.delete_customform %}
+								<a title="{% trans 'Delete' %}" class="btn btn-sm btn-outline-danger delete_btn" form_id="{{ form.id }}"
+											form_name="{{ form.name }}" data-url="{% url 'derb:delete_form' org_pk form.id %}"><i class="fa fa-trash-o"
+																																																																																																	aria-hidden="true"></i></a>
+							{% endif %}
 
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% block js %}
+			<script>
+				const translations = {
+					create_title: "{% trans 'Create Inform Template' %}",
+					btn_create: "{% trans 'Create' %}",
+					btn_cancel: "{% trans 'Cancel' %}",
+					create_text: "{% trans 'Name' %}",
+					delete_title: "{% trans 'Do you want to delete the inform template' %}",
+					btn_delete: "{% trans 'Delete' %}",
+					delete_text: "{% trans 'This action cannot be undone' %}",
+					delete_error_text: "{% trans 'The inform template could not be deleted.' %}",
+					delete_success_text: "{% trans 'The inform template has been deleted.' %}",
+					delete_success_title: "{% trans 'Deleted!' %}",
+				}
+			</script>
+			<script src="{% static 'js/list.js' %}?v={% get_organilab_version %}"></script>
+			<script>
+				window.urls = {
+					editview: "{% url 'derb:edit_view' org_pk %}",
+					formlist: "{% url 'derb:form_list' org_pk %}",
+					create: "{% url 'derb:create_form' org_pk %}"
+				}
+
+			</script>
+			<script>
+				$(document).ready(loadDataTable);
+				$('body').on('click', '.delete_btn', deleteForm);
+				$('body').on('click', '.create_btn', createForm);
+				$('body').on('click', '.edit_btn', editForm);
+			</script>
+		{% endblock %}
+
+	</div>
 
 {% endblock %}
 
-
-{% block js %}
-<script>
-const translations = {
-    create_title: "{% trans 'Create Inform Template' %}",
-    btn_create: "{% trans 'Create' %}",
-    btn_cancel: "{% trans 'Cancel' %}",
-    create_text: "{% trans 'Name' %}",
-    delete_title: "{% trans 'Do you want to delete the inform template' %}",
-    btn_delete: "{% trans 'Delete' %}",
-    delete_text: "{% trans 'This action cannot be undone' %}",
-    delete_error_text: "{% trans 'The inform template could not be deleted.' %}",
-    delete_success_text: "{% trans 'The inform template has been deleted.' %}",
-    delete_success_title: "{% trans 'Deleted!' %}",
-}
-</script>
-<script src="{% static 'js/list.js' %}?v={% get_organilab_version %}"></script>
-<script>
-window.urls = {
-    editview: "{% url 'derb:edit_view' org_pk %}",
-    formlist: "{% url 'derb:form_list' org_pk %}",
-    create: "{% url 'derb:create_form' org_pk %}"
-}
-
-</script>
-<script>
-        $(document).ready(loadDataTable);
-        $('body').on('click', '.delete_btn', deleteForm);
-        $('body').on('click', '.create_btn', createForm);
-        $('body').on('click', '.edit_btn', editForm);
-</script>
-{% endblock %}
