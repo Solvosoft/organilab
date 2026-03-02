@@ -181,7 +181,7 @@ URLNAME_PERMISSIONS = {
             "name": "View Catalog",
             "category": "Catalog",
             "permission": "laboratory.view_catalog",
-        }
+        },
     ],
     "laboratory_update": [
         {
@@ -1162,9 +1162,9 @@ URLNAME_PERMISSIONS = {
     ],
     "reservations_list": [
         {
-          "name": "Add Reservation",
-          "category": "Reservations",
-          "permission": "laboratory.add_objectfeatures",
+            "name": "Add Reservation",
+            "category": "Reservations",
+            "permission": "laboratory.add_objectfeatures",
         },
         {
             "name": "List my reservations",
@@ -3079,6 +3079,13 @@ URLNAME_PERMISSIONS = {
             "name": "View Precursor Report Value",
             "category": "Precursor Report Value",
             "permission": "laboratory.view_precursorreportvalues",
+        },
+    ],
+    "edit_process_condition": [
+        {
+            "name": "Update Process Condition",
+            "category": "Process Condition",
+            "permission": "laboratory.change_shelfobject",
         },
     ],
 }
