@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Objetos del Laboratorio - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-estructura.html" class="nav-link sub-item">
+                1. Estructura del Laboratorio
+            </a>
+            <a href="02-salas-muebles.html" class="nav-link sub-item">
+                2. Salas y Muebles
+            </a>
+            <a href="03-estantes.html" class="nav-link sub-item">
+                3. Estantes
+            </a>
+            <a href="04-objetos.html" class="nav-link sub-item active">
+                4. Objetos del Laboratorio
+            </a>
+            <a href="05-transferencias.html" class="nav-link sub-item">
+                5. Transferencias
+            </a>
+            <a href="06-reportes.html" class="nav-link sub-item">
+                6. Reportes y Auditoría
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Laboratorios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Objetos del Laboratorio</li>
+                </ol>
+            </nav>
+
+            <h1>4. Objetos del Laboratorio</h1>
+
+            <p class="lead">
+                Los objetos son los elementos individuales que se almacenan en los estantes del
+                laboratorio. Organilab clasifica los objetos en tres tipos: reactivos, materiales
+                y equipos. Cada tipo tiene propiedades específicas que permiten un control detallado
+                del inventario.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Tipos de Objetos</h2>
+
+            <p>
+                En Organilab, todo elemento del laboratorio se registra como un <strong>Objeto</strong>
+                que se clasifica en uno de tres tipos. Esta clasificación determina las propiedades
+                disponibles y los controles que se aplican.
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-droplet-fill"></i> Reactivo</h4>
+                        <div class="scenario-situation">Tipo = 0</div>
+                        <p>
+                            Sustancias químicas utilizadas en los procesos del laboratorio.
+                            Incluyen ácidos, bases, solventes, sales y cualquier compuesto
+                            químico registrado.
+                        </p>
+                        <ul>
+                            <li>Tienen fecha de vencimiento</li>
+                            <li>Pueden ser peligrosos</li>
+                            <li>Pueden ser precursores</li>
+                            <li>Se miden en unidades de volumen o masa</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-tools"></i> Material</h4>
+                        <div class="scenario-situation">Tipo = 1</div>
+                        <p>
+                            Insumos y utensilios utilizados para realizar los procedimientos
+                            del laboratorio. Son elementos físicos no químicos.
+                        </p>
+                        <ul>
+                            <li>Probetas, pipetas, matraces</li>
+                            <li>Guantes, gafas de seguridad</li>
+                            <li>Papel filtro, embudos</li>
+                            <li>Se miden generalmente en unidades</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-cpu"></i> Equipo</h4>
+                        <div class="scenario-situation">Tipo = 2</div>
+                        <p>
+                            Instrumentos y aparatos utilizados para medición, análisis
+                            u otros procesos de laboratorio.
+                        </p>
+                        <ul>
+                            <li>Balanzas analíticas</li>
+                            <li>Espectrofotómetros</li>
+                            <li>Centrífugas, agitadores</li>
+                            <li>Se registran como unidades individuales</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Propiedades Comunes del Objeto</h2>
+
+            <p>
+                Todos los objetos, independientemente de su tipo, comparten un conjunto de propiedades
+                básicas que los identifican en el sistema:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Propiedad</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Código</strong></td>
+                        <td>Identificador único del objeto en el sistema</td>
+                        <td>RQ-001, MT-045, EQ-012</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Nombre principal del objeto</td>
+                        <td>Ácido Clorhídrico, Probeta 100ml, Balanza Analítica</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sinónimo</strong></td>
+                        <td>Nombres alternativos o comerciales</td>
+                        <td>HCl, Muriatic Acid</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descripción</strong></td>
+                        <td>Detalle adicional sobre el objeto</td>
+                        <td>Ácido clorhídrico concentrado al 37%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es público</strong></td>
+                        <td>Indica si el objeto es visible para usuarios de otros laboratorios</td>
+                        <td>Si / No</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Objeto en el Estante (ShelfObject)</h2>
+
+            <p>
+                Cuando un objeto se coloca en un estante, se crea un registro llamado
+                <strong>ShelfObject</strong> que vincula el objeto con su ubicación física y
+                registra las propiedades específicas de esa instancia particular. Un mismo tipo
+                de objeto puede existir en múltiples estantes con diferentes cantidades y lotes.
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Propiedad</th>
+                        <th>Descripción</th>
+                        <th>Aplicable a</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cantidad</strong></td>
+                        <td>Cantidad actual del objeto en ese estante</td>
+                        <td>Todos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unidad de medida</strong></td>
+                        <td>Unidad en que se mide la cantidad (ml, g, unidades, etc.)</td>
+                        <td>Todos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lote (batch)</strong></td>
+                        <td>Número de lote del fabricante para trazabilidad</td>
+                        <td>Reactivos, Materiales</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estado físico</strong></td>
+                        <td>Estado del material: líquido, sólido en polvo, sólido cristalino, gas, etc.</td>
+                        <td>Reactivos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fecha de vencimiento</strong></td>
+                        <td>Fecha de expiración del reactivo (reactive_expiration_date)</td>
+                        <td>Reactivos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Límite mínimo</strong></td>
+                        <td>Cantidad mínima antes de generar una alerta de reabastecimiento</td>
+                        <td>Todos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Límite máximo</strong></td>
+                        <td>Cantidad máxima permitida en ese estante</td>
+                        <td>Todos</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_view_objects.gif" alt="Formulario de registro de un objeto en un estante mostrando los campos de cantidad, lote y estado físico" loading="lazy">
+                <p class="screenshot-caption">Formulario de registro de un objeto en un estante mostrando los campos de cantidad, lote y estado físico</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Estados Físicos</h2>
+
+            <p>
+                Para los reactivos, Organilab permite registrar el estado físico del material. Los
+                estados disponibles son:
+            </p>
+
+            <ul>
+                <li><strong>Líquido</strong> — Sustancias en estado líquido a temperatura ambiente</li>
+                <li><strong>Sólido en polvo</strong> — Sustancias sólidas finamente divididas</li>
+                <li><strong>Sólido cristalino</strong> — Sustancias sólidas en forma de cristales</li>
+                <li><strong>Sólido granular</strong> — Sustancias sólidas en forma de gránulos</li>
+                <li><strong>Gas</strong> — Sustancias en estado gaseoso</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Límites de Cantidad</h2>
+
+            <p>
+                Los límites de cantidad permiten establecer alertas y controles sobre el inventario.
+                Cuando la cantidad de un objeto cae por debajo del <strong>límite mínimo</strong>,
+                el sistema puede generar una alerta para indicar que es necesario reabastecer.
+                El <strong>límite máximo</strong> previene el almacenamiento excesivo en un estante.
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-arrow-down-circle"></i> Límite Mínimo</h4>
+                        <div class="scenario-situation">
+                            Ejemplo: Ácido Clorhídrico con límite mínimo de 500 ml
+                        </div>
+                        <p>
+                            Cuando la cantidad disponible baja a 500 ml o menos, el sistema
+                            alerta que es necesario solicitar más reactivo para evitar la
+                            interrupción de los procedimientos del laboratorio.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-arrow-up-circle"></i> Límite Máximo</h4>
+                        <div class="scenario-situation">
+                            Ejemplo: Etanol con límite máximo de 5000 ml
+                        </div>
+                        <p>
+                            Se establece un límite máximo de almacenamiento para cumplir con
+                            las regulaciones de seguridad sobre cantidades permitidas de
+                            sustancias inflamables en un mismo espacio.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Códigos QR de Objetos</h2>
+
+            <p>
+                Al igual que los muebles, cada objeto en un estante (ShelfObject) genera
+                automáticamente un <strong>código QR único</strong>. Este código permite:
+            </p>
+
+            <ul>
+                <li>Identificar rápidamente un objeto escaneando con un dispositivo móvil</li>
+                <li>Acceder a toda la información del objeto (cantidad, lote, vencimiento, ubicación)</li>
+                <li>Facilitar los procesos de inventario y auditoría</li>
+                <li>Imprimir etiquetas con el código QR para colocar en los envases</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Objetos Contenedores</h2>
+
+            <p>
+                Un ShelfObject puede funcionar como <strong>contenedor</strong> de otros objetos.
+                La propiedad <strong>container</strong> permite establecer una relación donde un
+                objeto contiene a otros objetos más pequeños. Esto es útil para:
+            </p>
+
+            <ul>
+                <li>Registrar un kit de materiales como un objeto que contiene varios componentes</li>
+                <li>Agrupar muestras dentro de un recipiente mayor</li>
+                <li>Representar cajas o paquetes que contienen múltiples unidades individuales</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Sustancias Peligrosas y Precursores</h2>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-octagon"></i> Marcas de seguridad importantes</strong>
+                Los objetos de tipo reactivo pueden tener dos marcas de seguridad cruciales:
+                <ul style="margin-bottom: 0; margin-top: 0.5rem;">
+                    <li>
+                        <strong>Es peligroso (is_dangerous)</strong> — Indica que la sustancia es
+                        peligrosa según el Sistema Globalmente Armonizado (SGA). Esto activa la
+                        visualización de pictogramas de peligro y frases H/P asociadas.
+                    </li>
+                    <li>
+                        <strong>Es precursor (is_precursor)</strong> — Indica que la sustancia está
+                        clasificada como precursor químico. Esto activa controles adicionales de
+                        trazabilidad y requiere reportes periódicos a las autoridades competentes.
+                    </li>
+                </ul>
+            </div>
+
+            <p>
+                Las sustancias marcadas como precursores están sujetas a regulaciones especiales que
+                requieren mantener un registro detallado de todas las entradas, salidas y usos. Organilab
+                automatiza la generación de estos reportes, como se explicará en la sección de reportes.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_view_object_features.gif" alt="Vista de detalle de un reactivo mostrando las marcas de peligroso y precursor con sus pictogramas SGA" loading="lazy">
+                <p class="screenshot-caption">Vista de detalle de un reactivo mostrando las marcas de peligroso y precursor con sus pictogramas SGA</p>
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Siguiente paso</strong>
+                Ahora que conoce los tipos de objetos y sus propiedades, en la siguiente sección
+                aprenderá cómo transferir objetos entre laboratorios.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="03-estantes.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Estantes
+                </a>
+                <a href="05-transferencias.html" class="next-page">
+                    Transferencias <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

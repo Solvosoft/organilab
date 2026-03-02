@@ -9,27 +9,35 @@ from laboratory.tests.selenium_tests.manage_organizations.base import (
 class ProfileTabTest(ManageOrganizationsSeleniumTest):
 
     def test_change_profile_permission_group_by_org(self):
-        path_list = self.path_base + [
+        """Test changing permission groups for a profile in an organization.
+
+        Flow: Select org via iCheck -> Click 'By profile' tab -> Select
+        profile in first Select2 -> Select permission group in second
+        Select2 -> Save changes.
+
+        GIF: docs/source/_static/gif/change_profile_permission_group_by_org.gif
+        """
+        path_list = self.select_organization + [
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[3]/div/div/div[1]/div[1]/div[2]/div/ins"
+                "path": "//*[@id='navbyprofile']",
+                "sleep": 1,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/ul/li[3]/a"
+                "path": "//*[@id='byprofile']//span[contains(@class, 'select2-selection')]",
+                "sleep": 1,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/div/div/span/span/span"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
             },
             {
-                "path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span[2]/ul/li[2]"
+                "path": "(//*[@id='byprofile']//span[contains(@class, 'select2-selection')])[last()]",
+                "sleep": 1,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/div[2]/div/span/span/span"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[3]",
             },
             {
-                "path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[3]"
-            },
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div/div[2]/div/div/div[@id='byprofile']/form/button[@id='savegroupsbyprofile']"
+                "path": "//*[@id='savegroupsbyprofile']",
             },
         ]
         self.create_gif_process(path_list, "change_profile_permission_group_by_org")

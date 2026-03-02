@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2. Salas y Muebles - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-estructura.html" class="nav-link sub-item">
+                1. Estructura del Laboratorio
+            </a>
+            <a href="02-salas-muebles.html" class="nav-link sub-item active">
+                2. Salas y Muebles
+            </a>
+            <a href="03-estantes.html" class="nav-link sub-item">
+                3. Estantes
+            </a>
+            <a href="04-objetos.html" class="nav-link sub-item">
+                4. Objetos del Laboratorio
+            </a>
+            <a href="05-transferencias.html" class="nav-link sub-item">
+                5. Transferencias
+            </a>
+            <a href="06-reportes.html" class="nav-link sub-item">
+                6. Reportes y Auditoría
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Laboratorios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Salas y Muebles</li>
+                </ol>
+            </nav>
+
+            <h1>2. Salas y Muebles</h1>
+
+            <p class="lead">
+                Las salas y los muebles son los dos primeros niveles de organización dentro de un
+                laboratorio. Las salas dividen el espacio físico en áreas funcionales, mientras que
+                los muebles representan los elementos donde se almacenan los materiales.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Salas del Laboratorio (LaboratoryRoom)</h2>
+
+            <p>
+                Una sala representa una habitación o área física dentro del laboratorio. Permite
+                dividir el espacio en zonas funcionales para organizar mejor los muebles y sus
+                contenidos. Por ejemplo, un laboratorio de química podría tener las siguientes salas:
+            </p>
+
+            <ul>
+                <li><strong>Sala de análisis</strong> - donde se realizan los experimentos</li>
+                <li><strong>Sala de almacenamiento</strong> - donde se guardan los reactivos</li>
+                <li><strong>Sala de instrumentación</strong> - donde están los equipos de medición</li>
+                <li><strong>Sala de preparación</strong> - donde se preparan las soluciones</li>
+            </ul>
+
+            <h3>Crear una Sala</h3>
+
+            <p>Para crear una nueva sala dentro de un laboratorio, siga estos pasos:</p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Acceda al laboratorio</strong> — Navegue al laboratorio donde desea crear
+                    la sala. Seleccione el laboratorio desde la lista de laboratorios disponibles
+                    en su organización.
+                </li>
+                <li>
+                    <strong>Abra la sección de salas</strong> — Dentro del laboratorio, busque la
+                    opción de gestión de salas o habitaciones. Generalmente se encuentra en el menú
+                    lateral o en la vista principal del laboratorio.
+                </li>
+                <li>
+                    <strong>Haga clic en "Agregar sala"</strong> — Se abrirá un formulario donde
+                    deberá ingresar el nombre de la sala y opcionalmente una descripción.
+                </li>
+                <li>
+                    <strong>Complete los datos de la sala</strong> — Ingrese un nombre descriptivo
+                    que refleje la función de la sala (por ejemplo: "Almacén de Reactivos Orgánicos").
+                </li>
+                <li>
+                    <strong>Guarde los cambios</strong> — Al guardar, la sala aparecerá en el listado
+                    del laboratorio y estará lista para recibir muebles.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_create_room.gif" alt="Listado de salas de un laboratorio con opción para agregar nueva sala" loading="lazy">
+                <p class="screenshot-caption">Listado de salas de un laboratorio con opción para agregar nueva sala</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Recomendación</strong>
+                Utilice nombres claros y descriptivos para las salas. Evite nombres genéricos como
+                "Sala 1" o "Sala 2". Prefiera nombres que indiquen la función del espacio, como
+                "Almacén de Ácidos" o "Laboratorio de Microbiología".
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Muebles (Furniture)</h2>
+
+            <p>
+                Los muebles son los elementos físicos dentro de una sala donde se organizan los
+                estantes y, por tanto, los objetos del laboratorio. Cada mueble tiene un tipo
+                que describe su naturaleza física y una configuración de cuadrícula que define
+                cuántos estantes puede contener.
+            </p>
+
+            <h3>Tipos de Muebles</h3>
+
+            <p>
+                Organilab incluye un catálogo de tipos de muebles que se puede personalizar. Los
+                tipos más comunes incluyen:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo de Mueble</th>
+                        <th>Descripción</th>
+                        <th>Uso Típico</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Gabinete</td>
+                        <td>Mueble cerrado con puertas</td>
+                        <td>Almacenamiento seguro de reactivos</td>
+                    </tr>
+                    <tr>
+                        <td>Estantería abierta</td>
+                        <td>Estructura con repisas sin puertas</td>
+                        <td>Materiales de uso frecuente</td>
+                    </tr>
+                    <tr>
+                        <td>Refrigerador</td>
+                        <td>Equipo de refrigeración</td>
+                        <td>Reactivos que requieren baja temperatura</td>
+                    </tr>
+                    <tr>
+                        <td>Campana de extracción</td>
+                        <td>Cabina ventilada para trabajo seguro</td>
+                        <td>Sustancias volátiles o peligrosas</td>
+                    </tr>
+                    <tr>
+                        <td>Mesa de trabajo</td>
+                        <td>Superficie plana de trabajo</td>
+                        <td>Equipos e instrumentos de uso diario</td>
+                    </tr>
+                    <tr>
+                        <td>Cajonera</td>
+                        <td>Mueble con cajones deslizables</td>
+                        <td>Materiales pequeños y consumibles</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Crear un Mueble</h3>
+
+            <p>Para agregar un mueble dentro de una sala, siga estos pasos:</p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Acceda a la sala</strong> — Navegue a la sala del laboratorio donde desea
+                    agregar el mueble.
+                </li>
+                <li>
+                    <strong>Seleccione "Agregar mueble"</strong> — Haga clic en el botón para crear
+                    un nuevo mueble dentro de la sala.
+                </li>
+                <li>
+                    <strong>Seleccione el tipo de mueble</strong> — Escoja el tipo que mejor describe
+                    el mueble físico (gabinete, estantería, refrigerador, etc.).
+                </li>
+                <li>
+                    <strong>Configure la cuadrícula</strong> — Defina el número de filas y columnas
+                    que tendrá el mueble. Esto determina cuántos estantes se crearán automáticamente.
+                    Por ejemplo, una estantería de 4 filas y 3 columnas creará 12 posiciones de estante.
+                </li>
+                <li>
+                    <strong>Guarde el mueble</strong> — Al guardar, el sistema creará automáticamente
+                    la cuadrícula de estantes y generará un código QR único para el mueble.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_create_furniture.gif" alt="Formulario de creación de mueble mostrando la selección de tipo y configuración de filas y columnas" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de mueble mostrando la selección de tipo y configuración de filas y columnas</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Configuración de la Cuadrícula (dataconfig)</h2>
+
+            <p>
+                La cuadrícula de un mueble define su estructura interna en términos de filas y columnas.
+                Esta configuración se almacena internamente como un dato JSON llamado <strong>dataconfig</strong>,
+                pero usted no necesita editar este dato directamente: el sistema lo genera automáticamente
+                cuando usted define las filas y columnas.
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-grid-3x3"></i> Ejemplo: Estantería 3x4</h4>
+                        <div class="scenario-situation">
+                            Una estantería con 3 filas y 4 columnas genera 12 posiciones de estante.
+                        </div>
+                        <p>Ideal para organizar reactivos por categoría en cada fila y por orden alfabético en cada columna.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-grid-1x2"></i> Ejemplo: Refrigerador 5x1</h4>
+                        <div class="scenario-situation">
+                            Un refrigerador con 5 filas y 1 columna genera 5 posiciones de estante (una por repisa).
+                        </div>
+                        <p>Cada repisa del refrigerador se mapea a un estante, facilitando la trazabilidad de los reactivos termosensibles.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Importante</strong>
+                Una vez creado el mueble, modificar la cuadrícula (agregar o quitar filas/columnas)
+                puede afectar los estantes existentes y sus objetos. Planifique la estructura del
+                mueble antes de comenzar a registrar objetos en él.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Códigos QR</h2>
+
+            <p>
+                Organilab genera automáticamente un <strong>código QR</strong> para cada mueble creado.
+                Este código QR puede imprimirse y colocarse físicamente en el mueble, permitiendo a los
+                usuarios escanear el código con un dispositivo móvil para acceder rápidamente a la
+                información del mueble y sus contenidos en el sistema.
+            </p>
+
+            <p>Los códigos QR de los muebles permiten:</p>
+
+            <ul>
+                <li>Identificar rápidamente un mueble en el laboratorio físico</li>
+                <li>Acceder directamente a la vista del mueble en Organilab</li>
+                <li>Facilitar inventarios y auditorías presenciales</li>
+                <li>Reducir errores de identificación entre muebles similares</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_view_lab_structure.gif" alt="Vista de un mueble mostrando su cuadrícula de estantes y código QR generado" loading="lazy">
+                <p class="screenshot-caption">Vista de un mueble mostrando su cuadrícula de estantes y código QR generado</p>
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Siguiente paso</strong>
+                Ahora que comprende cómo crear salas y muebles, en la siguiente sección aprenderá
+                sobre los estantes: sus tipos, capacidades y configuraciones especiales.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="01-estructura.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Estructura del Laboratorio
+                </a>
+                <a href="03-estantes.html" class="next-page">
+                    Estantes <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

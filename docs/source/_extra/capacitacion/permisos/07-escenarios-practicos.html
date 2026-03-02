@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7. Escenarios Prácticos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">1. Conceptos Fundamentales</a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">2. Jerarquía Organizacional</a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">3. Roles y Tipos de Usuario</a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">4. Asignación de Permisos</a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">5. Herencia de Permisos</a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">6. Laboratorios y Zonas</a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item active">7. Escenarios Prácticos</a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">8. Guía del Administrador</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Escenarios Prácticos</li>
+                </ol>
+            </nav>
+
+            <h1>7. Escenarios Prácticos</h1>
+
+            <p class="lead">
+                A continuación se presentan escenarios reales que una universidad distribuida
+                geográficamente podría enfrentar al configurar Organilab. Cada escenario incluye
+                la situación, la solución paso a paso y un diagrama explicativo.
+            </p>
+
+            <!-- ============================================ -->
+            <!-- ESCENARIO 1 -->
+            <h2>Escenario 1: Crear la estructura de una universidad con 3 sedes</h2>
+
+            <div class="scenario-card">
+                <h4><i class="bi bi-building"></i> Situación</h4>
+                <div class="scenario-situation">
+                    La Universidad Nacional de Costa Rica tiene una Sede Central en Heredia,
+                    una Sede Regional en Chorotega (Guanacaste) y una Sede Regional en Brunca
+                    (Pérez Zeledón). Cada sede tiene facultades con laboratorios. Necesitan
+                    configurar Organilab para reflejar esta estructura.
+                </div>
+
+                <h4>Solución paso a paso</h4>
+                <ol class="step-list">
+                    <li>
+                        <strong>Crear la organización raíz</strong>:
+                        "Universidad Nacional" como organización de nivel 0 (raíz). El administrador
+                        principal del sistema será quien la gestione.
+                    </li>
+                    <li>
+                        <strong>Crear las sedes como organizaciones hijas</strong>:
+                        Dentro de "Universidad Nacional", crear tres organizaciones de nivel 1:
+                        "Sede Central", "Sede Regional Chorotega", "Sede Regional Brunca".
+                    </li>
+                    <li>
+                        <strong>Crear las facultades/escuelas</strong>:
+                        Dentro de cada sede, crear las facultades como organizaciones de nivel 2.
+                        Ejemplo: "Sede Central" > "Facultad de Ciencias Exactas".
+                    </li>
+                    <li>
+                        <strong>Crear los laboratorios</strong>:
+                        Crear cada laboratorio y asignarlo a su facultad correspondiente.
+                        Ejemplo: "Lab. de Química Orgánica" en "Facultad de Ciencias Exactas".
+                    </li>
+                    <li>
+                        <strong>Asignar administradores por sede</strong>:
+                        Designar un administrador para cada sede que pueda gestionar sus
+                        propias facultades y laboratorios.
+                    </li>
+                </ol>
+
+                <div class="diagram-container">
+                    <svg viewBox="0 0 650 260" xmlns="http://www.w3.org/2000/svg" style="max-width: 650px;">
+                        <rect width="650" height="260" fill="white" rx="8" stroke="#dee2e6"/>
+
+                        <rect x="225" y="10" width="200" height="35" rx="6" fill="#1a4a7a"/>
+                        <text x="325" y="32" text-anchor="middle" font-size="11" fill="white" font-weight="500">Universidad Nacional</text>
+
+                        <line x1="260" y1="45" x2="110" y2="70" stroke="#6c757d" stroke-width="1.5"/>
+                        <line x1="325" y1="45" x2="325" y2="70" stroke="#6c757d" stroke-width="1.5"/>
+                        <line x1="390" y1="45" x2="540" y2="70" stroke="#6c757d" stroke-width="1.5"/>
+
+                        <rect x="20" y="70" width="180" height="30" rx="6" fill="#2c6fbb"/>
+                        <text x="110" y="89" text-anchor="middle" font-size="10" fill="white">Sede Central (Heredia)</text>
+
+                        <rect x="235" y="70" width="180" height="30" rx="6" fill="#2c6fbb"/>
+                        <text x="325" y="89" text-anchor="middle" font-size="10" fill="white">Sede Chorotega (Guanacaste)</text>
+
+                        <rect x="450" y="70" width="180" height="30" rx="6" fill="#2c6fbb"/>
+                        <text x="540" y="89" text-anchor="middle" font-size="10" fill="white">Sede Brunca (P. Zeledón)</text>
+
+                        <line x1="70" y1="100" x2="70" y2="120" stroke="#6c757d" stroke-width="1"/>
+                        <line x1="150" y1="100" x2="150" y2="120" stroke="#6c757d" stroke-width="1"/>
+                        <line x1="325" y1="100" x2="325" y2="120" stroke="#6c757d" stroke-width="1"/>
+                        <line x1="540" y1="100" x2="540" y2="120" stroke="#6c757d" stroke-width="1"/>
+
+                        <rect x="10" y="120" width="120" height="25" rx="4" fill="#5a9bd5"/>
+                        <text x="70" y="137" text-anchor="middle" font-size="9" fill="white">Fac. Ciencias</text>
+
+                        <rect x="140" y="120" width="120" height="25" rx="4" fill="#5a9bd5"/>
+                        <text x="200" y="137" text-anchor="middle" font-size="9" fill="white">Fac. Ingeniería</text>
+
+                        <rect x="270" y="120" width="110" height="25" rx="4" fill="#5a9bd5"/>
+                        <text x="325" y="137" text-anchor="middle" font-size="9" fill="white">Esc. Ciencias</text>
+
+                        <rect x="485" y="120" width="110" height="25" rx="4" fill="#5a9bd5"/>
+                        <text x="540" y="137" text-anchor="middle" font-size="9" fill="white">Esc. Ciencias</text>
+
+                        <!-- Labs -->
+                        <line x1="40" y1="145" x2="40" y2="165" stroke="#6c757d" stroke-width="1" stroke-dasharray="3"/>
+                        <line x1="100" y1="145" x2="100" y2="165" stroke="#6c757d" stroke-width="1" stroke-dasharray="3"/>
+                        <line x1="200" y1="145" x2="200" y2="165" stroke="#6c757d" stroke-width="1" stroke-dasharray="3"/>
+                        <line x1="325" y1="145" x2="325" y2="165" stroke="#6c757d" stroke-width="1" stroke-dasharray="3"/>
+                        <line x1="540" y1="145" x2="540" y2="165" stroke="#6c757d" stroke-width="1" stroke-dasharray="3"/>
+
+                        <rect x="5" y="165" width="80" height="22" rx="4" fill="#28a745"/>
+                        <text x="45" y="180" text-anchor="middle" font-size="8" fill="white">Lab. Quím.</text>
+
+                        <rect x="90" y="165" width="80" height="22" rx="4" fill="#28a745"/>
+                        <text x="130" y="180" text-anchor="middle" font-size="8" fill="white">Lab. Bio</text>
+
+                        <rect x="175" y="165" width="80" height="22" rx="4" fill="#28a745"/>
+                        <text x="215" y="180" text-anchor="middle" font-size="8" fill="white">Lab. Mat.</text>
+
+                        <rect x="290" y="165" width="80" height="22" rx="4" fill="#28a745"/>
+                        <text x="330" y="180" text-anchor="middle" font-size="8" fill="white">Lab. Gen.</text>
+
+                        <rect x="500" y="165" width="90" height="22" rx="4" fill="#28a745"/>
+                        <text x="545" y="180" text-anchor="middle" font-size="8" fill="white">Lab. Básico</text>
+
+                        <text x="325" y="215" text-anchor="middle" font-size="10" fill="#28a745" font-weight="500">5 laboratorios distribuidos en 3 sedes</text>
+                        <text x="325" y="235" text-anchor="middle" font-size="9" fill="#6c757d">Cada sede tiene su propio administrador para gestionar su estructura</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ESCENARIO 2 -->
+            <h2>Escenario 2: Regente Químico con visibilidad en toda la sede</h2>
+
+            <div class="scenario-card">
+                <h4><i class="bi bi-person-badge"></i> Situación</h4>
+                <div class="scenario-situation">
+                    El Dr. Roberto Jiménez es el Regente Químico de la Sede Central. Necesita
+                    poder ver las sustancias, etiquetas SGA y hojas de seguridad de <strong>todos
+                    los laboratorios</strong> de la Sede Central (Facultad de Ciencias y Facultad
+                    de Ingeniería), pero no debería poder modificar el inventario.
+                </div>
+
+                <h4>Solución paso a paso</h4>
+                <ol class="step-list">
+                    <li>
+                        <strong>Crear el rol "Regente Químico"</strong> en la organización "Sede Central"
+                        con permisos de solo lectura: ver sustancias, ver etiquetas SGA, ver hojas MSDS,
+                        ver reportes.
+                    </li>
+                    <li>
+                        <strong>Asignar el rol a nivel de organización</strong>: En la pestaña "Por Organización",
+                        asignar el rol "Regente Químico" al Dr. Jiménez en la organización "Sede Central".
+                    </li>
+                    <li>
+                        <strong>Verificar</strong>: El Dr. Jiménez ahora puede ver las sustancias de todos
+                        los laboratorios de la Sede Central (Lab. Química, Lab. Bio, Lab. Materiales)
+                        gracias a la herencia de permisos.
+                    </li>
+                </ol>
+
+                <div class="info-box success">
+                    <strong><i class="bi bi-check-circle"></i> Ventaja de este enfoque</strong>
+                    Si en el futuro se crea un nuevo laboratorio en cualquier facultad de la Sede Central,
+                    el Dr. Jiménez tendrá acceso automáticamente sin necesidad de configuración adicional.
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ESCENARIO 3 -->
+            <h2>Escenario 3: Técnico con acceso solo a su laboratorio</h2>
+
+            <div class="scenario-card">
+                <h4><i class="bi bi-tools"></i> Situación</h4>
+                <div class="scenario-situation">
+                    Ana Mora es técnica del Lab. de Bioquímica de la Facultad de Ciencias.
+                    Solo debe tener acceso a ese laboratorio y poder gestionar el inventario
+                    (agregar, modificar y mover sustancias y equipos).
+                </div>
+
+                <h4>Solución paso a paso</h4>
+                <ol class="step-list">
+                    <li>
+                        <strong>Crear el rol "Técnico de Laboratorio"</strong> (si no existe) con permisos
+                        de gestión de inventario: agregar/cambiar/ver sustancias, equipos, materiales,
+                        gestionar muebles y estantes.
+                    </li>
+                    <li>
+                        <strong>Asignar el rol a nivel de laboratorio</strong>: En la pestaña "Por Laboratorio",
+                        seleccionar el "Lab. de Bioquímica" y asignar el rol "Técnico de Laboratorio" a Ana.
+                    </li>
+                    <li>
+                        <strong>Resultado</strong>: Ana solo verá y podrá gestionar el Lab. de Bioquímica.
+                        No tendrá acceso al Lab. de Química Orgánica ni a ningún otro laboratorio.
+                    </li>
+                </ol>
+
+                <div class="info-box warning">
+                    <strong><i class="bi bi-exclamation-triangle"></i> Nota importante</strong>
+                    Si Ana necesitara acceso a otro laboratorio en el futuro, se le debería
+                    asignar un rol adicional en ese laboratorio específico. Los permisos por
+                    laboratorio no se propagan a otros labs.
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ESCENARIO 4 -->
+            <h2>Escenario 4: Docente con acceso temporal a otra sede</h2>
+
+            <div class="scenario-card">
+                <h4><i class="bi bi-mortarboard"></i> Situación</h4>
+                <div class="scenario-situation">
+                    El Prof. Miguel Vargas es docente en la Sede Central y necesita usar
+                    temporalmente el Lab. General de la Sede Chorotega para un proyecto de
+                    investigación. Necesita poder consultar el inventario y hacer reservaciones,
+                    pero no modificar nada.
+                </div>
+
+                <h4>Solución paso a paso</h4>
+                <ol class="step-list">
+                    <li>
+                        <strong>Verificar que el rol "Docente" existe</strong> en la Sede Chorotega
+                        con permisos de consulta y reservaciones. Si no existe, copiar el rol
+                        desde la Sede Central.
+                    </li>
+                    <li>
+                        <strong>Agregar al Prof. Vargas a la Sede Chorotega</strong> como
+                        "Usuario de Laboratorio".
+                    </li>
+                    <li>
+                        <strong>Asignar el rol "Docente" por laboratorio</strong>: En la pestaña
+                        "Por Laboratorio", asignar el rol solo en el "Lab. General" de Chorotega.
+                    </li>
+                    <li>
+                        <strong>Cuando termine el proyecto</strong>: Desvincular al Prof. Vargas
+                        del Lab. General de Chorotega. Sus permisos en la Sede Central no se
+                        verán afectados.
+                    </li>
+                </ol>
+
+                <div class="info-box">
+                    <strong><i class="bi bi-info-circle"></i> Multi-organización</strong>
+                    Un usuario puede pertenecer a múltiples organizaciones simultáneamente.
+                    Los permisos se evalúan independientemente en cada contexto.
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ESCENARIO 5 -->
+            <h2>Escenario 5: Gestión de zonas de riesgo multi-laboratorio</h2>
+
+            <div class="scenario-card">
+                <h4><i class="bi bi-exclamation-diamond"></i> Situación</h4>
+                <div class="scenario-situation">
+                    La Facultad de Ciencias tiene una zona de almacenamiento de reactivos inflamables
+                    que es compartida entre el Lab. de Química Orgánica y el Lab. de Bioquímica.
+                    Se necesita crear una zona de riesgo que abarque ambos laboratorios y designar
+                    a un responsable.
+                </div>
+
+                <h4>Solución paso a paso</h4>
+                <ol class="step-list">
+                    <li>
+                        <strong>Crear la zona de riesgo</strong> "Almacenamiento de Inflamables"
+                        en la organización "Facultad de Ciencias".
+                    </li>
+                    <li>
+                        <strong>Asociar los laboratorios</strong>: Vincular tanto el "Lab. de Química
+                        Orgánica" como el "Lab. de Bioquímica" a esta zona de riesgo.
+                    </li>
+                    <li>
+                        <strong>Configurar tipo y prioridad</strong>: Establecer el tipo de zona
+                        y asignar la prioridad adecuada según la evaluación de riesgos.
+                    </li>
+                    <li>
+                        <strong>Asignar responsable</strong>: El responsable de seguridad debe
+                        tener el permiso "Cambiar zona de riesgo" a nivel de la Facultad de Ciencias
+                        para poder gestionar esta zona.
+                    </li>
+                </ol>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- ESCENARIO 6 -->
+            <h2>Escenario 6: Auditoría - ¿Quién tiene acceso a qué?</h2>
+
+            <div class="scenario-card">
+                <h4><i class="bi bi-search"></i> Situación</h4>
+                <div class="scenario-situation">
+                    Durante una auditoría de cumplimiento ISO 17025, se solicita un reporte de
+                    quién tiene acceso a cada laboratorio y con qué permisos. El auditor necesita
+                    verificar que las responsabilidades y autoridades están bien definidas.
+                </div>
+
+                <h4>Solución paso a paso</h4>
+                <ol class="step-list">
+                    <li>
+                        <strong>Acceder a la gestión de permisos</strong> de la organización que se
+                        está auditando.
+                    </li>
+                    <li>
+                        <strong>Revisar por laboratorio</strong>: En la pestaña "Por Laboratorio",
+                        seleccionar cada laboratorio para ver los usuarios y sus roles asignados.
+                    </li>
+                    <li>
+                        <strong>Revisar por organización</strong>: En la pestaña "Por Organización",
+                        verificar qué usuarios tienen permisos a nivel organizacional (estos tendrán
+                        acceso a todos los laboratorios).
+                    </li>
+                    <li>
+                        <strong>Consultar los roles</strong>: Listar los roles de la organización
+                        para verificar exactamente qué permisos incluye cada uno.
+                    </li>
+                    <li>
+                        <strong>Documentar</strong>: Los reportes generados desde Organilab pueden
+                        servir como evidencia para la auditoría.
+                    </li>
+                </ol>
+
+                <div class="screenshot-container">
+                    <img src="../../_static/cap1_student_view.png" alt="Vista de usuarios con sus roles por laboratorio, útil para auditorías" loading="lazy">
+                    <p class="screenshot-caption">Vista de usuarios con sus roles por laboratorio, útil para auditorías</p>
+                </div>
+
+                <div class="info-box success">
+                    <strong><i class="bi bi-check-circle"></i> Alineación con ISO 17025</strong>
+                    Este proceso demuestra que la institución tiene un sistema claro y definido
+                    de responsabilidades y autoridades, tal como lo requiere la norma.
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Resumen de Buenas Prácticas</h2>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Práctica</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Principio de mínimo privilegio</strong></td>
+                        <td>Asigne solo los permisos que cada persona necesita para su trabajo. No más.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Use roles, no permisos individuales</strong></td>
+                        <td>Agrupe permisos en roles descriptivos. Es más fácil de gestionar y auditar.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permisos por lab para acceso específico</strong></td>
+                        <td>Use asignación por laboratorio cuando el usuario solo necesita acceso a un lab.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permisos por org para supervisores</strong></td>
+                        <td>Use asignación por organización para quienes necesitan ver todos los labs.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revise periódicamente</strong></td>
+                        <td>Audite los permisos regularmente. Revoque accesos que ya no sean necesarios.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Documente los roles</strong></td>
+                        <td>Use la descripción del rol para explicar su propósito. Facilita la auditoría.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="06-laboratorios-y-zonas.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Laboratorios y Zonas
+                </a>
+                <a href="08-guía-administrador.html" class="next-page">
+                    Guía del Administrador <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

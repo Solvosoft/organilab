@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6. Reportes y Auditoría - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-estructura.html" class="nav-link sub-item">
+                1. Estructura del Laboratorio
+            </a>
+            <a href="02-salas-muebles.html" class="nav-link sub-item">
+                2. Salas y Muebles
+            </a>
+            <a href="03-estantes.html" class="nav-link sub-item">
+                3. Estantes
+            </a>
+            <a href="04-objetos.html" class="nav-link sub-item">
+                4. Objetos del Laboratorio
+            </a>
+            <a href="05-transferencias.html" class="nav-link sub-item">
+                5. Transferencias
+            </a>
+            <a href="06-reportes.html" class="nav-link sub-item active">
+                6. Reportes y Auditoría
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Laboratorios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reportes y Auditoría</li>
+                </ol>
+            </nav>
+
+            <h1>6. Reportes y Auditoría</h1>
+
+            <p class="lead">
+                Organilab incluye un sistema completo de reportes y auditoría que permite generar
+                informes de inventario, rastrear todos los cambios realizados en los objetos del
+                laboratorio y cumplir con los requisitos regulatorios de reporte de sustancias
+                controladas.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Tipos de Reportes</h2>
+
+            <p>
+                El sistema ofrece varios tipos de reportes para cubrir las diferentes necesidades
+                de información del laboratorio:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo de Reporte</th>
+                        <th>Descripción</th>
+                        <th>Contenido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Reporte de Inventario</strong></td>
+                        <td>Listado completo de todos los objetos del laboratorio con su ubicación y cantidad actual</td>
+                        <td>Objeto, cantidad, unidad, estante, mueble, sala, estado físico</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Códigos H</strong></td>
+                        <td>Listado de sustancias clasificadas por sus indicaciones de peligro (frases H del SGA)</td>
+                        <td>Sustancia, código H, clase de peligro, pictograma, cantidad almacenada</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Precursores</strong></td>
+                        <td>Informe mensual de sustancias precursoras con entradas, salidas y existencias</td>
+                        <td>Sustancia precursora, cantidad inicial, entradas, salidas, cantidad final, destino</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Objetos por Estante</strong></td>
+                        <td>Detalle de los objetos almacenados en un estante específico</td>
+                        <td>Objeto, cantidad, lote, fecha de vencimiento, límites</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Reactivos Vencidos</strong></td>
+                        <td>Listado de reactivos cuya fecha de vencimiento ha pasado o está próxima</td>
+                        <td>Reactivo, fecha de vencimiento, cantidad, ubicación</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap2_reports_menú.png" alt="Menú de reportes del laboratorio" loading="lazy">
+                <p class="screenshot-caption">Menú de reportes del laboratorio</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Auditoría de Cambios (ObjectLogChange)</h2>
+
+            <p>
+                Organilab registra automáticamente cada cambio realizado en los objetos del laboratorio
+                a través del modelo <strong>ObjectLogChange</strong>. Este sistema de auditoría permite
+                rastrear con precisión quién hizo qué cambio, cuándo y qué valores se modificaron.
+            </p>
+
+            <h3>Información Registrada</h3>
+
+            <p>Cada registro de auditoría incluye los siguientes datos:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Valor anterior</strong></td>
+                        <td>El valor del campo antes del cambio (old_value)</td>
+                        <td>500 ml</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Valor nuevo</strong></td>
+                        <td>El valor del campo después del cambio (new_value)</td>
+                        <td>350 ml</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Diferencia</strong></td>
+                        <td>La diferencia entre ambos valores (diff_value)</td>
+                        <td>-150 ml</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usuario</strong></td>
+                        <td>El usuario que realizó el cambio</td>
+                        <td>Maria Rodriguez</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fecha y hora</strong></td>
+                        <td>El momento exacto en que se realizó el cambio</td>
+                        <td>2026-02-15 14:30:22</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo de cambio</strong></td>
+                        <td>La acción que generó el cambio (uso, transferencia, ajuste, etc.)</td>
+                        <td>Uso en procedimiento</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Importancia de la Auditoría</h3>
+
+            <p>El registro de auditoría es fundamental por varias razones:</p>
+
+            <ul>
+                <li>
+                    <strong>Trazabilidad completa</strong> — Permite reconstruir el historial completo
+                    de cada objeto desde su ingreso hasta su consumo o descarte.
+                </li>
+                <li>
+                    <strong>Responsabilidad</strong> — Identifica quién realizó cada cambio, estableciendo
+                    responsabilidades claras sobre el manejo de los materiales.
+                </li>
+                <li>
+                    <strong>Detección de anomalías</strong> — Permite identificar cambios inusuales
+                    que podrían indicar errores o uso no autorizado de materiales.
+                </li>
+                <li>
+                    <strong>Cumplimiento normativo</strong> — Satisface los requisitos de trazabilidad
+                    exigidos por normativas como ISO 17025 y regulaciones de sustancias controladas.
+                </li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_view_shelfobject_logs.gif" alt="Historial de cambios de un objeto" loading="lazy">
+                <p class="screenshot-caption">Historial de cambios de un objeto</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Reportes de Precursores (PrecursorReport)</h2>
+
+            <p>
+                Las sustancias clasificadas como <strong>precursores químicos</strong> requieren un
+                control especial y reportes periódicos a las autoridades competentes. Organilab
+                automatiza este proceso a través del modelo <strong>PrecursorReport</strong>.
+            </p>
+
+            <h3>¿Qué es un Reporte de Precursores?</h3>
+
+            <p>
+                Un reporte de precursores es un informe mensual que detalla el movimiento de todas
+                las sustancias precursoras del laboratorio durante un período determinado. Incluye:
+            </p>
+
+            <ul>
+                <li><strong>Existencia inicial</strong> — Cantidad al inicio del período</li>
+                <li><strong>Entradas</strong> — Cantidades recibidas (compras, transferencias entrantes)</li>
+                <li><strong>Salidas</strong> — Cantidades utilizadas, transferidas o descartadas</li>
+                <li><strong>Existencia final</strong> — Cantidad al cierre del período</li>
+                <li><strong>Destino</strong> — Uso o destino de las salidas registradas</li>
+            </ul>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-octagon"></i> Obligación regulatoria</strong>
+                En Costa Rica y muchos otros países, el manejo de sustancias precursoras está regulado
+                por ley. Los laboratorios que manejan este tipo de sustancias están obligados a presentar
+                reportes periódicos ante las autoridades competentes. Organilab facilita el cumplimiento
+                de esta obligación generando los reportes en el formato requerido.
+            </div>
+
+            <h3>Generar un Reporte de Precursores</h3>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Acceda a la sección de reportes</strong> — Navegue al módulo de reportes
+                    del laboratorio desde el menú principal.
+                </li>
+                <li>
+                    <strong>Seleccione "Reporte de Precursores"</strong> — Elija esta opción del
+                    listado de tipos de reportes disponibles.
+                </li>
+                <li>
+                    <strong>Defina el período</strong> — Seleccione el mes y año para el cual desea
+                    generar el reporte.
+                </li>
+                <li>
+                    <strong>Revise los datos</strong> — El sistema mostrará automáticamente las
+                    existencias, entradas y salidas de cada sustancia precursora registrada.
+                </li>
+                <li>
+                    <strong>Descargue el reporte</strong> — Genere el archivo PDF con el reporte
+                    completo listo para su presentación ante las autoridades.
+                </li>
+            </ol>
+
+            <!-- ============================================ -->
+            <h2>Descarga de Reportes en PDF</h2>
+
+            <p>
+                Todos los reportes de Organilab pueden descargarse en formato <strong>PDF</strong>
+                para su archivo, impresión o presentación ante autoridades. Los reportes en PDF
+                incluyen:
+            </p>
+
+            <ul>
+                <li>Encabezado con el nombre del laboratorio y la organización</li>
+                <li>Fecha de generación del reporte</li>
+                <li>Datos completos según el tipo de reporte seleccionado</li>
+                <li>Información del usuario que generó el reporte</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap2_pdf_report.png" alt="Ejemplo de un reporte de inventario en formato PDF" loading="lazy">
+                <p class="screenshot-caption">Ejemplo de un reporte de inventario en formato PDF</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Buenas Prácticas de Auditoría</h2>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-calendar-check"></i> Revisiones Periódicas</h4>
+                        <p>
+                            Establezca una rutina de revisión del historial de cambios. Se recomienda
+                            revisar semanalmente los cambios en sustancias controladas y mensualmente
+                            los cambios generales del inventario.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-archive"></i> Archivo de Reportes</h4>
+                        <p>
+                            Descargue y archive los reportes mensuales de precursores y los reportes
+                            de inventario. Mantenga un respaldo digital y físico según lo requiera
+                            la normativa aplicable.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-people"></i> Responsabilidades Claras</h4>
+                        <p>
+                            Asigne roles específicos para la generación y revisión de reportes.
+                            El regente químico o encargado del laboratorio debe ser el responsable
+                            de validar los reportes antes de su presentación.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-search"></i> Investigar Anomalías</h4>
+                        <p>
+                            Si el historial de auditoría muestra cambios inusuales (cantidades grandes
+                            no justificadas, cambios fuera de horario laboral), investigue la causa
+                            y documente los hallazgos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Fin del Capítulo 2</strong>
+                Ha completado el capítulo sobre gestión de laboratorios. Ahora conoce la estructura
+                física del laboratorio, cómo gestionar salas, muebles, estantes y objetos, cómo
+                realizar transferencias entre laboratorios y cómo generar reportes y auditar los
+                cambios. En el siguiente capítulo aprenderá sobre la gestión de sustancias y el
+                Sistema Globalmente Armonizado (SGA).
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="05-transferencias.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Transferencias
+                </a>
+                <a href="../sustancias/index.html" class="next-page">
+                    Gestión de Sustancias <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

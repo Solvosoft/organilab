@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2. Jerarquía Organizacional - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">1. Conceptos Fundamentales</a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item active">2. Jerarquía Organizacional</a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">3. Roles y Tipos de Usuario</a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">4. Asignación de Permisos</a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">5. Herencia de Permisos</a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">6. Laboratorios y Zonas</a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">7. Escenarios Prácticos</a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">8. Guía del Administrador</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Jerarquía Organizacional</li>
+                </ol>
+            </nav>
+
+            <h1>2. Jerarquía Organizacional</h1>
+
+            <p class="lead">
+                La estructura organizacional de Organilab replica la jerarquía real de su institución.
+                Entender cómo funciona esta estructura es esencial para configurar los permisos correctamente.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>La estructura como árbol</h2>
+
+            <p>
+                Organilab organiza las instituciones como un <strong>árbol jerárquico</strong>.
+                Cada nodo del árbol es una "organización" que puede contener organizaciones hijas
+                y laboratorios.
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 750 500" xmlns="http://www.w3.org/2000/svg" style="max-width: 750px;">
+                    <rect width="750" height="500" fill="#f8f9fa" rx="8"/>
+
+                    <!-- Nivel 0: ROOT -->
+                    <rect x="250" y="20" width="250" height="44" rx="6" fill="#1a4a7a"/>
+                    <text x="375" y="47" text-anchor="middle" font-size="13" fill="white" font-weight="600">Universidad Nacional (Raíz)</text>
+
+                    <!-- Conectores nivel 0 -> 1 -->
+                    <line x1="310" y1="64" x2="140" y2="105" stroke="#6c757d" stroke-width="1.5"/>
+                    <line x1="375" y1="64" x2="375" y2="105" stroke="#6c757d" stroke-width="1.5"/>
+                    <line x1="440" y1="64" x2="610" y2="105" stroke="#6c757d" stroke-width="1.5"/>
+
+                    <!-- Nivel 1: Sedes -->
+                    <rect x="40" y="105" width="200" height="40" rx="6" fill="#2c6fbb"/>
+                    <text x="140" y="130" text-anchor="middle" font-size="12" fill="white" font-weight="500">Sede Central</text>
+
+                    <rect x="275" y="105" width="200" height="40" rx="6" fill="#2c6fbb"/>
+                    <text x="375" y="130" text-anchor="middle" font-size="12" fill="white" font-weight="500">Sede Regional Chorotega</text>
+
+                    <rect x="510" y="105" width="200" height="40" rx="6" fill="#2c6fbb"/>
+                    <text x="610" y="130" text-anchor="middle" font-size="12" fill="white" font-weight="500">Sede Regional Brunca</text>
+
+                    <!-- Conectores nivel 1 -> 2 (Sede Central) -->
+                    <line x1="100" y1="145" x2="100" y2="185" stroke="#6c757d" stroke-width="1.5"/>
+                    <line x1="180" y1="145" x2="260" y2="185" stroke="#6c757d" stroke-width="1.5"/>
+
+                    <!-- Conectores nivel 1 -> 2 (Chorotega) -->
+                    <line x1="375" y1="145" x2="375" y2="185" stroke="#6c757d" stroke-width="1.5"/>
+
+                    <!-- Conectores nivel 1 -> Lab directo (Brunca) -->
+                    <line x1="610" y1="145" x2="610" y2="185" stroke="#6c757d" stroke-width="1.5" stroke-dasharray="4"/>
+
+                    <!-- Nivel 2: Facultades -->
+                    <rect x="10" y="185" width="180" height="40" rx="6" fill="#5a9bd5"/>
+                    <text x="100" y="210" text-anchor="middle" font-size="11" fill="white">Facultad de Ciencias</text>
+
+                    <rect x="200" y="185" width="180" height="40" rx="6" fill="#5a9bd5"/>
+                    <text x="290" y="210" text-anchor="middle" font-size="11" fill="white">Facultad de Ingeniería</text>
+
+                    <rect x="290" y="185" width="170" height="40" rx="6" fill="#5a9bd5" x="295"/>
+                    <text x="375" y="210" text-anchor="middle" font-size="11" fill="white">Escuela de Ciencias</text>
+
+                    <!-- Lab directo en Brunca -->
+                    <rect x="530" y="185" width="160" height="40" rx="6" fill="#28a745"/>
+                    <text x="610" y="210" text-anchor="middle" font-size="11" fill="white">Lab. Ciencias Básicas</text>
+
+                    <!-- Conectores nivel 2 -> Labs -->
+                    <line x1="60" y1="225" x2="60" y2="265" stroke="#6c757d" stroke-width="1.5" stroke-dasharray="4"/>
+                    <line x1="140" y1="225" x2="170" y2="265" stroke="#6c757d" stroke-width="1.5" stroke-dasharray="4"/>
+                    <line x1="290" y1="225" x2="290" y2="265" stroke="#6c757d" stroke-width="1.5" stroke-dasharray="4"/>
+                    <line x1="375" y1="225" x2="440" y2="265" stroke="#6c757d" stroke-width="1.5" stroke-dasharray="4"/>
+
+                    <!-- Nivel 3: Laboratorios -->
+                    <rect x="5" y="265" width="130" height="36" rx="6" fill="#28a745"/>
+                    <text x="70" y="287" text-anchor="middle" font-size="10" fill="white">Lab. Química Org.</text>
+
+                    <rect x="145" y="265" width="110" height="36" rx="6" fill="#28a745"/>
+                    <text x="200" y="287" text-anchor="middle" font-size="10" fill="white">Lab. Bioquímica</text>
+
+                    <rect x="265" y="265" width="110" height="36" rx="6" fill="#28a745"/>
+                    <text x="320" y="287" text-anchor="middle" font-size="10" fill="white">Lab. Materiales</text>
+
+                    <rect x="385" y="265" width="110" height="36" rx="6" fill="#28a745"/>
+                    <text x="440" y="287" text-anchor="middle" font-size="10" fill="white">Lab. General</text>
+
+                    <!-- Leyenda -->
+                    <rect x="30" y="330" width="690" height="80" rx="6" fill="white" stroke="#dee2e6"/>
+                    <text x="50" y="352" font-size="12" fill="#333" font-weight="600">Leyenda:</text>
+
+                    <rect x="50" y="362" width="14" height="14" rx="3" fill="#1a4a7a"/>
+                    <text x="72" y="374" font-size="11" fill="#6c757d">Organización Raíz (Nivel 0)</text>
+
+                    <rect x="230" y="362" width="14" height="14" rx="3" fill="#2c6fbb"/>
+                    <text x="252" y="374" font-size="11" fill="#6c757d">Sedes (Nivel 1)</text>
+
+                    <rect x="370" y="362" width="14" height="14" rx="3" fill="#5a9bd5"/>
+                    <text x="392" y="374" font-size="11" fill="#6c757d">Facultades (Nivel 2)</text>
+
+                    <rect x="530" y="362" width="14" height="14" rx="3" fill="#28a745"/>
+                    <text x="552" y="374" font-size="11" fill="#6c757d">Laboratorios</text>
+
+                    <text x="50" y="398" font-size="10" fill="#999">Los laboratorios pueden estar en cualquier nivel de la jerarquía. En este ejemplo, Brunca tiene un lab directamente en la sede.</text>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Ejemplo de estructura jerárquica de una universidad con tres sedes regionales.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Organizaciones Raíz vs. Organizaciones Hijas</h2>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-diagram-3"></i> Organización Raíz</h4>
+                        <p>Es la organización de nivel superior, <strong>sin organización padre</strong>. Tiene las siguientes capacidades exclusivas:</p>
+                        <ul>
+                            <li>Crear laboratorios</li>
+                            <li>Crear y gestionar usuarios</li>
+                            <li>Definir roles y permisos</li>
+                            <li>Crear organizaciones hijas</li>
+                            <li>Gestión completa del sistema</li>
+                        </ul>
+                        <div class="info-box warning" style="margin-bottom: 0;">
+                            <strong>Importante</strong>
+                            Solo los administradores de organizaciones raíz pueden crear nuevos
+                            laboratorios y registrar usuarios en el sistema.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-diagram-2"></i> Organización Hija</h4>
+                        <p>Es una organización que tiene un <strong>padre en la jerarquía</strong>. Sus capacidades son:</p>
+                        <ul>
+                            <li>Relacionar laboratorios existentes</li>
+                            <li>Asignar roles a usuarios dentro de su ámbito</li>
+                            <li>Crear sub-organizaciones (si tiene permisos)</li>
+                            <li>Gestionar su propia estructura interna</li>
+                        </ul>
+                        <div class="info-box" style="margin-bottom: 0;">
+                            <strong>Nota</strong>
+                            Las organizaciones hijas permiten distribuir la administración sin
+                            necesidad de que cada sede tenga acceso completo al sistema.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Niveles de la Jerarquía</h2>
+
+            <p>
+                Aunque Organilab permite crear tantos niveles como necesite, una estructura típica
+                para una universidad costarricense sería:
+            </p>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Ejemplo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>0 (Raíz)</strong></td>
+                        <td>Universidad Nacional</td>
+                        <td>La institución completa. Gestión centralizada.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Sede Central, Sede Chorotega</td>
+                        <td>Sedes regionales o campus. Agrupan facultades.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Facultad de Ciencias, Escuela de Química</td>
+                        <td>Unidades académicas. Contienen laboratorios.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3+</strong></td>
+                        <td>Departamento, Sección</td>
+                        <td>Subdivisiones adicionales si se necesitan.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Flexibilidad</strong>
+                No existe un límite fijo de niveles. Puede adaptar la jerarquía a la estructura
+                real de su institución. Un laboratorio puede pertenecer a cualquier nivel de
+                la jerarquía.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Cómo se ven las organizaciones en Organilab</h2>
+
+            <p>
+                En la interfaz de Organilab, la estructura organizacional se presenta como un
+                árbol navegable. Al hacer clic en una organización, puede ver sus hijas,
+                laboratorios asociados y gestionar usuarios y roles.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap1_org_tree_view.png" alt="Vista del árbol de organizaciones en el panel de administración de permisos" loading="lazy">
+                <p class="screenshot-caption">Vista del árbol de organizaciones en el panel de administración de permisos</p>
+            </div>
+
+            <p>
+                Desde esta vista, los administradores pueden:
+            </p>
+            <ul>
+                <li>Ver la estructura completa de la organización</li>
+                <li>Crear nuevas organizaciones hijas</li>
+                <li>Mover organizaciones dentro de la jerarquía</li>
+                <li>Activar o desactivar organizaciones</li>
+                <li>Acceder a la gestión de usuarios y roles de cada organización</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_org_popup.gif" alt="Ventana emergente al hacer clic en una organización, mostrando opciones de gestión" loading="lazy">
+                <p class="screenshot-caption">Ventana emergente al hacer clic en una organización, mostrando opciones de gestión</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Relación con los Laboratorios</h2>
+
+            <p>
+                Cada laboratorio pertenece a <strong>una organización específica</strong>. Esta relación
+                determina:
+            </p>
+
+            <ul>
+                <li><strong>Quién puede administrarlo</strong>: Los administradores de la organización padre</li>
+                <li><strong>Quién puede acceder</strong>: Los usuarios con roles asignados en ese laboratorio o en su organización</li>
+                <li><strong>Dónde aparece</strong>: En el listado de laboratorios de la organización y sus descendientes</li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Recuerde</strong>
+                Los laboratorios solo se pueden crear desde organizaciones raíz. Las organizaciones
+                hijas pueden <em>relacionar</em> laboratorios existentes dentro de su ámbito, pero
+                no crear nuevos.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="01-conceptos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Conceptos Fundamentales
+                </a>
+                <a href="03-roles-y-tipos.html" class="next-page">
+                    Roles y Tipos de Usuario <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

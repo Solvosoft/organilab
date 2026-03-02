@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Gestionar Reservaciones - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Reservaciones
+            </a>
+            <a href="02-solicitar.html" class="nav-link sub-item">
+                2. Solicitar Reservación
+            </a>
+            <a href="03-gestionar.html" class="nav-link sub-item active">
+                3. Gestionar Reservaciones
+            </a>
+            <a href="04-devolver.html" class="nav-link sub-item">
+                4. Devolución de Productos
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Reservaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gestionar Reservaciones</li>
+                </ol>
+            </nav>
+
+            <h1>3. Gestionar Reservaciones</h1>
+
+            <p class="lead">
+                Los encargados del laboratorio son responsables de revisar, aprobar o rechazar
+                las solicitudes de reservación. En esta sección aprenderá cómo gestionar las
+                reservaciones entrantes y cómo el sistema automatiza el control del inventario.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Vista de Reservaciones por Estado</h2>
+
+            <p>
+                El panel de gestión de reservaciones permite filtrar las solicitudes según su
+                estado actual. Esto facilita identificar rápidamente las reservaciones pendientes
+                de revisión:
+            </p>
+
+            <ul>
+                <li><strong>Solicitadas:</strong> reservaciones nuevas que esperan revisión. Son la prioridad del encargado.</li>
+                <li><strong>Aceptadas:</strong> reservaciones aprobadas con productos pendientes de préstamo o ya prestados.</li>
+                <li><strong>Rechazadas:</strong> reservaciones que fueron denegadas por el encargado.</li>
+                <li><strong>Cerradas:</strong> reservaciones completadas donde todos los productos fueron devueltos o finalizados.</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap5_reservations_list.png" alt="Panel de reservaciones con filtros por estado mostrando solicitudes pendientes" loading="lazy">
+                <p class="screenshot-caption">Panel de reservaciones con filtros por estado mostrando solicitudes pendientes</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Aprobar una Solicitud</h2>
+
+            <p>
+                Cuando el encargado recibe una solicitud de reservación, debe revisar los detalles
+                de cada producto solicitado y decidir si la aprueba. El proceso es el siguiente:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Revisar los detalles:</strong> verifique los productos solicitados, las
+                    cantidades, las fechas de préstamo y los comentarios del solicitante.
+                </li>
+                <li>
+                    <strong>Verificar la disponibilidad:</strong> el sistema muestra la cantidad
+                    disponible en el inventario para cada producto. Confirme que hay suficiente
+                    cantidad para cubrir la solicitud.
+                </li>
+                <li>
+                    <strong>Aprobar la reservación:</strong> al aceptar la solicitud, el estado de la
+                    reservación cambia a "Aceptada" y los productos pasan al estado "Prestado".
+                    El sistema programa automáticamente la tarea de decremento de inventario.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap5_manage_reservation.gif" alt="Detalle de una solicitud de reservación con opciones de aprobar o rechazar" loading="lazy">
+                <p class="screenshot-caption">Detalle de una solicitud de reservación con opciones de aprobar o rechazar</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Rechazar una Solicitud</h2>
+
+            <p>
+                Si una solicitud no puede ser aprobada, el encargado puede rechazarla. Los motivos
+                comunes de rechazo incluyen:
+            </p>
+
+            <ul>
+                <li>Cantidad insuficiente en el inventario para cubrir la solicitud</li>
+                <li>Conflictos de fechas con otras reservaciones ya aprobadas</li>
+                <li>Productos restringidos que requieren autorización especial</li>
+                <li>Solicitud incompleta o con información incorrecta</li>
+            </ul>
+
+            <p>
+                Al rechazar, el estado de la reservación cambia a "Rechazada" y los productos
+                individuales cambian al estado "Rechazado". El solicitante será notificado del
+                rechazo.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Validación Automática de Disponibilidad</h2>
+
+            <p>
+                El sistema realiza validaciones automáticas para garantizar la coherencia del
+                inventario:
+            </p>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Regla de las 6 horas</strong>
+                Las reservaciones deben solicitarse con al menos 6 horas de anticipación respecto
+                a la fecha de inicio del préstamo. Esto permite al sistema verificar la disponibilidad
+                real y al encargado revisar la solicitud con tiempo suficiente.
+            </div>
+
+            <p>
+                Además de la regla temporal, el sistema verifica:
+            </p>
+
+            <ul>
+                <li>Que la cantidad solicitada no supere la cantidad disponible en el estante</li>
+                <li>Que no existan superposiciones de fechas con otras reservaciones para el mismo producto</li>
+                <li>Que el producto siga existiendo en el inventario al momento de la aprobación</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Transiciones de Estado</h2>
+
+            <p>
+                La siguiente tabla resume las transiciones válidas para reservaciones y productos:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Estado Inicial</th>
+                        <th>Acción</th>
+                        <th>Estado Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Reservación</td>
+                        <td>Solicitada</td>
+                        <td>Encargado aprueba</td>
+                        <td>Aceptada</td>
+                    </tr>
+                    <tr>
+                        <td>Reservación</td>
+                        <td>Solicitada</td>
+                        <td>Encargado rechaza</td>
+                        <td>Rechazada</td>
+                    </tr>
+                    <tr>
+                        <td>Reservación</td>
+                        <td>Aceptada</td>
+                        <td>Todos los productos devueltos</td>
+                        <td>Cerrada</td>
+                    </tr>
+                    <tr>
+                        <td>Producto</td>
+                        <td>Seleccionado</td>
+                        <td>Se envía la solicitud</td>
+                        <td>Solicitado</td>
+                    </tr>
+                    <tr>
+                        <td>Producto</td>
+                        <td>Solicitado</td>
+                        <td>Reservación aceptada</td>
+                        <td>Prestado</td>
+                    </tr>
+                    <tr>
+                        <td>Producto</td>
+                        <td>Solicitado</td>
+                        <td>Producto rechazado</td>
+                        <td>Rechazado</td>
+                    </tr>
+                    <tr>
+                        <td>Producto</td>
+                        <td>Prestado</td>
+                        <td>Usuario devuelve</td>
+                        <td>Devuelto</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Gestión Automatizada del Inventario</h2>
+
+            <p>
+                Cuando una reservación es aceptada, el sistema programa tareas automáticas
+                utilizando Celery para gestionar el inventario sin intervención manual. El modelo
+                ReservationTasks registra cada tarea programada asociada a un producto reservado.
+            </p>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-gear"></i> Tarea decrease_stock</strong>
+                La tarea principal es <strong>decrease_stock</strong>, que se ejecuta automáticamente
+                en la fecha de inicio del préstamo. Esta tarea reduce la cantidad del objeto en el
+                estante (shelf_object.quantity) según la cantidad requerida (amount_required) del
+                producto reservado. Esto garantiza que el inventario refleje con precisión los
+                productos que han sido prestados.
+            </div>
+
+            <p>
+                El flujo automatizado funciona de la siguiente manera:
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px;">
+                    <defs>
+                        <marker id="arrowR" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Fondo -->
+                    <rect width="700" height="250" fill="#f8f9fa" rx="8"/>
+
+                    <!-- Título -->
+                    <text x="350" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a4a7a">Automatización del Inventario con Tareas Programadas</text>
+
+                    <!-- Linea de tiempo -->
+                    <line x1="50" y1="130" x2="650" y2="130" stroke="#dee2e6" stroke-width="2"/>
+
+                    <!-- Punto 1: Reservación aceptada -->
+                    <circle cx="100" cy="130" r="8" fill="#28a745"/>
+                    <rect x="30" y="55" width="140" height="55" rx="8" fill="#28a745"/>
+                    <text x="100" y="75" text-anchor="middle" font-size="11" fill="white" font-weight="600">Reservación</text>
+                    <text x="100" y="95" text-anchor="middle" font-size="11" fill="white" font-weight="600">Aceptada</text>
+                    <line x1="100" y1="110" x2="100" y2="122" stroke="#28a745" stroke-width="2"/>
+
+                    <!-- Flecha -->
+                    <line x1="115" y1="130" x2="225" y2="130" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowR)"/>
+
+                    <!-- Punto 2: Tarea programada -->
+                    <circle cx="260" cy="130" r="8" fill="#ffc107"/>
+                    <rect x="190" y="55" width="140" height="55" rx="8" fill="#ffc107"/>
+                    <text x="260" y="75" text-anchor="middle" font-size="11" fill="#333" font-weight="600">Tarea Celery</text>
+                    <text x="260" y="95" text-anchor="middle" font-size="11" fill="#333" font-weight="600">Programada</text>
+                    <line x1="260" y1="110" x2="260" y2="122" stroke="#ffc107" stroke-width="2"/>
+
+                    <!-- Flecha -->
+                    <line x1="275" y1="130" x2="385" y2="130" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowR)"/>
+                    <text x="330" y="155" text-anchor="middle" font-size="10" fill="#6c757d" font-style="italic">Fecha de inicio llega</text>
+
+                    <!-- Punto 3: decrease_stock -->
+                    <circle cx="420" cy="130" r="8" fill="#17a2b8"/>
+                    <rect x="350" y="55" width="140" height="55" rx="8" fill="#17a2b8"/>
+                    <text x="420" y="75" text-anchor="middle" font-size="11" fill="white" font-weight="600">decrease_stock</text>
+                    <text x="420" y="95" text-anchor="middle" font-size="11" fill="white" font-weight="600">se ejecuta</text>
+                    <line x1="420" y1="110" x2="420" y2="122" stroke="#17a2b8" stroke-width="2"/>
+
+                    <!-- Flecha -->
+                    <line x1="435" y1="130" x2="545" y2="130" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowR)"/>
+
+                    <!-- Punto 4: Inventario actualizado -->
+                    <circle cx="580" cy="130" r="8" fill="#1a4a7a"/>
+                    <rect x="510" y="55" width="140" height="55" rx="8" fill="#1a4a7a"/>
+                    <text x="580" y="75" text-anchor="middle" font-size="11" fill="white" font-weight="600">Inventario</text>
+                    <text x="580" y="95" text-anchor="middle" font-size="11" fill="white" font-weight="600">Actualizado</text>
+                    <line x1="580" y1="110" x2="580" y2="122" stroke="#1a4a7a" stroke-width="2"/>
+
+                    <!-- Detalle inferior -->
+                    <text x="100" y="170" text-anchor="middle" font-size="9" fill="#6c757d">Encargado aprueba</text>
+                    <text x="260" y="170" text-anchor="middle" font-size="9" fill="#6c757d">ReservationTasks</text>
+                    <text x="260" y="183" text-anchor="middle" font-size="9" fill="#6c757d">registra la tarea</text>
+                    <text x="420" y="170" text-anchor="middle" font-size="9" fill="#6c757d">quantity -= amount</text>
+                    <text x="580" y="170" text-anchor="middle" font-size="9" fill="#6c757d">Refleja el préstamo</text>
+
+                    <!-- Leyenda -->
+                    <text x="350" y="225" text-anchor="middle" font-size="10" fill="#6c757d" font-style="italic">El proceso es completamente automático una vez aprobada la reservación</text>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Línea de tiempo mostrando cómo la aprobación de una reservación desencadena
+                una tarea programada que actualiza el inventario automáticamente.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Modelo ReservationTasks</strong>
+                Cada tarea programada se registra en el modelo ReservationTasks, que almacena la
+                referencia al producto reservado, el identificador único de la tarea de Celery
+                (celery_task) y el tipo de tarea (task_type). Esto permite rastrear y, si es
+                necesario, cancelar tareas programadas antes de su ejecución.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="02-solicitar.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Solicitar Reservación
+                </a>
+                <a href="04-devolver.html" class="next-page">
+                    Devolución de Productos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

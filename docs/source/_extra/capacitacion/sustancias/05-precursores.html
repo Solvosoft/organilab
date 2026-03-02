@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precursores Químicos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificación.html" class="nav-link sub-item">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item active">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item">
+                6. Seguridad y Almacenamiento
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Precursores Químicos</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-shield-exclamation"></i> 5. Precursores Químicos</h1>
+
+            <p class="lead">
+                Los precursores químicos son sustancias controladas por la legislación costarricense que
+                requieren un seguimiento especial debido a su potencial uso en la fabricación ilícita de
+                drogas. Organilab incluye herramientas específicas para gestionar estas sustancias y
+                generar los reportes mensuales requeridos por la autoridad.
+            </p>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-octagon"></i> Obligación legal</strong>
+                El Decreto 44741-S-MAG de Costa Rica establece la obligación de controlar y reportar
+                el uso de precursores químicos. El incumplimiento de estos requisitos puede resultar
+                en sanciones administrativas y legales. Organilab facilita este cumplimiento mediante
+                el registro automático de movimientos y la generación de reportes mensuales.
+            </div>
+
+            <h2>Decreto 44741-S-MAG</h2>
+
+            <p>
+                El Decreto Ejecutivo 44741-S-MAG es la normativa costarricense que regula el control de
+                sustancias químicas que pueden utilizarse como precursores en la fabricación de drogas.
+                Establece:
+            </p>
+
+            <ul>
+                <li>La lista de sustancias controladas como precursores químicos.</li>
+                <li>La clasificación de precursores en tres tipos (I, II y III) según su nivel de control.</li>
+                <li>La obligación de llevar registros detallados de compras, usos y existencias.</li>
+                <li>La presentación de reportes periódicos a las autoridades competentes.</li>
+                <li>Los umbrales de cantidad a partir de los cuales se requiere control especial.</li>
+            </ul>
+
+            <h2>Tipos de Precursores</h2>
+
+            <p>
+                Organilab clasifica los precursores en tres tipos, siguiendo la clasificación del decreto.
+                El tipo de precursor se registra en el campo <strong>precursor_type</strong> de las
+                características de sustancia:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Nivel de control</th>
+                        <th>Descripción</th>
+                        <th>Ejemplos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tipo I</strong></td>
+                        <td>Máximo</td>
+                        <td>Sustancias con mayor potencial de desvío para la fabricación ilícita. Requieren control estricto y reporte detallado de cada movimiento.</td>
+                        <td>Efedrina, pseudoefedrina, ácido lisérgico</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo II</strong></td>
+                        <td>Intermedio</td>
+                        <td>Sustancias que requieren control significativo. Se reportan cuando superan ciertos umbrales de cantidad.</td>
+                        <td>Ácido fenilacético, piperonal, safrol</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo III</strong></td>
+                        <td>Básico</td>
+                        <td>Sustancias de amplio uso industrial y de laboratorio que requieren monitoreo general y reporte de volúmenes significativos.</td>
+                        <td>Acetona, ácido clorhídrico, ácido sulfúrico, tolueno</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Configuración de Precursores en Organilab</h2>
+
+            <p>
+                Para que una sustancia sea tratada como precursor químico en Organilab, se deben configurar
+                los siguientes campos en las <strong>Características de Sustancia</strong> y en el <strong>Objeto</strong>:
+            </p>
+
+            <h3>En las Características de Sustancia</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Valores</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Es precursor (is_precursor)</strong></td>
+                        <td>Indica que la sustancia es un precursor químico controlado</td>
+                        <td>Si / No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo de precursor (precursor_type)</strong></td>
+                        <td>Clasificación del precursor según el decreto</td>
+                        <td>Tipo I / Tipo II / Tipo III</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>En el Objeto</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Uso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tiene umbral (has_threshold)</strong></td>
+                        <td>Indica si el objeto tiene un límite de cantidad controlado</td>
+                        <td>Activa el control de umbral para alertas automáticas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Umbral (threshold)</strong></td>
+                        <td>Cantidad máxima permitida antes de requerir notificación</td>
+                        <td>Se compara con la cantidad actual en inventario</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es puro (is_pure)</strong></td>
+                        <td>Si la sustancia es pura o una mezcla/solución</td>
+                        <td>Afecta el cálculo de cantidades reportadas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Densidad</strong></td>
+                        <td>Densidad de la sustancia</td>
+                        <td>Permite conversión entre unidades volumétricas y de masa</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_precursor_config.gif" alt="Configuración de un reactivo como precursor" loading="lazy">
+                <p class="screenshot-caption">Configuración de un reactivo como precursor</p>
+            </div>
+
+            <h2>Reportes Mensuales de Precursores</h2>
+
+            <p>
+                Organilab genera automáticamente reportes mensuales de precursores químicos a través del
+                modelo <strong>PrecursorReport</strong>. Estos reportes recopilan todos los movimientos
+                de precursores durante el mes y calculan los balances correspondientes.
+            </p>
+
+            <h3>Estructura del Reporte</h3>
+
+            <p>
+                Cada reporte mensual contiene valores detallados por sustancia a través del modelo
+                <strong>PrecursorReportValues</strong>, que incluye:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Cálculo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Saldo anterior (previous_balance)</strong></td>
+                        <td>Cantidad disponible al inicio del mes</td>
+                        <td>Saldo final del mes anterior</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nuevos ingresos (new_income)</strong></td>
+                        <td>Cantidad adquirida o recibida durante el mes</td>
+                        <td>Suma de todas las entradas del mes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gasto del mes (month_expense)</strong></td>
+                        <td>Cantidad utilizada o consumida durante el mes</td>
+                        <td>Suma de todos los consumos del mes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Saldo final (final_balance)</strong></td>
+                        <td>Cantidad disponible al cierre del mes</td>
+                        <td>Saldo anterior + ingresos - gastos</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Generación y Envío de Reportes</h3>
+
+            <ol class="step-list">
+                <li>Los reportes se generan automáticamente al cierre de cada mes mediante tareas programadas de Celery.</li>
+                <li>El sistema recopila todos los movimientos de precursores registrados en el laboratorio.</li>
+                <li>Se calculan los balances de cada sustancia precursora (saldo anterior, ingresos, gastos, saldo final).</li>
+                <li>El reporte queda disponible para revisión en el módulo de reportes.</li>
+                <li>El administrador puede revisar, ajustar si es necesario, y aprobar el reporte.</li>
+                <li>Una vez aprobado, el reporte puede exportarse para su presentación ante las autoridades.</li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap3_precursor_report.png" alt="Vista del reporte mensual de precursores" loading="lazy">
+                <p class="screenshot-caption">Vista del reporte mensual de precursores</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Registro preciso de movimientos</strong>
+                Para que los reportes mensuales sean exactos, es fundamental registrar correctamente
+                cada entrada y salida de precursores en el sistema. Utilice las funciones de ingreso
+                y descuento de inventario cada vez que reciba nuevas existencias o consuma precursores
+                en sus actividades de laboratorio.
+            </div>
+
+            <h2>Buenas Prácticas para el Control de Precursores</h2>
+
+            <ul>
+                <li><strong>Registro inmediato:</strong> Registre cada movimiento de precursores en el momento
+                    en que ocurre, no al final del día o de la semana.</li>
+                <li><strong>Verificación de umbrales:</strong> Revise periódicamente que las cantidades en
+                    inventario no excedan los umbrales configurados.</li>
+                <li><strong>Revisión de reportes:</strong> Antes de aprobar un reporte mensual, verifique que
+                    los balances sean coherentes con el inventario físico.</li>
+                <li><strong>Almacenamiento seguro:</strong> Los precursores deben almacenarse bajo llave con
+                    acceso restringido y registro de quién accede.</li>
+                <li><strong>Capacitación del personal:</strong> Asegúrese de que todo el personal que maneja
+                    precursores conozca los procedimientos de registro y control.</li>
+            </ul>
+
+            <div class="page-navigation">
+                <a href="04-msds.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Hojas de Seguridad
+                </a>
+                <a href="06-seguridad.html" class="next-page">
+                    Seguridad y Almacenamiento <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

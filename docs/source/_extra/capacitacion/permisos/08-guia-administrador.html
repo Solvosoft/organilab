@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8. Guía del Administrador - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">1. Conceptos Fundamentales</a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">2. Jerarquía Organizacional</a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">3. Roles y Tipos de Usuario</a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">4. Asignación de Permisos</a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">5. Herencia de Permisos</a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">6. Laboratorios y Zonas</a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">7. Escenarios Prácticos</a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item active">8. Guía del Administrador</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Guía del Administrador</li>
+                </ol>
+            </nav>
+
+            <h1>8. Guía del Administrador</h1>
+
+            <p class="lead">
+                Esta guía paso a paso le ayudará a configurar el sistema de permisos de Organilab
+                desde cero. Siga estos pasos en orden para una configuración exitosa.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Antes de comenzar</strong>
+                Necesitará una cuenta con permisos de administrador. Si es la primera vez que
+                configura el sistema, utilice la cuenta de superusuario creada durante la
+                instalación.
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PASO 1 -->
+            <h2>Paso 1: Crear la organización raíz</h2>
+
+            <p>
+                La organización raíz es el punto de partida de toda la estructura. Representa
+                a su institución completa.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Ingrese a Organilab con su cuenta de administrador.
+                </li>
+                <li>
+                    Acceda a la sección de <strong>Administración de Permisos</strong> desde el menú principal.
+                </li>
+                <li>
+                    Haga clic en <strong>"Crear organización"</strong>.
+                </li>
+                <li>
+                    Ingrese el nombre de su institución (ej: "Universidad Nacional de Costa Rica").
+                    No seleccione organización padre — esto la convierte en organización raíz.
+                </li>
+                <li>
+                    Guarde la organización.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_create_org.gif" alt="Formulario de creación de organización raíz" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de organización raíz</p>
+            </div>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Importante</strong>
+                Al crear la organización raíz, el sistema automáticamente le asignará el rol
+                de "Gestión de Organización" con los permisos de administración necesarios.
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PASO 2 -->
+            <h2>Paso 2: Crear organizaciones hijas (sedes, facultades)</h2>
+
+            <p>
+                Ahora construya la jerarquía creando las organizaciones hijas que representan
+                las subdivisiones de su institución.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    En el árbol de organizaciones, haga clic en la organización raíz.
+                </li>
+                <li>
+                    En la ventana emergente, seleccione <strong>"Agregar organización hija"</strong>.
+                </li>
+                <li>
+                    Ingrese el nombre (ej: "Sede Central") y guarde.
+                </li>
+                <li>
+                    Repita para cada sede, facultad o unidad de su institución.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_add_org_descendant.gif" alt="Creación de una organización hija desde el árbol jerárquico" loading="lazy">
+                <p class="screenshot-caption">Creación de una organización hija desde el árbol jerárquico</p>
+            </div>
+
+            <p>
+                <strong>Estructura sugerida para una universidad:</strong>
+            </p>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Ejemplo</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Raíz</td>
+                        <td>Universidad Nacional</td>
+                        <td>Crear como org. raíz</td>
+                    </tr>
+                    <tr>
+                        <td>Nivel 1</td>
+                        <td>Sede Central, Sede Chorotega, Sede Brunca</td>
+                        <td>Hijas de la universidad</td>
+                    </tr>
+                    <tr>
+                        <td>Nivel 2</td>
+                        <td>Facultad de Ciencias, Escuela de Química</td>
+                        <td>Hijas de cada sede</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <!-- PASO 3 -->
+            <h2>Paso 3: Crear laboratorios</h2>
+
+            <p>
+                Con la estructura organizacional lista, proceda a crear los laboratorios
+                y asociarlos a sus organizaciones correspondientes.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Desde la vista de la organización donde desea crear el laboratorio,
+                    haga clic en <strong>"Crear laboratorio"</strong>.
+                </li>
+                <li>
+                    Complete la información del laboratorio: nombre, ubicación y organización.
+                </li>
+                <li>
+                    Guarde el laboratorio.
+                </li>
+                <li>
+                    Repita para cada laboratorio de su institución.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_add_laboratory_to_org.gif" alt="Formulario de creación de laboratorio asociado a una organización" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de laboratorio asociado a una organización</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Consejo</strong>
+                Nombre los laboratorios de forma descriptiva e incluya la ubicación si es
+                relevante. Ejemplo: "Lab. Química Orgánica - Edificio A, Piso 2".
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PASO 4 -->
+            <h2>Paso 4: Definir roles</h2>
+
+            <p>
+                Antes de agregar usuarios, defina los roles que necesitará su institución.
+                Piense en las funciones que desempeñan las personas en sus laboratorios.
+            </p>
+
+            <h3>Roles recomendados para comenzar</h3>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Permisos sugeridos</th>
+                        <th>¿Para quién?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Administrador de Lab</strong></td>
+                        <td>Todos los permisos de laboratorio, usuarios y configuración</td>
+                        <td>Responsable del laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Regente Químico</strong></td>
+                        <td>Ver sustancias, SGA, etiquetas, MSDS, zonas de riesgo, reportes</td>
+                        <td>Regente de la sede/facultad</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Técnico</strong></td>
+                        <td>Gestionar inventario, muebles, estantes, movimientos</td>
+                        <td>Personal técnico del laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Docente</strong></td>
+                        <td>Consultar inventario, reservaciones, ver procedimientos</td>
+                        <td>Profesores que usan el laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consulta</strong></td>
+                        <td>Solo lectura de inventario y sustancias</td>
+                        <td>Estudiantes, visitantes, auditores</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <ol class="step-list">
+                <li>
+                    Haga clic en la organización donde desea crear el rol.
+                </li>
+                <li>
+                    Seleccione <strong>"Agregar rol"</strong>.
+                </li>
+                <li>
+                    Ingrese el nombre y opcionalmente una descripción del propósito del rol.
+                </li>
+                <li>
+                    Si existe un rol similar, puede copiar sus permisos como punto de partida.
+                </li>
+                <li>
+                    Guarde y luego ajuste los permisos según sea necesario.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_add_role_no_copy.gif" alt="Formulario de creación de rol con selección de permisos" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de rol con selección de permisos</p>
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Tip</strong>
+                Puede crear un rol vacío e ir agregando permisos conforme navega por la
+                plataforma. Cada vez que acceda a una funcionalidad, el sistema le permitirá
+                agregar el permiso correspondiente al rol.
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PASO 5 -->
+            <h2>Paso 5: Registrar usuarios</h2>
+
+            <p>
+                Ahora registre a las personas que utilizarán el sistema.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Desde la organización correspondiente, seleccione <strong>"Agregar usuario"</strong>.
+                </li>
+                <li>
+                    Complete los datos del usuario: nombre, correo electrónico, identificación.
+                </li>
+                <li>
+                    Seleccione el <strong>tipo de usuario en la organización</strong>:
+                    <ul>
+                        <li><strong>Administrador</strong>: Para quienes gestionarán la organización</li>
+                        <li><strong>Gestor de Laboratorio</strong>: Para responsables de laboratorios</li>
+                        <li><strong>Usuario de Laboratorio</strong>: Para el resto del personal</li>
+                    </ul>
+                </li>
+                <li>
+                    Guarde. El usuario recibirá sus credenciales de acceso.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_create_register_user.gif" alt="Formulario de registro de usuario en una organización" loading="lazy">
+                <p class="screenshot-caption">Formulario de registro de usuario en una organización</p>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PASO 6 -->
+            <h2>Paso 6: Asignar roles a usuarios</h2>
+
+            <p>
+                Con los usuarios registrados y los roles definidos, proceda a asignar los
+                roles apropiados a cada usuario.
+            </p>
+
+            <h3>Opción A: Asignar por laboratorio</h3>
+            <p>Use esta opción cuando el usuario solo necesita acceso a un laboratorio específico.</p>
+
+            <ol class="step-list">
+                <li>
+                    En la gestión de permisos, seleccione la pestaña <strong>"Por Laboratorio"</strong>.
+                </li>
+                <li>
+                    Seleccione el laboratorio.
+                </li>
+                <li>
+                    Busque al usuario y seleccione el o los roles que desea asignarle.
+                </li>
+                <li>
+                    Haga clic en <strong>"Agregar"</strong> para añadir los roles.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_assign_roles_lab.gif" alt="Asignación de roles por laboratorio" loading="lazy">
+                <p class="screenshot-caption">Asignación de roles por laboratorio</p>
+            </div>
+
+            <h3>Opción B: Asignar por organización</h3>
+            <p>
+                Use esta opción cuando el usuario necesita acceso a todos los laboratorios de
+                una organización (ej: regente químico, auditor).
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    En la gestión de permisos, seleccione la pestaña <strong>"Por Organización"</strong>.
+                </li>
+                <li>
+                    Seleccione la organización.
+                </li>
+                <li>
+                    Busque al usuario y seleccione los roles.
+                </li>
+                <li>
+                    Haga clic en <strong>"Agregar"</strong>.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_assign_roles_org.gif" alt="Asignación de roles por organización" loading="lazy">
+                <p class="screenshot-caption">Asignación de roles por organización</p>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- PASO 7 -->
+            <h2>Paso 7: Verificar la configuración</h2>
+
+            <p>
+                Después de configurar todo, verifique que los permisos funcionan correctamente.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Revise el resumen</strong>: En la gestión de permisos, verifique
+                    que cada usuario tiene los roles correctos en los laboratorios/organizaciones
+                    correctos.
+                </li>
+                <li>
+                    <strong>Prueba con un usuario</strong>: Si es posible, inicie sesión con
+                    una cuenta de prueba para verificar que solo puede acceder a lo que le
+                    corresponde.
+                </li>
+                <li>
+                    <strong>Verifique la herencia</strong>: Si asignó permisos a nivel de
+                    organización, confirme que el usuario puede acceder a los laboratorios
+                    hijos.
+                </li>
+                <li>
+                    <strong>Documente</strong>: Registre qué roles creó, qué permisos incluyen,
+                    y quién tiene cada rol. Esta documentación es valiosa para auditorías.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap1_manager_view.png" alt="Vista de resumen de permisos mostrando usuarios, roles y laboratorios" loading="lazy">
+                <p class="screenshot-caption">Vista de resumen de permisos mostrando usuarios, roles y laboratorios</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Lista de Verificación del Administrador</h2>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th>Tarea</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Organización raíz creada</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Sedes/facultades creadas como organizaciones hijas</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Laboratorios creados y asociados a organizaciones</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Roles definidos con permisos apropiados</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Usuarios registrados en sus organizaciones</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Roles asignados a usuarios (por lab o por org)</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Permisos verificados con pruebas de acceso</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center"><i class="bi bi-square"></i></td>
+                        <td>Configuración documentada para auditoría</td>
+                        <td><span class="badge bg-secondary">Pendiente</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Referencia: Lista Completa de Permisos</h2>
+
+            <p>
+                Organilab cuenta con una extensa lista de permisos agrupados por categoría.
+                A continuación se presentan las categorías principales:
+            </p>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <ul>
+                        <li><strong>Laboratorio</strong>: Ver, agregar, cambiar, eliminar laboratorios</li>
+                        <li><strong>Sala de Laboratorio</strong>: Gestión de salas</li>
+                        <li><strong>Mueble</strong>: Gestión de muebles y estantes</li>
+                        <li><strong>Sustancias</strong>: Gestión de sustancias químicas</li>
+                        <li><strong>Equipos</strong>: Gestión de equipos y tipos de equipo</li>
+                        <li><strong>Materiales</strong>: Gestión de materiales</li>
+                        <li><strong>Etiqueta SGA</strong>: Gestión de etiquetas del SGA</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul>
+                        <li><strong>Indicación de Peligro</strong>: Gestión de indicaciones H</li>
+                        <li><strong>MSDS</strong>: Hojas de seguridad de materiales</li>
+                        <li><strong>Procedimientos</strong>: Gestión de procedimientos</li>
+                        <li><strong>Reservaciones</strong>: Sistema de reservaciones</li>
+                        <li><strong>Informes</strong>: Generación y visualización de informes</li>
+                        <li><strong>Zonas de Riesgo</strong>: Gestión de zonas de riesgo</li>
+                        <li><strong>Incidentes</strong>: Reportes de incidentes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p>
+                Cada categoría generalmente incluye los permisos: <strong>Agregar</strong>,
+                <strong>Ver</strong>, <strong>Cambiar</strong> y <strong>Eliminar</strong>.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Referencia completa</strong>
+                Para la lista detallada de todos los permisos disponibles, consulte la
+                documentación técnica de Organilab.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Preguntas Frecuentes</h2>
+
+            <div class="scenario-card">
+                <h4>¿Puedo asignar múltiples roles a un mismo usuario?</h4>
+                <p>
+                    Sí. Un usuario puede tener diferentes roles en diferentes laboratorios,
+                    y también puede tener múltiples roles en el mismo laboratorio u organización.
+                    Los permisos se combinan (unión).
+                </p>
+            </div>
+
+            <div class="scenario-card">
+                <h4>¿Qué pasa si elimino un rol que tiene usuarios asignados?</h4>
+                <p>
+                    Los usuarios perderán los permisos de ese rol. Si era su único rol,
+                    perderán todo acceso a los laboratorios donde lo tenían asignado.
+                    Siempre verifique los usuarios asignados antes de eliminar un rol.
+                </p>
+            </div>
+
+            <div class="scenario-card">
+                <h4>¿Puedo mover un laboratorio de una organización a otra?</h4>
+                <p>
+                    Los laboratorios están vinculados a una organización. Para cambiar la
+                    organización, deberá actualizar la relación del laboratorio. Tenga en cuenta
+                    que esto puede afectar los permisos de los usuarios que accedían al
+                    laboratorio a través de la organización anterior.
+                </p>
+            </div>
+
+            <div class="scenario-card">
+                <h4>¿Cómo revoco temporalmente el acceso de un usuario?</h4>
+                <p>
+                    Puede desactivar al usuario desde la plataforma. Esto impide que inicie
+                    sesión sin eliminar sus asignaciones de roles. Cuando necesite reactivarlo,
+                    simplemente active su cuenta de nuevo y conservará sus permisos.
+                </p>
+            </div>
+
+            <!-- ============================================ -->
+
+            <div class="info-box success" style="margin-top: 2rem;">
+                <strong><i class="bi bi-trophy"></i> ¡Felicitaciones!</strong>
+                Ha completado el Capítulo 1: Sistema de Permisos. Ahora comprende cómo funciona
+                la jerarquía organizacional, los roles, la asignación de permisos y la herencia
+                en Organilab. Está listo para configurar el sistema de su institución.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="07-escenarios-practicos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Escenarios Prácticos
+                </a>
+                <a href="../laboratorios/index.html" class="next-page">
+                    Gestión de Laboratorios <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

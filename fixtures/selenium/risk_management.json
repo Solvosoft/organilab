@@ -1037,6 +1037,9 @@
       "priority": 5,
       "laboratories": [
         1
+      ],
+      "buildings": [
+        1
       ]
     }
   },
@@ -1075,7 +1078,11 @@
       "mitigation_actions": "x",
       "recomendations": "x",
       "notification_copy": "",
+      "risk_zone": 5,
       "laboratories": [
+        1
+      ],
+      "buildings": [
         1
       ]
     }
@@ -1098,7 +1105,11 @@
       "mitigation_actions": "Algo",
       "recomendations": "Algo",
       "notification_copy": "",
+      "risk_zone": 5,
       "laboratories": [
+        1
+      ],
+      "buildings": [
         1
       ]
     }
@@ -1124,6 +1135,58 @@
       "laboratories": [
         1
       ]
+    }
+  },
+  {
+    "model": "risk_management.buildings",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": null,
+      "name": "Edificio Principal",
+      "phone": "22223333",
+      "is_asociaty_buildings": false,
+      "has_water_resources": false,
+      "area": 500.0,
+      "laboratories": [
+        1
+      ],
+      "nearby_buildings": [],
+      "regents": [],
+      "manager": 1
+    }
+  },
+  {
+    "model": "risk_management.regent",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": null,
+      "user": 2,
+      "type_regent": "chemical",
+      "laboratories": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.structure",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": null,
+      "name": "Estructura Norte",
+      "buildings": [
+        1
+      ],
+      "manager": 1,
+      "area": 100.0
     }
   }
 ]

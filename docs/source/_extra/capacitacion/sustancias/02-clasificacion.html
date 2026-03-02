@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificación SGA - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificación.html" class="nav-link sub-item active">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item">
+                6. Seguridad y Almacenamiento
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Clasificación SGA</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-diagram-3"></i> 2. Clasificación SGA</h1>
+
+            <p class="lead">
+                El Sistema Globalmente Armonizado de clasificación y etiquetado de productos químicos (SGA/GHS)
+                es el estándar internacional que Organilab utiliza para clasificar las sustancias según sus
+                peligros físicos, para la salud y para el medio ambiente.
+            </p>
+
+            <h2>¿Qué es el SGA (GHS)?</h2>
+
+            <p>
+                El SGA (en inglés GHS - Globally Harmonized System) fue desarrollado por las Naciones Unidas
+                para unificar los diferentes sistemas de clasificación de peligros químicos que existían en
+                el mundo. Su objetivo es que una misma sustancia se clasifique y etiquete de la misma manera
+                en todos los países, facilitando el comercio internacional y mejorando la protección de las
+                personas y el medio ambiente.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-globe"></i> Adopción en Costa Rica</strong>
+                Costa Rica ha adoptado el SGA como sistema oficial de clasificación y etiquetado de productos
+                químicos. Organilab implementa este sistema para permitir a los laboratorios cumplir con la
+                normativa nacional e internacional de seguridad química.
+            </div>
+
+            <h2>Códigos H: Indicaciones de Peligro</h2>
+
+            <p>
+                Las indicaciones de peligro (códigos H, del inglés <em>Hazard statements</em>) son frases
+                estandarizadas que describen la naturaleza y gravedad del peligro de una sustancia. Se organizan
+                en tres series principales:
+            </p>
+
+            <h3>Serie H200: Peligros físicos</h3>
+            <p>Describen peligros relacionados con las propiedades físicas de la sustancia:</p>
+            <ul>
+                <li><strong>H200-H205:</strong> Explosivos</li>
+                <li><strong>H220-H230:</strong> Gases y líquidos inflamables</li>
+                <li><strong>H240-H242:</strong> Sustancias autorreactivas</li>
+                <li><strong>H250-H252:</strong> Sustancias que se inflaman espontáneamente</li>
+                <li><strong>H260-H261:</strong> Sustancias que emiten gases inflamables al contacto con agua</li>
+                <li><strong>H270-H272:</strong> Sustancias comburentes</li>
+                <li><strong>H280-H284:</strong> Gases a presión</li>
+                <li><strong>H290:</strong> Corrosivo para los metales</li>
+            </ul>
+
+            <h3>Serie H300: Peligros para la salud</h3>
+            <p>Describen efectos adversos sobre la salud humana:</p>
+            <ul>
+                <li><strong>H300-H312:</strong> Toxicidad aguda (oral, cutánea, por inhalación)</li>
+                <li><strong>H314-H318:</strong> Corrosión/irritación cutánea y ocular</li>
+                <li><strong>H330-H336:</strong> Toxicidad por inhalación y efectos narcóticos</li>
+                <li><strong>H340-H341:</strong> Mutagenicidad</li>
+                <li><strong>H350-H351:</strong> Carcinogenicidad</li>
+                <li><strong>H360-H362:</strong> Toxicidad reproductiva</li>
+                <li><strong>H370-H373:</strong> Toxicidad específica en órganos diana</li>
+                <li><strong>H304:</strong> Peligro por aspiración</li>
+            </ul>
+
+            <h3>Serie H400: Peligros para el medio ambiente</h3>
+            <p>Describen efectos nocivos para el medio ambiente acuático:</p>
+            <ul>
+                <li><strong>H400:</strong> Muy tóxico para los organismos acuáticos</li>
+                <li><strong>H410:</strong> Muy tóxico para los organismos acuáticos con efectos duraderos</li>
+                <li><strong>H411:</strong> Tóxico para los organismos acuáticos con efectos duraderos</li>
+                <li><strong>H412:</strong> Nocivo para los organismos acuáticos con efectos duraderos</li>
+                <li><strong>H413:</strong> Puede ser nocivo para los organismos acuáticos con efectos duraderos</li>
+                <li><strong>H420:</strong> Perjudicial para la capa de ozono</li>
+            </ul>
+
+            <h2>Tabla de Ejemplo: Sustancias y sus Códigos H</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Sustancia</th>
+                        <th>CAS</th>
+                        <th>H-codes</th>
+                        <th>Clase de peligro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Ácido sulfúrico</td>
+                        <td>7664-93-9</td>
+                        <td>H290, H314</td>
+                        <td>Corrosivo</td>
+                    </tr>
+                    <tr>
+                        <td>Acetona</td>
+                        <td>67-64-1</td>
+                        <td>H225, H319, H336</td>
+                        <td>Inflamable</td>
+                    </tr>
+                    <tr>
+                        <td>Metanol</td>
+                        <td>67-56-1</td>
+                        <td>H225, H301, H311, H331, H370</td>
+                        <td>Tóxico</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Clases de Peligro: Estructura Jerárquica</h2>
+
+            <p>
+                En Organilab, las clases de peligro se organizan en una estructura de árbol jerárquico
+                con tres niveles: <strong>tipo de peligro</strong>, <strong>clase</strong> y <strong>categoría</strong>.
+                Esta jerarquía permite una clasificación precisa de cada sustancia.
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 300" style="max-width: 700px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-clasif" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Root: Tipo de Peligro -->
+                    <rect x="250" y="10" width="200" height="45" rx="8" fill="#fadbd8" stroke="#c0392b" stroke-width="2"/>
+                    <text x="350" y="38" text-anchor="middle" font-weight="bold" font-size="13" fill="#2c3e50">Tipo de Peligro</text>
+
+                    <!-- Lines down to classes -->
+                    <line x1="200" y1="55" x2="200" y2="95" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead-clasif)"/>
+                    <line x1="350" y1="55" x2="350" y2="95" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead-clasif)"/>
+                    <line x1="500" y1="55" x2="500" y2="95" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead-clasif)"/>
+                    <line x1="200" y1="55" x2="350" y2="55" stroke="#2c3e50" stroke-width="1"/>
+                    <line x1="350" y1="55" x2="500" y2="55" stroke="#2c3e50" stroke-width="1"/>
+
+                    <!-- Class: Físico -->
+                    <rect x="100" y="100" width="200" height="40" rx="8" fill="#fef9e7" stroke="#f39c12" stroke-width="2"/>
+                    <text x="200" y="125" text-anchor="middle" font-weight="bold" font-size="12" fill="#2c3e50">Peligro Físico</text>
+
+                    <!-- Class: Salud -->
+                    <rect x="250" y="100" width="200" height="40" rx="0" fill="#fef9e7" stroke="#f39c12" stroke-width="2" style="display:none"/>
+                    <rect x="250" y="100" width="200" height="40" rx="8" fill="#ebf5fb" stroke="#2980b9" stroke-width="2"/>
+                    <text x="350" y="125" text-anchor="middle" font-weight="bold" font-size="12" fill="#2c3e50">Peligro para la Salud</text>
+
+                    <!-- Class: Ambiente -->
+                    <rect x="400" y="100" width="200" height="40" rx="0" fill="#fef9e7" stroke="#f39c12" stroke-width="2" style="display:none"/>
+                    <rect x="400" y="100" width="200" height="40" rx="8" fill="#eafaf1" stroke="#27ae60" stroke-width="2"/>
+                    <text x="500" y="125" text-anchor="middle" font-weight="bold" font-size="12" fill="#2c3e50">Peligro Ambiental</text>
+
+                    <!-- Sub-classes for Físico -->
+                    <line x1="145" y1="140" x2="145" y2="175" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#arrowhead-clasif)"/>
+                    <line x1="255" y1="140" x2="255" y2="175" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#arrowhead-clasif)"/>
+                    <rect x="75" y="180" width="140" height="35" rx="6" fill="#fff" stroke="#f39c12" stroke-width="1.5"/>
+                    <text x="145" y="202" text-anchor="middle" font-size="11" fill="#2c3e50">Inflamables</text>
+                    <rect x="185" y="180" width="140" height="35" rx="6" fill="#fff" stroke="#f39c12" stroke-width="1.5"/>
+                    <text x="255" y="202" text-anchor="middle" font-size="11" fill="#2c3e50">Explosivos</text>
+
+                    <!-- Sub-classes for Salud -->
+                    <line x1="350" y1="140" x2="350" y2="175" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#arrowhead-clasif)"/>
+                    <rect x="280" y="180" width="140" height="35" rx="6" fill="#fff" stroke="#2980b9" stroke-width="1.5"/>
+                    <text x="350" y="202" text-anchor="middle" font-size="11" fill="#2c3e50">Toxicidad aguda</text>
+
+                    <!-- Sub-classes for Ambiente -->
+                    <line x1="500" y1="140" x2="500" y2="175" stroke="#2c3e50" stroke-width="1.5" marker-end="url(#arrowhead-clasif)"/>
+                    <rect x="430" y="180" width="140" height="35" rx="6" fill="#fff" stroke="#27ae60" stroke-width="1.5"/>
+                    <text x="500" y="202" text-anchor="middle" font-size="11" fill="#2c3e50">Peligro acuático</text>
+
+                    <!-- Categories level -->
+                    <line x1="145" y1="215" x2="145" y2="245" stroke="#2c3e50" stroke-width="1" marker-end="url(#arrowhead-clasif)"/>
+                    <rect x="70" y="250" width="150" height="35" rx="6" fill="#f9f9f9" stroke="#999" stroke-width="1"/>
+                    <text x="145" y="272" text-anchor="middle" font-size="10" fill="#555">Cat 1 / Cat 2 / Cat 3...</text>
+
+                    <line x1="350" y1="215" x2="350" y2="245" stroke="#2c3e50" stroke-width="1" marker-end="url(#arrowhead-clasif)"/>
+                    <rect x="275" y="250" width="150" height="35" rx="6" fill="#f9f9f9" stroke="#999" stroke-width="1"/>
+                    <text x="350" y="272" text-anchor="middle" font-size="10" fill="#555">Cat 1 / Cat 2 / Cat 3...</text>
+
+                    <line x1="500" y1="215" x2="500" y2="245" stroke="#2c3e50" stroke-width="1" marker-end="url(#arrowhead-clasif)"/>
+                    <rect x="425" y="250" width="150" height="35" rx="6" fill="#f9f9f9" stroke="#999" stroke-width="1"/>
+                    <text x="500" y="272" text-anchor="middle" font-size="10" fill="#555">Agudo / Crónico</text>
+                </svg>
+                <p class="diagram-caption">Estructura jerárquica de clases de peligro: Tipo de Peligro -> Clase -> Categoría</p>
+            </div>
+
+            <h2>Códigos P: Consejos de Prudencia</h2>
+
+            <p>
+                Los códigos P (del inglés <em>Precautionary statements</em>) son frases estandarizadas que
+                indican medidas para minimizar o prevenir los efectos adversos de la exposición a una sustancia.
+                Se organizan en cuatro grupos:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Serie</th>
+                        <th>Tipo</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>P100</strong></td>
+                        <td>General</td>
+                        <td>P102: Mantener fuera del alcance de los niños</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P200</strong></td>
+                        <td>Prevención</td>
+                        <td>P210: Mantener alejado de fuentes de calor, chispas, llama abierta</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P300</strong></td>
+                        <td>Respuesta</td>
+                        <td>P301+P310: EN CASO DE INGESTIÓN: llamar inmediatamente a un centro de toxicología</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P400</strong></td>
+                        <td>Almacenamiento</td>
+                        <td>P403: Almacenar en un lugar bien ventilado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>P500</strong></td>
+                        <td>Eliminación</td>
+                        <td>P501: Eliminar el contenido según la normativa local</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                En Organilab, cada indicación de peligro (código H) tiene asociados sus consejos de prudencia
+                (códigos P) correspondientes. Al clasificar una sustancia con sus códigos H, el sistema
+                automáticamente identifica los códigos P aplicables.
+            </p>
+
+            <h2>Otras Clasificaciones en Organilab</h2>
+
+            <h3>IARC (Agencia Internacional para la Investigación del Cáncer)</h3>
+            <p>
+                La clasificación IARC evalúa el potencial carcinogénico de las sustancias. Organilab permite
+                registrar el grupo IARC en las características de sustancia. Los grupos van desde "Grupo 1:
+                Carcinógeno para humanos" hasta "Grupo 4: Probablemente no carcinógeno".
+            </p>
+
+            <h3>IMDG (Código Marítimo Internacional de Mercancías Peligrosas)</h3>
+            <p>
+                El código IMDG clasifica las mercancías peligrosas para su transporte marítimo. Este campo
+                es útil para laboratorios que reciben o envían sustancias por vía marítima, y se registra en
+                las características de la sustancia.
+            </p>
+
+            <h3>NFPA 704 (Diamante de Peligro)</h3>
+            <p>
+                El sistema NFPA utiliza un diamante con cuatro cuadrantes de colores para indicar los niveles
+                de peligro de 0 a 4: salud (azul), inflamabilidad (rojo), reactividad (amarillo) y riesgo
+                específico (blanco). Organilab almacena estos valores en las características de sustancia
+                para su consulta rápida.
+            </p>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Consejo práctico</strong>
+                Al registrar una sustancia en Organilab, consulte la hoja de datos de seguridad (MSDS) del
+                fabricante para obtener los códigos H, códigos P y las clasificaciones IARC, IMDG y NFPA
+                correctas. Esto garantiza que la información en el sistema sea precisa y confiable.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_sga_classification.gif" alt="Formulario de clasificación SGA con códigos H y P seleccionados en Organilab" loading="lazy">
+                <p class="screenshot-caption">Formulario de clasificación SGA con códigos H y P seleccionados en Organilab</p>
+            </div>
+
+            <div class="page-navigation">
+                <a href="01-reactivos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Reactivos y Sustancias
+                </a>
+                <a href="03-etiquetado.html" class="next-page">
+                    Etiquetado <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

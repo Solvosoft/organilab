@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conceptos de Procedimientos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item active">
+                1. Conceptos de Procedimientos
+            </a>
+            <a href="02-crear.html" class="nav-link sub-item">
+                2. Crear Procedimiento
+            </a>
+            <a href="03-objetos-pasos.html" class="nav-link sub-item">
+                3. Objetos y Pasos
+            </a>
+            <a href="04-ejecutar.html" class="nav-link sub-item">
+                4. Ejecutar Procedimiento
+            </a>
+            <a href="05-reservar.html" class="nav-link sub-item">
+                5. Reservar desde Procedimiento
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Procedimientos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Conceptos de Procedimientos</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-lightbulb"></i> 1. Conceptos de Procedimientos</h1>
+
+            <p class="lead">
+                Un procedimiento de laboratorio es un conjunto documentado de instrucciones paso a paso que
+                describe cómo realizar una actividad específica. Organilab permite crear plantillas reutilizables
+                y generar instancias de ejecución con registros completos.
+            </p>
+
+            <h2>¿Qué es un procedimiento de laboratorio?</h2>
+
+            <p>
+                En el contexto de Organilab, un procedimiento es una plantilla que define una secuencia de pasos
+                necesarios para realizar una tarea en el laboratorio. Cada paso puede incluir descripciones
+                detalladas, objetos requeridos (reactivos, materiales, equipos) y observaciones de seguridad.
+            </p>
+
+            <p>
+                Los procedimientos son fundamentales para garantizar la reproducibilidad de los experimentos,
+                la seguridad del personal y el cumplimiento de normas de calidad como la ISO 17025.
+            </p>
+
+            <h2>Plantilla vs. Instancia</h2>
+
+            <p>
+                Organilab distingue entre dos conceptos clave:
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Procedure (Plantilla)</strong>
+                Es la definición general del procedimiento. Contiene el título, la descripción y los pasos con sus
+                objetos requeridos. Una plantilla puede reutilizarse múltiples veces sin modificarse. Piense en
+                ella como la receta maestra que se consulta cada vez que se ejecuta la actividad.
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> MyProcedure (Instancia de ejecución)</strong>
+                Es una ejecución concreta de una plantilla en un laboratorio específico. Cada instancia tiene su
+                propio estado, formulario dinámico para registrar datos y comentarios colaborativos por paso.
+                Representa la ejecución real de la receta en un momento y lugar determinados.
+            </div>
+
+            <h2>Estados del ciclo de vida</h2>
+
+            <p>
+                Cada instancia de procedimiento (MyProcedure) atraviesa tres estados durante su ciclo de vida:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Descripción</th>
+                        <th>Acciones permitidas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Borrador (Eraser)</strong></td>
+                        <td>Estado inicial. La instancia está en preparación y puede ser editada libremente.</td>
+                        <td>Editar datos, completar formularios, agregar comentarios, enviar a revisión.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>En Revisión (In Review)</strong></td>
+                        <td>El procedimiento ha sido completado y está pendiente de aprobación por un supervisor.</td>
+                        <td>Revisar datos, agregar comentarios de revisión, aprobar o rechazar.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Finalizado (Finalized)</strong></td>
+                        <td>El procedimiento ha sido aprobado. Se convierte en un registro histórico inmutable.</td>
+                        <td>Solo consulta. No se permiten modificaciones.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Flujo del ciclo de vida</h2>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 350" style="max-width: 700px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50" />
+                        </marker>
+                    </defs>
+                    <!-- Crear Plantilla -->
+                    <rect x="10" y="30" width="130" height="50" rx="8" fill="#3498db" />
+                    <text x="75" y="55" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Crear</text>
+                    <text x="75" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Plantilla</text>
+                    <!-- Arrow -->
+                    <line x1="140" y1="55" x2="170" y2="55" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead)" />
+                    <!-- Agregar Pasos -->
+                    <rect x="175" y="30" width="130" height="50" rx="8" fill="#2980b9" />
+                    <text x="240" y="55" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Agregar</text>
+                    <text x="240" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Pasos</text>
+                    <!-- Arrow -->
+                    <line x1="305" y1="55" x2="335" y2="55" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead)" />
+                    <!-- Agregar Objetos -->
+                    <rect x="340" y="30" width="130" height="50" rx="8" fill="#1abc9c" />
+                    <text x="405" y="55" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Agregar</text>
+                    <text x="405" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Objetos</text>
+                    <!-- Arrow down -->
+                    <line x1="405" y1="80" x2="405" y2="130" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead)" />
+                    <!-- Crear Instancia -->
+                    <rect x="340" y="135" width="130" height="50" rx="8" fill="#e67e22" />
+                    <text x="405" y="155" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Crear</text>
+                    <text x="405" y="170" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Instancia</text>
+                    <!-- Arrow left -->
+                    <line x1="340" y1="160" x2="310" y2="160" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead)" />
+                    <!-- Ejecutar -->
+                    <rect x="175" y="135" width="130" height="50" rx="8" fill="#e74c3c" />
+                    <text x="240" y="160" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Ejecutar</text>
+                    <text x="240" y="175" text-anchor="middle" fill="white" font-size="11">(Borrador)</text>
+                    <!-- Arrow down -->
+                    <line x1="240" y1="185" x2="240" y2="230" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead)" />
+                    <!-- En Revisión -->
+                    <rect x="175" y="235" width="130" height="50" rx="8" fill="#f39c12" />
+                    <text x="240" y="260" text-anchor="middle" fill="white" font-size="12" font-weight="bold">En Revisión</text>
+                    <!-- Arrow right -->
+                    <line x1="305" y1="260" x2="335" y2="260" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead)" />
+                    <!-- Finalizar -->
+                    <rect x="340" y="235" width="130" height="50" rx="8" fill="#27ae60" />
+                    <text x="405" y="260" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Finalizado</text>
+                    <!-- Labels -->
+                    <text x="350" y="320" text-anchor="middle" font-size="11" fill="#7f8c8d" font-style="italic">Ciclo de vida completo de un procedimiento en Organilab</text>
+                </svg>
+                <p class="diagram-caption">Diagrama: Flujo del ciclo de vida de un procedimiento, desde la creación de la plantilla hasta la finalización de la instancia.</p>
+            </div>
+
+            <h2>Relación con la norma ISO 17025</h2>
+
+            <p>
+                La norma ISO/IEC 17025 exige que los laboratorios mantengan procedimientos documentados para
+                todas las actividades que afectan la calidad de los resultados. El módulo de procedimientos
+                de Organilab facilita este cumplimiento al proporcionar:
+            </p>
+
+            <ul>
+                <li>Plantillas estandarizadas con pasos detallados y objetos requeridos.</li>
+                <li>Registro de cada ejecución con datos, observaciones y comentarios.</li>
+                <li>Flujo de revisión y aprobación para garantizar la supervisión adecuada.</li>
+                <li>Historial completo para auditorías y trazabilidad.</li>
+            </ul>
+
+            <h2>Glosario de términos</h2>
+
+            <dl class="glossary-term">
+                <dt>Procedure (Procedimiento)</dt>
+                <dd>Plantilla reutilizable que define el título, la descripción y la secuencia de pasos
+                    necesarios para realizar una actividad de laboratorio. Puede estar asociada a un objeto
+                    específico mediante una relación genérica (content_type y object_id).</dd>
+
+                <dt>ProcedureStep (Paso del Procedimiento)</dt>
+                <dd>Cada una de las instrucciones individuales dentro de un procedimiento. Incluye un título
+                    y una descripción en texto enriquecido. Los pasos se ejecutan de forma secuencial.</dd>
+
+                <dt>MyProcedure (Mi Procedimiento)</dt>
+                <dd>Instancia concreta de ejecución de un procedimiento en una organización. Tiene un nombre
+                    personalizado, un estado (Borrador, En Revisión, Finalizado) y un esquema JSON para
+                    formularios dinámicos generados con Formio.js.</dd>
+
+                <dt>ProcedureRequiredObject (Objeto Requerido)</dt>
+                <dd>Relación entre un paso y un objeto de laboratorio (reactivo, material o equipo) que se
+                    necesita para completar ese paso, incluyendo la cantidad y la unidad de medida.</dd>
+            </dl>
+
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-crear.html" class="next-page">
+                    Crear Procedimiento <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

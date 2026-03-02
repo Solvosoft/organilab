@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 1: Sistema de Permisos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link active">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos Fundamentales
+            </a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">
+                2. Jerarquía Organizacional
+            </a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">
+                3. Roles y Tipos de Usuario
+            </a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">
+                4. Asignación de Permisos
+            </a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">
+                5. Herencia de Permisos
+            </a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">
+                6. Laboratorios y Zonas
+            </a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">
+                7. Escenarios Prácticos
+            </a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">
+                8. Guía del Administrador
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Capítulo 1: Sistema de Permisos</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-shield-lock"></i> Capítulo 1: Sistema de Permisos</h1>
+
+            <p class="lead">
+                En este capítulo aprenderá cómo funciona el sistema de permisos jerárquico de Organilab,
+                diseñado para universidades e instituciones con múltiples sedes, facultades y laboratorios.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> ¿Por qué es importante?</strong>
+                Un sistema de permisos bien configurado garantiza que cada persona tenga acceso solo a lo que
+                necesita, protegiendo la información sensible del laboratorio y cumpliendo con los requisitos
+                de la norma ISO 17025 sobre responsabilidades y autoridades definidas.
+            </div>
+
+            <h2>Contenido del Capítulo</h2>
+
+            <a href="01-conceptos.html" class="chapter-card">
+                <h3>1. Conceptos Fundamentales</h3>
+                <p>Glosario de términos clave y visión general del sistema de permisos de Organilab.</p>
+            </a>
+
+            <a href="02-jerarquía-organizacional.html" class="chapter-card">
+                <h3>2. Jerarquía Organizacional</h3>
+                <p>Cómo se estructura la organización en forma de árbol: universidad, sedes, facultades y unidades.</p>
+            </a>
+
+            <a href="03-roles-y-tipos.html" class="chapter-card">
+                <h3>3. Roles y Tipos de Usuario</h3>
+                <p>Los diferentes tipos de usuario (Administrador, Gestor, Usuario) y cómo crear roles personalizados.</p>
+            </a>
+
+            <a href="04-profilepermissión.html" class="chapter-card">
+                <h3>4. Asignación de Permisos</h3>
+                <p>Cómo vincular usuarios con roles en laboratorios y organizaciones específicas.</p>
+            </a>
+
+            <a href="05-herencia-permisos.html" class="chapter-card">
+                <h3>5. Herencia de Permisos</h3>
+                <p>Cómo los permisos se propagan a través de la jerarquía organizacional.</p>
+            </a>
+
+            <a href="06-laboratorios-y-zonas.html" class="chapter-card">
+                <h3>6. Laboratorios y Zonas de Riesgo</h3>
+                <p>La relación entre organizaciones, laboratorios y zonas de riesgo.</p>
+            </a>
+
+            <a href="07-escenarios-practicos.html" class="chapter-card">
+                <h3>7. Escenarios Prácticos</h3>
+                <p>Casos de uso reales para una universidad distribuida geográficamente.</p>
+            </a>
+
+            <a href="08-guía-administrador.html" class="chapter-card">
+                <h3>8. Guía del Administrador</h3>
+                <p>Paso a paso para configurar el sistema de permisos desde cero.</p>
+            </a>
+
+            <div class="page-navigation">
+                <a href="../index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Página Principal
+                </a>
+                <a href="01-conceptos.html" class="next-page">
+                    Conceptos Fundamentales <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

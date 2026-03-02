@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Asignación de Permisos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">1. Conceptos Fundamentales</a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">2. Jerarquía Organizacional</a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">3. Roles y Tipos de Usuario</a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item active">4. Asignación de Permisos</a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">5. Herencia de Permisos</a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">6. Laboratorios y Zonas</a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">7. Escenarios Prácticos</a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">8. Guía del Administrador</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Asignación de Permisos</li>
+                </ol>
+            </nav>
+
+            <h1>4. Asignación de Permisos</h1>
+
+            <p class="lead">
+                La asignación de permisos conecta tres elementos: <strong>quién</strong> (el usuario),
+                <strong>dónde</strong> (el laboratorio o la organización), y <strong>qué puede hacer</strong>
+                (el rol con sus permisos).
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Las tres dimensiones de un permiso</h2>
+
+            <p>
+                Cada asignación de permisos en Organilab responde a tres preguntas fundamentales:
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 350" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px;">
+                    <rect width="700" height="350" fill="#f8f9fa" rx="8"/>
+
+                    <text x="350" y="30" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a4a7a">Las Tres Dimensiones de la Asignación de Permisos</text>
+
+                    <!-- Círculo central -->
+                    <circle cx="350" cy="185" r="55" fill="#1a4a7a" opacity="0.1" stroke="#1a4a7a" stroke-width="2"/>
+                    <text x="350" y="181" text-anchor="middle" font-size="12" font-weight="600" fill="#1a4a7a">Asignación</text>
+                    <text x="350" y="196" text-anchor="middle" font-size="12" font-weight="600" fill="#1a4a7a">de Permisos</text>
+
+                    <!-- Quién -->
+                    <rect x="60" y="75" width="160" height="70" rx="8" fill="#28a745"/>
+                    <text x="140" y="102" text-anchor="middle" font-size="13" fill="white" font-weight="600">¿QUIÉN?</text>
+                    <text x="140" y="122" text-anchor="middle" font-size="11" fill="white">El usuario</text>
+                    <text x="140" y="136" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">Ej: María González</text>
+                    <line x1="220" y1="110" x2="295" y2="170" stroke="#28a745" stroke-width="2" marker-end="url(#arrowG)"/>
+
+                    <!-- Dónde -->
+                    <rect x="60" y="235" width="160" height="70" rx="8" fill="#2c6fbb"/>
+                    <text x="140" y="262" text-anchor="middle" font-size="13" fill="white" font-weight="600">¿DÓNDE?</text>
+                    <text x="140" y="282" text-anchor="middle" font-size="11" fill="white">Laboratorio u Organización</text>
+                    <text x="140" y="296" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">Ej: Lab. Química Orgánica</text>
+                    <line x1="220" y1="270" x2="295" y2="200" stroke="#2c6fbb" stroke-width="2" marker-end="url(#arrowB)"/>
+
+                    <!-- Qué -->
+                    <rect x="480" y="150" width="170" height="70" rx="8" fill="#ffc107"/>
+                    <text x="565" y="177" text-anchor="middle" font-size="13" fill="#333" font-weight="600">¿QUÉ PUEDE HACER?</text>
+                    <text x="565" y="197" text-anchor="middle" font-size="11" fill="#333">Roles asignados</text>
+                    <text x="565" y="211" text-anchor="middle" font-size="10" fill="rgba(0,0,0,0.5)">Ej: Rol "Técnico"</text>
+                    <line x1="480" y1="185" x2="405" y2="185" stroke="#ffc107" stroke-width="2" marker-end="url(#arrowY)"/>
+
+                    <defs>
+                        <marker id="arrowG" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#28a745"/>
+                        </marker>
+                        <marker id="arrowB" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c6fbb"/>
+                        </marker>
+                        <marker id="arrowY" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#ffc107"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Cada asignación de permisos vincula un usuario con un rol sobre un objeto específico.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Permisos a nivel de Laboratorio</h2>
+
+            <p>
+                Cuando se asignan permisos <strong>a nivel de laboratorio</strong>, el usuario
+                solo tiene esos permisos dentro de ese laboratorio específico.
+            </p>
+
+            <div class="scenario-card">
+                <h4>Ejemplo: Permiso por Laboratorio</h4>
+                <div class="scenario-situation">
+                    María es técnica del Lab. de Química Orgánica de la Facultad de Ciencias.
+                    Se le asigna el rol "Técnico" en ese laboratorio.
+                </div>
+                <p><strong>Resultado:</strong></p>
+                <ul>
+                    <li>María puede realizar las acciones del rol "Técnico" <strong>solo en el Lab. de Química Orgánica</strong></li>
+                    <li>No puede acceder a otros laboratorios de la facultad</li>
+                    <li>No puede acceder a laboratorios de otras sedes</li>
+                </ul>
+            </div>
+
+            <h3>Asignar roles por laboratorio</h3>
+
+            <p>
+                Desde la pestaña <strong>"Por Laboratorio"</strong> en la gestión de permisos, puede:
+            </p>
+
+            <ul>
+                <li><strong>Agregar roles</strong>: Seleccione uno o más roles y se agregarán al usuario en ese laboratorio</li>
+                <li><strong>Remover roles</strong>: Quite roles específicos sin afectar otros permisos del usuario</li>
+                <li><strong>Usar solo los seleccionados</strong>: Reemplaza todos los roles actuales por los seleccionados</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_verify_permissions.gif" alt="Pestaña Por Laboratorio - asignación de roles a un usuario en un laboratorio específico" loading="lazy">
+                <p class="screenshot-caption">Pestaña "Por Laboratorio" - asignación de roles a un usuario en un laboratorio específico</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Operaciones sobre roles</strong>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Agregar</strong>: Añade los roles seleccionados a los que ya tiene el usuario</li>
+                    <li><strong>Remover</strong>: Quita solo los roles seleccionados</li>
+                    <li><strong>Usar seleccionados</strong>: Remueve todos los roles actuales y asigna solo los seleccionados</li>
+                </ul>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Permisos a nivel de Organización</h2>
+
+            <p>
+                Cuando se asignan permisos <strong>a nivel de organización</strong>, el usuario
+                obtiene esos permisos en <strong>todos los laboratorios</strong> que pertenecen
+                a esa organización y sus organizaciones hijas.
+            </p>
+
+            <div class="scenario-card">
+                <h4>Ejemplo: Permiso por Organización</h4>
+                <div class="scenario-situation">
+                    Carlos es Regente Químico de la Sede Central. Se le asigna el rol "Regente Químico"
+                    a nivel de la organización "Sede Central".
+                </div>
+                <p><strong>Resultado:</strong></p>
+                <ul>
+                    <li>Carlos puede acceder a <strong>todos los laboratorios</strong> de la Sede Central</li>
+                    <li>Esto incluye labs de la Facultad de Ciencias, Facultad de Ingeniería, etc.</li>
+                    <li>Si se crea un nuevo laboratorio en cualquier facultad de la sede, Carlos tendrá acceso automáticamente</li>
+                </ul>
+            </div>
+
+            <h3>Asignar roles por organización</h3>
+
+            <p>
+                Desde la pestaña <strong>"Por Organización"</strong> en la gestión de permisos:
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_verify_permissions_student.gif" alt="Pestaña Por Organización - asignación de roles a un usuario en una organización" loading="lazy">
+                <p class="screenshot-caption">Pestaña "Por Organización" - asignación de roles a un usuario en una organización</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Diferencia clave: Laboratorio vs. Organización</h2>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px;">
+                    <rect width="700" height="320" fill="#f8f9fa" rx="8"/>
+
+                    <text x="350" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a4a7a">Comparación: Permisos por Laboratorio vs. por Organización</text>
+
+                    <!-- Lado izquierdo: Por Lab -->
+                    <rect x="20" y="45" width="310" height="260" rx="8" fill="white" stroke="#28a745" stroke-width="2"/>
+                    <text x="175" y="68" text-anchor="middle" font-size="13" font-weight="600" fill="#28a745">Por Laboratorio</text>
+
+                    <rect x="105" y="85" width="140" height="30" rx="4" fill="#e8f0fe" stroke="#2c6fbb"/>
+                    <text x="175" y="105" text-anchor="middle" font-size="10" fill="#1a4a7a">Sede Central</text>
+
+                    <rect x="55" y="130" width="120" height="28" rx="4" fill="#e8f0fe" stroke="#2c6fbb"/>
+                    <text x="115" y="149" text-anchor="middle" font-size="9" fill="#1a4a7a">Fac. Ciencias</text>
+
+                    <rect x="185" y="130" width="120" height="28" rx="4" fill="#e8f0fe" stroke="#2c6fbb"/>
+                    <text x="245" y="149" text-anchor="middle" font-size="9" fill="#1a4a7a">Fac. Ingeniería</text>
+
+                    <!-- Lab con acceso -->
+                    <rect x="40" y="175" width="100" height="28" rx="4" fill="#28a745"/>
+                    <text x="90" y="193" text-anchor="middle" font-size="9" fill="white">Lab. Química</text>
+
+                    <!-- Labs sin acceso -->
+                    <rect x="150" y="175" width="90" height="28" rx="4" fill="#dee2e6" stroke="#adb5bd"/>
+                    <text x="195" y="193" text-anchor="middle" font-size="9" fill="#6c757d">Lab. Bio</text>
+
+                    <rect x="250" y="175" width="70" height="28" rx="4" fill="#dee2e6" stroke="#adb5bd"/>
+                    <text x="285" y="193" text-anchor="middle" font-size="9" fill="#6c757d">Lab. Mat</text>
+
+                    <!-- Conectores -->
+                    <line x1="175" y1="115" x2="115" y2="130" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="175" y1="115" x2="245" y2="130" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="90" y1="158" x2="90" y2="175" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="140" y1="158" x2="195" y2="175" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="245" y1="158" x2="285" y2="175" stroke="#6c757d" stroke-width="1"/>
+
+                    <text x="175" y="230" text-anchor="middle" font-size="10" fill="#28a745" font-weight="500">Acceso solo a Lab. Química</text>
+                    <text x="175" y="248" text-anchor="middle" font-size="9" fill="#6c757d">Preciso y limitado</text>
+
+                    <!-- Lado derecho: Por Org -->
+                    <rect x="370" y="45" width="310" height="260" rx="8" fill="white" stroke="#ffc107" stroke-width="2"/>
+                    <text x="525" y="68" text-anchor="middle" font-size="13" font-weight="600" fill="#856404">Por Organización</text>
+
+                    <rect x="455" y="85" width="140" height="30" rx="4" fill="#fff9e6" stroke="#ffc107" stroke-width="2"/>
+                    <text x="525" y="105" text-anchor="middle" font-size="10" fill="#856404" font-weight="600">Sede Central</text>
+
+                    <rect x="405" y="130" width="120" height="28" rx="4" fill="#fff9e6" stroke="#ffc107"/>
+                    <text x="465" y="149" text-anchor="middle" font-size="9" fill="#856404">Fac. Ciencias</text>
+
+                    <rect x="535" y="130" width="120" height="28" rx="4" fill="#fff9e6" stroke="#ffc107"/>
+                    <text x="595" y="149" text-anchor="middle" font-size="9" fill="#856404">Fac. Ingeniería</text>
+
+                    <!-- Todos los labs con acceso -->
+                    <rect x="390" y="175" width="100" height="28" rx="4" fill="#ffc107"/>
+                    <text x="440" y="193" text-anchor="middle" font-size="9" fill="#333">Lab. Química</text>
+
+                    <rect x="500" y="175" width="90" height="28" rx="4" fill="#ffc107"/>
+                    <text x="545" y="193" text-anchor="middle" font-size="9" fill="#333">Lab. Bio</text>
+
+                    <rect x="600" y="175" width="70" height="28" rx="4" fill="#ffc107"/>
+                    <text x="635" y="193" text-anchor="middle" font-size="9" fill="#333">Lab. Mat</text>
+
+                    <!-- Conectores -->
+                    <line x1="525" y1="115" x2="465" y2="130" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="525" y1="115" x2="595" y2="130" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="440" y1="158" x2="440" y2="175" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="490" y1="158" x2="545" y2="175" stroke="#6c757d" stroke-width="1"/>
+                    <line x1="595" y1="158" x2="635" y2="175" stroke="#6c757d" stroke-width="1"/>
+
+                    <text x="525" y="230" text-anchor="middle" font-size="10" fill="#856404" font-weight="500">Acceso a TODOS los laboratorios</text>
+                    <text x="525" y="248" text-anchor="middle" font-size="9" fill="#6c757d">Amplio, incluye futuros labs</text>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Permiso por laboratorio: acceso solo al lab específico.
+                Permiso por organización: acceso a todos los labs de la org y sus hijas.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Desvincular un usuario</h2>
+
+            <p>
+                Puede desvincular a un usuario de un laboratorio o de una organización completa.
+            </p>
+
+            <h3>Desvincular de un laboratorio</h3>
+            <p>
+                El usuario pierde sus roles en ese laboratorio pero mantiene sus permisos en otros
+                laboratorios u organizaciones.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_delete_user_lab_relation.gif" alt="Eliminar relación entre usuario y laboratorio" loading="lazy">
+                <p class="screenshot-caption">Eliminar relación entre usuario y laboratorio</p>
+            </div>
+
+            <h3>Desvincular de una organización</h3>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Atención</strong>
+                Al desvincular a un usuario de una organización, también pierde su relación con
+                <strong>todos los laboratorios</strong> de esa organización de los cuales sea parte.
+            </div>
+
+            <p>
+                Adicionalmente, al desvincular puede optar por <strong>desactivar</strong> al usuario
+                de la plataforma completa, impidiendo que inicie sesión.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_delete_user_org_relation.gif" alt="Eliminar relación entre usuario y organización, con opción de desactivar" loading="lazy">
+                <p class="screenshot-caption">Eliminar relación entre usuario y organización, con opción de desactivar</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Grupos de permisos por perfil</h2>
+
+            <p>
+                Además de los roles, Organilab permite asignar <strong>grupos de permisos</strong>
+                predefinidos directamente al perfil de un usuario. Estos son grupos personalizados
+                por el administrador que se aplican independientemente del laboratorio u organización.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_manage_permissión_groups.gif" alt="Administrar grupos de permisos por perfil de usuario" loading="lazy">
+                <p class="screenshot-caption">Administrar grupos de permisos por perfil de usuario</p>
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="03-roles-y-tipos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Roles y Tipos de Usuario
+                </a>
+                <a href="05-herencia-permisos.html" class="next-page">
+                    Herencia de Permisos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

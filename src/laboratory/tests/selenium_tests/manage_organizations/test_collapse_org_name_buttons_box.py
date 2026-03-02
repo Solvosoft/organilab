@@ -9,27 +9,31 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
 
     def setUp(self):
         super().setUp()
-        self.role_button_box = self.path_base + [
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"
-            },
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[1]/span"
-            },
+        self.role_button_box = [
+            {"path": self.org_node_h6(1)},
+            {"path": self.org_rolbtnadd(1), "sleep": 1},
         ]
 
     def test_add_role_to_org_without_copy_permissions_from_others_roles(self):
+        """Test adding a new role without copying permissions from existing roles.
+
+        Flow: Expand org node -> Click 'Add Rol' -> Fill role name in
+        modal -> Save.
+
+        GIF: docs/source/_static/gif/add_role_to_org_without_copy_permissions_from_others_roles.gif
+        """
         path_list = self.role_button_box + [
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input"
+                "path": "//*[@id='rolname']",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input",
+                "path": "//*[@id='rolname']",
                 "extra_action": "setvalue",
                 "value": "Gestión de objetos",
             },
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"
+                "path": "//*[@id='saveroluserorg']",
             },
         ]
         self.create_gif_process(
@@ -37,24 +41,38 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         )
 
     def test_add_role_to_org_copy_permissions_from_others_roles(self):
+        """Test adding a new role and copying permissions from existing roles.
+
+        Flow: Expand org node -> Click 'Add Rol' -> Fill role name ->
+        Check 'Copy permissions' -> Select source role -> Save.
+
+        GIF: docs/source/_static/gif/add_role_to_org_copy_permissions_from_others_roles.gif
+        """
         path_list = self.role_button_box + [
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input"
+                "path": "//*[@id='rolname']",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div/input",
+                "path": "//*[@id='rolname']",
                 "extra_action": "setvalue",
                 "value": "Administrar Laboratorio",
             },
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div[2]/div[1]/span"
+                "path": "//*[@id='selectroldiv']",
+                "extra_action": "script",
+                "value": "$('#id_relate_rols').iCheck('check'); setTimeout(function(){ $('#rolS2container').show(); }, 500);",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div/div[2]/div[2]/span/span/span"
+                "path": "//*[@id='rolS2container']//span[contains(@class, 'select2-selection')]",
+                "sleep": 3,
             },
-            {"path": ".//div[@id='addrolmodal']/span/span/span/ul/li"},
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+            },
+            {
+                "path": "//*[@id='saveroluserorg']",
             },
         ]
         self.create_gif_process(
@@ -62,168 +80,200 @@ class ButtonBoxCollapseOrgNameTest(ManageOrganizationsSeleniumTest):
         )
 
     def test_copy_role_to_org(self):
+        """Test copying roles from another organization.
+
+        Flow: Expand org node -> Click 'Add Rol' -> Switch to 'Copy Rols'
+        tab -> Select source role -> Save.
+
+        GIF: docs/source/_static/gif/copy_role_to_org.gif
+        """
         path_list = self.role_button_box + [
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[1]/div/button[2]"
+                "path": "//*[@id='btn_copy_rol']",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div[2]/div[2]/div/div[2]/span/span/span"
+                "path": "//*[@id='copy_rol_container']//span[contains(@class, 'select2-selection')]",
+                "sleep": 1,
             },
-            {"path": ".//div[@id='addrolmodal']/span/span/span/ul/li[2]"},
             {
-                "path": ".//div[@id='addrolmodal']/div/div[@class='modal-content']/form/div[@class='modal-footer']/button[@id='saveroluserorg']"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+            },
+            {
+                "path": "//*[@id='saveroluserorg']",
             },
         ]
         self.create_gif_process(path_list, "copy_role_to_org")
 
     def test_add_user_to_org_from_button_box(self):
-        path_list = self.path_base + [
+        """Test adding a new user from the organization button box.
+
+        Flow: Expand org node -> Click 'Add User' link -> Fill user
+        registration form (name, email, phone, ID, job) -> Submit.
+
+        GIF: docs/source/_static/gif/add_user_to_org_from_button_box.gif
+        """
+        path_list = [
+            {"path": self.org_node_h6(1)},
+            {"path": self.org_add_user_link(1), "sleep": 1},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"
+                "path": "//form//input[@name='first_name' or @id='id_first_name']",
+                "wait_ready": True,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[2]/a"
-            },
-            {"path": ".//form/div[1]/div/input"},
-            {
-                "path": ".//form/div[1]/div/input",
+                "path": "//form//input[@name='first_name' or @id='id_first_name']",
                 "extra_action": "setvalue",
                 "value": "Andrea",
             },
-            {"path": ".//form/div[2]/div/input"},
+            {"path": "//form//input[@name='last_name' or @id='id_last_name']"},
             {
-                "path": ".//form/div[2]/div/input",
+                "path": "//form//input[@name='last_name' or @id='id_last_name']",
                 "extra_action": "setvalue",
                 "value": "Rojas Barrantes",
             },
-            {"path": ".//form/div[3]/div/input"},
+            {"path": "//form//input[@name='email' or @id='id_email']"},
             {
-                "path": ".//form/div[3]/div/input",
+                "path": "//form//input[@name='email' or @id='id_email']",
                 "extra_action": "setvalue",
                 "value": "andrearb@",
             },
             {
-                "path": ".//form/div[3]/div/input",
+                "path": "//form//input[@name='email' or @id='id_email']",
                 "extra_action": "move_cursor_end",
                 "reduce_length": 3,
             },
             {
-                "path": ".//form/div[3]/div/input",
+                "path": "//form//input[@name='email' or @id='id_email']",
                 "extra_action": "setvalue",
                 "value": "gmail.com",
             },
-            {"path": ".//form/div[4]/div/input"},
+            {"path": "//form//input[@name='phone_number' or @id='id_phone_number']"},
             {
-                "path": ".//form/div[4]/div/input",
+                "path": "//form//input[@name='phone_number' or @id='id_phone_number']",
                 "extra_action": "setvalue",
                 "value": "50688888888",
             },
-            {"path": ".//form/div[5]/div/input"},
+            {"path": "//form//input[@name='id_card' or @id='id_id_card']"},
             {
-                "path": ".//form/div[5]/div/input",
+                "path": "//form//input[@name='id_card' or @id='id_id_card']",
                 "extra_action": "setvalue",
                 "value": "707770777",
             },
-            {"path": ".//form/div[6]/div/input"},
+            {"path": "//form//input[@name='job_position' or @id='id_job_position']"},
             {
-                "path": ".//form/div[6]/div/input",
+                "path": "//form//input[@name='job_position' or @id='id_job_position']",
                 "extra_action": "setvalue",
                 "value": "Estudiante",
             },
-            {"path": ".//form/div[8]/input"},
+            {"path": "//form//input[@type='submit'] | //form//button[@type='submit']"},
         ]
         self.create_gif_process(path_list, "add_user_to_org_from_button_box")
 
     def test_relate_user_to_org_from_button_box(self):
-        path_list = self.path_base + [
+        """Test relating an existing user to a child organization.
+
+        Flow: Expand child org node (pk=2) -> Click 'Related Users' ->
+        Select user in modal -> Submit.
+
+        GIF: docs/source/_static/gif/relate_user_to_org_from_button_box.gif
+        """
+        path_list = [
+            {"path": self.org_node_h6(1)},
+            {"path": self.org_node_h6(2), "sleep": 1},
+            {"path": self.org_userbtnadd(2), "sleep": 1},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"
+                "path": "//*[@id='modaluser2']//span[contains(@class, 'select2-selection')]",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[3]/a"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {
-                "path": "//*[@id='modaluser1']/div/form/div/div[@class='modal-body']/span/span/span"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div[1]/div[2]/div/div/div[2]/ul/div/div[2]/span/span/span/ul/li[2]"
-            },
-            {
-                "path": "//*[@id='modaluser1']/div/form/div/div[@class='modal-footer']/button[@type='submit']"
+                "path": "//*[@id='modaluser2']//button[@type='submit']",
             },
         ]
         self.create_gif_process(path_list, "relate_user_to_org_from_button_box")
 
     def test_add_laboratory_to_org(self):
-        path_list = self.path_base + [
+        """Test adding a new laboratory to an organization.
+
+        Flow: Expand org node -> Click 'Add Laboratory' -> Fill lab form
+        (name, phone, location) -> Submit.
+
+        GIF: docs/source/_static/gif/add_laboratory_to_org.gif
+        """
+        path_list = [
+            {"path": self.org_node_h6(1)},
+            {"path": self.org_add_lab_link(1), "sleep": 1},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div/div/h6"
+                "path": "//form//input[@name='name' or @id='id_name']",
+                "wait_ready": True,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[2]/div/div/div/div[2]/div/ul/li[4]/a"
-            },
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[1]/div/input"
-            },
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[1]/div/input",
+                "path": "//form//input[@name='name' or @id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Laboratorio Estudiantil",
             },
+            {"path": "//form//input[@name='phone_number' or @id='id_phone_number']"},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[2]/div/input"
-            },
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[2]/div/input",
+                "path": "//form//input[@name='phone_number' or @id='id_phone_number']",
                 "extra_action": "setvalue",
                 "value": "(506)2222-2222",
             },
+            {"path": "//form//input[@name='location' or @id='id_location']"},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input"
-            },
-            {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/div/div[3]/div/input",
+                "path": "//form//input[@name='location' or @id='id_location']",
                 "extra_action": "setvalue",
                 "value": "San Pedro, San José",
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[2]/form/button[@type='submit']",
+                "path": "//form//button[@type='submit'] | //form//input[@type='submit']",
                 "scroll": "window.scrollTo(0, 300)",
             },
         ]
         self.create_gif_process(path_list, "add_laboratory_to_org")
 
     def test_relate_external_laboratory_to_org(self):
-        path_list = self.path_base + [
+        """Test relating a laboratory from parent org to a child org.
+
+        Flow: Expand child org node (pk=2) -> Click 'Related Laboratory'
+        -> Select lab in modal -> Submit.
+
+        GIF: docs/source/_static/gif/relate_external_laboratory_to_org.gif
+        """
+        path_list = [
+            {"path": self.org_node_h6(1)},
+            {"path": self.org_node_h6(2), "sleep": 1},
+            {"path": self.org_rel_lab_btn(2), "sleep": 1},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[4]/div/div/div/div/div/h6"
+                "path": "//*[@id='relOrganizationmodal']//span[contains(@class, 'select2-selection')]",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[4]/div/div/div/div[2]/div/ul/li[5]/a"
-            },
-            {
-                "path": ".//div[@id='relOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/p/span/span/span"
-            },
-            {
-                "path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[1]"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {"path": self.get_submit_button_path("relOrganizationmodal")},
         ]
         self.create_gif_process(path_list, "relate_external_laboratory_to_org")
 
     def test_relate_org_base_laboratory_to_org_child(self):
-        path_list = self.path_base + [
+        """Test relating a laboratory from base org to another child org.
+
+        Flow: Expand second root org node (pk=3) -> Expand child (pk=4)
+        -> Click 'Related Laboratory' -> Select lab -> Submit.
+
+        GIF: docs/source/_static/gif/relate_org_base_laboratory_to_org_child.gif
+        """
+        path_list = [
+            {"path": self.org_node_h6(3)},
+            {"path": self.org_node_h6(4), "sleep": 1},
+            {"path": self.org_rel_lab_btn(4), "sleep": 1},
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[5]/div/div/div/div/div/h6"
+                "path": "//*[@id='relOrganizationmodal']//span[contains(@class, 'select2-selection')]",
+                "sleep": 2,
             },
             {
-                "path": ".//div[@class='right_col']/div[@class='card']/div[@class='card-body']/div[@class='row']/div[1]/div[5]/div/div/div/div[2]/div/ul/li[5]/a"
-            },
-            {
-                "path": ".//div[@id='relOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/p/span/span/span"
-            },
-            {
-                "path": "/html/body/span/span[@class='select2-dropdown select2-dropdown--below']/span/ul/li[1]"
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
             },
             {"path": self.get_submit_button_path("relOrganizationmodal")},
         ]

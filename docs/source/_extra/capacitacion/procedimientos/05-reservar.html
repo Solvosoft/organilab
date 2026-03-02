@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservar desde Procedimiento - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Procedimientos
+            </a>
+            <a href="02-crear.html" class="nav-link sub-item">
+                2. Crear Procedimiento
+            </a>
+            <a href="03-objetos-pasos.html" class="nav-link sub-item">
+                3. Objetos y Pasos
+            </a>
+            <a href="04-ejecutar.html" class="nav-link sub-item">
+                4. Ejecutar Procedimiento
+            </a>
+            <a href="05-reservar.html" class="nav-link sub-item active">
+                5. Reservar desde Procedimiento
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Procedimientos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reservar desde Procedimiento</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-calendar-plus"></i> 5. Reservar desde Procedimiento</h1>
+
+            <p class="lead">
+                Organilab permite generar reservaciones automáticas a partir de los objetos requeridos en un
+                procedimiento. El sistema verifica la disponibilidad de stock, identifica faltantes y puede
+                distribuir los objetos entre múltiples estantes cuando sea necesario.
+            </p>
+
+            <h2>Generación automática de reservaciones</h2>
+
+            <p>
+                Cuando un procedimiento tiene objetos requeridos definidos en sus pasos, Organilab puede
+                crear automáticamente las reservaciones necesarias para asegurar que todos los materiales,
+                reactivos y equipos estén disponibles antes de la ejecución. Este proceso ahorra tiempo
+                y reduce el riesgo de iniciar un procedimiento sin los recursos necesarios.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Abra la instancia del procedimiento que desea ejecutar.
+                </li>
+                <li>
+                    Haga clic en la opción <strong>"Reservar Objetos"</strong> o <strong>"Generar Reservación"</strong>.
+                </li>
+                <li>
+                    El sistema recopila todos los objetos requeridos de todos los pasos del procedimiento.
+                </li>
+                <li>
+                    Se realiza una verificación automática del stock disponible en el laboratorio.
+                </li>
+                <li>
+                    Si hay disponibilidad suficiente, se generan las reservaciones correspondientes.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap4_myprocedure_reservation.gif" alt="Pantalla de generación de reservación automática desde un procedimiento" loading="lazy">
+                <p class="screenshot-caption">Pantalla de generación de reservación automática desde un procedimiento</p>
+            </div>
+
+            <h2>Verificación de stock</h2>
+
+            <p>
+                Antes de crear las reservaciones, el sistema verifica que exista stock suficiente para cada
+                objeto requerido. La verificación considera:
+            </p>
+
+            <ul>
+                <li>La cantidad total requerida sumando todos los pasos que usan el mismo objeto.</li>
+                <li>El stock actual disponible en los estantes del laboratorio.</li>
+                <li>Las reservaciones existentes que ya comprometen parte del inventario.</li>
+                <li>Las unidades de medida, realizando conversiones cuando sea necesario.</li>
+            </ul>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Stock suficiente</strong>
+                Cuando todos los objetos requeridos están disponibles en las cantidades necesarias, el sistema
+                genera las reservaciones automáticamente y muestra un resumen de confirmación. El operador
+                puede proceder con la ejecución del procedimiento con la certeza de que los recursos están
+                reservados.
+            </div>
+
+            <h2>Manejo de faltantes</h2>
+
+            <p>
+                Si el sistema detecta que no hay stock suficiente para alguno de los objetos requeridos,
+                se informa al usuario de los faltantes para que pueda tomar las acciones correspondientes:
+            </p>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Stock insuficiente</strong>
+                El sistema muestra una lista detallada de los objetos con faltantes, indicando la cantidad
+                requerida, la cantidad disponible y el déficit. El operador puede optar por crear una
+                reservación parcial con los objetos disponibles, solicitar la reposición de los faltantes
+                antes de continuar, o buscar objetos equivalentes en otros laboratorios de la organización.
+            </div>
+
+            <h2>Distribución entre múltiples estantes</h2>
+
+            <p>
+                Un mismo reactivo o material puede estar distribuido en varios estantes dentro del laboratorio.
+                Cuando un solo estante no tiene la cantidad suficiente, el sistema puede distribuir la
+                reservación entre múltiples ubicaciones:
+            </p>
+
+            <ul>
+                <li>El sistema busca el objeto en todos los estantes disponibles del laboratorio.</li>
+                <li>Prioriza los estantes con mayor cantidad disponible.</li>
+                <li>Divide la reservación en múltiples registros si es necesario para cubrir la cantidad total.</li>
+                <li>El operador puede ver la distribución detallada antes de confirmar la reservación.</li>
+            </ul>
+
+            <h2>Flujo completo de reservación</h2>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 300" style="max-width: 700px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowres" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50" />
+                        </marker>
+                    </defs>
+                    <!-- Procedimiento -->
+                    <rect x="20" y="50" width="150" height="60" rx="8" fill="#3498db" />
+                    <text x="95" y="77" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Procedimiento</text>
+                    <text x="95" y="95" text-anchor="middle" fill="white" font-size="11">(Objetos requeridos)</text>
+                    <!-- Arrow -->
+                    <line x1="170" y1="80" x2="210" y2="80" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowres)" />
+                    <!-- Verificación -->
+                    <rect x="215" y="50" width="150" height="60" rx="8" fill="#e67e22" />
+                    <text x="290" y="77" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Verificación</text>
+                    <text x="290" y="95" text-anchor="middle" fill="white" font-size="11">(Stock disponible)</text>
+                    <!-- Arrow to success -->
+                    <line x1="365" y1="65" x2="430" y2="65" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowres)" />
+                    <!-- Reservación OK -->
+                    <rect x="435" y="35" width="150" height="60" rx="8" fill="#27ae60" />
+                    <text x="510" y="62" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Reservación</text>
+                    <text x="510" y="80" text-anchor="middle" fill="white" font-size="11">(Confirmada)</text>
+                    <!-- Arrow to execution -->
+                    <line x1="585" y1="65" x2="625" y2="65" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowres)" />
+                    <!-- Ejecución -->
+                    <rect x="630" y="35" width="60" height="60" rx="8" fill="#8e44ad" />
+                    <text x="660" y="62" text-anchor="middle" fill="white" font-size="10" font-weight="bold">Ejecutar</text>
+                    <text x="660" y="78" text-anchor="middle" fill="white" font-size="10">Proc.</text>
+                    <!-- Arrow to warning -->
+                    <line x1="290" y1="110" x2="290" y2="165" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowres)" />
+                    <!-- Faltantes -->
+                    <rect x="215" y="170" width="150" height="60" rx="8" fill="#e74c3c" />
+                    <text x="290" y="197" text-anchor="middle" fill="white" font-size="13" font-weight="bold">Faltantes</text>
+                    <text x="290" y="215" text-anchor="middle" fill="white" font-size="11">(Stock insuficiente)</text>
+                    <!-- Arrow to reponer -->
+                    <line x1="365" y1="200" x2="430" y2="200" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowres)" />
+                    <!-- Acciones -->
+                    <rect x="435" y="170" width="150" height="60" rx="8" fill="#f39c12" />
+                    <text x="510" y="192" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Acciones</text>
+                    <text x="510" y="210" text-anchor="middle" fill="white" font-size="10">Reponer / Parcial /</text>
+                    <text x="510" y="224" text-anchor="middle" fill="white" font-size="10">Buscar alternativa</text>
+                    <!-- Labels -->
+                    <text x="328" y="55" font-size="10" fill="#27ae60" font-weight="bold">OK</text>
+                    <text x="278" y="155" font-size="10" fill="#e74c3c" font-weight="bold">Falta</text>
+                    <text x="350" y="280" text-anchor="middle" font-size="11" fill="#7f8c8d" font-style="italic">Flujo de reservación desde un procedimiento con verificación de stock</text>
+                </svg>
+                <p class="diagram-caption">Diagrama: Proceso de reservación automática desde un procedimiento, incluyendo la verificación de stock y el manejo de faltantes.</p>
+            </div>
+
+            <h2>Relación con el módulo de reservaciones</h2>
+
+            <p>
+                Las reservaciones generadas desde procedimientos se integran completamente con el módulo de
+                reservaciones de Organilab. Una vez creadas, se gestionan de la misma manera que cualquier
+                otra reservación del sistema, incluyendo la aprobación, el seguimiento y la devolución de
+                objetos.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Más información sobre reservaciones</strong>
+                Para conocer en detalle cómo gestionar las reservaciones, aprobar solicitudes, dar seguimiento
+                a los objetos prestados y registrar devoluciones, consulte el
+                <a href="../reservaciones/index.html">Capítulo 5: Reservaciones</a>.
+            </div>
+
+            <div class="page-navigation">
+                <a href="04-ejecutar.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Ejecutar Procedimiento
+                </a>
+                <a href="../reservaciones/index.html" class="next-page">
+                    Reservaciones <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
