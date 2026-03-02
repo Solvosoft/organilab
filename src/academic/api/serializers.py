@@ -169,6 +169,7 @@ class ProcedureSerializer(serializers.ModelSerializer):
         return ""
 
     def get_actions(self, obj):
+        user = self.context["request"].user
         org_pk = self.context["view"].kwargs.get("org_pk")
         procedure_kwargs = {
             "org_pk": org_pk,
@@ -182,24 +183,27 @@ class ProcedureSerializer(serializers.ModelSerializer):
                 _("View Steps"),
             )
         )
-        action += (
-            """<a href="%s" title="%s"><i class="fa fa-plus text-success p-2"></i></a>"""
-            % (
-                reverse("academic:add_steps_wrapper", kwargs=procedure_kwargs),
-                _("New Step"),
+        if user.has_perm("academic.add_procedurestep"):
+            action += (
+                """<a href="%s" title="%s"><i class="fa fa-plus text-success p-2"></i></a>"""
+                % (
+                    reverse("academic:add_steps_wrapper", kwargs=procedure_kwargs),
+                    _("New Step"),
+                )
             )
-        )
-        action += (
-            """<a href="%s" title="%s"><i class="fa fa-edit  fa-sm p-2"></i></a>"""
-            % (reverse("academic:procedure_update", kwargs=procedure_kwargs), _("Edit"))
-        )
-        action += """<a onclick="delete_procedure(%d,'%s')" title="%s">
-        <i class="fa fa-trash text-danger p-2"></i>
-        </a>""" % (
-            obj.pk,
-            str(obj.title),
-            _("Remove"),
-        )
+        if user.has_perm("academic.change_procedure"):
+            action += (
+                """<a href="%s" title="%s"><i class="fa fa-edit  fa-sm p-2"></i></a>"""
+                % (reverse("academic:procedure_update", kwargs=procedure_kwargs), _("Edit"))
+            )
+        if user.has_perm("academic.delete_procedure"):
+            action += """<a onclick="delete_procedure(%d,'%s')" title="%s">
+            <i class="fa fa-trash text-danger p-2"></i>
+            </a>""" % (
+                obj.pk,
+                str(obj.title),
+                _("Remove"),
+            )
 
         return action
 

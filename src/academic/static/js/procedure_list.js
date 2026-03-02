@@ -1,4 +1,16 @@
 $(document).ready(function() {
+
+    let buttons = []
+    if (has_perm) {
+        buttons.push({
+            action: function ( e, dt, button, config ) {
+                window.location = document.urls['create_procedure'];
+                },
+            text: '<i class="fa fa-plus" aria-hidden="true"></i> '+gettext('Create procedure template'),
+            className: 'btn-sm btn-success',
+            });
+    }
+
 procedure_table = createDataTable('#procedure', document.urls['get_procedures'], {
         columns: [
             {data: "title", name: "title", title: gettext("Title"), type: "string", visible: true, width:"20%",className: 'dt-center'},
@@ -8,15 +20,7 @@ procedure_table = createDataTable('#procedure', document.urls['get_procedures'],
           dom: "<'d-flex justify-content-between'<'m-2'l>" +
         "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
         "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
-           buttons: [
-            {
-              action: function ( e, dt, button, config ) {
-                    window.location = document.urls['create_procedure'];
-                    },
-                text: '<i class="fa fa-plus" aria-hidden="true"></i> '+gettext('Create procedure template'),
-                className: 'btn-sm btn-success',
-                },
-                ],
+           buttons: buttons,
         ajax: {
            url: document.urls['get_procedures'],
            type: 'GET',
