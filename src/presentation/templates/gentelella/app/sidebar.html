@@ -35,12 +35,13 @@
 				{% endif %}
 				{% include 'partials/auth_and_perms.html' %}
 
-				<li>
-					<a class="nav-link" href="{% url 'blog:entrylist' %}"
+			<!--	<li>
+					<a class="nav-link" href="'blog:entrylist'"
 								title="{% trans 'blog entries' %}">
 						<i class="fa fa-edit fa-fw"></i> {% trans 'Blog' %}
 					</a>
 				</li>
+				-->
 				{% if perms.msds.view_regulationdocument %}
 					<li>
 						<a class="nav-link" href="{% url 'regulation_docs' %}{% if org_pk %}?org_pk={{ org_pk }}{% endif %}"
