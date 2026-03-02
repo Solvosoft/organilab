@@ -200,10 +200,10 @@ class RiskSeleniumTest(RiskSeleniumBase):
                 "value": 5,
             },
             {
-                "path": "(//span[contains(@class, 'select2-selection')])[last()]",
-            },
-            {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+                "path": "//*[@id='id_num_workers']",
+                "extra_action": "script",
+                "value": "$('#id_zone_type').val($('#id_zone_type option:eq(1)').val()).trigger('change');",
+                "sleep": 1,
             },
             {
                 "path": "//*[@id='btnsave']",
@@ -571,7 +571,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         self.navigate_to_buildings_list()
         path_list = [
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//h1[contains(@class, 'text-center')]",
                 "sleep": 3,
             },
         ]
@@ -642,7 +642,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
                 "path": "//button[@type='submit' or @id='btnsave']",
             },
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//h1[contains(@class, 'text-center')]",
                 "wait_ready": True,
             },
         ]
@@ -682,7 +682,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         self.navigate_to_regents_list()
         path_list = [
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//h1[contains(@class, 'text-center')]",
                 "sleep": 3,
             },
         ]
@@ -787,7 +787,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         self.navigate_to_structures_list()
         path_list = [
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//h1[contains(@class, 'text-center')]",
                 "sleep": 3,
             },
         ]
@@ -889,7 +889,7 @@ class RiskSeleniumTest(RiskSeleniumBase):
         self.navigate_to_zone_dashboard()
         path_list = [
             {
-                "path": "//h3[contains(@class, 'heading-1')]/span",
+                "path": "//h1[contains(@class, 'text-center')]",
                 "sleep": 3,
             },
         ]

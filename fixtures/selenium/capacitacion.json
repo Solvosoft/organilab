@@ -1413,7 +1413,10 @@
             "buildings": [],
             "num_workers": 5,
             "zone_type": 1,
-            "priority": 1
+            "priority": 1,
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
     {
@@ -1426,7 +1429,10 @@
             "buildings": [],
             "num_workers": 20,
             "zone_type": 2,
-            "priority": 2
+            "priority": 2,
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
 
@@ -1448,7 +1454,7 @@
     },
     {
         "model": "sga.dangerindication",
-        "pk": 1,
+        "pk": "H314",
         "fields": {
             "code": "H314",
             "description": "Provoca quemaduras graves en la piel y lesiones oculares graves",
@@ -1461,7 +1467,7 @@
     },
     {
         "model": "sga.dangerindication",
-        "pk": 2,
+        "pk": "H331",
         "fields": {
             "code": "H331",
             "description": "Toxico en caso de inhalacion",
@@ -1474,7 +1480,7 @@
     },
     {
         "model": "sga.dangerindication",
-        "pk": 3,
+        "pk": "H290",
         "fields": {
             "code": "H290",
             "description": "Puede ser corrosivo para los metales",
@@ -1495,10 +1501,13 @@
             "brand": "Merck",
             "status": 2,
             "components_sga": [],
-            "danger_indications": [1, 2, 3],
+            "danger_indications": ["H314", "H331", "H290"],
             "synonymous": "Acido muriatico, HCl",
             "agrochemical": false,
-            "description": "Acido clorhidrico concentrado al 37% grado analitico"
+            "description": "Acido clorhidrico concentrado al 37% grado analitico",
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
     {
@@ -1510,7 +1519,7 @@
             "molecular_formula": "HCl",
             "cas_id_number": "7647-01-0",
             "is_precursor": true,
-            "h_code": [1, 2, 3],
+            "h_code": ["H314", "H331", "H290"],
             "valid_molecular_formula": true,
             "seveso_list": false,
             "number_index": "017-002-01-X",
@@ -1529,7 +1538,7 @@
             "molecular_formula": "HCl",
             "cas_id_number": "7647-01-0",
             "is_precursor": true,
-            "h_code": [1, 2, 3],
+            "h_code": ["H314", "H331", "H290"],
             "valid_molecular_formula": true,
             "seveso_list": false,
             "density": 1.19
@@ -1618,7 +1627,10 @@
             "initial_date": "2026-02-01T08:00:00Z",
             "final_date": "2026-02-01T12:00:00Z",
             "status": 0,
-            "laboratory": 1
+            "laboratory": 1,
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
     {
@@ -1635,7 +1647,10 @@
             "initial_date": "2026-02-01T08:00:00Z",
             "final_date": "2026-02-01T12:00:00Z",
             "status": 0,
-            "laboratory": 1
+            "laboratory": 1,
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
     {
@@ -1652,7 +1667,10 @@
             "initial_date": "2026-02-15T08:00:00Z",
             "final_date": "2026-02-15T17:00:00Z",
             "status": 1,
-            "laboratory": 1
+            "laboratory": 1,
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
     {
@@ -1669,7 +1687,10 @@
             "initial_date": "2026-02-15T08:00:00Z",
             "final_date": "2026-02-15T17:00:00Z",
             "status": 1,
-            "laboratory": 1
+            "laboratory": 1,
+            "creation_date": "2026-01-01T00:00:00Z",
+            "last_update": "2026-01-01T00:00:00Z",
+            "created_by": null
         }
     },
 
@@ -1724,7 +1745,8 @@
             "interval": null,
             "crontab": 1,
             "enabled": true,
-            "description": "Envia alertas cuando productos alcanzan su limite minimo de inventario"
+            "description": "Envia alertas cuando productos alcanzan su limite minimo de inventario",
+            "date_changed": "2026-01-01T00:00:00Z"
         }
     },
     {
@@ -1736,7 +1758,8 @@
             "interval": null,
             "crontab": 2,
             "enabled": true,
-            "description": "Genera reportes mensuales de sustancias precursoras"
+            "description": "Genera reportes mensuales de sustancias precursoras",
+            "date_changed": "2026-01-01T00:00:00Z"
         }
     },
     {
@@ -1748,7 +1771,8 @@
             "interval": null,
             "crontab": 1,
             "enabled": true,
-            "description": "Envia alertas sobre reactivos proximos a expirar"
+            "description": "Envia alertas sobre reactivos proximos a expirar",
+            "date_changed": "2026-01-01T00:00:00Z"
         }
     },
     {
@@ -1760,7 +1784,8 @@
             "interval": 1,
             "crontab": null,
             "enabled": true,
-            "description": "Elimina sesiones expiradas de la base de datos"
+            "description": "Elimina sesiones expiradas de la base de datos",
+            "date_changed": "2026-01-01T00:00:00Z"
         }
     }
 ]

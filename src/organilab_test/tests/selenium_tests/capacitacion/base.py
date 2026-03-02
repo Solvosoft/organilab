@@ -119,7 +119,7 @@ class CapacitacionSeleniumBase(SeleniumBase):
 
     def navigate_to_risk_zone_list(self, org_pk):
         url = self.live_server_url + str(
-            reverse("risk_management:riskzone_list", kwargs={"org_pk": org_pk})
+            reverse("riskmanagement:riskzone_list", kwargs={"org_pk": org_pk})
         )
         self.selenium.get(url)
         self.wait_for_page_ready()
