@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguridad y Almacenamiento - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificación.html" class="nav-link sub-item">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item active">
+                6. Seguridad y Almacenamiento
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Seguridad y Almacenamiento</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-shield-check"></i> 6. Seguridad y Almacenamiento</h1>
+
+            <p class="lead">
+                El almacenamiento seguro de sustancias químicas es un pilar fundamental de la gestión de
+                laboratorios. Organilab registra información clave sobre clases de almacenamiento,
+                compatibilidad química y niveles de peligrosidad para ayudar a mantener un entorno
+                de trabajo seguro.
+            </p>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-heart-pulse"></i> Cultura de seguridad</strong>
+                La seguridad en el laboratorio no es solo una cuestión normativa: es una responsabilidad
+                compartida. Cada persona que trabaja con sustancias químicas debe conocer los peligros
+                de los productos que maneja, usar el equipo de protección adecuado y seguir los
+                procedimientos establecidos. Organilab facilita este compromiso al mantener toda la
+                información de seguridad centralizada y accesible.
+            </div>
+
+            <h2>Clases de Almacenamiento</h2>
+
+            <p>
+                Las clases de almacenamiento (campo <strong>storage_class</strong> en las características
+                de sustancia) definen las condiciones específicas bajo las cuales debe guardarse cada
+                sustancia. Esta clasificación es esencial para evitar reacciones peligrosas entre
+                sustancias incompatibles.
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Clase</th>
+                        <th>Descripción</th>
+                        <th>Condiciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Explosivos</td>
+                        <td>Almacén separado, lejos de fuentes de calor e ignición, acceso restringido</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Gases comprimidos</td>
+                        <td>Cilindros asegurados verticalmente, ventilación adecuada, lejos del calor</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Líquidos inflamables</td>
+                        <td>Armario de seguridad para inflamables, lejos de fuentes de ignición</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Sólidos inflamables</td>
+                        <td>Área seca, lejos de líquidos inflamables y oxidantes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>Oxidantes y peróxidos orgánicos</td>
+                        <td>Separados de inflamables y reductores, área ventilada y fresca</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td>Sustancias tóxicas</td>
+                        <td>Armario cerrado con llave, acceso restringido, inventario controlado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7</strong></td>
+                        <td>Sustancias corrosivas</td>
+                        <td>Estantes resistentes a la corrosión, contención secundaria, separar ácidos de bases</td>
+                    </tr>
+                    <tr>
+                        <td><strong>8</strong></td>
+                        <td>Sustancias que requieren refrigeración</td>
+                        <td>Refrigerador o congelador dedicado, sin alimentos, a prueba de explosión si es necesario</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Compatibilidad Química</h2>
+
+            <p>
+                Uno de los principios más importantes del almacenamiento seguro es no almacenar juntas
+                sustancias que puedan reaccionar entre sí de forma peligrosa. Las principales
+                incompatibilidades son:
+            </p>
+
+            <ul>
+                <li><strong>Ácidos fuertes + Bases fuertes:</strong> Reacción exotérmica violenta. Almacenar en estantes separados.</li>
+                <li><strong>Oxidantes + Reductores/Inflamables:</strong> Riesgo de incendio o explosión. Mantener en armarios distintos.</li>
+                <li><strong>Ácidos + Metales reactivos:</strong> Generación de hidrógeno inflamable. Separar completamente.</li>
+                <li><strong>Agua-reactivos + Cualquier fuente de humedad:</strong> Reacciones violentas. Almacenar en ambiente seco.</li>
+                <li><strong>Peróxidos orgánicos + Calor/Fricción:</strong> Riesgo de detonación. Almacenar en frío y con cuidado.</li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Regla general</strong>
+                Ante la duda sobre la compatibilidad de dos sustancias, consulte siempre las hojas
+                de seguridad (sección 7: Manipulación y almacenamiento, y sección 10: Estabilidad
+                y reactividad). Organilab permite acceder rápidamente a esta información desde la
+                ficha de cada reactivo.
+            </div>
+
+            <h2>Directiva Seveso III</h2>
+
+            <p>
+                El campo <strong>seveso_list</strong> en las características de sustancia indica si una
+                sustancia está incluida en la lista Seveso. La Directiva Seveso III es una normativa
+                europea (adoptada como referencia internacional) que establece obligaciones para
+                instalaciones que almacenan sustancias peligrosas en cantidades significativas.
+            </p>
+
+            <p>
+                Cuando una sustancia está marcada como Seveso en Organilab, el sistema alerta sobre
+                las obligaciones adicionales de control y reporte que aplican. Esto es especialmente
+                relevante para laboratorios que manejan grandes cantidades de sustancias peligrosas.
+            </p>
+
+            <h2>Órganos Diana</h2>
+
+            <p>
+                El campo <strong>white_organ</strong> (órganos diana) registra los órganos del cuerpo
+                humano que pueden verse afectados por la exposición a una sustancia. Esta información
+                es crítica para:
+            </p>
+
+            <ul>
+                <li>Seleccionar el equipo de protección personal adecuado.</li>
+                <li>Definir protocolos de vigilancia médica para el personal expuesto.</li>
+                <li>Evaluar el riesgo de exposición crónica en el lugar de trabajo.</li>
+                <li>Determinar las medidas de primeros auxilios apropiadas.</li>
+            </ul>
+
+            <p>
+                Los órganos diana comunes incluyen: sistema nervioso, hígado, riñones, pulmones, piel,
+                ojos, sistema reproductivo, sistema cardiovascular y sistema hematopoyético.
+            </p>
+
+            <h2>Diamante NFPA 704</h2>
+
+            <p>
+                El diamante NFPA (National Fire Protection Association) es un sistema de identificación
+                rápida de peligros ampliamente utilizado. Organilab almacena los valores NFPA en las
+                características de sustancia para facilitar su consulta.
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Cuadrante</th>
+                        <th>Color</th>
+                        <th>Peligro</th>
+                        <th>Escala</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Izquierdo</strong></td>
+                        <td>Azul</td>
+                        <td>Salud</td>
+                        <td>0 (mínimo) a 4 (mortal)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Superior</strong></td>
+                        <td>Rojo</td>
+                        <td>Inflamabilidad</td>
+                        <td>0 (no arde) a 4 (extremadamente inflamable)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Derecho</strong></td>
+                        <td>Amarillo</td>
+                        <td>Reactividad / Inestabilidad</td>
+                        <td>0 (estable) a 4 (puede detonar)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inferior</strong></td>
+                        <td>Blanco</td>
+                        <td>Riesgo específico</td>
+                        <td>OX (oxidante), W (reacciona con agua), SA (asfixiante simple)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_view_object_features.gif" alt="Valores NFPA de un reactivo en la vista de características de sustancia" loading="lazy">
+                <p class="screenshot-caption">Valores NFPA de un reactivo en la vista de características de sustancia</p>
+            </div>
+
+            <h2>Buenas Prácticas de Manejo Seguro</h2>
+
+            <ol class="step-list">
+                <li><strong>Conozca antes de usar:</strong> Lea la hoja de seguridad completa de cada sustancia antes de manipularla por primera vez.</li>
+                <li><strong>Use equipo de protección:</strong> Siempre utilice el equipo de protección personal indicado en la sección 8 de la MSDS (guantes, gafas, bata, etc.).</li>
+                <li><strong>Etiquete todo:</strong> Nunca trabaje con recipientes sin etiqueta. Si transvasa una sustancia, etiquete inmediatamente el nuevo recipiente.</li>
+                <li><strong>Minimice cantidades:</strong> Mantenga en el área de trabajo solo la cantidad mínima necesaria de sustancias peligrosas.</li>
+                <li><strong>Ventilación adecuada:</strong> Trabaje con sustancias volátiles o tóxicas en campanas de extracción.</li>
+                <li><strong>Segregación correcta:</strong> Almacene las sustancias según su clase de almacenamiento y compatibilidad química.</li>
+                <li><strong>Inspección regular:</strong> Revise periódicamente los envases para detectar fugas, corrosión o deterioro de etiquetas.</li>
+                <li><strong>Plan de emergencia:</strong> Conozca la ubicación de duchas de emergencia, lavaojos, extintores y kit de derrames.</li>
+            </ol>
+
+            <h2>Relación con Zonas de Riesgo</h2>
+
+            <p>
+                La información de seguridad de las sustancias está estrechamente relacionada con la gestión
+                de riesgos del laboratorio. El módulo de <strong>Gestión de Riesgos</strong> de Organilab
+                permite definir zonas de riesgo dentro del laboratorio, evaluar los peligros presentes y
+                establecer medidas de control.
+            </p>
+
+            <p>
+                Para obtener más información sobre la configuración de zonas de riesgo y evaluaciones de
+                peligros, consulte la sección correspondiente en el
+                <a href="../permisos/index.html">Capítulo 1: Sistema de Permisos</a>, donde se explica
+                cómo los permisos controlan el acceso a las funciones de gestión de riesgos.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Integración de información</strong>
+                Organilab integra toda la información de seguridad en un solo lugar: clasificación SGA,
+                códigos H y P, pictogramas, NFPA, hojas de seguridad, clases de almacenamiento y control
+                de precursores. Aproveche esta centralización para mantener una visión completa de los
+                riesgos en su laboratorio y tome decisiones informadas sobre el manejo seguro de sustancias.
+            </div>
+
+            <div class="page-navigation">
+                <a href="05-precursores.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Precursores Químicos
+                </a>
+                <a href="../procedimientos/index.html" class="next-page">
+                    Procedimientos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Estantes - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-estructura.html" class="nav-link sub-item">
+                1. Estructura del Laboratorio
+            </a>
+            <a href="02-salas-muebles.html" class="nav-link sub-item">
+                2. Salas y Muebles
+            </a>
+            <a href="03-estantes.html" class="nav-link sub-item active">
+                3. Estantes
+            </a>
+            <a href="04-objetos.html" class="nav-link sub-item">
+                4. Objetos del Laboratorio
+            </a>
+            <a href="05-transferencias.html" class="nav-link sub-item">
+                5. Transferencias
+            </a>
+            <a href="06-reportes.html" class="nav-link sub-item">
+                6. Reportes y Auditoría
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Laboratorios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Estantes</li>
+                </ol>
+            </nav>
+
+            <h1>3. Estantes</h1>
+
+            <p class="lead">
+                Los estantes son las unidades de almacenamiento dentro de los muebles. Cada estante
+                ocupa una posición en la cuadrícula del mueble y puede configurarse con diferentes
+                tipos, capacidades y restricciones para controlar qué objetos se almacenan en él.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Tipos de Contenedor</h2>
+
+            <p>
+                Cada estante tiene un tipo de contenedor que describe su forma física. Este tipo
+                se selecciona de un catálogo configurable. Los tipos más comunes son:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo de Uso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Compartimento</strong></td>
+                        <td>Espacio abierto en una repisa o estantería</td>
+                        <td>Repisa de un gabinete donde se colocan frascos de reactivos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cajón</strong></td>
+                        <td>Espacio cerrado deslizable dentro del mueble</td>
+                        <td>Cajón de una cajonera para guardar materiales pequeños</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Catálogo personalizable</strong>
+                Los tipos de contenedor se gestionan desde el catálogo del sistema. Los administradores
+                pueden agregar nuevos tipos si los predefinidos no cubren las necesidades de su
+                laboratorio.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Propiedades del Estante</h2>
+
+            <p>
+                Cada estante tiene varias propiedades que controlan su comportamiento y capacidad.
+                A continuación se describen las más importantes:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Propiedad</th>
+                        <th>Descripción</th>
+                        <th>Valor por Defecto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Nombre descriptivo del estante</td>
+                        <td>(obligatorio)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo de contenedor</strong></td>
+                        <td>Forma física del estante (compartimento, cajón, etc.)</td>
+                        <td>(obligatorio)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cantidad (capacidad)</strong></td>
+                        <td>Capacidad máxima del estante expresada en la unidad de medida seleccionada</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unidad de medida</strong></td>
+                        <td>Unidad en que se mide la capacidad (litros, kilogramos, unidades, etc.)</td>
+                        <td>(obligatorio)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descarte</strong></td>
+                        <td>Indica si el estante es un contenedor de descarte para residuos</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cantidad infinita</strong></td>
+                        <td>Permite que el estante no tenga límite de capacidad</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Limitar objetos</strong></td>
+                        <td>Restringe los objetos que pueden almacenarse a una lista predefinida</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Color</strong></td>
+                        <td>Color visual para identificar el estante en la cuadrícula del mueble</td>
+                        <td>Gris</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estante contenedor</strong></td>
+                        <td>Permite anidar este estante dentro de otro estante</td>
+                        <td>(ninguno)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Capacidad y Unidades de Medida</h2>
+
+            <p>
+                La capacidad de un estante se define mediante dos valores: la <strong>cantidad</strong>
+                y la <strong>unidad de medida</strong>. Juntos, determinan cuánto material puede
+                almacenarse en el estante.
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-droplet"></i> Ejemplo: Estante de Líquidos</h4>
+                        <div class="scenario-situation">
+                            Capacidad: 20 litros
+                        </div>
+                        <p>
+                            Este estante puede almacenar reactivos líquidos cuya suma total no
+                            supere los 20 litros. Si se intenta agregar un reactivo que exceda
+                            esta capacidad, el sistema mostrará una advertencia.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-box"></i> Ejemplo: Estante de Materiales</h4>
+                        <div class="scenario-situation">
+                            Capacidad: 50 unidades
+                        </div>
+                        <p>
+                            Este estante puede contener hasta 50 unidades de materiales de laboratorio
+                            (probetas, pipetas, matraces, etc.). El sistema controla que no se exceda
+                            este límite.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Estantes de Descarte</h2>
+
+            <p>
+                Un estante de descarte es un espacio designado específicamente para depositar residuos
+                o materiales que deben ser eliminados. Cuando un estante tiene activada la opción
+                <strong>discard=True</strong>, cumple las siguientes funciones:
+            </p>
+
+            <ul>
+                <li>Recibe objetos que han sido marcados para descarte desde otros estantes</li>
+                <li>Permite llevar un registro de los residuos generados en el laboratorio</li>
+                <li>Facilita el control de la disposición final de reactivos vencidos o contaminados</li>
+                <li>Se diferencia visualmente de los estantes regulares en la cuadrícula del mueble</li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Buena práctica</strong>
+                Es recomendable crear al menos un estante de descarte por laboratorio para poder
+                registrar adecuadamente los residuos. Esto facilita el cumplimiento de las normativas
+                ambientales y de seguridad vigentes.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Limitar Objetos en un Estante</h2>
+
+            <p>
+                La opción <strong>limitar objetos</strong> (limit_only_objects) permite restringir
+                qué tipos de objetos pueden almacenarse en un estante específico. Cuando esta opción
+                está activada, solo los objetos incluidos en la lista de objetos permitidos
+                (available_objects_when_limit) pueden ser agregados al estante.
+            </p>
+
+            <p>Esta funcionalidad es útil en situaciones como:</p>
+
+            <ul>
+                <li>
+                    <strong>Estantes exclusivos para ácidos</strong> — Solo se permite almacenar
+                    ácidos concentrados, evitando mezclas peligrosas con bases o solventes.
+                </li>
+                <li>
+                    <strong>Estantes de equipos específicos</strong> — Solo se permite almacenar
+                    ciertos instrumentos de medición calibrados.
+                </li>
+                <li>
+                    <strong>Estantes de materiales controlados</strong> — Solo se permite almacenar
+                    sustancias precursoras que requieren trazabilidad especial.
+                </li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Cantidad Infinita</h2>
+
+            <p>
+                En algunos casos, no es práctico definir un límite de capacidad para un estante. La
+                opción <strong>cantidad infinita</strong> permite desactivar el control de capacidad,
+                permitiendo agregar objetos sin restricción de cantidad.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> ¿Cuándo usar cantidad infinita?</strong>
+                Esta opción es útil para estantes de almacenamiento general donde el control de
+                capacidad no es crítico, como mesas de trabajo donde se colocan equipos temporalmente,
+                o estantes de tránsito donde los objetos están de paso.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Estantes Anidados (Contenedores)</h2>
+
+            <p>
+                Organilab permite crear una relación de contención entre estantes a través de la
+                propiedad <strong>estante contenedor</strong> (container_shelf). Esto significa que
+                un estante puede estar "dentro" de otro estante, creando una jerarquía de almacenamiento
+                más detallada.
+            </p>
+
+            <p>Ejemplos de uso:</p>
+
+            <ul>
+                <li>Una <strong>caja dentro de un compartimento</strong> de un gabinete</li>
+                <li>Un <strong>recipiente secundario</strong> dentro de un compartimento de seguridad</li>
+                <li>Un <strong>organizador</strong> dentro de un cajón</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Codificación por Colores</h2>
+
+            <p>
+                Cada estante puede tener un <strong>color</strong> asignado que se muestra en la
+                representación visual de la cuadrícula del mueble. Esta codificación por colores
+                facilita la identificación visual rápida de los estantes y su contenido.
+            </p>
+
+            <p>Algunos usos comunes de la codificación por colores:</p>
+
+            <ul>
+                <li><strong>Rojo</strong> — Estantes con sustancias peligrosas o inflamables</li>
+                <li><strong>Azul</strong> — Estantes con reactivos que requieren refrigeración</li>
+                <li><strong>Verde</strong> — Estantes con materiales de uso general</li>
+                <li><strong>Amarillo</strong> — Estantes de descarte o residuos</li>
+                <li><strong>Naranja</strong> — Estantes con sustancias precursoras</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap2_shelf_inventory.png" alt="Cuadrícula de un mueble mostrando estantes con diferentes colores según su contenido" loading="lazy">
+                <p class="screenshot-caption">Cuadrícula de un mueble mostrando estantes con diferentes colores según su contenido</p>
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Siguiente paso</strong>
+                Con los estantes configurados, el siguiente paso es aprender sobre los objetos
+                que se almacenan en ellos: reactivos, materiales y equipos.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="02-salas-muebles.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Salas y Muebles
+                </a>
+                <a href="04-objetos.html" class="next-page">
+                    Objetos del Laboratorio <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

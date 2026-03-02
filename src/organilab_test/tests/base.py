@@ -65,10 +65,10 @@ class SeleniumBase(StaticLiveServerTestCase):
         cls.ob = Screenshot(cls.selenium)
         cls.selenium.set_window_size(1280, 720)
 
-        cls.tmp = Path(settings.BASE_DIR) / "tmp"
+        cls.tmp = Path(getattr(settings, 'SELENIUM_SCREENSHOTS_DIR', Path(settings.BASE_DIR) / "tmp"))
         cls.screenshot_size = "1280x720"
         cls.folder = "%s/%s" % (cls.tmp, cls.screenshot_size)
-        cls.dir = Path(settings.BASE_DIR) / cls.folder
+        cls.dir = Path(cls.folder)
         cls.static_save_path = Path(settings.DOCS_SOURCE_DIR) / "_static"
         cls.save_path_gif = cls.static_save_path / "gif"
 
@@ -202,8 +202,11 @@ class SeleniumBase(StaticLiveServerTestCase):
         if url:
             self.selenium.get(url)
 
+        if not getattr(settings, 'GENERATE_SCREENSHOTS', True):
+            return
+
         self.folder = "%s/%s" % (self.tmp, self.screenshot_size)
-        self.dir = Path(settings.BASE_DIR) / self.folder
+        self.dir = Path(self.folder)
 
         path_with_folder_name = self.dir / folder_name
 
@@ -213,6 +216,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         self.dir = path_with_folder_name
 
     def create_screenshot(self, order=1, time_out=None, name="", save_screenshot=False):
+        if not getattr(settings, 'GENERATE_SCREENSHOTS', True):
+            return order + 1
+
         if time_out is None:
             time_out = self.screenshot_delay
         extension_name = "%s.png" % name
@@ -246,6 +252,9 @@ class SeleniumBase(StaticLiveServerTestCase):
         return gif_images
 
     def create_gif(self, file_url, folder):
+        if not getattr(settings, 'GENERATE_SCREENSHOTS', True):
+            return
+
         gif_images = self.get_gif_images(file_url)
 
         # save as a gif
@@ -479,23 +488,31 @@ class SeleniumBase(StaticLiveServerTestCase):
             7. In every path takes 3 screenshots after any movement or action.(A more complete gif(less skips between screenshots))
             8. In the second screenshot(inside the path loop) it will save the screenshot if it is necessary.(screenshot_name parameter in object path)
             9. Finally, the git result will be created in docs/source/_static/gif/folder_name.gif
+
+        When GENERATE_SCREENSHOTS is False, all test actions (find_element, do_action,
+        apply_utils, assert_no_server_error) still execute, but screenshot capture,
+        cursor animation, and sleep delays are skipped for faster test execution.
         """
-        self.create_directory_path(folder_name=folder_name)
-        self.create_screenshot(order=order)
+        generate = getattr(settings, 'GENERATE_SCREENSHOTS', True)
+        if generate:
+            self.create_directory_path(folder_name=folder_name)
+            self.create_screenshot(order=order)
         for obj in path_list:
             self.apply_utils(obj)
             self.assert_no_server_error(
                 context_msg='before finding element: %s' % obj.get('path', '?')
             )
             element = self.selenium.find_element(By.XPATH, obj["path"])
-            order = self.create_screenshot(order=order)
-            x, y = self.get_x_y_element(element)
-            self.activate_move_cursor(element, cursor, hover)
-            order = self.take_screenshot_by_obj(obj, order)
-            self.hide_show_cursor(cursor, show_cursor=False)
+            if generate:
+                order = self.create_screenshot(order=order)
+                x, y = self.get_x_y_element(element)
+                self.activate_move_cursor(element, cursor, hover)
+                order = self.take_screenshot_by_obj(obj, order)
+                self.hide_show_cursor(cursor, show_cursor=False)
             self.do_action(obj, element)
-            self.hide_show_cursor(cursor, x=x, y=y)
-            order = self.create_screenshot(order=order)
+            if generate:
+                self.hide_show_cursor(cursor, x=x, y=y)
+                order = self.create_screenshot(order=order)
             self.assert_no_server_error(
                 context_msg='after action on: %s' % obj.get('path', '?')
             )
@@ -609,6 +626,8 @@ class SeleniumBase(StaticLiveServerTestCase):
         # and removing it would break other workers' screenshot writes.
         # The tmp/ directory is ephemeral and can be cleaned up by CI
         # or manually after a test run.
+        if getattr(settings, 'GENERATE_SCREENSHOTS', True) and cls.tmp.exists():
+            print("\nScreenshots saved to: %s" % cls.tmp)
         super(SeleniumBase, cls).tearDownClass()
 
 

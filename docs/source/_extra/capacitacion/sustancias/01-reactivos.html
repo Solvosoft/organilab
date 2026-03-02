@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reactivos y Sustancias - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item active">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificación.html" class="nav-link sub-item">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item">
+                6. Seguridad y Almacenamiento
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reactivos y Sustancias</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-droplet-half"></i> 1. Reactivos y Sustancias</h1>
+
+            <p class="lead">
+                Los reactivos son uno de los tres tipos de objetos que se pueden registrar en un laboratorio
+                de Organilab. A diferencia de los materiales y equipos, los reactivos cuentan con información
+                química detallada a través de sus características de sustancia.
+            </p>
+
+            <h2>Crear un Reactivo en Organilab</h2>
+
+            <p>
+                Un reactivo se registra como un <strong>Objeto</strong> con tipo "Reactivo" dentro del sistema.
+                Al crearlo, se le asignan campos básicos que identifican la sustancia y permiten su búsqueda
+                y trazabilidad en el inventario.
+            </p>
+
+            <h3>Campos principales del Objeto (tipo Reactivo)</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Código</strong></td>
+                        <td>Código interno de identificación del reactivo</td>
+                        <td>RQ-001</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Nombre oficial o común de la sustancia</td>
+                        <td>Ácido sulfúrico</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sinónimo</strong></td>
+                        <td>Nombres alternativos por los que se conoce</td>
+                        <td>Aceite de vitriolo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descripción</strong></td>
+                        <td>Información adicional sobre el reactivo</td>
+                        <td>Solución concentrada al 98%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es público</strong></td>
+                        <td>Si el reactivo es visible para todos los usuarios</td>
+                        <td>Si / No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es peligroso</strong></td>
+                        <td>Marcado según Decreto 44741 de Costa Rica</td>
+                        <td>Si</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es puro</strong></td>
+                        <td>Indica si la sustancia es pura o una mezcla</td>
+                        <td>Si</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es contenedor</strong></td>
+                        <td>Si el objeto actúa como contenedor de otras sustancias</td>
+                        <td>No</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_create_substance.gif" alt="Formulario de creación de un objeto de tipo Reactivo en Organilab" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de un objeto de tipo Reactivo en Organilab</p>
+            </div>
+
+            <h2>Características de la Sustancia</h2>
+
+            <p>
+                Cada reactivo puede tener asociado un registro de <strong>Características de Sustancia</strong>
+                (SustanceCharacteristics), que almacena la información química y de seguridad detallada. Esta
+                relación es uno a uno: cada objeto de tipo reactivo tiene exactamente un conjunto de características.
+            </p>
+
+            <h3>Campos de Características de Sustancia</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Número CAS</strong></td>
+                        <td>Identificador único del Chemical Abstracts Service (ej: 7664-93-9)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fórmula molecular</strong></td>
+                        <td>Fórmula química de la sustancia (ej: H2SO4)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Densidad</strong></td>
+                        <td>Densidad de la sustancia en g/mL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Códigos H</strong></td>
+                        <td>Indicaciones de peligro asociadas (relación muchos a muchos)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clasificación IARC</strong></td>
+                        <td>Clasificación de carcinogenicidad de la IARC</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clasificación IMDG</strong></td>
+                        <td>Código de mercancías peligrosas para transporte marítimo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Códigos NFPA</strong></td>
+                        <td>Valores del diamante NFPA (salud, inflamabilidad, reactividad, especial)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Órganos diana</strong></td>
+                        <td>Órganos del cuerpo afectados por la exposición</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bioacumulable</strong></td>
+                        <td>Si la sustancia se acumula en organismos vivos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Es precursor</strong></td>
+                        <td>Si la sustancia es un precursor químico controlado</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_view_object_features.gif" alt="Formulario de características de sustancia" loading="lazy">
+                <p class="screenshot-caption">Formulario de características de sustancia</p>
+            </div>
+
+            <h2>Relación entre Objeto, Características y Clasificación</h2>
+
+            <p>
+                El siguiente diagrama muestra cómo se relacionan los principales modelos involucrados
+                en la gestión de un reactivo. El Objeto contiene la información básica, las Características
+                de Sustancia aportan los datos químicos y de seguridad, y los códigos H conectan con los
+                pictogramas de peligro del SGA.
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 750 350" style="max-width: 750px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-react" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Object box -->
+                    <rect x="10" y="100" width="160" height="150" rx="8" fill="#e8f4f8" stroke="#2c3e50" stroke-width="2"/>
+                    <text x="90" y="125" text-anchor="middle" font-weight="bold" font-size="14" fill="#2c3e50">Objeto</text>
+                    <text x="90" y="125" text-anchor="middle" font-weight="bold" font-size="14" fill="#2c3e50">Objeto</text>
+                    <line x1="20" y1="133" x2="160" y2="133" stroke="#2c3e50" stroke-width="1"/>
+                    <text x="25" y="152" font-size="11" fill="#555">tipo: REACTIVO</text>
+                    <text x="25" y="168" font-size="11" fill="#555">código</text>
+                    <text x="25" y="184" font-size="11" fill="#555">nombre</text>
+                    <text x="25" y="200" font-size="11" fill="#555">sinonimo</text>
+                    <text x="25" y="216" font-size="11" fill="#555">es_peligroso</text>
+                    <text x="25" y="232" font-size="11" fill="#555">descripción</text>
+
+                    <!-- Arrow Object -> Characteristics -->
+                    <line x1="170" y1="175" x2="230" y2="175" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead-react)"/>
+                    <text x="200" y="167" text-anchor="middle" font-size="10" fill="#888">1:1</text>
+
+                    <!-- SustanceCharacteristics box -->
+                    <rect x="240" y="70" width="200" height="210" rx="8" fill="#fef9e7" stroke="#2c3e50" stroke-width="2"/>
+                    <text x="340" y="95" text-anchor="middle" font-weight="bold" font-size="13" fill="#2c3e50">Características</text>
+                    <text x="340" y="110" text-anchor="middle" font-weight="bold" font-size="13" fill="#2c3e50">de Sustancia</text>
+                    <line x1="250" y1="117" x2="430" y2="117" stroke="#2c3e50" stroke-width="1"/>
+                    <text x="255" y="136" font-size="11" fill="#555">cas_id_number</text>
+                    <text x="255" y="152" font-size="11" fill="#555">molecular_fórmula</text>
+                    <text x="255" y="168" font-size="11" fill="#555">densidad</text>
+                    <text x="255" y="184" font-size="11" fill="#555">iarc / imdg / nfpa</text>
+                    <text x="255" y="200" font-size="11" fill="#555">órganos_diana</text>
+                    <text x="255" y="216" font-size="11" fill="#555">bioacumulable</text>
+                    <text x="255" y="232" font-size="11" fill="#555">es_precursor</text>
+                    <text x="255" y="248" font-size="11" fill="#555">clase_almacenamiento</text>
+                    <text x="255" y="264" font-size="11" fill="#555">códigos_H (M2M)</text>
+
+                    <!-- Arrow Characteristics -> H-codes -->
+                    <line x1="440" y1="175" x2="500" y2="175" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead-react)"/>
+                    <text x="470" y="167" text-anchor="middle" font-size="10" fill="#888">M:N</text>
+
+                    <!-- DangerIndication box -->
+                    <rect x="510" y="80" width="160" height="140" rx="8" fill="#fdedec" stroke="#2c3e50" stroke-width="2"/>
+                    <text x="590" y="105" text-anchor="middle" font-weight="bold" font-size="13" fill="#2c3e50">Indicación de</text>
+                    <text x="590" y="120" text-anchor="middle" font-weight="bold" font-size="13" fill="#2c3e50">Peligro (H-code)</text>
+                    <line x1="520" y1="127" x2="660" y2="127" stroke="#2c3e50" stroke-width="1"/>
+                    <text x="525" y="146" font-size="11" fill="#555">código (H225...)</text>
+                    <text x="525" y="162" font-size="11" fill="#555">descripción</text>
+                    <text x="525" y="178" font-size="11" fill="#555">palabra_advertencia</text>
+                    <text x="525" y="194" font-size="11" fill="#555">clase_peligro</text>
+                    <text x="525" y="210" font-size="11" fill="#555">consejo_prudencia</text>
+
+                    <!-- Arrow H-codes -> Pictograms -->
+                    <line x1="590" y1="220" x2="590" y2="265" stroke="#2c3e50" stroke-width="2" marker-end="url(#arrowhead-react)"/>
+
+                    <!-- Pictograms box -->
+                    <rect x="510" y="275" width="160" height="55" rx="8" fill="#eafaf1" stroke="#2c3e50" stroke-width="2"/>
+                    <text x="590" y="300" text-anchor="middle" font-weight="bold" font-size="13" fill="#2c3e50">Pictogramas</text>
+                    <text x="590" y="318" text-anchor="middle" font-size="11" fill="#555">SGA / GHS</text>
+                </svg>
+                <p class="diagram-caption">Diagrama de relaciones: Objeto -> Características de Sustancia -> Códigos H -> Pictogramas</p>
+            </div>
+
+            <h2>Objeto vs. Sustancia: Diferencias Clave</h2>
+
+            <p>
+                Es importante entender la diferencia entre un <strong>Objeto de tipo Reactivo</strong> y una
+                <strong>Sustancia SGA</strong> en Organilab, ya que son modelos distintos con propósitos complementarios:
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Objeto (tipo Reactivo)</strong>
+                Representa un artículo físico en el inventario del laboratorio. Tiene ubicación (estante),
+                cantidad, unidad de medida y se puede transferir entre laboratorios. Es el registro
+                que se usa para el control de inventario diario.
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-info-circle"></i> Sustancia (módulo SGA)</strong>
+                Representa la clasificación química y de seguridad de un producto. Incluye nombre comercial,
+                nombre IUPAC, marca, componentes SGA, indicaciones de peligro y un estado de aprobación
+                (Borrador, En revisión, Aprobada). Se usa para generar etiquetas y fichas de seguridad.
+            </div>
+
+            <p>
+                Un objeto de tipo reactivo puede estar vinculado a una sustancia SGA para heredar su
+                información de clasificación y peligrosidad, pero también puede tener sus propias
+                características de sustancia registradas directamente.
+            </p>
+
+            <h2>Pasos para Registrar un Reactivo</h2>
+
+            <ol class="step-list">
+                <li>Acceda al laboratorio donde desea agregar el reactivo desde el panel de laboratorios.</li>
+                <li>Navegue a la sección de objetos del laboratorio y seleccione "Agregar objeto".</li>
+                <li>Seleccione el tipo <strong>Reactivo</strong> en el formulario de creación.</li>
+                <li>Complete los campos obligatorios: código, nombre y descripción.</li>
+                <li>Si corresponde, marque las casillas de "Es peligroso", "Es puro" o "Es contenedor".</li>
+                <li>Guarde el objeto y luego acceda a la pestaña de <strong>Características de Sustancia</strong>.</li>
+                <li>Ingrese el número CAS, fórmula molecular, densidad y demás datos químicos.</li>
+                <li>Asocie los códigos H correspondientes seleccionándolos del catálogo disponible.</li>
+                <li>Guarde las características para completar el registro.</li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_view_reactive_objects.gif" alt="Lista de reactivos registrados" loading="lazy">
+                <p class="screenshot-caption">Lista de reactivos registrados</p>
+            </div>
+
+            <h2>Glosario</h2>
+
+            <dl>
+                <dt class="glossary-term">Número CAS</dt>
+                <dd>Identificador numérico único asignado por el Chemical Abstracts Service a cada sustancia química conocida. Formato: XXXXXXX-XX-X.</dd>
+
+                <dt class="glossary-term">Fórmula molecular</dt>
+                <dd>Representación de la composición química de una sustancia usando símbolos de elementos y subíndices numéricos (ej: H2SO4, NaOH).</dd>
+
+                <dt class="glossary-term">Código H</dt>
+                <dd>Declaración de peligro estandarizada del Sistema Global Armonizado que describe la naturaleza del peligro de una sustancia (ej: H225 = Líquido y vapores muy inflamables).</dd>
+
+                <dt class="glossary-term">SGA / GHS</dt>
+                <dd>Sistema Globalmente Armonizado de clasificación y etiquetado de productos químicos. Estándar internacional para comunicar peligros químicos.</dd>
+
+                <dt class="glossary-term">Decreto 44741</dt>
+                <dd>Decreto ejecutivo de Costa Rica que regula el control de sustancias peligrosas y precursores químicos.</dd>
+            </dl>
+
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-clasificación.html" class="next-page">
+                    Clasificación SGA <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

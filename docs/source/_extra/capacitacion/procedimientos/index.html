@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 4: Procedimientos de Laboratorio - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="index.html" class="nav-link active">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Procedimientos
+            </a>
+            <a href="02-crear.html" class="nav-link sub-item">
+                2. Crear Procedimiento
+            </a>
+            <a href="03-objetos-pasos.html" class="nav-link sub-item">
+                3. Objetos y Pasos
+            </a>
+            <a href="04-ejecutar.html" class="nav-link sub-item">
+                4. Ejecutar Procedimiento
+            </a>
+            <a href="05-reservar.html" class="nav-link sub-item">
+                5. Reservar desde Procedimiento
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Capítulo 4: Procedimientos de Laboratorio</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-list-check"></i> Capítulo 4: Procedimientos de Laboratorio</h1>
+
+            <p class="lead">
+                En este capítulo aprenderá a crear, gestionar y ejecutar procedimientos documentados para el trabajo
+                en el laboratorio. Los procedimientos permiten estandarizar actividades, registrar los objetos
+                requeridos en cada paso y mantener un historial completo de ejecución con observaciones y comentarios.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Procedimientos documentados e ISO 17025</strong>
+                La norma ISO 17025 establece que los laboratorios deben contar con procedimientos documentados
+                para todas sus actividades críticas. Organilab facilita el cumplimiento de este requisito
+                permitiendo crear plantillas de procedimientos reutilizables, definir pasos detallados con los
+                objetos necesarios, ejecutar instancias con formularios dinámicos y generar registros de
+                trazabilidad completos para auditorías y acreditaciones.
+            </div>
+
+            <h2>Contenido del Capítulo</h2>
+
+            <a href="01-conceptos.html" class="chapter-card">
+                <h3>1. Conceptos de Procedimientos</h3>
+                <p>¿Qué es un procedimiento, la diferencia entre plantilla e instancia, los estados del ciclo de vida y la terminología clave del módulo.</p>
+            </a>
+
+            <a href="02-crear.html" class="chapter-card">
+                <h3>2. Crear Procedimiento</h3>
+                <p>Cómo crear una plantilla de procedimiento, agregar pasos secuenciales y redactar descripciones detalladas con el editor de texto enriquecido.</p>
+            </a>
+
+            <a href="03-objetos-pasos.html" class="chapter-card">
+                <h3>3. Objetos Requeridos y Observaciones</h3>
+                <p>Asociar reactivos, materiales y equipos a cada paso, especificar cantidades y unidades de medida, y registrar observaciones de seguridad.</p>
+            </a>
+
+            <a href="04-ejecutar.html" class="chapter-card">
+                <h3>4. Ejecutar Procedimiento</h3>
+                <p>Crear una instancia de ejecución, completar formularios dinámicos, agregar comentarios colaborativos y gestionar el flujo de estados.</p>
+            </a>
+
+            <a href="05-reservar.html" class="chapter-card">
+                <h3>5. Reservar desde Procedimiento</h3>
+                <p>Generar reservaciones automáticas a partir de los objetos requeridos, validar disponibilidad de stock y manejar faltantes.</p>
+            </a>
+
+            <div class="page-navigation">
+                <a href="../sustancias/06-seguridad.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Seguridad y Almacenamiento
+                </a>
+                <a href="01-conceptos.html" class="next-page">
+                    Conceptos de Procedimientos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

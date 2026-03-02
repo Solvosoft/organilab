@@ -89,10 +89,12 @@ test-selenium-parallel: ## Run Selenium tests with 4 workers (optional: TEST=pat
 test-selenium-xvfb: ## Run Selenium tests with virtual display via xvfb-run (optional: TEST=path.to.test)
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel 12 -v 2"
 
-createcapacitation: ## - run capacitacion selenium tests and copy images
-	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test organilab_test.tests.selenium_tests.capacitacion --tag=selenium --no-input -v 2"
-	cp docs/source/_static/gif/cap*.gif capacitacion/img/
-	cp docs/source/_static/cap*.png capacitacion/img/
+test-selenium-fast: ## Run Selenium tests without GIF generation (fast mode, optional: TEST=path.to.test)
+	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(or $(TEST),) --tag=selenium --no-input --parallel -v 2
+
+test-selenium-single-fast: ## Run a single Selenium test without GIF generation (TEST=path.to.test)
+	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(TEST) --tag=selenium --no-input -v 2
+
 
 docs: ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2

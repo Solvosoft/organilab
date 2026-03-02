@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Roles y Tipos de Usuario - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">1. Conceptos Fundamentales</a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">2. Jerarquía Organizacional</a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item active">3. Roles y Tipos de Usuario</a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">4. Asignación de Permisos</a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">5. Herencia de Permisos</a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">6. Laboratorios y Zonas</a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">7. Escenarios Prácticos</a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">8. Guía del Administrador</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Roles y Tipos de Usuario</li>
+                </ol>
+            </nav>
+
+            <h1>3. Roles y Tipos de Usuario</h1>
+
+            <p class="lead">
+                Organilab distingue entre <strong>tipos de usuario</strong> (la categoría general
+                del usuario dentro de la organización) y <strong>roles</strong> (conjuntos específicos
+                de permisos personalizables).
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Tipos de Usuario en la Organización</h2>
+
+            <p>
+                Cuando un usuario se vincula a una organización, se le asigna uno de tres
+                <strong>tipos</strong> que definen su nivel general de acceso:
+            </p>
+
+            <div class="row mt-4">
+                <div class="col-md-4 mb-3">
+                    <div class="scenario-card" style="border-top: 4px solid #dc3545;">
+                        <h4><i class="bi bi-person-fill-gear"></i> Administrador</h4>
+                        <p>
+                            Tiene <strong>gestión completa</strong> de la organización. Puede:
+                        </p>
+                        <ul>
+                            <li>Crear y eliminar organizaciones hijas</li>
+                            <li>Crear laboratorios (si es org raíz)</li>
+                            <li>Registrar y gestionar usuarios</li>
+                            <li>Crear, modificar y eliminar roles</li>
+                            <li>Asignar roles a otros usuarios</li>
+                            <li>Configurar todas las opciones del sistema</li>
+                        </ul>
+                        <span class="badge bg-danger">Acceso total</span>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="scenario-card" style="border-top: 4px solid #ffc107;">
+                        <h4><i class="bi bi-person-fill-check"></i> Gestor de Laboratorio</h4>
+                        <p>
+                            <strong>Administra laboratorios específicos</strong> dentro de la organización. Puede:
+                        </p>
+                        <ul>
+                            <li>Gestionar el inventario del laboratorio</li>
+                            <li>Administrar sustancias, equipos y materiales</li>
+                            <li>Gestionar las salas y muebles</li>
+                            <li>Generar reportes del laboratorio</li>
+                            <li>Gestionar reservaciones</li>
+                        </ul>
+                        <span class="badge bg-warning text-dark">Acceso a laboratorios</span>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="scenario-card" style="border-top: 4px solid #28a745;">
+                        <h4><i class="bi bi-person-fill"></i> Usuario de Laboratorio</h4>
+                        <p>
+                            Tiene <strong>acceso operativo</strong> al laboratorio. Puede:
+                        </p>
+                        <ul>
+                            <li>Consultar el inventario</li>
+                            <li>Ver sustancias y sus fichas de seguridad</li>
+                            <li>Realizar reservaciones</li>
+                            <li>Consultar procedimientos</li>
+                            <li>Acceso limitado según los roles asignados</li>
+                        </ul>
+                        <span class="badge bg-success">Acceso básico</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Tipo vs. Rol</strong>
+                El <em>tipo de usuario</em> define la categoría general (administrador, gestor, usuario).
+                Los <em>roles</em> definen permisos específicos y detallados. Un usuario de tipo
+                "Gestor de Laboratorio" puede tener diferentes roles en diferentes laboratorios.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>¿Qué es un Rol?</h2>
+
+            <p>
+                Un <strong>rol</strong> es un conjunto de permisos agrupados bajo un nombre descriptivo.
+                Los roles permiten asignar múltiples permisos a un usuario de una sola vez, en lugar
+                de asignarlos uno por uno.
+            </p>
+
+            <h3>Características de un Rol</h3>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Identificador descriptivo del rol (ej: "Regente Químico", "Técnico de Lab")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Color</strong></td>
+                        <td>Color identificador visual para facilitar la distinción entre roles en la interfaz</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permisos</strong></td>
+                        <td>Lista de acciones específicas que el rol permite realizar</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descripción</strong></td>
+                        <td>Texto explicativo sobre el propósito del rol (opcional)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Roles Típicos en una Universidad</h2>
+
+            <p>
+                A continuación se presentan ejemplos de roles comunes que una universidad podría
+                definir en Organilab:
+            </p>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Descripción</th>
+                        <th>Permisos Típicos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Regente Químico</strong></td>
+                        <td>Responsable de la seguridad química en los laboratorios de una sede o facultad</td>
+                        <td>Ver y gestionar sustancias, SGA, hojas de seguridad, etiquetas, zonas de riesgo, reportes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Administrador de Laboratorio</strong></td>
+                        <td>Responsable de la operación completa de un laboratorio</td>
+                        <td>Gestión completa del inventario, usuarios del lab, reservaciones, reportes, procedimientos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Técnico de Laboratorio</strong></td>
+                        <td>Personal técnico que opera el laboratorio diariamente</td>
+                        <td>Inventario, movimientos de sustancias, gestión de muebles, reservaciones</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Docente</strong></td>
+                        <td>Profesor que utiliza el laboratorio para clases</td>
+                        <td>Consultar inventario, realizar reservaciones, ver procedimientos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estudiante</strong></td>
+                        <td>Estudiante que accede al laboratorio para prácticas</td>
+                        <td>Consultar inventario (solo lectura), ver sustancias y sus fichas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Auditor</strong></td>
+                        <td>Persona que revisa el cumplimiento de normas</td>
+                        <td>Ver reportes, informes, procedimientos, sustancias (solo lectura)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Personalización total</strong>
+                Estos son solo ejemplos. Usted puede crear los roles que necesite su institución,
+                con exactamente los permisos que cada función requiere. No hay límite en la cantidad
+                de roles que puede definir.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Crear un Rol Nuevo</h2>
+
+            <p>
+                Para crear un nuevo rol, acceda a la administración de la organización y seleccione
+                la opción de agregar rol. Puede crear un rol vacío (sin permisos) e ir agregando
+                permisos conforme navegue por el sistema, o copiar los permisos de un rol existente.
+            </p>
+
+            <h3>Opción 1: Rol nuevo sin copiar permisos</h3>
+            <p>
+                Cree el rol con un nombre descriptivo. Los permisos se agregarán después, conforme
+                se necesiten.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_add_role_no_copy.gif" alt="Formulario para crear un rol nuevo sin copiar permisos de otros roles" loading="lazy">
+                <p class="screenshot-caption">Formulario para crear un rol nuevo sin copiar permisos de otros roles</p>
+            </div>
+
+            <h3>Opción 2: Rol nuevo copiando permisos de otro rol</h3>
+            <p>
+                Si ya existe un rol similar, puede crear el nuevo rol copiando los permisos del
+                existente y luego ajustarlos según sea necesario.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_add_role_copy.gif" alt="Formulario para crear un rol nuevo copiando permisos de roles existentes" loading="lazy">
+                <p class="screenshot-caption">Formulario para crear un rol nuevo copiando permisos de roles existentes</p>
+            </div>
+
+            <h3>Copiar un rol a otra organización</h3>
+            <p>
+                Si necesita el mismo rol en varias organizaciones (por ejemplo, el rol "Técnico"
+                en cada sede), puede copiar un rol existente a otra organización. Se copian:
+            </p>
+            <ul>
+                <li>El nombre del rol</li>
+                <li>El color identificador</li>
+                <li>Todos los permisos asociados</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_copy_role_to_org.gif" alt="Proceso de copiar un rol de una organización a otra" loading="lazy">
+                <p class="screenshot-caption">Proceso de copiar un rol de una organización a otra</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Gestionar Roles Existentes</h2>
+
+            <h3>Consultar roles de una organización</h3>
+            <p>
+                Puede ver todos los roles asociados a una organización, incluyendo los permisos
+                de cada uno. Esto es útil para auditar qué permisos están disponibles.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_view_org_roles.gif" alt="Lista de roles de una organización con sus permisos" loading="lazy">
+                <p class="screenshot-caption">Lista de roles de una organización con sus permisos</p>
+            </div>
+
+            <h3>Eliminar un rol</h3>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-triangle"></i> Precaución</strong>
+                Al eliminar un rol, se remueven <strong>todas</strong> sus relaciones con usuarios
+                y organizaciones. Los usuarios que tenían ese rol perderán los permisos asociados.
+                Esta acción es <strong>definitiva</strong> y no se puede deshacer.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap1_delete_org_role.gif" alt="Confirmación de eliminación de un rol" loading="lazy">
+                <p class="screenshot-caption">Confirmación de eliminación de un rol</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Tabla Comparativa: Capacidades por Tipo de Usuario</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Acción</th>
+                        <th class="text-center">Administrador</th>
+                        <th class="text-center">Gestor de Lab</th>
+                        <th class="text-center">Usuario de Lab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Crear organizaciones hijas</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Crear laboratorios (org raíz)</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Registrar usuarios</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Crear y gestionar roles</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Asignar roles a usuarios</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-warning"><i class="bi bi-dash-circle-fill"></i></td>
+                        <td class="text-center text-danger"><i class="bi bi-x-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Gestionar inventario del lab</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-warning"><i class="bi bi-dash-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Consultar inventario</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Generar reportes</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-warning"><i class="bi bi-dash-circle-fill"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Realizar reservaciones</td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                        <td class="text-center text-success"><i class="bi bi-check-circle-fill"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="text-muted" style="font-size: 0.85rem;">
+                <i class="bi bi-check-circle-fill text-success"></i> Permitido &nbsp;
+                <i class="bi bi-dash-circle-fill text-warning"></i> Según el rol asignado &nbsp;
+                <i class="bi bi-x-circle-fill text-danger"></i> No permitido
+            </p>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="02-jerarquía-organizacional.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Jerarquía Organizacional
+                </a>
+                <a href="04-profilepermissión.html" class="next-page">
+                    Asignación de Permisos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2. Solicitar Reservación - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Reservaciones
+            </a>
+            <a href="02-solicitar.html" class="nav-link sub-item active">
+                2. Solicitar Reservación
+            </a>
+            <a href="03-gestionar.html" class="nav-link sub-item">
+                3. Gestionar Reservaciones
+            </a>
+            <a href="04-devolver.html" class="nav-link sub-item">
+                4. Devolución de Productos
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Reservaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Solicitar Reservación</li>
+                </ol>
+            </nav>
+
+            <h1>2. Solicitar Reservación</h1>
+
+            <p class="lead">
+                Crear una solicitud de reservación es el primer paso para obtener productos del
+                laboratorio. En esta sección aprenderá cómo seleccionar los productos, definir
+                cantidades y fechas, y enviar la solicitud para su aprobación.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Crear una Solicitud de Reservación</h2>
+
+            <p>
+                Para solicitar una reservación, el usuario debe acceder al módulo de reservaciones
+                desde el menú principal de su organización. El proceso sigue estos pasos:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Acceder al módulo de reservaciones:</strong> navegue a la sección de
+                    reservaciones dentro de su organización. El sistema mostrará la lista de
+                    reservaciones existentes y la opción de crear una nueva.
+                </li>
+                <li>
+                    <strong>Iniciar nueva reservación:</strong> haga clic en el botón para crear
+                    una nueva reservación. Se abrirá el formulario de solicitud donde podrá
+                    agregar comentarios sobre el propósito de la reservación.
+                </li>
+                <li>
+                    <strong>Seleccionar productos del inventario:</strong> busque y seleccione los
+                    objetos que necesita del inventario del laboratorio. Cada producto corresponde
+                    a un objeto almacenado en un estante (ShelfObject).
+                </li>
+                <li>
+                    <strong>Definir la cantidad requerida:</strong> para cada producto seleccionado,
+                    indique la cantidad que necesita en el campo "cantidad requerida". El sistema
+                    validará que la cantidad solicitada no exceda la disponible en el estante.
+                </li>
+                <li>
+                    <strong>Establecer las fechas:</strong> defina la fecha de inicio y la fecha
+                    de fin del préstamo para cada producto. Estas fechas determinan el periodo
+                    durante el cual tendrá el producto en su poder.
+                </li>
+                <li>
+                    <strong>Indicar si es retornable:</strong> marque si el producto debe ser
+                    devuelto al finalizar el préstamo. Los equipos y materiales reutilizables
+                    normalmente son retornables; los reactivos consumibles no lo son.
+                </li>
+                <li>
+                    <strong>Enviar la solicitud:</strong> una vez configurados todos los productos,
+                    envíe la solicitud. El estado de la reservación será "Solicitada" hasta que
+                    el encargado la revise.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap5_view_reservations.gif" alt="Formulario de creación de una nueva reservación con los campos de producto, cantidad y fechas" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de una nueva reservación con los campos de producto, cantidad y fechas</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Selección de Productos del Inventario</h2>
+
+            <p>
+                Al agregar productos a la reservación, el sistema muestra los objetos disponibles
+                en los estantes del laboratorio seleccionado. Para cada producto se presenta:
+            </p>
+
+            <ul>
+                <li>El nombre del objeto y su tipo (reactivo, material o equipo)</li>
+                <li>La ubicación actual: sala, mueble y estante donde se encuentra</li>
+                <li>La cantidad disponible en el estante</li>
+                <li>La unidad de medida correspondiente</li>
+            </ul>
+
+            <p>
+                Es posible agregar múltiples productos a una misma reservación. Cada producto
+                se configura de forma independiente con su propia cantidad, fechas y condición
+                de retorno.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap5_reserve_shelfobject.gif" alt="Lista de productos disponibles para selección mostrando cantidad en inventario" loading="lazy">
+                <p class="screenshot-caption">Lista de productos disponibles para selección mostrando cantidad en inventario</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Planifique con anticipación</strong>
+                Las solicitudes de reservación deben realizarse con al menos 6 horas de anticipación
+                respecto a la fecha de inicio del préstamo. Esto permite al sistema validar la
+                disponibilidad y al encargado del laboratorio revisar y aprobar la solicitud
+                a tiempo.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Configuración de Fechas</h2>
+
+            <p>
+                Las fechas de préstamo son fundamentales para el correcto funcionamiento del sistema.
+                Cada producto reservado requiere:
+            </p>
+
+            <ul>
+                <li><strong>Fecha de inicio:</strong> el momento en que se necesita el producto. En esta fecha,
+                    el sistema programará una tarea automática para decrementar el inventario.</li>
+                <li><strong>Fecha de fin:</strong> el momento en que el producto debe ser devuelto (si es
+                    retornable). El sistema utiliza esta fecha para el control de devoluciones.</li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Superposición de fechas</strong>
+                El sistema verifica que no existan conflictos de fechas entre reservaciones.
+                Si otro usuario ya tiene reservado el mismo producto para las fechas solicitadas
+                y no hay suficiente cantidad disponible, se notificará al momento de la solicitud
+                o al encargado durante la revisión.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Reservaciones Masivas</h2>
+
+            <p>
+                Las reservaciones masivas permiten solicitar productos para un grupo de usuarios
+                a la vez. Esta funcionalidad es especialmente útil en contextos académicos:
+            </p>
+
+            <ul>
+                <li><strong>Clases de laboratorio:</strong> cuando un grupo de estudiantes necesita
+                    los mismos materiales para una práctica.</li>
+                <li><strong>Actividades grupales:</strong> cuando varios investigadores requieren
+                    los mismos recursos para un proyecto conjunto.</li>
+            </ul>
+
+            <p>
+                Al marcar una reservación como masiva (campo "es masiva"), el sistema permite
+                asociar múltiples usuarios a la misma solicitud, distribuyendo los productos
+                entre los participantes.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap5_mass_reservation.gif" alt="Opción de reservación masiva con selección de múltiples usuarios" loading="lazy">
+                <p class="screenshot-caption">Opción de reservación masiva con selección de múltiples usuarios</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Reservaciones desde Procedimientos</h2>
+
+            <p>
+                Además de crear reservaciones directamente desde el módulo de reservaciones,
+                es posible generar una solicitud a partir de un procedimiento del laboratorio.
+                Cuando un procedimiento define las sustancias y materiales necesarios para su
+                ejecución, el usuario puede iniciar una reservación que incluya automáticamente
+                esos productos.
+            </p>
+
+            <p>
+                Para más detalles sobre cómo reservar desde un procedimiento, consulte la
+                <a href="../procedimientos/05-reservar.html">sección 5 del Capítulo 4: Reservar desde Procedimiento</a>.
+            </p>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Siguiente paso</strong>
+                Una vez enviada la solicitud, el encargado del laboratorio la revisará y decidirá
+                si la aprueba o la rechaza. En la siguiente sección veremos cómo se gestionan
+                las reservaciones desde el punto de vista del administrador.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="01-conceptos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Conceptos de Reservaciones
+                </a>
+                <a href="03-gestionar.html" class="next-page">
+                    Gestionar Reservaciones <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

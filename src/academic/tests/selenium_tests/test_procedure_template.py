@@ -186,7 +186,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 2,
             },
             {
-                "path": "//a[.//*[contains(@class, 'fa-edit')]]",
+                "path": "//a[.//span[contains(@class, 'fa-edit') and contains(@class, 'text-success')]]",
                 "wait_ready": True,
             },
             {
@@ -257,11 +257,11 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 2,
             },
             {
-                "path": "//a[.//*[contains(@class, 'fa-edit')]]",
+                "path": "//a[.//span[contains(@class, 'fa-edit') and contains(@class, 'text-success')]]",
                 "wait_ready": True,
             },
             {
-                "path": "//button[contains(@class, 'open_modal') and @data-bs-target='#object_modal']",
+                "path": "//span[contains(@class, 'open_modal') and @data-bs-target='#object_modal']",
                 "scroll": "window.scrollTo(0, 300)",
                 "wait_ready": True,
             },
@@ -270,7 +270,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "//ul[contains(@class, 'select2-results__options')]/li",
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[2]",
             },
             {
                 "path": "//input[@id='id_quantity']",
@@ -314,7 +314,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 2,
             },
             {
-                "path": "//a[.//*[contains(@class, 'fa-edit')]]",
+                "path": "//a[.//span[contains(@class, 'fa-edit') and contains(@class, 'text-success')]]",
                 "wait_ready": True,
             },
             {
@@ -347,11 +347,11 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 2,
             },
             {
-                "path": "//a[.//*[contains(@class, 'fa-edit')]]",
+                "path": "//a[.//span[contains(@class, 'fa-edit') and contains(@class, 'text-success')]]",
                 "wait_ready": True,
             },
             {
-                "path": "//button[contains(@class, 'open_modal') and @data-bs-target='#observation_modal']",
+                "path": "//span[contains(@class, 'open_modal') and @data-bs-target='#observation_modal']",
                 "scroll": "window.scrollTo(0, 350)",
                 "wait_ready": True,
             },
@@ -389,7 +389,7 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "sleep": 2,
             },
             {
-                "path": "//a[.//*[contains(@class, 'fa-edit')]]",
+                "path": "//a[.//span[contains(@class, 'fa-edit') and contains(@class, 'text-success')]]",
                 "wait_ready": True,
             },
             {

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etiquetado - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificación.html" class="nav-link sub-item">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item active">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item">
+                6. Seguridad y Almacenamiento
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Etiquetado</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-tag"></i> 3. Etiquetado</h1>
+
+            <p class="lead">
+                El etiquetado conforme al SGA es un requisito fundamental para la comunicación de peligros
+                químicos. Organilab permite generar etiquetas que cumplen con el estándar internacional,
+                incluyendo pictogramas, palabras de advertencia, indicaciones de peligro y consejos de prudencia.
+            </p>
+
+            <h2>Pictogramas de Peligro SGA</h2>
+
+            <p>
+                Los pictogramas son símbolos gráficos que comunican de forma visual el tipo de peligro de una
+                sustancia. El SGA define nueve pictogramas estándar, cada uno representado dentro de un rombo
+                con borde rojo:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Pictograma</th>
+                        <th>Nombre</th>
+                        <th>Peligros que representa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="bi bi-fire"></i></td>
+                        <td><strong>Llama</strong></td>
+                        <td>Inflamables, piroforos, autocalentamiento, emisores de gases inflamables</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-circle"></i></td>
+                        <td><strong>Llama sobre círculo</strong></td>
+                        <td>Comburentes (oxidantes)</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-exclamation-diamond"></i></td>
+                        <td><strong>Bomba explotando</strong></td>
+                        <td>Explosivos, sustancias autorreactivas, peróxidos orgánicos</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-droplet"></i></td>
+                        <td><strong>Corrosión</strong></td>
+                        <td>Corrosivos para metales, piel u ojos</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-x-octagon"></i></td>
+                        <td><strong>Calavera y tibias</strong></td>
+                        <td>Toxicidad aguda (mortal o tóxico)</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-exclamation-triangle"></i></td>
+                        <td><strong>Signo de exclamación</strong></td>
+                        <td>Irritación, sensibilización cutánea, toxicidad aguda leve, narcóticos</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-person-x"></i></td>
+                        <td><strong>Peligro para la salud</strong></td>
+                        <td>Carcinógeno, mutágeno, tóxico reproductivo, sensibilizante respiratorio</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-tree"></i></td>
+                        <td><strong>Medio ambiente</strong></td>
+                        <td>Peligroso para el medio ambiente acuático</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-cloud"></i></td>
+                        <td><strong>Cilindro de gas</strong></td>
+                        <td>Gases a presión</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Palabras de Advertencia</h2>
+
+            <p>
+                El SGA define dos palabras de advertencia que indican el nivel de gravedad del peligro.
+                Cada indicación de peligro (código H) tiene asignada una de estas palabras:
+            </p>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-octagon"></i> "Peligro"</strong>
+                Se utiliza para las categorías de peligro más graves. Indica que la sustancia presenta
+                un riesgo significativo para la salud, la seguridad o el medio ambiente. Ejemplos: toxicidad
+                aguda categorías 1-3, líquidos inflamables categoría 1, carcinógenos categoría 1.
+            </div>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> "Advertencia"</strong>
+                Se utiliza para categorías de peligro menos graves. Indica que la sustancia presenta
+                un riesgo menor pero que aún requiere precaución. Ejemplos: toxicidad aguda categoría 4,
+                líquidos inflamables categoría 4, irritación cutánea categoría 2.
+            </div>
+
+            <h2>Elementos de una Etiqueta SGA</h2>
+
+            <p>
+                Una etiqueta conforme al SGA debe contener los siguientes elementos obligatorios.
+                El diagrama muestra la disposición típica de estos elementos:
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 500 400" style="max-width: 500px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-etiq" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Label border -->
+                    <rect x="20" y="10" width="460" height="380" rx="8" fill="#fff" stroke="#c0392b" stroke-width="3"/>
+
+                    <!-- Product name -->
+                    <rect x="40" y="25" width="420" height="35" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+                    <text x="250" y="48" text-anchor="middle" font-weight="bold" font-size="14" fill="#2c3e50">NOMBRE DEL PRODUCTO</text>
+
+                    <!-- Pictograms row -->
+                    <text x="250" y="82" text-anchor="middle" font-size="11" fill="#888">Pictogramas de peligro</text>
+
+                    <!-- Pictogram diamonds -->
+                    <g transform="translate(95,90)">
+                        <polygon points="30,0 60,30 30,60 0,30" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+                        <text x="30" y="35" text-anchor="middle" font-size="18" fill="#c0392b"><tspan>&#9763;</tspan></text>
+                    </g>
+                    <g transform="translate(175,90)">
+                        <polygon points="30,0 60,30 30,60 0,30" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+                        <text x="30" y="35" text-anchor="middle" font-size="18" fill="#c0392b"><tspan>&#9888;</tspan></text>
+                    </g>
+                    <g transform="translate(255,90)">
+                        <polygon points="30,0 60,30 30,60 0,30" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+                        <text x="30" y="35" text-anchor="middle" font-size="18" fill="#c0392b"><tspan>&#9760;</tspan></text>
+                    </g>
+                    <g transform="translate(335,90)">
+                        <polygon points="30,0 60,30 30,60 0,30" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+                        <text x="30" y="35" text-anchor="middle" font-size="11" fill="#c0392b">GHS</text>
+                    </g>
+
+                    <!-- Warning word -->
+                    <rect x="40" y="165" width="420" height="30" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1"/>
+                    <text x="250" y="185" text-anchor="middle" font-weight="bold" font-size="16" fill="#c0392b">PELIGRO</text>
+
+                    <!-- H-phrases section -->
+                    <rect x="40" y="205" width="420" height="65" rx="4" fill="#fef9e7" stroke="#f39c12" stroke-width="1"/>
+                    <text x="50" y="222" font-weight="bold" font-size="11" fill="#2c3e50">Indicaciones de Peligro:</text>
+                    <text x="50" y="238" font-size="10" fill="#555">H225: Líquido y vapores muy inflamables</text>
+                    <text x="50" y="252" font-size="10" fill="#555">H301: Tóxico en caso de ingestión</text>
+                    <text x="50" y="266" font-size="10" fill="#555">H370: Provoca daños en los órganos</text>
+
+                    <!-- P-phrases section -->
+                    <rect x="40" y="280" width="420" height="55" rx="4" fill="#eafaf1" stroke="#27ae60" stroke-width="1"/>
+                    <text x="50" y="297" font-weight="bold" font-size="11" fill="#2c3e50">Consejos de Prudencia:</text>
+                    <text x="50" y="313" font-size="10" fill="#555">P210: Mantener alejado de fuentes de calor</text>
+                    <text x="50" y="327" font-size="10" fill="#555">P301+P310: En caso de ingestión, llamar a un centro de toxicología</text>
+
+                    <!-- Supplier info -->
+                    <rect x="40" y="345" width="420" height="30" rx="4" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+                    <text x="250" y="365" text-anchor="middle" font-size="10" fill="#888">Proveedor: Nombre | Dirección | Teléfono de emergencia</text>
+                </svg>
+                <p class="diagram-caption">Disposición de los elementos obligatorios en una etiqueta SGA</p>
+            </div>
+
+            <h2>Generar Etiquetas en Organilab</h2>
+
+            <p>
+                Organilab incluye un sistema de plantillas de etiquetas SGA (TemplateSGA) que permite
+                generar etiquetas conformes al estándar directamente desde el sistema. El proceso es el siguiente:
+            </p>
+
+            <ol class="step-list">
+                <li>Acceda al módulo <strong>SGA</strong> desde el menú principal de la organización.</li>
+                <li>Seleccione la sustancia para la cual desea generar la etiqueta.</li>
+                <li>Verifique que la sustancia tenga registrados sus códigos H, pictogramas y palabra de advertencia.</li>
+                <li>Seleccione la opción <strong>Generar etiqueta</strong> desde la vista de detalle de la sustancia.</li>
+                <li>Elija una plantilla de etiqueta (TemplateSGA) del catálogo disponible o cree una personalizada.</li>
+                <li>Configure las dimensiones y formato de la etiqueta según sus necesidades.</li>
+                <li>Revise la vista previa de la etiqueta generada.</li>
+                <li>Descargue o imprima la etiqueta en el formato deseado (PDF).</li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap3_sga_label_form.png" alt="Interfaz de generación de etiquetas SGA en el módulo de sustancias" loading="lazy">
+                <p class="screenshot-caption">Interfaz de generación de etiquetas SGA en el módulo de sustancias</p>
+            </div>
+
+            <h2>Elementos Requeridos en la Etiqueta</h2>
+
+            <p>
+                Según el SGA, toda etiqueta de producto químico debe incluir los siguientes seis elementos:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Descripción</th>
+                        <th>Origen en Organilab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Identificación del producto</strong></td>
+                        <td>Nombre químico o comercial del producto</td>
+                        <td>Campo nombre de la Sustancia o del Objeto</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pictogramas de peligro</strong></td>
+                        <td>Símbolos gráficos en rombo rojo</td>
+                        <td>Derivados de los códigos H y clases de peligro</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Palabra de advertencia</strong></td>
+                        <td>"Peligro" o "Advertencia"</td>
+                        <td>Asociada a cada código H (WarningWord)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Indicaciones de peligro</strong></td>
+                        <td>Frases H que describen los peligros</td>
+                        <td>DangerIndication asociadas a la sustancia</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consejos de prudencia</strong></td>
+                        <td>Frases P con medidas preventivas</td>
+                        <td>PrudenceAdvice vinculados a cada código H</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Información del proveedor</strong></td>
+                        <td>Nombre, dirección, teléfono</td>
+                        <td>Datos del proveedor en el registro de la sustancia</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_view_sga_label.gif" alt="Vista previa de una etiqueta SGA generada con pictogramas y frases de peligro" loading="lazy">
+                <p class="screenshot-caption">Vista previa de una etiqueta SGA generada con pictogramas y frases de peligro</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Buenas prácticas de etiquetado</strong>
+                Asegúrese de que todas las etiquetas sean legibles y estén firmemente adheridas al envase.
+                Cuando transvase una sustancia a un recipiente más pequeño, siempre coloque una nueva etiqueta
+                con toda la información requerida. Las etiquetas dañadas o ilegibles deben reemplazarse
+                inmediatamente para mantener la seguridad en el laboratorio.
+            </div>
+
+            <div class="page-navigation">
+                <a href="02-clasificación.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Clasificación SGA
+                </a>
+                <a href="04-msds.html" class="next-page">
+                    Hojas de Seguridad <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

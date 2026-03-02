@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3. Reportes Automáticos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Tareas
+            </a>
+            <a href="02-notificaciones.html" class="nav-link sub-item">
+                2. Notificaciones
+            </a>
+            <a href="03-reportes.html" class="nav-link sub-item active">
+                3. Reportes Automáticos
+            </a>
+            <a href="04-mantenimiento.html" class="nav-link sub-item">
+                4. Mantenimiento del Sistema
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Tareas Programadas</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reportes Automáticos</li>
+                </ol>
+            </nav>
+
+            <h1>3. Reportes Automáticos</h1>
+
+            <p class="lead">
+                Organilab genera automáticamente varios tipos de reportes para cumplir con requisitos
+                regulatorios, registrar históricos de inventario y facilitar la gestión de riesgos.
+                Estos reportes se crean sin intervención manual y quedan disponibles para consulta
+                en el sistema.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Reportes de Precursores Químicos (Mensual)</h2>
+
+            <p>
+                El primer día de cada mes a las 00:02, el sistema genera automáticamente un reporte de
+                precursores químicos para todos los laboratorios que manejan este tipo de sustancias.
+                Los precursores químicos son sustancias controladas que requieren un seguimiento estricto
+                por parte de las autoridades regulatorias.
+            </p>
+
+            <h3>Contenido del Reporte</h3>
+
+            <p>
+                Cada reporte de precursores (PrecursorReport) contiene valores detallados
+                (PrecursorReportValues) para cada sustancia controlada. Los campos que se registran
+                para cada precursor son:
+            </p>
+
+            <dl>
+                <dt class="glossary-term">Saldo anterior (previous_balance)</dt>
+                <dd>La cantidad del precursor al inicio del mes, tomada del saldo final del mes anterior.</dd>
+
+                <dt class="glossary-term">Nuevo ingreso (new_income)</dt>
+                <dd>Cantidad de precursor que ingresó al laboratorio durante el mes, ya sea por compra, donación o transferencia.</dd>
+
+                <dt class="glossary-term">Gasto del mes (month_expense)</dt>
+                <dd>Cantidad de precursor consumida o utilizada durante el mes en las actividades del laboratorio.</dd>
+
+                <dt class="glossary-term">Saldo final (final_balance)</dt>
+                <dd>Cantidad restante al cierre del mes. Se calcula como: saldo anterior + nuevo ingreso - gasto del mes.</dd>
+
+                <dt class="glossary-term">Proveedores (providers)</dt>
+                <dd>Lista de proveedores que suministraron el precursor durante el mes.</dd>
+
+                <dt class="glossary-term">Facturas (bills)</dt>
+                <dd>Referencias a las facturas o comprobantes de compra asociados a los ingresos del mes.</dd>
+            </dl>
+
+            <h3>Numeración Consecutiva</h3>
+
+            <p>
+                Cada reporte de precursores recibe un número consecutivo automático. Esta numeración
+                es continua y no se reinicia, lo que permite mantener una trazabilidad completa de
+                todos los reportes generados. Los entes reguladores pueden solicitar reportes por
+                número consecutivo para auditorías.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap3_precursor_report.png" alt="Vista del reporte mensual de precursores mostrando los valores de cada sustancia controlada" loading="lazy">
+                <p class="screenshot-caption">Vista del reporte mensual de precursores mostrando los valores de cada sustancia controlada</p>
+            </div>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Requisito regulatorio</strong>
+                En Costa Rica, los laboratorios que manejan precursores químicos deben mantener un
+                registro mensual actualizado de las cantidades de cada sustancia controlada. La
+                generación automática de estos reportes facilita el cumplimiento de esta obligación
+                y reduce el riesgo de omisiones.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Reportes de Establecimientos (Diario)</h2>
+
+            <p>
+                Cada día a las 16:45, el sistema genera reportes de establecimientos relacionados con
+                la gestión de riesgos. Estos reportes recopilan información sobre las condiciones de
+                seguridad, incidentes registrados y el estado general de las zonas de riesgo de cada
+                establecimiento.
+            </p>
+
+            <p>
+                Los reportes de establecimientos son parte del módulo de gestión de riesgos de Organilab
+                y permiten:
+            </p>
+
+            <ul>
+                <li>Documentar el estado diario de las condiciones de seguridad</li>
+                <li>Registrar automáticamente las evaluaciones de riesgo completadas</li>
+                <li>Generar un histórico para análisis de tendencias</li>
+                <li>Facilitar la elaboración de informes periódicos para autoridades</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap6_establishment_reports.png" alt="Vista del listado de reportes de establecimientos generados automáticamente" loading="lazy">
+                <p class="screenshot-caption">Vista del listado de reportes de establecimientos generados automáticamente</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Informes Periódicos (InformScheduler)</h2>
+
+            <p>
+                Además de los reportes con horario fijo, Organilab permite configurar informes periódicos
+                personalizados mediante el InformScheduler. Esta funcionalidad permite a los administradores
+                definir qué informes se deben generar, con qué frecuencia y para qué ámbito del sistema.
+            </p>
+
+            <h3>Cómo Configurar un Informe Periódico</h3>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Acceda a la configuración de informes</strong> — Navegue a la sección de
+                    administración de informes periódicos dentro de su organización.
+                </li>
+                <li>
+                    <strong>Cree un nuevo programador de informes</strong> — Seleccione la opción para
+                    crear un nuevo InformScheduler. Deberá definir el tipo de informe que desea generar.
+                </li>
+                <li>
+                    <strong>Configure la periodicidad</strong> — Establezca la frecuencia con la que
+                    se debe generar el informe: diaria, semanal, mensual o con un intervalo personalizado.
+                </li>
+                <li>
+                    <strong>Defina el alcance</strong> — Seleccione los laboratorios, organizaciones o
+                    áreas que debe cubrir el informe.
+                </li>
+                <li>
+                    <strong>Active el programador</strong> — Una vez configurado, active el programador
+                    para que el sistema comience a generar los informes automáticamente según el periodo
+                    definido.
+                </li>
+            </ol>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Permisos necesarios</strong>
+                La configuración de informes periódicos requiere permisos de administración. Solo los
+                usuarios con el rol adecuado podrán crear, modificar o desactivar programadores de
+                informes.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Registro de Stock Máximo Diario (10:00)</h2>
+
+            <p>
+                Cada día a las 10:00, el sistema registra la cantidad máxima de cada reactivo en cada
+                laboratorio. Este registro crea un histórico llamado ObjectMaximumLimit que permite
+                conocer cuál fue el inventario máximo registrado en un día específico.
+            </p>
+
+            <p>
+                Este registro es útil para:
+            </p>
+
+            <ul>
+                <li><strong>Control regulatorio</strong> — Demostrar que las cantidades almacenadas
+                    no exceden los límites permitidos por normativa</li>
+                <li><strong>Análisis de consumo</strong> — Comparar los niveles de stock a lo largo
+                    del tiempo para identificar patrones de uso</li>
+                <li><strong>Planificación de compras</strong> — Determinar los niveles óptimos de
+                    inventario basándose en datos históricos</li>
+                <li><strong>Auditorías</strong> — Proporcionar evidencia documentada de los niveles
+                    de inventario en cualquier fecha</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Resumen de Reportes Automáticos</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo de Reporte</th>
+                        <th>Frecuencia</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Precursores químicos</td>
+                        <td>Mensual (día 1, 00:02)</td>
+                        <td>Reporte con saldos, ingresos, gastos, proveedores y facturas por sustancia</td>
+                    </tr>
+                    <tr>
+                        <td>Establecimientos (riesgo)</td>
+                        <td>Diaria (16:45)</td>
+                        <td>Reporte de condiciones de seguridad y evaluaciones de riesgo</td>
+                    </tr>
+                    <tr>
+                        <td>Informes periódicos</td>
+                        <td>Configurable (InformScheduler)</td>
+                        <td>Informes personalizados según la configuración del administrador</td>
+                    </tr>
+                    <tr>
+                        <td>Stock máximo diario</td>
+                        <td>Diaria (10:00)</td>
+                        <td>Registro histórico de la cantidad máxima de cada reactivo por laboratorio</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Siguiente paso</strong>
+                En la siguiente sección aprenderá sobre las tareas de mantenimiento del sistema:
+                limpieza de datos huérfanos y otras operaciones que mantienen la integridad de la
+                base de datos.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="02-notificaciones.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Notificaciones
+                </a>
+                <a href="04-mantenimiento.html" class="next-page">
+                    Mantenimiento del Sistema <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Procedimiento - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Procedimientos
+            </a>
+            <a href="02-crear.html" class="nav-link sub-item active">
+                2. Crear Procedimiento
+            </a>
+            <a href="03-objetos-pasos.html" class="nav-link sub-item">
+                3. Objetos y Pasos
+            </a>
+            <a href="04-ejecutar.html" class="nav-link sub-item">
+                4. Ejecutar Procedimiento
+            </a>
+            <a href="05-reservar.html" class="nav-link sub-item">
+                5. Reservar desde Procedimiento
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Procedimientos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Crear Procedimiento</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-plus-circle"></i> 2. Crear Procedimiento</h1>
+
+            <p class="lead">
+                La creación de un procedimiento en Organilab comienza con la definición de una plantilla
+                que incluye un título descriptivo, una descripción general y una secuencia de pasos detallados.
+                Esta sección le guiará paso a paso en el proceso.
+            </p>
+
+            <h2>Crear la plantilla del procedimiento</h2>
+
+            <p>
+                Para crear un nuevo procedimiento, siga estos pasos desde el módulo de procedimientos de
+                su organización:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Navegue al módulo de procedimientos desde el menú principal de su organización.
+                </li>
+                <li>
+                    Haga clic en el botón <strong>"Crear Procedimiento"</strong> o <strong>"Nuevo Procedimiento"</strong>.
+                </li>
+                <li>
+                    Complete el campo <strong>Título</strong> con un nombre claro y descriptivo que identifique
+                    la actividad. Por ejemplo: "Preparación de solución de NaOH 1M".
+                </li>
+                <li>
+                    Escriba una <strong>Descripción</strong> general del procedimiento, indicando su propósito,
+                    alcance y cualquier prerrequisito importante.
+                </li>
+                <li>
+                    Guarde la plantilla para continuar agregando pasos.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap4_create_procedure.gif" alt="Formulario de creación de un nuevo procedimiento con los campos título y descripción" loading="lazy">
+                <p class="screenshot-caption">Formulario de creación de un nuevo procedimiento con los campos título y descripción</p>
+            </div>
+
+            <h2>Agregar pasos secuenciales</h2>
+
+            <p>
+                Una vez creada la plantilla, debe agregar los pasos que conforman el procedimiento. Cada paso
+                representa una instrucción específica que el operador debe seguir durante la ejecución.
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    Dentro del procedimiento creado, ubique la sección de <strong>Pasos</strong> y haga clic
+                    en <strong>"Agregar Paso"</strong>.
+                </li>
+                <li>
+                    Ingrese un <strong>Título</strong> breve para el paso. Por ejemplo: "Pesar el hidróxido de sodio".
+                </li>
+                <li>
+                    Utilice el <strong>editor de texto enriquecido</strong> para redactar la descripción detallada
+                    del paso. El editor permite aplicar formato, insertar listas, tablas y resaltar texto importante.
+                </li>
+                <li>
+                    Repita el proceso para cada paso adicional. Los pasos se organizan en orden secuencial.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap4_add_step.gif" alt="Formulario para agregar un nuevo paso al procedimiento con el editor de texto enriquecido" loading="lazy">
+                <p class="screenshot-caption">Formulario para agregar un nuevo paso al procedimiento con el editor de texto enriquecido</p>
+            </div>
+
+            <h2>Uso del editor de texto enriquecido</h2>
+
+            <p>
+                La descripción de cada paso soporta texto enriquecido, lo que permite crear instrucciones
+                claras y bien formateadas. Las funcionalidades disponibles incluyen:
+            </p>
+
+            <ul>
+                <li><strong>Negritas y cursivas</strong> para resaltar información crítica.</li>
+                <li><strong>Listas numeradas y con viñetas</strong> para sub-instrucciones.</li>
+                <li><strong>Tablas</strong> para organizar datos como concentraciones o cantidades.</li>
+                <li><strong>Enlaces</strong> a documentos de referencia o manuales externos.</li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Recomendación</strong>
+                Escriba cada paso de forma clara y concisa. Evite combinar múltiples acciones en un solo paso.
+                Si una instrucción es demasiado compleja, divídala en pasos más pequeños. Esto facilita la
+                ejecución, el seguimiento y la identificación de errores.
+            </div>
+
+            <h2>Consejos para buenas descripciones</h2>
+
+            <p>
+                Una plantilla bien redactada es la base para ejecuciones exitosas. Considere las siguientes
+                recomendaciones al crear sus procedimientos:
+            </p>
+
+            <ul>
+                <li><strong>Sea específico:</strong> En lugar de "agregar reactivo", escriba "agregar 50 mL de ácido sulfúrico concentrado (H2SO4, 98%)".</li>
+                <li><strong>Incluya condiciones:</strong> Especifique temperatura, tiempo de espera, velocidad de agitación u otras condiciones relevantes.</li>
+                <li><strong>Mencione precauciones:</strong> Indique si un paso requiere equipo de protección personal específico o si hay riesgos particulares.</li>
+                <li><strong>Use verbos de acción:</strong> Comience cada paso con un verbo claro: pesar, medir, verter, agitar, calentar, filtrar.</li>
+                <li><strong>Defina criterios de éxito:</strong> Cuando sea aplicable, indique cómo verificar que el paso se completó correctamente (color esperado, pH, temperatura alcanzada).</li>
+            </ul>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Ejemplo de buen paso</strong>
+                <em>Título:</em> Preparar la solución buffer pH 7.0<br>
+                <em>Descripción:</em> Disolver 1.20 g de fosfato de sodio dibásico (Na2HPO4) y 0.22 g de fosfato
+                de sodio monobásico (NaH2PO4) en 800 mL de agua destilada. Agitar con barra magnética durante
+                5 minutos a temperatura ambiente. Verificar el pH con el potenciómetro calibrado. Ajustar a
+                pH 7.0 +/- 0.05 con NaOH 0.1M o HCl 0.1M según sea necesario. Aforar a 1000 mL.
+            </div>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap4_procedure_list.png" alt="Vista del procedimiento con varios pasos agregados en orden secuencial" loading="lazy">
+                <p class="screenshot-caption">Vista del procedimiento con varios pasos agregados en orden secuencial</p>
+            </div>
+
+            <div class="page-navigation">
+                <a href="01-conceptos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Conceptos de Procedimientos
+                </a>
+                <a href="03-objetos-pasos.html" class="next-page">
+                    Objetos y Pasos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

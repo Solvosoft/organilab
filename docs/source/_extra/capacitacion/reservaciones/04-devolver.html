@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Devolución de Productos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Reservaciones
+            </a>
+            <a href="02-solicitar.html" class="nav-link sub-item">
+                2. Solicitar Reservación
+            </a>
+            <a href="03-gestionar.html" class="nav-link sub-item">
+                3. Gestionar Reservaciones
+            </a>
+            <a href="04-devolver.html" class="nav-link sub-item active">
+                4. Devolución de Productos
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Reservaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Devolución de Productos</li>
+                </ol>
+            </nav>
+
+            <h1>4. Devolución de Productos</h1>
+
+            <p class="lead">
+                El proceso de devolución es la etapa final del ciclo de reservación. Aquí se
+                registra la entrega de los productos prestados al laboratorio, se actualiza
+                el inventario y se cierra la reservación cuando todos los productos han sido
+                devueltos.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Devolución Parcial y Completa</h2>
+
+            <p>
+                El sistema permite registrar devoluciones de forma parcial o completa. Esto es
+                útil cuando un usuario devuelve parte de los productos primero y el resto después:
+            </p>
+
+            <ul>
+                <li><strong>Devolución completa:</strong> el usuario devuelve la totalidad de la
+                    cantidad prestada. El campo "cantidad devuelta" (amount_returned) se iguala
+                    a la "cantidad requerida" (amount_required) y el producto pasa al estado
+                    "Devuelto".</li>
+                <li><strong>Devolución parcial:</strong> el usuario devuelve solo una parte de la
+                    cantidad prestada. El campo "cantidad devuelta" se actualiza con la cantidad
+                    parcial. El producto permanece en estado "Prestado" hasta que se complete
+                    la devolución.</li>
+            </ul>
+
+            <div class="info-box">
+                <strong><i class="bi bi-box-arrow-in-left"></i> Actualización automática del inventario</strong>
+                Cada vez que se registra una devolución, el sistema incrementa automáticamente la
+                cantidad del objeto en el estante correspondiente. Si se devuelven 5 unidades,
+                el inventario del estante aumenta en 5 unidades. Esto garantiza que el inventario
+                siempre refleje la disponibilidad real de los productos.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Proceso de Devolución</h2>
+
+            <p>
+                Para registrar la devolución de productos, siga estos pasos:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Localizar la reservación:</strong> acceda al módulo de reservaciones
+                    y busque la reservación en estado "Aceptada" cuyos productos desea devolver.
+                    Puede filtrar por estado o buscar por usuario.
+                </li>
+                <li>
+                    <strong>Seleccionar los productos a devolver:</strong> dentro de la reservación,
+                    identifique los productos que están en estado "Prestado" y que el usuario
+                    desea devolver.
+                </li>
+                <li>
+                    <strong>Ingresar la cantidad devuelta:</strong> para cada producto, ingrese la
+                    cantidad que se está devolviendo. El sistema verifica que la cantidad devuelta
+                    no exceda la cantidad prestada.
+                </li>
+                <li>
+                    <strong>Confirmar la devolución:</strong> al confirmar, el sistema actualiza
+                    el campo "cantidad devuelta", incrementa el inventario del estante y cambia
+                    el estado del producto a "Devuelto" si la devolución es completa.
+                </li>
+                <li>
+                    <strong>Verificar el inventario:</strong> compruebe que la cantidad en el estante
+                    se haya actualizado correctamente después de la devolución.
+                </li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap5_return_products.gif" alt="Formulario de devolución de productos mostrando cantidad prestada y campo para cantidad devuelta" loading="lazy">
+                <p class="screenshot-caption">Formulario de devolución de productos mostrando cantidad prestada y campo para cantidad devuelta</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Productos Retornables vs. Consumibles</h2>
+
+            <p>
+                El manejo de la devolución depende de si el producto fue marcado como retornable
+                al momento de la reservación:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Retornable</th>
+                        <th>Ejemplo</th>
+                        <th>Devolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Equipos</strong></td>
+                        <td>Sí</td>
+                        <td>Microscopio, balanza, agitador</td>
+                        <td>Debe devolverse. El inventario se incrementa al devolver.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Materiales reutilizables</strong></td>
+                        <td>Sí</td>
+                        <td>Cristalería, pipetas, probetas</td>
+                        <td>Debe devolverse. El inventario se incrementa al devolver.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reactivos consumibles</strong></td>
+                        <td>No</td>
+                        <td>Ácidos, solventes, indicadores</td>
+                        <td>No se espera devolución. La cantidad se descontó permanentemente.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Materiales desechables</strong></td>
+                        <td>No</td>
+                        <td>Guantes, papel filtro, puntas</td>
+                        <td>No se espera devolución. La cantidad se descontó permanentemente.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Productos no retornables</strong>
+                Para productos marcados como no retornables, el sistema no presenta la opción
+                de devolución. La cantidad descontada del inventario no se recupera. Al cerrar
+                la reservación, estos productos se consideran finalizados automáticamente sin
+                necesidad de registrar una devolución.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Cierre de una Reservación</h2>
+
+            <p>
+                Una reservación puede cerrarse cuando se cumple alguna de las siguientes condiciones:
+            </p>
+
+            <ul>
+                <li>Todos los productos retornables han sido devueltos en su totalidad</li>
+                <li>Los productos no retornables ya fueron descontados del inventario</li>
+                <li>El encargado decide cerrar la reservación manualmente</li>
+            </ul>
+
+            <p>
+                Al cerrar una reservación, su estado cambia a "Cerrada" (valor 3). Una vez cerrada,
+                no se pueden realizar más operaciones sobre ella. Los registros de la reservación
+                y sus productos quedan disponibles para consulta y auditoría.
+            </p>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap5_reservation_closed.gif" alt="Reservación con todos los productos devueltos y opción de cerrar" loading="lazy">
+                <p class="screenshot-caption">Reservación con todos los productos devueltos y opción de cerrar</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Desactivación de Usuarios en Reservaciones</h2>
+
+            <p>
+                En situaciones donde un usuario ya no forma parte de la organización o pierde
+                acceso al laboratorio, el sistema permite gestionar sus reservaciones activas:
+            </p>
+
+            <ul>
+                <li>Las reservaciones pendientes del usuario pueden ser rechazadas por el encargado</li>
+                <li>Los productos prestados al usuario deben ser devueltos o registrados como
+                    pérdida antes de desactivar su acceso</li>
+                <li>El historial de reservaciones del usuario se mantiene para fines de auditoría</li>
+            </ul>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-person-x"></i> Importante sobre la desactivación</strong>
+                Antes de desactivar a un usuario del sistema, asegúrese de resolver todas sus
+                reservaciones activas. Los productos prestados que no sean devueltos pueden
+                generar inconsistencias en el inventario. Revise las reservaciones en estado
+                "Aceptada" del usuario antes de proceder con la desactivación.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Precisión del Inventario</h2>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Mantenga el inventario preciso</strong>
+                El sistema de reservaciones está diseñado para mantener el inventario actualizado
+                automáticamente. Sin embargo, es recomendable realizar verificaciones periódicas
+                comparando las cantidades registradas en el sistema con las cantidades físicas
+                en el laboratorio. Esto permite detectar discrepancias causadas por devoluciones
+                no registradas, pérdidas o errores de manipulación.
+            </div>
+
+            <p>
+                Para mantener la precisión del inventario en relación con las reservaciones:
+            </p>
+
+            <ul>
+                <li>Registre las devoluciones tan pronto como ocurran</li>
+                <li>Verifique las cantidades devueltas contra las cantidades prestadas</li>
+                <li>Cierre las reservaciones completadas para evitar confusiones</li>
+                <li>Revise periódicamente las reservaciones en estado "Aceptada" con fechas vencidas</li>
+            </ul>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="03-gestionar.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Gestionar Reservaciones
+                </a>
+                <a href="../tareas/index.html" class="next-page">
+                    Tareas Programadas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

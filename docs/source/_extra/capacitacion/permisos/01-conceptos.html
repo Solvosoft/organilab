@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Conceptos Fundamentales - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item active">
+                1. Conceptos Fundamentales
+            </a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">
+                2. Jerarquía Organizacional
+            </a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">
+                3. Roles y Tipos de Usuario
+            </a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">
+                4. Asignación de Permisos
+            </a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item">
+                5. Herencia de Permisos
+            </a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">
+                6. Laboratorios y Zonas
+            </a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">
+                7. Escenarios Prácticos
+            </a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">
+                8. Guía del Administrador
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Conceptos Fundamentales</li>
+                </ol>
+            </nav>
+
+            <h1>1. Conceptos Fundamentales</h1>
+
+            <p class="lead">
+                Antes de configurar permisos en Organilab, es importante comprender los conceptos
+                clave que forman la base del sistema.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>¿Qué es un sistema de permisos jerárquico?</h2>
+
+            <p>
+                Organilab utiliza un sistema de permisos <strong>jerárquico</strong>, lo que significa que
+                los permisos se organizan en niveles que reflejan la estructura real de su institución.
+                Imagine su universidad como un árbol:
+            </p>
+
+            <ul>
+                <li>En la <strong>raíz</strong> está la universidad completa</li>
+                <li>Las <strong>ramas principales</strong> son las sedes regionales</li>
+                <li>Las <strong>ramas secundarias</strong> son las facultades o escuelas</li>
+                <li>Las <strong>hojas</strong> son los laboratorios individuales</li>
+            </ul>
+
+            <p>
+                Los permisos fluyen de arriba hacia abajo: un usuario con permisos en una sede puede
+                tener acceso a los laboratorios de las facultades debajo de esa sede. Pero un usuario
+                con permisos solo en un laboratorio no puede acceder a otros laboratorios.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Regla fundamental</strong>
+                Cuando un usuario tiene permisos en múltiples niveles, <strong>se privilegia el rol
+                más inferior</strong> (el más cercano al recurso). Esto garantiza que los permisos
+                específicos prevalezcan sobre los generales.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>¿Por qué este diseño?</h2>
+
+            <p>
+                Este esquema jerárquico responde a necesidades reales de universidades distribuidas
+                geográficamente:
+            </p>
+
+            <ul>
+                <li>
+                    <strong>Descentralización</strong>: Cada sede o facultad puede gestionar sus
+                    propios laboratorios y usuarios sin depender de un administrador central.
+                </li>
+                <li>
+                    <strong>Control preciso</strong>: Se puede dar acceso exactamente a lo que cada
+                    persona necesita, ni más ni menos.
+                </li>
+                <li>
+                    <strong>Cumplimiento ISO 17025</strong>: La norma exige un sistema claro de
+                    responsabilidades y autoridades. Organilab lo implementa a través de roles
+                    y permisos bien definidos.
+                </li>
+                <li>
+                    <strong>Escalabilidad</strong>: La estructura crece naturalmente al agregar
+                    nuevas sedes, facultades o laboratorios.
+                </li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Diagrama General del Sistema</h2>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px;">
+                    <!-- Fondo -->
+                    <rect width="700" height="420" fill="#f8f9fa" rx="8"/>
+
+                    <!-- Título -->
+                    <text x="350" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#1a4a7a">Sistema de Permisos de Organilab</text>
+
+                    <!-- Organización -->
+                    <rect x="250" y="50" width="200" height="45" rx="6" fill="#1a4a7a" stroke="#1a4a7a"/>
+                    <text x="350" y="77" text-anchor="middle" font-size="13" fill="white" font-weight="500">Organización</text>
+
+                    <!-- Flecha Org -> Lab -->
+                    <line x1="300" y1="95" x2="200" y2="140" stroke="#6c757d" stroke-width="2" marker-end="url(#arrow)"/>
+                    <line x1="400" y1="95" x2="500" y2="140" stroke="#6c757d" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <!-- Laboratorio 1 -->
+                    <rect x="100" y="140" width="200" height="45" rx="6" fill="#2c6fbb" stroke="#2c6fbb"/>
+                    <text x="200" y="167" text-anchor="middle" font-size="13" fill="white" font-weight="500">Laboratorio A</text>
+
+                    <!-- Laboratorio 2 -->
+                    <rect x="400" y="140" width="200" height="45" rx="6" fill="#2c6fbb" stroke="#2c6fbb"/>
+                    <text x="500" y="167" text-anchor="middle" font-size="13" fill="white" font-weight="500">Laboratorio B</text>
+
+                    <!-- Usuarios -->
+                    <rect x="50" y="230" width="160" height="40" rx="6" fill="#28a745" stroke="#28a745"/>
+                    <text x="130" y="254" text-anchor="middle" font-size="12" fill="white">Usuario: María</text>
+
+                    <rect x="270" y="230" width="160" height="40" rx="6" fill="#28a745" stroke="#28a745"/>
+                    <text x="350" y="254" text-anchor="middle" font-size="12" fill="white">Usuario: Carlos</text>
+
+                    <rect x="490" y="230" width="160" height="40" rx="6" fill="#28a745" stroke="#28a745"/>
+                    <text x="570" y="254" text-anchor="middle" font-size="12" fill="white">Usuario: Ana</text>
+
+                    <!-- Flechas usuarios -> labs -->
+                    <line x1="130" y1="230" x2="170" y2="185" stroke="#28a745" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowGreen)"/>
+                    <line x1="350" y1="230" x2="350" y2="95" stroke="#ffc107" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowYellow)"/>
+                    <line x1="570" y1="230" x2="530" y2="185" stroke="#28a745" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#arrowGreen)"/>
+
+                    <!-- Roles -->
+                    <rect x="50" y="290" width="160" height="35" rx="15" fill="#e8f0fe" stroke="#2c6fbb"/>
+                    <text x="130" y="312" text-anchor="middle" font-size="11" fill="#1a4a7a">Rol: Técnico</text>
+
+                    <rect x="270" y="290" width="160" height="35" rx="15" fill="#fff9e6" stroke="#ffc107"/>
+                    <text x="350" y="312" text-anchor="middle" font-size="11" fill="#856404">Rol: Administrador</text>
+
+                    <rect x="490" y="290" width="160" height="35" rx="15" fill="#e8f0fe" stroke="#2c6fbb"/>
+                    <text x="570" y="312" text-anchor="middle" font-size="11" fill="#1a4a7a">Rol: Docente</text>
+
+                    <!-- Leyenda -->
+                    <rect x="50" y="350" width="600" height="55" rx="6" fill="white" stroke="#dee2e6"/>
+                    <text x="70" y="372" font-size="11" fill="#6c757d" font-weight="600">Leyenda:</text>
+                    <line x1="140" y1="368" x2="170" y2="368" stroke="#28a745" stroke-width="2" stroke-dasharray="4"/>
+                    <text x="175" y="372" font-size="11" fill="#6c757d">Permiso en laboratorio</text>
+                    <line x1="360" y1="368" x2="390" y2="368" stroke="#ffc107" stroke-width="2" stroke-dasharray="4"/>
+                    <text x="395" y="372" font-size="11" fill="#6c757d">Permiso en organización (accede a todos los labs)</text>
+                    <text x="70" y="393" font-size="10" fill="#999">María accede solo al Lab A | Carlos accede a Labs A y B (permiso en la organización) | Ana accede solo al Lab B</text>
+
+                    <!-- Definición de flechas -->
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d"/>
+                        </marker>
+                        <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#28a745"/>
+                        </marker>
+                        <marker id="arrowYellow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#ffc107"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Diagrama general: Los permisos se asignan a nivel de laboratorio o de organización.
+                Un permiso a nivel de organización otorga acceso a todos sus laboratorios.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Glosario de Términos</h2>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-building"></i> Organización</dt>
+                    <dd>
+                        Unidad estructural que representa una entidad dentro de la institución (universidad,
+                        sede, facultad, escuela, departamento). Las organizaciones se organizan en forma de
+                        árbol jerárquico. La organización raíz (sin padre) es la de mayor nivel.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-building"></i> Organización Raíz</dt>
+                    <dd>
+                        La organización de nivel superior en la jerarquía, sin organización padre.
+                        Es la única que puede crear laboratorios, usuarios y definir roles iniciales.
+                        Ejemplo: "Universidad Nacional" o "Sede Central".
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-flask"></i> Laboratorio</dt>
+                    <dd>
+                        Espacio físico o lógico donde se realizan actividades de laboratorio.
+                        Cada laboratorio pertenece a una organización y puede contener salas,
+                        muebles, estantes, sustancias, equipos y materiales.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-person-badge"></i> Rol</dt>
+                    <dd>
+                        Conjunto nombrado de permisos que define lo que un usuario puede hacer.
+                        Ejemplos: "Administrador de Laboratorio", "Regente Químico", "Técnico",
+                        "Docente". Cada rol tiene un nombre, un color identificador, y una lista
+                        de permisos específicos asociados.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-key"></i> Permiso</dt>
+                    <dd>
+                        Autorización específica para realizar una acción en el sistema, como
+                        "Agregar laboratorio", "Ver sustancias", "Cambiar mueble", etc.
+                        Los permisos se agrupan dentro de roles para facilitar su administración.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-link-45deg"></i> Asignación de Permisos</dt>
+                    <dd>
+                        La vinculación entre un usuario, un objeto (laboratorio u organización)
+                        y uno o más roles. Define exactamente qué puede hacer un usuario
+                        específico en un lugar específico del sistema.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-arrow-down-up"></i> Herencia de Permisos</dt>
+                    <dd>
+                        Mecanismo por el cual los permisos asignados en un nivel superior de la
+                        jerarquía se propagan a los niveles inferiores. Si un usuario tiene un rol
+                        en una sede, puede acceder a los laboratorios de las facultades de esa sede.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-exclamation-diamond"></i> Zona de Riesgo</dt>
+                    <dd>
+                        Área definida para gestión de riesgos que puede abarcar uno o más
+                        laboratorios. Las zonas de riesgo pertenecen a una organización y permiten
+                        clasificar los espacios según su nivel de peligrosidad.
+                    </dd>
+                </dl>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Visión General del Flujo</h2>
+
+            <p>El proceso general para configurar permisos en Organilab es:</p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Crear la estructura organizacional</strong> — Definir la jerarquía
+                    de su institución (universidad, sedes, facultades).
+                </li>
+                <li>
+                    <strong>Crear laboratorios</strong> — Asociar laboratorios a las organizaciones
+                    correspondientes.
+                </li>
+                <li>
+                    <strong>Definir roles</strong> — Crear roles con los permisos necesarios para
+                    cada función (administrador, técnico, docente, etc.).
+                </li>
+                <li>
+                    <strong>Registrar usuarios</strong> — Crear cuentas de usuario y asociarlas
+                    a las organizaciones.
+                </li>
+                <li>
+                    <strong>Asignar roles</strong> — Vincular los roles apropiados a cada usuario
+                    en sus laboratorios u organizaciones.
+                </li>
+            </ol>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> En las siguientes secciones</strong>
+                Exploraremos cada uno de estos conceptos en detalle, con ejemplos basados en una
+                universidad con múltiples sedes distribuidas geográficamente.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-jerarquía-organizacional.html" class="next-page">
+                    Jerarquía Organizacional <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5. Herencia de Permisos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+    <button class="sidebar-toggle" aria-label="Abrir menú">
+        <i class="bi bi-list"></i>
+    </button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h5>Organilab</h5>
+            <small>Capacitación</small>
+        </div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+            <div class="nav-section">Capítulo 1: Permisos</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">1. Conceptos Fundamentales</a>
+            <a href="02-jerarquía-organizacional.html" class="nav-link sub-item">2. Jerarquía Organizacional</a>
+            <a href="03-roles-y-tipos.html" class="nav-link sub-item">3. Roles y Tipos de Usuario</a>
+            <a href="04-profilepermissión.html" class="nav-link sub-item">4. Asignación de Permisos</a>
+            <a href="05-herencia-permisos.html" class="nav-link sub-item active">5. Herencia de Permisos</a>
+            <a href="06-laboratorios-y-zonas.html" class="nav-link sub-item">6. Laboratorios y Zonas</a>
+            <a href="07-escenarios-practicos.html" class="nav-link sub-item">7. Escenarios Prácticos</a>
+            <a href="08-guía-administrador.html" class="nav-link sub-item">8. Guía del Administrador</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Permisos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Herencia de Permisos</li>
+                </ol>
+            </nav>
+
+            <h1>5. Herencia de Permisos</h1>
+
+            <p class="lead">
+                Una de las características más potentes del sistema de permisos de Organilab es la
+                <strong>herencia</strong>: los permisos pueden propagarse automáticamente a través
+                de la jerarquía organizacional.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Regla Fundamental</h2>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Regla de prioridad</strong>
+                Cuando un usuario tiene permisos en múltiples niveles de la jerarquía,
+                <strong>se privilegia el rol más inferior</strong> (el más cercano al recurso).
+                Los permisos específicos prevalecen sobre los generales.
+            </div>
+
+            <p>
+                Esto significa que si un usuario tiene un rol de "Solo lectura" a nivel de la sede,
+                pero tiene un rol de "Administrador" en un laboratorio específico, en ese laboratorio
+                funcionará como administrador.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>¿Cómo funciona la herencia?</h2>
+
+            <p>
+                Cuando un usuario accede a un laboratorio o una organización, el sistema busca
+                sus permisos siguiendo estos pasos:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Busca permisos directos en el laboratorio</strong> —
+                    ¿El usuario tiene roles asignados directamente en este laboratorio?
+                    Si los tiene, esos son los permisos que se aplican.
+                </li>
+                <li>
+                    <strong>Busca permisos en la organización del laboratorio</strong> —
+                    Si no tiene permisos directos en el lab, ¿tiene roles en la organización
+                    a la que pertenece el laboratorio?
+                </li>
+                <li>
+                    <strong>Sube por la jerarquía</strong> —
+                    Si no encuentra permisos en la organización directa, busca en la organización
+                    padre, luego en la abuela, y así sucesivamente hasta llegar a la raíz.
+                </li>
+                <li>
+                    <strong>Usa el primer nivel que encuentre</strong> —
+                    El primer nivel de la jerarquía donde el usuario tenga permisos asignados
+                    es el que se aplica. No continúa buscando hacia arriba.
+                </li>
+            </ol>
+
+            <!-- ============================================ -->
+            <h2>Diagrama de Flujo de Resolución</h2>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 600 550" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px;">
+                    <rect width="600" height="550" fill="#f8f9fa" rx="8"/>
+
+                    <text x="300" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a4a7a">Flujo de Resolución de Permisos</text>
+
+                    <!-- Inicio -->
+                    <ellipse cx="300" cy="55" rx="120" ry="20" fill="#1a4a7a"/>
+                    <text x="300" y="60" text-anchor="middle" font-size="11" fill="white">Usuario accede a un recurso</text>
+
+                    <line x1="300" y1="75" x2="300" y2="95" stroke="#6c757d" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+
+                    <!-- Pregunta 1 -->
+                    <polygon points="300,95 440,135 300,175 160,135" fill="white" stroke="#2c6fbb" stroke-width="2"/>
+                    <text x="300" y="131" text-anchor="middle" font-size="10" fill="#1a4a7a">¿Tiene permisos directos</text>
+                    <text x="300" y="143" text-anchor="middle" font-size="10" fill="#1a4a7a">en el laboratorio?</text>
+
+                    <!-- Sí -->
+                    <line x1="440" y1="135" x2="510" y2="135" stroke="#28a745" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+                    <text x="470" y="128" font-size="10" fill="#28a745" font-weight="600">Sí</text>
+                    <rect x="510" y="120" width="80" height="30" rx="6" fill="#28a745"/>
+                    <text x="550" y="140" text-anchor="middle" font-size="10" fill="white">Usar estos</text>
+
+                    <!-- No -->
+                    <line x1="300" y1="175" x2="300" y2="205" stroke="#dc3545" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+                    <text x="310" y="193" font-size="10" fill="#dc3545" font-weight="600">No</text>
+
+                    <!-- Pregunta 2 -->
+                    <polygon points="300,205 440,245 300,285 160,245" fill="white" stroke="#2c6fbb" stroke-width="2"/>
+                    <text x="300" y="241" text-anchor="middle" font-size="10" fill="#1a4a7a">¿Tiene permisos en la</text>
+                    <text x="300" y="253" text-anchor="middle" font-size="10" fill="#1a4a7a">organización del lab?</text>
+
+                    <!-- Sí -->
+                    <line x1="440" y1="245" x2="510" y2="245" stroke="#28a745" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+                    <text x="470" y="238" font-size="10" fill="#28a745" font-weight="600">Sí</text>
+                    <rect x="510" y="230" width="80" height="30" rx="6" fill="#28a745"/>
+                    <text x="550" y="250" text-anchor="middle" font-size="10" fill="white">Usar estos</text>
+
+                    <!-- No -->
+                    <line x1="300" y1="285" x2="300" y2="315" stroke="#dc3545" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+                    <text x="310" y="303" font-size="10" fill="#dc3545" font-weight="600">No</text>
+
+                    <!-- Pregunta 3 -->
+                    <polygon points="300,315 440,355 300,395 160,355" fill="white" stroke="#2c6fbb" stroke-width="2"/>
+                    <text x="300" y="351" text-anchor="middle" font-size="10" fill="#1a4a7a">¿Tiene permisos en alguna</text>
+                    <text x="300" y="363" text-anchor="middle" font-size="10" fill="#1a4a7a">org. ancestro (padre, abuelo...)?</text>
+
+                    <!-- Sí -->
+                    <line x1="440" y1="355" x2="510" y2="355" stroke="#28a745" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+                    <text x="470" y="348" font-size="10" fill="#28a745" font-weight="600">Sí</text>
+                    <rect x="510" y="340" width="80" height="30" rx="6" fill="#28a745"/>
+                    <text x="550" y="360" text-anchor="middle" font-size="10" fill="white">Usar estos</text>
+
+                    <!-- No -->
+                    <line x1="300" y1="395" x2="300" y2="425" stroke="#dc3545" stroke-width="1.5" marker-end="url(#arrowFlow)"/>
+                    <text x="310" y="413" font-size="10" fill="#dc3545" font-weight="600">No</text>
+
+                    <!-- Sin acceso -->
+                    <rect x="225" y="425" width="150" height="35" rx="6" fill="#dc3545"/>
+                    <text x="300" y="447" text-anchor="middle" font-size="11" fill="white" font-weight="500">Sin acceso</text>
+
+                    <!-- Nota -->
+                    <rect x="30" y="480" width="540" height="50" rx="6" fill="white" stroke="#dee2e6"/>
+                    <text x="300" y="500" text-anchor="middle" font-size="10" fill="#6c757d">El sistema también combina permisos de roles con permisos directos del usuario</text>
+                    <text x="300" y="515" text-anchor="middle" font-size="10" fill="#6c757d">y permisos de grupos, para obtener el conjunto final de acciones permitidas.</text>
+
+                    <defs>
+                        <marker id="arrowFlow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                El sistema busca permisos desde el nivel más específico (laboratorio) hasta el más general (organización raíz).
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Ejemplo Práctico de Herencia</h2>
+
+            <div class="scenario-card">
+                <h4>Escenario: Regente Químico con acceso a toda la sede</h4>
+                <div class="scenario-situation">
+                    La Dra. Laura Solano es Regente Química de la Sede Central. Se le asigna
+                    el rol "Regente Químico" en la organización "Sede Central" (nivel 1).
+                    La Sede Central tiene dos facultades, cada una con sus laboratorios.
+                </div>
+
+                <div class="diagram-container">
+                    <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="max-width: 600px;">
+                        <rect width="600" height="280" fill="white" rx="8" stroke="#dee2e6"/>
+
+                        <!-- Sede Central con permiso -->
+                        <rect x="200" y="15" width="200" height="35" rx="6" fill="#ffc107"/>
+                        <text x="300" y="37" text-anchor="middle" font-size="11" fill="#333" font-weight="500">Sede Central (Rol: Regente)</text>
+
+                        <line x1="260" y1="50" x2="150" y2="75" stroke="#6c757d" stroke-width="1.5"/>
+                        <line x1="340" y1="50" x2="450" y2="75" stroke="#6c757d" stroke-width="1.5"/>
+
+                        <!-- Facultades -->
+                        <rect x="60" y="75" width="180" height="30" rx="6" fill="#e8f0fe" stroke="#2c6fbb"/>
+                        <text x="150" y="95" text-anchor="middle" font-size="10" fill="#1a4a7a">Facultad de Ciencias</text>
+
+                        <rect x="360" y="75" width="180" height="30" rx="6" fill="#e8f0fe" stroke="#2c6fbb"/>
+                        <text x="450" y="95" text-anchor="middle" font-size="10" fill="#1a4a7a">Facultad de Ingeniería</text>
+
+                        <!-- Labs heredan acceso -->
+                        <line x1="110" y1="105" x2="90" y2="130" stroke="#ffc107" stroke-width="1.5" stroke-dasharray="4"/>
+                        <line x1="190" y1="105" x2="220" y2="130" stroke="#ffc107" stroke-width="1.5" stroke-dasharray="4"/>
+                        <line x1="450" y1="105" x2="450" y2="130" stroke="#ffc107" stroke-width="1.5" stroke-dasharray="4"/>
+
+                        <rect x="25" y="130" width="130" height="28" rx="4" fill="#fff9e6" stroke="#ffc107"/>
+                        <text x="90" y="148" text-anchor="middle" font-size="9" fill="#856404">Lab. Química Org.</text>
+
+                        <rect x="165" y="130" width="120" height="28" rx="4" fill="#fff9e6" stroke="#ffc107"/>
+                        <text x="225" y="148" text-anchor="middle" font-size="9" fill="#856404">Lab. Bioquímica</text>
+
+                        <rect x="385" y="130" width="130" height="28" rx="4" fill="#fff9e6" stroke="#ffc107"/>
+                        <text x="450" y="148" text-anchor="middle" font-size="9" fill="#856404">Lab. Materiales</text>
+
+                        <!-- Usuario -->
+                        <rect x="180" y="190" width="240" height="35" rx="6" fill="#28a745"/>
+                        <text x="300" y="212" text-anchor="middle" font-size="11" fill="white">Dra. Laura Solano (Regente Químico)</text>
+
+                        <text x="300" y="250" text-anchor="middle" font-size="10" fill="#6c757d">
+                            Tiene acceso a los 3 laboratorios por herencia del permiso en la Sede
+                        </text>
+                        <text x="300" y="268" text-anchor="middle" font-size="10" fill="#ffc107" font-weight="500">
+                            Los bordes amarillos indican acceso heredado
+                        </text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Combinación de Permisos</h2>
+
+            <p>
+                Cuando el sistema evalúa los permisos de un usuario, combina tres fuentes:
+            </p>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Fuente</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Permisos de Roles</strong></td>
+                        <td>Los permisos que vienen de los roles asignados al usuario en laboratorios y organizaciones</td>
+                        <td>Rol "Técnico" que incluye "Gestionar inventario", "Ver sustancias", etc.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permisos Directos</strong></td>
+                        <td>Permisos individuales asignados directamente al usuario</td>
+                        <td>Un permiso específico que no está en ningún rol</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permisos de Grupo</strong></td>
+                        <td>Permisos heredados de los grupos de permisos asignados al perfil del usuario</td>
+                        <td>Grupo "Acceso a reportes" asignado al perfil</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                El conjunto final de permisos es la <strong>unión</strong> de estas tres fuentes.
+                Si un permiso aparece en cualquiera de las fuentes, el usuario lo tiene.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Casos Especiales</h2>
+
+            <h3>Usuarios en múltiples organizaciones</h3>
+            <p>
+                Un usuario puede pertenecer a varias organizaciones simultáneamente (por ejemplo,
+                ser técnico en una sede y docente en otra). Los permisos se evalúan independientemente
+                para cada contexto: cuando accede a un laboratorio de la Sede A, se usan los permisos
+                de la Sede A; cuando accede a un laboratorio de la Sede B, se usan los de la Sede B.
+            </p>
+
+            <h3>Organizaciones inactivas</h3>
+            <p>
+                Si una organización se marca como <strong>inactiva</strong>, los usuarios no pueden
+                acceder a ella ni a sus recursos, independientemente de los permisos que tengan.
+            </p>
+
+            <h3>Superusuarios</h3>
+            <p>
+                Los superusuarios del sistema tienen acceso completo a todo, independientemente
+                de las asignaciones de roles y permisos. Este nivel solo debe usarse para
+                administradores del sistema.
+            </p>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-shield-exclamation"></i> Buena práctica</strong>
+                Evite usar cuentas de superusuario para operaciones diarias. Cree roles
+                administrativos específicos con los permisos necesarios. Esto garantiza
+                la trazabilidad de acciones y cumple con los requisitos de ISO 17025.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="04-profilepermissión.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Asignación de Permisos
+                </a>
+                <a href="06-laboratorios-y-zonas.html" class="next-page">
+                    Laboratorios y Zonas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

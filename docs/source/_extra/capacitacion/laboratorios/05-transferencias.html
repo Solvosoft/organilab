@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5. Transferencias - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-estructura.html" class="nav-link sub-item">
+                1. Estructura del Laboratorio
+            </a>
+            <a href="02-salas-muebles.html" class="nav-link sub-item">
+                2. Salas y Muebles
+            </a>
+            <a href="03-estantes.html" class="nav-link sub-item">
+                3. Estantes
+            </a>
+            <a href="04-objetos.html" class="nav-link sub-item">
+                4. Objetos del Laboratorio
+            </a>
+            <a href="05-transferencias.html" class="nav-link sub-item active">
+                5. Transferencias
+            </a>
+            <a href="06-reportes.html" class="nav-link sub-item">
+                6. Reportes y Auditoría
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Laboratorios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Transferencias</li>
+                </ol>
+            </nav>
+
+            <h1>5. Transferencias</h1>
+
+            <p class="lead">
+                Las transferencias permiten mover objetos entre laboratorios de manera controlada
+                y trazable. Organilab implementa un flujo de solicitud y aceptación que garantiza
+                que ambas partes estén de acuerdo antes de que el movimiento se ejecute.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Cómo Funcionan las Transferencias</h2>
+
+            <p>
+                El sistema de transferencias de Organilab se basa en el modelo <strong>TransferObject</strong>,
+                que registra cada movimiento de objetos entre laboratorios. Cada transferencia involucra:
+            </p>
+
+            <ul>
+                <li><strong>Laboratorio de origen</strong> (lab_send) — El laboratorio que envía el objeto</li>
+                <li><strong>Laboratorio de destino</strong> (lab_received) — El laboratorio que recibe el objeto</li>
+                <li><strong>Objeto transferido</strong> — El ShelfObject que se mueve</li>
+                <li><strong>Cantidad</strong> — La cantidad del objeto que se transfiere</li>
+                <li><strong>Estado</strong> — El estado actual de la transferencia (Solicitada o Aceptada)</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Flujo de Transferencia</h2>
+
+            <p>
+                Las transferencias siguen un flujo de dos pasos para garantizar el control y la trazabilidad:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Solicitar la transferencia</strong> — Un usuario del laboratorio de origen
+                    selecciona el objeto que desea transferir, indica la cantidad y el laboratorio
+                    de destino. La transferencia queda en estado <strong>"Solicitada"</strong> hasta
+                    que el laboratorio de destino la procese.
+                </li>
+                <li>
+                    <strong>Revisar la solicitud</strong> — El laboratorio de destino recibe una
+                    notificación de la solicitud pendiente. Un usuario autorizado revisa los detalles
+                    de la transferencia: qué objeto se envía, en qué cantidad y desde dónde.
+                </li>
+                <li>
+                    <strong>Aceptar la transferencia</strong> — Si el laboratorio de destino está de
+                    acuerdo, acepta la transferencia. El estado cambia a <strong>"Aceptada"</strong>
+                    y el sistema actualiza automáticamente las cantidades en ambos laboratorios:
+                    resta del origen y suma en el destino.
+                </li>
+                <li>
+                    <strong>Verificar el resultado</strong> — Ambos laboratorios pueden verificar
+                    que las cantidades se actualizaron correctamente. La transferencia queda registrada
+                    en el historial para fines de auditoría.
+                </li>
+            </ol>
+
+            <!-- ============================================ -->
+            <h2>Diagrama del Flujo de Transferencia</h2>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 350" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px;">
+                    <defs>
+                        <marker id="arrowRight" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d"/>
+                        </marker>
+                        <marker id="arrowRightBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#2c6fbb"/>
+                        </marker>
+                        <marker id="arrowRightGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#28a745"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Fondo -->
+                    <rect width="700" height="350" fill="#f8f9fa" rx="8"/>
+
+                    <!-- Título -->
+                    <text x="350" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a4a7a">Flujo de Transferencia entre Laboratorios</text>
+
+                    <!-- Laboratorio Origen -->
+                    <rect x="30" y="60" width="180" height="55" rx="8" fill="#1a4a7a"/>
+                    <text x="120" y="83" text-anchor="middle" font-size="13" fill="white" font-weight="600">Laboratorio A</text>
+                    <text x="120" y="101" text-anchor="middle" font-size="10" fill="#a8c8e8">(Origen)</text>
+
+                    <!-- Laboratorio Destino -->
+                    <rect x="490" y="60" width="180" height="55" rx="8" fill="#1a4a7a"/>
+                    <text x="580" y="83" text-anchor="middle" font-size="13" fill="white" font-weight="600">Laboratorio B</text>
+                    <text x="580" y="101" text-anchor="middle" font-size="10" fill="#a8c8e8">(Destino)</text>
+
+                    <!-- Paso 1: Solicitud -->
+                    <rect x="240" y="130" width="220" height="40" rx="6" fill="#ffc107"/>
+                    <text x="350" y="155" text-anchor="middle" font-size="12" fill="#333" font-weight="500">1. Solicitud de Transferencia</text>
+
+                    <!-- Flecha origen -> solicitud -->
+                    <line x1="120" y1="115" x2="120" y2="148" stroke="#6c757d" stroke-width="1.5"/>
+                    <line x1="120" y1="148" x2="235" y2="148" stroke="#6c757d" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+                    <!-- Paso 2: Revisión -->
+                    <rect x="240" y="190" width="220" height="40" rx="6" fill="#2c6fbb"/>
+                    <text x="350" y="215" text-anchor="middle" font-size="12" fill="white" font-weight="500">2. Revisión por Destino</text>
+
+                    <!-- Flecha solicitud -> revisión -->
+                    <line x1="350" y1="170" x2="350" y2="186" stroke="#6c757d" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+                    <!-- Flecha destino -> revisión -->
+                    <line x1="580" y1="115" x2="580" y2="208" stroke="#2c6fbb" stroke-width="1.5"/>
+                    <line x1="580" y1="208" x2="465" y2="208" stroke="#2c6fbb" stroke-width="1.5" marker-end="url(#arrowRightBlue)"/>
+
+                    <!-- Paso 3: Aceptación -->
+                    <rect x="240" y="250" width="220" height="40" rx="6" fill="#28a745"/>
+                    <text x="350" y="275" text-anchor="middle" font-size="12" fill="white" font-weight="500">3. Transferencia Aceptada</text>
+
+                    <!-- Flecha revisión -> aceptación -->
+                    <line x1="350" y1="230" x2="350" y2="246" stroke="#6c757d" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+                    <!-- Flechas resultado -->
+                    <line x1="240" y1="270" x2="120" y2="270" stroke="#28a745" stroke-width="1.5" stroke-dasharray="4"/>
+                    <text x="120" y="290" text-anchor="middle" font-size="10" fill="#28a745">Cantidad restada</text>
+
+                    <line x1="460" y1="270" x2="580" y2="270" stroke="#28a745" stroke-width="1.5" stroke-dasharray="4"/>
+                    <text x="580" y="290" text-anchor="middle" font-size="10" fill="#28a745">Cantidad sumada</text>
+
+                    <!-- Leyenda -->
+                    <rect x="50" y="310" width="600" height="30" rx="6" fill="white" stroke="#dee2e6"/>
+                    <text x="350" y="330" text-anchor="middle" font-size="10" fill="#6c757d">
+                        El objeto se descuenta del Lab A y se agrega al Lab B. Ambos movimientos quedan registrados para auditoría.
+                    </text>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Flujo completo de una transferencia: desde la solicitud en el laboratorio de origen
+                hasta la aceptación en el laboratorio de destino.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Estados de la Transferencia</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Descripción</th>
+                        <th>Acción Requerida</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Solicitada (Requested)</strong></td>
+                        <td>La transferencia ha sido creada por el laboratorio de origen y está pendiente de revisión</td>
+                        <td>El laboratorio de destino debe revisar y decidir si acepta</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aceptada (Accepted)</strong></td>
+                        <td>El laboratorio de destino aceptó la transferencia. Las cantidades se actualizaron</td>
+                        <td>Ninguna. La transferencia está completa</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Marcar como Descarte</h2>
+
+            <p>
+                Durante el proceso de transferencia, existe la opción de <strong>marcar como descarte</strong>
+                (mark_as_discard). Esta opción permite transferir un objeto directamente a un estante de
+                descarte del laboratorio de destino, lo cual es útil cuando:
+            </p>
+
+            <ul>
+                <li>Un laboratorio desea enviar residuos a un laboratorio centralizado de gestión de residuos</li>
+                <li>Se necesita transferir reactivos vencidos a un punto de recolección</li>
+                <li>Se realiza una limpieza del laboratorio y los materiales descartados deben registrarse</li>
+            </ul>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Nota sobre descarte</strong>
+                Al marcar una transferencia como descarte, el objeto se deposita automáticamente en un
+                estante de descarte del laboratorio de destino. Asegúrese de que el laboratorio de
+                destino tenga configurado al menos un estante de descarte para recibir estos objetos.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Transferencias entre Organizaciones</h2>
+
+            <p>
+                Organilab permite realizar transferencias entre laboratorios que pertenecen a
+                <strong>diferentes organizaciones</strong>. Esto es especialmente útil en instituciones
+                con múltiples sedes o facultades que necesitan compartir recursos.
+            </p>
+
+            <p>Para que una transferencia entre organizaciones funcione, se requiere que:</p>
+
+            <ul>
+                <li>Ambos laboratorios estén registrados y activos en el sistema</li>
+                <li>El usuario que solicita la transferencia tenga permisos en el laboratorio de origen</li>
+                <li>El usuario que acepta la transferencia tenga permisos en el laboratorio de destino</li>
+                <li>El objeto que se transfiere exista en el estante del laboratorio de origen</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Permisos Necesarios</h2>
+
+            <div class="info-box">
+                <strong><i class="bi bi-shield-lock"></i> Permisos para transferencias</strong>
+                Para realizar transferencias, los usuarios necesitan permisos específicos:
+                <ul style="margin-bottom: 0; margin-top: 0.5rem;">
+                    <li><strong>Para solicitar:</strong> El usuario debe tener permiso de gestión de objetos en el laboratorio de origen</li>
+                    <li><strong>Para aceptar:</strong> El usuario debe tener permiso de gestión de objetos en el laboratorio de destino</li>
+                    <li>Los administradores de la organización pueden gestionar transferencias en todos los laboratorios bajo su ámbito</li>
+                </ul>
+            </div>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap2_transfer_out.gif" alt="Lista de transferencias pendientes mostrando el laboratorio de origen, destino, objeto y estado" loading="lazy">
+                <p class="screenshot-caption">Lista de transferencias pendientes mostrando el laboratorio de origen, destino, objeto y estado</p>
+            </div>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Siguiente paso</strong>
+                En la siguiente sección aprenderá sobre los reportes y la auditoría del laboratorio,
+                incluyendo cómo rastrear todos los cambios realizados en el inventario.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="04-objetos.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Objetos del Laboratorio
+                </a>
+                <a href="06-reportes.html" class="next-page">
+                    Reportes y Auditoría <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

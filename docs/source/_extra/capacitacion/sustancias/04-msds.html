@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hojas de Seguridad (MSDS) - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-reactivos.html" class="nav-link sub-item">
+                1. Reactivos y Sustancias
+            </a>
+            <a href="02-clasificación.html" class="nav-link sub-item">
+                2. Clasificación SGA
+            </a>
+            <a href="03-etiquetado.html" class="nav-link sub-item">
+                3. Etiquetado
+            </a>
+            <a href="04-msds.html" class="nav-link sub-item active">
+                4. Hojas de Seguridad
+            </a>
+            <a href="05-precursores.html" class="nav-link sub-item">
+                5. Precursores Químicos
+            </a>
+            <a href="06-seguridad.html" class="nav-link sub-item">
+                6. Seguridad y Almacenamiento
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Sustancias</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Hojas de Seguridad</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-file-earmark-medical"></i> 4. Hojas de Seguridad (MSDS)</h1>
+
+            <p class="lead">
+                Las Hojas de Datos de Seguridad (MSDS, por sus siglas en inglés: Material Safety Data Sheet)
+                son documentos esenciales que proporcionan información detallada sobre las propiedades,
+                peligros, manejo seguro y procedimientos de emergencia de cada sustancia química.
+            </p>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Requisito normativo</strong>
+                La legislación costarricense exige que todo laboratorio que maneje sustancias químicas
+                mantenga disponibles las hojas de seguridad de cada producto. Estas deben estar accesibles
+                para todo el personal y actualizadas según las versiones más recientes proporcionadas
+                por los fabricantes o proveedores.
+            </div>
+
+            <h2>¿Qué es una Hoja de Datos de Seguridad?</h2>
+
+            <p>
+                Una MSDS (también conocida como SDS - Safety Data Sheet, o FDS - Ficha de Datos de Seguridad)
+                es un documento estandarizado que describe las características de una sustancia química.
+                Según el SGA, toda hoja de seguridad debe contener exactamente <strong>16 secciones</strong>
+                en un orden específico:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Sección</th>
+                        <th>Título</th>
+                        <th>Contenido principal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>Identificación del producto</td>
+                        <td>Nombre del producto, usos, datos del proveedor, teléfono de emergencia</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Identificación de peligros</td>
+                        <td>Clasificación SGA, elementos de la etiqueta, otros peligros</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>Composición / Información de ingredientes</td>
+                        <td>Identidad química, números CAS, concentraciones</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td>Primeros auxilios</td>
+                        <td>Medidas por vía de exposición (inhalación, contacto, ingestión)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td>Medidas contra incendios</td>
+                        <td>Medios de extinción, peligros específicos, equipo de protección</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td>Medidas en caso de derrame</td>
+                        <td>Precauciones personales, métodos de contención y limpieza</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7</strong></td>
+                        <td>Manipulación y almacenamiento</td>
+                        <td>Precauciones de manejo seguro, condiciones de almacenamiento</td>
+                    </tr>
+                    <tr>
+                        <td><strong>8</strong></td>
+                        <td>Controles de exposición / Protección personal</td>
+                        <td>Límites de exposición, equipo de protección personal (EPP)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>9</strong></td>
+                        <td>Propiedades físicas y químicas</td>
+                        <td>Apariencia, olor, pH, punto de ebullición, densidad, solubilidad</td>
+                    </tr>
+                    <tr>
+                        <td><strong>10</strong></td>
+                        <td>Estabilidad y reactividad</td>
+                        <td>Condiciones a evitar, materiales incompatibles, productos de descomposición</td>
+                    </tr>
+                    <tr>
+                        <td><strong>11</strong></td>
+                        <td>Información toxicológica</td>
+                        <td>Vías de exposición, efectos agudos y crónicos, datos de toxicidad</td>
+                    </tr>
+                    <tr>
+                        <td><strong>12</strong></td>
+                        <td>Información ecológica</td>
+                        <td>Toxicidad acuática, persistencia, bioacumulación</td>
+                    </tr>
+                    <tr>
+                        <td><strong>13</strong></td>
+                        <td>Consideraciones de eliminación</td>
+                        <td>Métodos de eliminación segura, normativa aplicable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>14</strong></td>
+                        <td>Información de transporte</td>
+                        <td>Número ONU, clase de peligro para transporte, embalaje</td>
+                    </tr>
+                    <tr>
+                        <td><strong>15</strong></td>
+                        <td>Información reglamentaria</td>
+                        <td>Regulaciones nacionales e internacionales aplicables</td>
+                    </tr>
+                    <tr>
+                        <td><strong>16</strong></td>
+                        <td>Otra información</td>
+                        <td>Fecha de elaboración, revisión, abreviaturas, referencias</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Gestión de MSDS en Organilab</h2>
+
+            <p>
+                Organilab gestiona las hojas de seguridad a través del modelo <strong>MSDSObject</strong>,
+                que permite asociar archivos PDF de hojas de seguridad a los productos químicos registrados
+                en el sistema. Los campos principales son:
+            </p>
+
+            <ul>
+                <li><strong>Proveedor:</strong> El fabricante o distribuidor que proporciona la hoja de seguridad.</li>
+                <li><strong>Archivo (PDF):</strong> El documento de la hoja de seguridad en formato PDF.</li>
+                <li><strong>Producto:</strong> La sustancia o reactivo al que corresponde la hoja.</li>
+            </ul>
+
+            <h3>Subir una Hoja de Seguridad</h3>
+
+            <ol class="step-list">
+                <li>Acceda al módulo <strong>MSDS</strong> desde el menú de la organización (ruta: /msds/&lt;org_pk&gt;/).</li>
+                <li>Seleccione la opción <strong>Agregar hoja de seguridad</strong>.</li>
+                <li>Seleccione el proveedor de la lista disponible o registre uno nuevo.</li>
+                <li>Suba el archivo PDF de la hoja de seguridad desde su computadora.</li>
+                <li>Asocie la hoja al producto químico correspondiente seleccionándolo del catálogo.</li>
+                <li>Guarde el registro para que la hoja quede disponible para consulta.</li>
+            </ol>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_msds_upload_form.gif" alt="Formulario para subir una nueva hoja de seguridad en el módulo MSDS" loading="lazy">
+                <p class="screenshot-caption">Formulario para subir una nueva hoja de seguridad en el módulo MSDS</p>
+            </div>
+
+            <h3>Consultar Hojas de Seguridad</h3>
+
+            <p>
+                Las hojas de seguridad pueden consultarse de varias formas dentro de Organilab:
+            </p>
+
+            <ul>
+                <li><strong>Desde el módulo MSDS:</strong> Navegue al listado completo de hojas de seguridad
+                    disponibles en la organización y busque por nombre de producto o proveedor.</li>
+                <li><strong>Desde la vista de sustancia:</strong> Al consultar los detalles de un reactivo,
+                    encontrará un enlace directo a su hoja de seguridad si esta ha sido cargada.</li>
+                <li><strong>Desde las características de sustancia:</strong> El campo <em>security_sheet</em>
+                    permite adjuntar directamente un archivo de hoja de seguridad a las características
+                    de la sustancia.</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap3_msds_list.png" alt="Lista de hojas de seguridad disponibles con opciones de búsqueda y descarga" loading="lazy">
+                <p class="screenshot-caption">Lista de hojas de seguridad disponibles con opciones de búsqueda y descarga</p>
+            </div>
+
+            <h2>Árbol de Seguridad (SecurityLeaf)</h2>
+
+            <p>
+                El módulo MSDS de Organilab también incluye el modelo <strong>SecurityLeaf</strong>, que
+                permite organizar la información de seguridad en una estructura de árbol jerárquico
+                (OrganilabNode). Esto es útil para:
+            </p>
+
+            <ul>
+                <li>Organizar las hojas de seguridad por categorías o departamentos.</li>
+                <li>Crear una biblioteca estructurada de documentación de seguridad.</li>
+                <li>Facilitar la navegación y búsqueda de información de seguridad.</li>
+                <li>Mantener un registro ordenado de toda la documentación requerida.</li>
+            </ul>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Recomendación</strong>
+                Mantenga siempre las hojas de seguridad actualizadas. Cuando reciba una nueva versión
+                de un proveedor, suba el archivo actualizado al sistema y verifique que la información
+                de clasificación de la sustancia coincida con la nueva hoja. Las hojas de seguridad
+                deben revisarse al menos cada 5 años o cuando haya nueva información disponible.
+            </div>
+
+            <h2>Importancia de las MSDS</h2>
+
+            <p>
+                Las hojas de seguridad son la fuente principal de información para:
+            </p>
+
+            <ul>
+                <li><strong>Respuesta a emergencias:</strong> Contienen instrucciones de primeros auxilios,
+                    medidas contra incendios y procedimientos en caso de derrames.</li>
+                <li><strong>Protección personal:</strong> Especifican el equipo de protección personal
+                    necesario para manipular cada sustancia.</li>
+                <li><strong>Almacenamiento seguro:</strong> Indican las condiciones de almacenamiento
+                    adecuadas y las incompatibilidades químicas.</li>
+                <li><strong>Eliminación de residuos:</strong> Describen los métodos apropiados para
+                    desechar la sustancia de manera segura.</li>
+                <li><strong>Cumplimiento normativo:</strong> Son un requisito legal que debe estar
+                    disponible para inspecciones y auditorías.</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/gif/cap3_view_msds.gif" alt="Vista de detalle de una hoja de seguridad asociada a un reactivo en Organilab" loading="lazy">
+                <p class="screenshot-caption">Vista de detalle de una hoja de seguridad asociada a un reactivo en Organilab</p>
+            </div>
+
+            <div class="page-navigation">
+                <a href="03-etiquetado.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Etiquetado
+                </a>
+                <a href="05-precursores.html" class="next-page">
+                    Precursores Químicos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

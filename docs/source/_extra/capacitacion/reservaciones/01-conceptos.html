@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Conceptos de Reservaciones - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item active">
+                1. Conceptos de Reservaciones
+            </a>
+            <a href="02-solicitar.html" class="nav-link sub-item">
+                2. Solicitar Reservación
+            </a>
+            <a href="03-gestionar.html" class="nav-link sub-item">
+                3. Gestionar Reservaciones
+            </a>
+            <a href="04-devolver.html" class="nav-link sub-item">
+                4. Devolución de Productos
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link">
+                <i class="bi bi-clock-history"></i> Tareas Programadas
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Reservaciones</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Conceptos de Reservaciones</li>
+                </ol>
+            </nav>
+
+            <h1>1. Conceptos de Reservaciones</h1>
+
+            <p class="lead">
+                Antes de utilizar el sistema de reservaciones, es importante comprender los conceptos
+                fundamentales: qué se puede reservar, cuáles son los estados posibles y cómo fluye
+                una reservación desde la solicitud hasta su cierre.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>¿Qué se puede reservar?</h2>
+
+            <p>
+                El sistema de reservaciones permite solicitar el préstamo de cualquier objeto registrado
+                en los estantes del laboratorio. Esto incluye tres tipos de elementos:
+            </p>
+
+            <ul>
+                <li><strong>Equipos:</strong> instrumentos y aparatos del laboratorio como balanzas, microscopios, agitadores y otros dispositivos.</li>
+                <li><strong>Sustancias:</strong> reactivos químicos almacenados en los estantes, con control de cantidad disponible.</li>
+                <li><strong>Materiales:</strong> materiales de uso general como cristalería, pipetas, probetas y otros insumos.</li>
+            </ul>
+
+            <p>
+                Cada producto reservado se asocia directamente a un objeto del estante (ShelfObject),
+                lo que permite al sistema controlar la disponibilidad y ajustar el inventario automáticamente.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Estados de una Reservación</h2>
+
+            <p>
+                Una reservación pasa por diferentes estados durante su ciclo de vida. El administrador
+                o encargado del laboratorio es quien cambia el estado según las acciones que realice:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Valor</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Solicitada</strong></td>
+                        <td>0 - Requested</td>
+                        <td>El usuario ha enviado la solicitud de reservación. Está pendiente de revisión.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Aceptada</strong></td>
+                        <td>1 - Accepted</td>
+                        <td>El encargado aprobó la solicitud. Los productos están listos para ser prestados.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rechazada</strong></td>
+                        <td>2 - Denied</td>
+                        <td>El encargado rechazó la solicitud. No se prestarán los productos.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cerrada</strong></td>
+                        <td>3 - Closed</td>
+                        <td>Todos los productos han sido devueltos o la reservación fue finalizada.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Estados de un Producto Reservado</h2>
+
+            <p>
+                Cada producto individual dentro de una reservación tiene su propio estado, independiente
+                del estado general de la reservación. Esto permite manejar devoluciones parciales:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Valor</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Solicitado</strong></td>
+                        <td>0 - Requested</td>
+                        <td>El producto fue solicitado como parte de la reservación.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Prestado</strong></td>
+                        <td>1 - Borrowed</td>
+                        <td>El producto fue entregado al usuario. El inventario se ha reducido.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rechazado</strong></td>
+                        <td>2 - Denied</td>
+                        <td>El producto específico fue rechazado (no está disponible o no se autoriza).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Seleccionado</strong></td>
+                        <td>3 - Selected</td>
+                        <td>El producto ha sido marcado para inclusión en la reservación.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Devuelto</strong></td>
+                        <td>4 - Returned</td>
+                        <td>El producto fue devuelto al laboratorio. El inventario se ha incrementado.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Productos Retornables y No Retornables</h2>
+
+            <p>
+                No todos los productos reservados necesitan ser devueltos. El campo <strong>es retornable</strong>
+                (is_returnable) determina si el sistema espera la devolución del producto:
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-arrow-repeat"></i> Productos retornables</strong>
+                Son aquellos que deben devolverse después de su uso, como equipos y materiales
+                reutilizables. El sistema rastrea la cantidad prestada y la cantidad devuelta
+                para asegurar que todo regrese al inventario.
+            </div>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Productos no retornables</strong>
+                Son aquellos que se consumen durante su uso, como reactivos químicos. Una vez
+                prestados, no se espera su devolución. La cantidad se descuenta permanentemente
+                del inventario.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Ciclo de Vida de una Reservación</h2>
+
+            <p>
+                El siguiente diagrama muestra el flujo completo de una reservación, incluyendo
+                los estados tanto de la reservación como de los productos individuales:
+            </p>
+
+            <div class="diagram-container">
+                <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" style="max-width: 700px;">
+                    <defs>
+                        <marker id="arrowRight" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#6c757d"/>
+                        </marker>
+                        <marker id="arrowDown" markerWidth="10" markerHeight="7" refX="5" refY="7" orient="auto">
+                            <polygon points="0 0, 10 0, 5 7" fill="#6c757d"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Fondo -->
+                    <rect width="700" height="400" fill="#f8f9fa" rx="8"/>
+
+                    <!-- Título -->
+                    <text x="350" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#1a4a7a">Ciclo de Vida de una Reservación</text>
+
+                    <!-- === Pista de Reservación === -->
+                    <text x="20" y="60" font-size="12" font-weight="bold" fill="#1a4a7a">Reservación:</text>
+
+                    <!-- Solicitar -->
+                    <rect x="30" y="70" width="130" height="40" rx="8" fill="#ffc107"/>
+                    <text x="95" y="95" text-anchor="middle" font-size="12" fill="#333" font-weight="600">Solicitada</text>
+
+                    <!-- Flecha -->
+                    <line x1="160" y1="90" x2="195" y2="90" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+                    <!-- Decisión -->
+                    <polygon points="240,70 280,90 240,110 200,90" fill="#e9ecef" stroke="#6c757d" stroke-width="1.5"/>
+                    <text x="240" y="94" text-anchor="middle" font-size="10" fill="#333">Revisar</text>
+
+                    <!-- Flecha Aceptar -->
+                    <line x1="280" y1="90" x2="315" y2="90" stroke="#28a745" stroke-width="2" marker-end="url(#arrowRight)"/>
+                    <text x="298" y="82" font-size="9" fill="#28a745">Aceptar</text>
+
+                    <!-- Aceptada -->
+                    <rect x="320" y="70" width="130" height="40" rx="8" fill="#28a745"/>
+                    <text x="385" y="95" text-anchor="middle" font-size="12" fill="white" font-weight="600">Aceptada</text>
+
+                    <!-- Flecha a Cerrada -->
+                    <line x1="450" y1="90" x2="525" y2="90" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowRight)"/>
+                    <text x="488" y="82" font-size="9" fill="#6c757d">Completar</text>
+
+                    <!-- Cerrada -->
+                    <rect x="530" y="70" width="130" height="40" rx="8" fill="#1a4a7a"/>
+                    <text x="595" y="95" text-anchor="middle" font-size="12" fill="white" font-weight="600">Cerrada</text>
+
+                    <!-- Flecha Rechazar -->
+                    <line x1="240" y1="110" x2="240" y2="145" stroke="#dc3545" stroke-width="2" marker-end="url(#arrowDown)"/>
+                    <text x="255" y="135" font-size="9" fill="#dc3545">Rechazar</text>
+
+                    <!-- Rechazada -->
+                    <rect x="175" y="150" width="130" height="40" rx="8" fill="#dc3545"/>
+                    <text x="240" y="175" text-anchor="middle" font-size="12" fill="white" font-weight="600">Rechazada</text>
+
+                    <!-- Separador -->
+                    <line x1="20" y1="210" x2="680" y2="210" stroke="#dee2e6" stroke-width="1" stroke-dasharray="5,5"/>
+
+                    <!-- === Pista de Productos === -->
+                    <text x="20" y="240" font-size="12" font-weight="bold" fill="#1a4a7a">Productos:</text>
+
+                    <!-- Seleccionado -->
+                    <rect x="30" y="250" width="110" height="40" rx="8" fill="#6c757d"/>
+                    <text x="85" y="275" text-anchor="middle" font-size="11" fill="white" font-weight="600">Seleccionado</text>
+
+                    <!-- Flecha -->
+                    <line x1="140" y1="270" x2="170" y2="270" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+                    <!-- Solicitado -->
+                    <rect x="175" y="250" width="110" height="40" rx="8" fill="#ffc107"/>
+                    <text x="230" y="275" text-anchor="middle" font-size="11" fill="#333" font-weight="600">Solicitado</text>
+
+                    <!-- Flecha -->
+                    <line x1="285" y1="270" x2="315" y2="270" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+                    <!-- Prestado -->
+                    <rect x="320" y="250" width="110" height="40" rx="8" fill="#17a2b8"/>
+                    <text x="375" y="275" text-anchor="middle" font-size="11" fill="white" font-weight="600">Prestado</text>
+
+                    <!-- Flecha -->
+                    <line x1="430" y1="270" x2="460" y2="270" stroke="#6c757d" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+                    <!-- Devuelto -->
+                    <rect x="465" y="250" width="110" height="40" rx="8" fill="#28a745"/>
+                    <text x="520" y="275" text-anchor="middle" font-size="11" fill="white" font-weight="600">Devuelto</text>
+
+                    <!-- Rechazado (producto) -->
+                    <line x1="230" y1="290" x2="230" y2="325" stroke="#dc3545" stroke-width="2" marker-end="url(#arrowDown)"/>
+                    <rect x="175" y="330" width="110" height="40" rx="8" fill="#dc3545"/>
+                    <text x="230" y="355" text-anchor="middle" font-size="11" fill="white" font-weight="600">Rechazado</text>
+
+                    <!-- Leyenda -->
+                    <text x="465" y="340" font-size="10" fill="#6c757d" font-style="italic">* Productos no retornables</text>
+                    <text x="465" y="355" font-size="10" fill="#6c757d" font-style="italic">  no pasan a "Devuelto"</text>
+                </svg>
+            </div>
+            <p class="diagram-caption">
+                Diagrama del ciclo de vida: la pista superior muestra los estados de la reservación
+                y la pista inferior muestra los estados de cada producto individual.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Glosario</h2>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-calendar-check"></i> Reservación (Reservations)</dt>
+                    <dd>
+                        Solicitud formal de préstamo de uno o más productos del laboratorio. Agrupa
+                        todos los productos solicitados por un usuario en una sola petición. Tiene un
+                        estado general que indica si fue aceptada, rechazada o cerrada.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-box-seam"></i> Producto Reservado (ReservedProducts)</dt>
+                    <dd>
+                        Cada producto individual dentro de una reservación. Registra el objeto del estante
+                        solicitado, la cantidad requerida, las fechas de préstamo, si es retornable y
+                        la cantidad devuelta. Tiene su propio estado independiente.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-arrow-repeat"></i> Retornable (is_returnable)</dt>
+                    <dd>
+                        Propiedad de un producto reservado que indica si debe ser devuelto al laboratorio
+                        después de su uso. Los equipos y materiales suelen ser retornables; los reactivos
+                        consumibles generalmente no lo son.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-people"></i> Reservación Masiva (is_massive)</dt>
+                    <dd>
+                        Tipo de reservación que permite solicitar productos para múltiples usuarios
+                        a la vez. Útil para clases de laboratorio o actividades grupales donde varios
+                        participantes necesitan los mismos recursos.
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="glossary-term">
+                <dl>
+                    <dt><i class="bi bi-clock"></i> Tarea de Reservación (ReservationTasks)</dt>
+                    <dd>
+                        Tarea programada en Celery asociada a un producto reservado. Se ejecuta
+                        automáticamente en la fecha de inicio para decrementar el inventario cuando
+                        comienza el periodo de préstamo.
+                    </dd>
+                </dl>
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-solicitar.html" class="next-page">
+                    Solicitar Reservación <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4. Mantenimiento del Sistema - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link">
+                <i class="bi bi-house-door"></i> Página Principal
+            </a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link">
+                <i class="bi bi-shield-lock"></i> Sistema de Permisos
+            </a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link">
+                <i class="bi bi-box-seam"></i> Gestión de Laboratorios
+            </a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link">
+                <i class="bi bi-droplet-half"></i> Gestión de Sustancias
+            </a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link">
+                <i class="bi bi-list-check"></i> Procedimientos
+            </a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link">
+                <i class="bi bi-calendar-check"></i> Reservaciones
+            </a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="index.html" class="nav-link">
+                <i class="bi bi-journal-text"></i> Índice del Capítulo
+            </a>
+            <a href="01-conceptos.html" class="nav-link sub-item">
+                1. Conceptos de Tareas
+            </a>
+            <a href="02-notificaciones.html" class="nav-link sub-item">
+                2. Notificaciones
+            </a>
+            <a href="03-reportes.html" class="nav-link sub-item">
+                3. Reportes Automáticos
+            </a>
+            <a href="04-mantenimiento.html" class="nav-link sub-item active">
+                4. Mantenimiento del Sistema
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Tareas Programadas</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Mantenimiento del Sistema</li>
+                </ol>
+            </nav>
+
+            <h1>4. Mantenimiento del Sistema</h1>
+
+            <p class="lead">
+                Organilab ejecuta tareas de mantenimiento automáticas que garantizan la integridad de
+                los datos, eliminan registros obsoletos y mantienen el rendimiento óptimo del sistema.
+                Estas tareas son invisibles para el usuario final pero son esenciales para el correcto
+                funcionamiento de la plataforma.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Limpieza de Estantes Huérfanos</h2>
+
+            <p>
+                La tarea de limpieza de estantes huérfanos (remove_shelf_not_furniture) se encarga de
+                identificar y eliminar estantes que ya no están asociados a ningún mueble en el sistema.
+                Un estante se considera "huérfano" cuando no aparece referenciado en la configuración
+                de datos (dataconfig) de ningún mueble.
+            </p>
+
+            <h3>Por qué se Generan Estantes Huérfanos</h3>
+
+            <p>
+                Los estantes huérfanos pueden aparecer en situaciones como las siguientes:
+            </p>
+
+            <ul>
+                <li><strong>Reconfiguración de muebles</strong> — Cuando un administrador modifica la
+                    cuadrícula de un mueble (por ejemplo, reduce de 4 filas a 3), los estantes que
+                    estaban en la fila eliminada pueden quedar sin referencia en el mueble.</li>
+                <li><strong>Eliminación de muebles</strong> — Si se elimina un mueble del sistema,
+                    los estantes asociados podrían no eliminarse correctamente en todos los casos.</li>
+                <li><strong>Migraciones de datos</strong> — Durante actualizaciones del sistema o
+                    migraciones de base de datos, pueden generarse inconsistencias temporales.</li>
+            </ul>
+
+            <p>
+                La tarea de limpieza revisa periódicamente todos los estantes del sistema y compara
+                sus identificadores con los que aparecen en las configuraciones de los muebles. Los
+                estantes que no coinciden con ninguna configuración son eliminados automáticamente.
+            </p>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Estantes con objetos</strong>
+                Antes de eliminar un estante huérfano, el sistema verifica que no contenga objetos.
+                Si un estante huérfano todavía tiene objetos registrados, la situación se reporta
+                para que un administrador tome las medidas necesarias antes de proceder con la
+                limpieza.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Limpieza de Sesiones Expiradas</h2>
+
+            <p>
+                Cuando los usuarios inician sesión en Organilab, el sistema crea un registro de sesión
+                que mantiene al usuario autenticado. Estas sesiones tienen una duración limitada y,
+                una vez expiradas, deben eliminarse de la base de datos para mantener el rendimiento
+                del sistema.
+            </p>
+
+            <p>
+                La limpieza de sesiones expiradas realiza las siguientes acciones:
+            </p>
+
+            <ul>
+                <li>Identifica todas las sesiones cuya fecha de expiración ya ha pasado</li>
+                <li>Elimina los registros de sesión expirados de la base de datos</li>
+                <li>Libera espacio en la tabla de sesiones para mejorar el rendimiento de las consultas</li>
+            </ul>
+
+            <p>
+                En un sistema con muchos usuarios activos, la tabla de sesiones puede crecer
+                significativamente si no se limpia regularmente. La eliminación periódica de sesiones
+                expiradas evita que esta tabla se convierta en un cuello de botella para el rendimiento.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Limpieza de Archivos Temporales</h2>
+
+            <p>
+                Organilab genera archivos temporales durante diversas operaciones: exportación de
+                reportes, generación de documentos PDF, procesamiento de imágenes y otras tareas que
+                requieren almacenamiento intermedio. Estos archivos se acumulan con el tiempo y deben
+                eliminarse periódicamente.
+            </p>
+
+            <p>
+                La tarea de limpieza de archivos temporales:
+            </p>
+
+            <ul>
+                <li>Busca archivos en los directorios temporales del sistema que superen cierta antigüedad</li>
+                <li>Verifica que no estén siendo utilizados por ninguna operación activa</li>
+                <li>Elimina los archivos que ya no son necesarios</li>
+                <li>Registra la cantidad de archivos eliminados y el espacio liberado</li>
+            </ul>
+
+            <div class="screenshot-container">
+                <img src="../../_static/cap6_admin_maintenance.png" alt="Panel de administración mostrando el estado de las tareas de mantenimiento del sistema" loading="lazy">
+                <p class="screenshot-caption">Panel de administración mostrando el estado de las tareas de mantenimiento del sistema</p>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Importancia del Mantenimiento Automático</h2>
+
+            <p>
+                Las tareas de mantenimiento, aunque no producen resultados visibles para el usuario
+                final, son fundamentales para la salud del sistema a largo plazo. Sin ellas, la base
+                de datos acumularía registros innecesarios, el almacenamiento se llenaría de archivos
+                temporales y el rendimiento del sistema se degradaría progresivamente.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Integridad de datos</strong>
+                Las tareas de mantenimiento protegen la integridad de los datos del sistema. Los estantes
+                huérfanos, por ejemplo, pueden causar inconsistencias en los reportes de inventario si
+                no se eliminan a tiempo. Las sesiones expiradas acumuladas pueden ralentizar el proceso
+                de autenticación. Y los archivos temporales sin limpiar pueden consumir todo el espacio
+                disponible en el servidor. El mantenimiento automático previene estos problemas antes
+                de que afecten a los usuarios.
+            </div>
+
+            <h3>Responsabilidades del Administrador</h3>
+
+            <p>
+                Aunque las tareas de mantenimiento son automáticas, el administrador del sistema debe:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Verificar que las tareas se están ejecutando</strong> — Revisar
+                    periódicamente el panel de administración de tareas para confirmar que todas
+                    las tareas programadas se ejecutan según su horario.
+                </li>
+                <li>
+                    <strong>Monitorear los registros de ejecución</strong> — Revisar los registros
+                    (logs) del sistema para detectar errores o advertencias en la ejecución de las
+                    tareas de mantenimiento.
+                </li>
+                <li>
+                    <strong>Atender las alertas</strong> — Si una tarea de limpieza detecta una
+                    situación que requiere intervención manual (como un estante huérfano con objetos),
+                    el administrador debe resolver la situación.
+                </li>
+                <li>
+                    <strong>Mantener los servicios activos</strong> — Asegurarse de que los servicios
+                    de ejecución de tareas en segundo plano (Celery Worker y Celery Beat) estén
+                    siempre en funcionamiento. Si estos servicios se detienen, ninguna tarea
+                    programada se ejecutará.
+                </li>
+            </ol>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-octagon"></i> Servicios detenidos</strong>
+                Si el servicio de ejecución de tareas se detiene por cualquier razón (reinicio del
+                servidor, error del sistema, etc.), todas las tareas programadas dejarán de ejecutarse.
+                Esto significa que no se enviarán notificaciones, no se generarán reportes y no se
+                realizará mantenimiento. Es responsabilidad del administrador verificar regularmente
+                que estos servicios estén activos y configurar mecanismos de reinicio automático.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Resumen de Tareas de Mantenimiento</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tarea</th>
+                        <th>Objetivo</th>
+                        <th>Impacto si no se ejecuta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Limpieza de estantes huérfanos</td>
+                        <td>Eliminar estantes sin referencia en muebles</td>
+                        <td>Inconsistencias en reportes de inventario</td>
+                    </tr>
+                    <tr>
+                        <td>Limpieza de sesiones</td>
+                        <td>Eliminar sesiones de usuario expiradas</td>
+                        <td>Degradación del rendimiento de autenticación</td>
+                    </tr>
+                    <tr>
+                        <td>Limpieza de archivos temporales</td>
+                        <td>Liberar espacio de almacenamiento</td>
+                        <td>Agotamiento del espacio en disco del servidor</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Capítulo completado</strong>
+                Ha completado el Capítulo 6: Tareas Programadas. Ahora conoce cómo Organilab automatiza
+                las operaciones críticas del sistema, desde notificaciones y generación de reportes
+                hasta el mantenimiento de la integridad de los datos. Puede regresar a la página
+                principal para revisar otros capítulos del curso.
+            </div>
+
+            <!-- Navegación -->
+            <div class="page-navigation">
+                <a href="03-reportes.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Reportes Automáticos
+                </a>
+                <a href="../index.html" class="next-page">
+                    Página Principal <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
