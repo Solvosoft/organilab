@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
-class ObjectSeleniumBase(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class ObjectSeleniumBase(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -13,45 +13,79 @@ class ObjectSeleniumBase(SeleniumBase):
         self.force_login(
             user=self.user, driver=self.selenium, base_url=self.live_server_url
         )
-        self.path_base = [
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div/div/span/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div/div[2]/div/div/div/a[1]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[1]/a"
-            },
-        ]
+
+    def navigate_to_lab_index(self):
+        url = self.live_server_url + str(
+            reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_object_view(self):
+        """Navigate to the material/object list page."""
+        url = self.live_server_url + str(
+            reverse("laboratory:object_view", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_substance_list(self):
+        """Navigate to the reactive/substance list page."""
+        url = self.live_server_url + str(
+            reverse("laboratory:sustance_list", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_object_features(self):
+        """Navigate to the object features page."""
+        url = self.live_server_url + str(
+            reverse("laboratory:objectfeatures_view", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_equipment_list(self):
+        """Navigate to the equipment list page."""
+        url = self.live_server_url + str(
+            reverse("laboratory:equipment_list", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
 
 
 @tag("selenium")
 class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
-    def test_view_material_dropdown(self):
 
-        path_list = self.path_base + [
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
+    def test_view_material_dropdown(self):
+        """Test viewing the material dropdown in laboratory navbar.
+
+        Flow: Navigate to lab index -> Click Objects dropdown ->
+        Select Material sub-item.
+
+        GIF: docs/source/_static/gif/view_material_dropdown.gif
+        """
+        self.navigate_to_lab_index()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[3]/a",
-                "active_hidden_elements": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a",
+                "path": "//a[contains(@href, '/object/list')]",
             },
         ]
         self.create_gif_process(path_list, "view_material_dropdown")
 
     def test_view_reactive_dropdown(self):
+        """Test viewing the reactive link in laboratory index page.
 
-        path_list = self.path_base + [
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/a"},
+        Flow: Navigate to lab index -> Click Reactive link.
+
+        GIF: docs/source/_static/gif/view_reactive_dropdown.gif
+        """
+        self.navigate_to_lab_index()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[7]/ul/li[1]/a",
-                "active_hidden_elements": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6.]/ul/li[7]/a",
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/sustance')]",
             },
         ]
-
         self.create_gif_process(path_list, "view_reactive_dropdown")
 
 
@@ -59,444 +93,466 @@ class ObjectDropdowmSeleniumTest(ObjectSeleniumBase):
 class ObjectSeleniumTest(ObjectSeleniumBase):
 
     def test_view_material_dropdown(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test navigating to materials from lab index page.
+
+        Flow: Navigate to lab index -> Click 'Material' link in
+        administration list.
+
+        GIF: docs/source/_static/gif/view_materials.gif
+        """
+        self.navigate_to_lab_index()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]"
-            }
+                "path": "//a[contains(@href, '/object/list')]",
+            },
         ]
         self.create_gif_process(path_list, "view_materials")
 
+    @modifies_db
     def test_add_object_material(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test creating a new material object via modal.
+
+        Flow: Navigate to object view -> Click create button in DataTable
+        toolbar -> Fill modal form (code, name, synonym, description) -> Save.
+
+        GIF: docs/source/_static/gif/add_material_object.gif
+        """
+        self.navigate_to_object_view()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]"
+                "path": "//*[@id='table_wrapper']//button[contains(@class, 'btn-outline-success')]",
+                "sleep": 1,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/a"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form"},
-            {"path": "//*[@id='id_code']", "extra_action": "clearIvput"},
             {
-                "path": "//*[@id='id_code']",
+                "path": "//input[@id='id_create-code']",
+                "extra_action": "clearinput",
+                "sleep": 1,
+            },
+            {
+                "path": "//input[@id='id_create-code']",
                 "extra_action": "setvalue",
                 "value": "CE-456",
             },
-            {"path": "//*[@id='id_name']", "extra_action": "clearInput"},
             {
-                "path": "//*[@id='id_name']",
+                "path": "//input[@id='id_create-name']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//input[@id='id_create-name']",
                 "extra_action": "setvalue",
                 "value": "BEA143 Beakers 50 mL",
             },
-            {"path": "//*[@id='id_synonym']", "extra_action": "clearinput"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[4]/div/span"
+                "path": "//input[@id='id_create-synonym']",
+                "extra_action": "clearinput",
             },
-            {"path": "//*[@id='id_description']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_description']",
+                "path": "//textarea[@id='id_create-description']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//textarea[@id='id_create-description']",
                 "extra_action": "setvalue",
                 "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente ",
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[6]/div/span/span[1]/span",
-                "scroll": "window.scrollTo(0, 350)",
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(350)",
             },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[7]/div/span"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/input[2]"},
         ]
         self.create_gif_process(path_list, "add_material_object")
 
+    @modifies_db
     def test_edit_object_material(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test editing an existing material object via DataTable and modal.
+
+        Flow: Navigate to object view -> Click edit icon on first row ->
+        Modify fields in update modal -> Save.
+
+        GIF: docs/source/_static/gif/update_material_object.gif
+        """
+        self.navigate_to_object_view()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]",
+                "path": "//*[@id='table']//tbody/tr[1]//i[contains(@class, 'fa-edit')]",
                 "screenshot_name": "material_object",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/ul/li[1]/div[2]/a[1]"
+                "path": "//input[@id='id_update-code']",
+                "extra_action": "clearinput",
+                "sleep": 1,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form"},
-            {"path": "//*[@id='id_code']", "extra_action": "clearIvput"},
             {
-                "path": "//*[@id='id_code']",
+                "path": "//input[@id='id_update-code']",
                 "extra_action": "setvalue",
                 "value": "CE-456",
             },
-            {"path": "//*[@id='id_name']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_name']",
+                "path": "//input[@id='id_update-name']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//input[@id='id_update-name']",
                 "extra_action": "setvalue",
                 "value": "BEA143 Beakers 50 mL",
             },
-            {"path": "//*[@id='id_synonym']", "extra_action": "clearinput"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[4]/div/span"
+                "path": "//input[@id='id_update-synonym']",
+                "extra_action": "clearinput",
             },
-            {"path": "//*[@id='id_description']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_description']",
+                "path": "//textarea[@id='id_update-description']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//textarea[@id='id_update-description']",
                 "extra_action": "setvalue",
-                "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente "
-                "en el laboratorio, sobre todo, para preparar o calentar sustancias, medir o traspasar líquidos. Es cilíndrico con un fondo plano; se le encuentra de varias capacidades, desde 1 ml hasta de varios litros. Normalmente es de vidrio, de metal o de "  # noqa: E501
-                "un plástico en especial y es aquel cuyo objetivo es contener gases o líquidos. Tiene componentes de teflón u otros materiales resistentes a la corrosión.",
+                "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente ",
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[6]/div/span/span[1]/span",
-                "scroll": "window.scrollTo(0, 350)",
+                "path": "//*[@id='update_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(350)",
             },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/input[2]"},
         ]
         self.create_gif_process(path_list, "update_material_object")
 
+    @modifies_db
     def test_add_object_material_is_container(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test creating a material object that is a container via modal.
+
+        Flow: Navigate to object view -> Click create -> Fill form
+        with container-specific fields (is_container, capacity,
+        capacity_measurement_unit) -> Save.
+
+        GIF: docs/source/_static/gif/add_material_container_object.gif
+        """
+        self.navigate_to_object_view()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]"
+                "path": "//*[@id='table_wrapper']//button[contains(@class, 'btn-outline-success')]",
+                "sleep": 1,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/a"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form",
-                "screenshot_name": "form_material_object",
+                "path": "//input[@id='id_create-code']",
+                "extra_action": "clearinput",
+                "sleep": 1,
             },
-            {"path": "//*[@id='id_code']", "extra_action": "clearIvput"},
             {
-                "path": "//*[@id='id_code']",
+                "path": "//input[@id='id_create-code']",
                 "extra_action": "setvalue",
                 "value": "CE-456",
             },
-            {"path": "//*[@id='id_name']", "extra_action": "clearInput"},
             {
-                "path": "//*[@id='id_name']",
+                "path": "//input[@id='id_create-name']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//input[@id='id_create-name']",
                 "extra_action": "setvalue",
                 "value": "BEA143 Beakers 50 mL",
             },
-            {"path": "//*[@id='id_synonym']", "extra_action": "clearinput"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[4]/div/span"
+                "path": "//input[@id='id_create-synonym']",
+                "extra_action": "clearinput",
             },
-            {"path": "//*[@id='id_description']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_description']",
+                "path": "//textarea[@id='id_create-description']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//textarea[@id='id_create-description']",
                 "extra_action": "setvalue",
-                "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente "
-                "en el laboratorio, sobre todo, para preparar o calentar sustancias, medir o traspasar líquidos. Es cilíndrico con un fondo plano; se le encuentra de varias capacidades, desde 1 ml hasta de varios litros. Normalmente es de vidrio, de metal o de "  # noqa: E501
-                "un plástico en especial y es aquel cuyo objetivo es contener gases o líquidos. Tiene componentes de teflón u otros materiales resistentes a la corrosión.",
+                "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente ",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(200)",
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[6]/div/span/span[1]/span",
-                "scroll": "window.scrollTo(0, 450)",
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_create-is_container').prop('checked', true).trigger('change'); $('.is_container').show();",
+                "sleep": 1,
             },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {"path": "//*[@id='id_capacity']", "extra_action": "clearInput"},
-            {"path": "//*[@id='id_capacity']", "extra_action": "setvalue", "value": 40},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[9]/div/span/span[1]/span"
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_create-capacity').val(40);",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(300)",
             },
-            {"path": ".//span/span/span[2]/ul/li[2]"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/div[7]/div/span"
+                "path": "//select[@id='id_create-capacity_measurement_unit']/..//span[contains(@class, 'select2-selection')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(350)",
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/form/input[2]"},
+            {
+                "path": "//ul[contains(@class, 'select2-results__options')]/li[1]",
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(500)",
+            },
         ]
-
         self.create_gif_process(path_list, "add_material_container_object")
 
+    @modifies_db
     def test_delete_material(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test deleting a material object via DataTable and modal.
+
+        Flow: Navigate to object view -> Click delete icon on first
+        row -> Confirm deletion in modal.
+
+        GIF: docs/source/_static/gif/delete_material_object.gif
+        """
+        self.navigate_to_object_view()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]"
+                "path": "//*[@id='table']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/ul/li[1]/div[2]/a[2]"
+                "path": "//*[@id='delete_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "sleep": 1,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/form/input[2]"},
         ]
         self.create_gif_process(path_list, "delete_material_object")
 
     def test_view_material(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test searching for materials using the DataTable search.
+
+        Flow: Navigate to object view -> Enter search term 'Balones' ->
+        Clear and search again with 'Ba'.
+
+        GIF: docs/source/_static/gif/search_material_object.gif
+        """
+        self.navigate_to_object_view()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[2]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/form/div/input[1]",
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
                 "extra_action": "clearinput",
+                "wait_ready": True,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/form/div/input[1]",
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
                 "extra_action": "setvalue",
                 "value": "Balones",
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/form/button"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/form/div/input[1]",
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
                 "extra_action": "clearinput",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/form/div/input[1]",
+                "path": "//*[@id='table_filter']//input | //input[@type='search']",
                 "extra_action": "setvalue",
                 "value": "Ba",
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/form/button"},
         ]
         self.create_gif_process(path_list, "search_material_object")
 
     def test_view_reactive(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test viewing the reactive/substance list.
+
+        Flow: Navigate to substance list -> Verify page content.
+
+        GIF: docs/source/_static/gif/view_reactive_objects.gif
+        """
+        self.navigate_to_substance_list()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]",
+                "path": "//body",
                 "screenshot_name": "reactive_object",
-            }
+                "extra_action": "script",
+                "value": "",
+            },
         ]
         self.create_gif_process(path_list, "view_reactive_objects")
 
+    @modifies_db
     def test_add_reactive_object(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test creating a new reactive/substance object via modal.
+
+        Flow: Navigate to substance list -> Click create button -> Fill
+        substance form (name, code, synonym, description,
+        molecular formula, CAS, model, serie, plaque) -> Save.
+
+        GIF: docs/source/_static/gif/add_reactive_object.gif
+        """
+        self.navigate_to_substance_list()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]",
-                "screenshot_name": "reactive_object",
+                "path": "//*[@id='reactive_table_wrapper']//button[contains(@class, 'btn-outline-success')]",
+                "sleep": 1,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[1]/a"},
             {
-                "path": "//*[@id='id_name']",
+                "path": "//input[@id='id_create-name']",
                 "extra_action": "setvalue",
                 "value": "BEA143 Beakers 50 mL",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[1]/span[2]"
-            },
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {
-                "path": "//*[@id='id_synonym']",
+                "path": "//input[@id='id_create-synonym']",
                 "extra_action": "setvalue",
                 "value": "ss454",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[2]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {
-                "path": "//*[@id='id_code']",
+                "path": "//input[@id='id_create-code']",
                 "extra_action": "setvalue",
                 "value": "CE-456",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[3]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "//*[@id='id_description']",
+                "path": "//textarea[@id='id_create-description']",
                 "extra_action": "setvalue",
                 "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente ,",
-                "scroll": "window.scrollTo(0, 400)",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
             },
             {
-                "path": "//*[@id='id_molecular_formula']",
+                "path": "//input[@id='id_create-molecular_formula']",
                 "extra_action": "setvalue",
                 "value": "AE2",
             },
             {
-                "path": "//*[@id='id_cas_id_number']",
+                "path": "//input[@id='id_create-cas_id_number']",
                 "extra_action": "setvalue",
                 "value": "12633468",
             },
-            {"path": "//*[@id='id_model']", "scroll": "window.scrollTo(0, 400)"},
             {
-                "path": "//*[@id='id_model']",
+                "path": "//input[@id='id_create-model']",
                 "extra_action": "setvalue",
                 "value": "CA-546",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(600)",
             },
             {
-                "path": "//*[@id='id_serie']",
+                "path": "//input[@id='id_create-serie']",
                 "extra_action": "setvalue",
                 "value": "B54897",
             },
             {
-                "path": "//*[@id='id_plaque']",
+                "path": "//input[@id='id_create-plaque']",
                 "extra_action": "setvalue",
                 "value": "5634646465",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[2]/div[9]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[9]/span[2]/span[1]/span",
-                "scroll": "window.scrollTo(0, 800)",
-            },
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[10]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[11]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[12]/span[2]/span[1]/span",
-                "scroll": "window.scrollTo(0, 1000)",
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[13]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[2]/button",
-                "scroll": "window.scrollTo(0, 1100)",
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(800)",
             },
         ]
         self.create_gif_process(path_list, "add_reactive_object")
 
+    @modifies_db
     def test_edit_reactive_object(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test editing an existing reactive/substance object via modal.
+
+        Flow: Navigate to substance list -> Click edit icon on first
+        row -> Modify fields in update modal -> Save.
+
+        GIF: docs/source/_static/gif/update_reactive_object.gif
+        """
+        self.navigate_to_substance_list()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"
+                "path": "//*[@id='reactive_table']//tbody/tr[1]//i[contains(@class, 'fa-edit')]",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[2]/td[4]/a[1]"
+                "path": "//input[@id='id_update-name']",
+                "extra_action": "clearinput",
+                "sleep": 1,
             },
-            {"path": "//*[@id='id_name']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_name']",
+                "path": "//input[@id='id_update-name']",
                 "extra_action": "setvalue",
                 "value": "BEA143 Beakers 50 mL",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[1]/span[2]"
+                "path": "//input[@id='id_update-synonym']",
+                "extra_action": "clearinput",
             },
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {"path": "//*[@id='id_synonym']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_synonym']",
+                "path": "//input[@id='id_update-synonym']",
                 "extra_action": "setvalue",
                 "value": "ss454",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[2]/span[2]/span[1]/span"
+                "path": "//input[@id='id_update-code']",
+                "extra_action": "clearinput",
             },
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {"path": "//*[@id='id_code']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_code']",
+                "path": "//input[@id='id_update-code']",
                 "extra_action": "setvalue",
                 "value": "CE-456",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[3]/span[2]/span[1]/span"
+                "path": "//textarea[@id='id_update-description']",
+                "extra_action": "clearinput",
             },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {"path": "//*[@id='id_description']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_description']",
+                "path": "//textarea[@id='id_update-description']",
                 "extra_action": "setvalue",
                 "value": "Un vaso de precipitado es un recipiente cilíndrico de vidrio borosilicatado fino que se utiliza muy comúnmente ,",
-                "scroll": "window.scrollTo(0, 400)",
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(400)",
             },
-            {"path": "//*[@id='id_molecular_formula']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_molecular_formula']",
+                "path": "//input[@id='id_update-molecular_formula']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//input[@id='id_update-molecular_formula']",
                 "extra_action": "setvalue",
                 "value": "AE2",
             },
-            {"path": "//*[@id='id_cas_id_number']", "extra_action": "clearinput"},
             {
-                "path": "//*[@id='id_cas_id_number']",
+                "path": "//input[@id='id_update-cas_id_number']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//input[@id='id_update-cas_id_number']",
                 "extra_action": "setvalue",
                 "value": "12633468",
             },
             {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[9]/span[2]/span[1]/span",
-                "scroll": "window.scrollTo(0, 800)",
+                "path": "//*[@id='update_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#update_obj_modal .modal-body').scrollTop(600)",
             },
-            {"path": "/html/body/span/span/span[2]/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[10]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[11]/span[2]/span[1]/span"
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {
-                "path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[1]/div[3]/div[12]/span[2]/span[1]/span",
-                "scroll": "window.scrollTo(0, 1000)",
-            },
-            {"path": "/html/body/span/span/span/ul/li[2]"},
-            {"path": "/html/body/div[1]/div[1]/div[3]/div/div/div/form/div[2]/button"},
         ]
         self.create_gif_process(path_list, "update_reactive_object")
 
+    @modifies_db
     def test_delete_reactive(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test deleting a reactive/substance object via modal.
+
+        Flow: Navigate to substance list -> Click delete icon on first
+        row -> Confirm deletion in modal.
+
+        GIF: docs/source/_static/gif/delete_reactive_object.gif
+        """
+        self.navigate_to_substance_list()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"
+                "path": "//*[@id='reactive_table']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[2]/div/table/tbody/tr[1]/td[4]/a[2]"
+                "path": "//*[@id='delete_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "sleep": 1,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/form/input[3]"},
         ]
         self.create_gif_process(path_list, "delete_reactive_object")
 
     def test_search_reactive(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test searching for reactive objects using the DataTable search.
+
+        Flow: Navigate to substance list -> Type 'Alcohol' in search
+        input -> Verify filtered results.
+
+        GIF: docs/source/_static/gif/search_reactive_object.gif
+        """
+        self.navigate_to_substance_list()
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a[1]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div[2]/div/label/input",
+                "path": "//input[@type='search']",
                 "extra_action": "clearinput",
+                "wait_ready": True,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/div[2]/div/label/input",
+                "path": "//input[@type='search']",
                 "extra_action": "setvalue",
                 "value": "Alcohol",
             },
@@ -508,90 +564,135 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
 class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
 
     def test_view_object_features(self):
-        path_list = self.path_base + [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
+        """Test viewing the object features page.
+
+        Flow: Navigate to object features -> Verify DataTable and
+        features list are visible.
+
+        GIF: docs/source/_static/gif/view_object_features.gif
+        """
+        self.navigate_to_object_features()
+        path_list = [
             {
-                "path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/form",
+                "path": "//body",
                 "screenshot_name": "object_features_view",
             },
         ]
         self.create_gif_process(path_list, "view_object_features")
 
     def test_view_object_features_dropdown(self):
-        path_list = self.path_base + [
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/a"},
-            {"path": "/html/body/div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[9]/a"},
+        """Test navigating to object features via the lab index page.
+
+        Flow: Navigate to lab index -> Click 'Object features' link.
+
+        GIF: docs/source/_static/gif/view_object_features_dropdown.gif
+        """
+        self.navigate_to_lab_index()
+        path_list = [
+            {
+                "path": "//li[contains(@class, 'list-group-item')]//a[contains(@href, '/features/list')]",
+            },
         ]
         self.create_gif_process(path_list, "view_object_features_dropdown")
 
+    @modifies_db
     def test_add_object_features(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test adding a new object feature via DataTable modal.
+
+        Flow: Navigate to object features -> Click create button ->
+        Fill name and description in modal -> Save.
+
+        GIF: docs/source/_static/gif/view_object_features.gif
+        """
+        self.navigate_to_object_features()
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
-            {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
-                "path": ".//*[@id='id_name']",
+                "path": "//*[@id='table_wrapper']//button[contains(@class, 'btn-outline-success')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//input[@id='id_create-name']",
+                "extra_action": "clearinput",
+                "sleep": 1,
+            },
+            {
+                "path": "//input[@id='id_create-name']",
                 "extra_action": "setvalue",
                 "value": "Química Orgánica",
             },
-            {"path": ".//*[@id='id_description']", "extra_action": "clearinput"},
             {
-                "path": ".//*[@id='id_description']",
+                "path": "//textarea[@id='id_create-description']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//textarea[@id='id_create-description']",
                 "extra_action": "setvalue",
                 "value": "Objetos exclusivos o representativos de la disciplina de quimica orgánica, ejemplo : equipo especial para síntesis.",
             },
             {
-                "path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/form/div[3]/div/button"
-            },
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[3]",
-                "scroll": "window.scrollTo(0, 350)",
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
             },
         ]
         self.create_gif_process(path_list, "view_object_features")
 
+    @modifies_db
     def test_edit_object_features(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test editing an existing object feature via DataTable modal.
+
+        Flow: Navigate to object features -> Click edit icon on first
+        row -> Update name and description in modal -> Save.
+
+        GIF: docs/source/_static/gif/view_object_features.gif
+        """
+        self.navigate_to_object_features()
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[1]/div[3]/div/a[1]"
+                "path": "//*[@id='table']//tbody/tr[1]//i[contains(@class, 'fa-edit')]",
+                "sleep": 1,
             },
-            {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
-                "path": ".//*[@id='id_name']",
+                "path": "//input[@id='id_update-name']",
+                "extra_action": "clearinput",
+                "sleep": 1,
+            },
+            {
+                "path": "//input[@id='id_update-name']",
                 "extra_action": "setvalue",
                 "value": "Química Orgánica",
             },
-            {"path": ".//*[@id='id_description']", "extra_action": "clearinput"},
             {
-                "path": ".//*[@id='id_description']",
+                "path": "//textarea[@id='id_update-description']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//textarea[@id='id_update-description']",
                 "extra_action": "setvalue",
                 "value": "Objetos exclusivos o representativos de la disciplina de quimica orgánica, ejemplo : equipo especial para síntesis.",
             },
             {
-                "path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/form/div[3]/div/button"
+                "path": "//*[@id='update_obj_modal']//button[contains(@class, 'btn-primary')]",
             },
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[1]/div[1]"},
         ]
         self.create_gif_process(path_list, "view_object_features")
 
+    @modifies_db
     def test_delete_object_features(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """Test deleting an object feature via DataTable modal.
+
+        Flow: Navigate to object features -> Click delete icon on first
+        row -> Confirm deletion in modal.
+
+        GIF: docs/source/_static/gif/view_object_features.gif
+        """
+        self.navigate_to_object_features()
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"},
             {
-                "path": ".//div[1]/div/div[3]/div/div/div/div[3]/div[1]/li[1]/div[3]/div/a[2]"
+                "path": "//*[@id='table']//tbody/tr[1]//i[contains(@class, 'fa-trash')]",
+                "sleep": 1,
             },
-            {"path": ".//div[1]/div/div[3]/div/div/form/input[2]"},
+            {
+                "path": "//*[@id='delete_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "sleep": 1,
+            },
         ]
         self.create_gif_process(path_list, "view_object_features")

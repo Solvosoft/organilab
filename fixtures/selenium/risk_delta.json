@@ -1,0 +1,278 @@
+[
+  {
+    "model": "laboratory.catalog",
+    "pk": 100,
+    "fields": {
+      "key": "distance_unit",
+      "description": "Metros cuadrados"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 101,
+    "fields": {
+      "key": "structure_type",
+      "description": "Edificio"
+    }
+  },
+  {
+    "model": "risk_management.zonetype",
+    "pk": 1,
+    "fields": {
+      "name": "Zona Residencial  Zona Comercial y de Servicios Zona Mixta",
+      "priority_validator": [
+        1,
+        4,
+        5
+      ]
+    }
+  },
+  {
+    "model": "risk_management.zonetype",
+    "pk": 2,
+    "fields": {
+      "name": "Zona Industrial",
+      "priority_validator": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "risk_management.zonetype",
+    "pk": 3,
+    "fields": {
+      "name": "Otras Zonas",
+      "priority_validator": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "risk_management.priorityconstrain",
+    "pk": 1,
+    "fields": {
+      "operation": "<",
+      "left_value": 100,
+      "right_value": null,
+      "priority": 1,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "risk_management.priorityconstrain",
+    "pk": 2,
+    "fields": {
+      "operation": "<",
+      "left_value": 0,
+      "right_value": null,
+      "priority": 5,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "risk_management.priorityconstrain",
+    "pk": 3,
+    "fields": {
+      "operation": "<",
+      "left_value": 0,
+      "right_value": null,
+      "priority": 4,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "risk_management.priorityconstrain",
+    "pk": 4,
+    "fields": {
+      "operation": "=<<=",
+      "left_value": 100,
+      "right_value": 30,
+      "priority": 2,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "risk_management.priorityconstrain",
+    "pk": 5,
+    "fields": {
+      "operation": ">",
+      "left_value": 30,
+      "right_value": null,
+      "priority": 3,
+      "creation_date": "2023-01-31T19:33:49.008Z",
+      "last_update": "2023-01-31T19:33:49.035Z"
+    }
+  },
+  {
+    "model": "risk_management.riskzone",
+    "pk": 5,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-26T15:44:14.515Z",
+      "last_update": "2023-01-26T15:44:14.669Z",
+      "created_by": null,
+      "name": "LAPRE I Área laboratorio",
+      "num_workers": 3,
+      "zone_type": 3,
+      "priority": 5,
+      "laboratories": [
+        1
+      ],
+      "buildings": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.riskzone",
+    "pk": 6,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-26T15:44:14.515Z",
+      "last_update": "2023-01-26T15:44:14.669Z",
+      "created_by": null,
+      "name": "LAPRE II Área de laboratorio",
+      "num_workers": 1,
+      "zone_type": 3,
+      "priority": 5,
+      "laboratories": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.incidentreport",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "last_update": "2023-01-26T15:44:13.983Z",
+      "created_by": null,
+      "creation_date": "2020-10-16T00:04:40.469Z",
+      "short_description": "x",
+      "incident_date": "2020-10-16",
+      "causes": "x",
+      "infraestructure_impact": "x",
+      "people_impact": "x",
+      "environment_impact": "x",
+      "result_of_plans": "x",
+      "mitigation_actions": "x",
+      "recomendations": "x",
+      "notification_copy": "",
+      "risk_zone": 5,
+      "laboratories": [
+        1
+      ],
+      "buildings": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.incidentreport",
+    "pk": 3,
+    "fields": {
+      "organization": 1,
+      "last_update": "2023-01-26T15:44:13.983Z",
+      "created_by": null,
+      "creation_date": "2020-10-16T16:37:07.888Z",
+      "short_description": "Algo ocurrió hoy",
+      "incident_date": "2020-11-01",
+      "causes": "Algo",
+      "infraestructure_impact": "Algo",
+      "people_impact": "Algo",
+      "environment_impact": "Algo",
+      "result_of_plans": "Algo",
+      "mitigation_actions": "Algo",
+      "recomendations": "Algo",
+      "notification_copy": "",
+      "risk_zone": 5,
+      "laboratories": [
+        1
+      ],
+      "buildings": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.incidentreport",
+    "pk": 4,
+    "fields": {
+      "organization": null,
+      "last_update": "2023-01-26T15:44:13.983Z",
+      "created_by": null,
+      "creation_date": "2020-12-22T19:18:57.556Z",
+      "short_description": "demo",
+      "incident_date": "2020-12-22",
+      "causes": "testtaest",
+      "infraestructure_impact": "test",
+      "people_impact": "dfkafk",
+      "environment_impact": "fjakd",
+      "result_of_plans": "jfaksd",
+      "mitigation_actions": "djasdk",
+      "recomendations": "dfjasdkfs",
+      "notification_copy": "",
+      "laboratories": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.buildings",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": null,
+      "name": "Edificio Principal",
+      "phone": "22223333",
+      "is_asociaty_buildings": false,
+      "has_water_resources": false,
+      "area": 500.0,
+      "laboratories": [
+        1
+      ],
+      "nearby_buildings": [],
+      "regents": [],
+      "manager": 1
+    }
+  },
+  {
+    "model": "risk_management.regent",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": null,
+      "user": 2,
+      "type_regent": "chemical",
+      "laboratories": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "risk_management.structure",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "creation_date": "2023-01-25T20:46:09.591Z",
+      "last_update": "2023-01-25T20:46:09.591Z",
+      "created_by": null,
+      "name": "Estructura Norte",
+      "buildings": [
+        1
+      ],
+      "manager": 1,
+      "area": 100.0,
+      "type_structure": 101,
+      "measuerement_unit": 100
+    }
+  }
+]

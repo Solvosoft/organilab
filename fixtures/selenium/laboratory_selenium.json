@@ -1249,7 +1249,7 @@
     "content_type": ["laboratory","laboratory"],
     "object_id": 1,
     "organization_creator": 1,
-    "organization_register": 2,
+    "organization_register": 1,
     "code": "bdc0"
   }
 },

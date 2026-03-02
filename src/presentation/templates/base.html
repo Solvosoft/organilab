@@ -45,4 +45,36 @@
       }
     });
   </script>
+  {% is_testing_mode as testing_mode %}
+  {% if testing_mode %}
+  <script>
+  (function() {
+      var pendingDT = 0;
+      var domReady = false;
+
+      function checkReady() {
+          if (domReady && pendingDT === 0) {
+              document.body.setAttribute('data-organilab-ready', 'true');
+          }
+      }
+
+      $(document).on('init.dt', function(e, settings) {
+          if (settings.ajax) {
+              pendingDT++;
+              $(settings.nTable).one('xhr.dt', function() {
+                  pendingDT--;
+                  checkReady();
+              });
+          }
+      });
+
+      $(document).ready(function() {
+          setTimeout(function() {
+              domReady = true;
+              checkReady();
+          }, 0);
+      });
+  })();
+  </script>
+  {% endif %}
 {% endblock %}

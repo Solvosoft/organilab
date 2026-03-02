@@ -2,12 +2,12 @@ from django.contrib.auth.models import User
 from django.test import tag
 from django.urls import reverse
 from laboratory.models import OrganizationStructure
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class FurnitureSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class FurnitureSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -20,6 +20,7 @@ class FurnitureSeleniumTest(SeleniumBase):
             user=self.user, driver=self.selenium, base_url=self.live_server_url
         )
 
+    @modifies_db
     def test_create_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -52,6 +53,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "add_furniture")
 
+    @modifies_db
     def test_update_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -85,6 +87,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "update_furniture")
 
+    @modifies_db
     def test_move_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -99,7 +102,7 @@ class FurnitureSeleniumTest(SeleniumBase):
             {
                 "path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div/span/span[1]/span"
             },
-            {"path": ".//span/span/span[2]/ul/li[3]"},
+            {"path": ".//span/span/span[2]/ul/li[2]"},
             {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
                 "path": ".//*[@id='id_name']",
@@ -113,6 +116,7 @@ class FurnitureSeleniumTest(SeleniumBase):
         ]
         self.create_gif_process(path_list, "move_furniture")
 
+    @modifies_db
     def test_delete_furniture(self):
         self.selenium.get(
             url=self.live_server_url
@@ -124,11 +128,18 @@ class FurnitureSeleniumTest(SeleniumBase):
                 "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li/div/div[1]/div/div[3]/div/button[1]"
             },
             {"path": ".//div[3]/div[2]/ul/li[1]/a"},
-            {"path": ".//div[1]/div/div[3]/div/div/div[1]/form/div[1]/div[3]/a"},
-            {"path": ".//div[1]/div/div[3]/div/div/form/input[2]"},
+            {
+                "path": "//a[contains(@class, 'btn-danger') and contains(@href, 'delete')]",
+                "wait_ready": True,
+            },
+            {
+                "path": "//input[@type='submit']",
+                "wait_ready": True,
+            },
         ]
         self.create_gif_process(path_list, "delete_furniture")
 
+    @modifies_db
     def test_add_furniture_type(self):
         self.selenium.get(
             url=self.live_server_url

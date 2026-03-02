@@ -7,11 +7,24 @@ from laboratory.tests.selenium_tests.manage_organizations.base import ManageOrga
 class TopButtonsActionTest(ManageOrganizationsSeleniumTest):
 
     def test_create_organization(self):
-        path_list = self.path_base + [
-            {"path": ".//span[@class='addOrgStructureEmpty']"},
-            {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/input[@id='id_name']"},
-            {"path": ".//div[@id='addOrganizationmodal']/div/div[@class='modal-content']/form/div[@class='modal-body']/div/div/input[@id='id_name']",
-                "extra_action": "setvalue", "value": "Sede Central"},
-            {"path": self.get_submit_button_path("addOrganizationmodal")}
+        """Test creating a new top-level organization via modal.
+
+        Flow: Click 'Add organization' span -> Fill name in modal ->
+        Submit modal.
+
+        GIF: docs/source/_static/gif/create_org.gif
+        """
+        path_list = [
+            {"path": "//span[@class='addOrgStructureEmpty']"},
+            {
+                "path": "//*[@id='addOrganizationmodal']//input[@id='id_name']",
+                "sleep": 2,
+            },
+            {
+                "path": "//*[@id='addOrganizationmodal']//input[@id='id_name']",
+                "extra_action": "setvalue",
+                "value": "Sede Central",
+            },
+            {"path": self.get_submit_button_path("addOrganizationmodal")},
         ]
         self.create_gif_process(path_list, "create_org")

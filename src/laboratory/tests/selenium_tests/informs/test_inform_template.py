@@ -1,11 +1,39 @@
 from django.contrib.auth.models import User
 from django.test import tag
-from organilab_test.tests.base import SeleniumBase
+from django.urls import reverse
+
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
+
+# Formio builder sidebar component buttons (text-based selectors)
+FORMIO_TEXT_FIELD = "//span[contains(@class, 'btn') and contains(., 'Text Field')]"
+FORMIO_NUMBER = "//span[contains(@class, 'btn') and contains(., 'Number')]"
+FORMIO_PASSWORD = "//span[contains(@class, 'btn') and contains(., 'Password')]"
+FORMIO_CHECKBOX = "//span[contains(@class, 'btn') and contains(., 'Checkbox')]"
+FORMIO_RADIO = "//span[contains(@class, 'btn') and contains(., 'Radio')]"
+
+# Formio builder drop zone (top-level form uses formio-builder-form)
+FORMIO_DROP_ZONE = "//*[@id='formio']//div[contains(@class, 'drag-container')]"
+
+# Formio component dialog selectors
+FORMIO_DIALOG = "//div[contains(@class, 'formio-dialog-content')]"
+FORMIO_DIALOG_TAB_DATA = FORMIO_DIALOG + "//li[2]/a"
+FORMIO_DIALOG_TAB_VALIDATION = FORMIO_DIALOG + "//li[3]/a"
+FORMIO_DIALOG_LABEL_INPUT = FORMIO_DIALOG + "//input[1]"
+FORMIO_DIALOG_SAVE = FORMIO_DIALOG + "//button[contains(@class, 'btn-success')]"
+
+# Edit view page elements
+SAVE_FORM_BTN = "//*[@id='save_btn']"
+RETURN_TO_LIST_BTN = "//button[@title='Form List']"
+
+# Form table action selectors
+FORM_TABLE_PREVIEW_ROW = "//table[@id='form_table']//tbody/tr[{row}]//a[contains(@class, 'preview_btn')]"
+FORM_TABLE_EDIT_ROW = "//table[@id='form_table']//tbody/tr[{row}]//a[contains(@class, 'edit_btn')]"
+FORM_TABLE_DELETE_ROW = "//table[@id='form_table']//tbody/tr[{row}]//a[contains(@class, 'delete_btn')]"
 
 
 @tag("selenium")
-class InformsSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class InformsSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
@@ -13,452 +41,499 @@ class InformsSeleniumTest(SeleniumBase):
         self.force_login(
             user=self.user, driver=self.selenium, base_url=self.live_server_url
         )
-        self.path_base = [
+
+    def navigate_to_form_list(self):
+        """Navigate directly to the inform template (Formio form) list page."""
+        url = self.live_server_url + str(
+            reverse("derb:form_list", kwargs={"org_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def _return_and_preview(self, row=1):
+        """Common steps: save form, return to list, confirm, preview, return.
+
+        Used at the end of Formio builder tests.
+        """
+        return [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div/div[1]/div/div/span/span[1]/span"
+                "path": SAVE_FORM_BTN,
             },
-            {"path": "/html/body/span/span/span/ul/li[1]"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div/div[2]/div/div/div/a[1]"
+                "path": RETURN_TO_LIST_BTN,
+                "scroll": "window.scrollTo(0, 600)",
+                "sleep": 2,
             },
-            {"path": "/html/body/div[1]/div/div[1]/div/div[4]/div/ul/li[6]"},
             {
-                "path": "/html/body/div[1]/div/div[1]/div/div[4]/div/ul/li[6]/ul/li[2]/a",
-                "scroll": "window.scrollTo(0, 200)",
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+                "sleep": 1,
+            },
+            {
+                "path": FORM_TABLE_PREVIEW_ROW.format(row=row),
+                "wait_ready": True,
+            },
+            {
+                "path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]",
+                "wait_ready": True,
             },
         ]
 
     def test_view_informs(self):
+        """Test viewing the inform templates list page.
 
-        path_list = self.path_base
+        Flow: Navigate to form list -> View page with DataTable.
+
+        GIF: docs/source/_static/gif/view_inform_templates.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
+            {
+                "path": "//h1",
+            },
+        ]
         self.create_gif_process(path_list, "view_inform_templates")
 
+    @modifies_db
     def test_create_inform_template(self):
+        """Test creating a new inform template via SweetAlert input.
 
-        path_list = self.path_base + [
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/div/button"},
+        Flow: Navigate to form list -> Click create button -> Enter
+        template name in SweetAlert -> Confirm -> View edit page.
+
+        GIF: docs/source/_static/gif/add_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[3]/div/div[2]/input[1]",
+                "path": "//button[contains(@class, 'create_btn')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//div[contains(@class, 'swal2-popup')]//input[contains(@class, 'swal2-input')]",
                 "extra_action": "clearinput",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/input[1]",
+                "path": "//div[contains(@class, 'swal2-popup')]//input[contains(@class, 'swal2-input')]",
                 "extra_action": "setvalue",
                 "value": "Primer Formulario",
             },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {"path": "//*[@id='form_name']"},
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+            },
+            {
+                "path": "//*[@id='form_name']",
+                "wait_ready": True,
+            },
         ]
         self.create_gif_process(path_list, "add_inform_template")
 
+    @modifies_db
     def test_update_name_inform_template(self):
+        """Test renaming an existing inform template.
 
-        path_list = self.path_base + [
+        Flow: Navigate to form list -> Click edit button on first row
+        -> Click rename button -> Enter new name in SweetAlert
+        -> Confirm -> Dismiss success alert.
+
+        GIF: docs/source/_static/gif/update_name_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=1),
+                "sleep": 2,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[1]/a"},
-            {"path": "/html/body/div[3]/div/div[2]/input[1]"},
             {
-                "path": "/html/body/div[3]/div/div[2]/input[1]",
+                "path": "//a[contains(@class, 'edit_name_btn')]",
+                "wait_ready": True,
+            },
+            {
+                "path": "//div[contains(@class, 'swal2-popup')]//input[contains(@class, 'swal2-input')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//div[contains(@class, 'swal2-popup')]//input[contains(@class, 'swal2-input')]",
                 "extra_action": "setvalue",
                 "value": "Formulario Prueba",
             },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+            },
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+                "sleep": 1,
+            },
         ]
         self.create_gif_process(path_list, "update_name_inform_template")
 
-    # def test_drag_drop(self):
-    #
-    #     path_list = self.path_base+[
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[1]",
-    #          "extra_action": "drag_and_drop", "x":"/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[1]",
-    #          "y":"/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input", "extra_action": "clearinput"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
-    #          "extra_action": "setvalue", "value": "Nombre"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[5]/div[1]/input", "extra_action": "clearinput"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[5]/div[1]/input",
-    #          "extra_action": "setvalue", "value": "Ingrese el nombre"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]"},
-    #         {"path": "//*[@id='save_btn']"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button", "scroll":"window.scrollTo(0, 600)"},
-    #         {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-    #
-    #     ]
-    #     self.create_gif_process(path_list, "drag_drop_inform_template")
-    #     self.view_form()
+    @modifies_db
     def test_remove_element(self):
-        path_list = self.path_base + [
+        """Test removing a form element from an inform template.
+
+        Flow: Navigate to form list -> Click edit button on second row
+        -> Hover on a component to show action buttons -> Click remove
+        -> Save form -> Return to form list -> Confirm in SweetAlert.
+
+        GIF: docs/source/_static/gif/remove_inform_template_element.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[2]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=2),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[2]/div[1]",
+                "path": "//div[contains(@class, 'formio-component')][1]",
                 "hover": "",
                 "element": ".component-btn-group",
+                "wait_ready": True,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[1]"
+                "path": "//div[contains(@class, 'component-settings-button-remove')] | //div[contains(@class, 'component-btn-group')]/div[1]",
             },
-            {"path": "//*[@id='save_btn']"},
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
+                "path": SAVE_FORM_BTN,
+            },
+            {
+                "path": RETURN_TO_LIST_BTN,
                 "scroll": "window.scrollTo(0, 600)",
+                "sleep": 2,
             },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+                "sleep": 1,
+            },
         ]
         self.create_gif_process(path_list, "remove_inform_template_element")
         self.view_form()
 
+    @modifies_db
     def test_add_textfield_derb(self):
-        path_list = self.path_base + [
+        """Test adding a text field component to an inform template.
+
+        Flow: Navigate to form list -> Click edit button on first row
+        -> Drag Text Field from sidebar to canvas -> Configure Data tab
+        (set default value) -> View Validation tab -> Save component
+        -> Save form -> Return to form list -> Preview form.
+
+        GIF: docs/source/_static/gif/edit_textfield_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=1),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[1]",
+                "path": FORMIO_TEXT_FIELD,
                 "extra_action": "drag_and_drop",
-                "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[1]",
-                "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div",
+                "x": FORMIO_TEXT_FIELD,
+                "y": FORMIO_DROP_ZONE,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"
+                "path": FORMIO_DIALOG_TAB_DATA,
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/input"
+                "path": FORMIO_DIALOG + "//div[contains(@class, 'tab-pane')][2]//input[1]",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/div/div[1]/input",
+                "path": FORMIO_DIALOG + "//div[contains(@class, 'tab-pane')][2]//input[1]",
                 "extra_action": "setvalue",
                 "value": "Clark",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[3]/a"
-            },
-            {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[4]/div[4]/div[1]/input",
+                "path": FORMIO_DIALOG_TAB_VALIDATION,
                 "screenshot_name": "textfield_validations",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]"
+                "path": FORMIO_DIALOG_SAVE,
             },
-            {"path": "//*[@id='save_btn']"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
-                "scroll": "window.scrollTo(0, 600)",
-            },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-        ]
+        ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "edit_textfield_inform_template")
 
-    def test_add_textfield_calendar_derb(self):
-        path_list = self.path_base + [
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
-            },
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[1]",
-                "extra_action": "drag_and_drop",
-                "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[1]",
-                "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div",
-            },
-            {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[10]/div[1]/div[1]/div/div",
-                "scroll": '$(".formio-dialog-content").scrollTop(300)',
-            },
-            {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[10]/div[1]/div[2]/div/div[2]"
-            },
-            {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]",
-                "scroll": '$(".formio-dialog-content").scrollTop(0)',
-            },
-            {"path": "//*[@id='save_btn']"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
-                "scroll": "window.scrollTo(0, 600)",
-            },
-            {"path": "/html/body/div[8]/div/div[3]/button[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-        ]
-        self.create_gif_process(path_list, "add_calendar_inform_template")
+    # DISABLED: Calendar widget test - Formio calendar widget interaction is unreliable in Selenium
+    # @modifies_db
+    # def test_add_textfield_calendar_derb(self):
+    #     self.navigate_to_form_list()
+    #     path_list = [
+    #         {"path": FORM_TABLE_EDIT_ROW.format(row=1), "sleep": 2},
+    #         {"path": FORMIO_TEXT_FIELD, "extra_action": "drag_and_drop",
+    #          "x": FORMIO_TEXT_FIELD, "y": FORMIO_DROP_ZONE, "wait_ready": True, "sleep": 3},
+    #         {"path": FORMIO_DIALOG + "//div[contains(@class, 'formio-component-select')]//div[contains(@class, 'choices')]",
+    #          "scroll": '$(".formio-dialog-content").scrollTop(300)', "sleep": 1},
+    #         {"path": FORMIO_DIALOG + "//div[contains(@class, 'choices__list--dropdown')]//div[contains(@class, 'choices__item')][2]"},
+    #         {"path": FORMIO_DIALOG_SAVE, "scroll": '$(".formio-dialog-content").scrollTop(0)'},
+    #         {"path": SAVE_FORM_BTN},
+    #         {"path": RETURN_TO_LIST_BTN, "scroll": "window.scrollTo(0, 600)", "sleep": 2},
+    #         {"path": "//button[contains(@class, 'swal2-confirm')]", "sleep": 1},
+    #         {"path": FORM_TABLE_PREVIEW_ROW.format(row=1), "wait_ready": True},
+    #         {"path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]", "wait_ready": True},
+    #         {"path": FORM_TABLE_PREVIEW_ROW.format(row=1), "wait_ready": True},
+    #         {"path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]", "wait_ready": True},
+    #     ]
+    #     self.create_gif_process(path_list, "add_calendar_inform_template")
 
+    @modifies_db
     def test_add_number_derb(self):
-        path_list = self.path_base + [
+        """Test adding a number field component to an inform template.
+
+        Flow: Navigate to form list -> Click edit button on first row
+        -> Drag Number from sidebar to canvas -> Configure Data tab
+        (set default value) -> View Validation tab -> Save component
+        -> Save form -> Return to form list -> Preview form.
+
+        GIF: docs/source/_static/gif/number_input_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=1),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[3]",
+                "path": FORMIO_NUMBER,
                 "extra_action": "drag_and_drop",
-                "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[3]",
-                "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div",
+                "x": FORMIO_NUMBER,
+                "y": FORMIO_DROP_ZONE,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"
+                "path": FORMIO_DIALOG_TAB_DATA,
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[5]/div[1]/input"
+                "path": FORMIO_DIALOG + "//div[contains(@class, 'tab-pane')][2]//input[1]",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[5]/div[1]/input",
+                "path": FORMIO_DIALOG + "//div[contains(@class, 'tab-pane')][2]//input[1]",
                 "extra_action": "setvalue",
                 "value": 2,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[3]/a",
+                "path": FORMIO_DIALOG_TAB_VALIDATION,
                 "screenshot_name": "number_input_data",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]",
+                "path": FORMIO_DIALOG_SAVE,
                 "screenshot_name": "number_input_validations",
             },
-            {"path": "//*[@id='save_btn']"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
-                "scroll": "window.scrollTo(0, 600)",
-            },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-        ]
+        ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "number_input_inform_template")
 
+    @modifies_db
     def test_add_password_derb(self):
-        path_list = self.path_base + [
+        """Test adding a password field component to an inform template.
+
+        Flow: Navigate to form list -> Click edit button on first row
+        -> Drag Password from sidebar to canvas -> View Data tab
+        -> View Validation tab -> Save component -> Save form
+        -> Return to form list -> Preview form.
+
+        GIF: docs/source/_static/gif/password_input_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=1),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[4]",
+                "path": FORMIO_PASSWORD,
                 "extra_action": "drag_and_drop",
-                "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[4]",
-                "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div",
+                "x": FORMIO_PASSWORD,
+                "y": FORMIO_DROP_ZONE,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"
+                "path": FORMIO_DIALOG_TAB_DATA,
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[3]/a",
+                "path": FORMIO_DIALOG_TAB_VALIDATION,
                 "screenshot_name": "password_input_data",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]",
+                "path": FORMIO_DIALOG_SAVE,
                 "screenshot_name": "password_input_validations",
             },
-            {"path": "//*[@id='save_btn']"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
-                "scroll": "window.scrollTo(0, 600)",
-            },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-        ]
+        ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "password_input_inform_template")
 
+    @modifies_db
     def test_add_checkbox_derb(self):
-        path_list = self.path_base + [
+        """Test adding a checkbox component to an inform template.
+
+        Flow: Navigate to form list -> Click edit button on first row
+        -> Drag Checkbox from sidebar to canvas -> Set label
+        -> View Data tab -> View Validation tab -> Save component
+        -> Save form -> Return to form list -> Preview form.
+
+        GIF: docs/source/_static/gif/checkbox_input_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=1),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[5]",
+                "path": FORMIO_CHECKBOX,
                 "extra_action": "drag_and_drop",
-                "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[5]",
-                "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div",
+                "x": FORMIO_CHECKBOX,
+                "y": FORMIO_DROP_ZONE,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input"
+                "path": FORMIO_DIALOG_LABEL_INPUT,
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
+                "path": FORMIO_DIALOG_LABEL_INPUT,
                 "extra_action": "setvalue",
                 "value": "¿Es peligroso?",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"
+                "path": FORMIO_DIALOG_TAB_DATA,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[3]/a",
+                "path": FORMIO_DIALOG_TAB_VALIDATION,
                 "screenshot_name": "checkbox_input_data",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]",
+                "path": FORMIO_DIALOG_SAVE,
                 "screenshot_name": "checkbox_input_validations",
             },
-            {"path": "//*[@id='save_btn']"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
-                "scroll": "window.scrollTo(0, 600)",
-            },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-        ]
+        ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "checkbox_input_inform_template")
 
-    # def test_add_select_box_derb(self):
-    #     path_list = self.path_base+[
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[6]",
-    #             "scroll": "window.scrollTo(0, 100)",
-    #             "extra_action": "drag_and_drop",
-    #             "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[6]",
-    #             "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
-    #          "extra_action": "clearinput"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
-    #          "extra_action": "setvalue", "value": "Seleccione las licencias que posees"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tbody/tr/td[2]/div/div[1]/input",
-    #          "extra_action": "clearinput"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tbody/tr/td[2]/div/div[1]/input",
-    #          "extra_action": "setvalue", "value":"A2"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tfoot/tr/td/button"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tbody/tr[2]/td[2]/div/div[1]/input",
-    #          "extra_action": "clearinput"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tbody/tr[2]/td[2]/div/div[1]/input",
-    #          "extra_action": "setvalue", "value":"B2"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[3]/a",
-    #          "screenshot_name":"select_box_input_data"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]",
-    #          "screenshot_name":"select_box_input_validations"},
-    #         {"path": "//*[@id='save_btn']"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button", "scroll":"window.scrollTo(0, 600)"},
-    #         {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-    #
-    #     ]
-    #     self.create_gif_process(path_list, "select_box_inform_template")
-
+    @modifies_db
     def test_add_radio_derb(self):
-        path_list = self.path_base + [
+        """Test adding a radio button component to an inform template.
+
+        Flow: Navigate to form list -> Click edit button on first row
+        -> Drag Radio from sidebar to canvas -> Set label -> Configure
+        Data tab (set radio option value) -> View Validation tab
+        -> Save component -> Save form -> Return to form list
+        -> Preview form.
+
+        GIF: docs/source/_static/gif/radio_input_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"
+                "path": FORM_TABLE_EDIT_ROW.format(row=1),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[8]",
+                "path": FORMIO_RADIO,
                 "scroll": "window.scrollTo(0, 110)",
                 "extra_action": "drag_and_drop",
-                "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div/span[8]",
-                "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div",
+                "x": FORMIO_RADIO,
+                "y": FORMIO_DROP_ZONE,
+                "wait_ready": True,
+                "sleep": 3,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
-                "value": "clearinput",
+                "path": FORMIO_DIALOG_LABEL_INPUT,
+                "extra_action": "clearinput",
+                "sleep": 1,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
+                "path": FORMIO_DIALOG_LABEL_INPUT,
                 "extra_action": "setvalue",
                 "value": "¿Es peligroso?",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"
+                "path": FORMIO_DIALOG_TAB_DATA,
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tbody/tr/td[2]/div/div[1]/input",
+                "path": FORMIO_DIALOG + "//div[contains(@class, 'tab-pane')][2]//table//tbody/tr[1]/td[2]//input",
                 "extra_action": "clearinput",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/table/tbody/tr/td[2]/div/div[1]/input",
+                "path": FORMIO_DIALOG + "//div[contains(@class, 'tab-pane')][2]//table//tbody/tr[1]/td[2]//input",
                 "extra_action": "setvalue",
                 "value": "Si",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[3]/a",
+                "path": FORMIO_DIALOG_TAB_VALIDATION,
                 "screenshot_name": "radio_input_data",
             },
             {
-                "path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]",
+                "path": FORMIO_DIALOG_SAVE,
                 "screenshot_name": "radio_input_validations",
             },
-            {"path": "//*[@id='save_btn']"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button",
-                "scroll": "window.scrollTo(0, 600)",
-            },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
-            },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
-        ]
+        ] + self._return_and_preview(row=1)
         self.create_gif_process(path_list, "radio_input_inform_template")
 
-    # def test_add_select_api_derb(self):
-    #     path_list = self.path_base+[
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[2]"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[1]/div[1]/h5/button",
-    #          "extra_action":"script", "value":" document.querySelector('#group-basic').classList.remove('show')"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[1]/h5/button",
-    #          "extra_action":"script", "value":" document.querySelector('#group-custom').classList.add('show')"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/span",
-    #             "extra_action": "drag_and_drop",
-    #             "x": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[1]/div/div/div[2]/div[2]/div/span",
-    #             "y": "/html/body/div[1]/div/div[3]/div/div/div[2]/div[2]/div/div/div[2]/div"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
-    #          "extra_action": "clearinput"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[2]/div[1]/div[1]/input",
-    #          "extra_action": "setvalue", "value": "Seleccione un laboratorio"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[1]/ul/li[2]/a"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/div[1]/div[1]/div/div"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[1]/div/div/div[1]/div[1]/div[1]/div[3]/div[2]/div[1]/div[2]/div/div[3]"},
-    #         {"path": "/html/body/div[3]/div/div[2]/div[2]/div[2]/div[2]/div[2]/button[1]", "screenshot_name":"select_api_data"},
-    #         {"path": "//*[@id='save_btn']"},
-    #         {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/button"},
-    #         {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-    #
-    #     ]
-    #     self.create_gif_process(path_list, "select_api_inform_template")
     def test_view_inform_template(self):
-        path_list = self.path_base + [
+        """Test previewing an inform template with Formio form.
+
+        Flow: Navigate to form list -> Click preview button on third
+        row -> View Formio form preview -> Return to form list.
+
+        GIF: docs/source/_static/gif/view_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[3]/td[3]/a[1]"
+                "path": FORM_TABLE_PREVIEW_ROW.format(row=3),
+                "sleep": 2,
             },
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button",
-                "sleep": 20,
+                "path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]",
+                "sleep": 5,
             },
         ]
         self.create_gif_process(path_list, "view_inform_template")
 
+    @modifies_db
     def test_delete_inform_template(self):
-        path_list = self.path_base + [
+        """Test deleting an inform template.
+
+        Flow: Navigate to form list -> Click delete button on third
+        row -> Confirm in SweetAlert -> Dismiss success alert.
+
+        GIF: docs/source/_static/gif/remove_inform_template.gif
+        """
+        self.navigate_to_form_list()
+        path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[3]/td[3]/a[3]"
+                "path": FORM_TABLE_DELETE_ROW.format(row=3),
+                "sleep": 1,
             },
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
-            {"path": "/html/body/div[3]/div/div[3]/button[1]"},
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+            },
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+                "sleep": 1,
+            },
         ]
         self.create_gif_process(path_list, "remove_inform_template")
 
     def view_form(self):
+        """Preview a form template and return to list.
+
+        Flow: Click preview on first row -> View preview -> Return
+        to form list.
+
+        GIF: docs/source/_static/gif/drag_drop_form.gif
+        """
         path_list = [
             {
-                "path": "/html/body/div[1]/div/div[3]/div/div/div[3]/div/div/div[2]/div/table/tbody/tr[1]/td[3]/a[1]"
+                "path": FORM_TABLE_PREVIEW_ROW.format(row=1),
+                "wait_ready": True,
             },
-            {"path": "/html/body/div[1]/div/div[3]/div/div/div[2]/div/button"},
+            {
+                "path": "//button[contains(@class, 'btn-primary') and contains(@onclick, 'window.location')]",
+                "wait_ready": True,
+            },
         ]
         self.create_gif_process(path_list, "drag_drop_form")

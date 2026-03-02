@@ -3,105 +3,158 @@ from django.test import tag
 from django.urls import reverse
 
 from laboratory.models import OrganizationStructure
-from organilab_test.tests.base import SeleniumBase
+from organilab_test.tests.base import OptimizedSeleniumBase, modifies_db
 
 
 @tag("selenium")
-class LabRoomSeleniumTest(SeleniumBase):
-    fixtures = ["selenium/laboratory_selenium.json"]
+class LabRoomSeleniumTest(OptimizedSeleniumBase):
+    fixtures = ["selenium/base_selenium.json", "selenium/laboratory_delta.json"]
 
     def setUp(self):
         super().setUp()
         self.user = User.objects.get(pk=1)
         self.org = OrganizationStructure.objects.get(pk=1)
-        self.select_org_url = self.live_server_url + str(
-            reverse("auth_and_perms:select_organization_by_user")
-        )
         self.force_login(
             user=self.user, driver=self.selenium, base_url=self.live_server_url
         )
 
+    def navigate_to_rooms_create(self):
+        """Navigate directly to the laboratory room create/manage page."""
+        url = self.live_server_url + str(
+            reverse("laboratory:rooms_create", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_rooms_list(self):
+        """Navigate directly to the laboratory room tree view."""
+        url = self.live_server_url + str(
+            reverse("laboratory:rooms_list", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
+    def navigate_to_lab_index(self):
+        """Navigate directly to the laboratory index page."""
+        url = self.live_server_url + str(
+            reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
     def view_laboratory_rooms(self):
+        """View the laboratory rooms tree page.
+
+        Flow: Navigate to rooms list -> View room tree.
+
+        GIF: docs/source/_static/gif/view_room.gif
+        """
+        self.navigate_to_rooms_list()
         path_list = [
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[1]/div/div/span"},
-            {"path": ".//span/span/span[2]/ul/li[1]"},
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[2]/div/div/div/a[1]"},
-            {"path": ".//div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[1]/a"},
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+            {
+                "path": "//h1",
+            },
         ]
         self.create_gif_process(path_list, "view_room")
 
     def view_laboratory_rooms_navbar(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
+        """View laboratory rooms from the navbar dropdown.
+
+        Flow: Navigate to lab index -> Click rooms link in view
+        section.
+
+        GIF: docs/source/_static/gif/view_room_navbar.gif
+        """
+        self.navigate_to_lab_index()
         path_list = [
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]"},
-            {"path": ".//div[1]/div/div[2]/nav/div[1]/ul[2]/li[6]/ul/li[5]/a"},
+            {
+                "path": "//a[contains(@href, 'rooms') and .//strong]",
+                "sleep": 1,
+            },
         ]
         self.create_gif_process(path_list, "view_room_navbar")
 
     def add_laboratory_rooms(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
-        self.path_base = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
-            {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
+        """Add a new laboratory room.
+
+        Flow: Navigate to room management -> Fill room name ->
+        Submit create form.
+
+        GIF: docs/source/_static/gif/add_room.gif
+        """
+        self.navigate_to_rooms_create()
+        path_list = [
             {
-                "path": ".//*[@id='id_name']",
+                "path": "//*[@id='id_name']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//*[@id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Nuevo Cuarto",
             },
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/form/div[2]/div/button"
+                "path": "//form//button[contains(@class, 'btn-outline-success')]",
             },
         ]
-        self.create_gif_process(self.path_base, "add_room")
+        self.create_gif_process(path_list, "add_room")
 
     def update_laboratory_rooms(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
-        self.path_base = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+        """Update an existing laboratory room.
+
+        Flow: Navigate to room management -> Click edit button
+        on a room -> Clear and enter new name -> Submit.
+
+        GIF: docs/source/_static/gif/update_room.gif
+        """
+        self.navigate_to_rooms_create()
+        path_list = [
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li[3]/div/div[2]/div/a[1]"
+                "path": "//ul[contains(@class, 'list-group')]//a[contains(@class, 'btn-outline-warning')]",
             },
-            {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
             {
-                "path": ".//*[@id='id_name']",
+                "path": "//*[@id='id_name']",
+                "extra_action": "clearinput",
+                "wait_ready": True,
+            },
+            {
+                "path": "//*[@id='id_name']",
                 "extra_action": "setvalue",
                 "value": "Cuarto Actualizado",
             },
             {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/form/div[2]/div/button"
-            },
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/form/div[2]/div/button"
+                "path": "//form//button[contains(@class, 'btn-outline-warning')]",
             },
         ]
-        self.create_gif_process(self.path_base, "update_room")
+        self.create_gif_process(path_list, "update_room")
 
     def delete_laboratory_rooms(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
-        self.path_base = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
-            {
-                "path": ".//div[1]/div/div[3]/div/div/div[2]/div[1]/div/ul/li[3]/div/div[2]/div/a[2]"
-            },
-            {"path": ".//div[1]/div/div[3]/div/div/form/input[2]"},
-            {"path": ".//*[@id='id_name']", "extra_action": "clearinput"},
-        ]
-        self.create_gif_process(self.path_base, "delete_room")
+        """Delete a laboratory room.
 
+        Flow: Navigate to room management -> Click delete button
+        on a room -> Confirm deletion.
+
+        GIF: docs/source/_static/gif/delete_room.gif
+        """
+        self.navigate_to_rooms_create()
+        path_list = [
+            {
+                "path": "//ul[contains(@class, 'list-group')]//a[contains(@class, 'btn-outline-danger')]",
+            },
+            {
+                "path": "//input[@type='submit' and contains(@class, 'btn-danger')]",
+                "wait_ready": True,
+            },
+        ]
+        self.create_gif_process(path_list, "delete_room")
+
+    @modifies_db
     def test_laboratory_room_crud(self):
+        """Test full CRUD cycle for laboratory rooms.
+
+        Chains: view rooms -> add room -> update room -> delete room
+        -> view rooms from navbar.
+        """
         self.view_laboratory_rooms()
         self.add_laboratory_rooms()
         self.update_laboratory_rooms()
@@ -109,15 +162,17 @@ class LabRoomSeleniumTest(SeleniumBase):
         self.view_laboratory_rooms_navbar()
 
     def test_update_qr(self):
-        self.selenium.get(
-            url=self.live_server_url
-            + str(reverse("laboratory:labindex", kwargs={"org_pk": 1, "lab_pk": 1}))
-        )
-        self.path_base = [
-            {"path": ".//div[1]/div/div[3]/div/div/div[2]/div[2]/div[2]/ul/li[1]/a"},
+        """Test viewing the QR code rebuild page.
+
+        Flow: Navigate to room management -> Click rebuild QR link.
+
+        GIF: docs/source/_static/gif/update_qr.gif
+        """
+        self.navigate_to_rooms_create()
+        path_list = [
             {
-                "path": "./html/body/div[1]/div/div[3]/div/div/div[2]/a",
+                "path": "//a[contains(@href, 'rebuild_laboratory_qr')]",
                 "screenshot_name": "update_qr",
             },
         ]
-        self.create_gif_process(self.path_base, "update_qr")
+        self.create_gif_process(path_list, "update_qr")
