@@ -94,9 +94,10 @@ Para comprender como funciona el sistema de arrastre primero se ve en el costado
 
         Otra funcionalidad que posee este campo es la de convertirse en un campo de fecha de la siguiente forma:
 
-        .. image:: ../_static/gif/add_calendar_inform_template.gif
-           :height: 380
-           :width: 720
+        .. TODO: imagen pendiente - create_gif_process comentado en test
+        .. .. image:: ../_static/gif/add_calendar_inform_template.gif
+        ..    :height: 380
+        ..    :width: 720
 
     *   **TextArea**: Este campo se utiliza para el ingreso texto extenso se recomiendo para campos descriptivos.
 
@@ -119,9 +120,10 @@ Para comprender como funciona el sistema de arrastre primero se ve en el costado
     *   **Select Boxes**: Este campo es similar al de **Checkbox** la única diferencia entre estos es que permite agregar y
         seleccionar mas de una opción.
 
-        .. image:: ../_static/gif/select_box_inform_template.gif
-           :height: 380
-           :width: 720
+        .. TODO: imagen pendiente de regenerar por tests Selenium
+        .. .. image:: ../_static/gif/select_box_inform_template.gif
+        ..    :height: 380
+        ..    :width: 720
 
     *   **Radio**: Este campo se es similar al **Checkbox** la unica diferecia es que permite agregar mas de una opción y a
         diferencia del **Select Boxes**, solo permite una selección.
@@ -133,9 +135,10 @@ Para comprender como funciona el sistema de arrastre primero se ve en el costado
     *   **Select**: Este campo se utilizá, para el despliegue de un lista de opciones permite la selección de uno o mas
         elementos, pero por defecto permite solo una selección.
 
-        .. image:: ../_static/gif/select_input_inform_template.gif
-           :height: 380
-           :width: 720
+        .. TODO: imagen pendiente de regenerar por tests Selenium
+        .. .. image:: ../_static/gif/select_input_inform_template.gif
+        ..    :height: 380
+        ..    :width: 720
 
 *   **API Fields**: A diferencia que en el **Basic** este solo almacenara campos que estan configurados por *SOLVO*:
 
@@ -158,9 +161,10 @@ Para comprender como funciona el sistema de arrastre primero se ve en el costado
         *   *Objetos*: Al seleccionar esta opción como base, se desplegarán un lista con todos los objetos registrados
             por parte de la organización que esta accediendo esto excluye organizaciones padres e hijas.
 
-        .. image:: ../_static/gif/select_api_inform_template.gif
-           :height: 380
-           :width: 720
+        .. TODO: imagen pendiente de regenerar por tests Selenium
+        .. .. image:: ../_static/gif/select_api_inform_template.gif
+        ..    :height: 380
+        ..    :width: 720
 
 *   **Layout**: Este sitio de ingreso de columnas, tablas, pestañas para una mejor confeccion del plantilla.
 
