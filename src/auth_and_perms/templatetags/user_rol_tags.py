@@ -29,6 +29,8 @@ def has_perm_in_org(context, org_pk, permission):
 
     if effective_org is None:
         profile_in = ProfilePermission.objects.filter(
+            profile=user.profile
+        ).filter(
             Q(
                 content_type__app_label="laboratory",
                 content_type__model="laboratory",
