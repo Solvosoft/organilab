@@ -1,5 +1,5 @@
 from django.contrib.admin.models import DELETION, CHANGE, ADDITION
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, Sum, F
 from django.db.models.functions import JSONObject
@@ -31,8 +31,13 @@ from risk_management.forms import (
     UpdateRegentForm,
     RiskZoneListForm,
 )
-from risk_management.models import RiskZone, ZoneType, Buildings, Regent, \
-    EstablishmentLogs
+from risk_management.models import (
+    RiskZone,
+    ZoneType,
+    Buildings,
+    Regent,
+    EstablishmentLogs,
+)
 from laboratory.views.djgeneric import (
     ListView,
     CreateView,
@@ -45,7 +50,11 @@ import uuid
 from django.utils.translation import gettext_lazy as _
 
 
-@method_decorator(permission_required("risk_management.view_riskzone"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("risk_management.view_riskzone", raise_exception=True),
+    name="dispatch",
+)
 class ListZone(ListView):
     model = RiskZone
     ordering = "zone_type"
@@ -58,9 +67,13 @@ class ListZone(ListView):
         queryset = super().get_queryset().filter(organization__pk=org)
         if "q" in self.request.GET:
             q = self.request.GET["q"]
-            queryset = queryset.filter(
-                Q(name__icontains=q) | Q(laboratories__name__icontains=q)
-            ).annotate(zone_pk=JSONObject(origen=F("pk"))).distinct()
+            queryset = (
+                queryset.filter(
+                    Q(name__icontains=q) | Q(laboratories__name__icontains=q)
+                )
+                .annotate(zone_pk=JSONObject(origen=F("pk")))
+                .distinct()
+            )
 
         return queryset
 
@@ -86,15 +99,16 @@ class ListZone(ListView):
                     x += f"?{key}={data}"
                 i += 1
 
-        context["eslochart"] = reverse(
-            "eslochart-detail",
-            kwargs={"pk": org_pk}
-        ) + x
+        context["eslochart"] = reverse("eslochart-detail", kwargs={"pk": org_pk}) + x
         for object in context["object_list"]:
-            latest_log = EstablishmentLogs.objects.filter(
-                object_id=object.pk,
-                content_type=ContentType.objects.get_for_model(RiskZone),
-            ).order_by('-date').first()
+            latest_log = (
+                EstablishmentLogs.objects.filter(
+                    object_id=object.pk,
+                    content_type=ContentType.objects.get_for_model(RiskZone),
+                )
+                .order_by("-date")
+                .first()
+            )
             if latest_log:
                 object.status = latest_log.establishment_status
             else:
@@ -103,7 +117,11 @@ class ListZone(ListView):
         return context
 
 
-@method_decorator(permission_required("risk_management.add_riskzone"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("risk_management.add_riskzone", raise_exception=True),
+    name="dispatch",
+)
 class ZoneCreate(CreateView):
     model = RiskZone
     form_class = RiskZoneCreateForm
@@ -138,8 +156,10 @@ class ZoneCreate(CreateView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.change_riskzone"), name="dispatch"
+    permission_required("risk_management.change_riskzone", raise_exception=True),
+    name="dispatch",
 )
 class ZoneEdit(UpdateView):
     model = RiskZone
@@ -169,8 +189,10 @@ class ZoneEdit(UpdateView):
         return success_url
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("risk_management.delete_riskzone"), name="dispatch"
+    permission_required("risk_management.delete_riskzone", raise_exception=True),
+    name="dispatch",
 )
 class ZoneDelete(DeleteView):
     model = RiskZone
@@ -194,7 +216,11 @@ class ZoneDelete(DeleteView):
         return success_url
 
 
-@method_decorator(permission_required("risk_management.view_riskzone"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("risk_management.view_riskzone", raise_exception=True),
+    name="dispatch",
+)
 class ZoneDetail(DetailView):
     model = RiskZone
 
@@ -216,7 +242,8 @@ class ZoneDetail(DetailView):
         return context
 
 
-@permission_required("risk_management.add_zonetype")
+@login_required
+@permission_required("risk_management.add_zonetype", raise_exception=True)
 def add_zone_type_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     if not check_user_access_kwargs_org_lab(org_pk, 0, request.user):
@@ -267,14 +294,16 @@ def add_zone_type_view(request, org_pk):
     return JsonResponse(data)
 
 
-@permission_required("risk_management.view_buildings")
+@login_required
+@permission_required("risk_management.view_buildings", raise_exception=True)
 def buildings_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     context = {"org_pk": org_pk}
     return render(request, "risk_management/building_list.html", context=context)
 
 
-@permission_required("risk_management.add_buildings")
+@login_required
+@permission_required("risk_management.add_buildings", raise_exception=True)
 def buildings_actions(request, org_pk, pk=None):
     user_is_allowed_on_organization(request.user, org_pk)
     form = BuildingsForm(org_pk=org_pk)
@@ -307,7 +336,8 @@ def buildings_actions(request, org_pk, pk=None):
     return render(request, "risk_management/buildings.html", context=context)
 
 
-@permission_required("risk_management.view_regent")
+@login_required
+@permission_required("risk_management.view_regent", raise_exception=True)
 def regent_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     context = {
@@ -319,14 +349,16 @@ def regent_view(request, org_pk):
     return render(request, "risk_management/regents.html", context=context)
 
 
-@permission_required("risk_management.view_structure")
+@login_required
+@permission_required("risk_management.view_structure", raise_exception=True)
 def structure_view(request, org_pk):
     user_is_allowed_on_organization(request.user, org_pk)
     context = {"org_pk": org_pk}
     return render(request, "risk_management/structure_list.html", context=context)
 
 
-@permission_required("risk_management.add_structure")
+@login_required
+@permission_required("risk_management.add_structure", raise_exception=True)
 def structure_actions(request, org_pk, pk=None):
     user_is_allowed_on_organization(request.user, org_pk)
     form = StructureForm(org_pk=org_pk)
@@ -407,7 +439,10 @@ class ZoneDashboard(TemplateView):
         return context
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_report", raise_exception=True), name="dispatch"
+)
 class RiskZoneReport(ListView):
     model = RiskZone
     template_name = "report/base_report_organizations.html"

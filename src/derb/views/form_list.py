@@ -1,5 +1,5 @@
 from django.contrib.admin.models import DELETION, ADDITION
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -13,7 +13,11 @@ from derb.models import CustomForm
 from laboratory.utils import organilab_logentry
 
 
-@method_decorator(permission_required("derb.view_customform"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("derb.view_customform", raise_exception=True),
+    name="dispatch",
+)
 class FormList(ListView):
     model = CustomForm
     context_object_name = "forms"
@@ -33,7 +37,11 @@ class FormList(ListView):
         return context
 
 
-@method_decorator(permission_required("derb.delete_customform"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("derb.delete_customform", raise_exception=True),
+    name="dispatch",
+)
 class DeleteForm(DeleteView):
     model = CustomForm
 
@@ -49,7 +57,8 @@ class DeleteForm(DeleteView):
         return success_url
 
 
-@permission_required("derb.add_customform")
+@login_required
+@permission_required("derb.add_customform", raise_exception=True)
 def CreateForm(request, org_pk):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
 

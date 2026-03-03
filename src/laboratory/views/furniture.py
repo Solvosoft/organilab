@@ -2,33 +2,26 @@ from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from djgentelella.widgets import core as genwidgets
-
 from presentation.utils import build_qr_instance
-
 from ..forms import FurnitureForm, CatalogForm, FurnitureLabRoomForm
 from ..utils import organilab_logentry
-
-"""
-Created on 26/12/2016
-
-@author: luisza
-"""
-
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django_ajax.decorators import ajax
-
-
 from laboratory.models import Furniture, Laboratory, LaboratoryRoom, Shelf
 from laboratory.shelf_utils import get_dataconfig
 from .djgeneric import CreateView, UpdateView, DeleteView
 from django.utils.translation import gettext_lazy as _
 
 
-@method_decorator(permission_required("laboratory.add_furniture"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.add_furniture", raise_exception=True),
+    name="dispatch",
+)
 class FurnitureCreateView(CreateView):
     model = Furniture
     fields = ("name", "type")
@@ -89,7 +82,11 @@ class FurnitureCreateView(CreateView):
         }
 
 
-@method_decorator(permission_required("laboratory.change_furniture"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.change_furniture", raise_exception=True),
+    name="dispatch",
+)
 class FurnitureUpdateView(UpdateView):
     model = Furniture
     success_url = "/"
@@ -144,7 +141,11 @@ class FurnitureUpdateView(UpdateView):
         return redirect(self.get_success_url())
 
 
-@method_decorator(permission_required("laboratory.delete_furniture"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.delete_furniture", raise_exception=True),
+    name="dispatch",
+)
 class FurnitureDelete(DeleteView):
     model = Furniture
     success_url = "/"

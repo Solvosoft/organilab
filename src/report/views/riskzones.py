@@ -516,7 +516,7 @@ def report_hazard_map_pdf(report, uri):
 
 
 @login_required
-@permission_required("laboratory.view_report")
+@permission_required("laboratory.view_report", raise_exception=True)
 def hazard_map_visual_view(request, org_pk):
     """Direct HTML view for hazard map (bypasses Celery)."""
     from risk_management.hazard_map_utils import build_lab_hazard_map

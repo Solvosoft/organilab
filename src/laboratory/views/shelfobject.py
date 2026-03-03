@@ -86,7 +86,11 @@ def list_shelfobject_render(request, shelf=0, row=0, col=0, org_pk=None, lab_pk=
     return render_to_string("laboratory/shelfObject_list.html", context, request)
 
 
-@method_decorator(permission_required("reservations.add_reservation"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("reservations.add_reservation", raise_exception=True),
+    name="dispatch",
+)
 class ShelfObjectReservationModal(FormView):
     template_name = "laboratory/reservation_modal.html"
     form_class = ReservationModalForm
@@ -300,7 +304,11 @@ class ShelfObjectRefuseFormUpdate(GTForm, forms.ModelForm):
         }
 
 
-@method_decorator(permission_required("laboratory.add_shelfobject"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.add_shelfobject", raise_exception=True),
+    name="dispatch",
+)
 class ShelfObjectCreate(AJAXMixin, CreateView):
     model = ShelfObject
     form_class = ShelfObjectForm
@@ -392,7 +400,11 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
         return {"inner-fragments": {"#shelfobjectCreate": response.content}}
 
 
-@method_decorator(permission_required("laboratory.change_shelfobject"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.change_shelfobject", raise_exception=True),
+    name="dispatch",
+)
 class ShelfObjectEdit(AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
@@ -462,7 +474,11 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
 
 
 # fixme Delete
-@method_decorator(permission_required("laboratory.change_shelfobject"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.change_shelfobject", raise_exception=True),
+    name="dispatch",
+)
 class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
     model = ShelfObject
     form_class = ShelfObjectFormUpdate
@@ -521,7 +537,11 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
         }
 
 
-@method_decorator(permission_required("laboratory.delete_shelfobject"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.delete_shelfobject", raise_exception=True),
+    name="dispatch",
+)
 class ShelfObjectDelete(AJAXMixin, DeleteView):
     model = ShelfObject
     success_url = "/"
@@ -539,7 +559,11 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
         return data
 
 
-@method_decorator(permission_required("laboratory.view_shelfobject"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_shelfobject", raise_exception=True),
+    name="dispatch",
+)
 class ShelfObjectDetail(AJAXMixin, DetailView):
     model = ShelfObject
 
@@ -595,7 +619,8 @@ def get_shelf_list(request):
     return JsonResponse({"data": data, "msg": msg})
 
 
-@permission_required("laboratory.add_tranferobject")
+@login_required
+@permission_required("laboratory.add_tranferobject", raise_exception=True)
 def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
     transfer = get_object_or_404(TranferObject, pk=transfer_pk)
     shelf = get_object_or_404(Shelf, pk=shelf_pk)
@@ -724,8 +749,8 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
 objects_transfer.lab_pk_field = "lab_pk"
 
 
-@login_required()
-@permission_required("laboratory.change_shelfobject")
+@login_required
+@permission_required("laboratory.change_shelfobject", raise_exception=True)
 def edit_limit_object(request, *args, **kwargs):
     shelf_object = ShelfObject.objects.filter(pk=kwargs["pk"]).first()
     context = {
@@ -748,7 +773,7 @@ def edit_limit_object(request, *args, **kwargs):
 
 
 @login_required
-@permission_required("laboratory.view_shelfobject")
+@permission_required("laboratory.view_shelfobject", raise_exception=True)
 def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     org = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -776,8 +801,10 @@ def download_shelfobject_qr(request, org_pk, lab_pk, pk):
     return response
 
 
+@login_required
 @all_permission_required(
-    ["laboratory.change_shelfobject", "laboratory.view_shelfobject"]
+    ["laboratory.change_shelfobject", "laboratory.view_shelfobject"],
+    raise_exception=True,
 )
 def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
     shelfobject = get_object_or_404(
@@ -892,7 +919,7 @@ def view_equipment_shelfobject_detail(request, org_pk, lab_pk, pk):
 
 
 @login_required()
-@permission_required("laboratory.change_shelfobject")
+@permission_required("laboratory.change_shelfobject", raise_exception=True)
 def shelf_object_reagents(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
@@ -911,8 +938,8 @@ def shelf_object_reagents(request, org_pk, lab_pk):
     )
 
 
-@login_required()
-@permission_required("laboratory.change_shelfobject")
+@login_required
+@permission_required("laboratory.change_shelfobject", raise_exception=True)
 def shelf_object_hcode(request, org_pk, lab_pk):
     org = get_object_or_404(OrganizationStructure, pk=org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)
