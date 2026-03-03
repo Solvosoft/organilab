@@ -127,6 +127,60 @@ class Cap2InventoryTest(CapacitacionSeleniumBase):
         ]
         self.create_gif_process(path_list, "cap2_view_objects")
 
+    def test_view_shelf_object_details(self):
+        """Escenario 2.5: Ver detalles de un objeto en el laboratorio.
+
+        Flujo: Expandir Sala de Almacenamiento -> Expandir mueble ->
+        Seleccionar estante -> Clic en boton ojo de un registro ->
+        Scroll en el modal de detalles.
+
+        GIF: docs/source/_static/gif/cap2_view_shelf_object_details.gif
+        """
+        self.navigate_to_rooms(org_pk=4, lab_pk=1)
+        path_list = [
+            # Expandir Sala de Almacenamiento (labroom pk=1)
+            {
+                "path": "//*[@id='labroom_1']",
+                "sleep": 1,
+            },
+            # Expandir mueble Gabinete Principal (furniture pk=1)
+            {
+                "path": "//*[@id='furniture_1']",
+                "sleep": 1,
+            },
+            # Seleccionar estante Estante Reactivos A (shelf pk=1)
+            {
+                "path": "//*[@id='shelf_1']",
+                "scroll": "window.scrollTo(0, 250)",
+                "sleep": 2,
+            },
+            # Clic en boton ojo (ver detalles) del primer registro de la tabla
+            {
+                "path": "//*[@id='shelfobjecttable']/tbody/tr[1]//a[.//i[contains(@class,'fa-eye')]]",
+                "sleep": 2,
+            },
+            # Scroll en el modal de detalles
+            {
+                "path": "//*[@id='shelfobject_detail_modal_body']",
+                "extra_action": "script",
+                "value": "$('#shelfobject_detail_modal_body').scrollTop(150);",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='shelfobject_detail_modal_body']",
+                "extra_action": "script",
+                "value": "$('#shelfobject_detail_modal_body').scrollTop(300);",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='shelfobject_detail_modal_body']",
+                "extra_action": "script",
+                "value": "$('#shelfobject_detail_modal_body').scrollTop(450);",
+                "sleep": 1,
+            },
+        ]
+        self.create_gif_process(path_list, "cap2_view_shelf_object_details")
+
 
 @tag("selenium")
 class Cap2ReportsTest(CapacitacionSeleniumBase):
