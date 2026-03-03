@@ -181,6 +181,72 @@ class Cap2InventoryTest(CapacitacionSeleniumBase):
         ]
         self.create_gif_process(path_list, "cap2_view_shelf_object_details")
 
+    def test_pending_transfers(self):
+        """Escenario 2.5: Ver transacciones pendientes."""
+        self.navigate_to_rooms(org_pk=4, lab_pk=1)
+        path_list = [
+            # Expandir Sala de Almacenamiento (labroom pk=1)
+            {
+                "path": "//*[@id='labroom_1']",
+                "sleep": 1,
+            },
+            # Expandir mueble Gabinete Principal (furniture pk=1)
+            {
+                "path": "//*[@id='furniture_1']",
+                "sleep": 1,
+            },
+            # Seleccionar estante Estante Reactivos A (shelf pk=1)
+            {
+                "path": "//*[@id='shelf_1']",
+                "scroll": "window.scrollTo(0, 250)",
+                "sleep": 2,
+            },
+            # Clic en boton de flechas para ver transacciones pendientes
+            {
+                "path": "//button[.//i[contains(@class,'fa-exchange')]]",
+                "sleep": 2,
+            },
+        ]
+        self.create_gif_process(path_list, "cap2_transfer_out")
+
+    def test_view_shelf_object_logs(self):
+        """Escenario 2.5: Ver detalles de un objeto en el laboratorio.
+
+        Flujo: Expandir Sala de Almacenamiento -> Expandir mueble ->
+        Seleccionar estante -> Clic en boton ojo de un registro ->
+        Scroll en el modal de detalles.
+
+        GIF: docs/source/_static/gif/cap2_view_shelf_object_details.gif
+        """
+        self.navigate_to_rooms(org_pk=4, lab_pk=1)
+        path_list = [
+            # Expandir Sala de Almacenamiento (labroom pk=1)
+            {
+                "path": "//*[@id='labroom_1']",
+                "sleep": 1,
+            },
+            # Expandir mueble Gabinete Principal (furniture pk=1)
+            {
+                "path": "//*[@id='furniture_1']",
+                "sleep": 1,
+            },
+            # Seleccionar estante Estante Reactivos A (shelf pk=1)
+            {
+                "path": "//*[@id='shelf_1']",
+                "scroll": "window.scrollTo(0, 250)",
+                "sleep": 2,
+            },
+            # Clic en boton ojo (ver detalles) del primer registro de la tabla
+            {
+                "path": "//*[@id='shelfobjecttable']/tbody/tr[1]//a[.//i[contains(@class,'fa-file-text-o')]]",
+                "sleep": 2,
+            },
+            {
+                "path": "//body",
+                "sleep": 2,
+            }
+        ]
+        self.create_gif_process(path_list, "cap2_view_shelfobject_logs")
 
 @tag("selenium")
 class Cap2ReportsTest(CapacitacionSeleniumBase):
