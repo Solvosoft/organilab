@@ -1213,3 +1213,9 @@ msgstr "Agregar Reservaciones"
 
 msgid "Can Request Reservations"
 msgstr "Puede Solicitar Reservaciones"
+
+msgid "Danger Substance Category"
+msgstr "Categoría de Sustancia Peligrosa"
+
+msgid "View Register User"
+msgstr "Ver Registro de Usuario"

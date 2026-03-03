@@ -64,6 +64,18 @@ def organization_can_change_laboratory(laboratory, organization, raise_exec=Fals
     ):
         return True
 
+    descendants = organization.descendants()
+    if (
+        OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
+            .filter(
+            content_type__app_label=laboratory._meta.app_label,
+            content_type__model=laboratory._meta.model_name,
+            object_id=laboratory.pk,
+            organization__in=descendants,
+        ).exists()
+    ):
+        return True
+
     if raise_exec:
         raise PermissionDenied(_("You can modify this laboratory"))
     return False
