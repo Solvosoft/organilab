@@ -1,10 +1,11 @@
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render
 
 from laboratory.forms import InstrumentalFamilyForm, EquipmentTypeForm
 
 
-@permission_required("laboratory.view_catalog")
+@login_required
+@permission_required("laboratory.view_catalog", raise_exception=True)
 def view_instrumental_family_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
@@ -16,7 +17,8 @@ def view_instrumental_family_list(request, org_pk, lab_pk):
     return render(request, "laboratory/instrumentalfamily/list.html", context=context)
 
 
-@permission_required("laboratory.view_object")
+@login_required
+@permission_required("laboratory.view_object", raise_exception=True)
 def view_equipmenttype_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,

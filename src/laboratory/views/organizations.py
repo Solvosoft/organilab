@@ -8,7 +8,7 @@ from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -58,7 +58,11 @@ class OrganizationSelectableForm(GTForm, forms.Form):
             )
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_report", raise_exception=True),
+    name="dispatch",
+)
 class OrganizationReportView(ListView):
     model = Laboratory
     template_name = "laboratory/report_organizationlaboratory_list.html"
@@ -140,8 +144,12 @@ class OrganizationReportView(ListView):
         return super(OrganizationReportView, self).get(request, *args, **kwargs)
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.delete_organizationstructure"), name="dispatch"
+    permission_required(
+        "laboratory.delete_organizationstructure", raise_exception=True
+    ),
+    name="dispatch",
 )
 class OrganizationDeleteView(DeleteView):
     model = OrganizationStructure
@@ -166,8 +174,10 @@ class OrganizationDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.add_organizationstructure"), name="dispatch"
+    permission_required("laboratory.add_organizationstructure", raise_exception=True),
+    name="dispatch",
 )
 class OrganizationCreateView(CreateView):
     model = OrganizationStructure
@@ -190,8 +200,12 @@ class OrganizationCreateView(CreateView):
         return response
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.change_organizationstructure"), name="dispatch"
+    permission_required(
+        "laboratory.change_organizationstructure", raise_exception=True
+    ),
+    name="dispatch",
 )
 class OrganizationActionsFormview(FormView):
     form_class = OrganizationActions
@@ -340,8 +354,12 @@ class OrganizationActionsFormview(FormView):
         return redirect(reverse_lazy("auth_and_perms:organizationManager"))
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.change_organizationstructure"), name="dispatch"
+    permission_required(
+        "laboratory.change_organizationstructure", raise_exception=True
+    ),
+    name="dispatch",
 )
 class OrganizationUpdateView(UpdateView):
     model = OrganizationStructure
@@ -377,7 +395,7 @@ class OrganizationUpdateView(UpdateView):
             UserOrganization.objects.get_or_create(
                 user=user,
                 organization=new_root,
-                defaults={'type_in_organization': UserOrganization.LABORATORY_USER}
+                defaults={"type_in_organization": UserOrganization.LABORATORY_USER},
             )
             organilab_logentry(
                 self.request.user,
@@ -403,7 +421,7 @@ class OrganizationUpdateView(UpdateView):
             )
 
     def form_valid(self, form):
-        new_parent = form.cleaned_data.get('parent')
+        new_parent = form.cleaned_data.get("parent")
 
         response = super().form_valid(form)
 

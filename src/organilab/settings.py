@@ -97,7 +97,7 @@ INSTALLED_APPS = [
     "django_otp",
     "django_otp.plugins.otp_totp",
     "report",
-    "pending_tasks"
+    "pending_tasks",
 ]
 
 
@@ -117,6 +117,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "djreservation.middleware.ReservationMiddleware",
     "authentication.middleware.ProfileMiddleware",
+    "authentication.middleware.HandleErrorMiddleware",
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
