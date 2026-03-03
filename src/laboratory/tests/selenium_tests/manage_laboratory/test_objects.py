@@ -219,13 +219,8 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
 
     @modifies_db
     def test_add_object_material_is_container(self):
-        """Test creating a material object that is a container via modal.
-
-        Flow: Navigate to object view -> Click create -> Fill form
-        with container-specific fields (is_container, capacity,
-        capacity_measurement_unit) -> Save.
-
-        GIF: docs/source/_static/gif/add_material_container_object.gif
+        """
+        GIF: docs/source/_static/gif/cap3_precursor_config.gif
         """
         self.navigate_to_object_view()
         path_list = [
@@ -435,6 +430,227 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
             },
         ]
         self.create_gif_process(path_list, "add_reactive_object")
+
+    @modifies_db
+    def test_add_reactive_object_classification(self):
+        """
+        GIF: docs/source/_static/gif/cap3_sga_classification.gif
+        """
+        self.navigate_to_substance_list()
+
+        path_list = [
+            {
+                "path": "//*[@id='reactive_table_wrapper']//button[contains(@class, 'btn-outline-success')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//input[@id='id_create-code']",
+                "extra_action": "setvalue",
+                "value": "CE-456",
+            },
+            {
+                "path": "//input[@id='id_create-name']",
+                "extra_action": "setvalue",
+                "value": "BEA143 Beakers 50 mL",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//input[@id='id_create-synonym']",
+                "extra_action": "setvalue",
+                "value": "ss454",
+            },
+            {
+                "path": "//textarea[@id='id_create-description']",
+                "extra_action": "setvalue",
+                "value": "Un vaso de precipitado es un recipiente cilíndrico...",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(300)",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//input[@id='id_create-model']",
+                "extra_action": "setvalue",
+                "value": "CA-546",
+                "sleep": 0.3,
+            },
+            # ¿Es peligroso? (toggle)
+            {
+                "path": "//*[@id='id_create-is_dangerous']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider') or self::label]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(600)",
+                "sleep": 0.6,
+            },
+            # IARC (select2)
+            {
+                "path": "//select[@id='id_create-iarc']/..//span[contains(@class,'select2-selection')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(900)",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(normalize-space(.),'Grupo 1')]",
+                "sleep": 0.6,
+            },
+            # IMDG (select2)
+            {
+                "path": "//select[@id='id_create-imdg']/..//span[contains(@class,'select2-selection')]",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(normalize-space(.),'Líquidos inflamables')]",
+                "sleep": 0.6,
+            },
+            # Órgano blanco (select2)
+            {
+                "path": "//*[@id='create_obj_modal']//*[self::label or self::span][contains(normalize-space(.),'Organo blanco') or contains(normalize-space(.),'Órgano blanco')]/ancestor::*[self::div or self::p or self::li][1]//span[contains(@class,'select2-selection')]",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(normalize-space(.),'Aparato digestivo')]",
+                "sleep": 0.6,
+            },
+            # Indicación de peligro (H-codes)
+            {
+                "path": "//*[@id='select2-id_create-h_code-container']/ancestor::span[contains(@class,'select2-selection')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(1100)",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(.,'H300') and contains(.,'H310')]",
+                "sleep": 0.6,
+            },
+            # Códigos UE
+            {
+                "path": "//*[@id='select2-id_create-ue_code-container']/ancestor::span[contains(@class,'select2-selection')]",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(normalize-space(.),'EUH 001')]",
+                "sleep": 0.6,
+            },
+            # Códigos NFPA
+            {
+                "path": "//*[@id='id_create-nfpa']/ancestor::*[contains(@class,'form-group') or contains(@class,'mb-') or self::div][1]//span[contains(@class,'select2-selection')]",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(normalize-space(.),'Líquido inflamable clase IA')]",
+                "sleep": 0.6,
+            },
+            # Clases de almacenamientos (select2 / multi)
+            {
+                "path": "//select[@id='id_create-storage_class']/..//span[contains(@class,'select2-selection')]",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[starts-with(normalize-space(.),'1 ')]",
+                "sleep": 0.6,
+            },
+            {
+                "path": "//input[@id='id_create-density']",
+                "extra_action": "setvalue",
+                "value": "1.00",
+                "sleep": 0.4,
+            },
+            # GUARDAR
+            {
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(1200)",
+                "sleep": 1,
+            },
+        ]
+
+        self.create_gif_process(path_list, "cap3_sga_classification")
+
+    @modifies_db
+    def test_add_reactive_object_precursor(self):
+        """
+        GIF: docs/source/_static/gif/cap3_precursor_config.gif
+        """
+        self.navigate_to_substance_list()
+
+        path_list = [
+            {
+                "path": "//*[@id='reactive_table_wrapper']//button[contains(@class, 'btn-outline-success')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//input[@id='id_create-code']",
+                "extra_action": "setvalue",
+                "value": "CE-456",
+            },
+            {
+                "path": "//input[@id='id_create-name']",
+                "extra_action": "setvalue",
+                "value": "BEA143 Beakers 50 mL",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//input[@id='id_create-synonym']",
+                "extra_action": "setvalue",
+                "value": "ss454",
+            },
+            {
+                "path": "//textarea[@id='id_create-description']",
+                "extra_action": "setvalue",
+                "value": "Un vaso de precipitado es un recipiente cilíndrico...",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(300)",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//input[@id='id_create-model']",
+                "extra_action": "setvalue",
+                "value": "CA-546",
+                "sleep": 0.3,
+            },
+            # Tiene umbral
+            {
+                "path": "//*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-has_threshold']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(400)",
+                "sleep": 0.6,
+            },
+            #  Umbral
+            {
+                "path": "//input[@id='id_create-threshold']",
+                "extra_action": "setvalue",
+                "value": "10",
+                "sleep": 0.4,
+            },
+            # Es pura
+            {
+                "path": "//*[@id='id_create-is_pure']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-is_pure']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
+                "sleep": 0.6,
+            },
+            # Es precursor
+            {
+                "path": "//*[@id='id_create-is_precursor']/ancestor::*[self::div or self::li or self::p][1]//label | //*[@id='id_create-is_precursor']/ancestor::*[self::div or self::li or self::p][1]//*[contains(@class,'switch') or contains(@class,'slider')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(450)",
+                "sleep": 0.6,
+            },
+            # Tipo de precursor
+            {
+                "path": "//select[@id='id_create-precursor_type']/..//span[contains(@class,'select2-selection')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(500)",
+                "sleep": 0.4,
+            },
+            {
+                "path": "//ul[contains(@class,'select2-results__options')]//li[contains(.,'Lista 1')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(600)",
+                "sleep": 0.6,
+            },
+            {
+                "path": "//input[@id='id_create-density']",
+                "extra_action": "setvalue",
+                "value": "1.00",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(750)",
+                "sleep": 0.4,
+            },
+            # GUARDAR
+            {
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
+                "scroll": "$('#create_obj_modal .modal-body').scrollTop(1200)",
+                "sleep": 1,
+            },
+        ]
+
+        self.create_gif_process(path_list, "cap3_precursor_config")
 
     @modifies_db
     def test_edit_reactive_object(self):
