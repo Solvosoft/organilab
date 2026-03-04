@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.admin.models import LogEntry, DELETION, CHANGE, ADDITION
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.db.models import Value, DateField, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -421,7 +421,11 @@ class ShelfObjectGraphicAPI(APIView):
         return Response({"labels": labels, "data": data})
 
 
-@method_decorator(permission_required("laboratory.delete_shelf"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.delete_shelf", raise_exception=True),
+    name="dispatch",
+)
 class ShelfList(APIView):
     def post(self, request):
         serializer = serializers.ShelfPkList(data=request.data)
@@ -435,7 +439,8 @@ class ShelfList(APIView):
         return Response({"data": data})
 
 
-@permission_required("laboratory.view_shelfobject")
+@login_required
+@permission_required("laboratory.view_shelfobject", raise_exception=True)
 def ShelfObjectObservationView(request, org_pk, lab_pk, pk):
     template = "laboratory/shelfobject/shelfobject_observations.html"
     organization = get_object_or_404(

@@ -1,7 +1,7 @@
 # encoding: utf-8
 from django.conf import settings
 from django.contrib.admin.models import DELETION, ADDITION
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect, reverse, get_object_or_404
 from django.shortcuts import render
 from auth_and_perms.organization_utils import (
@@ -10,9 +10,6 @@ from auth_and_perms.organization_utils import (
 )
 from laboratory.forms import InformForm, CommentForm
 from laboratory.models import Inform, OrganizationStructure, Laboratory
-
-from django.contrib import messages
-from django.utils.translation import gettext as _
 from django.http import JsonResponse
 from django.contrib.contenttypes.models import ContentType
 import json
@@ -20,7 +17,8 @@ import json
 from laboratory.utils import organilab_logentry
 
 
-@permission_required("laboratory.view_inform")
+@login_required
+@permission_required("laboratory.view_inform", raise_exception=True)
 def get_informs(request, *args, **kwargs):
     lab = int(kwargs.get("lab_pk"))
     content = ContentType.objects.get(app_label="laboratory", model="laboratory")
@@ -35,7 +33,8 @@ def get_informs(request, *args, **kwargs):
     return render(request, "laboratory/inform.html", context=context)
 
 
-@permission_required("laboratory.delete_inform")
+@login_required
+@permission_required("laboratory.delete_inform", raise_exception=True)
 def remove_inform(request, *args, **kwargs):
     informs = Inform.objects.filter(pk=int(kwargs.get("pk"))).first()
     if informs:
@@ -57,7 +56,8 @@ def remove_inform(request, *args, **kwargs):
     )
 
 
-@permission_required("laboratory.add_inform")
+@login_required
+@permission_required("laboratory.add_inform", raise_exception=True)
 def create_informs(request, *args, **kwargs):
     org = kwargs.get("org_pk")
     form = InformForm(request.POST, org_pk=org)
@@ -120,7 +120,8 @@ def update_inform_data(item, data):
                 update_inform_data(child, data)
 
 
-@permission_required("laboratory.change_inform")
+@login_required
+@permission_required("laboratory.change_inform", raise_exception=True)
 def complete_inform(request, *args, **kwargs):
     inform = Inform.objects.get(pk=kwargs.get("pk"))
     schema = inform.schema

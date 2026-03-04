@@ -1,11 +1,15 @@
 from .djgeneric import ListView
 from reservations_management.models import ReservedProducts
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("reservations_management.add_reservations"), name="dispatch"
+    permission_required(
+        "reservations_management.add_reservations", raise_exception=True
+    ),
+    name="dispatch",
 )
 class MyReservationView(ListView):
     model = ReservedProducts
