@@ -304,6 +304,10 @@ CELERYBEAT_SCHEDULE = {
         "task": "risk_management.tasks.create_establishment_reports",
         "schedule": crontab(minute=0, hour=7),
     },
+    "remove_relation_organization_laboratory": {
+        "task": "laboratory.tasks.remove_relation_organization_laboratory",
+        "schedule": crontab(minute=0, hour=6),
+    },
 }
 
 INTERNAL_IPS = ("127.0.0.1",)
