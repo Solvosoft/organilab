@@ -570,3 +570,42 @@ class PrecursorReportValuesView(ListView):
             }
         )
         return context
+
+
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.do_report", raise_exception=True), name="dispatch"
+)
+class DonationReportView(ListView):
+    model = ShelfObject
+    template_name = "report/base_report_form_view.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.org_pk = kwargs.get("org_pk")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.none()
+
+    def get_context_data(self, **kwargs):
+        context = super(DonationReportView, self).get_context_data(**kwargs)
+        title = _("Donation Report")
+        context.update(
+            {
+                "title_view": title,
+                "report_urlnames": ["donations_report"],
+                "form": ReportForm(
+                    initial={
+                        "name": slugify(
+                            title + " " + now().strftime("%x").replace("/", "-")
+                        ),
+                        "title": title,
+                        "organization": self.org,
+                        "report_name": "donations_report",
+                    },
+                    org_pk=self.org,
+                ),
+            }
+        )
+        return context
