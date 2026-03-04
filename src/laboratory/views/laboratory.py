@@ -55,7 +55,11 @@ from laboratory.views.laboratory_utils import filter_by_user_and_hcode
 from presentation.models import FeedbackEntry
 
 
-@method_decorator(permission_required("laboratory.change_laboratory"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.change_laboratory", raise_exception=True),
+    name="dispatch",
+)
 class LaboratoryEdit(UpdateView):
     model = Laboratory
     template_name = "laboratory/edit.html"
@@ -132,7 +136,11 @@ class LaboratoryView(object):
         ]
 
 
-@method_decorator(permission_required("laboratory.add_laboratory"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.add_laboratory", raise_exception=True),
+    name="dispatch",
+)
 class CreateLaboratoryFormView(FormView):
     template_name = "laboratory/laboratory_create.html"
     form_class = LaboratoryCreate
@@ -194,7 +202,11 @@ class CreateLaboratoryFormView(FormView):
         return reverse("auth_and_perms:organizationManager")
 
 
-@method_decorator(permission_required("laboratory.add_laboratory"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.add_laboratory", raise_exception=True),
+    name="dispatch",
+)
 class CreateLaboratoryView(CreateView):
     form_class = LaboratoryCreate
     success_url = "/"
@@ -217,7 +229,11 @@ class CreateLaboratoryView(CreateView):
             return redirect(self.success_url)
 
 
-@method_decorator(permission_required("laboratory.view_laboratory"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_laboratory", raise_exception=True),
+    name="dispatch",
+)
 class LaboratoryListView(ListView):
     model = Laboratory
     template_name = "laboratory/laboratory_list.html"
@@ -262,7 +278,11 @@ class LaboratoryListView(ListView):
         return queryset.order_by(*self.ordering)
 
 
-@method_decorator(permission_required("laboratory.delete_laboratory"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.delete_laboratory", raise_exception=True),
+    name="dispatch",
+)
 class LaboratoryDeleteView(DeleteView):
     model = Laboratory
     template_name = "laboratory/laboratory_delete.html"
@@ -406,7 +426,11 @@ class LaboratoryDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-@method_decorator(permission_required("laboratory.do_report"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.do_report", raise_exception=True),
+    name="dispatch",
+)
 class HCodeReports(ListView):
     paginate_by = 15
     template_name = "laboratory/h_code_report.html"
@@ -437,7 +461,8 @@ class HCodeReports(ListView):
         return context
 
 
-@permission_required("laboratory.view_registeruserqr")
+@login_required
+@permission_required("laboratory.view_registeruserqr", raise_exception=True)
 def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
     template = get_template("pdf/qr_pdf.html")
 
@@ -468,8 +493,10 @@ def get_pdf_register_user_qr(request, org_pk, lab_pk, pk):
     return response
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.view_registeruserqr"), name="dispatch"
+    permission_required("laboratory.view_registeruserqr", raise_exception=True),
+    name="dispatch",
 )
 class RegisterUserQRList(ListView):
     model = RegisterUserQR
@@ -496,7 +523,8 @@ class RegisterUserQRList(ListView):
         return queryset
 
 
-@permission_required("laboratory.add_registeruserqr")
+@login_required
+@permission_required("laboratory.add_registeruserqr", raise_exception=True)
 def manage_register_qr(request, org_pk, lab_pk, pk=None):
     obj = None
     user = request.user
@@ -588,8 +616,10 @@ def manage_register_qr(request, org_pk, lab_pk, pk=None):
     )
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.delete_registeruserqr"), name="dispatch"
+    permission_required("laboratory.delete_registeruserqr", raise_exception=True),
+    name="dispatch",
 )
 class RegisterUserQRDeleteView(DeleteView):
     model = RegisterUserQR
@@ -806,7 +836,7 @@ def create_user_qr(request, org_pk, lab_pk, pk, user=None):
 
 
 @login_required()
-@permission_required("laboratory.view_laboratoryprocess")
+@permission_required("laboratory.view_laboratoryprocess", raise_exception=True)
 def laboratory_process_list(request, org_pk, lab_pk):
     return render(
         request,
