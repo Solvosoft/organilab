@@ -32,7 +32,7 @@ from risk_management.forms import (
     RiskZoneListForm,
 )
 from risk_management.models import RiskZone, ZoneType, Buildings, Regent, \
-    EstablishmentLogs
+    EstablishmentLogs, Structure
 from laboratory.views.djgeneric import (
     ListView,
     CreateView,
@@ -335,7 +335,7 @@ def structure_actions(request, org_pk, pk=None):
     title = _("Create Structure")
     if pk:
         title = _("Update Structure")
-        structure = get_object_or_404(Buildings, pk=pk)
+        structure = get_object_or_404(Structure, pk=pk)
         form = StructureForm(instance=structure, org_pk=org_pk)
     if request.method == "POST":
         if structure:
