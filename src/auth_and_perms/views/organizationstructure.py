@@ -50,7 +50,7 @@ from django.conf import settings
 
 
 @login_required
-@permission_required("laboratory.can_manage_org_permissions")
+@permission_required("laboratory.can_manage_org_permissions", raise_exception=True)
 def organization_manage_view(request):
     parents, parents_pks = get_org_parents_info(request.user)
     nodes = []
@@ -136,7 +136,8 @@ def get_related_users(organization, form):
     return remove_users, add_users
 
 
-@permission_required("laboratory.change_organizationstructure")
+@login_required
+@permission_required("laboratory.change_organizationstructure", raise_exception=True)
 def add_users_organization(request, pk):
 
     organizationstructure = get_object_or_404(
@@ -224,7 +225,11 @@ def assign_rol_permissions(user, rols):
     user.user_permissions.add(*perms)
 
 
-@method_decorator(permission_required("auth_and_perms.change_rol"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("auth_and_perms.change_rol", raise_exception=True),
+    name="dispatch",
+)
 class ListRolByOrganization(ListView):
     model = Rol
 
@@ -248,7 +253,11 @@ class ListRolByOrganization(ListView):
         return context
 
 
-@method_decorator(permission_required("auth_and_perms.delete_rol"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("auth_and_perms.delete_rol", raise_exception=True),
+    name="dispatch",
+)
 class DeleteRolByOrganization(DeleteView):
     model = Rol
 
@@ -314,7 +323,10 @@ def add_rol_by_laboratory(request):
     return redirect("auth_and_perms:organizationManager")
 
 
-@method_decorator(permission_required("auth.add_user"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("auth.add_user", raise_exception=True), name="dispatch"
+)
 class AddUser(CreateView):
     model = User
     form_class = CreateUserForm
@@ -378,7 +390,8 @@ class AddUser(CreateView):
         return response
 
 
-@permission_required("laboratory.change_organizationstructure")
+@login_required
+@permission_required("laboratory.change_organizationstructure", raise_exception=True)
 def add_contenttype_to_org(request):
     form = ContentypeForm(request.POST)
     if form.is_valid():
@@ -399,7 +412,8 @@ def add_contenttype_to_org(request):
     return redirect("auth_and_perms:organizationManager")
 
 
-@permission_required("laboratory.change_organizationstructure")
+@login_required
+@permission_required("laboratory.change_organizationstructure", raise_exception=True)
 @require_http_methods(["POST"])
 def copy_rols(request, pk):
     org = get_object_or_404(OrganizationStructure, pk=pk)
@@ -413,7 +427,7 @@ def copy_rols(request, pk):
 
 
 @login_required
-@permission_required("auth_and_perms.view_rol")
+@permission_required("auth_and_perms.view_rol", raise_exception=True)
 @require_http_methods(["GET"])
 def get_roles_by_organization(request, pk):
     roles = get_object_or_404(OrganizationStructure, pk=pk).root.rol.all()
@@ -425,7 +439,7 @@ def get_roles_by_organization(request, pk):
 
 
 @login_required
-@permission_required("auth_and_perms.view_rol")
+@permission_required("auth_and_perms.view_rol", raise_exception=True)
 @require_http_methods(["GET"])
 def get_rol(request, pk):
     rol = get_object_or_404(Rol, pk=pk)
@@ -434,7 +448,7 @@ def get_rol(request, pk):
 
 
 @login_required
-@permission_required("auth_and_perms.change_rol")
+@permission_required("auth_and_perms.change_rol", raise_exception=True)
 @require_http_methods(["POST"])
 def update_rol(request, org_pk, pk):
     rol = get_object_or_404(Rol, pk=pk)

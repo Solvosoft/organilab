@@ -15,7 +15,7 @@ from laboratory.models import OrganizationStructure, UserOrganization
 
 
 @login_required
-@permission_required("auth_and_perms.change_impostorlog")
+@permission_required("auth_and_perms.change_impostorlog", raise_exception=True)
 def add_user_impostor(request, org_pk, pk):
     response = redirect(reverse("index"))
     User = get_user_model()

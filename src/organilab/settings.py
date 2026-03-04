@@ -117,6 +117,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "djreservation.middleware.ReservationMiddleware",
     "authentication.middleware.ProfileMiddleware",
+    "authentication.middleware.HandleErrorMiddleware",
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"

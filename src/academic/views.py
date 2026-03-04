@@ -59,7 +59,7 @@ from . import convertions
 
 
 @login_required
-@permission_required("academic.add_procedurestep")
+@permission_required("academic.add_procedurestep", raise_exception=True)
 def add_steps_wrapper(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -73,7 +73,8 @@ def add_steps_wrapper(request, org_pk, pk):
     )
 
 
-@permission_required("academic.view_myprocedure")
+@login_required
+@permission_required("academic.view_myprocedure", raise_exception=True)
 def get_my_procedures(request, org_pk, lab_pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(
@@ -90,7 +91,8 @@ def get_my_procedures(request, org_pk, lab_pk):
     return render(request, "academic/procedure.html", context=context)
 
 
-@permission_required("academic.add_myprocedure")
+@login_required
+@permission_required("academic.add_myprocedure", raise_exception=True)
 def create_my_procedures(request, org_pk, lab_pk, content_type, model):
     form = MyProcedureForm(request.POST)
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
@@ -124,7 +126,8 @@ def create_my_procedures(request, org_pk, lab_pk, content_type, model):
     )
 
 
-@permission_required("academic.delete_myprocedure")
+@login_required
+@permission_required("academic.delete_myprocedure", raise_exception=True)
 def remove_my_procedure(request, org_pk, lab_pk, pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(
@@ -175,7 +178,8 @@ def update_my_procedure_data(item, data):
                 update_my_procedure_data(child, data)
 
 
-@permission_required("academic.change_myprocedure")
+@login_required
+@permission_required("academic.change_myprocedure", raise_exception=True)
 def complete_my_procedure(request, org_pk, lab_pk, pk):
     laboratory = get_object_or_404(Laboratory, pk=lab_pk)
     organization = get_object_or_404(
@@ -226,14 +230,21 @@ def complete_my_procedure(request, org_pk, lab_pk, pk):
     return render(request, "academic/complete_my_procedure.html", context)
 
 
-@method_decorator(permission_required("academic.view_procedure"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("academic.view_procedure", raise_exception=True),
+    name="dispatch",
+)
 class ProcedureListView(DJListView):
     model = Procedure
     queryset = Procedure.objects.none()
     template_name = "academic/list.html"
 
 
-@method_decorator(permission_required("academic.add_procedure"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("academic.add_procedure", raise_exception=True), name="dispatch"
+)
 class ProcedureCreateView(DJCreateView):
     model = Procedure
     form_class = ProcedureForm
@@ -270,7 +281,11 @@ class ProcedureCreateView(DJCreateView):
         return super(ProcedureCreateView, self).form_valid(form)
 
 
-@method_decorator(permission_required("academic.change_procedure"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("academic.change_procedure", raise_exception=True),
+    name="dispatch",
+)
 class ProcedureUpdateView(DJUpdateView):
     model = Procedure
     form_class = ProcedureForm
@@ -299,7 +314,7 @@ class ProcedureUpdateView(DJUpdateView):
 
 
 @login_required
-@permission_required("academic.view_procedure")
+@permission_required("academic.view_procedure", raise_exception=True)
 def procedureStepDetail(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -350,7 +365,11 @@ class ProcedureStepCreateView(FormView):
         return success_url
 
 
-@method_decorator(permission_required("academic.change_procedurestep"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("academic.change_procedurestep", raise_exception=True),
+    name="dispatch",
+)
 class ProcedureStepUpdateView(DJUpdateView):
     model = ProcedureStep
     form_class = ProcedureStepForm
@@ -382,7 +401,7 @@ class ProcedureStepUpdateView(DJUpdateView):
 
 
 @login_required
-@permission_required("academic.add_procedurerequiredobject")
+@permission_required("academic.add_procedurerequiredobject", raise_exception=True)
 def save_object(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -423,7 +442,7 @@ def save_object(request, org_pk, pk):
 
 
 @login_required
-@permission_required("academic.delete_procedurestep")
+@permission_required("academic.delete_procedurestep", raise_exception=True)
 def delete_step(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -437,7 +456,8 @@ def delete_step(request, org_pk):
     return JsonResponse({"data": True})
 
 
-@permission_required("academic.delete_procedurerequiredobject")
+@login_required
+@permission_required("academic.delete_procedurerequiredobject", raise_exception=True)
 def remove_object(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -466,7 +486,7 @@ def get_objects(pk):
 
 
 @login_required
-@permission_required("academic.add_procedureobservations")
+@permission_required("academic.add_procedureobservations", raise_exception=True)
 def save_observation(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -503,7 +523,7 @@ def get_observations(pk):
 
 
 @login_required
-@permission_required("academic.delete_procedureobservations")
+@permission_required("academic.delete_procedureobservations", raise_exception=True)
 def remove_observation(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -517,7 +537,7 @@ def remove_observation(request, org_pk, pk):
 
 
 @login_required
-@permission_required("academic.view_procedure")
+@permission_required("academic.view_procedure", raise_exception=True)
 def get_procedure(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -538,7 +558,8 @@ def get_procedure(request, org_pk, pk):
     )
 
 
-@permission_required("academic.delete_procedure")
+@login_required
+@permission_required("academic.delete_procedure", raise_exception=True)
 def delete_procedure(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -550,7 +571,10 @@ def delete_procedure(request, org_pk):
     return JsonResponse({"data": True})
 
 
-@permission_required("reservations_management.add_reservedproducts")
+@login_required
+@permission_required(
+    "reservations_management.add_reservedproducts", raise_exception=True
+)
 def generate_reservation(request, org_pk, lab_pk):
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     org = get_object_or_404(
