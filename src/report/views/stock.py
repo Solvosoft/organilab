@@ -210,15 +210,22 @@ def report_stock(report):
             "Fecha: " + now().strftime("%d/%m/%Y"),
         ],
     ]
+
     laboratories = report.data.get("laboratory", [])
+
     if len(laboratories) == 0:
         organization = OrganizationStructure.objects.filter(
             pk=report.data["organization"]
         ).first()
         laboratories = list(set(organization.get_my_laboratories))
 
-    for lab in laboratories:
-        laboratory = Laboratory.objects.get(pk=lab)
+    for lab_id in laboratories:
+        try:
+            laboratory = Laboratory.objects.get(pk=lab)
+        except Laboratory.DoesNotExist:
+            print("LAB NOT FOUND:", lab)
+            continue
+
         headers = [
             [""],
             [""],
@@ -237,7 +244,7 @@ def report_stock(report):
             ["Teléfono", laboratory.phone_number if laboratory.phone_number else "N/A"],
             ["Email", laboratory.email if laboratory.email else "N/A"],
         ]
-        content += headers + columns + get_stock_dataset(lab, None)
+        content += headers + columns + get_stock_dataset(lab_id, None)
 
     record_total = len(content) - 1
     report_name = get_report_name(report)
