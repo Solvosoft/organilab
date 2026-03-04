@@ -869,14 +869,15 @@ class EquipmentForm(GTForm, forms.ModelForm):
         ).distinct()
         provider_list = provider_not_available.union(providers_by_lab).order_by("name")
         self.fields["providers"].queryset = provider_list
-
         self.fields["instrumental_family"] = forms.ModelChoiceField(
             widget=AutocompleteSelect(
                 "instrumentalfamily",
                 attrs={
                     "data-dropdownparent": modal_id,
                     "data-s2filter-laboratory": laboratory_id,
+                    "data-s2filter-lab_pk": laboratory_id,
                     "data-s2filter-organization": organization_id,
+                    "data-s2filter-org_pk": organization_id,
                 },
             ),
             queryset=Catalog.objects.none(),
@@ -982,7 +983,9 @@ class EquipmentForm(GTForm, forms.ModelForm):
                 attrs={
                     "data-dropdownparent": modal_id,
                     "data-s2filter-laboratory": laboratory_id,
+                    "data-s2filter-lab_pk": laboratory_id,
                     "data-s2filter-organization": organization_id,
+                    "data-s2filter-org_pk": organization_id,
                 },
             ),
             queryset=Catalog.objects.none(),
