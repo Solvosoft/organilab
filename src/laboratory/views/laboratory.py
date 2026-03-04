@@ -249,9 +249,11 @@ class LaboratoryListView(ListView):
         user = self.request.user
         profile = getattr(user, "profile", None)
 
+        org_ids = list(organization.ancestors().values_list("pk", flat=True))
+        org_ids.append(organization.pk)
         has_org_permission = ProfilePermission.objects.filter(
             profile=profile,
-            object_id=organization.pk,
+            object_id__in=org_ids,
             content_type__app_label="laboratory",
             content_type__model="organizationstructure",
             rol__isnull=False,
