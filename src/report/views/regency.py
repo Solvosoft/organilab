@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from laboratory.models import OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import get_report_name, format_date
+from report.utils import get_report_name, format_date, sanitize_ods_table
 from risk_management.utils_risk import (
     cargar_cuadro3,
     cargar_sga_referencia,
@@ -248,6 +248,7 @@ def report_regency_doc(report):
         content.append(_("Data not available"))
     report_name = get_report_name(report)
     content.insert(0, [report_name])
+    content = sanitize_ods_table(content)
     file = builder.save_ods(content, format_type=report.file_type)
     file_name = f"{report_name}.{report.file_type}"
     file.seek(0)

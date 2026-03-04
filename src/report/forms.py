@@ -98,7 +98,7 @@ class ReportForm(ReportBase):
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
-            laboratory = get_laboratories_from_organization(organization)
+            return list(get_laboratories_from_organization(organization))
 
         return list(laboratory.values_list("pk", flat=True))
 
@@ -343,7 +343,7 @@ class ValidateFurnitureForm(GTForm):
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
-            laboratory = get_laboratories_from_organization(organization)
+            return list(get_laboratories_from_organization(organization))
 
         return list(laboratory.values_list("pk", flat=True))
 
@@ -550,7 +550,7 @@ class HazardMapReportForm(ReportBase):
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
-            laboratory = get_laboratories_from_organization(organization)
+            return list(get_laboratories_from_organization(organization))
 
         return list(laboratory.values_list("pk", flat=True))
 
