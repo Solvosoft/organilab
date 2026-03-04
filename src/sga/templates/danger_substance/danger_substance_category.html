@@ -28,11 +28,11 @@
 
 	{% url "sga:api-danger-substance-category-list" org_pk as list_obj_url %}
 	{% trans 'Register Danger Substance' as create_obj_tittle %}
-	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle principal_class='modal-l' modal_class=create_obj_tittle url=list_obj_url %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_create form_id="create_obj_form" id="create_obj_modal" title=create_obj_tittle principal_class='modal-lg' modal_class=create_obj_tittle url=list_obj_url %}
 
 	{% url "sga:api-danger-substance-category-detail" org_pk 0 as detail_obj_url %}
 	{% trans 'Update Danger Substance' as update_obj_tittle %}
-	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle principal_class='modal-l' modal_class=update_obj_tittle url=detail_obj_url %}
+	{% include 'gentelella/blocks/modal_template.html' with form=form_update form_id="update_obj_form" id="update_obj_modal" title=update_obj_tittle principal_class='modal-lg' modal_class=update_obj_tittle url=detail_obj_url %}
 
 	{% trans 'Delete Danger Substance' as delete_obj_tittle %}
 	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}

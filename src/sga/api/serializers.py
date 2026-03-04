@@ -20,7 +20,9 @@ from sga.models import (
     ReviewSubstance,
     DisplayLabel,
     WarningWord,
-    HCodeCategory, DangerSubstance, DangerSubstanceCategory,
+    HCodeCategory,
+    DangerSubstance,
+    DangerSubstanceCategory,
 )
 
 logger = logging.getLogger("organilab")
@@ -350,20 +352,22 @@ class DangerIndicationSerializer(serializers.ModelSerializer):
         kwargs = {"org_pk": org_pk, "pk": obj.pk}
         edit_url = reverse("sga:update_danger_indication", kwargs=kwargs)
         action = ""
-        action += """<a title='%s' class="pe-2" href='%s'>
-                <i class="fa fa-edit text-warning" aria-hidden="true"></i>
-                </a>""" % (
-            _("Edit"),
-            edit_url,
-        )
-
-        action += """<a title='%s' class="pe-2"
-                onclick="delete_danger_indication('%s')">
-                <i class="fa fa-close text-danger" aria-hidden="true"></i>
-                </a>""" % (
-            _("Delete"),
-            obj.pk,
-        )
+        user = self.context["request"].user
+        if user.has_perm("sga.change_dangerindication"):
+            action += """<a title='%s' class="pe-2" href='%s'>
+                    <i class="fa fa-edit text-warning" aria-hidden="true"></i>
+                    </a>""" % (
+                _("Edit"),
+                edit_url,
+            )
+        if user.has_perm("sga.delete_dangerindication"):
+            action += """<a title='%s' class="pe-2"
+                    onclick="delete_danger_indication('%s')">
+                    <i class="fa fa-close text-danger" aria-hidden="true"></i>
+                    </a>""" % (
+                _("Delete"),
+                obj.pk,
+            )
 
         return action
 
@@ -495,9 +499,9 @@ class DangerCategoryActionsSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
-        queryset=Catalog.objects.
-        using(settings.READONLY_DATABASE).
-        filter(key="units", description__in=["Litros", "Kilogramos", "Libra"]),
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE).filter(
+            key="units", description__in=["Litros", "Kilogramos", "Libra"]
+        ),
     )
 
     class Meta:
@@ -528,15 +532,9 @@ class DangerCategorySerializer(serializers.ModelSerializer):
     def get_actions(self, obj):
         user = self.context["request"].user
         add_perm = True if user.has_perm("sga.add_hcodecategory") else False
-        delele_perm = (
-            True if user.has_perm("sga.delete_hcodecategory") else False
-        )
-        view_perm = (
-            True if user.has_perm("sga.view_hcodecategory") else False
-        )
-        update_perm = (
-            True if user.has_perm("sga.change_hcodecategory") else False
-        )
+        delele_perm = True if user.has_perm("sga.delete_hcodecategory") else False
+        view_perm = True if user.has_perm("sga.view_hcodecategory") else False
+        update_perm = True if user.has_perm("sga.change_hcodecategory") else False
 
         return {
             "list": view_perm,
@@ -590,7 +588,13 @@ class DangerSubstanceValidateSerializer(serializers.ModelSerializer):
     threshold = serializers.FloatField(required=False)
     notes = serializers.CharField(required=False, allow_blank=True)
     type_match = serializers.CharField(required=False, allow_blank=True)
-    h_codes_match = serializers.PrimaryKeyRelatedField(queryset=DangerIndication.objects.all(), required=False, allow_empty=True, allow_null=True, many=True)
+    h_codes_match = serializers.PrimaryKeyRelatedField(
+        queryset=DangerIndication.objects.all(),
+        required=False,
+        allow_empty=True,
+        allow_null=True,
+        many=True,
+    )
     patron_name = serializers.CharField(required=False, allow_blank=True)
     especial_condition = serializers.CharField(required=False, allow_blank=True)
 
@@ -613,7 +617,9 @@ class DangerSubstanceCategorySerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     h_code = GTS2SerializerBase(many=False)
     process_condition = GTS2SerializerBase(many=False)
-    category = ChoicesGTS2Serializer(choices=DangerSubstanceCategory.CATEGORY_CHOICES, many=False)
+    category = ChoicesGTS2Serializer(
+        choices=DangerSubstanceCategory.CATEGORY_CHOICES, many=False
+    )
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -630,7 +636,9 @@ class DangerSubstanceCategorySerializer(serializers.ModelSerializer):
 
 class DangerSubstanceCategoryDataTableSerializer(serializers.Serializer):
 
-    data = serializers.ListField(child=DangerSubstanceCategorySerializer(), required=True)
+    data = serializers.ListField(
+        child=DangerSubstanceCategorySerializer(), required=True
+    )
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
@@ -638,10 +646,14 @@ class DangerSubstanceCategoryDataTableSerializer(serializers.Serializer):
 
 class DangerSubstanceCategoryValidateSerializer(serializers.ModelSerializer):
 
-    h_code = serializers.PrimaryKeyRelatedField(queryset=DangerIndication.objects.all(), required=True)
+    h_code = serializers.PrimaryKeyRelatedField(
+        queryset=DangerIndication.objects.all(), required=True
+    )
     category = serializers.CharField(required=True)
     section = serializers.CharField(required=False, allow_blank=True)
-    process_condition = serializers.PrimaryKeyRelatedField(queryset=Catalog.objects.all(), required=True, allow_null=True, allow_empty=True)
+    process_condition = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.all(), required=True, allow_null=True, allow_empty=True
+    )
     note = serializers.CharField(required=False, allow_blank=True)
     threshold = serializers.FloatField(required=False)
 

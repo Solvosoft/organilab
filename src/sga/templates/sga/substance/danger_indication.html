@@ -19,6 +19,7 @@
 
 {% block js %}
 <script>
+	has_perm = {{ perms.sga.add_dangerindication|yesno:"true,false" }};
 	document.url_dangers_table = '{% url 'laboratory:api-dangers-table-list' org_pk=org_pk %}'
 	document.url_add_danger_indication = '{% url 'sga:add_danger_indication' org_pk %}'
 	document.url_delete_danger_indication = '{% url 'laboratory:api-danger-indication-detail' org_pk=org_pk pk=0 %}'

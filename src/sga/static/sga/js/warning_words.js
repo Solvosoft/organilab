@@ -56,8 +56,9 @@ function add_warning_word() {
 
 function edit_warning_word(pk){
     localStorage.setItem('warningword', pk);
-    let url = document.url_get_warning_word.replace('0', pk);
-    request_url = document.url_update_warning_word.replace('0', pk)
+    console.log(pk)
+    let url = document.url_get_warning_word.replace('/0/', '/' + pk + '/');
+    request_url = document.url_update_warning_word.replace('/0/', '/' + pk + '/');
     request_type = "PUT";
     $.ajax({
     url: url,
@@ -85,7 +86,7 @@ function edit_warning_word(pk){
 }
 
 function delete_warning_word(pk){
-    let url = document.url_delete_warning_word.replace('0', pk);
+    let url = document.url_delete_warning_word.replace('/0/', '/' + pk + '/');
     Swal.fire({
     title: gettext("Delete warning word"),
     text: gettext("Do you want to remove the warning word?"),
