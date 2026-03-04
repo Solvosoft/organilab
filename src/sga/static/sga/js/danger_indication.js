@@ -1,5 +1,5 @@
 function delete_danger_indication(pk){
-    let url = document.url_delete_danger_indication.replace('0', pk);
+    let url = document.url_delete_danger_indication.replace('/0/', '/' + pk + '/');
     Swal.fire({
     title: gettext("Delete danger indication"),
     text: gettext("Do you want to remove the danger indication?"),
@@ -45,15 +45,18 @@ datatableelement=createDataTable('#dangerindicationtable', document.url_dangers_
         {data: "actions", name:"actions", title: gettext("Actions"), type: "string", visible: true, sortable: false},
     ],
     buttons: [
-        {
-            text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
-            className: 'btn btn-success',
-            action: function (e, dt, node, config) {
-                window.location.href = document.url_add_danger_indication;
+
+            {
+                text: '<i class="fa fa-plus" aria-hidden="true"></i> ' + gettext('Add'),
+                className: 'btn btn-success',
+                action: function (e, dt, node, config) {
+                    window.location.href = document.url_add_danger_indication;
+                }
             }
-        }
+
     ],
     dom: "<'d-flex justify-content-between'<'m-2'l>" +
     "<'m-2'B><'m-2 d-flex justify-content-start'f>>" +
     "<'row'tr><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 m-auto'p>>",
 }, addfilter=false);
+

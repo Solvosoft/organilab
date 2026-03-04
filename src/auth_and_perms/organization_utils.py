@@ -5,8 +5,11 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from auth_and_perms.models import ProfilePermission, Profile
-from laboratory.models import OrganizationStructureRelations, OrganizationStructure, \
-    UserOrganization
+from laboratory.models import (
+    OrganizationStructureRelations,
+    OrganizationStructure,
+    UserOrganization,
+)
 
 
 def user_is_allowed_on_organization(user, organization):
@@ -16,17 +19,17 @@ def user_is_allowed_on_organization(user, organization):
 
     if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
-
     if organization.users.filter(pk=user.pk).exists():
         return True
 
     user_org_content_type = ContentType.objects.get_for_model(UserOrganization)
-    user_org_ids = UserOrganization.objects.filter(user=user).values_list('pk',
-                                                                          flat=True)
+    user_org_ids = UserOrganization.objects.filter(user=user).values_list(
+        "pk", flat=True
+    )
     has_relation = OrganizationStructureRelations.objects.filter(
         organization=organization,
         content_type=user_org_content_type,
-        object_id__in=user_org_ids
+        object_id__in=user_org_ids,
     ).exists()
 
     if has_relation:
@@ -38,7 +41,7 @@ def user_is_allowed_on_organization(user, organization):
         has_ancestor_relation = OrganizationStructureRelations.objects.filter(
             organization=ancestor,
             content_type=user_org_content_type,
-            object_id__in=user_org_ids
+            object_id__in=user_org_ids,
         ).exists()
         if has_ancestor_relation:
             return True
@@ -54,25 +57,26 @@ def organization_can_change_laboratory(laboratory, organization, raise_exec=Fals
         return True
     if (
         OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
-            .filter(
+        .filter(
             content_type__app_label=laboratory._meta.app_label,
             content_type__model=laboratory._meta.model_name,
             object_id=laboratory.pk,
             organization=organization,
         )
-            .exists()
+        .exists()
     ):
         return True
 
     descendants = organization.descendants()
     if (
         OrganizationStructureRelations.objects.using(settings.READONLY_DATABASE)
-            .filter(
+        .filter(
             content_type__app_label=laboratory._meta.app_label,
             content_type__model=laboratory._meta.model_name,
             object_id=laboratory.pk,
             organization__in=descendants,
-        ).exists()
+        )
+        .exists()
     ):
         return True
 

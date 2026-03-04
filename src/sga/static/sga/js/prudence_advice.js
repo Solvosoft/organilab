@@ -55,8 +55,8 @@ function add_prudence_advice() {
 
 function edit_prudence_advice(pk) {
     localStorage.setItem('prudenceadvice', pk);
-    let url = document.url_get_prudence_advice.replace('0', pk);
-    request_url = document.url_update_prudence_advice.replace('0', pk);
+    let url = document.url_get_prudence_advice.replace('/0/', '/' + pk + '/');
+    request_url = document.url_update_prudence_advice.replace('/0/', '/' + pk + '/');
     request_type = "PUT";
     $.ajax({
         url: url,
@@ -76,7 +76,7 @@ function edit_prudence_advice(pk) {
 }
 
 function delete_prudence_advice(pk) {
-    let url = document.url_delete_prudence_advice.replace('0', pk);
+    let url = document.url_delete_prudence_advice.replace('/0/', '/' + pk + '/');
     Swal.fire({
     title: gettext("Delete prudence advice"),
     text: gettext("Do you want to remove the prudence advice?"),
