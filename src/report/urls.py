@@ -124,6 +124,11 @@ report_urls = [
         reports_org.PrecursorReportValuesView.as_view(),
         name="precursor_report_values_view",
     ),
+    path(
+        "donations-report/",
+        reports_org.DonationReportView.as_view(),
+        name="donations_report",
+    ),
 ]
 
 urlpatterns = [

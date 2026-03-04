@@ -5466,8 +5466,12 @@ msgstr "Ir al inicio"
 msgid "Error code"
 msgstr "Código de error"
 
-msgid "Update process condition of reagents"
-msgstr "Actualizar condición de proceso de reactivos"
 
 msgid "CAS code"
 msgstr "Código CAS"
+
+msgid "Donations Report"
+msgstr "Informe de donaciones"
+
+msgid "Donation Report"
+msgstr "Informe de donaciones"
