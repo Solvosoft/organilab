@@ -293,6 +293,7 @@ def view_equipment_list(request, org_pk, lab_pk):
             laboratory_pk=lab_pk,
         ),
         "update_form": EquipmentForm(
+            initial={"laboratory": lab_pk, "organization": org_pk, },
             prefix="update", modal_id="#update_obj_form", laboratory_pk=lab_pk
         ),
     }

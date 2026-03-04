@@ -19,15 +19,12 @@ def create_establishment_reports():
     day = now().date() - timedelta(days=1)
     for risk in RiskZone.objects.all():
         labs = list(
-            risk.laboratories.using(settings.READONLY_DATABASE)
+            risk.buildings.using(settings.READONLY_DATABASE)
             .all()
-            .values_list("pk", flat=True)
+            .values_list("laboratories__pk", flat=True)
         )
         create_estableshment_logs_data(risk, day, labs)
+
     for org in OrganizationStructure.objects.all():
-        labs = list(
-            org.laboratory_set.using(settings.READONLY_DATABASE)
-            .all()
-            .values_list("pk", flat=True)
-        )
+        labs = list(set(org.get_my_laboratories))
         create_estableshment_logs_data(org, day, labs)

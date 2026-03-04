@@ -23,7 +23,7 @@
         "fields": {
             "password": "pbkdf2_sha256$600000$salt$hash",
             "last_login": "2026-01-10T10:00:00Z",
-            "is_superuser": false,
+            "is_superuser": true,
             "username": "lab_manager",
             "first_name": "Carlos",
             "last_name": "Quesada",
@@ -1613,6 +1613,27 @@
             "is_massive": false
         }
     },
+      {
+        "model": "reservations_management.reservations",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "status": 0,
+            "comments": "Reservacion para practica de laboratorio",
+            "is_massive": false
+        }
+    },
+    {
+        "model": "reservations_management.reservations",
+        "pk": 4,
+        "fields": {
+            "user": 2,
+            "status": 1,
+            "comments": "Reservacion aprobada para clase de quimica",
+            "is_massive": false
+        }
+    },
+
     {
         "model": "reservations_management.reservedproducts",
         "pk": 1,
