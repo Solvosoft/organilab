@@ -303,7 +303,7 @@ CELERYBEAT_SCHEDULE = {
     },
     "create_establishment_logs": {
         "task": "risk_management.tasks.create_establishment_reports",
-        "schedule": crontab(minute=45, hour=16),
+        "schedule": crontab(minute=0, hour=7),
     },
 }
 

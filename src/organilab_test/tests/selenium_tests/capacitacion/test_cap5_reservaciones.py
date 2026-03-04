@@ -35,7 +35,7 @@ class Cap5ManageReservationsTest(CapacitacionSeleniumBase):
     def test_mass_reservation(self):
         """Escenario 5.2: Opcion de reservacion masiva."""
         # Login como docente
-        self.login_as(user_pk=4)
+        self.login_as(user_pk=2)
         self.navigate_to_reservations(org_pk=4, status=0)
 
         path_list = [

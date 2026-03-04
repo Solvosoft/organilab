@@ -28,6 +28,7 @@ from report.utils import (
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
+    sanitize_ods_table,
 )
 from report.views.object_changes import get_dataset_objectlogchanges
 
@@ -632,6 +633,7 @@ def report_organization_reactive_list_doc(report):
     record_total = len(content) - 1
     report_name = get_report_name(report)
     content.insert(0, [report_name])
+    content = sanitize_ods_table(content)
     file = builder.save_ods(content, format_type=report.file_type)
     file_name = f"{report_name}.{report.file_type}"
     file.seek(0)

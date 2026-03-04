@@ -18,6 +18,7 @@ def get_dataset_report_reactive(report, column_list=None):
     organization = OrganizationStructure.objects.filter(
         pk=report.data["organization"]
     ).first()
+
     if general:
         filters["in_where_laboratory__pk__in"] = (
             laboratories if len(laboratories) > 1 else organization.get_my_laboratories

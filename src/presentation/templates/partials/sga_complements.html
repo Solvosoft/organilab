@@ -36,13 +36,7 @@
 					</a>
 				</li>
 			{% endif %}
-			{% if perms.sga.view_hcodecategory %}
-				<li>
-					<a href="{% url 'sga:categoriesh' org_pk %}">
-						{% trans 'H Code Categories' %}
-					</a>
-				</li>
-			{% endif %}
+
 			{% if perms.sga.view_dangersubstance %}
 				<li>
 					<a href="{% url 'sga:danger_substance' org_pk %}">
