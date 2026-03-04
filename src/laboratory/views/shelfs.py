@@ -8,7 +8,7 @@ Created on 26/12/2016
 from django import forms
 from django.conf import settings
 from django.contrib.admin.models import DELETION, ADDITION, CHANGE
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -37,7 +37,7 @@ logger = logging.getLogger("organilab")
 
 
 @ajax
-@permission_required("laboratory.delete_shelf")
+@permission_required("laboratory.delete_shelf", raise_exception=True)
 def delete_shelf(request, org_pk, lab_pk, pk, row, col):
     laboratory = get_object_or_404(
         Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk
@@ -299,7 +299,11 @@ class ShelfUpdateForm(forms.ModelForm, GTForm):
         return objects
 
 
-@method_decorator(permission_required("laboratory.add_shelf"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.add_shelf", raise_exception=True),
+    name="dispatch",
+)
 class ShelfCreate(AJAXMixin, CreateView):
     model = Shelf
     success_url = "/"
@@ -389,7 +393,11 @@ class ShelfCreate(AJAXMixin, CreateView):
         }
 
 
-@method_decorator(permission_required("laboratory.change_shelf"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.change_shelf", raise_exception=True),
+    name="dispatch",
+)
 class ShelfEdit(AJAXMixin, UpdateView):
     model = Shelf
     success_url = "/"

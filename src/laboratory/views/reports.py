@@ -6,7 +6,7 @@ Created on 26/12/2016
 """
 import django_excel
 from django.conf import settings
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.http import Http404
 from django.http.response import HttpResponse
 from django.shortcuts import render
@@ -33,7 +33,8 @@ from report.forms import (
 )
 
 
-@permission_required("laboratory.do_report")
+@login_required
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_shelf_objects(request, org_pk, lab_pk, pk):
 
     if not pk:
@@ -71,7 +72,8 @@ def report_shelf_objects(request, org_pk, lab_pk, pk):
     return response
 
 
-@permission_required("laboratory.do_report")
+@login_required
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_h_code(request, *args, **kwargs):
     form = H_CodeForm(request.GET)
     q = []
@@ -109,7 +111,11 @@ def report_h_code(request, *args, **kwargs):
     return response
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_report", raise_exception=True),
+    name="dispatch",
+)
 class OrganizationReactivePresenceList(ReportListView):
     model = OrganizationStructure
     template_name = "report/base_report_form_view.html"
@@ -155,7 +161,8 @@ def getLevelClass(level):
     return cl, color[level]
 
 
-@permission_required("laboratory.view_report")
+@login_required
+@permission_required("laboratory.view_report", raise_exception=True)
 def report_index(request, org_pk):
 
     user_perms = UserOrganization.objects.filter(
@@ -173,7 +180,11 @@ def report_index(request, org_pk):
     return render(request, "laboratory/reports/report_index.html", context=context)
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_report", raise_exception=True),
+    name="dispatch",
+)
 class ChemicalInventoryReport(ReportListView):
     model = ShelfObject
     template_name = "report/base_report_form_view.html"

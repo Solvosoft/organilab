@@ -16,12 +16,13 @@ import logging
 logger = logging.getLogger("organilab")
 
 
-@permission_required("auth_and_perms.institution_can_access")
+@login_required
+@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def index_tutorial(request, org_pk):
     return render(request, "tutorial.html", context={"org_pk": org_pk})
 
 
-@method_decorator(login_required(), name="dispatch")
+@method_decorator(login_required, name="dispatch")
 class FeedbackView(PermissionRequiredMixin, CreateView):
     template_name = "feedback/feedbackentry_form.html"
     model = FeedbackEntry
@@ -88,10 +89,18 @@ def general_information(request):
     return render(request, "general_information.html")
 
 
-@login_required
 def error_view(request):
+    raw_status = request.GET.get("status")
+    try:
+        status = int(raw_status) if raw_status else None
+    except (TypeError, ValueError):
+        status = None
 
-    return render(
-        request,
-        "error_view.html",
-    )
+    if status not in (403, 404):
+        status = None
+
+    context = {
+        "status": status or 404,
+    }
+
+    return render(request, "error_view.html", context=context, status=context["status"])

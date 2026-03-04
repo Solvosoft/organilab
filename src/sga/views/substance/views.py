@@ -43,7 +43,10 @@ from ...api.serializers import (
 
 
 @login_required
-@permission_required(("laboratory.change_object", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("laboratory.change_object", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def create_edit_sustance(request, org_pk, pk=None):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -154,7 +157,10 @@ def create_edit_sustance(request, org_pk, pk=None):
 
 
 @login_required
-@permission_required(("sga.view_substance", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.view_substance", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def get_substances(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -165,7 +171,10 @@ def get_substances(request, org_pk):
 
 
 @login_required
-@permission_required(("sga.view_substance", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.view_substance", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def get_list_substances(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -178,7 +187,10 @@ def get_list_substances(request, org_pk):
 
 
 @login_required
-@permission_required(("sga.change_substance", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.change_substance", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def approve_substances(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -200,7 +212,10 @@ def approve_substances(request, org_pk, pk):
 
 
 @login_required
-@permission_required(("sga.delete_substance", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.delete_substance", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def delete_substance(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -216,7 +231,10 @@ def delete_substance(request, org_pk, pk):
 
 
 @login_required
-@permission_required(("sga.change_substance", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.change_substance", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def detail_substance(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -247,7 +265,10 @@ def detail_substance(request, org_pk, pk):
 
 
 @login_required
-@permission_required(("sga.change_sgacomplement", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.change_sgacomplement", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def step_two(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -344,7 +365,10 @@ def step_two(request, org_pk, pk):
 
 
 @login_required
-@permission_required(("sga.change_displaylabel", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.change_displaylabel", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def step_three(request, org_pk, template, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -421,7 +445,10 @@ def step_three(request, org_pk, template, substance):
 
 
 @login_required
-@permission_required(("sga.change_securityleaf", "auth_and_perms.institution_can_access"))
+@permission_required(
+    ("sga.change_securityleaf", "auth_and_perms.institution_can_access"),
+    raise_exception=True,
+)
 def step_four(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -461,7 +488,7 @@ def step_four(request, org_pk, substance):
 
 
 @login_required
-@permission_required("auth_and_perms.institution_can_access")
+@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def security_leaf_pdf(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -491,7 +518,8 @@ def security_leaf_pdf(request, org_pk, substance):
 
 @login_required
 @any_permission_required(
-    ["sga.add_prudenceadvice", "sga.add_dangerindication", "sga.add_warningword"]
+    ["sga.add_prudenceadvice", "sga.add_dangerindication", "sga.add_warningword"],
+    raise_exception=True,
 )
 def add_sga_complements(request, org_pk, element):
     organization = get_object_or_404(
@@ -555,7 +583,7 @@ def add_sga_complements(request, org_pk, element):
 
 
 @login_required
-@permission_required("sga.view_dangerindication")
+@permission_required("sga.view_dangerindication", raise_exception=True)
 def view_danger_indications(request, org_pk, *args, **kwargs):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -570,7 +598,7 @@ def view_danger_indications(request, org_pk, *args, **kwargs):
 
 
 @login_required
-@permission_required("sga.view_warningword")
+@permission_required("sga.view_warningword", raise_exception=True)
 def view_warning_words(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -584,7 +612,10 @@ def view_warning_words(request, org_pk):
     )
 
 
-@permission_required("auth_and_perms.institution_can_access", "sga.view_recipientsize")
+@permission_required(
+    ("auth_and_perms.institution_can_access", "sga.view_recipientsize"),
+    raise_exception=True,
+)
 def view_recipient_size(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -598,7 +629,7 @@ def view_recipient_size(request, org_pk):
 
 
 @login_required
-@permission_required("sga.view_prudenceadvice")
+@permission_required("sga.view_prudenceadvice", raise_exception=True)
 def view_prudence_advices(request, org_pk, *args, **kwargs):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -613,7 +644,7 @@ def view_prudence_advices(request, org_pk, *args, **kwargs):
 
 
 @login_required
-@permission_required("sga.view_substanceobservation")
+@permission_required("sga.view_substanceobservation", raise_exception=True)
 def add_observation(request, org_pk, substance):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -647,7 +678,7 @@ def add_observation(request, org_pk, substance):
 
 
 @login_required
-@permission_required("sga.change_substanceobservation")
+@permission_required("sga.change_substanceobservation", raise_exception=True)
 def update_observation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -678,7 +709,7 @@ def update_observation(request, org_pk):
 
 
 @login_required
-@permission_required("sga.delete_substanceobservation")
+@permission_required("sga.delete_substanceobservation", raise_exception=True)
 def delete_observation(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -704,7 +735,7 @@ def delete_observation(request, org_pk):
 
 
 @login_required
-@permission_required("sga.change_warningword")
+@permission_required("sga.change_warningword", raise_exception=True)
 def change_warning_word(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -740,7 +771,7 @@ def change_warning_word(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.change_prudenceadvice")
+@permission_required("sga.change_prudenceadvice", raise_exception=True)
 def change_prudence_advice(request, org_pk, pk, *args, **kwargs):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -788,7 +819,7 @@ def change_prudence_advice(request, org_pk, pk, *args, **kwargs):
 
 
 @login_required
-@permission_required("sga.change_dangerindication")
+@permission_required("sga.change_dangerindication", raise_exception=True)
 def change_danger_indication(request, org_pk, pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
@@ -827,7 +858,7 @@ def change_danger_indication(request, org_pk, pk):
 
 
 @login_required
-@permission_required("sga.add_provider")
+@permission_required("sga.add_provider", raise_exception=True)
 def add_sga_provider(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk

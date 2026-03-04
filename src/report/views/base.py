@@ -152,7 +152,7 @@ def base_pdf(report, uri):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def create_request_by_report(request, org_pk):
     response = {"result": False}
     data = {"org_pk": org_pk}
@@ -228,7 +228,7 @@ def create_request_by_report(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def download_report(request, org_pk):
     response = {"result": False, "end": False, "state": "PENDING", "error": ""}
     status_code = 200
@@ -292,7 +292,7 @@ def download_report(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_table(request, org_pk, pk):
 
     if not check_user_access_kwargs_org(org_pk, request.user):
@@ -326,7 +326,7 @@ def report_table(request, org_pk, pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_status(request, org_pk):
     end = False
     description = ""
@@ -366,7 +366,7 @@ def report_status(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def create_organization_request_by_report(request, org_pk):
     response = {"result": False}
     data = {"org_pk": org_pk}
@@ -425,7 +425,7 @@ def create_organization_request_by_report(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def download__organization_report(request, org_pk):
     response = {"result": False}
     status_code = 200
@@ -498,7 +498,7 @@ def download__organization_report(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def report_organization_table(request, org_pk, pk):
     task = get_object_or_404(
         TaskReport.objects.using(settings.READONLY_DATABASE), pk=pk
@@ -526,7 +526,7 @@ def report_organization_table(request, org_pk, pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def regency_report(request, org_pk):
     get_object_or_404(OrganizationStructure, pk=org_pk)
     template_name = "report/regency_report.html"
@@ -548,7 +548,7 @@ def regency_report(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def create_request_by_report_regency(request, org_pk):
     response = {"result": False}
     data = {"org_pk": org_pk}
@@ -606,7 +606,7 @@ def create_request_by_report_regency(request, org_pk):
 
 
 @login_required
-@permission_required("laboratory.do_report")
+@permission_required("laboratory.do_report", raise_exception=True)
 def download_report_regency(request, org_pk):
     response = {"result": False}
     status_code = 200

@@ -5,7 +5,6 @@ Created on 26/12/2016
 @author: luisza
 """
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
-from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, redirect
@@ -13,6 +12,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -36,7 +36,9 @@ from ..shelfobject.forms import (
     IncreaseShelfObjectForm,
     TransferInShelfObjectApproveWithContainerForm,
     ContainerManagementForm,
-    MoveShelfobjectWithContainerForm, EditReactiveForm, EditMaterialForm,
+    MoveShelfobjectWithContainerForm,
+    EditReactiveForm,
+    EditMaterialForm,
 )
 from ..shelfobject.serializers import SearchShelfObjectSerializer
 from ..utils import organilab_logentry, check_user_access_kwargs_org_lab
@@ -46,8 +48,10 @@ def display_shelfobject(data, name):
     return "%s %s" % (data["object__code"], data[name])
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.view_laboratoryroom"), name="dispatch"
+    permission_required("laboratory.view_laboratoryroom", raise_exception=True),
+    name="dispatch",
 )
 class LaboratoryRoomsList(ListView):
     model = LaboratoryRoom
@@ -234,10 +238,12 @@ class LaboratoryRoomsList(ListView):
                 set_container_advanced_options=True,
             )
         )
-        context["edit_form"] = EditReactiveForm(prefix="edit",
-                                                )
-        context["edit_material_form"] = EditMaterialForm(prefix="edit_material",
-                                                         )
+        context["edit_form"] = EditReactiveForm(
+            prefix="edit",
+        )
+        context["edit_material_form"] = EditMaterialForm(
+            prefix="edit_material",
+        )
         context["options"] = ["Reservation", "Add", "Transfer", "Substract"]
         context["user"] = self.request.user
         context["search_by_url"] = self.search_by_url(self.request.GET)
@@ -248,7 +254,11 @@ class LaboratoryRoomsList(ListView):
         return context
 
 
-@method_decorator(permission_required("laboratory.add_laboratoryroom"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.add_laboratoryroom", raise_exception=True),
+    name="dispatch",
+)
 class LabroomCreate(CreateView):
     model = LaboratoryRoom
     form_class = LaboratoryRoomForm
@@ -298,8 +308,10 @@ class LabroomCreate(CreateView):
         return reverse_lazy("laboratory:rooms_create", args=(self.org, self.lab))
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.change_laboratoryroom"), name="dispatch"
+    permission_required("laboratory.change_laboratoryroom", raise_exception=True),
+    name="dispatch",
 )
 class LabroomUpdate(UpdateView):
     model = LaboratoryRoom
@@ -341,8 +353,10 @@ class LabroomUpdate(UpdateView):
         return super().form_invalid(form)
 
 
+@method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.delete_laboratoryroom"), name="dispatch"
+    permission_required("laboratory.delete_laboratoryroom", raise_exception=True),
+    name="dispatch",
 )
 class LaboratoryRoomDelete(DeleteView):
     model = LaboratoryRoom
@@ -371,7 +385,11 @@ class LaboratoryRoomDelete(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-@method_decorator(permission_required("laboratory.view_report"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_report", raise_exception=True),
+    name="dispatch",
+)
 class LaboratoryRoomReportView(ListView):
     model = LaboratoryRoom
     template_name = "report/base_report_form_view.html"
@@ -406,7 +424,8 @@ class LaboratoryRoomReportView(ListView):
         return context
 
 
-@permission_required("laboratory.change_laboratoryroom")
+@login_required
+@permission_required("laboratory.change_laboratoryroom", raise_exception=True)
 def rebuild_laboratory_qr(request, org_pk, lab_pk):
     if not check_user_access_kwargs_org_lab(org_pk, lab_pk, request.user):
         raise Http404()
