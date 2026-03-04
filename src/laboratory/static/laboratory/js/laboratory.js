@@ -272,7 +272,6 @@ $(document).ready(function(){
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
             {data: "unit", name: "measurement_unit__description", title: gettext("Unit"), type: "string", visible: true},
             {data: "container", name: "container__object__name", title: gettext("Container"), type: "string", visible: true},
-            {data: "was_donated", name: "was_donated", title: gettext("Donated"), type: "boolean", render: objShowBool, visible: true},
             {data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: true, filterable: false, sortable: false},
         ],
         buttons: shelfObjectButtons,
