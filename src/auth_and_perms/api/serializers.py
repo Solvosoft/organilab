@@ -371,11 +371,22 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
                     }
                 )
 
+            lab_content_type = ContentType.objects.get_for_model(Laboratory)
+            lab_pk = shelf_object.in_where_laboratory.pk
+
             is_related = OrganizationStructureRelations.objects.filter(
                 organization=organization,
-                content_type=ContentType.objects.get_for_model(Laboratory),
-                object_id=shelf_object.in_where_laboratory.pk
+                content_type=lab_content_type,
+                object_id=lab_pk
             ).exists()
+
+            if not is_related:
+                descendant_pks = organization.descendants(include_self=False).values_list("pk", flat=True)
+                is_related = OrganizationStructureRelations.objects.filter(
+                    organization__pk__in=descendant_pks,
+                    content_type=lab_content_type,
+                    object_id=lab_pk
+                ).exists()
 
             is_owner = shelf_object.in_where_laboratory.organization == organization
 
@@ -409,12 +420,21 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
                     {"shelf": _("Shelf does not belong to this laboratory.")}
                 )
 
-            if (
-                not organization.organizationstructurerelations_set.filter(
+            shelf_lab_pk = shelf.furniture.labroom.laboratory.pk
+            shelf_is_related = organization.organizationstructurerelations_set.filter(
+                content_type__model="laboratory",
+                object_id=shelf_lab_pk,
+            ).exists()
+
+            if not shelf_is_related:
+                descendant_pks = organization.descendants(include_self=False).values_list("pk", flat=True)
+                shelf_is_related = OrganizationStructureRelations.objects.filter(
+                    organization__pk__in=descendant_pks,
                     content_type__model="laboratory",
-                    object_id=shelf.furniture.labroom.laboratory.pk,
+                    object_id=shelf_lab_pk,
                 ).exists()
-            ) and shelf.furniture.labroom.laboratory.organization != organization:
+
+            if not shelf_is_related and shelf.furniture.labroom.laboratory.organization != organization:
                 logger.debug(
                     f"ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory.organization != organization"
                 )
