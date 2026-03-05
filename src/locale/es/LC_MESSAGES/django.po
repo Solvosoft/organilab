@@ -5466,7 +5466,6 @@ msgstr "Ir al inicio"
 msgid "Error code"
 msgstr "Código de error"
 
-
 msgid "CAS code"
 msgstr "Código CAS"
 
@@ -5475,3 +5474,12 @@ msgstr "Informe de donaciones"
 
 msgid "Donation Report"
 msgstr "Informe de donaciones"
+
+msgid "Load reagent inventory"
+msgstr "Cargar inventario de reactivos"
+
+msgid "Load Archive"
+msgstr "Cargar Archivo"
+
+msgid "Load archive"
+msgstr "Cargar archivo"

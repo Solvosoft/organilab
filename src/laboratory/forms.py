@@ -785,7 +785,7 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
                 url_kwargs={"pk": org_pk},
             ),
             help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'
-            % (_("New status")),
+                      % (_("New status")),
         )
 
     class Meta:
@@ -794,7 +794,6 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 
 
 class ObservationShelfObjectForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = ShelfObjectObservation
         exclude = ["shelf_object", "created_by"]
@@ -1237,7 +1236,6 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
 
 
 class ObjectMaterialForm(GTForm, forms.ModelForm):
-
     is_container = forms.BooleanField(
         widget=genwidgets.YesNoInput(
             shparent="p",
@@ -1348,7 +1346,6 @@ class InstrumentalFamilyForm(GTForm, forms.ModelForm):
 
 
 class EquipmentTypeForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = EquipmentType
         fields = ["name", "description"]
@@ -1610,3 +1607,57 @@ class LaboratoryProcessForm(GTForm, forms.ModelForm):
             "laboratory": genwidgets.HiddenInput,
             "description": EditorTinymce,
         }
+
+
+class LoadArchiveForm(GTForm, forms.Form):
+    file = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Load archive")
+    )
+    lab_room = forms.ModelChoiceField(
+        label=_("Laboratory Room"),
+        widget=AutocompleteSelect(
+            "lab_room",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "rooms",
+                "data-s2filter-organization": "#org",
+                "data-s2filter-laboratory": "#lab",
+            },
+        ),
+        queryset=LaboratoryRoom.objects.all(),
+    )
+    furniture = forms.ModelChoiceField(
+        label=_("Furniture"),
+        widget=AutocompleteSelect(
+            "furniture",
+            attrs={
+                "data-related": "true",
+                "data-pos": 1,
+                "data-groupname": "rooms",
+                "data-s2filter-labroom": "#id_lab_room",
+                "data-s2filter-organization": "#org",
+                "data-s2filter-laboratory": "#lab",
+            },
+        ),
+        queryset=Furniture.objects.all(),
+    )
+    shelf = forms.ModelChoiceField(
+        label=_("Shelf"),
+        widget=AutocompleteSelect(
+            "shelf",
+            attrs={
+                "data-related": "true",
+                "data-pos": 2,
+                "data-groupname": "rooms",
+                "data-s2filter-shelf": "#id_shelf",
+                "data-s2filter-furniture": "#id_furniture",
+                "data-s2filter-organization": "#org",
+                "data-s2filter-laboratory": "#lab",
+            },
+        ),
+        queryset=Shelf.objects.all(),
+    )
+    class Meta:
+        model = None
+        fields = ["file", "lab_room", "furniture", "shelf"]
