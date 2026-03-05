@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Load Archive' %}{% endblock %}
+{% block content %}
+	<input type="hidden" value="{{ org_pk }}" id="org">
+	<input type="hidden" value="{{ lab_pk }}" id="lab">
+
+	{% if errors %}
+		<div class="alert alert-danger">
+			{% for field, messages in errors.items %}
+				<strong>{{ field }}</strong>
+				{% for msg in messages %}
+					<p>{{ msg }}</p>
+				{% endfor %}
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	<div class="offset-md-2 col-md-8">
+		<div class="page-header" align="center">
+			<h3 class="heading-1"><span>{% trans 'Load Archive' %}</span></h3>
+		</div>
+	</div>
+
+	<div class="offset-md-2 col-md-8">
+		{{ create_form.errors }}
+		<form class="form" action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			{{ create_form }}
+			<button type="submit" class="btn btn-sm btn-outline-success float-end me-0">{% trans 'Save' %}</button>
+		</form>
+	</div>
+{% endblock %}
+{% block js %}
+	{{ create_form.media }}
+	<script>
+	 $('#id_create-lab_room').on('change', function(){
+      $('#id_create-furniture').val(null).trigger('change');
+  });
+
+  $('#id_create-furniture').on('change', function(){
+      $('#id_create-shelf').val(null).trigger('change');
+  });
+	</script>
+{% endblock %}
