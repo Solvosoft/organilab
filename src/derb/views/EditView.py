@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from derb.models import CustomForm
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 
 from laboratory.utils import organilab_logentry
 
@@ -28,7 +28,11 @@ def getId(request, index=1):
     return form_id
 
 
-@method_decorator(permission_required("derb.change_customform"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("derb.change_customform", raise_exception=True),
+    name="dispatch",
+)
 class EditView(TemplateView):
     template_name = "formBuilder/edit_view.html"
 
@@ -61,7 +65,8 @@ class EditView(TemplateView):
             return HttpResponseBadRequest("Invalid request")
 
 
-@permission_required("derb.change_customform")
+@login_required
+@permission_required("derb.change_customform", raise_exception=True)
 def UpdateForm(request, org_pk):
     form_id = getId(request, 2)
     if request.method == "POST":

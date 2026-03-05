@@ -127,4 +127,13 @@ REPORT_FORMS = {
         "html": "report.views.stock.report_reactive_stock_html",
         "pdf": "report.views.base.base_pdf",
     },
+    "donations_report": {
+        "task": "report.tasks.task_report",
+        "form": "report.forms.ReportForm",
+        "html": "report.views.donation.report_donations_html",
+        "pdf": "report.views.base.base_pdf",
+        "xls": "report.views.donation.report_donations_doc",
+        "xlsx": "report.views.donation.report_donations_doc",
+        "ods": "report.views.donation.report_donations_doc",
+    },
 }

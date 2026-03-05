@@ -89,6 +89,7 @@ class DangerIndicationForm(GTForm, forms.ModelForm):
             "warning_class": genwidgets.SelectMultiple(),
             "warning_category": genwidgets.SelectMultiple(),
             "prudence_advice": genwidgets.SelectMultiple(),
+            "danger_type": genwidgets.TextInput,
         }
 
 

@@ -21,12 +21,14 @@ from msds.models import MSDSObject, RegulationDocument
 logger = logging.getLogger("organilab")
 
 
-@permission_required("auth_and_perms.institution_can_access")
+@login_required
+@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def index_msds(request, org_pk):
     return render(request, "index_msds.html", context={"org_pk": org_pk})
 
 
-@permission_required("auth_and_perms.institution_can_access")
+@login_required
+@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def get_download_links(request, obj):
 
     new_url = reverse(

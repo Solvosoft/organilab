@@ -3266,9 +3266,6 @@ msgid "Email with password reset instructions has been sent."
 msgstr ""
 "Un correo con las instrucciones para reinicio de contraseña ha sido enviado."
 
-msgid "Go to home"
-msgstr "Ir al inicio"
-
 #, python-format
 msgid "Reseting password at %(site_name)s"
 msgstr "Reiniciando contraseña en %(site_name)s"
@@ -5425,32 +5422,56 @@ msgstr "Eliminar valores del informe de precursores"
 msgid "You do not have access to this organization reports"
 msgstr "No tiene acceso a los informes de esta organización"
 
+msgid "Update process condition of reagents"
+msgstr "Actualizar condición de proceso de reactivos"
+
+# error_view.html
+
+msgid "Access denied"
+msgstr "Acceso denegado"
+
 msgid "Page not available"
 msgstr "Página no disponible"
+
+msgid "You don’t have permission to view this page"
+msgstr "No tiene permisos para ver esta página"
+
+msgid "Your account doesn’t have access to this resource. If you think this is a mistake, contact the administrator."
+msgstr "Su cuenta no tiene acceso a este recurso. Si considera que esto es un error, contacte al administrador."
 
 msgid "We couldn’t find that page"
 msgstr "No pudimos encontrar esa página"
 
 msgid "It may not exist, it may have moved, or you may not have permission to view it."
-msgstr "Puede que no exista, que haya sido movida o que no tenga permisos para verla."
+msgstr "Puede que no exista, que haya cambiado de ubicación o que no tenga permisos para verla."
 
 msgid "Access issue"
 msgstr "Problema de acceso"
 
-msgid "If you believe this is an error, contact the administrator or try again with another account."
-msgstr "Si considera que esto es un error, contacte al administrador o intente nuevamente con otra cuenta."
+msgid "Not found"
+msgstr "No encontrada"
 
-msgid "Path"
-msgstr "Ruta"
+msgid "Try again with another account or request access."
+msgstr "Intente nuevamente con otra cuenta o solicite acceso."
+
+msgid "Check the URL or go back to the home page."
+msgstr "Verifique la URL o regrese a la página principal."
 
 msgid "Referrer"
-msgstr "Referencia"
+msgstr "Página de origen"
 
-msgid "Go back"
-msgstr "Volver"
+msgid "Go to home"
+msgstr "Ir al inicio"
 
 msgid "Error code"
 msgstr "Código de error"
 
-msgid "Update process condition of reagents"
-msgstr "Actualizar condición de proceso de reactivos"
+
+msgid "CAS code"
+msgstr "Código CAS"
+
+msgid "Donations Report"
+msgstr "Informe de donaciones"
+
+msgid "Donation Report"
+msgstr "Informe de donaciones"

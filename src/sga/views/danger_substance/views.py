@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render
 from rest_framework.generics import get_object_or_404
 
@@ -8,7 +8,8 @@ from laboratory.models import OrganizationStructure
 from sga.forms import DangerSubstanceForm, DangerSubstanceCategoryForm
 
 
-@permission_required("sga.view_dangersubstance")
+@login_required
+@permission_required("sga.view_dangersubstance", raise_exception=True)
 def danger_substance_view(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -21,12 +22,13 @@ def danger_substance_view(request, org_pk):
         context={
             "form_create": DangerSubstanceForm(prefix="create"),
             "form_update": DangerSubstanceForm(prefix="update"),
-            "org_pk": org_pk
-        }
+            "org_pk": org_pk,
+        },
     )
 
 
-@permission_required("sga.view_dangersubstancecategory")
+@login_required
+@permission_required("sga.view_dangersubstancecategory", raise_exception=True)
 def danger_substance_category_view(request, org_pk):
     organization = get_object_or_404(
         OrganizationStructure.objects.using(settings.READONLY_DATABASE),
@@ -39,6 +41,6 @@ def danger_substance_category_view(request, org_pk):
         context={
             "form_create": DangerSubstanceCategoryForm(prefix="create"),
             "form_update": DangerSubstanceCategoryForm(prefix="update"),
-            "org_pk": org_pk
-        }
+            "org_pk": org_pk,
+        },
     )

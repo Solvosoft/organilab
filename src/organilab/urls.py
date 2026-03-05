@@ -50,6 +50,7 @@ def check_ok(request):
         division_by_zero = 1 / 0
     return HttpResponse("ok")
 
+
 urlpatterns = (
     urls_djgentelela
     + auth_urls
@@ -62,7 +63,7 @@ urlpatterns = (
         path("", include((laboratory_urls, "laboratory"), namespace="laboratory")),
         path("", include((api_urls, "api"), namespace="api")),
         path("msds/<int:org_pk>/", include((msds_urls, "msds"), namespace="msds")),
-        path("weblog/", include("djgentelella.blog.urls")),
+        # path("weblog/", include("djgentelella.blog.urls")),
         path("sga/<int:org_pk>/", include((sga_urls, "sga"), namespace="sga")),
         path(
             "risk/<int:org_pk>/",
@@ -89,7 +90,9 @@ urlpatterns = (
         path("admin/", admin.site.urls),
         path("async_notifications/", include("async_notifications.urls")),
         path("report/", include((report_urls, "report"), namespace="report")),
-        path('pending_tasks/', include('pending_tasks.urls', namespace='pending_tasks')),
+        path(
+            "pending_tasks/", include("pending_tasks.urls", namespace="pending_tasks")
+        ),
     ]
 )
 

@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
@@ -232,7 +232,11 @@ class ProcedureStepCommentAPI(
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@method_decorator(permission_required("academic.view_myprocedure"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("academic.view_myprocedure", raise_exception=True),
+    name="dispatch",
+)
 class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
@@ -283,7 +287,11 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             )
 
 
-@method_decorator(permission_required("academic.view_procedure"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("academic.view_procedure", raise_exception=True),
+    name="dispatch",
+)
 class ProcedureAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
     authentication_classes = [SessionAuthentication]
     permission_classes = (IsAuthenticated,)

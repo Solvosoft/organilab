@@ -80,25 +80,28 @@ class ButtonsActionsTableColumn(ButtonsActionsTableColumnBase):
 
     def test_reserve_shelfobject(self):
         initial_date, initial_date_strftime = self.get_format_increase_decrease_date(
-            now(), 1
+            now(), 2
         )
         final_date, final_date_strftime = self.get_format_increase_decrease_date(
             initial_date, 5
         )
 
         path_list = self.buttons_actions_path + [
-            {"path": "//*[@id='shelfobjecttable']/tbody/tr/td[7]/a[2]"},
+            {
+                "path": "//*[@id='shelfobjecttable']/tbody/tr[1]//a[.//i[contains(@class,'fa-shopping-basket')]]"},
             {"path": "//*[@id='reservesoform']/div/div/input"},
             {
                 "path": "//*[@id='reservesoform']/div/div/input",
                 "extra_action": "setvalue",
                 "value": "2",
             },
-            {"path": "//*[@id='reservesoform']/div[2]/div/div/input"},
-            {"path": "//*[@data-day='%s']" % initial_date_strftime},
+            {"path": "//*[@id='reservesoform']/div[2]/div/div/input", "sleep": 1},
+            {"path": "//*[@data-day='%s']" % initial_date_strftime,"sleep": 1},
+            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5","sleep": 1},
             {"path": "//*[@id='reservesoform']/div[3]/div/div/input"},
-            {"path": "//*[@data-day='%s']" % final_date_strftime},
-            {"path": self.get_save_button_modal("reservesomodal")},
+            {"path": "//*[@data-day='%s']" % final_date_strftime,"sleep": 1},
+            {"path": "//*[@id='reservesomodal']//h4 | //*[@id='reservesomodal']//h5","sleep": 1},
+            {"path": self.get_save_button_modal("reservesomodal"), "sleep": 5},
         ]
         self.create_gif_process(path_list, "reserve_shelfobject")
 
