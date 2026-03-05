@@ -5483,3 +5483,7 @@ msgstr "Cargar Archivo"
 
 msgid "Load archive"
 msgstr "Cargar archivo"
+
+msgid "Only .xlsm files are allowed."
+msgstr "Solo se permiten archivos .xlsm."
+

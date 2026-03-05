@@ -54,7 +54,7 @@ def read_xlsm_data(uploaded_file):
             "formula_quimica": row[COLUMNS["formula_quimica"] - 1],
             "estado": None if estado == "Seleccione" else estado,
             "cantidad": row[COLUMNS["cantidad"] - 1],
-            "unidades_cantidad": None if unidades == "Seleccione" else unidades,
+            "unidades": None if unidades == "Seleccione" else unidades,
             "capacidad_envase": row[COLUMNS["capacidad_envase"] - 1],
             "unidades_capacidad": row[COLUMNS["unidades_capacidad"] - 1],
             "material_contenedor": row[COLUMNS["material_contenedor"] - 1],
