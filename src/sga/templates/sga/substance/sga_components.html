@@ -21,7 +21,7 @@
             </div>
             <form action="{{url}}" method="post">
                 {% csrf_token %}
-                {{form.as_inline}}
+                {{form}}
                 <button class="btn btn-success float-end" type="submit">
                     <i class="fa fa-floppy-o" aria-hidden="true"></i>
                     {% trans 'Save' %}

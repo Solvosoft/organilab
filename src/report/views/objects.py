@@ -28,6 +28,7 @@ from report.utils import (
     set_format_table_columns,
     get_report_name,
     load_dataset_by_column,
+    sanitize_ods_table,
 )
 from report.views.object_changes import get_dataset_objectlogchanges
 
@@ -424,8 +425,15 @@ def report_objects_doc(report):
 
 # report_limit_object
 def get_limited_shelf_objects(query):
-    for shelf_object in query:
-        if shelf_object.limit_reached:
+    for shelf_object in query.filter(
+        limits__minimum_limit__gte=0, limits__maximum_limit__gte=0.1
+    ):
+
+        if (
+            shelf_object.limits.minimum_limit == shelf_object.quantity
+            or shelf_object.limits.maximum_limit == shelf_object.quantity
+        ):
+
             yield shelf_object
 
 
@@ -443,7 +451,8 @@ def get_dataset_limit_objects(report, column_list=None):
         labs = Laboratory.objects.filter(pk__in=labs)
         for lab in labs:
             shelf_objects = ShelfObject.objects.filter(
-                shelf__furniture__labroom__laboratory=lab
+                in_where_laboratory=lab,
+                limits__isnull=False,
             )
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)
@@ -454,8 +463,17 @@ def get_dataset_limit_objects(report, column_list=None):
                     "code": shelfobj.object.code,
                     "object": shelfobj.object.name,
                     "quantity": shelfobj.quantity,
-                    "limit_quantity": shelfobj.limit_quantity,
                     "measurement_unit": shelfobj.get_measurement_unit_display(),
+                    "minimun_limit": (
+                        shelfobj.limits.minimum_limit
+                        if shelfobj.limits.minimum_limit > 0
+                        else "-----"
+                    ),
+                    "maximum_limit": (
+                        shelfobj.limits.maximum_limit
+                        if shelfobj.limits.maximum_limit > 0
+                        else "-----"
+                    ),
                 }
                 obj_item = list(data_column.values())
 
@@ -477,8 +495,9 @@ def report_limit_object_html(report):
         {"name": "code", "title": _("Code")},
         {"name": "object", "title": _("Object")},
         {"name": "quantity", "title": _("Quantity")},
-        {"name": "limit_quantity", "title": _("Limit quantity")},
         {"name": "measurement_unit", "title": _("Unit")},
+        {"name": "minimun_limit", "title": _("Minimum Limit")},
+        {"name": "maximum_limit", "title": _("Maximum Limit")},
     ]
     columns_fields = set_format_table_columns(columns_fields)
     column_list = list(map(lambda x: x["name"], columns_fields))
@@ -498,8 +517,9 @@ def report_limit_object_doc(report):
             _("Code"),
             _("Object"),
             _("Quantity"),
-            _("Limit quantity"),
             _("Measurement Unit"),
+            _("Minimum Limit"),
+            _("Maximum Limit"),
         ]
     ]
     if "laboratory" in report.data:
@@ -632,6 +652,7 @@ def report_organization_reactive_list_doc(report):
     record_total = len(content) - 1
     report_name = get_report_name(report)
     content.insert(0, [report_name])
+    content = sanitize_ods_table(content)
     file = builder.save_ods(content, format_type=report.file_type)
     file_name = f"{report_name}.{report.file_type}"
     file.seek(0)

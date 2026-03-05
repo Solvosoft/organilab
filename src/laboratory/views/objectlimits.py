@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -9,12 +9,20 @@ from laboratory.models import Object
 from laboratory.utils import check_user_access_kwargs_org_lab
 
 
-@method_decorator(permission_required("laboratory.view_object"), name="dispatch")
+@method_decorator(login_required, name="dispatch")
+@method_decorator(
+    permission_required("laboratory.view_laboratory", raise_exception=True),
+    name="dispatch",
+)
 class ReactiveStockDashboard(TemplateView):
     template_name = "laboratory/objectlimit/dashboard.html"
 
     def get(self, request, *args, **kwargs):
-        if not check_user_access_kwargs_org_lab(self.kwargs.get("org_pk", None), self.kwargs.get("lab_pk", None), request.user):
+        if not check_user_access_kwargs_org_lab(
+            self.kwargs.get("org_pk", None),
+            self.kwargs.get("lab_pk", None),
+            request.user,
+        ):
             raise Http404()
         return super().get(request, *args, **kwargs)
 

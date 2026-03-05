@@ -21,6 +21,8 @@ from laboratory.models import (
     Object,
     ObjectMaximumLimit,
     BlockedListNotification,
+    OrganizationStructure,
+    OrganizationStructureRelations,
 )
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import (
@@ -106,12 +108,24 @@ def remove_shelf_not_furniture():
 def add_maximum_object_stock_per_day():
     laboratories = Laboratory.objects.all()
     for laboratory in laboratories:
-        objects = ShelfObject.objects.filter(in_where_laboratory=laboratory, object__type=Object.REACTIVE).values_list("object", flat=True)
+        objects = ShelfObject.objects.filter(
+            in_where_laboratory=laboratory, object__type=Object.REACTIVE
+        ).values_list("object", flat=True)
         objects = set(objects)
         for obj in Object.objects.filter(pk__in=objects):
-            total = sum([get_conversion_units(shelfobject.measurement_unit, shelfobject.quantity)
-                         for shelfobject in ShelfObject.objects.filter(in_where_laboratory=laboratory, object=obj)])
-            shelfobject = ShelfObject.objects.filter(in_where_laboratory=laboratory, object=obj).first()
+            total = sum(
+                [
+                    get_conversion_units(
+                        shelfobject.measurement_unit, shelfobject.quantity
+                    )
+                    for shelfobject in ShelfObject.objects.filter(
+                        in_where_laboratory=laboratory, object=obj
+                    )
+                ]
+            )
+            shelfobject = ShelfObject.objects.filter(
+                in_where_laboratory=laboratory, object=obj
+            ).first()
             data = {
                 "quantity": total,
                 "laboratory": laboratory,
@@ -126,9 +140,8 @@ def add_maximum_object_stock_per_day():
 def send_expiration_email():
     tomorrow = date.today() + timedelta(days=1)
     expiring_reactives = ShelfObject.objects.filter(
-        object__type=Object.REACTIVE,
-        reactive_expiration_date=tomorrow
-    ).select_related('object', 'shelf__furniture__labroom')
+        object__type=Object.REACTIVE, reactive_expiration_date=tomorrow
+    ).select_related("object", "shelf__furniture__labroom")
     reactives_by_lab = defaultdict(list)
     for reactive in expiring_reactives:
         lab = reactive.in_where_laboratory
@@ -137,27 +150,28 @@ def send_expiration_email():
 
     for lab, reactives in reactives_by_lab.items():
         blocked = BlockedListNotification.objects.filter(
-            laboratory=lab,
-            object__in=[r.object for r in reactives]
+            laboratory=lab, object__in=[r.object for r in reactives]
         )
         blocked_emails = list(blocked.values_list("user__email", flat=True))
         cc = ContentType.objects.get_for_model(Laboratory)
         user_ids = ProfilePermission.objects.filter(
-            content_type=cc,
-            object_id=lab.pk
+            content_type=cc, object_id=lab.pk
         ).values_list("profile__user", flat=True)
         users = User.objects.filter(id__in=user_ids)
-        emails = [user.email for user in users if
-                  user.email and user.email not in blocked_emails]
+        emails = [
+            user.email
+            for user in users
+            if user.email and user.email not in blocked_emails
+        ]
         if emails:
             schema = "https" if not settings.DEBUG else "http"
             domain = Site.objects.get_current().domain
             url = f"/lab/{lab.pk}/blocknotifications/"
             context = {
-                'laboratory': lab,
-                'shelf_object': reactives,
-                'blockurl': f"{schema}://{domain}{url}",
-                'domain': domain,
+                "laboratory": lab,
+                "shelf_object": reactives,
+                "blockurl": f"{schema}://{domain}{url}",
+                "domain": domain,
             }
             send_email_from_template(
                 "Expiring reactives",
@@ -167,3 +181,26 @@ def send_expiration_email():
                 user=None,
                 upfile=None,
             )
+
+
+@app.task()
+def remove_relation_organization_laboratory():
+    # remove relations of laboratories if not exists
+    relations = OrganizationStructureRelations.objects.filter(
+        content_type__app_label="laboratory",
+        content_type__model="laboratory",
+    )
+    for relation in relations:
+        lab = Laboratory.objects.filter(pk=relation.object_id).first()
+        if not lab:
+            relation.delete()
+
+    # remove relations of organizations if not exists
+    relations = OrganizationStructureRelations.objects.filter(
+        content_type__app_label="laboratory",
+        content_type__model="organizationstructure",
+    )
+    for relation in relations:
+        org = OrganizationStructure.objects.filter(pk=relation.object_id).first()
+        if not org:
+            relation.delete()

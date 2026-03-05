@@ -97,7 +97,7 @@ INSTALLED_APPS = [
     "django_otp",
     "django_otp.plugins.otp_totp",
     "report",
-    "pending_tasks"
+    "pending_tasks",
 ]
 
 
@@ -117,6 +117,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "djreservation.middleware.ReservationMiddleware",
     "authentication.middleware.ProfileMiddleware",
+    "authentication.middleware.HandleErrorMiddleware",
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
@@ -302,7 +303,11 @@ CELERYBEAT_SCHEDULE = {
     },
     "create_establishment_logs": {
         "task": "risk_management.tasks.create_establishment_reports",
-        "schedule": crontab(minute=45, hour=16),
+        "schedule": crontab(minute=0, hour=7),
+    },
+    "remove_relation_organization_laboratory": {
+        "task": "laboratory.tasks.remove_relation_organization_laboratory",
+        "schedule": crontab(minute=0, hour=6),
     },
 }
 

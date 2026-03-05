@@ -1,9 +1,11 @@
 from django.test import tag
 
-from laboratory.tests.selenium_tests.manage_organizations.base import ManageOrganizationsSeleniumTest
+from laboratory.tests.selenium_tests.manage_organizations.base import (
+    ManageOrganizationsSeleniumTest,
+)
 
 
-@tag('selenium')
+@tag("selenium")
 class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
 
     # DISABLED: ButtonBoxOrg modal tests - actions modal interaction is unreliable
@@ -84,6 +86,26 @@ class ButtonBoxOrgTest(ManageOrganizationsSeleniumTest):
             },
         ]
         self.create_gif_process(path_list, "view_org_roles")
+
+    def test_remove_org_roles(self):
+        """Test navigating to view organization roles list.
+
+        Flow: Click rol list link for org pk=1 -> View role entries.
+
+        GIF: docs/source/_static/gif/view_org_roles.gif
+        """
+        path_list = [
+            {
+                "path": "//a[contains(@class, 'loglist') and contains(@href, '/rols/list/')]",
+            },
+            {
+                "path": "//a[contains(@class, 'text-danger')]",
+            },
+            {
+                "path": "//input[contains(@class, 'btn-danger')]",
+            },
+        ]
+        self.create_gif_process(path_list, "remove_org_roles")
 
     def test_change_org_parent(self):
         """Test changing the parent of an organization.

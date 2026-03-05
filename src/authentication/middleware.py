@@ -12,6 +12,9 @@ from rest_framework.exceptions import PermissionDenied
 from auth_and_perms.models import ProfilePermission
 from laboratory.models import OrganizationStructure
 from laboratory.utils import get_laboratories_by_user_profile
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.http import urlencode
 
 
 class ProfileMiddleware:
@@ -56,14 +59,14 @@ class ProfileMiddleware:
 
         profile = user.profile
         org_pk = (
-            view_kwargs.get("org_pk") or
-            resolved_kwargs.get("org_pk") or
-            request.GET.get("org_pk")
+            view_kwargs.get("org_pk")
+            or resolved_kwargs.get("org_pk")
+            or request.GET.get("org_pk")
         )
         lab_pk = (
-            view_kwargs.get("lab_pk") or
-            resolved_kwargs.get("lab_pk") or
-            request.GET.get("lab_pk")
+            view_kwargs.get("lab_pk")
+            or resolved_kwargs.get("lab_pk")
+            or request.GET.get("lab_pk")
         )
 
         if (
@@ -124,8 +127,9 @@ class ProfileMiddleware:
 
             if not lab_pk:
                 # for my_labs selection and other steps without laboratory defined
-                laboratories = get_laboratories_by_user_profile(request.user, org_pk,
-                                                                True)
+                laboratories = get_laboratories_by_user_profile(
+                    request.user, org_pk, True
+                )
                 queryQ |= Q(
                     profile=user.profile,
                     object_id__in=laboratories,
@@ -153,3 +157,19 @@ class ProfileMiddleware:
             request.user._perm_cache = {
                 "%s.%s" % (ct, name) for ct, name in user_permissions
             }
+
+
+class HandleErrorMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if response.status_code in (403, 404):
+            error_path = reverse("error_view")
+
+            if request.path != error_path:
+                qs = urlencode({"status": response.status_code})
+                return redirect(f"{error_path}?{qs}")
+
+        return response

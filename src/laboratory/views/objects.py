@@ -8,8 +8,7 @@ Free as freedom will be 26/8/2016
 
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models.query_utils import Q
 from django.forms import ModelForm
 from django.http import HttpResponseRedirect, JsonResponse
@@ -275,7 +274,8 @@ def block_notifications(request, lab_pk, obj_pk):
     return render(request, "laboratory/block_object_notification.html")
 
 
-@permission_required("laboratory.view_object")
+@login_required
+@permission_required("laboratory.view_object", raise_exception=True)
 def view_equipment_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
@@ -293,13 +293,15 @@ def view_equipment_list(request, org_pk, lab_pk):
             laboratory_pk=lab_pk,
         ),
         "update_form": EquipmentForm(
+            initial={"laboratory": lab_pk, "organization": org_pk, },
             prefix="update", modal_id="#update_obj_form", laboratory_pk=lab_pk
         ),
     }
     return render(request, "laboratory/equipment/list.html", context=context)
 
 
-@permission_required("laboratory.view_object")
+@login_required
+@permission_required("laboratory.view_object", raise_exception=True)
 def view_reactive_list(request, org_pk, lab_pk):
     context = {
         "org_pk": org_pk,
@@ -332,7 +334,8 @@ def view_reactive_list(request, org_pk, lab_pk):
     return render(request, "laboratory/sustance/list.html", context=context)
 
 
-@permission_required("laboratory.view_object")
+@login_required
+@permission_required("laboratory.view_object", raise_exception=True)
 def object_view(request, org_pk=0, lab_pk=0):
     user_is_allowed_on_organization(request.user, org_pk)
     lab = get_object_or_404(Laboratory, pk=lab_pk)

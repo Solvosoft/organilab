@@ -284,14 +284,9 @@ class StructureForm(GTForm, forms.ModelForm):
 
         if org_pk:
             organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-            if instance:
-                self.fields["buildings"].queryset = Buildings.objects.filter(
-                    organization__pk=org_pk
-                ).exclude(pk=instance.pk)
-            else:
-                self.fields["buildings"].queryset = Buildings.objects.filter(
-                    organization__pk=org_pk
-                )
+            self.fields["buildings"].queryset = Buildings.objects.filter(
+                organization__pk=org_pk
+            )
             self.fields["manager"].queryset = User.objects.filter(
                 pk__in=get_users_from_organization(organization.root.pk)
             )

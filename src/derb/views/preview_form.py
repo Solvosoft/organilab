@@ -7,7 +7,7 @@ from derb.models import CustomForm
 
 
 @login_required
-@permission_required("derb.view_customform")
+@permission_required("derb.view_customform", raise_exception=True)
 def previewForm(request, org_pk, form_id):
     template_name = "formBuilder/preview_form.html"
 

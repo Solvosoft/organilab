@@ -3,7 +3,7 @@ from django.utils.translation import gettext as _
 
 from laboratory.models import OrganizationStructure
 from laboratory.report_utils import ExcelGraphBuilder
-from report.utils import get_report_name, format_date
+from report.utils import get_report_name, format_date, sanitize_ods_table
 from risk_management.utils_risk import (
     cargar_cuadro3,
     cargar_sga_referencia,
@@ -48,71 +48,99 @@ def report_regency_xlsx(report):
     c3 = cargar_cuadro3()
     c4 = cargar_umbral_por_H()
     mapH_tipo = cargar_sga_referencia()
-    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+    try:
 
-    builder.ws.append([_("Classification"), _("Criterion")])
-    builder.ws.append([str(res["clasificacion"]), str(res["criterio"])])
-    builder.style_header()
-    builder.autosize_columns()
+        res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
 
-    sumatoria = res["sumatorias_por_categoria"]
+        builder.ws.append([_("Classification"), _("Criterion")])
+        builder.ws.append([str(res["clasificacion"]), str(res["criterio"])])
+        builder.style_header()
+        builder.autosize_columns()
 
-    builder.ws = builder.wb["Sumatoria_categoría"]
-    builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
-    builder.ws.append(
-        [
-            sumatoria["Físico"],
-            sumatoria["Salud"],
-            sumatoria["Ambiental"],
-        ]
-    )
-    builder.style_header()
-    builder.autosize_columns()
+        sumatoria = res["sumatorias_por_categoria"]
 
-    builder.ws = builder.wb["Detalle"]
-    builder.ws.append(
-        [
-            _("Name"),
-            _("CAS"),
-            _("Quantity"),
-            _("Nominated"),
-            _("Threshold"),
-            _("Ratio"),
-            _("H-codes"),
-            _("Cross rule"),
-            _("Detail"),
-            _("Warnings"),
-            _("Health contributions"),
-            _("Physical contributions"),
-            _("Environmental contributions"),
-        ]
-    )
-
-    for details in res["detalles"]:
+        builder.ws = builder.wb["Sumatoria_categoría"]
+        builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
         builder.ws.append(
             [
-                details["nombre"],
-                details["cas"],
-                details["cantidad_t"],
-                builder.safe_bool(details["nominada_c3"]),
-                details["umbral_c3"],
-                details["ratio_c3"],
-                details["h_codes"],
-                builder.safe_bool(details["regla_cruzada_salud"]),
-                (
-                    " | ".join(details["detalle_contribuciones"])
-                    if details["detalle_contribuciones"]
-                    else ""
-                ),
-                " | ".join(details["advertencias"] if details["advertencias"] else ""),
-                details["contribuciones"].get("Salud", 0.0),
-                details["contribuciones"].get("Físico", 0.0),
-                details["contribuciones"].get("Ambiental", 0.0),
+                sumatoria["Físico"],
+                sumatoria["Salud"],
+                sumatoria["Ambiental"],
             ]
         )
-    builder.style_header()
-    builder.autosize_columns()
-    builder.format_border_cell(len(res["detalles"]), 13)
+        builder.style_header()
+        builder.autosize_columns()
+
+        builder.ws = builder.wb["Detalle"]
+        builder.ws.append(
+            [
+                _("Name"),
+                _("CAS"),
+                _("Quantity"),
+                _("Nominated"),
+                _("Threshold"),
+                _("Ratio"),
+                _("H-codes"),
+                _("Cross rule"),
+                _("Detail"),
+                _("Warnings"),
+                _("Health contributions"),
+                _("Physical contributions"),
+                _("Environmental contributions"),
+            ]
+        )
+
+        for details in res["detalles"]:
+            builder.ws.append(
+                [
+                    details["nombre"],
+                    details["cas"],
+                    details["cantidad_t"],
+                    builder.safe_bool(details["nominada_c3"]),
+                    details["umbral_c3"],
+                    details["ratio_c3"],
+                    details["h_codes"],
+                    builder.safe_bool(details["regla_cruzada_salud"]),
+                    (
+                        " | ".join(details["detalle_contribuciones"])
+                        if details["detalle_contribuciones"]
+                        else ""
+                    ),
+                    " | ".join(
+                        details["advertencias"] if details["advertencias"] else ""
+                    ),
+                    details["contribuciones"].get("Salud", 0.0),
+                    details["contribuciones"].get("Físico", 0.0),
+                    details["contribuciones"].get("Ambiental", 0.0),
+                ]
+            )
+        builder.style_header()
+        builder.autosize_columns()
+        builder.format_border_cell(len(res["detalles"]), 13)
+
+    except Exception as e:
+        builder.ws.append([_("Classification"), _("Criterion")])
+        builder.ws.append(["riesgo menor", ""])
+        builder.style_header()
+        builder.autosize_columns()
+        builder.ws = builder.wb["Sumatoria_categoría"]
+        builder.ws.append([_("Physical"), _("Health"), _("Environmental")])
+        builder.ws.append(
+            [
+                0.0,
+                0.0,
+                0.0,
+            ]
+        )
+        builder.style_header()
+        builder.autosize_columns()
+
+        builder.ws = builder.wb["Detalle"]
+        builder.ws.append(
+            [
+                _("Data not available"),
+            ]
+        )
 
     report_name = get_report_name(report)
     file = builder.save()
@@ -145,67 +173,82 @@ def report_regency_doc(report):
 
     if report.data["laboratory"]:
         filters.update({"laboratory__pk__in": report.data["laboratory"]})
-
+    content = []
     inv = get_inventory(filters)
     inv = inv.drop_duplicates(subset=["nombre", "h_codes", "cas", "cantidad_t"])
     c3 = cargar_cuadro3()
     c4 = cargar_umbral_por_H()
     mapH_tipo = cargar_sga_referencia()
-    res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
-    sumatoria = res["sumatorias_por_categoria"]
-    content = [
-        [_("Classification"), _("Criterion")],
-        [str(res["clasificacion"]), str(res["criterio"])],
-        [],
-        ["Totals by category"],
-        [_("Physical"), _("Health"), _("Environmental")],
-        [sumatoria["Físico"], sumatoria["Salud"], sumatoria["Ambiental"]],
-    ]
-    content.append([])
-    content.append(["Details of the substances"])
-    content.append(
-        [
-            _("Name"),
-            _("CAS"),
-            _("Quantity"),
-            _("Nominated"),
-            _("Threshold"),
-            _("Ratio"),
-            _("H-codes"),
-            _("Cross rule"),
-            _("Detail"),
-            _("Warnings"),
-            _("Health contributions"),
-            _("Physical contributions"),
-            _("Environmental contributions"),
+    try:
+        res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
+        sumatoria = res["sumatorias_por_categoria"]
+        content = [
+            [_("Classification"), _("Criterion")],
+            [str(res["clasificacion"]), str(res["criterio"])],
+            [],
+            [_("Totals by category")],
+            [_("Physical"), _("Health"), _("Environmental")],
+            [sumatoria["Físico"], sumatoria["Salud"], sumatoria["Ambiental"]],
         ]
-    )
-
-    for details in res["detalles"]:
+        content.append([])
+        content.append([_("Details of the substances")])
         content.append(
             [
-                details["nombre"],
-                details["cas"],
-                details["cantidad_t"],
-                _("Yes") if details["nominada_c3"] else _("No"),
-                details["umbral_c3"],
-                details["ratio_c3"],
-                details["h_codes"],
-                _("Yes") if details["regla_cruzada_salud"] else _("No"),
-                (
-                    " | ".join(details["detalle_contribuciones"])
-                    if details["detalle_contribuciones"]
-                    else ""
-                ),
-                " | ".join(details["advertencias"] if details["advertencias"] else ""),
-                details["contribuciones"].get("Salud", 0.0),
-                details["contribuciones"].get("Físico", 0.0),
-                details["contribuciones"].get("Ambiental", 0.0),
+                _("Name"),
+                _("CAS"),
+                _("Quantity"),
+                _("Nominated"),
+                _("Threshold"),
+                _("Ratio"),
+                _("H-codes"),
+                _("Cross rule"),
+                _("Detail"),
+                _("Warnings"),
+                _("Health contributions"),
+                _("Physical contributions"),
+                _("Environmental contributions"),
             ]
         )
 
+        for details in res["detalles"]:
+            content.append(
+                [
+                    details["nombre"],
+                    details["cas"],
+                    details["cantidad_t"],
+                    _("Yes") if details["nominada_c3"] else _("No"),
+                    details["umbral_c3"],
+                    details["ratio_c3"],
+                    details["h_codes"],
+                    _("Yes") if details["regla_cruzada_salud"] else _("No"),
+                    (
+                        " | ".join(details["detalle_contribuciones"])
+                        if details["detalle_contribuciones"]
+                        else ""
+                    ),
+                    " | ".join(
+                        details["advertencias"] if details["advertencias"] else ""
+                    ),
+                    details["contribuciones"].get("Salud", 0.0),
+                    details["contribuciones"].get("Físico", 0.0),
+                    details["contribuciones"].get("Ambiental", 0.0),
+                ]
+            )
+    except Exception as e:
+        content = [
+            [_("Classification"), _("Criterion")],
+            ["riesgo menor", ""],
+            [],
+            [_("Totals by category")],
+            [_("Physical"), _("Health"), _("Environmental")],
+            [0.0, 0.0, 0.0],
+        ]
+        content.append([])
+        content.append([_("Details of the substances")])
+        content.append(_("Data not available"))
     report_name = get_report_name(report)
     content.insert(0, [report_name])
+    content = sanitize_ods_table(content)
     file = builder.save_ods(content, format_type=report.file_type)
     file_name = f"{report_name}.{report.file_type}"
     file.seek(0)
