@@ -1610,3 +1610,66 @@ class LaboratoryProcessForm(GTForm, forms.ModelForm):
             "laboratory": genwidgets.HiddenInput,
             "description": EditorTinymce,
         }
+
+
+class ReactiveUploadForm(GTForm, forms.Form):
+
+    nombre_producto = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Name of the product"),
+    )
+    formula_quimica = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Chemical formula"),
+    )
+    cantidad = forms.FloatField(
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Amount"),
+        help_text=_("Use dot like 0.344 on decimal"),
+    )
+    unidades_cantidad = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Units of the quantity"),
+    )
+    capacidad_envase = forms.FloatField(
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Capacity"),
+        help_text=_("Use dot like 0.344 on decimal"),
+    )
+    unidades_capacidad = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Units of the capacity"),
+    )
+    material_contenedor = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Material of the container"),
+    )
+    cantidad_maxima_anual = forms.FloatField(
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Maximum annual quantity"),
+        help_text=_("Use dot like 0.344 on decimal"),
+    )
+    unidades_maxima_anual = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Units of the maximum annual quantity"),
+    )
+    fecha_caducidad = forms.DateField(
+        widget=genwidgets.DateInput,
+        required=False,
+        label=_("Expiration date"),
+    )
