@@ -1736,3 +1736,9 @@ class LoadArchiveSerializer(serializers.Serializer):
         required=True,
         queryset=Shelf.objects.using(settings.READONLY_DATABASE)
     )
+
+    def validate_file(self, value):
+        name = getattr(value, 'name', '') or ''
+        if not name.lower().endswith('.xlsm'):
+            raise serializers.ValidationError(_("Only .xlsm files are allowed."))
+        return value
