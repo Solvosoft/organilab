@@ -48,7 +48,7 @@ from laboratory.utils import (
     get_laboratories_by_user_profile,
     register_laboratory_contenttype,
     delete_profile_roles_related_to_laboratory,
-    delete_relation_between_laboratory_with_other_models,
+    delete_relation_between_laboratory_with_other_models, get_lab_ids,
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -248,31 +248,7 @@ class LaboratoryListView(ListView):
 
         user = self.request.user
         profile = getattr(user, "profile", None)
-
-        org_ids = list(organization.ancestors().values_list("pk", flat=True))
-        org_ids.append(organization.pk)
-        has_org_permission = ProfilePermission.objects.filter(
-            profile=profile,
-            object_id__in=org_ids,
-            content_type__app_label="laboratory",
-            content_type__model="organizationstructure",
-            rol__isnull=False,
-        ).exists()
-
-        if has_org_permission:
-            lab_ids = organization.get_my_laboratories
-        else:
-            lab_ids = list(
-                ProfilePermission.objects.filter(
-                    profile=profile,
-                    content_type__app_label="laboratory",
-                    content_type__model="laboratory",
-                    rol__isnull=False,
-                ).values_list("object_id", flat=True)
-            )
-            org_lab_ids = organization.get_my_laboratories
-            lab_ids = [lab_id for lab_id in lab_ids if lab_id in org_lab_ids]
-
+        lab_ids = get_lab_ids(organization, profile)
         queryset = self.model.objects.filter(pk__in=lab_ids)
         q = self.request.GET.get("search_fil", "")
         if q != "":
