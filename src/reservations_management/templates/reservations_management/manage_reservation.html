@@ -6,103 +6,114 @@
 {% load organilab_tags %}
 
 {% block pre_head %}
-    {% define_urlname_action 'increase_stock' %}
-    {% define_urlname_action 'manage_reservation' %}
-    {% define_urlname_action 'get_product_name_and_quantity' %}
-    {% define_urlname_action 'validate_reservation' %}
+	{% define_urlname_action 'increase_stock' %}
+	{% define_urlname_action 'manage_reservation' %}
+	{% define_urlname_action 'get_product_name_and_quantity' %}
+	{% define_urlname_action 'validate_reservation' %}
 {% endblock %}
 {% block title %}{% trans 'Manage Reservation' %}{% endblock %}
 
 {% block content %}
-{{block.super}}
+	{{ block.super }}
 
 
-<div class="management_id" hidden id="manage_urls">
-    <input type="hidden" id="reservation_id" value="{{object.id}}">
-    <input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0%}">
-    <input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0%}">
+	<div class="management_id" hidden id="manage_urls">
+		<input type="hidden" id="reservation_id" value="{{ object.id }}">
+		<input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0 %}">
+		<input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0 %}">
 
-    <input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity" value="{% url 'reservations_management:get_product_name_and_quantity' org_pk %}">
-    <input type="hidden" name="validate_reservation" id="validate_reservation" value="{% url 'reservations_management:validate_reservation' org_pk %}">
-    <input type="hidden" name="increase_stock" id="increase_stock" value="{% url 'reservations_management:increase_stock' org_pk %}">
+		<input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity"
+									value="{% url 'reservations_management:get_product_name_and_quantity' org_pk %}">
+		<input type="hidden" name="validate_reservation" id="validate_reservation"
+									value="{% url 'reservations_management:validate_reservation' org_pk %}">
+		<input type="hidden" name="increase_stock" id="increase_stock"
+									value="{% url 'reservations_management:increase_stock' org_pk %}">
 
-</div>
-
-
-<div class="card gencrud">
-    <div class="card-body">
-        <div class="card-title titles">
-            <ul class="nav navbar-left panel_toolbox">
-                <li>
-                    <a  href="{% url 'reservations_management:reservations_list' org_pk object.status %}" title="{% trans 'Back to the reservations list'%}">
-                        <i class="fs-5 fa fa-angle-double-left red"></i>
-                    </a>
-                </li>
-            </ul>
-
-            <h2>{% trans 'Reservation from' %} <strong>{{object.user.username}}</strong> {% trans 'for laboratory' %} <strong>
-                {{object.laboratory.name}}</strong></h2>
-
-            <ul class="nav navbar-right panel_toolbox">
-
-            </ul>
-
-        </div>
+	</div>
 
 
+	<div class="card gencrud">
 
-        <form method="POST" id="form">
-            {% csrf_token %}
-            {{reservation_form.as_plain }}
+		<div class="card-body">
+			<div class="card-title titles">
+				<ul class="nav navbar-left panel_toolbox">
+					<li>
+						<a href="{% url 'reservations_management:reservations_list' org_pk object.status %}"
+									title="{% trans 'Back to the reservations list' %}">
+							<i class="fs-5 fa fa-angle-double-left red"></i>
+						</a>
+					</li>
+				</ul>
+				<h2>{% trans 'Reservation from' %} <strong>{{ object.user.username }}</strong> {% trans 'for laboratory' %}
+					<strong>
+						{{ object.laboratory.name }}</strong></h2>
 
-                <div class="form-group mt-2">
-                    <div class="controls text-end">
+				<ul class="nav navbar-right panel_toolbox">
 
-                        <a href="{% url 'reservations_management:reservations_list' org_pk object.status %}" class="btn btn-danger"><i class='fa fa-times'></i> {% trans 'Cancel' %}</a>
+				</ul>
 
-                        <button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> {% trans 'Save' %}</button>
-                    </div>
-                </div>
+			</div>
+			{% if perms.reservations_management.change_reservations %}
 
-        </form>
 
-    </div>
 
-    <div class="card-body">
+				<form method="POST" id="form">
+					{% csrf_token %}
+					{{ reservation_form.as_plain }}
 
-        <h3 class="card-title">{% trans 'Products List' %}</h3>
+					<div class="form-group mt-2">
+						<div class="controls text-end">
 
-        <div class="table-responsive">
+							<a href="{% url 'reservations_management:reservations_list' org_pk object.status %}" class="btn btn-danger"><i
+								class='fa fa-times'></i> {% trans 'Cancel' %}</a>
 
-            <table class="table table-sm table-bordered text-center" id="reserved_products_table">
-                <thead>
-                <tr class="text-center align-middle">
-                    <th>{% trans 'Product name' %}</th>
-                    <th>{% trans 'Available quantity' %}</th>
-                    <th>{% trans 'Amount Required' %}</th>
-                    <th>{% trans 'Amount Returned' %}</th>
-                    <th>{% trans 'Start Date' %}</th>
-                    <th>{% trans 'End Date' %}</th>
-                    <th>{% trans 'Is Returnable' %}</th>
-                    <th>{% trans 'Status' %}</th>
-                </tr>
-                </thead>
+							<button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> {% trans 'Save' %}</button>
+						</div>
+					</div>
 
-                <tbody id="reserved_products_table_body" class="align-middle">
+				</form>
+			{% endif %}
+		</div>
 
-                </tbody>
-            </table>
-        </div>
 
-    </div>
+		<div class="card-body">
 
-</div>
+			<h3 class="card-title">{% trans 'Products List' %}</h3>
+
+			<div class="table-responsive">
+
+				<table class="table table-sm table-bordered text-center" id="reserved_products_table">
+					<thead>
+					<tr class="text-center align-middle">
+						<th>{% trans 'Product name' %}</th>
+						<th>{% trans 'Available quantity' %}</th>
+						<th>{% trans 'Amount Required' %}</th>
+						<th>{% trans 'Amount Returned' %}</th>
+						<th>{% trans 'Start Date' %}</th>
+						<th>{% trans 'End Date' %}</th>
+						<th>{% trans 'Is Returnable' %}</th>
+						<th>{% trans 'Status' %}</th>
+					</tr>
+					</thead>
+
+					<tbody id="reserved_products_table_body" class="align-middle">
+
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
+	</div>
 
 {% endblock %}
 
 {% block js %}
-{{ block.super }}
-<script src="{% static 'reservations_management/js/reservations_management.js' %}?v={% get_organilab_version %}"></script>
-
+	{{ block.super }}
+	<script>
+		const has_perm = {{ perms.reservations_management.change_reservations|yesno:"true,false" }};
+	</script>
+	<script
+		src="{% static 'reservations_management/js/reservations_management.js' %}?v={% get_organilab_version %}"></script>
 
 {% endblock %}
