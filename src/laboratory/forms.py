@@ -1717,16 +1717,7 @@ class ReactiveUploadForm(GTForm, forms.Form):
                 "unidades_cantidad",
                 _("The unit not exist in the database"),
             )
-        if shelf.measurement_unit and unidades_cantidad.exists():
-            if not get_conversion_from_two_units(
-                unidades_cantidad.first(),
-                shelf.measurement_unit,
-                cleaned_data.get("cantidad"),
-            ):
-                self.add_error(
-                    "unidades_capacidad",
-                    _("The unit not exist in the same of the shelf"),
-                )
+
         if cantidad > capacity:
             self.add_error(
                 "cantidad",
