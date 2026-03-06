@@ -78,7 +78,7 @@ def read_xlsm_data(uploaded_file, shelf):
             "formula_quimica": row[COLUMNS["formula_quimica"] - 1],
             "estado": None if estado == "Seleccione" else estado,
             "cantidad": row[COLUMNS["cantidad"] - 1],
-            "unidades": None if unidades == "Seleccione" else unidades,
+            "unidades_cantidad": None if unidades == "Seleccione" else unidades,
             "capacidad_envase": row[COLUMNS["capacidad_envase"] - 1],
             "unidades_capacidad": row[COLUMNS["unidades_capacidad"] - 1],
             "material_contenedor": row[COLUMNS["material_contenedor"] - 1],
@@ -174,6 +174,8 @@ def load_archive(request, org_pk, lab_pk):
     )
 
 
+@login_required
+@permission_required("laboratory.add_shelfobject", raise_exception=True)
 def upload_reactives(request, org_pk, lab_pk, key):
     temp = get_object_or_404(TemporalUploadReactive, key=key)
     if request.method == "POST":
@@ -275,7 +277,7 @@ def upload_reactives(request, org_pk, lab_pk, key):
                     "laboratory": lab_pk,
                 },
             )
-    ReactiveFormSet = formset_factory(ReactiveUploadForm, extra=0, can_delete=True)
+    ReactiveFormSet = formset_factory(ReactiveUploadForm, extra=0)
     formset = ReactiveFormSet(initial=temp.data)
 
     context = {

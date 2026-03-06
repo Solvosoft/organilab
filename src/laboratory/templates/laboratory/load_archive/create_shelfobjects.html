@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Load Archive' %}{% endblock %}
+{% load urlname_tags %}
+
+{% block title %}{% trans 'Upload Reactives' %}{% endblock %}
+{% block pre_head %}
+    {% define_urlname_action 'upload_reactives' %}
+{% endblock %}
 {% block content %}
 	<input type="hidden" value="{{ org_pk }}" id="org">
 	<input type="hidden" value="{{ lab_pk }}" id="lab">
@@ -23,30 +28,30 @@
 	</div>
 
 	<div class="offset-md-2 col-md-8">
+
 		<form class="form" action="" method="post">
+			<div class="text-center">
+			<button type="submit" class="btn btn-sm btn-outline-success float-end me-0 text-center">{% trans 'Save' %}</button>
+			</div>
+			<br>
+			<br>
 			{% csrf_token %}
+
 								{{ formset.management_form }}
 
     {% for form in formset %}
 		<div class="card">
-    <div class="card-body">
-        <div class="card-title titles">
-                {% if formset.can_delete %}
-			         <a class="deletebtn" title="{% trans 'Delete' %}">
-                            {{ form.DELETE }}
-                            <span>{{ form_count }}</span>
-                            <i class="fa fa-close text-danger"></i>
-                        </a>
-									{% endif %}
-        </div>
+			<div class="card-header">
 
+			</div>
+    <div class="card-body">
     {{ form }}
     </div>
 </div>
 			<br>
     {% endfor %}
 
-			<button type="submit" class="btn btn-sm btn-outline-success float-end me-0">{% trans 'Save' %}</button>
+			<button type="submit" class="btn btn-sm btn-outline-success float-end me-0 text-center">{% trans 'Save' %}</button>
 		</form>
 	</div>
 {% endblock %}

@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load urlname_tags %}
+
 {% block title %}{% trans 'Load Archive' %}{% endblock %}
+{% block pre_head %}
+    {% define_urlname_action 'upload_reactives' %}
+{% endblock %}
 {% block content %}
 	<input type="hidden" value="{{ org_pk }}" id="org">
 	<input type="hidden" value="{{ lab_pk }}" id="lab">
