@@ -1,4 +1,4 @@
-// ############### USEFULL METHODS ############### 
+// ############### USEFULL METHODS ###############
 const get_html_element = (element_id, option = 'js') => {
     let element = null;
     try {
@@ -44,7 +44,7 @@ const get_modal_product_elements = () => {
     return data;
 }
 
-// VARIABLES 
+// VARIABLES
 let methods_urls = {}
 let status_select = null;
 let amount_returned = null;
@@ -100,6 +100,7 @@ const store_reserved_product_info = (data) => {
     sessionStorage.setItem('reservation', data['reservation']);
     sessionStorage.setItem('shelf_object', data['shelf_object']);
     sessionStorage.setItem('last_status', data['status']);
+    sessionStorage.setItem('amount_required', data['amount_required']);
 }
 
 const get_stored_reserved_product_info = () => {
@@ -108,7 +109,8 @@ const get_stored_reserved_product_info = () => {
         'final_date': sessionStorage.getItem('final_date'),
         'id': parseInt(sessionStorage.getItem('id')),
         'reservation': parseInt(sessionStorage.getItem('reservation')),
-        'shelf_object': parseInt(sessionStorage.getItem('shelf_object'))
+        'shelf_object': parseInt(sessionStorage.getItem('shelf_object')),
+        'amount_required': parseFloat(sessionStorage.getItem('amount_required'))
     };
 
     return data;
@@ -117,11 +119,19 @@ const get_stored_reserved_product_info = () => {
 const load_product_information = async (data) => {
     store_reserved_product_info(data);
     modal_elements.is_returnable_checkbox.checked = data.is_returnable;
-    modal_elements.status_select.selectedIndex = data.status
     modal_elements.amount_required.value = data.amount_required;
     modal_elements.amount_returned.value = data.amount_returned;
     modal_elements.initial_date.value = new Date(data.initial_date).toString();
     modal_elements.final_date.value = new Date(data.final_date).toString();
+
+    if (data.status === 1) {
+        modal_elements.status_select.selectedIndex = 4;
+        modal_elements.amount_returned.readOnly = false;
+    } else {
+        modal_elements.status_select.selectedIndex = data.status;
+        modal_elements.amount_returned.readOnly = true;
+    }
+
     $.get(methods_urls.get_product_name_and_quantity_url, { 'id': data.id }, function ({ product_name }) {
         modal_elements.modal_title.textContent = product_name.toUpperCase();
     });
@@ -184,7 +194,6 @@ const update_product_information = () => {
     const data = get_stored_reserved_product_info();
     data['status'] = modal_elements.status_select.selectedIndex;
     data['is_returnable'] = modal_elements.is_returnable_checkbox.checked;
-    data['amount_required'] = parseFloat(modal_elements.amount_required.value);
     data['amount_returned'] = parseFloat(modal_elements.amount_returned.value);
 
     const results = can_increase_and_update(data);
@@ -269,7 +278,7 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     ${new Date(reserved_product.final_date).toString()}
     </td>
     <td id="is_returnable">
-        ${is_returnable} 
+        ${is_returnable}
     </td>
     <td id="status">
         <strong class="${reserved_product_status[reserved_product.status]['color']}">
@@ -364,6 +373,8 @@ if (modal_elements) {
 }
 
 if (status_select) {
+    const user_has_perm = (typeof has_perm !== 'undefined') ? has_perm : false;
+
     if (status_select.selectedIndex === 4) {
         amount_returned.readOnly = false;
     }
@@ -381,6 +392,7 @@ if (status_select) {
             amount_returned.readOnly = true;
         }
     });
+    status_select.disabled = !user_has_perm;
 }
 
 if (cancel_button) {

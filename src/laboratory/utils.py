@@ -667,3 +667,30 @@ class PermissionByOrganization(BasePermission):
         Return `True` if permission is granted, `False` otherwise.
         """
         return self.has_permission(request, view)
+
+
+def get_lab_ids(organization, profile):
+    org_ids = list(organization.ancestors().values_list("pk", flat=True))
+    org_ids.append(organization.pk)
+    has_org_permission = ProfilePermission.objects.filter(
+        profile=profile,
+        object_id__in=org_ids,
+        content_type__app_label="laboratory",
+        content_type__model="organizationstructure",
+        rol__isnull=False,
+    ).exists()
+
+    if has_org_permission:
+        lab_ids = organization.get_my_laboratories
+    else:
+        lab_ids = list(
+            ProfilePermission.objects.filter(
+                profile=profile,
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+                rol__isnull=False,
+            ).values_list("object_id", flat=True)
+        )
+        org_lab_ids = organization.get_my_laboratories
+        lab_ids = [lab_id for lab_id in lab_ids if lab_id in org_lab_ids]
+    return lab_ids

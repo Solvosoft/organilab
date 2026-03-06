@@ -3088,4 +3088,11 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.change_shelfobject",
         },
     ],
+    "upload_reactives": [
+        {
+            "name": "Upload Reactives",
+            "category": "Upload Reactives",
+            "permission": "laboratory.add_shelfobject",
+        }
+    ],
 }
