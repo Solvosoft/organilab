@@ -1,4 +1,5 @@
 import importlib
+import json
 from collections import namedtuple
 from datetime import datetime, timedelta
 
@@ -8,6 +9,8 @@ from django.contrib.admin.models import CHANGE
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django_celery_beat.models import ClockedSchedule, PeriodicTask
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import ShelfObject, OrganizationStructure
@@ -454,12 +457,31 @@ def add_decrease_stock_task(reserved_product):
     except Exception as error:
         pass
 
-    task = decrease_stock.apply_async(
-        args=(reserved_product.id,), eta=reserved_product.initial_date
-    )
 
-    new_reserved_product_task = ReservationTasks(
-        reserved_product=reserved_product, celery_task=task.id, task_type="decrease"
-    )
 
-    new_reserved_product_task.save()
+    schedule_decrease_stock(reserved_product)
+
+    # new_reserved_product_task = ReservationTasks(
+    #     reserved_product=reserved_product, celery_task=task.id, task_type="decrease"
+    # )
+    #
+    # new_reserved_product_task.save()
+
+
+def schedule_decrease_stock(reserved_product):
+    initial_date = reserved_product.initial_date
+    if timezone.is_naive(initial_date):
+        initial_date = timezone.make_aware(initial_date)
+
+    initial_date = initial_date.replace(day=initial_date.month, month=initial_date.day)
+
+    clocked, _ = ClockedSchedule.objects.get_or_create(
+        clocked_time=initial_date
+    )
+    PeriodicTask.objects.create(
+        clocked=clocked,
+        name=f"decrease_stock_{reserved_product.id}",
+        task="reservations_management.tasks.decrease_stock",
+        args=json.dumps([reserved_product.id]),
+        one_off=True,
+    )

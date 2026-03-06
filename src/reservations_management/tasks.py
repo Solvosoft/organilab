@@ -21,6 +21,11 @@ def decrease_stock(reserved_product):
         except Exception as e:
             logger.error("Decrease stock", exc_info=e)
             return
-
-    reserved_product.shelf_object.quantity -= reserved_product.amount_required
+    quanity = reserved_product.shelf_object.quantity
+    if (quanity - reserved_product.amount_required) < 0:
+        reserved_product.shelf_object.quantity = 0
+    else:
+        reserved_product.shelf_object.quantity = (
+            quanity - reserved_product.amount_required
+        )
     reserved_product.shelf_object.save()
