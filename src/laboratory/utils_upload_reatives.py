@@ -51,11 +51,13 @@ def get_reactive_by_cas_or_name(cas, name, molecular_formula, organization):
         organization=organization,
     ).distinct()
     if obj.exists() and obj.count() == 1:
-        print(obj)
         return obj.first()
 
     new_obj = Object.objects.create(
-        name=name.capitalize(), type=0, organization=organization
+        name=name.capitalize(),
+        type=0,
+        organization=organization,
+        is_pure=True if len(cas) > 0 else False,
     )
     SustanceCharacteristics.objects.create(
         obj=new_obj, cas_id_number=cas, molecular_formula=molecular_formula
