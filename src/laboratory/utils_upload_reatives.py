@@ -11,11 +11,13 @@ from laboratory.models import (
     ShelfObjectObservation,
     ReactiveLimit,
 )
+from laboratory.shelfobject.utils import build_shelfobject_qr
 from laboratory.utils import organilab_logentry
+from laboratory.utils_base_unit import get_conversion_from_two_units
 
 
 def create_reactive_limits(laboratory, object, quantity, measurement_unit):
-    unit = get_units(measurement_unit)
+    unit = get_units(measurement_unit).first()
     ReactiveLimit.objects.create(
         laboratory=laboratory,
         object=object,
@@ -26,10 +28,16 @@ def create_reactive_limits(laboratory, object, quantity, measurement_unit):
 
 
 def get_units(unit):
-    catalog, created = Catalog.objects.get_or_create(
-        key="units", description=unit.capitalize()
-    )
+    catalog = Catalog.objects.filter(key="units", description=unit.capitalize())
     return catalog
+
+
+def validate_shelf(shelf, shelfobject_unit, quantity):
+    if shelf.measurement_unit:
+        return get_conversion_from_two_units(
+            get_units(shelfobject_unit).first(), shelf.measurement_unit, quantity
+        )
+    return None
 
 
 def get_reactive_by_cas_or_name(cas, name, molecular_formula, organization):
@@ -38,14 +46,17 @@ def get_reactive_by_cas_or_name(cas, name, molecular_formula, organization):
     )
     obj = Object.objects.filter(
         type=0,
-        name__icontains=name,
+        name=name.capitalize(),
         sustancecharacteristics__in=substace_char,
         organization=organization,
     ).distinct()
     if obj.exists() and obj.count() == 1:
+        print(obj)
         return obj.first()
 
-    new_obj = Object.objects.create(name=name, type=0, organization=organization)
+    new_obj = Object.objects.create(
+        name=name.capitalize(), type=0, organization=organization
+    )
     SustanceCharacteristics.objects.create(
         obj=new_obj, cas_id_number=cas, molecular_formula=molecular_formula
     )
@@ -55,34 +66,43 @@ def get_reactive_by_cas_or_name(cas, name, molecular_formula, organization):
 def get_or_create_material(name, capacity, unit, organization):
     obj = Object.objects.filter(
         type=1,
-        name__icontains=name.capitalize(),
+        name=name.capitalize(),
         is_container=True,
         organization=organization,
     ).distinct()
     if obj.exists() and obj.count() == 1:
-        return obj
+        return obj.first()
+
     container = Object.objects.create(
         name=name.capitalize(), type=1, is_container=True, organization=organization
     )
     MaterialCapacity.objects.create(
-        object=container, capacity=capacity, capacity_measurement_unit=get_units(unit)
+        object=container,
+        capacity=capacity,
+        capacity_measurement_unit=get_units(unit).first(),
     )
     return container
 
 
-def create_shelfobject(data, user, organization_id):
+def create_shelfobject(data, organization_id, request):
     shelfobject = ShelfObject.objects.create(**data)
     ShelfObjectObservation.objects.create(
-        shelfobject=shelfobject,
+        shelf_object=shelfobject,
         description=_("Created"),
         action_taken=_("Object Created"),
-        created_by=user,
+        created_by=request.user,
     )
-    organilab_logentry(user, _("Object Created"), ADDITION, "shelfobject", created=True)
+    organilab_logentry(
+        request.user,
+        shelfobject,
+        ADDITION,
+        "shelfobject",
+        relobj=[data["in_where_laboratory"]],
+    )
 
     log_object_change(
-        user,
-        data["in_where_laboratory"],
+        request.user,
+        data["in_where_laboratory"].pk,
         shelfobject,
         0,
         shelfobject.quantity,
@@ -91,5 +111,8 @@ def create_shelfobject(data, user, organization_id):
         _("Income"),
         create=True,
         organization=organization_id,
+    )
+    build_shelfobject_qr(
+        request, shelfobject, organization_id, shelfobject.in_where_laboratory.pk
     )
     return shelfobject

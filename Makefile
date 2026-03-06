@@ -116,6 +116,7 @@ messages: ##  - extract messages for translations
 
 trans: ##  - compile messages of translations
 	cd src && django-admin compilemessages --locale es
+	cd src && django-admin compilemessages --locale en
 
 release: ##  - package and upload a release
 	$(MAKE) clean && $(MAKE) trans && builddocker

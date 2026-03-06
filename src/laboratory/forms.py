@@ -49,6 +49,8 @@ from .models import (
     Furniture,
 )
 from .utils import get_users_from_organization
+from .utils_base_unit import get_conversion_from_two_units
+from .utils_upload_reatives import get_units
 
 
 class UserAccessForm(forms.Form):
@@ -794,7 +796,6 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 
 
 class ObservationShelfObjectForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = ShelfObjectObservation
         exclude = ["shelf_object", "created_by"]
@@ -1237,7 +1238,6 @@ class ObjectUpdateForm(MaterialCapacityObjectForm, forms.ModelForm):
 
 
 class ObjectMaterialForm(GTForm, forms.ModelForm):
-
     is_container = forms.BooleanField(
         widget=genwidgets.YesNoInput(
             shparent="p",
@@ -1348,7 +1348,6 @@ class InstrumentalFamilyForm(GTForm, forms.ModelForm):
 
 
 class EquipmentTypeForm(GTForm, forms.ModelForm):
-
     class Meta:
         model = EquipmentType
         fields = ["name", "description"]
@@ -1617,8 +1616,20 @@ class ReactiveUploadForm(GTForm, forms.Form):
     nombre_producto = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
-        required=False,
+        required=True,
         label=_("Name of the product"),
+    )
+    numero_cas = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("CAS number"),
+    )
+    estado = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Status"),
     )
     formula_quimica = forms.CharField(
         widget=genwidgets.TextInput,
@@ -1628,32 +1639,32 @@ class ReactiveUploadForm(GTForm, forms.Form):
     )
     cantidad = forms.FloatField(
         widget=genwidgets.TextInput,
-        required=False,
+        required=True,
         label=_("Amount"),
         help_text=_("Use dot like 0.344 on decimal"),
     )
     unidades_cantidad = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
-        required=False,
+        required=True,
         label=_("Units of the quantity"),
     )
     capacidad_envase = forms.FloatField(
         widget=genwidgets.TextInput,
-        required=False,
+        required=True,
         label=_("Capacity"),
         help_text=_("Use dot like 0.344 on decimal"),
     )
     unidades_capacidad = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
-        required=False,
+        required=True,
         label=_("Units of the capacity"),
     )
     material_contenedor = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
-        required=False,
+        required=True,
         label=_("Material of the container"),
     )
     cantidad_maxima_anual = forms.FloatField(
@@ -1662,7 +1673,7 @@ class ReactiveUploadForm(GTForm, forms.Form):
         label=_("Maximum annual quantity"),
         help_text=_("Use dot like 0.344 on decimal"),
     )
-    unidades_maxima_anual = forms.CharField(
+    unidades_cantidad_maxima = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
         required=False,
@@ -1673,3 +1684,109 @@ class ReactiveUploadForm(GTForm, forms.Form):
         required=False,
         label=_("Expiration date"),
     )
+    shelf = forms.ModelChoiceField(
+        queryset=Shelf.objects.using(settings.READONLY_DATABASE),
+        required=True,
+        widget=genwidgets.HiddenInput,
+        label=_("Shelf"),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        unidades_capacidad = get_units(cleaned_data.get("unidades_capacidad", ""))
+        unidades_cantidad_maxima = get_units(
+            cleaned_data.get("unidades_cantidad_maxima", "")
+        )
+        unidades_cantidad = get_units(cleaned_data.get("unidades_cantidad", ""))
+        cantidad_maxima_anual = cleaned_data.get("cantidad_maxima_anual", 0.0)
+        cantidad = cleaned_data.get("cantidad", 0.0)
+        capacity = cleaned_data.get("capacidad_envase", 0.0)
+        shelf = cleaned_data.get("shelf", None)
+        if not unidades_capacidad.exists():
+            self.add_error(
+                "unidades_capacidad",
+                _("The unit not exist in the database"),
+            )
+        if not unidades_cantidad_maxima.exists():
+            self.add_error(
+                "unidades_cantidad_maxima",
+                _("The unit not exist in the database"),
+            )
+        if not unidades_cantidad.exists():
+            self.add_error(
+                "unidades_cantidad",
+                _("The unit not exist in the database"),
+            )
+        if shelf.measurement_unit and unidades_cantidad.exists():
+            if not get_conversion_from_two_units(
+                unidades_cantidad.first(),
+                shelf.measurement_unit,
+                cleaned_data.get("cantidad"),
+            ):
+                self.add_error(
+                    "unidades_capacidad",
+                    _("The unit not exist in the same of the shelf"),
+                )
+        if cantidad > capacity:
+            self.add_error(
+                "cantidad",
+                _(
+                    "The quantity cannot be greater than the quantity available for the container."
+                ),
+            )
+        return cleaned_data
+
+
+class LoadArchiveForm(GTForm, forms.Form):
+    file = forms.FileField(
+        widget=FileChunkedUpload, required=False, label=_("Load archive")
+    )
+    lab_room = forms.ModelChoiceField(
+        label=_("Laboratory Room"),
+        widget=AutocompleteSelect(
+            "lab_room",
+            attrs={
+                "data-related": "true",
+                "data-pos": 0,
+                "data-groupname": "rooms",
+                "data-s2filter-organization": "#org",
+                "data-s2filter-laboratory": "#lab",
+            },
+        ),
+        queryset=LaboratoryRoom.objects.all(),
+    )
+    furniture = forms.ModelChoiceField(
+        label=_("Furniture"),
+        widget=AutocompleteSelect(
+            "furniture",
+            attrs={
+                "data-related": "true",
+                "data-pos": 1,
+                "data-groupname": "rooms",
+                "data-s2filter-labroom": "#id_lab_room",
+                "data-s2filter-organization": "#org",
+                "data-s2filter-laboratory": "#lab",
+            },
+        ),
+        queryset=Furniture.objects.all(),
+    )
+    shelf = forms.ModelChoiceField(
+        label=_("Shelf"),
+        widget=AutocompleteSelect(
+            "shelf",
+            attrs={
+                "data-related": "true",
+                "data-pos": 2,
+                "data-groupname": "rooms",
+                "data-s2filter-shelf": "#id_shelf",
+                "data-s2filter-furniture": "#id_furniture",
+                "data-s2filter-organization": "#org",
+                "data-s2filter-laboratory": "#lab",
+            },
+        ),
+        queryset=Shelf.objects.all(),
+    )
+
+    class Meta:
+        model = None
+        fields = ["file", "lab_room", "furniture", "shelf"]
