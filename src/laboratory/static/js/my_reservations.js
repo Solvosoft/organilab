@@ -111,6 +111,13 @@ function update_reserved_products(data_info){
             },
             success: function(data) {
                 location.reload()
+            },
+            error: function(xhr) {
+                var msg = gettext('You do not have permission to perform this action.');
+                if (xhr.responseJSON && xhr.responseJSON.detail) {
+                    msg = xhr.responseJSON.detail;
+                }
+                Swal.fire({ icon: 'error', title: gettext('Error'), text: msg });
             }
         });
     }
@@ -157,16 +164,29 @@ function make_reservation(){
                        }
                     }
                     update_reserved_products(info_update);
+                },
+                error: function(xhr) {
+                    var msg = gettext('You do not have permission to perform this action.');
+                    if (xhr.responseJSON && xhr.responseJSON.detail) {
+                        msg = xhr.responseJSON.detail;
+                    }
+                    Swal.fire({ icon: 'error', title: gettext('Error'), text: msg });
                 }
             });
         //}
+    }).fail(function(xhr) {
+        var msg = gettext('You do not have permission to perform this action.');
+        if (xhr.responseJSON && xhr.responseJSON.detail) {
+            msg = xhr.responseJSON.detail;
+        }
+        Swal.fire({ icon: 'error', title: gettext('Error'), text: msg });
     });
 }
 
 //########################################INIT
 /*Function necessary for the datatables to work*/
 $(document).ready(function() {
-   table = $('#table_id').DataTable();
    all_status = get_all_elements_with_name("status_num");
+   table = $('#table_id').DataTable();
    status_of_reservation_buttons(all_status);
 });
