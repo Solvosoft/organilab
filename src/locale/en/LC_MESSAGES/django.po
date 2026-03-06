@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-22 14:24-0600\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
+
+msgid "Gas"
+msgstr "Gas"
+
+msgid "Líquido"
+msgstr "Liquid"
+
+msgid "Lentejas"
+msgstr "Lentils"
+
+msgid "Polvos finos/ alta densidadr"
+msgstr "polid powder"
+
+msgid "Sólidos granulares o cristalinos"
+msgstr "Solid granular or crystalline"
+
+msgid "Granza"
+msgstr "Granza"
+
+msgid "Sólidos"
+msgstr "Solids"
+
+msgid "Sólido en polvo"
+msgstr "Solid powder"
+
+msgid "Sólidos cristalinos"
+msgstr "Solid crystalline"
+
+msgid "Tabletas"
+msgstr "Tablets"
+
+msgid "Gaseoso"
+msgstr "Gaseous"
+
+msgid "Colloidal"
+msgstr "Colloidal"
+
+msgid "Kit"
+msgstr "Kit"
+
+msgid "Carbón solido"
+msgstr "Solid Carbon"
