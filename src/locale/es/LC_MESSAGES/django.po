@@ -5487,3 +5487,17 @@ msgstr "Cargar archivo"
 msgid "Only .xlsm files are allowed."
 msgstr "Solo se permiten archivos .xlsm."
 
+msgid "The archive was loaded successfully."
+msgstr "El archivo fue cargado correctamente."
+
+msgid "Save Reactives"
+msgstr "Guardar reactivos"
+
+msgid "The measurement unit in some reactive is different from the shelf measurement unit %s"
+msgstr "La unidad de medida en algunos reactivos es diferente de la unidad de medida de la estante %s"
+
+msgid "The unit not exist in the database"
+msgstr "La unidad no existe en la base de datos"
+
+msgid "The quantity cannot be greater than the quantity available for the container."
+msgstr "La cantidad no puede ser mayor que la cantidad disponible en el contenedor."

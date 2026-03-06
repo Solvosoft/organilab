@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Load Archive' %}{% endblock %}
+{% block content %}
+	<input type="hidden" value="{{ org_pk }}" id="org">
+	<input type="hidden" value="{{ lab_pk }}" id="lab">
+
+	{% if errors %}
+		<div class="alert alert-danger">
+			{% for field, messages in errors.items %}
+				<strong>{{ field }}</strong>
+				{% for msg in messages %}
+					<p>{{ msg }}</p>
+				{% endfor %}
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	<div class="offset-md-2 col-md-8">
+		<div class="page-header" align="center">
+			<h3 class="heading-1"><span>{% trans 'Save Reactives' %}</span></h3>
+		</div>
+	</div>
+
+	<div class="offset-md-2 col-md-8">
+		<form class="form" action="" method="post">
+			{% csrf_token %}
+								{{ formset.management_form }}
+
+    {% for form in formset %}
+		<div class="card">
+    <div class="card-body">
+        <div class="card-title titles">
+                {% if formset.can_delete %}
+			         <a class="deletebtn" title="{% trans 'Delete' %}">
+                            {{ form.DELETE }}
+                            <span>{{ form_count }}</span>
+                            <i class="fa fa-close text-danger"></i>
+                        </a>
+									{% endif %}
+        </div>
+
+    {{ form }}
+    </div>
+</div>
+			<br>
+    {% endfor %}
+
+			<button type="submit" class="btn btn-sm btn-outline-success float-end me-0">{% trans 'Save' %}</button>
+		</form>
+	</div>
+{% endblock %}

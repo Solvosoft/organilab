@@ -49,6 +49,8 @@ from .models import (
     Furniture,
 )
 from .utils import get_users_from_organization
+from .utils_base_unit import get_conversion_from_two_units
+from .utils_upload_reatives import get_units
 
 
 class UserAccessForm(forms.Form):
@@ -785,7 +787,7 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
                 url_kwargs={"pk": org_pk},
             ),
             help_text='<a class="add_status float-end fw-bold m-2"><i class="fa fa-plus"></i> %s</a>'
-                      % (_("New status")),
+            % (_("New status")),
         )
 
     class Meta:
@@ -1609,6 +1611,123 @@ class LaboratoryProcessForm(GTForm, forms.ModelForm):
         }
 
 
+class ReactiveUploadForm(GTForm, forms.Form):
+
+    nombre_producto = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=True,
+        label=_("Name of the product"),
+    )
+    numero_cas = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("CAS number"),
+    )
+    estado = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Status"),
+    )
+    formula_quimica = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Chemical formula"),
+    )
+    cantidad = forms.FloatField(
+        widget=genwidgets.TextInput,
+        required=True,
+        label=_("Amount"),
+        help_text=_("Use dot like 0.344 on decimal"),
+    )
+    unidades_cantidad = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=True,
+        label=_("Units of the quantity"),
+    )
+    capacidad_envase = forms.FloatField(
+        widget=genwidgets.TextInput,
+        required=True,
+        label=_("Capacity"),
+        help_text=_("Use dot like 0.344 on decimal"),
+    )
+    unidades_capacidad = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=True,
+        label=_("Units of the capacity"),
+    )
+    material_contenedor = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=True,
+        label=_("Material of the container"),
+    )
+    cantidad_maxima_anual = forms.FloatField(
+        widget=genwidgets.TextInput,
+        required=False,
+        label=_("Maximum annual quantity"),
+        help_text=_("Use dot like 0.344 on decimal"),
+    )
+    unidades_cantidad_maxima = forms.CharField(
+        widget=genwidgets.TextInput,
+        max_length=255,
+        required=False,
+        label=_("Units of the maximum annual quantity"),
+    )
+    fecha_caducidad = forms.DateField(
+        widget=genwidgets.DateInput,
+        required=False,
+        label=_("Expiration date"),
+    )
+    shelf = forms.ModelChoiceField(
+        queryset=Shelf.objects.using(settings.READONLY_DATABASE),
+        required=True,
+        widget=genwidgets.HiddenInput,
+        label=_("Shelf"),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        unidades_capacidad = get_units(cleaned_data.get("unidades_capacidad", ""))
+        unidades_cantidad_maxima = get_units(
+            cleaned_data.get("unidades_cantidad_maxima", "")
+        )
+        unidades_cantidad = get_units(cleaned_data.get("unidades_cantidad", ""))
+        cantidad_maxima_anual = cleaned_data.get("cantidad_maxima_anual", 0.0)
+        cantidad = cleaned_data.get("cantidad", 0.0)
+        capacity = cleaned_data.get("capacidad_envase", 0.0)
+        shelf = cleaned_data.get("shelf", None)
+        if not unidades_capacidad.exists():
+            self.add_error(
+                "unidades_capacidad",
+                _("The unit not exist in the database"),
+            )
+        if not unidades_cantidad_maxima.exists():
+            self.add_error(
+                "unidades_cantidad_maxima",
+                _("The unit not exist in the database"),
+            )
+        if not unidades_cantidad.exists():
+            self.add_error(
+                "unidades_cantidad",
+                _("The unit not exist in the database"),
+            )
+
+        if cantidad > capacity:
+            self.add_error(
+                "cantidad",
+                _(
+                    "The quantity cannot be greater than the quantity available for the container."
+                ),
+            )
+        return cleaned_data
+
+
 class LoadArchiveForm(GTForm, forms.Form):
     file = forms.FileField(
         widget=FileChunkedUpload, required=False, label=_("Load archive")
@@ -1658,6 +1777,7 @@ class LoadArchiveForm(GTForm, forms.Form):
         ),
         queryset=Shelf.objects.all(),
     )
+
     class Meta:
         model = None
         fields = ["file", "lab_room", "furniture", "shelf"]

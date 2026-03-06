@@ -35,7 +35,9 @@ from laboratory.models import (
     ReactiveLimit,
     ObjectMaximumLimit,
     LaboratoryProcess,
-    MaterialCapacity, LaboratoryRoom, Furniture,
+    MaterialCapacity,
+    LaboratoryRoom,
+    Furniture,
 )
 
 from laboratory.models import Protocol
@@ -1725,16 +1727,13 @@ class ShelfObjectHcodeDetailSerializer(serializers.ModelSerializer):
 class LoadArchiveSerializer(serializers.Serializer):
     file = ChunkedFileField(required=True, allow_empty_file=False)
     lab_room = serializers.PrimaryKeyRelatedField(
-        required=True,
-        queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE)
+        required=True, queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE)
     )
     furniture = serializers.PrimaryKeyRelatedField(
-        required=True,
-        queryset=Furniture.objects.using(settings.READONLY_DATABASE)
+        required=True, queryset=Furniture.objects.using(settings.READONLY_DATABASE)
     )
     shelf = serializers.PrimaryKeyRelatedField(
-        required=True,
-        queryset=Shelf.objects.using(settings.READONLY_DATABASE)
+        required=True, queryset=Shelf.objects.using(settings.READONLY_DATABASE)
     )
 
     def validate_file(self, value):

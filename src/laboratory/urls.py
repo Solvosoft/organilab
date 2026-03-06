@@ -19,7 +19,7 @@ from laboratory.views.catalogs import (
     view_instrumental_family_list,
     view_equipmenttype_list,
 )
-from laboratory.views.loadArchive import load_archive
+from laboratory.views.loadArchive import load_archive, upload_reactives
 from laboratory.views.objectlimits import ReactiveStockDashboard
 from laboratory.views.shelfobject import (
     view_equipment_shelfobject_detail,
@@ -681,5 +681,10 @@ urlpatterns += organization_urls + [
         "<int:org_pk>/<int:lab_pk>/load_archive/",
         load_archive,
         name="load_archive",
+    ),
+    path(
+        "<int:org_pk>/<int:lab_pk>/load_archive/create_shelfobjects/<uuid:key>/",
+        upload_reactives,
+        name="load_archive_create_shelfobjects",
     ),
 ]
