@@ -1652,14 +1652,14 @@ class ReactiveUploadForm(GTForm, forms.Form):
     capacidad_envase = forms.FloatField(
         widget=genwidgets.TextInput,
         required=True,
-        label=_("Capacity"),
+        label=_("Capacity of the container"),
         help_text=_("Use dot like 0.344 on decimal"),
     )
     unidades_capacidad = forms.CharField(
         widget=genwidgets.TextInput,
         max_length=255,
         required=True,
-        label=_("Units of the capacity"),
+        label=_("Measurement unit of the container"),
     )
     material_contenedor = forms.CharField(
         widget=genwidgets.TextInput,
@@ -1677,7 +1677,7 @@ class ReactiveUploadForm(GTForm, forms.Form):
         widget=genwidgets.TextInput,
         max_length=255,
         required=False,
-        label=_("Units of the maximum annual quantity"),
+        label=_("Measurement unit of the maximum annual quantity"),
     )
     fecha_caducidad = forms.DateField(
         widget=genwidgets.DateInput,
