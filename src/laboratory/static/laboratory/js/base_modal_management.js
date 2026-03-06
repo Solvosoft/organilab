@@ -168,13 +168,15 @@ function BaseFormModal(modalid,  data_extras={})  {
                         instance.success(instance, data);
                     },
                     error: function(xhr, resp, text) {
-                        var errors = xhr.responseJSON.errors;
+                        var errors = xhr.responseJSON && xhr.responseJSON.errors;
                         if(errors){  // form errors
                             form.find('ul.form_errors').remove();
                             form_field_errors(form, errors, instance.prefix);
                         }else{
                             let error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');  // any other error
-                            if(xhr.responseJSON.detail){
+                            if(xhr.status === 403){
+                                error_msg = gettext('You do not have permission to perform this action.');
+                            }else if(xhr.responseJSON && xhr.responseJSON.detail){
                                 error_msg = xhr.responseJSON.detail;
                             }
                             Swal.fire({
