@@ -1,5 +1,6 @@
 import datetime
 import json
+import uuid
 from pathlib import Path
 
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.db.models import Sum, Q, Max, Min
+from django.db.models import Sum, Q, Max, Min, JSONField
 from django.db.models.expressions import F
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -88,7 +89,7 @@ class Object(AbstractOrganizationRef):
         (EQUIPMENT, _("Equipment")),
     )
 
-    code = models.CharField(_("Code"), max_length=255)
+    code = models.CharField(_("Code"), max_length=255, null=True, blank=True)
     name = models.CharField(_("Name"), max_length=255)
     synonym = models.CharField(
         _("Synonym"),
@@ -1832,3 +1833,14 @@ class LaboratoryProcess(BaseCreationObj):
         related_name="laboratory_proccess",
     )
     description = models.TextField(_("Description"), null=True, blank=True)
+
+
+class TemporalUploadReactive(BaseCreationObj):
+    key = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    shelf = models.ForeignKey(
+        Shelf,
+        on_delete=models.CASCADE,
+        verbose_name=_("Shelf"),
+        related_name="shelf_temp",
+    )
+    data = JSONField()
