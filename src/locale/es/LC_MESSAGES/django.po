@@ -5501,3 +5501,27 @@ msgstr "La unidad no existe en la base de datos"
 
 msgid "The quantity cannot be greater than the quantity available for the container."
 msgstr "La cantidad no puede ser mayor que la cantidad disponible en el contenedor."
+
+msgid "Maximum annual quantity"
+msgstr "Cantidad anual máxima"
+
+msgid "Capacity of the container"
+msgstr "Capacidad del envase"
+
+msgid "Measurement unit of the container"
+msgstr "Unidad de medida del envase"
+
+msgid "Chemical formula"
+msgstr "Fórmula química"
+
+msgid "Measurement unit of the maximum annual quantity"
+msgstr "Unidad de medida de la cantidad anual máxima"
+
+msgid "Name of the product"
+msgstr "Nombre del producto"
+
+msgid "Material of the container"
+msgstr "Material del contenedor"
+
+msgid "Upload Reactives"
+msgstr "Subir reactivos"
