@@ -5525,3 +5525,6 @@ msgstr "Material del contenedor"
 
 msgid "Upload Reactives"
 msgstr "Subir reactivos"
+
+msgid "Period on days"
+msgstr "Periodo en días"
