@@ -6,8 +6,6 @@ services:
     networks:
       - apps
 
-
-
   postgresdb:
     image: postgres:latest
     restart: always
@@ -28,20 +26,85 @@ services:
     networks:
       - apps
     ports:
-    - 1025:1025
-    - 8025:8025
+      - 1025:1025
+      - 8025:8025
 
-  organilab:
-    image: organilab:1.4.5
-    container_name: "organilab"
+  organilab-web:
+    image: organilab:latest
+    container_name: "organilab-web"
+    environment:
+      - SERVICE_TYPE=web
+    env_file: organilab.env
     networks:
       - apps
-    env_file: organilab.env
     ports:
       - 8001:80
     volumes:
       - vol-organilab:/organilab/media/
+    depends_on:
+      postgresdb:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:80/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  organilab-celery:
+    image: organilab:latest
+    container_name: "organilab-celery"
+    environment:
+      - SERVICE_TYPE=celery
+      - CELERY_CONCURRENCY=2
+    env_file: organilab.env
+    networks:
+      - apps
+    volumes:
+      - vol-organilab:/organilab/media/
+    depends_on:
+      postgresdb:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "celery", "-A", "organilab", "inspect", "ping", "--timeout", "10"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  organilab-beat:
+    image: organilab:latest
+    container_name: "organilab-beat"
+    environment:
+      - SERVICE_TYPE=beat
+    env_file: organilab.env
+    networks:
+      - apps
+    depends_on:
+      postgresdb:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/celerybeat.pid"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     logging:
       driver: "json-file"
       options:
@@ -57,4 +120,3 @@ volumes:
   db-files:
   db-backup:
   vol-organilab:
-

@@ -815,7 +815,7 @@ function get_material_shelfobject_data(shelfobject){
                 $("#id_edit_material-was_donated").parent().addClass('checked')
                 $('#id_edit_material-was_donated').iCheck('check');
             } else {
-                $('#id_edit_material-was_donated').iCheck('check');
+            $('#id_edit_material-was_donated').iCheck('check');
             }
         }
         if(data.minimum_limit == 0 && data.maximum_limit == 0){
