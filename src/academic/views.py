@@ -671,7 +671,7 @@ def add_procedure_reservation(request, objects, form, lab, org):
                     final_date=form.cleaned_data["final_date"],
                     amount_required=result,
                     laboratory=lab,
-                    organization=org,
+                    organization=org
                 )
                 organilab_logentry(
                     request.user, reserved, ADDITION, changed_data=form.changed_data

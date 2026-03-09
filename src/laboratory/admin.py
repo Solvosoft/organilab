@@ -19,6 +19,7 @@ def regenerate_qr_codes(admin, request, queryset):
 
 
 class ShelfObject_Admin(admin.ModelAdmin):
+    list_display = ("id", "object", "quantity", "measurement_unit")
     actions = [regenerate_qr_codes]
 
 
