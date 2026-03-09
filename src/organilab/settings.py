@@ -330,6 +330,7 @@ DATE_INPUT_FORMATS = ["%d/%m/%Y", "%Y-%m-%d", "%d/%m/%y"]
 DATE_FORMAT = "d/m/Y"
 
 DATETIME_INPUT_FORMATS = [
+    "%d/%m/%Y %H:%M:%S",
     "%m/%d/%Y %H:%M %p",
     "%Y/%m/%d %H:%M %A",
     "%Y-%m-%d %H:%M %p",
