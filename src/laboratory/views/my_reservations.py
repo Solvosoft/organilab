@@ -19,7 +19,7 @@ class MyReservationView(ListView):
     def get_queryset(self):
         queryset = ReservedProducts.objects.filter(
             user=self.request.user, organization__pk=self.org, laboratory__pk=self.lab
-        )
+        ).order_by("-creation_date")
         return queryset
 
 
