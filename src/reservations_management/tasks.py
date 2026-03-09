@@ -2,8 +2,9 @@ import importlib
 import logging
 
 from django.conf import settings
+from django.utils import timezone
 
-from .models import ReservedProducts
+from .models import ReservedProducts, DENIED
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 logger = logging.getLogger("organilab")
@@ -13,7 +14,7 @@ logger = logging.getLogger("organilab")
 def decrease_stock(reserved_product):
     """
     Decrease the stock quantity of one reserved product
-    reserved_product is an instancw of ReservedProducts
+    reserved_product is an instance of ReservedProducts
     """
     if not isinstance(reserved_product, ReservedProducts):
         try:
@@ -21,11 +22,15 @@ def decrease_stock(reserved_product):
         except Exception as e:
             logger.error("Decrease stock", exc_info=e)
             return
-    quanity = reserved_product.shelf_object.quantity
-    if (quanity - reserved_product.amount_required) < 0:
+    if reserved_product.final_date < timezone.now():
+        reserved_product.status = DENIED
+        reserved_product.save(update_fields=["status"])
+        return
+    quantity = reserved_product.shelf_object.quantity
+    if (quantity - reserved_product.amount_required) < 0:
         reserved_product.shelf_object.quantity = 0
     else:
         reserved_product.shelf_object.quantity = (
-            quanity - reserved_product.amount_required
+            quantity - reserved_product.amount_required
         )
     reserved_product.shelf_object.save()
