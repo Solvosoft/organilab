@@ -30,7 +30,7 @@ def create_informsperiods(informscheduler, now=timezone.now()):
     last_close = last_close + timezone.timedelta(days=informscheduler.period_on_days)
     if next_update == now.today().date():
         labs = Laboratory.objects.filter(
-            organization__pk=informscheduler.organization.pk
+            pk__in=informscheduler.organization.get_my_laboratories
         )
         ip = InformsPeriod.objects.create(
             scheduler=informscheduler,
