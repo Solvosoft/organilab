@@ -10,6 +10,9 @@
 	{% define_urlname_action 'remove_object' %}
 	{% define_urlname_action 'procedure_list' %}
 {% endblock %}
+{% block extra_css %}
+	<link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}?v={% get_organilab_version %}">
+{% endblock %}
 {% block title %}{% trans "Procedures Steps" %}{% endblock %}
 {% block content %}
 	<div class="card-body">
@@ -20,6 +23,7 @@
 			<div class="card-body">
 				<form method="post" id="form_step">
 					{% csrf_token %}
+					<input type="hidden" name="form_schema" id="form_schema">
 					{{ form.as_p | safe }}
 					{{ form.media }}
 					<div class="text-center">
@@ -32,12 +36,21 @@
 		</div>
 		<br>
 		<div class="card">
+			<div class="card-header">
+				<h3 class="card-title mb-0">{% trans 'Form' %}</h3>
+			</div>
+			<div class="card-body">
+				<div id="formio_step_builder"></div>
+			</div>
+		</div>
+		<br>
+		<div class="card">
 			<div class="card-body">
 				<div class="clearfix">
 					<h3 class="card-title float-start">{% trans 'Object List' %}</h3>
 					{% if perms.academic.add_procedurerequiredobject %}
 						<span class="btn btn-success float-end open_modal" data-bs-target="#object_modal" data-bs-toggle="modal"
-												title="{% trans 'Create Object' %}">
+										title="{% trans 'Create Object' %}">
                     <i class="fa fa-plus"></i> {% trans 'Create Object' %}
                 </span>
 						</div>
@@ -70,7 +83,7 @@
 					<h3 class="card-title float-start">{% trans 'Observations' %}</h3>
 					{% if perms.academic.add_procedureobservations %}
 						<span class="btn btn-success float-end open_modal" data-bs-target="#observation_modal"
-												data-bs-toggle="modal" title="{% trans 'Create Observation' %}">
+										data-bs-toggle="modal" title="{% trans 'Create Observation' %}">
                     <i class="fa fa-plus"></i> {% trans 'Create Observation' %}
                 </span>
 					{% endif %}
@@ -113,4 +126,52 @@
 		}
 	</script>
 	<script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>
+	<script type="text/javascript" src="{% static 'formio/formio.full.min.js' %}?v={% get_organilab_version %}"></script>
+	<script type="text/javascript" src="{% static 'formio/CustomSection.js' %}?v={% get_organilab_version %}"></script>
+	<script type="text/javascript" src="{% static 'formio/CustomTextInput.js' %}?v={% get_organilab_version %}"></script>
+	<script type="text/javascript" src="{% static 'formio/CustomSelect.js' %}?v={% get_organilab_version %}"></script>
+	<script>
+		var stepFormBuilder = null;
+		var stepFormSchema = {{ form_schema|safe }};
+
+		Formio.setBaseUrl(window.location.origin);
+		Formio.setProjectUrl(window.location.origin);
+
+		Formio.builder(document.getElementById('formio_step_builder'), stepFormSchema, {
+			noDefaultSubmitButton: true,
+			builder: {
+				basic: {
+					components: {
+						textfield: true,
+						number: true,
+						select: true,
+						datetime: true,
+						time: true,
+						textarea: true,
+						password: false,
+						checkbox: false,
+						selectboxes: false,
+						radio: false,
+						button: false,
+					}
+				},
+				advanced: false,
+				layout: false,
+				data: false,
+				premium: false,
+				custom: false,
+			}
+		}).then(function (builder) {
+			stepFormBuilder = builder;
+			builder.on('change', function () {
+				stepFormSchema = builder.form;
+			});
+		});
+
+		document.getElementById('form_step').addEventListener('submit', function () {
+			if (stepFormBuilder) {
+				document.getElementById('form_schema').value = JSON.stringify(stepFormBuilder.form);
+			}
+		});
+	</script>
 {% endblock %}

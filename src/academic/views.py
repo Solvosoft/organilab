@@ -47,6 +47,7 @@ from laboratory.models import (
     Laboratory,
     OrganizationStructure,
 )
+from derb.models import CustomForm
 from laboratory.utils import organilab_logentry
 from laboratory.views.djgeneric import (
     ListView as DJListView,
@@ -337,6 +338,7 @@ class ProcedureStepCreateView(FormView):
         context = super(ProcedureStepCreateView, self).get_context_data()
         context["object_form"] = ObjectForm
         context["observation_form"] = ObservationForm
+        context["form_schema"] = json.dumps({})
         return context
 
     def form_valid(self, form):
@@ -349,6 +351,25 @@ class ProcedureStepCreateView(FormView):
             description=form.cleaned_data["description"],
         )
         step.save()
+
+        form_schema_raw = self.request.POST.get("form_schema", "").strip()
+        if form_schema_raw:
+            try:
+                schema = json.loads(form_schema_raw)
+                schema["name"] = step.title or str(_("Step Form"))
+                org = get_object_or_404(OrganizationStructure, pk=self.kwargs["org_pk"])
+                custom_form = CustomForm.objects.create(
+                    name=schema["name"],
+                    status="admin",
+                    schema=schema,
+                    organization=org,
+                )
+                step.form = custom_form
+                step.save()
+                organilab_logentry(self.request.user, custom_form, ADDITION, "custom form")
+            except (json.JSONDecodeError, KeyError):
+                pass
+
         organilab_logentry(
             self.request.user,
             step,
@@ -379,7 +400,9 @@ class ProcedureStepUpdateView(DJUpdateView):
         context = super(ProcedureStepUpdateView, self).get_context_data()
         context["object_form"] = ObjectForm
         context["observation_form"] = ObservationForm
-        context["step"] = ProcedureStep.objects.get(pk=int(self.kwargs["pk"]))
+        step = ProcedureStep.objects.get(pk=int(self.kwargs["pk"]))
+        context["step"] = step
+        context["form_schema"] = json.dumps(step.form.schema if step.form else {})
         return context
 
     def get_success_url(self, **kwargs):
@@ -390,6 +413,34 @@ class ProcedureStepUpdateView(DJUpdateView):
 
     def form_valid(self, form):
         procedurestep = form.save()
+
+        form_schema_raw = self.request.POST.get("form_schema", "").strip()
+        if form_schema_raw:
+            try:
+                schema = json.loads(form_schema_raw)
+                schema["name"] = procedurestep.title or str(_("Step Form"))
+                if procedurestep.form:
+                    procedurestep.form.schema = schema
+                    procedurestep.form.name = schema["name"]
+                    procedurestep.form.save()
+                    organilab_logentry(
+                        self.request.user, procedurestep.form, CHANGE,
+                        "custom form", changed_data=["schema"],
+                    )
+                else:
+                    org = get_object_or_404(OrganizationStructure, pk=self.org)
+                    custom_form = CustomForm.objects.create(
+                        name=schema["name"],
+                        status="admin",
+                        schema=schema,
+                        organization=org,
+                    )
+                    procedurestep.form = custom_form
+                    procedurestep.save()
+                    organilab_logentry(self.request.user, custom_form, ADDITION, "custom form")
+            except (json.JSONDecodeError, KeyError):
+                pass
+
         organilab_logentry(
             self.request.user,
             procedurestep,
