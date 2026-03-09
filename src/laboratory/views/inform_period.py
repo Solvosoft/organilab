@@ -1,10 +1,10 @@
 from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 
 from laboratory.forms import InformSchedulerForm, InformSchedulerFormEdit
-from laboratory.models import InformScheduler, Laboratory
+from laboratory.models import InformScheduler, Laboratory, OrganizationStructure
 from laboratory.views.djgeneric import UpdateView, CreateView, DetailView
 
 
@@ -61,11 +61,12 @@ class InformSchedulerDetail(DetailView):
 @login_required
 @permission_required("laboratory.view_inform", raise_exception=True)
 def get_inform_index(request, org_pk):
-
-    labs = Laboratory.objects.filter(organization__pk=org_pk)
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    labs = Laboratory.objects.filter(pk__in=organization.get_my_laboratories)
     schedulers = InformScheduler.objects.filter(organization__pk=org_pk).order_by(
         "active"
     )
+    print(labs, schedulers)
 
     return render(
         request,
