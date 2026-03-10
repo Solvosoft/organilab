@@ -173,5 +173,12 @@
 				document.getElementById('form_schema').value = JSON.stringify(stepFormBuilder.form);
 			}
 		});
+
+		document.getElementById('save_step').addEventListener('click', function () {
+			if (stepFormBuilder) {
+				document.getElementById('form_schema').value = JSON.stringify(stepFormBuilder.form);
+			}
+			document.getElementById('form_step').submit();
+		});
 	</script>
 {% endblock %}
