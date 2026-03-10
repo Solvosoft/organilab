@@ -195,6 +195,12 @@ def complete_my_procedure(request, org_pk, lab_pk, pk):
     )
     schema = my_procedure.schema
     form = json.dumps(schema, indent=2)
+    steps_forms_schemas = []
+    for step in steps:
+        if step.form:
+            step_schema = step.form.schema
+            if step_schema:
+                steps_forms_schemas.append({"step": step.id, "form": step_schema})
     context = {
         "schema": form,
         "my_procedure": my_procedure,
@@ -202,10 +208,25 @@ def complete_my_procedure(request, org_pk, lab_pk, pk):
         "org_pk": org_pk,
         "form": CommentProcedureStepForm,
         "steps": steps,
+        "steps_forms_schemas": json.dumps(steps_forms_schemas),
+        "steps_data": json.dumps(my_procedure.schema.get("steps_data", {})),
         "comments": comments,
     }
 
     if request.method == "POST":
+        if request.POST.get("save_step_form") == "1":
+            step_pk = request.POST.get("step_pk")
+            step_form_data = request.POST.get("step_form_data")
+            if step_pk and step_form_data:
+                try:
+                    steps_data = my_procedure.schema.get("steps_data", {})
+                    steps_data[step_pk] = json.loads(step_form_data)
+                    my_procedure.schema["steps_data"] = steps_data
+                    my_procedure.save()
+                except (ValueError, TypeError):
+                    pass
+            return JsonResponse({"status": "ok"})
+
         data = dict(request.POST)
         my_procedure.status = request.POST.get("status")
         del data["csrfmiddlewaretoken"]
