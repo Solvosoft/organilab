@@ -20,7 +20,6 @@ from .api.serializers import (
     ValidateReservedProductsAmountSerializer,
 )
 from .models import ReservedProducts, ReservationTasks
-from .tasks import decrease_stock
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 
@@ -326,9 +325,9 @@ def validate_reservation(request, org_pk):
         if serializer.is_valid():
 
             requested_product = serializer.validated_data["id"]
-            requested_initial_date = requested_product.initial_date
+            requested_final_date = requested_product.final_date
 
-            if requested_initial_date - timedelta(hours=6) >= pytz.UTC.localize(
+            if requested_final_date >= pytz.UTC.localize(
                 datetime.now()
             ):
 
@@ -431,7 +430,7 @@ def increase_stock(request, org_pk):
             product = serializer.validated_data["id"]
             amount_to_return = serializer.validated_data["amount_to_return"]
 
-            if product.amount_required >= product.amount_returned + amount_to_return:
+            if product.amount_required >= amount_to_return:
                 product.shelf_object.quantity += amount_to_return
                 was_increase = True
                 product.shelf_object.save()
@@ -472,9 +471,6 @@ def schedule_decrease_stock(reserved_product):
     initial_date = reserved_product.initial_date
     if timezone.is_naive(initial_date):
         initial_date = timezone.make_aware(initial_date)
-
-    initial_date = initial_date.replace(day=initial_date.month, month=initial_date.day)
-
     clocked, _ = ClockedSchedule.objects.get_or_create(
         clocked_time=initial_date
     )
