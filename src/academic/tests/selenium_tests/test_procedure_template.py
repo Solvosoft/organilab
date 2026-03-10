@@ -138,11 +138,19 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
         """Test CRUD operations on procedure steps.
 
         Flow: Navigate to procedure list -> Click add step icon ->
-        Fill step form -> Submit -> Chain sub-operations.
+        Fill step form -> Add a textfield to the formio builder ->
+        Submit -> Chain sub-operations.
 
         GIF: docs/source/_static/gif/add_step.gif
         """
         self.navigate_to_procedure_list()
+        set_form_schema = (
+            "var mySchema = {display:'form', components:[{"
+            "type:'textfield', key:'observacion', label:'Observacion', input:true"
+            "}]};"
+            "Object.defineProperty(stepFormBuilder, 'form', "
+            "{get: function(){ return mySchema; }, configurable: true});"
+        )
         path_list = [
             {
                 "path": "//table[@id='procedure']//tbody/tr[1]//i[contains(@class, 'fa-plus')]",
@@ -158,6 +166,13 @@ class ProcedureTemplateSeleniumTest(OptimizedSeleniumBase):
                 "path": "//form[1]",
                 "extra_action": "script",
                 "value": 'tinymce.get("id_description").setContent("<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>");',  # noqa: E501
+            },
+            {
+                "path": "//div[@id='formio_step_builder']",
+                "extra_action": "script",
+                "value": set_form_schema,
+                "scroll": "window.scrollTo(0, 400)",
+                "sleep": 1,
             },
             {
                 "path": "//button[contains(@class, 'step_save')] | //button[contains(@class, 'btn-success') and @type='submit']",
