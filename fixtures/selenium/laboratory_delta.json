@@ -435,7 +435,8 @@
     "fields": {
       "procedure": 10,
       "title": "01.\tDecantación un Liquido",
-      "description": "<p>Para separar l&iacute;quidos que no son solubles, como por ejemplo&nbsp;agua&nbsp;y&nbsp;aceite, es necesario introducir la&nbsp;mezcla&nbsp;en un recipiente llamado embudo de decantaci&oacute;n&nbsp;y dejar que repose hasta que los l&iacute;quidos se separan en dos capas.&nbsp;Despu&eacute;s, se abre la llave y se deja salir el l&iacute;quido de la capa inferior poco a poco, y cerramos la llave cuando falte poco para que salga el otro l&iacute;quido.&nbsp;Para no contaminar los componentes de la mezcla al separarlos, no es conveniente aprovechar ni el final del primer l&iacute;quido ni el comienzo del segundo. Finalmente, hay que coger otro recipiente y recoger el segundo l&iacute;quido.</p>"
+      "description": "<p>Para separar l&iacute;quidos que no son solubles, como por ejemplo&nbsp;agua&nbsp;y&nbsp;aceite, es necesario introducir la&nbsp;mezcla&nbsp;en un recipiente llamado embudo de decantaci&oacute;n&nbsp;y dejar que repose hasta que los l&iacute;quidos se separan en dos capas.&nbsp;Despu&eacute;s, se abre la llave y se deja salir el l&iacute;quido de la capa inferior poco a poco, y cerramos la llave cuando falte poco para que salga el otro l&iacute;quido.&nbsp;Para no contaminar los componentes de la mezcla al separarlos, no es conveniente aprovechar ni el final del primer l&iacute;quido ni el comienzo del segundo. Finalmente, hay que coger otro recipiente y recoger el segundo l&iacute;quido.</p>",
+      "form": 1
     }
   },
   {
@@ -547,9 +548,16 @@
       "name": "Primer Formulario",
       "status": "admin",
       "schema": {
+        "display": "form",
         "name": "Primer Formulario",
-        "status": "admin",
-        "components": []
+        "components": [
+          {
+            "type": "textfield",
+            "key": "observacion",
+            "label": "Observación",
+            "input": true
+          }
+        ]
       }
     }
   },
