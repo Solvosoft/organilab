@@ -629,6 +629,15 @@ def get_procedure(request, org_pk, pk):
         {"title": procedure.title, "pk": procedure.pk, "msg": msg}, status=result_status
     )
 
+@login_required
+@permission_required("academic.view_myprocedure", raise_exception=True)
+def download_myprocedure(request, org_pk, pk):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+    )
+    user_is_allowed_on_organization(request.user, organization)
+    procedure = get_object_or_404(Procedure, pk=pk)
+
 
 @login_required
 @permission_required("academic.delete_procedure", raise_exception=True)
