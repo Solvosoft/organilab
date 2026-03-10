@@ -338,6 +338,7 @@ DATETIME_INPUT_FORMATS = [
     "%m/%d/%Y %H:%M",
     "%d/%m/%Y %H:%M",
     "%d/%m/%y %H:%M",
+    "%d/%m/%Y %H:%M:%S",
 ]
 
 
