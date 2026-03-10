@@ -1671,11 +1671,11 @@ class Protocol(BaseCreationObj):
 
 
 class InformScheduler(AbstractOrganizationRef):
-    name = models.CharField(max_length=512)
-    start_application_date = models.DateField()
-    close_application_date = models.DateField()
+    name = models.CharField(max_length=512, verbose_name=_("Name"))
+    start_application_date = models.DateField(verbose_name=_("Start application date"))
+    close_application_date = models.DateField(verbose_name=_("Close application date"))
 
-    period_on_days = models.IntegerField(default=365)
+    period_on_days = models.IntegerField(default=365, verbose_name=_("Period on days"))
     inform_template = models.ForeignKey(
         "derb.CustomForm", verbose_name=_("Inform template"), on_delete=models.CASCADE
     )

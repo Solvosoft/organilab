@@ -5531,3 +5531,6 @@ msgstr "Formulario"
 
 msgid "No step has been selected"
 msgstr "Ningún paso ha sido seleccionado"
+
+msgid "Period on days"
+msgstr "Periodo en días"
