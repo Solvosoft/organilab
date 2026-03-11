@@ -1726,6 +1726,7 @@ class ShelfObjectHcodeDetailSerializer(serializers.ModelSerializer):
 
 class LoadArchiveSerializer(serializers.Serializer):
     file = ChunkedFileField(required=True, allow_empty_file=False)
+    know_places = serializers.BooleanField(required=False)
     lab_room = serializers.PrimaryKeyRelatedField(
         required=True, queryset=LaboratoryRoom.objects.using(settings.READONLY_DATABASE)
     )
@@ -1736,8 +1737,18 @@ class LoadArchiveSerializer(serializers.Serializer):
         required=True, queryset=Shelf.objects.using(settings.READONLY_DATABASE)
     )
 
+    def get_fields(self):
+        fields = super().get_fields()
+        know_place = fields["know_places"].initial
+        if know_place == False:
+            fields["lab_room"].required = False
+            fields["furniture"].required = False
+            fields["shelf"].required = False
+
+        return fields
+
     def validate_file(self, value):
-        name = getattr(value, 'name', '') or ''
-        if not name.lower().endswith('.xlsm'):
+        name = getattr(value, "name", "") or ""
+        if not name.lower().endswith(".xlsm"):
             raise serializers.ValidationError(_("Only .xlsm files are allowed."))
         return value
