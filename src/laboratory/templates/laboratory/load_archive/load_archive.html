@@ -28,7 +28,6 @@
 	</div>
 
 	<div class="offset-md-2 col-md-8">
-		{{ create_form.errors }}
 		<form class="form" action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 			{{ create_form }}
@@ -36,4 +35,15 @@
 		</form>
 	</div>
 {% endblock %}
+{% block js %}
+	{{ create_form.media }}
+	<script>
+	 $('#id_create-lab_room').on('change', function(){
+      $('#id_create-furniture').val(null).trigger('change');
+  });
 
+  $('#id_create-furniture').on('change', function(){
+      $('#id_create-shelf').val(null).trigger('change');
+  });
+	</script>
+{% endblock %}
