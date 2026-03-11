@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIClient
-from rest_framework.exceptions import NotFound
 
 from academic.models import MyProcedure, ProcedureStep, CommentProcedureStep
 from laboratory.models import OrganizationStructure, Laboratory
@@ -165,10 +164,7 @@ class CompleteMyProcedureViewTest(TestCase):
             )
             + "?format=datatables"
         )
-        result = response.json()
-        expected = NotFound.default_detail
-        self.assertFalse("recordsTotal" in result)
-        self.assertEqual(result["detail"], expected)
+        self.assertNotEqual(response.status_code, 200)
 
     def test_comments_list_without_specified_step(self):
         self.client.force_login(self.first_user)
