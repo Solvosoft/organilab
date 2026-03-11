@@ -17,6 +17,14 @@ def user_is_allowed_on_organization(user, organization):
     if organization is None:
         raise ObjectDoesNotExist("Organization not found")
 
+    if not user.is_authenticated:
+        raise PermissionDenied(
+            _("User %(user)s not allowed on organization %(organization)r ") % {
+                "user": user,
+                "organization": organization,
+            }
+        )
+
     if isinstance(organization, (str, int)):
         organization = get_object_or_404(OrganizationStructure, pk=organization)
     if organization.users.filter(pk=user.pk).exists():

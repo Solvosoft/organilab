@@ -5526,5 +5526,11 @@ msgstr "Material del contenedor"
 msgid "Upload Reactives"
 msgstr "Subir reactivos"
 
+msgid "Form"
+msgstr "Formulario"
+
+msgid "No step has been selected"
+msgstr "Ningún paso ha sido seleccionado"
+
 msgid "Period on days"
 msgstr "Periodo en días"

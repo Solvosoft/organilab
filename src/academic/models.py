@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from academic.presentation import HTMLPresentation
+from derb.models import CustomForm
 from laboratory import catalog
 from laboratory.models import Object, Catalog
 from presentation.models import AbstractOrganizationRef
@@ -67,6 +68,7 @@ class ProcedureStep(models.Model, HTMLPresentation):
     )
     title = models.CharField(_("Title"), max_length=500, null=True)
     description = models.TextField(_("Description"), null=True)
+    form = models.ForeignKey(CustomForm, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         if self.title:
@@ -145,3 +147,4 @@ class ProcedureObservations(models.Model):
         ordering = ("pk",)
         verbose_name = _("Procedure Observation")
         verbose_name_plural = _("Procedure Observations")
+

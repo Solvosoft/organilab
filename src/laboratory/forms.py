@@ -244,12 +244,23 @@ class ReservationModalForm(GTForm, ModelForm):
             "Entered date should be greater than current date and time"
         )
 
+    initial_date = forms.DateTimeField(
+        widget=genwidgets.DateTimeInput,
+        input_formats=settings.DATETIME_INPUT_FORMATS,
+        required=True,
+        label=_("Initial Date"),
+    )
+    final_date = forms.DateTimeField(
+        widget=genwidgets.DateTimeInput,
+        input_formats=settings.DATETIME_INPUT_FORMATS,
+        required=True,
+        label=_("Final Date"),
+    )
+
     class Meta:
         model = ReservedProducts
         fields = ["amount_required", "initial_date", "final_date"]
         widgets = {
-            "initial_date": genwidgets.DateTimeInput,
-            "final_date": genwidgets.DateTimeInput,
             "amount_required": genwidgets.TextInput,
         }
 
