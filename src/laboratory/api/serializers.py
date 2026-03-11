@@ -1744,7 +1744,6 @@ class LoadArchiveSerializer(serializers.Serializer):
             fields["lab_room"].required = False
             fields["furniture"].required = False
             fields["shelf"].required = False
-
         return fields
 
     def validate_file(self, value):

@@ -1749,6 +1749,7 @@ class LoadArchiveForm(GTForm, forms.Form):
     )
     lab_room = forms.ModelChoiceField(
         label=_("Laboratory Room"),
+        required=False,
         widget=AutocompleteSelect(
             "lab_room",
             attrs={
@@ -1764,6 +1765,7 @@ class LoadArchiveForm(GTForm, forms.Form):
     )
     furniture = forms.ModelChoiceField(
         label=_("Furniture"),
+        required=False,
         widget=AutocompleteSelect(
             "furniture",
             attrs={
@@ -1779,6 +1781,7 @@ class LoadArchiveForm(GTForm, forms.Form):
     )
     shelf = forms.ModelChoiceField(
         label=_("Shelf"),
+        required=False,
         widget=AutocompleteSelect(
             "shelf",
             attrs={
