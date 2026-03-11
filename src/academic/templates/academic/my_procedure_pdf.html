@@ -1,0 +1,45 @@
+{% extends "report/base_pdf.html" %}
+{% load i18n %}
+
+{% block extra_css %}
+	h1 { font-size: 1em; margin-bottom: 0.5em; }
+	h2 { font-size: 0.85em; margin: 1em 0 0.3em 0; border-bottom: 1px solid #555; padding-bottom: 2px; }
+	h3 { font-size: 0.75em; margin: 0.6em 0 0.2em 0.5em; color: #444; }
+	.field-row { margin: 0.15em 0 0.15em 1.2em; font-size: 0.65em; }
+	.field-label { font-weight: bold; }
+	.comment-item { margin: 0.2em 0 0.2em 1.2em; font-size: 0.65em; border-left: 3px solid #aaa; padding-left: 0.5em; }
+	.comment-meta { font-size: 0.6em; color: #666; margin-bottom: 0.1em; }
+	.no-data { color: #888; font-style: italic; font-size: 0.65em; margin-left: 1.2em; }
+{% endblock %}
+
+{% block pdf_content %}
+	<h1>{{ my_procedure.name }}</h1>
+
+	{% for step in steps_data %}
+		<h2>{{ step.title }}</h2>
+
+		<h3>{% trans "Form" %}</h3>
+		{% if step.fields %}
+			{% for field in step.fields %}
+				<div class="field-row">
+					<span class="field-label">{{ field.label }}:</span>
+					<span> {{ field.value }}</span>
+				</div>
+			{% endfor %}
+		{% else %}
+			<p class="no-data">{% trans "No form data recorded" %}</p>
+		{% endif %}
+
+		<h3>{% trans "Comments" %}</h3>
+		{% if step.comments %}
+			{% for comment in step.comments %}
+				<div class="comment-item">
+					<div class="comment-meta">{{ comment.created_by }} — {{ comment.created_by_at }}</div>
+					<div>{{ comment.comment }}</div>
+				</div>
+			{% endfor %}
+		{% else %}
+			<p class="no-data">{% trans "No comments" %}</p>
+		{% endif %}
+	{% endfor %}
+{% endblock %}

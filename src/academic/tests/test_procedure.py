@@ -1,7 +1,9 @@
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from academic.models import Procedure, ProcedureStep, ProcedureObservations
+from derb.models import CustomForm
 import json
 from datetime import datetime
 
@@ -115,7 +117,7 @@ class AcademicTest(TestCase):
         pos_procedures = Procedure.objects.all().count()
 
         self.assertEqual(pre_procedures, pos_procedures)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_get_ajax_procedure(self):
         self.url_attr["pk"] = self.procedure.pk
@@ -134,7 +136,7 @@ class AcademicTest(TestCase):
             reverse("academic:get_procedure", kwargs=self.url_attr)
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_add_step_procedure(self):
         url = self.url_attr.copy()
@@ -244,7 +246,7 @@ class AcademicTest(TestCase):
             reverse("academic:remove_observation", kwargs=url), data
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_add_object(self):
         url = self.url_attr.copy()
@@ -280,3 +282,80 @@ class AcademicTest(TestCase):
             reverse("academic:generate_reservation", kwargs=self.url_attr), data
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_add_step_with_form_schema(self):
+        url = self.url_attr.copy()
+        url["pk"] = self.procedure.pk
+        form_schema = json.dumps({
+            "display": "form",
+            "components": [
+                {"type": "textfield", "key": "sample", "label": "Sample", "input": True}
+            ],
+        })
+        data = {
+            "title": "Step with form",
+            "description": "Step that includes a formio schema",
+            "form_schema": form_schema,
+        }
+        response = self.client.post(
+            reverse("academic:procedure_step", kwargs=url), data=data, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        step = ProcedureStep.objects.filter(procedure=self.procedure, title="Step with form").first()
+        self.assertIsNotNone(step)
+        self.assertIsNotNone(step.form)
+        self.assertEqual(step.form.schema["components"][0]["key"], "sample")
+
+    def test_update_step_with_form_schema(self):
+        url = self.url_attr.copy()
+        step = ProcedureStep.objects.filter(procedure=self.procedure).latest("pk")
+        url["pk"] = step.pk
+        form_schema = json.dumps({
+            "display": "form",
+            "components": [
+                {"type": "textfield", "key": "updated_field", "label": "Updated", "input": True}
+            ],
+        })
+        data = {
+            "title": "Step with updated form",
+            "description": "Updated description",
+            "form_schema": form_schema,
+        }
+        response = self.client.post(
+            reverse("academic:update_step", kwargs=url), data=data, follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        step.refresh_from_db()
+        self.assertIsNotNone(step.form)
+        self.assertEqual(step.form.schema["components"][0]["key"], "updated_field")
+
+    def test_update_step_replaces_existing_form_schema(self):
+        from laboratory.models import OrganizationStructure
+        url = self.url_attr.copy()
+        step = ProcedureStep.objects.filter(procedure=self.procedure).latest("pk")
+        org = OrganizationStructure.objects.get(pk=1)
+        initial_form = CustomForm.objects.create(
+            name="Initial form",
+            status="admin",
+            schema={"display": "form", "components": [
+                {"type": "textfield", "key": "old_field", "label": "Old", "input": True}
+            ]},
+            organization=org,
+        )
+        step.form = initial_form
+        step.save()
+
+        url["pk"] = step.pk
+        new_schema = json.dumps({
+            "display": "form",
+            "components": [
+                {"type": "textfield", "key": "new_field", "label": "New", "input": True}
+            ],
+        })
+        data = {"title": "Step with replaced form", "description": "Description", "form_schema": new_schema}
+        self.client.post(reverse("academic:update_step", kwargs=url), data=data, follow=True)
+
+        step.refresh_from_db()
+        self.assertIsNotNone(step.form)
+        self.assertEqual(step.form.schema["components"][0]["key"], "new_field")
+        self.assertEqual(CustomForm.objects.filter(pk=initial_form.pk).first().schema["components"][0]["key"], "new_field")

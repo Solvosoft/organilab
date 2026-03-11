@@ -1,7 +1,9 @@
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
+from reservations_management.tasks import decrease_stock
 
 from reservations_management.models import ReservedProducts
 from reservations_management.api.serializers import ReservedProductSerializer
@@ -37,7 +39,10 @@ class ApiReservedProductsCRUD(APIView):
         if serializer.is_valid():
             serializer.save()
             if serializer.initial_data["status"] == "1" and last_status == 0:
-                add_decrease_stock_task(reserved_product)
+                if reserved_product.initial_date >= timezone.now():
+                    add_decrease_stock_task(reserved_product)
+                else:
+                    decrease_stock.delay(reserved_product.pk)
 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

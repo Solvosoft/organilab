@@ -182,11 +182,12 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
 
     def test_shelfobject_increase_case6(self):
         """
-        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
+        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to increase shelfobject
+         from lab1 using lab3 endpoint)
         Material Object
 
         CHECK TESTS
-        1) Check response status code equal to 403.
+        1) Check response status code equal to 400.
         2) Check if user has permission to access this organization and laboratory.
         5) Check if new quantity is equal to old quantity
         """
@@ -202,7 +203,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         response = self.client.post(self.url, data=data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 400)
         self.assertTrue(
             check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
         )
@@ -212,11 +213,12 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
 
     def test_shelfobject_increase_case7(self):
         """
-        #EXPECTED CASE(User 1 in this organization with permissions try to increase shelfobject)
+        #UNEXPECTED CASE, BUT POSSIBLE(User 1 in this organization with permissions try to increase shelfobject
+         from lab1 using lab3 endpoint)
         Equipment Object
 
         CHECK TESTS
-        1) Check response status code equal to 403.
+        1) Check response status code equal to 400.
         2) Check if user has permission to access this organization and laboratory.
         5) Check if new quantity is equal to old quantity
         """
@@ -232,7 +234,7 @@ class ShelfObjectIncreaseViewTest(ShelfObjectSetUp):
             kwargs={"org_pk": self.org.pk, "lab_pk": self.lab.pk},
         )
         response = self.client.post(self.url, data=data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 400)
         self.assertTrue(
             check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
         )

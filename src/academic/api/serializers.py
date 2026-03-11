@@ -133,6 +133,12 @@ class MyProcedureSerializer(serializers.ModelSerializer):
                     kwargs={"org_pk": org_pk, "pk": obj.custom_procedure.pk},
                 ),
             )
+        if user.has_perm("academic.view_myprocedure"):
+            action += """ <a title='%s' class="pe-2" href='%s'><i class="fa fa-download" aria-hidden="true"></i></a>""" % (
+                _("Download"),
+                reverse("academic:api-my-procedure-download-my-procedures",
+                        kwargs=procedure_kwargs),
+            )
         if user.has_perm("academic.delete_myprocedure"):
             action += """ <a title='%s' class="pe-2" onclick="delete_my_procedure(%d)"><i class="fa fa-trash text-danger"
             aria-hidden="true"></i></a>""" % (
@@ -194,7 +200,8 @@ class ProcedureSerializer(serializers.ModelSerializer):
         if user.has_perm("academic.change_procedure"):
             action += (
                 """<a href="%s" title="%s"><i class="fa fa-edit  fa-sm p-2"></i></a>"""
-                % (reverse("academic:procedure_update", kwargs=procedure_kwargs), _("Edit"))
+                % (reverse("academic:procedure_update", kwargs=procedure_kwargs),
+                   _("Edit"))
             )
         if user.has_perm("academic.delete_procedure"):
             action += """<a onclick="delete_procedure(%d,'%s')" title="%s">
