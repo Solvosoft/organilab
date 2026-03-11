@@ -321,7 +321,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         #UNEXPECTED CASE, BUT POSSIBLE(User 4 to other organization with permissions try to reserve shelfobject by procedure with amount object equal to 0)
 
         CHECK TESTS
-        1) Check response status code equal to 403.
+        1) Check response status code equal to 302 (HandleErrorMiddleware converts HTML 403 to redirect).
         2) Check if user has permission to access this organization and laboratory.
         3) Check if reservation dates are valid.
         4) Check variable state returned by response data.
@@ -335,7 +335,7 @@ class ShelfObjectReserveByProcedureViewTest(ShelfObjectSetUp):
         self.client = self.client4_org2
         self.user = self.user4_org2
         response = self.client.post(self.url, data=self.data)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(
             check_user_access_kwargs_org_lab(self.org.pk, self.lab.pk, self.user)
         )

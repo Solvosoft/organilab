@@ -574,7 +574,6 @@
       "last_update": "2023-01-31T19:33:49.272Z"
     }
   },
-
   {
     "model": "laboratory.shelfobject",
     "pk": 6,
@@ -670,18 +669,6 @@
       "rol": [
         1,
         2,
-        3
-      ]
-    }
-  },
-  {
-    "model": "auth_and_perms.profilepermission",
-    "pk": 2,
-    "fields": {
-      "profile": 4,
-      "content_type": 1,
-      "object_id": 1,
-      "rol": [
         3
       ]
     }
@@ -789,6 +776,41 @@
       "object": 1,
       "quantity": 15,
       "measurement_unit": 64
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "rol": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "content_type": 1,
+      "object_id": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 2,
+    "fields": {
+      "organization": 1,
+      "content_type": 1,
+      "object_id": 3
     }
   }
 ]

@@ -210,7 +210,7 @@
     "fields": {
       "name": "Lab 1",
       "phone_number": "88888888",
-      "location": "San José",
+      "location": "San Jos\u00e9",
       "geolocation": "9.895804362670006,-84.4325435324",
       "email": "",
       "coordinator": "",
@@ -407,7 +407,7 @@
     "pk": 1,
     "fields": {
       "name": "Reactivo",
-      "description": "Es un reactivo en la industria química."
+      "description": "Es un reactivo en la industria qu\u00edmica."
     }
   },
   {
@@ -575,8 +575,8 @@
     "model": "academic.procedure",
     "pk": 1,
     "fields": {
-      "title": "Prácticas Estudiantiles S2 2023",
-      "description": "Prácticas estudiantiles del segundo semestre en 2023",
+      "title": "Pr\u00e1cticas Estudiantiles S2 2023",
+      "description": "Pr\u00e1cticas estudiantiles del segundo semestre en 2023",
       "content_type": 1,
       "object_id": 1
     }
@@ -594,8 +594,8 @@
     "model": "academic.procedure",
     "pk": 2,
     "fields": {
-      "title": "Prácticas Estudiantiles S1 2023",
-      "description": "Prácticas estudiantiles del primer semestre en 2023",
+      "title": "Pr\u00e1cticas Estudiantiles S1 2023",
+      "description": "Pr\u00e1cticas estudiantiles del primer semestre en 2023",
       "content_type": 1,
       "object_id": 1
     }
@@ -623,8 +623,8 @@
     "model": "academic.procedure",
     "pk": 3,
     "fields": {
-      "title": "Prácticas Estudiantiles S1 2021",
-      "description": "Prácticas estudiantiles del primer semestre en 2021",
+      "title": "Pr\u00e1cticas Estudiantiles S1 2021",
+      "description": "Pr\u00e1cticas estudiantiles del primer semestre en 2021",
       "content_type": 1,
       "object_id": 1
     }
@@ -646,6 +646,33 @@
       "object": 1,
       "quantity": 15,
       "measurement_unit": 62
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "rol": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
     }
   }
 ]
