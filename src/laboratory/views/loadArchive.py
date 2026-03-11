@@ -20,6 +20,9 @@ from laboratory.models import (
     Laboratory,
     TemporalUploadReactive,
     Catalog,
+    LaboratoryRoom,
+    Furniture,
+    Shelf,
 )
 from datetime import datetime
 
@@ -106,12 +109,43 @@ def load_archive(request, org_pk, lab_pk):
     user_is_allowed_on_organization(request.user, org)
     organization_can_change_laboratory(lab, org)
     if request.method == "POST":
+        know_places = request.POST.get("know_places", True)
         data = {
-            "file": request.POST.get("create-file"),
-            "lab_room": request.POST.get("create-lab_room"),
-            "furniture": request.POST.get("create-furniture"),
-            "shelf": request.POST.get("create-shelf"),
+            "file": request.FILES.get("create-file"),
         }
+        if know_places == False:
+            lab_room, created = LaboratoryRoom.objects.get_or_create(
+                laboratory=lab, name="Reactivos Cargados"
+            )
+            furniture, fu_created = Furniture.objects.get_or_create(
+                labroom=lab_room,
+                name="Mueble de Reactivos Cargados",
+                type=Catalog.objects.get(key="furniture_type").first(),
+            )
+            shelf, shelf_created = Shelf.objects.get_or_create(
+                furniture=furniture,
+                name="Estante de Reactivos Cargados",
+                type=Catalog.objects.get(key="container_type").first(),
+            )
+            if shelf_created:
+                furniture.dataconfig = "[%d]" % shelf.pk
+                furniture.save()
+            data.update(
+                {
+                    "lab_room": lab_room.pk,
+                    "furniture": furniture.pk,
+                    "shelf": shelf.pk,
+                }
+            )
+        else:
+            data.update(
+                {
+                    "lab_room": request.POST.get("create-lab_room"),
+                    "furniture": request.POST.get("create-furniture"),
+                    "shelf": request.POST.get("create-shelf"),
+                }
+            )
+
         serializer = LoadArchiveSerializer(data=data)
         if not serializer.is_valid():
             return render(
@@ -125,6 +159,7 @@ def load_archive(request, org_pk, lab_pk):
                     "errors": serializer.errors,
                 },
             )
+        print(1111)
         uploaded_file = serializer.validated_data["file"]
         data = read_xlsm_data(uploaded_file, serializer.validated_data["shelf"].pk)
         shelf = serializer.validated_data["shelf"]
