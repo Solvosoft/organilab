@@ -295,7 +295,7 @@ CELERYBEAT_SCHEDULE = {
     },
     "register_maximum_object_stock_per_day": {
         "task": "laboratory.tasks.add_maximum_object_stock_per_day",
-        "schedule": crontab(minute=0, hour=10),
+        "schedule": crontab(minute=30, hour=6),
     },
     "shel_object_expiration_email": {
         "task": "laboratory.tasks.send_expiration_email",
