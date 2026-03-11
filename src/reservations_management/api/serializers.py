@@ -1,5 +1,7 @@
+from django.utils import timezone
 from rest_framework import serializers
-from reservations_management.models import ReservedProducts, Reservations
+from reservations_management.models import ReservedProducts, Reservations, SELECTED, \
+    DENIED
 from laboratory.models import ShelfObject
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -13,7 +15,6 @@ class ReservedProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReservedProducts
         fields = "__all__"
-
 
 class ValidateReservedProductsSerializer(serializers.Serializer):
     id = serializers.PrimaryKeyRelatedField(
