@@ -97,8 +97,8 @@
     "fields": {
       "profile": 1,
       "content_type": [
-        "auth_and_perms",
-        "profile"
+        "laboratory",
+        "organizationstructure"
       ],
       "object_id": 1,
       "rol": [
