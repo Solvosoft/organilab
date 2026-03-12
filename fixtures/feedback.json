@@ -88,6 +88,28 @@
       "laboratory_id": 1,
       "user": 1
     }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Acceso Org",
+      "color": "#337193",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "rol": [1]
+    }
   }
 
 ]

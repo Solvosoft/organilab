@@ -20,6 +20,9 @@ from laboratory.models import (
     Laboratory,
     TemporalUploadReactive,
     Catalog,
+    LaboratoryRoom,
+    Furniture,
+    Shelf,
 )
 from datetime import datetime
 
@@ -105,15 +108,53 @@ def load_archive(request, org_pk, lab_pk):
     lab = get_object_or_404(Laboratory, pk=lab_pk)
     user_is_allowed_on_organization(request.user, org)
     organization_can_change_laboratory(lab, org)
+    data = {}
     if request.method == "POST":
+
+        know_places = request.POST.get("create-now_places")
         data = {
             "file": request.POST.get("create-file"),
-            "lab_room": request.POST.get("create-lab_room"),
-            "furniture": request.POST.get("create-furniture"),
-            "shelf": request.POST.get("create-shelf"),
         }
+        if not know_places:
+            lab_room, created = LaboratoryRoom.objects.get_or_create(
+                laboratory=lab, name="Reactivos Cargados"
+            )
+            furniture, fu_created = Furniture.objects.get_or_create(
+                labroom=lab_room,
+                name="Mueble de Reactivos Cargados",
+                type=Catalog.objects.filter(key="furniture_type").first(),
+            )
+            shelf, shelf_created = Shelf.objects.get_or_create(
+                furniture=furniture,
+                name="Estante de Reactivos Cargados",
+                type=Catalog.objects.filter(key="container_type").first(),
+            )
+            if shelf_created:
+                furniture.dataconfig = "[[[%d]]]" % shelf.pk
+                furniture.save()
+
+            data.update(
+                {
+                    "lab_room": lab_room.pk,
+                    "furniture": furniture.pk,
+                    "shelf": shelf.pk,
+                }
+            )
+
+        else:
+            data.update(
+                {
+                    "lab_room": request.POST.get("create-lab_room"),
+                    "furniture": request.POST.get("create-furniture"),
+                    "shelf": request.POST.get("create-shelf"),
+                }
+            )
+        data = {k: v for k, v in data.items() if v}
         serializer = LoadArchiveSerializer(data=data)
         if not serializer.is_valid():
+            form = LoadArchiveForm(request.POST, prefix="create")
+            for field, errors in serializer.errors.items():
+                form.add_error(field, errors)
             return render(
                 request,
                 "laboratory/load_archive/load_archive.html",
@@ -121,7 +162,7 @@ def load_archive(request, org_pk, lab_pk):
                     "org_pk": org_pk,
                     "lab_pk": lab_pk,
                     "laboratory": lab_pk,
-                    "create_form": LoadArchiveForm(prefix="create"),
+                    "create_form": form,
                     "errors": serializer.errors,
                 },
             )
@@ -245,7 +286,7 @@ def upload_reactives(request, org_pk, lab_pk, key):
                             form.cleaned_data["cantidad"] if not shelves else shelves
                         ),
                         "measurement_unit": (
-                            get_units(form.cleaned_data["unidades_cantidad"])
+                            get_units(form.cleaned_data["unidades_cantidad"]).first()
                             if not shelves
                             else temp.shelf.measurement_unit
                         ),

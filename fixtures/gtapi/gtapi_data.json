@@ -1,16 +1,16 @@
 [
-{
+  {
     "model": "auth.permission",
     "pk": 22,
     "fields": {
-        "name": "Can shelfobject",
-        "content_type": [
-            "laboratory",
-            "shelfobject"
-        ],
-        "codename": "view_shelfobject"
+      "name": "Can shelfobject",
+      "content_type": [
+        "laboratory",
+        "shelfobject"
+      ],
+      "codename": "view_shelfobject"
     }
-},
+  },
   {
     "model": "auth.user",
     "pk": 1,
@@ -26,7 +26,9 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [22]
+      "user_permissions": [
+        22
+      ]
     }
   },
   {
@@ -44,7 +46,9 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [22]
+      "user_permissions": [
+        22
+      ]
     }
   },
   {
@@ -62,7 +66,9 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [22]
+      "user_permissions": [
+        22
+      ]
     }
   },
   {
@@ -80,7 +86,9 @@
       "is_active": true,
       "date_joined": "2018-07-09T19:45:29Z",
       "groups": [],
-      "user_permissions": [22]
+      "user_permissions": [
+        22
+      ]
     }
   },
   {
@@ -91,9 +99,11 @@
       "name": "Organization 1",
       "position": 0,
       "level": 0,
-      "rol": [
-      ],
-      "users": [1, 2]
+      "rol": [],
+      "users": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -104,9 +114,11 @@
       "name": "Organization 2",
       "position": 0,
       "level": 0,
-      "rol": [
-      ],
-      "users": [1, 2]
+      "rol": [],
+      "users": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -115,7 +127,7 @@
     "fields": {
       "name": "Lab 1",
       "phone_number": "88888888",
-      "location": "San José",
+      "location": "San Jos\u00e9",
       "geolocation": "9.895804362670006,-84.4325435324",
       "email": "",
       "coordinator": "",
@@ -181,7 +193,10 @@
       "phone_number": "8888-8888",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [1, 2]
+      "laboratories": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -192,8 +207,7 @@
       "phone_number": "7777-7777",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [
-      ]
+      "laboratories": []
     }
   },
   {
@@ -204,7 +218,10 @@
       "phone_number": "7777-7777",
       "id_card": "0-0000-0000",
       "job_position": "Administrator",
-      "laboratories": [1, 2]
+      "laboratories": [
+        1,
+        2
+      ]
     }
   },
   {
@@ -222,7 +239,7 @@
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
-      "name": "Sala de equipos de protección individual",
+      "name": "Sala de equipos de protecci\u00f3n individual",
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z",
       "laboratory": 1
@@ -232,7 +249,7 @@
     "model": "laboratory.laboratoryroom",
     "pk": 2,
     "fields": {
-      "name": "Sala de prácticas estudiantiles",
+      "name": "Sala de pr\u00e1cticas estudiantiles",
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z",
       "laboratory": 2
@@ -473,7 +490,7 @@
       "infinity_quantity": false
     }
   },
-   {
+  {
     "model": "laboratory.shelf",
     "pk": 6,
     "fields": {
@@ -564,6 +581,75 @@
       "marked_as_discard": false,
       "creation_date": "2023-01-31T19:33:49.240Z",
       "last_update": "2023-01-31T19:33:49.272Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "View ShelfObject",
+      "color": "#337193",
+      "permissions": [
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "rol": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 2,
+      "rol": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 2
     }
   }
 ]
