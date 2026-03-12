@@ -48,7 +48,9 @@ def resume_queryset(queryset):
                 {
                     "lab": lab.name,
                     "values": query_values,
-                    "diff": query_values.aggregate(total=Sum("diff_value"))["total"],
+                    "diff": round(
+                        query_values.aggregate(total=Sum("diff_value"))["total"], 3
+                    ),
                 }
             )
 
@@ -70,9 +72,9 @@ def resume_queryset(queryset):
                     "pk": ob.pk,
                     "object": ob.object,
                     "update_time": ob.update_time,
-                    "old_value": ob.old_value,
-                    "new_value": ob.new_value,
-                    "diff_value": ob.diff_value,
+                    "old_value": round(ob.old_value, 3),
+                    "new_value": round(ob.new_value, 3),
+                    "diff_value": round(ob.diff_value, 3),
                     "measurement_unit": ob.measurement_unit,
                 }
             )
@@ -193,7 +195,7 @@ def get_dataset_reactive_precursor(report, column_list=None):
                 "code": object.code,
                 "name": object.name,
                 "type": object.get_type_display(),
-                "quantity_total": object.quantity_total,
+                "quantity_total": round(object.quantity_total, 3),
                 "measurement_unit": ShelfObject.get_units(object.measurement_unit),
                 "molecular_formula": str(get_molecular_formula(object)),
                 "cas_id_number": str(get_cas(object, "")),
