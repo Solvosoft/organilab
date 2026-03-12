@@ -317,6 +317,11 @@ class ShelfObjectLaboratoryViewSerializer(
     created_by = serializers.SerializerMethodField()
     container = serializers.SerializerMethodField()
     actions = serializers.SerializerMethodField()
+    quantity = serializers.SerializerMethodField()
+
+    def get_quantity(self, obj):
+        if obj.object.type == Object.REACTIVE:
+            return round(obj.quantity, 3)
 
     def get_actions(self, obj):
         context = {
