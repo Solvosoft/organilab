@@ -1,4 +1,5 @@
 import os
+import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import django
@@ -23,7 +24,20 @@ _FK_CATALOG_FIELDS = {
 _M2M_CATALOG_FIELDS = ['white_organ', 'ue_code', 'nfpa', 'storage_class']
 
 
-def _process_one(sc_pk, catalog_data, dry_run, only_empty):
+def _resolve_pdf_path(sc):
+    """Resolve the PDF path for a SustanceCharacteristics in MEDIA_ROOT."""
+    if not sc.security_sheet or not sc.security_sheet.name:
+        return None
+
+    local_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name)
+    if os.path.exists(local_path):
+        return local_path
+
+    return None
+
+
+def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds_max_years=5,
+                 sds_delay=2, sources=None):
     """Process a single SustanceCharacteristics. Returns a result dict.
 
     Runs in a worker process — closes inherited DB connections so each
@@ -49,9 +63,50 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty):
         return result
 
     name = str(sc.obj) if sc.obj else f"PK={sc.pk}"
-    file_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name)
+    file_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name) if sc.security_sheet else ''
+    file_exists = sc.security_sheet and file_path and os.path.exists(file_path)
 
-    if not os.path.exists(file_path):
+    if update_sds:
+        cas = (sc.cas_id_number or '').strip()
+        if cas:
+            from laboratory.sds_sources import check_needs_update, get_sources, update_sds_for_substance
+
+            needs_download = not file_exists
+            if file_exists and not needs_download:
+                needs_update, _ = check_needs_update(file_path, sds_max_years)
+                needs_download = needs_update
+
+            if needs_download:
+                # Build sources inside worker if not provided (not serializable across processes)
+                if sources is None:
+                    sources = get_sources()
+
+                existing_pdf_path = _resolve_pdf_path(sc)
+
+                sds_result = update_sds_for_substance(
+                    sc, sources=sources, max_years=sds_max_years, force=True,
+                    existing_pdf_path=existing_pdf_path
+                )
+                if sds_result['status'] == 'updated':
+                    result['stdout'].append(
+                        f"[SDS] {name} (PK={sc.pk}): downloaded from {sds_result['source']}"
+                    )
+                    sc.refresh_from_db()
+                    file_path = os.path.join(settings.MEDIA_ROOT, sc.security_sheet.name)
+                    file_exists = True
+                elif sds_result['status'] == 'error':
+                    result['stderr'].append(
+                        f"[SDS-WARN] {name} (PK={sc.pk}): {sds_result.get('error', 'unknown error')}"
+                    )
+                elif sds_result['status'] == 'no_source':
+                    result['stderr'].append(
+                        f"[SDS-WARN] {name} (PK={sc.pk}): no source could provide SDS"
+                    )
+
+                if sds_delay > 0:
+                    time.sleep(sds_delay)
+
+    if not file_exists:
         result['status'] = 'skipped'
         result['stderr'].append(f"[SKIP] {name} (PK={sc.pk}): file not found at {file_path}")
         return result
@@ -63,6 +118,25 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty):
         return result
 
     pdf_text = data.pop('_text', '')
+
+    # Create traceability record for existing PDFs if none exists
+    try:
+        from laboratory.models import SDSTraceability
+        from laboratory.management.commands.identify_sds_sources import _identify_source, _extract_revision_date, _parse_date
+        from laboratory.sds_sources import SOURCE_NAME_TO_KEY
+
+        if not SDSTraceability.objects.filter(sustance_characteristics=sc).exists():
+            source_name = _identify_source(pdf_text) if pdf_text else 'Sin identificar'
+            source_key = SOURCE_NAME_TO_KEY.get(source_name, 'unknown')
+            rev_date_str = _extract_revision_date(pdf_text) if pdf_text else ''
+            rev_date = _parse_date(rev_date_str)
+            SDSTraceability.objects.create(
+                sustance_characteristics=sc,
+                source=source_key,
+                revision_date=rev_date,
+            )
+    except Exception as e:
+        result['stderr'].append(f"[WARN] {name} (PK={sc.pk}): could not create traceability record: {e}")
     catalog_fields = extract_catalog_fields(pdf_text, catalog_data) if pdf_text else {}
 
     changes = []
@@ -181,12 +255,32 @@ class Command(BaseCommand):
             default=1,
             help='Number of parallel processes for PDF processing (default: 1)',
         )
+        parser.add_argument(
+            '--skip-sds-update',
+            action='store_true',
+            help='Do not attempt to download SDS from external sources (use only existing PDFs)',
+        )
+        parser.add_argument(
+            '--sds-max-years',
+            type=int,
+            default=5,
+            help='Maximum age in years before considering an SDS outdated (default: 5)',
+        )
+        parser.add_argument(
+            '--sds-delay',
+            type=float,
+            default=2,
+            help='Delay in seconds between SDS downloads to avoid rate limiting (default: 2)',
+        )
 
     def handle(self, *args, **options):
         dry_run = options['dry_run']
         only_empty = options['only_empty']
         ids = options.get('ids')
         workers = options['workers']
+        update_sds = not options['skip_sds_update']
+        sds_max_years = options['sds_max_years']
+        sds_delay = options['sds_delay']
 
         catalog_data = {}
         for key in _CATALOG_KEYS:
@@ -212,7 +306,10 @@ class Command(BaseCommand):
         if workers > 1:
             with ProcessPoolExecutor(max_workers=workers) as executor:
                 futures = {
-                    executor.submit(_process_one, pk, catalog_data, dry_run, only_empty): pk
+                    executor.submit(
+                        _process_one, pk, catalog_data, dry_run, only_empty,
+                        update_sds, sds_max_years, sds_delay
+                    ): pk
                     for pk in sc_pks
                 }
                 for future in as_completed(futures):
@@ -235,7 +332,10 @@ class Command(BaseCommand):
                         skipped += 1
         else:
             for pk in sc_pks:
-                res = _process_one(pk, catalog_data, dry_run, only_empty)
+                res = _process_one(
+                    pk, catalog_data, dry_run, only_empty,
+                    update_sds, sds_max_years, sds_delay
+                )
                 for line in res['stdout']:
                     self.stdout.write(line)
                 for line in res['stderr']:
