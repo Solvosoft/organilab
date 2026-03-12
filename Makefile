@@ -142,3 +142,9 @@ load-perms: ## - load permissions
 ##--------------------------------------------------------
 lint: ## - check style with flake8
 	pycodestyle --exclude=*/migrations/*  --max-line-length=200 src
+
+update_sds: ## - update SDS files in batches
+	cd src && python manage.py update_sds --batch-size 10 --batch-delay 30 --delay 2
+
+clean_orphan_media: ## - elimina archivos en MEDIA_ROOT no referenciados en la BD
+	cd src && python manage.py clean_orphan_media

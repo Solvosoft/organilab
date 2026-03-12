@@ -147,4 +147,13 @@ admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.ObjectMaximumLimit)
 admin.site.register(models.ReactiveLimit)
 admin.site.register(models.ShelfObjectEquipmentCharacteristics)
+
+
+class SDSTraceabilityAdmin(admin.ModelAdmin):
+    list_display = ['sustance_characteristics', 'source', 'revision_date', 'creation_date']
+    list_filter = ['source']
+    search_fields = ['sustance_characteristics__cas_id_number']
+
+
+admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.site_header = _("Organilab Administration site")
