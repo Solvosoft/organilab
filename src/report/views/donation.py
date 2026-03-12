@@ -33,7 +33,7 @@ def get_dataset(report, column_list=None):
             "type": str(object_type[shelfobject.object.type]),
             "status": shelfobject.status.description if shelfobject.status else "",
             "object": shelfobject.object.name,
-            "quantity": shelfobject.quantity,
+            "quantity": round(shelfobject.quantity, 3),
             "unit": shelf_unit,
             "laboratory": shelfobject.in_where_laboratory.name,
             "laboratory_room": furniture.labroom.name,

@@ -46,7 +46,7 @@ def resume_queryset(report, queryset, objs=None, log_filters=None):
                     laboratory=lab,
                     object=obj_using,
                     unit=catalog,
-                    diff_value=object_diff,
+                    diff_value=round(object_diff, 3),
                 )
 
             for values in query_values:
@@ -55,9 +55,9 @@ def resume_queryset(report, queryset, objs=None, log_filters=None):
                 object_builder = ObjectChangeLogReportBuilder(
                     report=object_log,
                     user=user_obj,
-                    old_value=values.old_value,
-                    new_value=values.new_value,
-                    diff_value=values.diff_value,
+                    old_value=round(values.old_value, 3),
+                    new_value=round(values.new_value, 3),
+                    diff_value=round(values.diff_value, 3),
                     update_time=values.update_time,
                 )
 
@@ -132,9 +132,9 @@ def resume_queryset_doc(report, queryset, objs, log_filters):
                     [
                         user,
                         values.update_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                        values.old_value,
-                        values.new_value,
-                        values.diff_value,
+                        round(values.old_value, 3),
+                        round(values.new_value, 3),
+                        round(values.diff_value, 3),
                     ]
                 )
                 total += 1

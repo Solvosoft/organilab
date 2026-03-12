@@ -5534,3 +5534,6 @@ msgstr "Ningún paso ha sido seleccionado"
 
 msgid "Period on days"
 msgstr "Periodo en días"
+
+msgid "Register Provider"
+msgstr "Registrar Proveedor"

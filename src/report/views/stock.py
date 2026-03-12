@@ -101,9 +101,9 @@ def get_stock_dataset(lab_pk, column_list=None):
                     "cas_id": cas_id,
                     "molecular_formula": molecular_formula,
                     "physical_status": status,
-                    "quantity": amount,
+                    "quantity": round(amount, 3),
                     "reactive_unit": base_unit,
-                    "container_capacity": capacity,
+                    "container_capacity": round(capacity, 3),
                     "container_unit": capacity_measurement_unit,
                     "container_quantity": shelfobjects.count(),
                     "container": container_object.object.name,
@@ -160,7 +160,7 @@ def get_stock_dataset(lab_pk, column_list=None):
             "cas_id": cas_id,
             "molecular_formula": molecular_formula,
             "physical_status": status,
-            "quantity": amount,
+            "quantity": round(amount, 3),
             "reactive_unit": base_unit,
             "container_capacity": "",
             "container_unit": "",
@@ -221,9 +221,9 @@ def report_stock(report):
 
     for lab_id in laboratories:
         try:
-            laboratory = Laboratory.objects.get(pk=lab)
+            laboratory = Laboratory.objects.get(pk=lab_id)
         except Laboratory.DoesNotExist:
-            print("LAB NOT FOUND:", lab)
+            print("LAB NOT FOUND:", lab_id)
             continue
 
         headers = [
@@ -276,7 +276,6 @@ def get_stock_cartel_dataset(report, column_list=None):
         filters["in_where_laboratory__pk__in"] = (
             laboratories if len(laboratories) > 1 else organization.get_my_laboratories
         )
-        print(filters["in_where_laboratory__pk__in"])
     else:
         filters["in_where_laboratory__pk"] = laboratories[0]
 
@@ -343,7 +342,7 @@ def get_stock_cartel_dataset(report, column_list=None):
                         "in_where_laboratory__name": lab_name,
                         "substance_name": shelfobj.object.name,
                         "cas_id": cas_id,
-                        "quantity": amount,
+                        "quantity": round(amount, 3),
                         "measurement_unit": Catalog.objects.get(pk=unit).description,
                         "physical_status": status,
                         "storage_class": shelfobj.object.get_storage_class,
