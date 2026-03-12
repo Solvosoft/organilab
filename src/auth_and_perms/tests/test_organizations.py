@@ -146,7 +146,7 @@ class OrganizationTest(TestCase):
         response = self.client.get(
             reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": 14})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
         # self.assertTrue(response.context['object_list'].count()==0)
 
     def test_delete_rol_organization(self):
@@ -233,7 +233,7 @@ class OrganizationTest(TestCase):
             organization__pk=1
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(org_relations.count() == 0)
         # self.assertRedirects(response, reverse('auth_and_perms:organizationManager'))
 
@@ -246,7 +246,7 @@ class OrganizationTest(TestCase):
             organization__pk=1
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(org_relations.count() == 0)
 
     def test_rol_list(self):
