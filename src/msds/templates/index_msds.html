@@ -6,44 +6,43 @@
 	{% define_urlname_action 'index_msds' %}
 	{% define_urlname_action 'list_msds' %}
 {% endblock %}
-{% block content %} 
-<h1 class="text-center">  {% trans 'Search MSDS' %}
-<a class="btn btn-success float-end" href="{% url 'msds:msds_msdsobject_create' org_pk %}">
-{% trans 'Upload your MSDS' %}
+{% block content %}
+
+<div class="text-center mb-3">
+    <img src="{% url 'laboratory:sds_coverage_svg' org_pk %}" alt="{% trans 'SDS Coverage' %}" />
+</div>
+
+<h1 class="text-center">{% trans 'Search SDS' %}
+<a class="btn btn-success float-end" href="{% url 'msds:sds_create' org_pk %}">
+{% trans 'Upload SDS' %}
 </a>
-
 </h1>
-<table id="msdstable" class="display" style="width: 100%">
-	<thead>
-		<tr>
-			<th>{% trans 'Provider' %}</th>
-			<th>{% trans 'Product' %}</th>
-			<th>{% trans 'Download' %}</th>
 
-		</tr>
-	</thead>
-	<tfoot>
-		<tr>
-			<th>{% trans 'Provider' %}</th>
-			<th>{% trans 'Product' %}</th>
-			<th>{% trans 'Download' %}</th>
-		</tr>
-	</tfoot>
-</table>
+<table id="msdstable" class="display table table-striped w-100"></table>
 
-{% endblock %} 
+{% endblock %}
 {% block js %}
 <script>
 $(document).ready(function() {
-    $('#msdstable').DataTable( {
-        "ajax": '{% url "msds:list_msds" org_pk %}',
-       // "processing" : true,
-        "serverSide" : true,
-        "language": {
-            "url": "{% get_datatables_translation %}"
-        }
-        
-    } );
+    createDataTable(
+        '#msdstable',
+        '{% url "msds:list_msds" org_pk %}',
+        {
+            columns: [
+                {data: "0", name: "substance", title: gettext("Substance"), type: "string", visible: true},
+                {data: "1", name: "cas_code", title: gettext("CAS Code"), type: "string", visible: true},
+                {data: "2", name: "source", title: gettext("Source"), type: "select", visible: true,
+                    choices: {{ source_choices_json|safe }}
+                },
+                {data: "3", name: "revision_date", title: gettext("Revision Date"), type: "date", visible: true},
+                {data: "4", name: "last_update", title: gettext("Last Update"), type: "readonly", visible: true},
+                {data: "5", name: "download", title: gettext("Download"), type: "readonly", visible: true, orderable: false, searchable: false}
+            ],
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, 100, 500, 1000], [10, 25, 50, 100, 500, 1000]]
+        },
+        true
+    );
 } );
 </script>
 {% endblock %}

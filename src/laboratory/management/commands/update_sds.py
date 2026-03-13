@@ -61,6 +61,17 @@ class Command(BaseCommand):
             action='store_true',
             help='Only process substances that have no SDS file at all',
         )
+        parser.add_argument(
+            '--only-pubchem',
+            action='store_true',
+            help='Only process substances whose current SDS is from PubChem (synthetic)',
+        )
+        parser.add_argument(
+            '--exclude-source',
+            nargs='+',
+            choices=['merck', 'pubchem'],
+            help='Exclude specific sources from the search (e.g. --exclude-source pubchem)',
+        )
 
     def handle(self, *args, **options):
         dry_run = options['dry_run']
@@ -72,9 +83,17 @@ class Command(BaseCommand):
         delay = options['delay']
         force = options['force']
         only_missing = options['only_missing']
+        only_pubchem = options['only_pubchem']
+        exclude_source = options.get('exclude_source')
 
         source_names = None if source_name == 'all' else [source_name]
         sources = get_sources(source_names)
+
+        if exclude_source:
+            sources = [s for s in sources if s.name not in exclude_source]
+            if not sources:
+                self.stderr.write("No sources left after exclusion. Aborting.")
+                return
 
         qs = SustanceCharacteristics.objects.select_related('obj', 'obj__organization')
 
@@ -84,6 +103,13 @@ class Command(BaseCommand):
         if only_missing:
             from django.db.models import Q
             qs = qs.filter(Q(security_sheet='') | Q(security_sheet__isnull=True))
+
+        if only_pubchem:
+            from laboratory.models import SDSTraceability
+            pubchem_sc_ids = SDSTraceability.objects.filter(
+                source='pubchem'
+            ).values_list('sustance_characteristics_id', flat=True).distinct()
+            qs = qs.filter(pk__in=pubchem_sc_ids)
 
         if ids:
             qs = qs.filter(pk__in=ids)

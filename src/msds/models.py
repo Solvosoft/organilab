@@ -1,30 +1,8 @@
-import datetime
-
-from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from tree_queries.models import TreeNode
 
 from laboratory.models_utils import upload_files
-from presentation.models import AbstractOrganizationRef
-from pathlib import Path
-
-
-class MSDSObject(AbstractOrganizationRef):
-    provider = models.CharField(_("Provider"), max_length=300)
-    file = models.FileField(
-        upload_to=upload_files,
-        verbose_name=_("MSDS File"),
-        validators=[FileExtensionValidator(allowed_extensions=["pdf"])],
-    )
-
-    product = models.CharField(_("Product"), max_length=300)
-
-    class Meta:
-        ordering = ("pk",)
-        verbose_name = _("MSDS Object")
-        verbose_name_plural = _("MSDS Object")
 
 
 class OrganilabNode(TreeNode):
