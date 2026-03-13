@@ -10,7 +10,7 @@ from laboratory.models import (
     Protocol,
     RegisterUserQR,
 )
-from msds.models import MSDSObject, RegulationDocument
+from msds.models import RegulationDocument
 from report.models import TaskReport
 from risk_management.models import IncidentReport
 from sga.models import DisplayLabel
@@ -114,19 +114,6 @@ class Command(BaseCommand):
                     register_user.save()
                     print(register_user.register_user_qr)
 
-    def set_msds_file(self):
-        msdsobjects = MSDSObject.objects.all()
-
-        for msds in msdsobjects:
-            if msds.file:
-                name, initial_path, new_path = self.set_media_name(msds.file)
-                msds.file.name = name
-
-                if default_storage.exists(initial_path):
-                    os.rename(initial_path, new_path)
-                    msds.save()
-                    print(msds.file)
-
     def set_regulation_document_file(self):
         regulation_docs = RegulationDocument.objects.all()
 
@@ -188,7 +175,6 @@ class Command(BaseCommand):
         self.set_shelf_object_qr()
         self.set_protocol_file()
         self.set_register_user_qr()
-        self.set_msds_file()
         self.set_regulation_document_file()
         self.set_task_report_file()
         self.set_incident_report_file()
