@@ -21,7 +21,7 @@ django-celery-beat==2.8.1
 django-celery-results==2.6.0
 celery==5.5.3
 weasyprint==66.0
-CairoSVG==2.8.2
+CairoSVG==2.9.0
 pyfva==0.0.43
 django-otp==1.6.1
 python-barcode==0.16.1
