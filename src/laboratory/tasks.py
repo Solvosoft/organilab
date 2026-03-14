@@ -36,7 +36,9 @@ app = importlib.import_module(settings.CELERY_MODULE).app
 
 
 def get_limited_shelf_objects(lab):
-    return ShelfObject.objects.filter(in_where_laboratory=lab)
+    return ShelfObject.objects.filter(
+        in_where_laboratory=lab, limits__minimum_limit__isnull=False
+    ).distinct()
 
 
 @app.task
@@ -45,8 +47,10 @@ def notify_about_product_limit_reach():
     object_list = []
     for lab in labs:
         for shelfobjects in get_limited_shelf_objects(lab):
-            object_list.append(shelfobjects)
-        send_email_limit_objs(lab, object_list, enqueued=False)
+            if shelfobjects.quantity <= shelfobjects.limits.minimum_limit:
+                object_list.append(shelfobjects)
+        if len(object_list) > 0:
+            send_email_limit_objs(lab, object_list, enqueued=False)
         object_list.clear()
 
 
