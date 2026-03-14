@@ -7,7 +7,7 @@ services:
       - apps
 
   postgresdb:
-    image: postgres:latest
+    image: postgres:17
     restart: always
     container_name: "postgresdb"
     env_file: organilab.env

@@ -1,7 +1,7 @@
 .PHONY: help clean clean-pyc clean-build list test test-parallel test-selenium test-selenium-4 test-selenium-xvfb docs release sdist
 
 # Variables
-setup_version := `python src/organilab/__init__.py`
+setup_version := `python3 src/organilab/__init__.py`
 current_path := `pwd`
 
 
@@ -127,9 +127,9 @@ dist: ##  - print current version of organilab
 	git push origin "refs/tags/v$(setup_version)"
 
 build_docker: ##  - build docker images
-	$(MAKE) clean && $(MAKE) trans && \
 	docker pull python:3.13-trixie && \
-	docker build  -t organilab:$(setup_version)  .
+	docker pull python:3.13-slim-trixie && \
+	docker build  -t organilab:$(setup_version) -t organilab:latest .
 
 build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
