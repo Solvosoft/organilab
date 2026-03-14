@@ -110,6 +110,34 @@ class PubChemSource(SDSSource):
             pass
         return {}
 
+    def verify_cas_for_cid(self, cid, expected_cas):
+        """Check if expected_cas appears in the synonyms of the given CID.
+
+        Returns dict with cas_found, all_cas_numbers, synonym_count.
+        """
+        url = f"{BASE_URL}/compound/cid/{cid}/synonyms/JSON"
+        result = {'cas_found': False, 'all_cas_numbers': [], 'synonym_count': 0}
+        try:
+            session = self._get_session()
+            r = session.get(url, timeout=self.timeout)
+            if r.status_code != 200:
+                return result
+            data = r.json()
+            synonyms = (
+                data.get('InformationList', {})
+                .get('Information', [{}])[0]
+                .get('Synonym', [])
+            )
+            result['synonym_count'] = len(synonyms)
+            cas_pattern = re.compile(r'^\d{1,7}-\d{2}-\d$')
+            cas_numbers = [s for s in synonyms if cas_pattern.match(s)]
+            result['all_cas_numbers'] = cas_numbers
+            normalized = expected_cas.strip()
+            result['cas_found'] = normalized in cas_numbers
+        except Exception as e:
+            logger.debug("[pubchem] Synonym lookup failed for CID %s: %s", cid, e)
+        return result
+
     def _parse_ghs(self, data):
         h_codes = set()
         p_codes = set()

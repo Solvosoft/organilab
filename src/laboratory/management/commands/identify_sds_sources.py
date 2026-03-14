@@ -39,19 +39,7 @@ SOURCE_KEYWORDS = {
     'Gibco': ['gibco'],
 }
 
-# Patterns to extract revision date from SDS text
-REVISION_DATE_PATTERNS = [
-    # Spanish patterns
-    r'[Ff]echa\s+de\s+[Rr]evisi[oó]n[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
-    r'[Ff]echa\s+de\s+[Rr]evisi[oó]n[:\s]*(\d{2,4}[.-]\d{1,2}[.-]\d{1,2})',
-    r'[Rr]evisi[oó]n[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
-    # English patterns
-    r'[Rr]evision\s+[Dd]ate[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
-    r'[Rr]evision\s+[Dd]ate[:\s]*(\d{2,4}[.-]\d{1,2}[.-]\d{1,2})',
-    r'[Dd]ate\s+of\s+[Rr]evision[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
-    # Generic date near "revision" keyword
-    r'[Rr]evis(?:ion|ión).*?(\d{2}[./]\d{2}[./]\d{4})',
-]
+from laboratory.utils_pdf import REVISION_DATE_PATTERNS  # noqa: E402
 
 
 def _extract_text(pdf_path):

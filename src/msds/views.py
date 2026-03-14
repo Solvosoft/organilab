@@ -1,10 +1,14 @@
+import json
 import logging
 import os
 import zipfile
+from uuid import uuid4
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.files.base import File
+from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 from django.db.models.query_utils import Q
 from django.http import HttpResponse, HttpResponseRedirect
@@ -12,11 +16,15 @@ from django.http.response import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
-from djgentelella.cruds.base import CRUDView
 
-from laboratory.models import OrganizationStructure
-from msds.forms import FormMSDSobject, FormMSDSobjectUpdate
-from msds.models import MSDSObject, RegulationDocument
+from laboratory.models import (
+    Catalog, Object, OrganizationStructure, SDSTraceability,
+    SustanceCharacteristics,
+)
+from laboratory.utils_pdf import extract_catalog_fields, extract_msds_data
+from msds.forms import SDSUploadForm, SDSConfirmForm
+from msds.models import RegulationDocument
+from sga.models import DangerIndication
 
 logger = logging.getLogger("organilab")
 
@@ -24,177 +32,284 @@ logger = logging.getLogger("organilab")
 @login_required
 @permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def index_msds(request, org_pk):
-    return render(request, "index_msds.html", context={"org_pk": org_pk})
+    source_labels = dict(SDSTraceability.SDS_SOURCE_CHOICES)
+    existing_sources = (
+        SDSTraceability.objects
+        .filter(sustance_characteristics__obj__organization__pk=org_pk)
+        .order_by("source")
+        .values_list("source", flat=True)
+        .distinct()
+    )
+    source_choices = [
+        [src, str(source_labels.get(src, src))] for src in existing_sources
+    ]
+    context = {
+        "org_pk": org_pk,
+        "source_choices_json": json.dumps(source_choices),
+    }
+    return render(request, "index_msds.html", context=context)
 
 
 @login_required
 @permission_required("auth_and_perms.institution_can_access", raise_exception=True)
-def get_download_links(request, obj):
-
-    new_url = reverse(
-        "msds:msds_msdsobject_detail",
-        args=(
-            obj.organization.pk,
-            obj.pk,
-        ),
-    )
-    dev = '<a href="%s" target="_blank">%s</a>' % (new_url, _("Download"))
-    if request.user.has_perm("msds.change_msdsobject"):
-        new_url = reverse(
-            "msds:msds_msdsobject_update",
-            args=(
-                obj.organization.pk,
-                obj.pk,
-            ),
-        )
-        dev += ' -- <a href="%s" target="_blank">%s</a>' % (new_url, _("Edit"))
-    if request.user.has_perm("msds.delete_msdsobject"):
-        new_url = reverse(
-            "msds:msds_msdsobject_delete",
-            args=(
-                obj.organization.pk,
-                obj.pk,
-            ),
-        )
-        dev += ' -- <a href="%s" target="_blank">%s</a>' % (new_url, _("Delete"))
-    return dev
-
-
 def get_list_msds(request, org_pk):
-    q = request.GET.get("search[value]")
-    length = request.GET.get("length", "10")
-    pgnum = request.GET.get("start", "0")
-    objs = MSDSObject.objects.filter(organization__pk=org_pk)
-    try:
-        length = int(length)
-        pgnum = 1 + (int(pgnum) / length)
-    except Exception as e:
-        logger.error("Get list msds ", exc_info=e)
-        length = 10
-        pgnum = 1
+    objs = SDSTraceability.objects.filter(
+        sustance_characteristics__obj__organization__pk=org_pk
+    ).select_related("sustance_characteristics__obj")
 
+    records_total = objs.count()
+
+    # Global search (DataTables search[value])
+    q = request.GET.get("search[value]") or request.GET.get("q")
     if q:
-        objs = objs.filter(Q(provider__icontains=q) | Q(product__icontains=q))
-    objs = objs.order_by("product")
+        objs = objs.filter(
+            Q(sustance_characteristics__obj__name__icontains=q)
+            | Q(sustance_characteristics__cas_id_number__icontains=q)
+        )
 
-    recordsFiltered = objs.count()
-    p = Paginator(objs, length)
-    if pgnum > p.num_pages:
-        pgnum = 1
-    page = p.page(pgnum)
+    # Column filters (sent by formatDataTableParams)
+    substance_filter = request.GET.get("substance__icontains") or request.GET.get("substance")
+    if substance_filter:
+        objs = objs.filter(sustance_characteristics__obj__name__icontains=substance_filter)
+
+    cas_filter = request.GET.get("cas_code__icontains") or request.GET.get("cas_code")
+    if cas_filter:
+        objs = objs.filter(sustance_characteristics__cas_id_number__icontains=cas_filter)
+
+    source_filter = request.GET.get("source")
+    if source_filter:
+        objs = objs.filter(source=source_filter)
+
+    revision_date_filter = request.GET.get("revision_date")
+    if revision_date_filter and "," in revision_date_filter:
+        dates = revision_date_filter.split(",")
+        if len(dates) == 2:
+            date_from, date_to = dates[0].strip(), dates[1].strip()
+            if date_from:
+                objs = objs.filter(revision_date__gte=date_from)
+            if date_to:
+                objs = objs.filter(revision_date__lte=date_to)
+
+    objs = objs.order_by("-last_update")
+    records_filtered = objs.count()
+
+    # Pagination: support both DataTables native (start/length) and DRF (page/page_size)
+    try:
+        page_size = int(request.GET.get("page_size") or request.GET.get("length") or 25)
+        page_num = request.GET.get("page")
+        if page_num:
+            page_num = int(page_num)
+        else:
+            start = int(request.GET.get("start", 0))
+            page_num = 1 + (start // page_size)
+    except (ValueError, ZeroDivisionError):
+        page_size = 25
+        page_num = 1
+
+    p = Paginator(objs, page_size)
+    if page_num > p.num_pages and p.num_pages > 0:
+        page_num = 1
+    page = p.page(page_num) if p.num_pages > 0 else p.page(1) if records_filtered == 0 and p.num_pages == 0 else p.page(page_num)
+
     data = []
-    for obj in page.object_list:
-        data.append([obj.provider, obj.product, get_download_links(request, obj)])
+    for trace in page.object_list:
+        sc = trace.sustance_characteristics
+        obj_name = sc.obj.name if sc and sc.obj else ""
+        cas = sc.cas_id_number or "" if sc else ""
+        source = trace.get_source_display()
+        revision = str(trace.revision_date) if trace.revision_date else ""
+        updated = str(trace.last_update.date()) if trace.last_update else ""
+
+        sheet = trace.security_sheet or (sc.security_sheet if sc else None)
+        if sheet:
+            download = '<a href="%s" target="_blank">%s</a>' % (
+                sheet.url, _("Download")
+            )
+        else:
+            download = "N/A"
+
+        data.append([obj_name, cas, source, revision, updated, download])
 
     dev = {
         "data": data,
-        "recordsTotal": MSDSObject.objects.all().count(),
-        "recordsFiltered": recordsFiltered,
+        "recordsTotal": records_total,
+        "recordsFiltered": records_filtered,
     }
 
-    draw = request.GET.get("_", "")
-    try:
-        draw = int(draw)
-        dev["draw"] = draw
-    except Exception as e:
-        logger.error("Error in datatable ", exc_info=e)
-        pass
+    draw = request.GET.get("draw") or request.GET.get("_")
+    if draw:
+        try:
+            dev["draw"] = int(draw)
+        except (ValueError, TypeError):
+            pass
     return JsonResponse(dev)
 
 
-class MSDSObjectCRUD(CRUDView):
-    model = MSDSObject
-    views_available = ["create", "update", "detail", "delete"]
-    namespace = "msds"
-    add_form = FormMSDSobject
-    update_form = FormMSDSobjectUpdate
-    check_login = False
-    check_perms = False
-    perms = {
-        "create": ["msds.add_msdsobject", "auth_and_perms.institution_can_access"],
-        "list": ["auth_and_perms.institution_can_access"],
-        "delete": ["msds.delete_msdsobject", "auth_and_perms.institution_can_access"],
-        "update": ["msds.change_msdsobject", "auth_and_perms.institution_can_access"],
-        "detail": ["auth_and_perms.institution_can_access"],
+@login_required
+@permission_required("auth_and_perms.institution_can_access", raise_exception=True)
+def sds_create(request, org_pk):
+    context = {"org_pk": org_pk}
+
+    if request.method == "POST" and "confirm" in request.POST:
+        return _sds_create_confirm(request, org_pk, context)
+
+    if request.method == "POST":
+        return _sds_create_upload(request, org_pk, context)
+
+    # GET — step 1: upload form
+    context["step"] = 1
+    context["upload_form"] = SDSUploadForm()
+    return render(request, "msds/sds_create.html", context)
+
+
+def _build_catalog_dict():
+    """Build the catalogs dict expected by extract_catalog_fields."""
+    catalog_keys = ["IARC", "IDMG", "white_organ", "ue_code", "nfpa",
+                    "storage_class", "Precursor"]
+    catalogs = {}
+    for key in catalog_keys:
+        catalogs[key] = list(
+            Catalog.objects.filter(key=key).values_list("pk", "description")
+        )
+    return catalogs
+
+
+def _sds_create_upload(request, org_pk, context):
+    upload_form = SDSUploadForm(request.POST, request.FILES)
+    if not upload_form.is_valid():
+        context["step"] = 1
+        context["upload_form"] = upload_form
+        return render(request, "msds/sds_create.html", context)
+
+    uploaded_file = request.FILES["file"]
+    temp_name = "tmp/sds/%s.pdf" % uuid4()
+    saved_name = default_storage.save(temp_name, uploaded_file)
+    full_path = default_storage.path(saved_name)
+
+    extracted = extract_msds_data(full_path)
+    if extracted is None:
+        extracted = {}
+        messages.warning(
+            request,
+            _("Could not extract data from the PDF. Please fill in the fields manually."),
+        )
+
+    h_codes = extracted.get("h_codes", [])
+    text = extracted.get("_text", "")
+    request.session["sds_temp_file"] = saved_name
+
+    # Extract catalog fields from PDF text
+    catalog_fields = {}
+    if text:
+        catalogs = _build_catalog_dict()
+        catalog_fields = extract_catalog_fields(text, catalogs, extracted.get('_lang', 'es'))
+
+    # Pre-select h_code DangerIndication objects by code
+    h_code_pks = list(
+        DangerIndication.objects.filter(code__in=h_codes).values_list("pk", flat=True)
+    )
+
+    revision_date = extracted.get("revision_date")
+
+    initial = {
+        "name": extracted.get("product_name", ""),
+        "cas_id_number": extracted.get("cas_id_number", ""),
+        "molecular_formula": extracted.get("molecular_formula", ""),
+        "density": extracted.get("density"),
+        "bioaccumulable": extracted.get("bioaccumulable"),
+        "is_precursor": extracted.get("is_precursor", False),
+        "seveso_list": extracted.get("seveso_list", False),
+        "revision_date": revision_date,
+        # Catalog FK fields (single PK or None)
+        "iarc": catalog_fields.get("iarc"),
+        "imdg": catalog_fields.get("imdg"),
+        "precursor_type": catalog_fields.get("precursor_type"),
+        # Catalog M2M fields (lists of PKs)
+        "h_code": h_code_pks,
+        "white_organ": catalog_fields.get("white_organ", []),
+        "ue_code": catalog_fields.get("ue_code", []),
+        "nfpa": catalog_fields.get("nfpa", []),
+        "storage_class": catalog_fields.get("storage_class", []),
     }
-    form_widget_exclude = ["file"]
 
-    def decorator_update(self, viewclass):
-        return login_required(viewclass)
+    context["step"] = 2
+    context["confirm_form"] = SDSConfirmForm(initial=initial)
+    return render(request, "msds/sds_create.html", context)
 
-    def decorator_delete(self, viewclass):
-        return login_required(viewclass)
 
-    def get_create_view(self):
-        CreateViewClass = super(MSDSObjectCRUD, self).get_create_view()
+def _sds_create_confirm(request, org_pk, context):
+    confirm_form = SDSConfirmForm(request.POST)
+    if not confirm_form.is_valid():
+        context["step"] = 2
+        context["confirm_form"] = confirm_form
+        return render(request, "msds/sds_create.html", context)
 
-        class OCreateView(CreateViewClass):
-            def get_success_url(self):
-                url = reverse(
-                    "msds:index_msds", kwargs={"org_pk": self.kwargs["org_pk"]}
-                )
-                messages.success(self.request, _("Your MSDS was uploaded successfully"))
-                return url
+    temp_file_name = request.session.get("sds_temp_file")
 
-            def get_context_data(self, **kwargs):
-                context = super().get_context_data(**kwargs)
-                context["org_pk"] = self.kwargs["org_pk"]
-                return context
+    if not temp_file_name or not default_storage.exists(temp_file_name):
+        messages.error(request, _("Temporary file not found. Please upload again."))
+        context["step"] = 1
+        context["upload_form"] = SDSUploadForm()
+        return render(request, "msds/sds_create.html", context)
 
-            def form_valid(self, form):
-                instance = form.save(commit=False)
-                organization = get_object_or_404(
-                    OrganizationStructure, pk=self.kwargs["org_pk"]
-                )
-                instance.organization = organization
-                instance.save()
-                return HttpResponseRedirect(self.get_success_url())
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    cd = confirm_form.cleaned_data
 
-        return OCreateView
+    obj = Object(
+        name=cd["name"],
+        type=Object.REACTIVE,
+        organization=organization,
+        created_by=request.user,
+    )
+    obj.save()
 
-    def get_update_view(self):
-        EditViewClass = super(MSDSObjectCRUD, self).get_update_view()
+    full_path = default_storage.path(temp_file_name)
+    file_name = "%s.pdf" % (cd.get("cas_id_number") or obj.pk)
 
-        class OEditView(EditViewClass):
+    sc = SustanceCharacteristics(
+        obj=obj,
+        cas_id_number=cd.get("cas_id_number") or None,
+        molecular_formula=cd.get("molecular_formula") or None,
+        density=cd.get("density") or 0,
+        bioaccumulable=cd.get("bioaccumulable"),
+        is_precursor=cd.get("is_precursor", False),
+        seveso_list=cd.get("seveso_list", False),
+        iarc=cd.get("iarc"),
+        imdg=cd.get("imdg"),
+        precursor_type=cd.get("precursor_type"),
+    )
+    with open(full_path, "rb") as f:
+        sc.security_sheet.save(file_name, File(f), save=False)
+    sc.save()
 
-            def get_success_url(self):
-                url = reverse(
-                    "msds:index_msds", kwargs={"org_pk": self.kwargs["org_pk"]}
-                )
-                messages.success(self.request, _("Your MSDS was updated successfully"))
-                return url
+    # M2M fields
+    if cd.get("h_code"):
+        sc.h_code.set(cd["h_code"])
+    if cd.get("white_organ"):
+        sc.white_organ.set(cd["white_organ"])
+    if cd.get("ue_code"):
+        sc.ue_code.set(cd["ue_code"])
+    if cd.get("nfpa"):
+        sc.nfpa.set(cd["nfpa"])
+    if cd.get("storage_class"):
+        sc.storage_class.set(cd["storage_class"])
 
-            def get_context_data(self, **kwargs):
-                context = super().get_context_data(**kwargs)
-                context["org_pk"] = self.kwargs["org_pk"]
-                return context
+    trace = SDSTraceability(
+        sustance_characteristics=sc,
+        source="manual",
+        revision_date=cd.get("revision_date"),
+        created_by=request.user,
+    )
+    with open(full_path, "rb") as f:
+        trace.security_sheet.save(file_name, File(f), save=False)
+    trace.save()
 
-        return OEditView
+    # Clean up temp file and session
+    default_storage.delete(temp_file_name)
+    request.session.pop("sds_temp_file", None)
 
-    def get_delete_view(self):
-        ODeleteClass = super(MSDSObjectCRUD, self).get_delete_view()
-
-        class ODeleteView(ODeleteClass):
-
-            def get_success_url(self):
-                url = reverse(
-                    "msds:index_msds", kwargs={"org_pk": self.kwargs["org_pk"]}
-                )
-                messages.success(self.request, _("Your MSDS was delete successfully"))
-                return url
-
-            def get_queryset(self):
-                query = super(ODeleteView, self).get_queryset()
-                if not self.request.user.has_perm("msds.delete_msdsobject"):
-                    query = query.none()
-                return query
-
-            def get_context_data(self, **kwargs):
-                context = super().get_context_data(**kwargs)
-                context["org_pk"] = self.kwargs["org_pk"]
-                return context
-
-        return ODeleteView
+    messages.success(request, _("SDS uploaded and substance created successfully"))
+    return HttpResponseRedirect(reverse("msds:index_msds", kwargs={"org_pk": org_pk}))
 
 
 def regulation_view(request):
