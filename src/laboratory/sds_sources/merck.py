@@ -26,7 +26,8 @@ SDS_URL = "https://www.sigmaaldrich.com/CR/es/sds/{brand}/{product_number}"
 IMPERSONATE = "chrome131"
 MAX_RETRIES = 1
 RETRY_DELAY = 3
-MAX_PRODUCTS_TO_TRY = 5
+MAX_PRODUCTS_TO_TRY = 15
+BRAND_SLUGS = ['sial', 'aldrich', 'mm', 'sigma', 'supelco']
 
 # Pattern to find brandKey/productNumber pairs close together in JSON
 BRAND_THEN_PRODUCT = re.compile(
@@ -274,14 +275,32 @@ class MerckSource(SDSSource):
     def _extract_products(self, html):
         """Extract (brand, product_number) pairs from the search page.
 
+        Uses two strategies:
+        1. The original regex that finds adjacent brandKey/productNumber pairs.
+        2. Extracts all productNumbers independently and pairs each with all
+           known brand slugs, since brandKey and productNumber often appear in
+           separate JSON sections and the regex misses them.
+
         Returns a list of unique pairs, deduplicated and preserving order.
         """
         seen = set()
         products = []
+
+        # Strategy 1: adjacent brandKey/productNumber pairs (original regex)
         for m in BRAND_THEN_PRODUCT.finditer(html):
-            brand, product = m.group(1), m.group(2)
+            brand, product = m.group(1).lower(), m.group(2)
             key = (brand, product)
             if key not in seen:
                 seen.add(key)
                 products.append(key)
+
+        # Strategy 2: extract all productNumbers and pair with all brand slugs
+        all_pn = set(re.findall(r'"productNumber"\s*:\s*"([^"]+)"', html))
+        for pn in all_pn:
+            for slug in BRAND_SLUGS:
+                key = (slug, pn)
+                if key not in seen:
+                    seen.add(key)
+                    products.append(key)
+
         return products

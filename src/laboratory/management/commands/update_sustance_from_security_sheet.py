@@ -137,7 +137,8 @@ def _process_one(sc_pk, catalog_data, dry_run, only_empty, update_sds=False, sds
             )
     except Exception as e:
         result['stderr'].append(f"[WARN] {name} (PK={sc.pk}): could not create traceability record: {e}")
-    catalog_fields = extract_catalog_fields(pdf_text, catalog_data) if pdf_text else {}
+    lang = data.get('_lang', 'es')
+    catalog_fields = extract_catalog_fields(pdf_text, catalog_data, lang) if pdf_text else {}
 
     changes = []
     simple_fields = {

@@ -120,6 +120,7 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
         try:
             search_result = source.search(cas, substance_name, pdf_path=existing_pdf_path)
             if not search_result:
+                logger.info("[%s] No results for %s (CAS: %s)", source.name, name, cas)
                 continue
 
             # Download to temp file first
@@ -128,6 +129,7 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
 
             success = source.download(search_result, tmp_path)
             if not success:
+                logger.info("[%s] Download failed for %s (CAS: %s)", source.name, name, cas)
                 if os.path.exists(tmp_path):
                     os.remove(tmp_path)
                 continue
@@ -173,11 +175,13 @@ def update_sds_for_substance(sc, sources=None, max_years=5, dry_run=False,
                     rev_date_str = _extract_revision_date(text)
                     rev_date = _parse_date(rev_date_str)
 
-                SDSTraceability.objects.create(
+                SDSTraceability.objects.update_or_create(
                     sustance_characteristics=sc,
-                    source=source.name,
-                    revision_date=rev_date,
-                    download_url=search_result.get('url', '') or '',
+                    defaults={
+                        'source': source.name,
+                        'revision_date': rev_date,
+                        'download_url': search_result.get('url', '') or '',
+                    },
                 )
             except Exception as e:
                 logger.warning("Could not create SDS traceability record for %s: %s", name, e)
