@@ -1194,3 +1194,15 @@ msgstr "Tipo de Equipo"
 
 msgid "Donated"
 msgstr "Donado"
+
+msgid "Limits"
+msgstr "Límites"
+
+msgid "Decrease"
+msgstr "Disminuir"
+
+msgid "Source"
+msgstr "Fuente"
+
+msgid "Revision Date"
+msgstr "Fecha de Revisión"

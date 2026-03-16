@@ -5537,3 +5537,165 @@ msgstr "Periodo en días"
 
 msgid "Register Provider"
 msgstr "Registrar Proveedor"
+
+msgid "Compatibility Laboratory Report"
+msgstr "Informe de laboratorio de compatibilidad"
+
+msgid "Compatibility Report"
+msgstr "Reporte de compatibilidad SGA"
+
+msgid "Compatible"
+msgstr "Compatible"
+
+msgid "Caution"
+msgstr "Advertencia"
+
+msgid "Incompatible"
+msgstr "Incompatible"
+
+msgid "Incompatibility Alerts"
+msgstr "Advertencias de incompatibilidad"
+
+msgid "Shelf A"
+msgstr "Estante A"
+
+msgid "H-Code A"
+msgstr "Código H A"
+
+msgid "Shelf B"
+msgstr "Estante B"
+
+msgid "H-Code B"
+msgstr "Código H B"
+
+msgid "Reason"
+msgstr "Razón"
+
+msgid "Summary Map"
+msgstr "Mapa de resumen"
+
+msgid "No rooms in this laboratory."
+msgstr "No hay salas en este laboratorio."
+
+msgid "No shelf layout configured for this furniture."
+msgstr "No hay diseño de estantes configurado para este mueble."
+
+msgid "No furniture in this room."
+msgstr "No hay muebles en esta sala."
+
+msgid "No laboratory data available."
+msgstr "No hay datos de laboratorio disponibles."
+
+msgid "Total reactive weight"
+msgstr "Peso total de reactivos"
+
+msgid "tons"
+msgstr "toneladas"
+
+msgid "Substance A"
+msgstr "Substancia A"
+
+msgid "Substance B"
+msgstr "Substancia B"
+
+msgid "Laboratory A"
+msgstr "Laboratorio A"
+
+msgid "Laboratory B"
+msgstr "Laboratorio B"
+
+msgid "No buildings found for this organization."
+msgstr "No se encontraron edificios para esta organización."
+
+msgid "Create buildings and assign them to risk zones first."
+msgstr "Cree edificios y asignelos a zonas de riesgo primero."
+
+msgid "No risk zones found linked to the selected buildings."
+msgstr "No se encontraron zonas de riesgo vinculadas a los edificios seleccionados."
+
+msgid "Assign risk zones to buildings first."
+msgstr "Asigne zonas de riesgo a edificios primero."
+
+msgid "Risk zones found but none have laboratories assigned."
+msgstr "Zonas de riesgo encontradas pero ninguna tiene laboratorios asignados."
+
+msgid "Assign laboratories to the risk zones."
+msgstr "Asigne laboratorios a las zonas de riesgo."
+
+msgid "Laboratories found but no reactive substances registered."
+msgstr "Laboratorios encontrados pero no se han registrado sustancias reactivas."
+
+msgid "Register reactive substances (ShelfObjects of type Reactive) in the laboratories."
+msgstr "Registre sustancias reactivas (objetos de estante de tipo Reactive) en los laboratorios."
+
+msgid "Reactive substances found but none have H-codes (danger indications) assigned."
+msgstr "Sustancias reactivas encontradas pero ninguna tiene códigos H (indicaciones de peligro) asignados."
+
+msgid "Edit each reactive substance and assign H-codes via Substance Characteristics (SGA)."
+msgstr "Edite cada sustancia reactiva y asigne códigos H (indicaciones de peligro) a través de Características de sustancias (SGA)."
+
+msgid "Only one unique H-code found across all zones. At least 2 different H-codes are needed to compare compatibility."
+msgstr "Sólo se encontró un único código H en todas las zonas. Se necesitan al menos 2 códigos H diferentes para comparar la compatibilidad."
+
+msgid "Assign different H-codes to the reactive substances."
+msgstr "Asigne diferentes códigos H a las sustancias reactivas."
+
+msgid "No compatibility pairs generated. Each zone needs at least 2 different H-codes within the same zone."
+msgstr "No se generaron pares de compatibilidad. Cada zona necesita al menos 2 códigos H diferentes dentro de la misma zona."
+
+msgid "Ensure at least one risk zone contains substances with 2 or more different H-codes."
+msgstr "Asegúrese de que al menos una zona de riesgo contiene sustancias con 2 o más códigos H diferentes."
+
+msgid "Compatibility"
+msgstr "Compatibilidad"
+
+msgid "Know places"
+msgstr "Lugares conocidos"
+
+msgid "Density"
+msgstr "Densidad"
+
+msgid "Search SDS"
+msgstr "Buscar SDS"
+
+msgid "Upload SDS"
+msgstr "Subir SDS"
+
+msgid "Analyze"
+msgstr "Analizar"
+
+msgid "Upload SDS File"
+msgstr "Subir archivo SDS"
+
+msgid "SDS File (PDF)"
+msgstr "Archivo SDS (PDF)"
+
+msgid "Diagnostic"
+msgstr "Diagnóstico"
+
+msgid "Classifications"
+msgstr "Clasificaciones"
+
+msgid "Corresponds to the date of the first report, additionally it is the date since the cycle begins to count"
+msgstr "Corresponde a la fecha del primer informe, además es la fecha desde que se inicia a contar el ciclo"
+
+msgid "No comments"
+msgstr "Sin comentarios"
+
+msgid "Legend"
+msgstr "Leyenda"
+
+msgid "No form data recorded"
+msgstr "No hay datos de formulario registrados"
+
+msgid "Reactives with H-codes"
+msgstr "Reactivos con códigos H"
+
+msgid "Unique H-codes"
+msgstr "Códigos H únicos"
+
+msgid "Review extracted data"
+msgstr "Revisar datos extraídos"
+
+msgid "SDS Coverage"
+msgstr "Cobertura SDS"
