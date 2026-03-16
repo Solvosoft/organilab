@@ -65,7 +65,12 @@
 			<a href="{% url 'laboratory:profile' user.pk %}" title="{% trans 'Profile' %}">
 				<span class="fa fa-user" aria-hidden="true"></span>
 			</a>
+
+			<a href="{% url 'pending_tasks:view_task' %}" title="{% trans 'Pending Tasks' %}">
+				<span class="fa fa-sticky-note" aria-hidden="true"></span>
+			</a>
 		{% endif %}
+
 		{% footer_sidebar_menu %}
 		<a title="{% trans 'Logout' %}" href="{% url 'logout' %}">
 			<span class="fa fa-power-off" aria-hidden="true"></span>

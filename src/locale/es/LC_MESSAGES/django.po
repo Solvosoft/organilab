@@ -5528,3 +5528,51 @@ msgstr "Subir reactivos"
 
 msgid "Period on days"
 msgstr "Periodo en días"
+
+msgid "Pending Tasks"
+msgstr "Tareas Pendientes"
+
+msgid "Add Pending Task"
+msgstr "Agregar tarea pendiente"
+
+msgid "Change Pending Task"
+msgstr "Modificar tarea pendiente"
+
+msgid "Delete Pending Task"
+msgstr "Eliminar tarea pendiente"
+
+msgid "View Pending Task"
+msgstr "Ver tarea pendiente"
+
+msgid "Pending Task"
+msgstr "Tarea pendiente"
+
+msgid "Create task"
+msgstr "Crear tarea"
+
+msgid "Edit task"
+msgstr "Editar tarea"
+
+msgid "Delete task"
+msgstr "Eliminar tarea"
+
+msgid "Open link"
+msgstr "Abrir enlace"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "In process"
+msgstr "En proceso"
+
+msgid "Finished"
+msgstr "Finalizada"
+
+msgid "No pending tasks"
+msgstr "No hay tareas pendientes"
+
+msgid "No tasks in process"
+msgstr "No hay tareas en proceso"
+
+msgid "No finished tasks"
+msgstr "No hay tareas finalizadas"
