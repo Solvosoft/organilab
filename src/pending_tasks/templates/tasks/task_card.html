@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<div class="task-card card mb-3 shadow-sm" data-task-id="{{ task.pk }}">
+	<div class="card-body">
+
+		<div class="d-flex justify-content-between align-items-start mb-2">
+			<div class="pe-2">
+				<h6 class="card-title mb-1">
+					#{{ task.pk }} {{ task.description|truncatechars:60 }}
+				</h6>
+			</div>
+
+			<div class="dropdown">
+				<button class="btn btn-sm btn-link text-muted p-0"
+												type="button"
+												title="{% translate 'Actions' %}"
+												data-bs-toggle="dropdown"
+												aria-expanded="false">
+					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+
+				</button>
+
+				<ul class="dropdown-menu dropdown-menu-end">
+					{% if perms.pending_task.change_pendingtask %}
+						<li>
+							<a class="dropdown-item" href="#">
+								<i class="fa fa-pencil me-2 text-warning" aria-hidden="true"></i>
+								{% trans 'Edit task' %}
+							</a>
+						</li>
+					{% endif %}
+
+					{% if perms.pending_task.delete_pendingtask %}
+						<li>
+							<a class="dropdown-item" href="#">
+								<i class="fa fa-trash me-2 text-danger" aria-hidden="true"></i> {% trans 'Delete task' %}
+							</a>
+						</li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+
+		{% if task.profile %}
+			<div class="mb-2 text-muted small">
+				<i class="fa fa-user me-1" aria-hidden="true"></i>
+
+				{{ task.profile }}
+			</div>
+		{% endif %}
+
+		{% if task.link %}
+			<div class="mb-2">
+				<a href="{{ task.link }}" target="_blank" rel="noopener noreferrer">
+					<i class="fa fa-link" aria-hidden="true"></i>
+					{% trans 'Open link' %}
+				</a>
+			</div>
+		{% endif %}
+
+	</div>
+</div>

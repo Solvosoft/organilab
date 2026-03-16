@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+	{% define_urlname_action 'pendingtask_list' %}
+{% endblock %}
+
+{% block extra_head %}
+ 	{{ block.super }}
+		<link rel="stylesheet" href="{% static '/css/tasks.css' %}">
+{% endblock %}
+
+{% block title %}
+	{% trans 'Pending Tasks' %}
+{% endblock %}
+
+{% block content %}
+	<div class="container-fluid py-4">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<div>
+				<h1 class="mb-1">{% trans 'Pending Tasks' %}</h1>
+			</div>
+
+			{% if perms.pending_task.add_pendingtask %}
+				<button type="button" class="btn btn-primary" id="create-task-btn">
+					<i class="fa fa-plus" aria-hidden="true"></i>
+					{% trans 'Create task' %}
+				</button>
+			{% endif %}
+		</div>
+
+		<div class="row g-3 kanban-board">
+			<div class="col-12 col-lg-4">
+				{% include 'tasks/task_column.html' with column_id='status-pending' title=_('Pending') count=pending_tasks|length tasks=pending_tasks status='0' empty_message=_('No pending tasks') header_class='bg-warning-subtle' %}
+			</div>
+
+			<div class="col-12 col-lg-4">
+				{% include 'tasks/task_column.html' with column_id='status-in-process' title=_('In process') count=in_process_tasks|length tasks=in_process_tasks status='1' empty_message=_('No tasks in process') header_class='bg-info-subtle' %}
+			</div>
+
+			<div class="col-12 col-lg-4">
+				{% include 'tasks/task_column.html' with column_id='status-finished' title=_('Finished') count=finished_tasks|length tasks=finished_tasks status='2' empty_message=_('No finished tasks') header_class='bg-success-subtle' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+
+	<script src="{% static '/js/tasks.js' %}?v={% get_organilab_version %}"></script>
+
+{% endblock %}
