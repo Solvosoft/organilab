@@ -320,8 +320,7 @@ class ShelfObjectLaboratoryViewSerializer(
     quantity = serializers.SerializerMethodField()
 
     def get_quantity(self, obj):
-        if obj.object.type == Object.REACTIVE:
-            return round(obj.quantity, 3)
+        return round(obj.quantity, 3)
 
     def get_actions(self, obj):
         context = {
