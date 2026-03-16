@@ -477,7 +477,7 @@ class CompatibilityReport(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(CompatibilityReport, self).get_context_data(**kwargs)
-        title = _("SGA Compatibility Table")
+        title = _("Compatibility Report")
         context.update(
             {
                 "title_view": title,
@@ -508,7 +508,7 @@ class HazardMapReport(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(HazardMapReport, self).get_context_data(**kwargs)
-        title = _("Compatibility Laboratory")
+        title = _("Compatibility Laboratory Report")
         context.update(
             {
                 "title_view": title,
