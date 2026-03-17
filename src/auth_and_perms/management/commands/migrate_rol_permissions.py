@@ -33,11 +33,11 @@ from laboratory.models import OrganizationStructure
 # CONFIGURACIÓN — editar estos valores antes de ejecutar
 # ---------------------------------------------------------------------------
 
-SOURCE_DB_HOST = "127.0.0.1"
+SOURCE_DB_HOST = "10.0.3.153"
 SOURCE_DB_PORT = 5432
-SOURCE_DB_NAME = "organilabviejo"
-SOURCE_DB_USER = "organilab_user"
-SOURCE_DB_PASSWORD = "0rg4n1l4b"
+SOURCE_DB_NAME = "organilab_una_migration"
+SOURCE_DB_USER = "user_migrations"
+SOURCE_DB_PASSWORD = "kfZuS1PyUqa8Xl7Fe3"
 
 # IDs de registros Rol en la BD VIEJA. Se migran TODOS sus permisos.
 # Corresponden posicionalmente con DEST_ROL_IDS.
