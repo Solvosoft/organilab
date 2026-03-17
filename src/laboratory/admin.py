@@ -6,6 +6,7 @@ from laboratory import models
 from laboratory.task_utils import create_informsperiods
 from presentation.utils import update_qr_instance
 from django.core import serializers
+from django.contrib.contenttypes.admin import GenericTabularInline
 
 
 @admin.action(description="Regenerate QR")
@@ -26,22 +27,6 @@ class ShelfObject_Admin(admin.ModelAdmin):
 class Object_Admin(admin.ModelAdmin):
     search_fields = ["name"]
     list_display = ("code", "name", "type", "is_precursor")
-
-class UserOrganizationInline(admin.TabularInline):
-    model = models.UserOrganization
-    extra = 1
-    autocomplete_fields = ['user']
-
-class OrganizationStrutureAdmin(admin.ModelAdmin):
-    search_fields = ["name", "laboratory__name"]
-    list_display = ["name", "laboratories"]
-    mptt_level_indent = 20
-    inlines = [UserOrganizationInline]
-
-    def get_users(self, obj):
-        return ", ".join([u.username for u in obj.users.all()])
-
-    get_users.short_description = "Users"
 
 
 @admin.action(description="Run new informs utilities")
@@ -123,6 +108,80 @@ class BaseUnittAdmin(admin.ModelAdmin):
 class ObjectLogAdmin(admin.ModelAdmin):
     list_display = ["object", "update_time"]
 
+
+class UserOrganizationInline(admin.TabularInline):
+    model = models.UserOrganization
+    extra = 1
+    autocomplete_fields = ["user"]
+
+
+class OrganizationStructureRelationsInline(admin.TabularInline):
+    model = models.OrganizationStructureRelations
+    extra = 1
+    autocomplete_fields = []
+    fields = ("content_type", "object_id")
+
+
+# Organizaciones
+@admin.register(models.OrganizationStructure)
+class OrganizationStrutureAdmin(admin.ModelAdmin):
+    search_fields = ["name"]
+    list_display = [
+        "id",
+        "name",
+        "laboratories",
+        "position",
+        "level",
+        "active",
+        "get_users",
+    ]
+    list_filter = ["active", "level"]
+    filter_horizontal = ["rol"]
+    mptt_level_indent = 20
+    inlines = [UserOrganizationInline, OrganizationStructureRelationsInline]
+
+    def get_users(self, obj):
+        return ", ".join([u.username for u in obj.users.all()])
+
+    get_users.short_description = _("Users")
+
+
+# Relaciones de organizaciones con laboratorios
+@admin.register(models.OrganizationStructureRelations)
+class OrganizationStructureRelationsAdmin(admin.ModelAdmin):
+    list_display = [
+        "organization_id_display",
+        "organization",
+        "content_type",
+        "object_id",
+        "content_object_display",
+    ]
+    list_filter = ["content_type", "organization"]
+    search_fields = ["organization__name", "object_id"]
+    autocomplete_fields = ["organization"]
+
+    def content_object_display(self, obj):
+        return str(obj.content_object) if obj.content_object else "-"
+
+    content_object_display.short_description = _("Related object")
+
+    def organization_id_display(self, obj):
+        return obj.organization_id
+
+    organization_id_display.short_description = "Org ID"
+
+
+class SDSTraceabilityAdmin(admin.ModelAdmin):
+    list_display = [
+        "sustance_characteristics",
+        "source",
+        "revision_date",
+        "creation_date",
+    ]
+    list_filter = ["source"]
+    search_fields = ["sustance_characteristics__cas_id_number"]
+
+
 admin.site.register(models.Laboratory, LaboratoryAdmin)
 admin.site.register(models.Protocol)
 admin.site.register(models.LaboratoryRoom)
@@ -138,7 +197,6 @@ admin.site.register(models.ObjectLogChange, ObjectLogAdmin)
 admin.site.register(models.TranferObject)
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.RegisterUserQR)
-admin.site.register(models.OrganizationStructure, OrganizationStrutureAdmin)
 admin.site.register(models.UserOrganization)
 admin.site.register(models.InformScheduler, InformSchedulerAdmin)
 admin.site.register(models.ShelfObjectObservation)
@@ -147,13 +205,5 @@ admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.ObjectMaximumLimit)
 admin.site.register(models.ReactiveLimit)
 admin.site.register(models.ShelfObjectEquipmentCharacteristics)
-
-
-class SDSTraceabilityAdmin(admin.ModelAdmin):
-    list_display = ['sustance_characteristics', 'source', 'revision_date', 'creation_date']
-    list_filter = ['source']
-    search_fields = ['sustance_characteristics__cas_id_number']
-
-
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.site_header = _("Organilab Administration site")
