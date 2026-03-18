@@ -42,8 +42,10 @@ class Command(BaseCommand):
             )
 
     def restore_objects(self):
-        objects_produ = Object.objects.using(self.from_db).select_related(
-            "organization"
+        objects_produ = (
+            Object.objects.using(self.from_db)
+            .select_related("organization")
+            .distinct("pk")
         )
         for obj in objects_produ:
             by_org = {
@@ -51,7 +53,7 @@ class Command(BaseCommand):
                 "name": obj.name,
                 "type": obj.type,
             }
-            una_obj = Object.objects.using(self.to_db).filter(**by_org)
+            una_obj = Object.objects.using(self.to_db).filter(**by_org).distinct("pk")
             org_una = OrganizationStructure.objects.using(self.to_db).filter(
                 name=obj.organization.name
             )
@@ -67,6 +69,7 @@ class Command(BaseCommand):
                         is_dangerous=obj.is_dangerous,
                         threshold=obj.threshold,
                         is_container=obj.is_container,
+                        has_threshold=obj.has_threshold,
                         is_pure=obj.is_pure,
                         plaque=obj.plaque,
                         model=obj.model,
@@ -74,12 +77,12 @@ class Command(BaseCommand):
                         organization=org_una.first(),
                     )
                     features = list(
-                        obj.features.using("una")
+                        obj.features.using(self.to_db)
                         .filter(name__in=obj.features.values_list("name", flat=True))
                         .values_list("pk", flat=True)
                     )
-                    new_obj.features.set(features)
-
+                    new_obj.features.add(*features)
+                    new_obj.save()
                     if obj.type == Object.REACTIVE and hasattr(
                         obj, "sustancecharacteristics"
                     ):
@@ -122,16 +125,17 @@ class Command(BaseCommand):
                                             field_name: cat.first(),
                                         }
                                     )
-                        new_sus_char, c = SustanceCharacteristics.objects.using(
+                        new_sus_char = SustanceCharacteristics.objects.using(
                             self.to_db
-                        ).get_or_create(**x)
+                        ).create(**x)
                         for field in [
                             "white_organ",
                             "ue_code",
                             "nfpa",
                             "storage_class",
                         ]:
-                            if not getattr(sus_char, field).exists():
+                            if getattr(sus_char, field).exists():
+
                                 for cat in (
                                     Catalog.objects.using(self.to_db)
                                     .filter(
@@ -144,10 +148,11 @@ class Command(BaseCommand):
                                 ):
                                     getattr(new_sus_char, field).add(cat)
 
-                            for h in DangerIndication.objects.using(self.to_db).filter(
-                                code__in=sus_char.h_code.values_list("code", flat=True)
-                            ):
-                                new_sus_char.h_code.add(h)
+                        for h in DangerIndication.objects.using(self.to_db).filter(
+                            code__in=sus_char.h_code.values_list("code", flat=True)
+                        ):
+                            new_sus_char.h_code.add(h)
+                        new_sus_char.save()
                     elif obj.type == Object.MATERIAL and hasattr(
                         obj, "materialcapacity"
                     ):
