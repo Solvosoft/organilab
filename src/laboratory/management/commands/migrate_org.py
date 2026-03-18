@@ -1,13 +1,7 @@
-import json
-from collections import defaultdict
-
 from django.core.management.base import BaseCommand
-from django.db.models import Q
-from docutils.nodes import description
 
 from laboratory.models import (
     Catalog,
-    BaseUnitValues,
     Object,
     OrganizationStructure,
     SustanceCharacteristics,
