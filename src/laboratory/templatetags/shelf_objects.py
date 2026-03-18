@@ -8,15 +8,14 @@ register = template.Library()
 def get_shelfs(lab):
     objects = Shelf.objects.filter(
         furniture__labroom__laboratory=lab,
-        discard=True,
-        furniture__dataconfig__isnull=False,
+        shelfobject__marked_as_discard=True,
     ).distinct()
     return objects
 
 
 @register.simple_tag
 def get_shelf_objects(shelf):
-    objects = ShelfObject.objects.filter(shelf=shelf)
+    objects = ShelfObject.objects.filter(shelf=shelf, marked_as_discard=True)
     return objects
 
 
@@ -24,8 +23,7 @@ def get_shelf_objects(shelf):
 def get_lab_porcentage(lab):
     objects = Shelf.objects.filter(
         furniture__labroom__laboratory=lab,
-        discard=True,
-        furniture__dataconfig__isnull=False,
+        shelfobject__marked_as_discard=True,
     ).distinct()
     amount = 0
     porcentage = 0
