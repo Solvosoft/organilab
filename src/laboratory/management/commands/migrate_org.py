@@ -79,10 +79,9 @@ class Command(BaseCommand):
                     )
 
                     for feature in obj.features.all():
-                        fea = (
-                            ObjectFeatures.objects.using(self.to_db)
-                            .filter(name=feature.name, description=feature.description)
-                            .first()
+                        fea, _ = ObjectFeatures.objects.using(self.to_db).get_or_create(
+                            name=feature.name,
+                            defaults={"description": feature.description},
                         )
                         new_obj.features.add(fea)
                     new_obj.save()
