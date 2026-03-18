@@ -14,6 +14,7 @@ from laboratory.models import (
     EquipmentType,
     MaterialCapacity,
     EquipmentCharacteristics,
+    ObjectFeatures,
 )
 from sga.models import DangerIndication
 
@@ -76,12 +77,14 @@ class Command(BaseCommand):
                         serie=obj.serie,
                         organization=org_una.first(),
                     )
-                    features = list(
-                        obj.features.using(self.to_db)
-                        .filter(name__in=obj.features.values_list("name", flat=True))
-                        .values_list("pk", flat=True)
-                    )
-                    new_obj.features.add(*features)
+
+                    for feature in obj.features.all():
+                        fea = (
+                            ObjectFeatures.objects.using(self.to_db)
+                            .filter(name=feature.name, description=feature.description)
+                            .first()
+                        )
+                        new_obj.features.add(fea)
                     new_obj.save()
                     if obj.type == Object.REACTIVE and hasattr(
                         obj, "sustancecharacteristics"
@@ -108,7 +111,7 @@ class Command(BaseCommand):
                         }
                         z = (
                             ("iarc", "IARC"),
-                            ("imdg", "IMDG"),
+                            ("imdg", "IDMG"),
                             ("precursor_type", "Precursor"),
                         )
                         for field_name, value in z:
@@ -136,22 +139,22 @@ class Command(BaseCommand):
                         ]:
                             if getattr(sus_char, field).exists():
 
-                                for cat in (
-                                    Catalog.objects.using(self.to_db)
-                                    .filter(
-                                        key=field,
-                                        description__in=getattr(
-                                            sus_char, field
-                                        ).values_list("description", flat=True),
-                                    )
-                                    .all()
+                                for cat in Catalog.objects.using(self.to_db).filter(
+                                    key=field,
+                                    description__in=list(
+                                        getattr(sus_char, field).values_list(
+                                            "description", flat=True
+                                        )
+                                    ),
                                 ):
                                     getattr(new_sus_char, field).add(cat)
-
-                        for h in DangerIndication.objects.using(self.to_db).filter(
-                            code__in=sus_char.h_code.values_list("code", flat=True)
-                        ):
-                            new_sus_char.h_code.add(h)
+                        for h in sus_char.h_code.all():
+                            danger_indication = (
+                                DangerIndication.objects.using(self.to_db)
+                                .filter(code=h.code, description=h.description)
+                                .first()
+                            )
+                            new_sus_char.h_code.add(danger_indication)
                         new_sus_char.save()
                     elif obj.type == Object.MATERIAL and hasattr(
                         obj, "materialcapacity"
