@@ -28,8 +28,8 @@ class Command(BaseCommand):
     #     parser.add_argument("--to", type=str, default="una")
 
     def handle(self, *args, **options):
-        self.from_db = "default"
-        self.to_db = "una"
+        self.from_db = "una"
+        self.to_db = "default"
 
         self.migrate_equipment_type()
         self.restore_objects()
