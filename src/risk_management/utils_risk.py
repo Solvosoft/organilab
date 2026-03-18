@@ -87,11 +87,12 @@ def get_inventory(filters=None):
                 total_shelfobjects += max_obj.quantity
             else:
                 try:
-                    total_shelfobjects += (
+                    total_shelfobjects += round(
                         get_conversion_units_to_kilograms(
                             max_obj.measurement_unit, max_obj.quantity, density
                         )
-                        / 1000
+                        / 1000,
+                        3,
                     )
                 except ZeroDivisionError:
                     total_shelfobjects += 0
@@ -99,7 +100,7 @@ def get_inventory(filters=None):
             data = {
                 "nombre": obj.name,
                 "cas": obj.cas_code,
-                "cantidad_t": 0,
+                "cantidad_t": total_shelfobjects,
                 "h_codes": ";".join(h_codes),
                 "condicion_proceso": "",
             }
