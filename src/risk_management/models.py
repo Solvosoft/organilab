@@ -92,7 +92,7 @@ class RiskZone(AbstractOrganizationRef):
     zone_type = models.ForeignKey(
         ZoneType, on_delete=models.CASCADE, verbose_name=_("Zone Type")
     )
-    priority = models.SmallIntegerField(verbose_name=_("Priority"))
+    priority = models.SmallIntegerField(verbose_name=_("Priority"), default=0)
 
     def __str__(self):
         return self.name
@@ -233,6 +233,8 @@ class Buildings(AbstractOrganizationRef):
         verbose_name=_("Responsible"),
         related_name="manager",
         on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
     )
     geolocation = PlainLocationField(
         default="9.895804362670006,-84.1552734375", zoom=15
