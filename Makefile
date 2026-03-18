@@ -53,6 +53,21 @@ create-profile: ## - create user and user profile
 	user = User.objects.last(); \
 	Profile.objects.get_or_create(user=user)"
 
+check-move-organization-data: ## Validate organization migration (Example: make check-move-organization-data FROM=5 TO=9)
+	@echo "Validating organization data migration..."
+	@echo "FROM=$(FROM) → TO=$(TO)"
+	cd src && python manage.py move_organization_data --from-org $(FROM) --to-org $(TO) --dry-run
+
+
+move-organization-data: ## Execute organization migration (Example: make move-move-organization-data FROM=5 TO=9)
+	@echo "You are about to move data from one organization to another"
+	@echo "FROM=$(FROM) → TO=$(TO)"
+	@read -p "Do you want to continue? [y/N]: " confirm; \
+	if [ "$$confirm" = "y" ]; then \
+		cd src && python manage.py move_organization_data --from-org $(FROM) --to-org $(TO); \
+	else \
+		echo "Operation cancelled"; \
+	fi
 
 ##--------------------------------------------------------
 ## Project build
