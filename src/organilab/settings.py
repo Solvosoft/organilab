@@ -163,23 +163,8 @@ DATABASES = {
             "PORT": os.getenv("DBPORT", "5432"),
         },
     },
-    "una": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DBNAME_MIGRATIONS", "orga_x"),
-        "USER": os.getenv("DBUSER", "organilab_user"),
-        "PASSWORD": os.getenv("DBPASSWORD", "0rg4n1l4b"),
-        "HOST": os.getenv("DBHOST", "127.0.0.1"),
-        "PORT": os.getenv("DBPORT", "5432"),
-        "TEST": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DBNAME", "organilab_test"),
-            "USER": os.getenv("DBUSER", "organilab_user"),
-            "PASSWORD": os.getenv("DBPASSWORD", "0rg4n1l4b"),
-            "HOST": os.getenv("DBHOST", "127.0.0.1"),
-            "PORT": os.getenv("DBPORT", "5432"),
-        },
-    },
 }
+
 
 READONLY_DATABASE = os.getenv("READONLY_DATABASE", "default")
 

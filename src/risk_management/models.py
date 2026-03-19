@@ -339,6 +339,7 @@ class EstablishmentLogs(models.Model):
         max_length=50, null=True, blank=True, verbose_name=_("Establishment Status")
     )
     table_content = models.JSONField(null=True, blank=True)
+    xls_content = models.FileField(null=True, blank=True)
     date = models.DateTimeField(default=timezone.now, editable=True)
 
     def __str__(self):
