@@ -144,7 +144,7 @@ dist: ##  - print current version of organilab
 build_docker: ##  - build docker images
 	docker pull python:3.13-trixie && \
 	docker pull python:3.13-slim-trixie && \
-	docker build  -t organilab:$(setup_version) -t organilab:latest .
+	docker build --no-cache  -t organilab:$(setup_version) -t organilab:latest .
 
 build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
