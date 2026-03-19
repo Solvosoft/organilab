@@ -9,7 +9,7 @@ class EstablishmentLogsAdmin(admin.ModelAdmin):
     list_display = ['id', 'content_type', 'object_id', 'date']
     list_filter = ['date', 'content_type']
     fields = ['content_type', 'object_id', 'physical', 'health',
-              'environmental', 'establishment_status', 'table_content', 'date']
+              'environmental', 'establishment_status', 'table_content', 'xls_content', 'date']
 
 
 admin.site.register(PriorityConstrain)
