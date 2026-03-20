@@ -102,4 +102,23 @@
 {% block js %}
 	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
 	<script src="{% static 'js/graphics_callback.js' %}?v={% get_organilab_version %}"></script>
-{% endblock %}
+	<script>
+	$(document).ready(function() {
+		$.ajax({
+			url: "{{ substancetonschart }}",
+			type: "GET",
+			dataType: "json",
+			success: function(result) {
+				var numLabels = result.data.labels.length;
+				var chartHeight = Math.max(400, numLabels * 25);
+				var container = document.getElementById("substancetons-container");
+				container.style.height = chartHeight + "px";
+				result.options.maintainAspectRatio = false;
+				result.options.responsive = true;
+				var ctx = document.getElementById("substancetons-canvas").getContext("2d");
+				new Chart(ctx, result);
+			}
+		});
+	});
+	</script>
+		{% endblock %}
