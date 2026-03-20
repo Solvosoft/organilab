@@ -1,6 +1,7 @@
 20/03/2026
 Command to merge duplicate Buildings
     - python manage.py merge_duplicates_buildings
+
 20/03/2026s
 Command to move laboratories of buildings to risk zones
     - python manage.py assign_lab_to_riskzones
