@@ -344,7 +344,7 @@ TUTORIALS = [
             {
                 'order': 3, 'step_key': 'proc-ejecutar', 'step_type': 'MODAL',
                 'title': 'Ejecutar procedimiento',
-                'content': 'Al ejecutar un procedimiento se crea una <strong>instancia</strong> (MyProcedure) que pasa por estados: Borrador → En Revisión → Finalizado. En cada paso puede completar formularios y agregar observaciones.',
+                'content': 'Al ejecutar un procedimiento se crea una <strong>instancia</strong> (Mis Procedimientos) que pasa por estados: Borrador → En Revisión → Finalizado. En cada paso puede completar formularios y agregar observaciones.',
             },
             {
                 'order': 4, 'step_key': 'proc-reservar', 'step_type': 'MODAL',
