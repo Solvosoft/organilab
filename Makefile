@@ -163,7 +163,3 @@ update_sds: ## - update SDS files in batches
 
 clean_orphan_media: ## - elimina archivos en MEDIA_ROOT no referenciados en la BD
 	cd src && python manage.py clean_orphan_media
-
-load_backup: ## - load database from backups/respaldo.sql.gz
-	createdb -W -U organilab_user organilab
-	gunzip -c backups/respaldo.sql.gz | psql -U organilab_user -W -d organilab
