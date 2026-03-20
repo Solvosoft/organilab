@@ -74,6 +74,32 @@
 										{% endif %}
 									</div>
 									<div class="card-body">
+
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-tag"></i> {% trans 'Zone Type' %}:</small>
+											<span class="badge bg-secondary">{{ object.zone_type }}</span>
+										</div>
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-flask"></i> {% trans 'Laboratories' %}:</small>
+											{% for lab in object.laboratories.all %}
+												<span class="badge bg-info text-dark">{{ lab.name }}</span>
+											{% empty %}
+												<span class="text-muted"><small>{% trans 'None' %}</small></span>
+											{% endfor %}
+										</div>
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-building"></i> {% trans 'Buildings' %}:</small>
+											{% for building in object.buildings.all %}
+												<span class="badge bg-warning text-dark">{{ building.name }}</span>
+											{% empty %}
+												<span class="text-muted"><small>{% trans 'None' %}</small></span>
+											{% endfor %}
+										</div>
+										<div class="mb-2">
+											<small class="text-muted"><i class="fa fa-users"></i> {% trans 'Workers' %}:</small>
+											<span>{{ object.num_workers }}</span>
+										</div>
+										<hr class="my-2">
 										<div style="width: 100%; height: 300px;">
 											{% with zone_pk=object.pk|stringformat:"s" %}
 												{% with dataparams='data-zone="'|add:zone_pk|add:'"' %}

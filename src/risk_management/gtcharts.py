@@ -17,7 +17,9 @@ from rest_framework.response import Response
 from laboratory.models import (
     ShelfObject,
     Catalog,
-    OrganizationStructure, BaseUnitValues,
+    OrganizationStructure,
+    BaseUnitValues,
+    Object,
 )
 from laboratory.utils_base_unit import get_conversion_units
 from risk_management.api.serializer import RiskZoneSerializer
@@ -133,19 +135,16 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                }
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
@@ -169,18 +168,32 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
                 object__sustancecharacteristics__h_code=dangerindication
             ):
                 base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit).first()
-                if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                     kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Litros":
-                    litro_amount += get_conversion_units(obj.measurement_unit,
-                                                          obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Libra":
-                    libra_amount += get_conversion_units(obj.measurement_unit,)
+                    measurement_unit=obj.measurement_unit
+                ).first()
+                if (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Kilogramos"
+                ):
+                    kilo_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Litros"
+                ):
+                    litro_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit and base_unit.measurement_unit_base.description == "Libra"
+                ):
+                    libra_amount += get_conversion_units(
+                        obj.measurement_unit,
+                    )
                 else:
                     logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}")
+                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
+                    )
 
             if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
                 labels.append(dangerindication.code)
@@ -221,7 +234,7 @@ class LaboratoryDangerIndicationChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
-            }
+            },
         ]
 
 
@@ -245,19 +258,16 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                }
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
@@ -283,19 +293,32 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
                 object__sustancecharacteristics__white_organ__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit).first()
-                if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                    kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                        obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Litros":
-                    litro_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Libra":
-                    libra_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
+                    measurement_unit=obj.measurement_unit
+                ).first()
+                if (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Kilogramos"
+                ):
+                    kilo_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Litros"
+                ):
+                    litro_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit and base_unit.measurement_unit_base.description == "Libra"
+                ):
+                    libra_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
                 else:
                     logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}")
+                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
+                    )
 
             if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
                 labels.append(catalog["description"])
@@ -336,7 +359,7 @@ class LaboratoryWhiteOrganChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
-            }
+            },
         ]
 
 
@@ -360,19 +383,16 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                }
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
@@ -397,19 +417,32 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
                 object__sustancecharacteristics__precursor_type__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit).first()
-                if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                    kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                        obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Litros":
-                    litro_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Libra":
-                    libra_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
+                    measurement_unit=obj.measurement_unit
+                ).first()
+                if (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Kilogramos"
+                ):
+                    kilo_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Litros"
+                ):
+                    litro_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit and base_unit.measurement_unit_base.description == "Libra"
+                ):
+                    libra_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
                 else:
                     logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}")
+                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
+                    )
 
             if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
                 labels.append(catalog["description"])
@@ -450,7 +483,7 @@ class LaboratoryPrecursorTypeChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
-            }
+            },
         ]
 
 
@@ -474,19 +507,16 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                }
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
@@ -509,19 +539,32 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
                 object__sustancecharacteristics__nfpa__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit).first()
-                if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                    kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                        obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Litros":
-                    litro_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Libra":
-                    libra_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
+                    measurement_unit=obj.measurement_unit
+                ).first()
+                if (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Kilogramos"
+                ):
+                    kilo_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Litros"
+                ):
+                    litro_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit and base_unit.measurement_unit_base.description == "Libra"
+                ):
+                    libra_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
                 else:
                     logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}")
+                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
+                    )
 
             if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
                 labels.append(catalog["description"])
@@ -562,7 +605,7 @@ class LaboratoryNFPAChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
-            }
+            },
         ]
 
 
@@ -586,19 +629,16 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                }
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
@@ -624,19 +664,32 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
                 object__sustancecharacteristics__ue_code__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit).first()
-                if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                    kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                        obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Litros":
-                    litro_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Libra":
-                    libra_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
+                    measurement_unit=obj.measurement_unit
+                ).first()
+                if (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Kilogramos"
+                ):
+                    kilo_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Litros"
+                ):
+                    litro_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit and base_unit.measurement_unit_base.description == "Libra"
+                ):
+                    libra_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
                 else:
                     logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}")
+                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
+                    )
 
             if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
                 labels.append(catalog["description"])
@@ -677,7 +730,7 @@ class LaboratoryUECodeChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
-            }
+            },
         ]
 
 
@@ -701,19 +754,16 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                }
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
@@ -738,19 +788,32 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
                 object__sustancecharacteristics__storage_class__pk=catalog["pk"]
             ):
                 base_unit = BaseUnitValues.objects.filter(
-                    measurement_unit=obj.measurement_unit).first()
-                if base_unit and base_unit.measurement_unit_base.description == "Kilogramos":
-                    kilo_amount += get_conversion_units(obj.measurement_unit,
-                                                        obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Litros":
-                    litro_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
-                elif base_unit and base_unit.measurement_unit_base.description == "Libra":
-                    libra_amount += get_conversion_units(obj.measurement_unit,
-                                                         obj.quantity)
+                    measurement_unit=obj.measurement_unit
+                ).first()
+                if (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Kilogramos"
+                ):
+                    kilo_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit
+                    and base_unit.measurement_unit_base.description == "Litros"
+                ):
+                    litro_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
+                elif (
+                    base_unit and base_unit.measurement_unit_base.description == "Libra"
+                ):
+                    libra_amount += get_conversion_units(
+                        obj.measurement_unit, obj.quantity
+                    )
                 else:
                     logger.error(
-                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}")
+                        f"Error in base unit {obj.measurement_unit}, obj: {obj.pk}"
+                    )
 
             if litro_amount > 0 or kilo_amount > 0 or libra_amount > 0:
                 labels.append(catalog["description"])
@@ -791,7 +854,7 @@ class LaboratoryStorageClassChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": self.libra_data,
-            }
+            },
         ]
 
 
@@ -809,7 +872,7 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
     def retrieve(self, request, pk):
         self.request = request
         self.organization = get_object_or_404(OrganizationStructure, pk=pk)
-        zone_param = request.GET.get('zone')
+        zone_param = request.GET.get("zone")
         if zone_param is None:
             raise Http404("Zone parameter is required")
         try:
@@ -822,50 +885,47 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
 
     def get_options(self):
         options = super().get_options()
-        options['plugins'] = {
-            'showDataLabels': True,
-            'datalabels': {
-                'anchor': 'end',
-                'align': 'end',
-                'offset': 4,
-                'clip': False,
-                'color': '#333',
-                'font': {
-                    'weight': 'bold',
-                    'size': 11
-                },
-            }
+        options["plugins"] = {
+            "showDataLabels": True,
+            "datalabels": {
+                "anchor": "end",
+                "align": "end",
+                "offset": 4,
+                "clip": False,
+                "color": "#333",
+                "font": {"weight": "bold", "size": 11},
+            },
         }
         return options
 
     def get_scales(self):
         return {
-            'xAxes': [{
-                'ticks': {
-                    'min': 0,
-                    'max': 1,
-                    'stepSize': 0.1
-                }
-            }],
-            'yAxes': [{
-                'ticks': {}
-            }]
+            "xAxes": [{"ticks": {"min": 0, "max": 1, "stepSize": 0.1}}],
+            "yAxes": [{"ticks": {}}],
         }
 
     def get_labels(self):
         return [""]
 
     def get_datasets(self):
-        latest_log = EstablishmentLogs.objects.filter(
-            object_id=self.pk,
-            content_type=ContentType.objects.get_for_model(RiskZone),
-        ).order_by('-date').first()
+        latest_log = (
+            EstablishmentLogs.objects.filter(
+                object_id=self.pk,
+                content_type=ContentType.objects.get_for_model(RiskZone),
+            )
+            .order_by("-date")
+            .first()
+        )
 
         if not latest_log:
-            latest_log = EstablishmentLogs.objects.filter(
-                object_id=self.pk,
-                content_type=ContentType.objects.get_for_model(RiskZone)
-            ).order_by('-date').first()
+            latest_log = (
+                EstablishmentLogs.objects.filter(
+                    object_id=self.pk,
+                    content_type=ContentType.objects.get_for_model(RiskZone),
+                )
+                .order_by("-date")
+                .first()
+            )
 
         physical_value = latest_log.physical if latest_log else 0
         health_value = latest_log.health if latest_log else 0
@@ -897,5 +957,173 @@ class EstablishmentLogsClassChart(BaseChart, HorizontalBarChart):
                 "borderColor": color_3,
                 "borderWidth": 1,
                 "data": [environmental_value],
-            }
+            },
         ]
+
+
+@register_lookups(prefix="substance_tons", basename="substancetonschart")
+class SubstanceQuantityTonsChart(BaseChart, HorizontalBarChart):
+    permission_classes = [LaboratoryPermission]
+    django_permissions_list = ["risk_management.view_riskzone"]
+
+    def get_title(self):
+        return {"display": True, "text": _("Substances quantity in tons")}
+
+    def list(self, request):
+        raise Http404("Not found")
+
+    def retrieve(self, request, pk):
+        self.request = request
+        self.organization = get_object_or_404(OrganizationStructure, pk=pk)
+        data = self.get_graph_data()
+        serializer = self.serializer_class(data)
+        return Response(serializer.data)
+
+    def get_options(self):
+        options = super().get_options()
+        options["plugins"] = {
+            "showDataLabels": False,
+        }
+        options["maintainAspectRatio"] = False
+        return options
+
+    def _get_unit_pks_by_base(self, *base_descriptions):
+        return list(
+            BaseUnitValues.objects.filter(
+                measurement_unit_base__description__in=base_descriptions
+            ).values_list("measurement_unit__pk", flat=True)
+        )
+
+    def get_labels(self):
+        labels = []
+        self.tons_data = []
+        self.other_datasets = {}
+        self.other_units = [
+            ("unidades", _("Unidades")),
+            ("pascales", _("Pascales (Pa)")),
+            ("psi", _("PSI")),
+        ]
+
+        kg_pks = self._get_unit_pks_by_base("Kilogramos")
+        libra_pks = self._get_unit_pks_by_base("Libra")
+        litro_pks = self._get_unit_pks_by_base("Litros")
+        metro_pks = self._get_unit_pks_by_base("Metros")
+        m3_pks = self._get_unit_pks_by_base("Metro cúbico")
+        unidad_pks = self._get_unit_pks_by_base("Unidades")
+        pascal_pks = self._get_unit_pks_by_base("Pascales")
+        psi_pks = self._get_unit_pks_by_base("PSI")
+
+        results = (
+            ShelfObject.objects.filter(
+                object__organization=self.organization,
+                object__type=Object.REACTIVE,
+            )
+            .values("object__name")
+            .annotate(
+                tons=Sum(
+                    Case(
+                        When(
+                            measurement_unit__pk__in=kg_pks,
+                            then=F("quantity_base_unit") / Value(1000.0),
+                        ),
+                        When(
+                            measurement_unit__pk__in=libra_pks,
+                            then=F("quantity_base_unit")
+                            * Value(0.453592)
+                            / Value(1000.0),
+                        ),
+                        When(
+                            measurement_unit__pk__in=litro_pks,
+                            then=F("quantity_base_unit") / Value(1000.0),
+                        ),
+                        When(
+                            measurement_unit__pk__in=metro_pks,
+                            then=F("quantity_base_unit") / Value(1000.0),
+                        ),
+                        When(
+                            measurement_unit__pk__in=m3_pks,
+                            then=F("quantity_base_unit"),
+                        ),
+                        default=Value(0.0),
+                        output_field=FloatField(),
+                    )
+                ),
+                unidades=Sum(
+                    Case(
+                        When(
+                            measurement_unit__pk__in=unidad_pks,
+                            then=F("quantity_base_unit"),
+                        ),
+                        default=Value(0.0),
+                        output_field=FloatField(),
+                    )
+                ),
+                pascales=Sum(
+                    Case(
+                        When(
+                            measurement_unit__pk__in=pascal_pks,
+                            then=F("quantity_base_unit"),
+                        ),
+                        default=Value(0.0),
+                        output_field=FloatField(),
+                    )
+                ),
+                psi=Sum(
+                    Case(
+                        When(
+                            measurement_unit__pk__in=psi_pks,
+                            then=F("quantity_base_unit"),
+                        ),
+                        default=Value(0.0),
+                        output_field=FloatField(),
+                    )
+                ),
+            )
+            .order_by("object__name")
+        )
+
+        active_others = set()
+        for row in results:
+            tons = row["tons"] or 0
+            others = {key: row[key] or 0 for key, label in self.other_units}
+            if tons > 0 or any(v > 0 for v in others.values()):
+                labels.append(row["object__name"])
+                self.tons_data.append(round(float(tons), 4))
+                for key, label in self.other_units:
+                    self.other_datasets.setdefault(key, []).append(
+                        round(float(others[key]), 2)
+                    )
+                    if others[key] > 0:
+                        active_others.add(key)
+
+        self.other_units = [(k, l) for k, l in self.other_units if k in active_others]
+
+        if not labels:
+            labels.append(_("No data registered"))
+            self.tons_data.append(0)
+        return labels
+
+    def get_datasets(self):
+        self.index = randint(0, len(self.colors))
+        color = self.get_color()
+        datasets = [
+            {
+                "label": _("Toneladas (t)"),
+                "backgroundColor": color,
+                "borderColor": color,
+                "borderWidth": 1,
+                "data": self.tons_data,
+            },
+        ]
+        for key, label in self.other_units:
+            color = self.get_color()
+            datasets.append(
+                {
+                    "label": label,
+                    "backgroundColor": color,
+                    "borderColor": color,
+                    "borderWidth": 1,
+                    "data": self.other_datasets.get(key, []),
+                }
+            )
+        return datasets
