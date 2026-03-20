@@ -72,7 +72,7 @@ def tutorial_launcher(context):
         request.resolver_match.kwargs.get('org_pk') if request.resolver_match else None
     )
     url_name = (
-        request.resolver_match.url_name if request.resolver_match else None
+        request.resolver_match.view_name if request.resolver_match else None
     )
 
     tutorials = _get_tutorials_for_page(request.user, org_pk, url_name)
@@ -127,6 +127,11 @@ def tutorial_launcher(context):
         })
         if t.auto_start and t.id not in progress_map:
             auto_start_slugs.append(t.slug)
+            TutorialProgress.objects.get_or_create(
+                user=request.user,
+                tutorial=t,
+                defaults={'current_step': 0},
+            )
 
     if not tutorials_data:
         return ''
