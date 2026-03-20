@@ -753,4 +753,5 @@ class ReactiveLimitAdmin(admin.ModelAdmin):
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
+admin.site.register(models.ShelfObjectLimits)
 admin.site.site_header = _("Organilab Administration site")

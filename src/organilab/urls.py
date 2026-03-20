@@ -88,7 +88,7 @@ urlpatterns = (
         ),
         re_path(r"^markitup/", include("markitup.urls")),
         path("admin/", admin.site.urls),
-        path("async_notifications/", include("async_notifications.urls")),
+        path("async_notification/", include("djgentelella.async_notification.urls", namespace="async_notification")),
         path("report/", include((report_urls, "report"), namespace="report")),
         path(
             "pending_tasks/", include("pending_tasks.urls", namespace="pending_tasks")

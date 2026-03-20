@@ -1,4 +1,3 @@
-from async_notifications.register import update_template_context
 from django.views.generic.base import TemplateView
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -12,25 +11,9 @@ class PermissionDeniedView(TemplateView):
     template_name = "laboratory/permission_denied.html"
 
 
-context = [
-    ("data.name", "name"),
-    ("data.business_email", "Business email"),
-    ("data.company_name", "Company name"),
-    ("data.country", "Country"),
-    ("data.phone_number", "Phone number"),
-]
-update_template_context(
-    "Request demo",
-    "New demo request",
-    context,
-    message="""User information:<br>
-                        {{data.name}}<br>
-                        {{data.business_email}}<br>
-                        {{data.company_name}}<br>
-                        {{data.country}}<br>
-                        {{data.phone_number}}
-                        """,
-)
+# TODO: migrate to djgentelella.async_notification.registry.register_context
+# context = [("data.name", "name"), ("data.business_email", "Business email"), ...]
+# update_template_context("Request demo", "New demo request", context, message=...)
 
 
 class SignDataRequestViewSet(viewsets.ViewSet):
