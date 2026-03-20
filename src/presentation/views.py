@@ -1,17 +1,26 @@
+import json
+import logging
+
 from async_notifications.utils import send_email_from_template
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.utils.decorators import method_decorator
-from django.utils.translation import gettext_lazy as _
-from django.http import HttpResponseRedirect
+from django.contrib.contenttypes.models import ContentType
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView
-from presentation.models import Donation, FeedbackEntry
+
+from auth_and_perms.models import ProfilePermission
 from presentation.forms import DonateForm, FeedbackEntryForm
-from django.conf import settings
-import logging
+from presentation.models import (
+    Donation, FeedbackEntry, Tutorial, TutorialProgress,
+)
 
 logger = logging.getLogger("organilab")
 
@@ -19,7 +28,119 @@ logger = logging.getLogger("organilab")
 @login_required
 @permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def index_tutorial(request, org_pk):
-    return render(request, "tutorial.html", context={"org_pk": org_pk})
+    user = request.user
+    user_rol_ids = set()
+    try:
+        from laboratory.models import OrganizationStructure
+        org_ct = ContentType.objects.get_for_model(OrganizationStructure)
+        for pp in ProfilePermission.objects.filter(
+            profile=user.profile, content_type=org_ct, object_id=org_pk
+        ):
+            user_rol_ids.update(pp.rol.values_list('id', flat=True))
+    except Exception:
+        pass
+
+    tutorials = Tutorial.objects.filter(
+        is_active=True
+    ).prefetch_related('steps', 'target_roles').order_by('chapter', 'order')
+
+    filtered = []
+    for t in tutorials:
+        target_ids = set(t.target_roles.values_list('id', flat=True))
+        if target_ids and not target_ids.intersection(user_rol_ids):
+            continue
+        filtered.append(t)
+
+    progress_map = {}
+    for tp in TutorialProgress.objects.filter(user=user):
+        progress_map[tp.tutorial_id] = tp
+
+    chapters = {}
+    for t in filtered:
+        chapter = t.get_chapter_display()
+        if chapter not in chapters:
+            chapters[chapter] = []
+        tp = progress_map.get(t.id)
+        chapters[chapter].append({
+            'tutorial': t,
+            'progress': tp,
+            'step_count': t.steps.count(),
+        })
+
+    return render(request, "tutorial.html", context={
+        "org_pk": org_pk,
+        "chapters": chapters,
+    })
+
+
+@login_required
+@require_POST
+def tutorial_progress_api(request):
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    tutorial_id = data.get('tutorial_id')
+    step_order = data.get('step_order', 0)
+    completed = data.get('completed', False)
+    dismissed = data.get('dismissed', False)
+
+    if not tutorial_id:
+        return JsonResponse({'error': 'tutorial_id required'}, status=400)
+
+    try:
+        tutorial = Tutorial.objects.get(pk=tutorial_id)
+    except Tutorial.DoesNotExist:
+        return JsonResponse({'error': 'Tutorial not found'}, status=404)
+
+    progress, created = TutorialProgress.objects.get_or_create(
+        user=request.user,
+        tutorial=tutorial,
+    )
+
+    progress.current_step = step_order
+    if completed:
+        progress.completed = True
+        progress.completed_at = timezone.now()
+    if dismissed:
+        progress.dismissed = True
+    progress.save()
+
+    return JsonResponse({'ok': True})
+
+
+@login_required
+@require_POST
+def tutorial_toggle_api(request):
+    try:
+        profile = request.user.profile
+    except Exception:
+        return JsonResponse({'error': 'No profile'}, status=400)
+
+    profile.show_tutorials = not profile.show_tutorials
+    profile.save(update_fields=['show_tutorials'])
+
+    return JsonResponse({'show_tutorials': profile.show_tutorials})
+
+
+@login_required
+@require_POST
+def tutorial_reactivate_api(request):
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, ValueError):
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+    tutorial_id = data.get('tutorial_id')
+    if not tutorial_id:
+        return JsonResponse({'error': 'tutorial_id required'}, status=400)
+
+    TutorialProgress.objects.filter(
+        user=request.user, tutorial_id=tutorial_id
+    ).update(dismissed=False, completed=False, current_step=0, completed_at=None)
+
+    return JsonResponse({'ok': True})
 
 
 @method_decorator(login_required, name="dispatch")

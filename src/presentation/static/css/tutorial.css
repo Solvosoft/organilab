@@ -1,0 +1,187 @@
+/* Tutorial Overlay */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    transition: opacity 0.3s ease;
+}
+
+/* Highlighted element */
+.tutorial-highlighted {
+    position: relative !important;
+    z-index: 10001 !important;
+    box-shadow: 0 0 0 4px #1ABB9C, 0 0 20px rgba(26, 187, 156, 0.4) !important;
+    border-radius: 4px;
+    transition: box-shadow 0.3s ease;
+}
+
+/* Tooltip */
+.tutorial-tooltip {
+    position: absolute;
+    z-index: 10002;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 380px;
+    min-width: 280px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: tutorialFadeIn 0.3s ease;
+}
+
+.tutorial-tooltip .tutorial-step-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #2A3F54;
+}
+
+.tutorial-tooltip .tutorial-step-content {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.tutorial-tooltip .tutorial-step-content img {
+    max-width: 100%;
+    border-radius: 4px;
+    margin: 8px 0;
+}
+
+.tutorial-tooltip .tutorial-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.tutorial-tooltip .tutorial-nav .btn {
+    font-size: 13px;
+    padding: 5px 14px;
+}
+
+.tutorial-tooltip .tutorial-step-indicator {
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    flex: 1;
+}
+
+/* Tooltip arrow */
+.tutorial-tooltip::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tutorial-tooltip.tooltip-top::before {
+    bottom: -6px;
+    left: 50%;
+    margin-left: -6px;
+}
+
+.tutorial-tooltip.tooltip-bottom::before {
+    top: -6px;
+    left: 50%;
+    margin-left: -6px;
+}
+
+.tutorial-tooltip.tooltip-left::before {
+    right: -6px;
+    top: 50%;
+    margin-top: -6px;
+}
+
+.tutorial-tooltip.tooltip-right::before {
+    left: -6px;
+    top: 50%;
+    margin-top: -6px;
+}
+
+/* FAB Button */
+.tutorial-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #1ABB9C;
+    color: #fff;
+    border: none;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 9999;
+    box-shadow: 0 2px 12px rgba(26, 187, 156, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tutorial-fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(26, 187, 156, 0.6);
+}
+
+/* Tutorial menu (FAB expanded) */
+.tutorial-menu {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    min-width: 280px;
+    max-width: 350px;
+    max-height: 400px;
+    overflow-y: auto;
+    animation: tutorialFadeIn 0.2s ease;
+}
+
+.tutorial-menu .tutorial-menu-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    color: #2A3F54;
+}
+
+.tutorial-menu .tutorial-menu-item {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: background 0.15s;
+}
+
+.tutorial-menu .tutorial-menu-item:hover {
+    background: #f5f5f5;
+}
+
+.tutorial-menu .tutorial-menu-item .tutorial-menu-title {
+    font-weight: 500;
+    color: #2A3F54;
+}
+
+.tutorial-menu .tutorial-menu-item .tutorial-menu-desc {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+}
+
+@keyframes tutorialFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
