@@ -435,6 +435,10 @@ class ZoneDashboard(TemplateView):
                 "nfpachart-detail", kwargs={"pk": self.kwargs["org_pk"]}
             )
             + x,
+            "substancetonschart": reverse(
+                "substancetonschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
         }
         context.update(urls)
         context["form"] = RiskZoneListForm(
