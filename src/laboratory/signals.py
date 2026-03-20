@@ -1,10 +1,11 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+from djgentelella.async_notification.backends import get_backend
 
 from auth_and_perms.models import Profile
 from laboratory.models import ShelfObject, OrganizationStructure, BaseUnitValues
 from django.conf import settings
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.sending import send_email_from_template
 from laboratory.models import BlockedListNotification
 from django.contrib.sites.models import Site
 from decimal import Decimal
@@ -69,11 +70,13 @@ def send_email_to_ptech_limitobjs(shelf_object, enqueued=True):
         domain = Site.objects.get_current().domain
         context["blockurl"] = f"{schema}://{domain}{url}"
         context["domain"] = domain
-        send_email_from_template(
-            "Shelf object in limit",
+        notification = send_email_from_template(
+            "shelf-object-in-limit",
             email,
             context=context,
             enqueued=enqueued,
             user=None,
             upfile=None,
         )
+        get_backend().send(notification.pk)
+

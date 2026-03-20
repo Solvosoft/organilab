@@ -1,4 +1,5 @@
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.backends import get_backend
+from djgentelella.async_notification.sending import send_email_from_template
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
@@ -67,14 +68,15 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
         if self.request.user.is_authenticated or lab_pk:
             self.object.save()
 
-        send_email_from_template(
-            "New feedback",
+        notification = send_email_from_template(
+            "new-feedback",
             settings.DEFAULT_FROM_EMAIL,
             context={"feedback": self.object},
             enqueued=True,
             user=None,
             upfile=self.object.related_file,
         )
+        get_backend().send(notification.pk)
 
         return dev
 

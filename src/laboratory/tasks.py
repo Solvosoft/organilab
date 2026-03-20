@@ -7,7 +7,8 @@ import time
 from collections import defaultdict
 from datetime import date, timedelta
 
-from async_notifications.utils import send_email_from_template
+from djgentelella.async_notification.backends import get_backend
+from djgentelella.async_notification.sending import send_email_from_template
 from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -57,7 +58,7 @@ def notify_about_product_limit_reach():
             if shelfobjects.quantity <= shelfobjects.limits.minimum_limit:
                 object_list.append(shelfobjects)
         if len(object_list) > 0:
-            send_email_limit_objs(lab, object_list, enqueued=False)
+            send_email_limit_objs(lab, object_list, enqueued=True)
         object_list.clear()
 
 
@@ -184,14 +185,16 @@ def send_expiration_email():
                 "blockurl": f"{schema}://{domain}{url}",
                 "domain": domain,
             }
-            send_email_from_template(
-                "Expiring reactives",
-                emails,
+            notification = send_email_from_template(
+                "expiring-reactives",
+                ", ".join(emails),
                 context=context,
-                enqueued=False,
+                enqueued=True,
                 user=None,
                 upfile=None,
             )
+            get_backend().send(notification.pk)
+
 
 
 @app.task()

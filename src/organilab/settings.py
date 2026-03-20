@@ -83,7 +83,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "msds",
     "sga",
-    "async_notifications",
+    "djgentelella.async_notification",
     "django_celery_results",
     "risk_management",
     "markitup",
@@ -149,7 +149,7 @@ WSGI_APPLICATION = "organilab.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DBNAME", "organilab"),
+        "NAME": os.getenv("DBNAME", "organilab_pro"),
         "USER": os.getenv("DBUSER", "organilab_user"),
         "PASSWORD": os.getenv("DBPASSWORD", "0rg4n1l4b"),
         "HOST": os.getenv("DBHOST", "127.0.0.1"),
@@ -278,14 +278,10 @@ LOCATION_FIELD = {
 ACCOUNT_ACTIVATION_DAYS = 2
 
 ASYNC_NOTIFICATION_TEXT_AREA_WIDGET = "markitup.widgets.AdminMarkItUpWidget"
+ASYNC_NOTIFICATION_BACKEND = "djgentelella.async_notification.backends.celery.CeleryBackend"
 CELERY_MODULE = "organilab.celery"
 
 CELERYBEAT_SCHEDULE = {
-    # execute 12:30 pm
-    "send_daily_emails": {
-        "task": "async_notifications.tasks.send_daily",
-        "schedule": crontab(minute=2, hour=0),
-    },
     "check_product_limits": {
         "task": "laboratory.tasks.notify_about_product_limit_reach",
         "schedule": crontab(minute=50, hour=6),
