@@ -48,14 +48,34 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="card-footer bg-transparent">
-                    {% if item.progress and item.progress.completed or item.progress and item.progress.dismissed %}
-                    <button class="btn btn-sm btn-outline-primary tutorial-reactivate"
-                            data-tutorial-id="{{ item.tutorial.id }}">
-                        {% trans "Restart" %}
-                    </button>
-                    {% endif %}
-                    <span class="text-muted small float-right">
+                <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        {% if item.progress and item.progress.completed or item.progress and item.progress.dismissed %}
+                            <button class="btn btn-sm btn-outline-secondary tutorial-reactivate"
+                                    data-tutorial-id="{{ item.tutorial.id }}">
+                                {% trans "Restart" %}
+                            </button>
+                        {% elif item.progress and not item.progress.completed and not item.progress.dismissed %}
+                            {% if item.target_url %}
+                            <button class="btn btn-sm btn-warning tutorial-start-btn"
+                                    data-slug="{{ item.tutorial.slug }}"
+                                    data-url="{{ item.target_url }}"
+                                    data-step="{{ item.progress.current_step }}">
+                                {% trans "Continue" %}
+                            </button>
+                            {% endif %}
+                        {% else %}
+                            {% if item.target_url %}
+                            <button class="btn btn-sm btn-primary tutorial-start-btn"
+                                    data-slug="{{ item.tutorial.slug }}"
+                                    data-url="{{ item.target_url }}"
+                                    data-step="0">
+                                {% trans "Start" %}
+                            </button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <span class="text-muted small">
                         {{ item.step_count }} {% trans "steps" %}
                     </span>
                 </div>
@@ -93,6 +113,16 @@ document.getElementById('toggleTutorials').addEventListener('change', function()
             var msg = data.show_tutorials ? '{% trans "Tutorials enabled" %}' : '{% trans "Tutorials disabled" %}';
             Swal.fire({icon: 'info', title: msg, timer: 1500, showConfirmButton: false});
         }
+    });
+});
+
+document.querySelectorAll('.tutorial-start-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var slug = this.getAttribute('data-slug');
+        var url  = this.getAttribute('data-url');
+        var step = parseInt(this.getAttribute('data-step') || '0', 10);
+        sessionStorage.setItem('_tutorial_resume', JSON.stringify({slug: slug, step: step}));
+        window.location.href = url;
     });
 });
 

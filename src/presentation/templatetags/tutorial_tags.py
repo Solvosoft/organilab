@@ -2,6 +2,7 @@ import json
 
 from django import template
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from auth_and_perms.models import ProfilePermission
@@ -139,7 +140,7 @@ def tutorial_launcher(context):
     config = {
         'tutorials': tutorials_data,
         'autoStart': auto_start_slugs,
-        'progressUrl': '/tutorial/api/progress/',
+        'progressUrl': reverse('tutorial_progress_api'),
     }
 
     html = (

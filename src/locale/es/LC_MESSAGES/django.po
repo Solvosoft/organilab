@@ -5699,3 +5699,24 @@ msgstr "Revisar datos extraídos"
 
 msgid "SDS Coverage"
 msgstr "Cobertura SDS"
+
+msgid "Interactive guides to help you use the system. Click on a tutorial to start it."
+msgstr "Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial para iniciarlo."
+
+msgid "Enable tutorials"
+msgstr "Activar tutoriales"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgid "steps"
+msgstr "pasos"
+
+msgid "Completed"
+msgstr "Completado"
+
+msgid "In progress"
+msgstr "En proceso"
+
+msgid "Not started"
+msgstr "No iniciado"
