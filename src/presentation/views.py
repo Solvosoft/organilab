@@ -55,16 +55,47 @@ def index_tutorial(request, org_pk):
     for tp in TutorialProgress.objects.filter(user=user):
         progress_map[tp.tutorial_id] = tp
 
+    # Get first lab of the org to resolve lab-dependent URLs
+    lab_pk = None
+    try:
+        from laboratory.models import Laboratory
+        lab = Laboratory.objects.filter(organization=org_pk).first()
+        if lab:
+            lab_pk = lab.pk
+    except Exception:
+        pass
+
+    def resolve_tutorial_url(url_name):
+        kwargs_candidates = [
+            {'org_pk': org_pk, 'lab_pk': lab_pk} if lab_pk else None,
+            {'org_pk': org_pk, 'pk': org_pk},
+            {'org_pk': org_pk, 'status': 0},
+            {'org_pk': org_pk},
+            {'pk': org_pk},
+            {},
+        ]
+        for kwargs in kwargs_candidates:
+            if kwargs is None:
+                continue
+            try:
+                return reverse(url_name, kwargs=kwargs)
+            except Exception:
+                continue
+        return None
+
     chapters = {}
     for t in filtered:
         chapter = t.get_chapter_display()
         if chapter not in chapters:
             chapters[chapter] = []
         tp = progress_map.get(t.id)
+        first_url_name = t.url_name.split(',')[0].strip()
+        target_url = resolve_tutorial_url(first_url_name)
         chapters[chapter].append({
             'tutorial': t,
             'progress': tp,
             'step_count': t.steps.count(),
+            'target_url': target_url,
         })
 
     return render(request, "tutorial.html", context={
