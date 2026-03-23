@@ -1631,6 +1631,7 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         "quantity",
         "measurement_unit__description",
         "measurement_unit__key",
+        "object__sustancecharacteristics__cas_id_number",
     ]
     filterset_class = filterset.ShelObjectReactiveFilter
     ordering_fields = ["id"]

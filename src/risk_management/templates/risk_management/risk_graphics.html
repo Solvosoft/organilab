@@ -40,9 +40,14 @@
 					<div class="clearfix"></div>
 					<ul class="nav nav-pills" role="tablist">
 						<li class="nav-item" role="presentation">
-							<button class="nav-link active" id="pills-di" data-bs-toggle="pill"
+							<button class="nav-link active" id="pills-tons" data-bs-toggle="pill" data-bs-target="#substancetons" type="button"
+															role="tab" aria-controls="pills-tons" aria-selected="true">
+								{% trans 'Tons per Substance' %}</button>
+						</li>
+						<li class="nav-item" role="presentation">
+							<button class="nav-link" id="pills-di" data-bs-toggle="pill"
 															data-bs-target="#dangerindication"
-															type="button" role="tab" aria-controls="pills-di" aria-selected="true">
+															type="button" role="tab" aria-controls="pills-di">
 								{% trans 'Danger Indication' %}
 							</button>
 						</li>
@@ -74,7 +79,12 @@
 						</li>
 					</ul>
 					<div class="tab-content" id="pills-tabContent">
-						<div id="dangerindication" class="tab-pane fade show active">
+						<div id="substancetons" class="tab-pane fade show active">
+							<div id="substancetons-container" style="position: relative; width: 100%;">
+								<canvas id="substancetons-canvas"></canvas>
+							</div>
+						</div>
+						<div id="dangerindication" class="tab-pane fade">
 							{% include 'gentelella/widgets/chartjs.html' with graph_url=dangerindicationchart %}
 						</div>
 						<div id="whiteorgan" class="tab-pane fade">
@@ -121,4 +131,4 @@
 		});
 	});
 	</script>
-		{% endblock %}
+{% endblock %}
