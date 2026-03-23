@@ -5241,8 +5241,8 @@ msgstr "Registro de consumo"
 msgid "List Reagents"
 msgstr "Listar Reactivos"
 
-msgid "Reorder Reactives"
-msgstr "Reordenar Reactivos"
+msgid "Consumption log"
+msgstr "Registro de consumo"
 
 msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
 msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
