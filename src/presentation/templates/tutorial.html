@@ -122,6 +122,14 @@ document.querySelectorAll('.tutorial-start-btn').forEach(function(btn) {
         var url  = this.getAttribute('data-url');
         var step = parseInt(this.getAttribute('data-step') || '0', 10);
         sessionStorage.setItem('_tutorial_resume', JSON.stringify({slug: slug, step: step}));
+        var reactivated = document.cookie.split(';').some(function(c) {
+            return c.trim().startsWith('tutorial_reactivated=');
+        });
+        if (reactivated) {
+            document.cookie = 'tutorial_reactivated=; Max-Age=0; Path=/';
+            var sep = url.indexOf('?') !== -1 ? '&' : '?';
+            url = url + sep + '_t=' + Date.now();
+        }
         window.location.href = url;
     });
 });

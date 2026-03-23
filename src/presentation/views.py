@@ -186,7 +186,9 @@ def tutorial_reactivate_api(request):
         user=request.user, tutorial_id=tutorial_id
     ).update(dismissed=False, completed=False, current_step=0, completed_at=None)
 
-    return JsonResponse({'ok': True})
+    response = JsonResponse({'ok': True})
+    response.set_cookie('tutorial_reactivated', tutorial_id, max_age=300, samesite='Lax')
+    return response
 
 
 @method_decorator(login_required, name="dispatch")
