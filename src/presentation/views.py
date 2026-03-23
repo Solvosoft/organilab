@@ -65,20 +65,35 @@ def index_tutorial(request, org_pk):
     except Exception:
         pass
 
+    effective_org_pk = org_pk
+    if not effective_org_pk:
+        try:
+            from laboratory.models import OrganizationStructure
+            root_ct = ContentType.objects.get_for_model(OrganizationStructure)
+            effective_org_pk = ProfilePermission.objects.filter(
+                profile=user.profile,
+                content_type=root_ct,
+            ).values_list('object_id', flat=True).first()
+        except Exception:
+            pass
+
     def resolve_tutorial_url(url_name):
         kwargs_candidates = [
-            {'org_pk': org_pk, 'lab_pk': lab_pk} if lab_pk else None,
-            {'org_pk': org_pk, 'pk': org_pk},
-            {'org_pk': org_pk, 'status': 0},
-            {'org_pk': org_pk},
-            {'pk': org_pk},
+            {'org_pk': effective_org_pk, 'lab_pk': lab_pk} if lab_pk else None,
+            {'org_pk': effective_org_pk, 'pk': effective_org_pk},
+            {'org_pk': effective_org_pk, 'status': 0},
+            {'org_pk': effective_org_pk},
+            {'pk': effective_org_pk},
             {},
         ]
         for kwargs in kwargs_candidates:
             if kwargs is None:
                 continue
             try:
-                return reverse(url_name, kwargs=kwargs)
+                url = reverse(url_name, kwargs=kwargs)
+                if not kwargs.get('org_pk'):
+                    url = f'{url}?org_pk={effective_org_pk}'
+                return url
             except Exception:
                 continue
         return None
