@@ -1,3 +1,16 @@
+20/03/2026
+Command to merge duplicate Buildings
+    - python manage.py merge_duplicates_buildings
+
+20/03/2026s
+Command to move laboratories of buildings to risk zones
+    - python manage.py assign_lab_to_riskzones
+
+18/03/2026
+Command to load new laboratories, risk zones, buildings and organizations
+
+    - python manage.py load_risk_zones --output=xxx.xlsx
+
 27/02/2026
 Command to load cuadro4
 

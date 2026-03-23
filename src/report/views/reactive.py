@@ -71,7 +71,7 @@ def get_dataset_report_reactive(report, column_list=None):
             "health": health,
             "environment": enviroment,
             "concentration": reactive.concentration,
-            "quantity": reactive.quantity,
+            "quantity": round(reactive.quantity, 3),
             "measurement_unit": reactive.get_measurement_unit_display(),
         }
         obj_item = list(data_column.values())

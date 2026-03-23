@@ -243,6 +243,7 @@ lab_reports_urls = [
 ]
 
 reports_all_lab = [
+    path("reports/sds-coverage.svg", reports.sds_coverage_svg, name="sds_coverage_svg"),
     path("reports/hcode", laboratory.HCodeReports.as_view(), name="h_code_reports"),
     path(
         "reports/download/hcode", reports.report_h_code, name="download_h_code_reports"

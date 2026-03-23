@@ -1,6 +1,7 @@
 import re
 import logging
 import threading
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -19,48 +20,101 @@ def _normalize_subscripts(text):
     return text
 
 
-def _extract_cas_number(text):
+def _detect_language(text):
+    """Detect SDS language from section headers and keywords. Returns 'es' or 'en'."""
+    header = text[:2000].upper()
+    if 'SECCI' in header:
+        return 'es'
+    # Older Merck Spanish SDS don't use SECCIÓN headers
+    es_indicators = ['FECHA DE', 'DENOMINACI', 'FICHA DE DATOS', 'HOJA DE DATOS',
+                     'IDENTIFICACI', 'SUSTANCIA PELIGROSA']
+    if sum(1 for kw in es_indicators if kw in header) >= 2:
+        return 'es'
+    return 'en'
+
+
+def _section_pattern(n, lang):
+    """Return a regex pattern matching section N header for the given language."""
+    if lang == 'es':
+        return r'SECCI[ÓO]N\s*' + str(n)
+    return r'Section\s*' + str(n)
+
+
+def _extract_product_name(text, lang='es'):
+    sec2 = re.search(_section_pattern(2, lang), text, re.IGNORECASE)
+    section1_text = text[:sec2.start()] if sec2 else text[:2000]
+
+    if lang == 'es':
+        patterns = [
+            r'Nombre\s+del\s+producto\s*:?\s*(.+)',
+            r'Nombre\s+comercial\s*:?\s*(.+)',
+            r'Denominaci[óo]n\s*:?\s*(.+)',
+            r'Nombre\s+de\s+la\s+sustancia\s*:?\s*(.+)',
+        ]
+    else:
+        patterns = [
+            r'Product\s+[Nn]ame\s*:?\s*(.+)',
+            r'Trade\s+[Nn]ame\s*:?\s*(.+)',
+            r'Substance\s+[Nn]ame\s*:?\s*(.+)',
+        ]
+    for pattern in patterns:
+        match = re.search(pattern, section1_text)
+        if match:
+            name = match.group(1).strip().lstrip('·').strip().rstrip('.')
+            if name and len(name) >= 2:
+                return name
+    return None
+
+
+def _extract_cas_number(text, lang='es'):
     patterns = [
         r'CAS[-\s]*No\.?\s*[:\.]?\s*(\d{1,7}-\d{2}-\d)',
+        r'CAS\s*Number\s*:?\s*\n?\s*(\d{1,7}-\d{2}-\d)',
+        r'N\.º\s*CAS\s*:?\s*(\d{1,7}-\d{2}-\d)',
         r'N[ºúu](?:mero)?\s*CAS\s*\[?\s*(\d{1,7}-\d{2}-\d)',
         r'\bCAS\s+(\d{1,7}-\d{2}-\d)',
     ]
 
-    # Pass 1: Section 1 only (before Section 2) to avoid grabbing component
-    # CAS from composition tables when the main CAS is in Section 1.
-    sec2 = re.search(r'(?:SECCI[ÓO]N\s*2|Section\s*2)\b', text, re.IGNORECASE)
+    sec2 = re.search(_section_pattern(2, lang), text, re.IGNORECASE)
     section1_text = text[:sec2.start()] if sec2 else text
     for pattern in patterns:
         match = re.search(pattern, section1_text)
         if match:
             return match.group(1)
 
-    # Pass 2: Section 3 only (fallback for mixtures like aqueous solutions
-    # where the CAS appears only in the composition table).
-    sec3 = re.search(r'(?:SECCI[ÓO]N\s*3|Section\s*3)\b', text, re.IGNORECASE)
-    sec4 = re.search(r'(?:SECCI[ÓO]N\s*4|Section\s*4)\b', text, re.IGNORECASE)
+    # Try section 3 with formal section header
+    sec3 = re.search(_section_pattern(3, lang), text, re.IGNORECASE)
+    sec4 = re.search(_section_pattern(4, lang), text, re.IGNORECASE)
     if sec3:
         sec3_text = text[sec3.start():sec4.start() if sec4 else len(text)]
+        for pattern in patterns:
+            match = re.search(pattern, sec3_text)
+            if match:
+                return match.group(1)
+        # Fallback: any CAS-formatted number in section 3
         match = re.search(r'(\d{1,7}-\d{2}-\d)', sec3_text)
+        if match:
+            return match.group(1)
+
+    # Fallback for SDS without standard section headers (e.g. Cayman)
+    for pattern in patterns:
+        match = re.search(pattern, text)
         if match:
             return match.group(1)
 
     return None
 
 
-def _extract_molecular_formula(text):
+def _extract_molecular_formula(text, lang='es'):
     normalized = _normalize_subscripts(text)
 
     # Merck/Sigma-Aldrich format: "Formula CH3COCH3 C3H6O (Hill)"
-    # Extract the Hill notation (last formula token before "(Hill)")
     hill_match = re.search(
         r'([A-Z][A-Za-z0-9]+)\s*\(Hill\)', normalized
     )
     if hill_match:
         formula = hill_match.group(1)
         if re.match(r'^[A-Z][A-Za-z0-9]*$', formula) and len(formula) >= 2:
-            # For hydrates like "C12H8N2 · H2O  H2O (Hill)", the Hill match
-            # picks up the water of crystallization. Extract the real formula.
             if formula == 'H2O':
                 pre_hill = normalized[:hill_match.start()]
                 hydrate_match = re.search(
@@ -72,11 +126,16 @@ def _extract_molecular_formula(text):
                         return real
             return formula
 
-    # Other formats: "Fórmula molecular Cd O4 S" or "Molecular Formula C3 H8 O"
-    patterns = [
-        r'[Ff][óo]rmula\s+molecular\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
-        r'(?:Molecular\s+)?[Ff]ormula\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
-    ]
+    if lang == 'es':
+        patterns = [
+            r'[Ff][óo]rmula\s+molecular\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
+        ]
+    else:
+        patterns = [
+            r'Molecular\s+[Ff]ormula\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
+            r'Structural\s+[Ff]ormula\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
+            r'Formula\s*:?\s*([A-Za-z0-9\s]+?)(?:\n|$|\(|\.[\s\n])',
+        ]
     for pattern in patterns:
         match = re.search(pattern, normalized)
         if match:
@@ -92,14 +151,20 @@ def _extract_h_codes(text):
     return sorted(codes)
 
 
-def _extract_density(text):
-    patterns = [
-        r'[Dd]ensidad\s+relativa\s+([\d]+[.,][\d]+)',
-        r'[Rr]elative\s+density\s+([\d]+[.,][\d]+)',
-        r'[Ss]pecific\s+[Gg]ravity\s+([\d]+[.,][\d]+)',
-        r'[Dd]ensidad\s+([\d]+[.,][\d]+)',
-        r'[Dd]ensity\s+([\d]+[.,][\d]+)',
-    ]
+def _extract_density(text, lang='es'):
+    if lang == 'es':
+        patterns = [
+            r'Densidad\s+relativa\s*:?\s*(?:aprox\.?\s*)?([\d]+[.,][\d]+)',
+            r'Densidad\s+a\s+[\d.,]+\s*[°ºo]?\s*C[^:]*:\s*([\d]+[.,][\d]+)',
+            r'Densidad\s*:?\s*(?:aprox\.?\s*)?([\d]+[.,][\d]+)',
+        ]
+    else:
+        patterns = [
+            r'Relative\s+density\s*:?\s*(?:approx\.?\s*)?([\d]+[.,][\d]+)',
+            r'Specific\s+[Gg]ravity\s*:?\s*(?:approx\.?\s*)?([\d]+[.,][\d]+)',
+            r'Density\s+at\s+[\d.,]+\s*[°ºo]?\s*C[^:]*:\s*([\d]+[.,][\d]+)',
+            r'Density\s*:?\s*(?:approx\.?\s*)?([\d]+[.,][\d]+)',
+        ]
     for pattern in patterns:
         match = re.search(pattern, text)
         if match:
@@ -111,7 +176,7 @@ def _extract_density(text):
     return None
 
 
-def _extract_bioaccumulable(text):
+def _extract_bioaccumulable(text, lang='es'):
     negative_patterns = [
         r'(?:bioaccumul|bioacumul)\w*\s+(?:es|is)\s+(?:improbable|unlikely|low)',
         r'no.{0,50}(?:bioaccumul|bioacumul)',
@@ -138,7 +203,7 @@ def _extract_bioaccumulable(text):
     return None
 
 
-def _extract_seveso(text):
+def _extract_seveso(text, lang='es'):
     if not re.search(r'[Ss]eveso', text):
         return False
 
@@ -162,7 +227,7 @@ def _extract_seveso(text):
     return False
 
 
-def _extract_precursor(text):
+def _extract_precursor(text, lang='es'):
     if not re.search(r'[Pp]recursor', text):
         return False
 
@@ -183,6 +248,45 @@ def _extract_precursor(text):
             return True
 
     return False
+
+
+REVISION_DATE_PATTERNS_ES = [
+    r'Fecha\s+de\s+[Rr]evisi[oó]n[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
+    r'Fecha\s+de\s+[Rr]evisi[oó]n[:\s]*(\d{2,4}[.-]\d{1,2}[.-]\d{1,2})',
+    r'Revisi[oó]n[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
+    r'Fecha:\s*(\d{4}-\d{2}-\d{2})',
+    r'Fecha\s+de\s+emisi[oó]n[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
+]
+
+REVISION_DATE_PATTERNS_EN = [
+    r'Revision\s+Date[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
+    r'Revision\s+Date[:\s]*(\d{2,4}[.-]\d{1,2}[.-]\d{1,2})',
+    r'Date\s+of\s+Revision[:\s]*(\d{1,2}[./]\d{1,2}[./]\d{2,4})',
+    r'Revision.*?(\d{2}[./]\d{2}[./]\d{4})',
+]
+
+# Combined list for backward compatibility (used by identify_sds_sources.py)
+REVISION_DATE_PATTERNS = REVISION_DATE_PATTERNS_ES + REVISION_DATE_PATTERNS_EN
+
+
+def _parse_revision_date(date_str):
+    if not date_str:
+        return None
+    for fmt in ('%d.%m.%Y', '%d/%m/%Y', '%Y-%m-%d', '%m/%d/%Y', '%d.%m.%y', '%d/%m/%y'):
+        try:
+            return datetime.strptime(date_str, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _extract_revision_date(text, lang='es'):
+    patterns = REVISION_DATE_PATTERNS_ES if lang == 'es' else REVISION_DATE_PATTERNS_EN
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return _parse_revision_date(match.group(1).strip())
+    return None
 
 
 def extract_msds_data(pdf_path):
@@ -227,15 +331,20 @@ def extract_msds_data(pdf_path):
     if not text.strip():
         return None
 
+    lang = _detect_language(text)
+
     return {
-        'cas_id_number': _extract_cas_number(text),
-        'molecular_formula': _extract_molecular_formula(text),
+        'product_name': _extract_product_name(text, lang),
+        'cas_id_number': _extract_cas_number(text, lang),
+        'molecular_formula': _extract_molecular_formula(text, lang),
         'h_codes': _extract_h_codes(text),
-        'density': _extract_density(text),
-        'bioaccumulable': _extract_bioaccumulable(text),
-        'seveso_list': _extract_seveso(text),
-        'is_precursor': _extract_precursor(text),
+        'density': _extract_density(text, lang),
+        'bioaccumulable': _extract_bioaccumulable(text, lang),
+        'seveso_list': _extract_seveso(text, lang),
+        'is_precursor': _extract_precursor(text, lang),
+        'revision_date': _extract_revision_date(text, lang),
         '_text': text,
+        '_lang': lang,
     }
 
 
@@ -277,9 +386,8 @@ _ORGAN_ES_EN = {
 }
 
 
-def _extract_iarc(text, entries):
+def _extract_iarc(text, entries, lang='es'):
     """Extract IARC group from PDF text. Returns a single PK or None."""
-    # Build map from group identifier to PK: {"1": pk, "2A": pk, ...}
     group_to_pk = {}
     for pk, desc in entries:
         m = re.search(r'Grupo\s+(\d[AB]?)', desc)
@@ -289,7 +397,6 @@ def _extract_iarc(text, entries):
     if not group_to_pk:
         return None
 
-    # Search near IARC keyword
     iarc_context = re.search(r'IARC.{0,300}', text, re.DOTALL | re.IGNORECASE)
     if not iarc_context:
         return None
@@ -303,21 +410,16 @@ def _extract_iarc(text, entries):
     return None
 
 
-def _extract_imdg(text, entries):
+def _extract_imdg(text, entries, lang='es'):
     """Extract IMDG class from section 14. Returns a single PK or None."""
-    # Entries in PK order correspond to IMDG classes 1-9
     class_to_pk = {}
     for idx, (pk, desc) in enumerate(entries, start=1):
         class_to_pk[idx] = pk
 
-    # Search section 14 for class number
-    m = re.search(r'14\.3\s+Clas[es]*\s+(\d)', text)
-    if m:
-        cls = int(m.group(1))
-        return class_to_pk.get(cls)
-
-    # Also try English format
-    m = re.search(r'14\.3\s+(?:Transport\s+hazard\s+)?[Cc]lass\s+(\d)', text)
+    if lang == 'es':
+        m = re.search(r'14\.3\s+Clas[es]*\s+(\d)', text)
+    else:
+        m = re.search(r'14\.3\s+(?:Transport\s+hazard\s+)?[Cc]lass\s+(\d)', text)
     if m:
         cls = int(m.group(1))
         return class_to_pk.get(cls)
@@ -325,13 +427,14 @@ def _extract_imdg(text, entries):
     return None
 
 
-def _extract_white_organ(text, entries):
+def _extract_white_organ(text, entries, lang='es'):
     """Extract target organs (M2M). Returns list of PKs."""
-    # Find section 11 context for target organs
+    sec_pattern = _section_pattern(11, lang)
+    sec_end_pattern = _section_pattern(12, lang)
     section11 = re.search(
-        r'(?:SECCI[ÓO]N\s*11|Section\s*11|11\.\s*Informaci[óo]n\s+toxicol[óo]gica'
+        r'(?:' + sec_pattern + r'|11\.\s*Informaci[óo]n\s+toxicol[óo]gica'
         r'|11\.\s*Toxicological\s+information)'
-        r'(.+?)(?:SECCI[ÓO]N\s*12|Section\s*12|12\.\s)',
+        r'(.+?)(?:' + sec_end_pattern + r'|12\.\s)',
         text, re.DOTALL | re.IGNORECASE
     )
     search_text = section11.group(1) if section11 else text
@@ -339,11 +442,9 @@ def _extract_white_organ(text, entries):
     matched_pks = []
     for pk, desc in entries:
         desc_lower = desc.lower().strip()
-        # Search for the description directly (case-insensitive)
         if re.search(re.escape(desc_lower), search_text, re.IGNORECASE):
             matched_pks.append(pk)
             continue
-        # Try English translation
         en_name = _ORGAN_ES_EN.get(desc_lower)
         if en_name and re.search(re.escape(en_name), search_text, re.IGNORECASE):
             matched_pks.append(pk)
@@ -351,9 +452,8 @@ def _extract_white_organ(text, entries):
     return matched_pks
 
 
-def _extract_ue_code(text, entries):
+def _extract_ue_code(text, entries, lang='es'):
     """Extract EU hazard statement codes (M2M). Returns list of PKs."""
-    # Build map from EUH code number to PK
     code_to_pk = {}
     for pk, desc in entries:
         m = re.search(r'EUH\s*(\d{3}[A-Z]?)', desc)
@@ -363,7 +463,6 @@ def _extract_ue_code(text, entries):
     if not code_to_pk:
         return []
 
-    # Find all EUH codes in PDF text
     found_codes = set(re.findall(r'EUH\s*(\d{3}[A-Z]?)', text))
     matched_pks = []
     for code in found_codes:
@@ -373,9 +472,8 @@ def _extract_ue_code(text, entries):
     return sorted(matched_pks)
 
 
-def _extract_nfpa(text, entries):
+def _extract_nfpa(text, entries, lang='es'):
     """Extract NFPA flammable liquid classification (M2M). Returns list of PKs."""
-    # Build map from class label to PK
     class_to_pk = {}
     for pk, desc in entries:
         m = re.search(r'clase\s+(I{1,3}[AB]?)', desc, re.IGNORECASE)
@@ -385,30 +483,26 @@ def _extract_nfpa(text, entries):
     if not class_to_pk:
         return []
 
-    # Extract flash point from section 9
     fp = None
-    fp_patterns = [
-        r'(?:Punto\s+de\s+inflamaci[óo]n|Flash\s+point)\s*[:\s]*(-?[\d]+[.,]?[\d]*)\s*[°ºo]?\s*C',
-    ]
-    for pat in fp_patterns:
-        m = re.search(pat, text, re.IGNORECASE)
-        if m:
-            fp = float(m.group(1).replace(',', '.'))
-            break
+    if lang == 'es':
+        fp_pattern = r'Punto\s+de\s+inflamaci[óo]n\s*[:\s]*(-?[\d]+[.,]?[\d]*)\s*[°ºo]?\s*C'
+    else:
+        fp_pattern = r'Flash\s+point\s*[:\s]*(-?[\d]+[.,]?[\d]*)\s*[°ºo]?\s*C'
+    m = re.search(fp_pattern, text, re.IGNORECASE)
+    if m:
+        fp = float(m.group(1).replace(',', '.'))
 
     if fp is None:
         return []
 
-    # Extract boiling point from section 9
     bp = None
-    bp_patterns = [
-        r'(?:Punto\s+de\s+ebullici[óo]n|Boiling\s+point)\s*[:\s]*(-?[\d]+[.,]?[\d]*)\s*[°ºo]?\s*C',
-    ]
-    for pat in bp_patterns:
-        m = re.search(pat, text, re.IGNORECASE)
-        if m:
-            bp = float(m.group(1).replace(',', '.'))
-            break
+    if lang == 'es':
+        bp_pattern = r'Punto\s+de\s+ebullici[óo]n\s*[:\s]*(-?[\d]+[.,]?[\d]*)\s*[°ºo]?\s*C'
+    else:
+        bp_pattern = r'Boiling\s+point\s*[:\s]*(-?[\d]+[.,]?[\d]*)\s*[°ºo]?\s*C'
+    m = re.search(bp_pattern, text, re.IGNORECASE)
+    if m:
+        bp = float(m.group(1).replace(',', '.'))
 
     # NFPA 30 classification
     nfpa_class = None
@@ -430,9 +524,8 @@ def _extract_nfpa(text, entries):
     return [pk] if pk else []
 
 
-def _extract_storage_class(text, entries):
+def _extract_storage_class(text, entries, lang='es'):
     """Extract storage class (M2M). Returns list of PKs."""
-    # Build map from normalized code to PK
     code_to_pk = {}
     for pk, desc in entries:
         m = re.match(r'^([\d.]+\s*[A-C]?)', desc.strip())
@@ -443,22 +536,19 @@ def _extract_storage_class(text, entries):
     if not code_to_pk:
         return []
 
-    # Search PDF for storage class
-    m = re.search(
-        r'(?:Clase\s+de\s+almacenamiento|Storage\s+class)\s+([\d.]+\s*[A-C]?)',
-        text, re.IGNORECASE
-    )
+    if lang == 'es':
+        sc_pattern = r'Clase\s+de\s+almacenamiento\s+([\d.]+\s*[A-C]?)'
+    else:
+        sc_pattern = r'Storage\s+class\s+([\d.]+\s*[A-C]?)'
+    m = re.search(sc_pattern, text, re.IGNORECASE)
     if not m:
         return []
 
     found_code = re.sub(r'\s+', '', m.group(1)).strip()
 
-    # Exact match first
     if found_code in code_to_pk:
         return [code_to_pk[found_code]]
 
-    # If no exact match, try without trailing letter (e.g., "3" matches "3A" or "3B")
-    # But only if the found code is a bare number
     if re.match(r'^\d+$', found_code):
         matched = []
         for code, pk in code_to_pk.items():
@@ -469,9 +559,8 @@ def _extract_storage_class(text, entries):
     return []
 
 
-def _extract_precursor_type(text, entries):
+def _extract_precursor_type(text, entries, lang='es'):
     """Extract precursor type (FK). Returns a single PK or None."""
-    # Build map from list number to PK
     list_to_pk = {}
     for pk, desc in entries:
         m = re.search(r'Lista\s+(\d)', desc)
@@ -481,7 +570,6 @@ def _extract_precursor_type(text, entries):
     if not list_to_pk:
         return None
 
-    # Search near "precursor" context
     precursor_context = re.search(
         r'[Pp]recursor.{0,500}', text, re.DOTALL
     )
@@ -496,7 +584,7 @@ def _extract_precursor_type(text, entries):
     return None
 
 
-def extract_catalog_fields(text, catalogs):
+def extract_catalog_fields(text, catalogs, lang='es'):
     """Extract catalog-linked fields from PDF text.
 
     Args:
@@ -504,17 +592,18 @@ def extract_catalog_fields(text, catalogs):
         catalogs: dict mapping catalog keys to lists of (pk, description) tuples.
             Expected keys: 'IARC', 'IDMG', 'white_organ', 'ue_code', 'nfpa',
             'storage_class', 'Precursor'.
+        lang: SDS language ('es' or 'en').
 
     Returns:
         dict with keys: iarc, imdg, white_organ, ue_code, nfpa, storage_class,
         precursor_type. FK fields are single PK or None; M2M fields are lists of PKs.
     """
     return {
-        'iarc': _extract_iarc(text, catalogs.get('IARC', [])),
-        'imdg': _extract_imdg(text, catalogs.get('IDMG', [])),
-        'white_organ': _extract_white_organ(text, catalogs.get('white_organ', [])),
-        'ue_code': _extract_ue_code(text, catalogs.get('ue_code', [])),
-        'nfpa': _extract_nfpa(text, catalogs.get('nfpa', [])),
-        'storage_class': _extract_storage_class(text, catalogs.get('storage_class', [])),
-        'precursor_type': _extract_precursor_type(text, catalogs.get('Precursor', [])),
+        'iarc': _extract_iarc(text, catalogs.get('IARC', []), lang),
+        'imdg': _extract_imdg(text, catalogs.get('IDMG', []), lang),
+        'white_organ': _extract_white_organ(text, catalogs.get('white_organ', []), lang),
+        'ue_code': _extract_ue_code(text, catalogs.get('ue_code', []), lang),
+        'nfpa': _extract_nfpa(text, catalogs.get('nfpa', []), lang),
+        'storage_class': _extract_storage_class(text, catalogs.get('storage_class', []), lang),
+        'precursor_type': _extract_precursor_type(text, catalogs.get('Precursor', []), lang),
     }

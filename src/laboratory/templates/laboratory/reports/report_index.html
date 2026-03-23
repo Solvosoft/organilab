@@ -16,7 +16,7 @@
 				<section class="my-3">
 					<h5 class="text-secondary pb-2"> {% trans 'Informs' %} </h5>
 
-					<a class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}"
+					<a class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="{% trans 'Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los que se almacena reactivos y productos químicos' %}"
 								href="{% url 'report:regency_report' org_pk %}" target="_blank"><i
 						class="fa fa-file-text-o"></i> {% trans 'Regency Report' %}</a>
 
@@ -29,7 +29,7 @@
 				<section class="my-3">
 					<h5 class="text-secondary pb-2"> {% trans 'Reports' %} </h5>
 
-					<a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Reactive presence' %}"
+					<a class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="{% trans 'Occupational Health Report' %}"
 								href="{% url 'laboratory:organizationreactivepresence' org_pk %}" target="_blank">
 						<i class="fa fa-file-text"></i>
 						{% trans 'Occupational Health Report' %}
@@ -92,7 +92,7 @@
 					<a class="btn btn-primary btn-sm" target="_blank"
 								href="{% url 'report:hazard_map_report' org_pk %}">
 						<i class="fa fa-file-text"></i>
-						{% trans 'Compatibility Laboratory' %}
+						{% trans 'Compatibility Laboratory Report' %}
 					</a>
 					<a class="btn btn-primary btn-sm" target="_blank"
 								href="{% url 'report:donations_report' org_pk %}">

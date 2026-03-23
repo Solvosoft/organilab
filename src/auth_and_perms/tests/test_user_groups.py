@@ -95,7 +95,7 @@ class TestUserProfile(TestCaseBase):
             self.url, data=data, content_type="application/json"
         )
 
-        self.assertTrue(response.status_code == 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_update_profile_empty_group(self):
         data = {"profile": 1, "groups": [], "organization": 1}

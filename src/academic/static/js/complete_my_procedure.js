@@ -1,16 +1,20 @@
-let message_title = procedure_info['status'] == 'Eraser'? gettext("Do you want to send the report for review?") : gettext("Do you want to finish the report?");
+let message_title = procedure_info['status'] == 'Eraser' ? gettext("Do you want to send the report for review?") : gettext("Do you want to finish the report?");
 var formmodal = BaseFormModal('#commentmodal', {});
 
-formmodal.addBtnForm = function(instance) {
+formmodal.addBtnForm = function (instance) {
 
-    return function(event) {
-        var dataAsString = convertToStringJson(instance.form, prefix=instance.prefix, extras=instance.data_extras);
+    return function (event) {
+        var dataAsString = convertToStringJson(instance.form, prefix = instance.prefix, extras = instance.data_extras);
         var dataAsJson = JSON.parse(dataAsString);
 
         $.ajax({
             url: urls['add_comment'],
             type: "POST",
-            data: {'comment': dataAsJson.comment, 'procedure_step': step_pk = $('.stepradio:checked').val(), 'my_procedure': procedure_info['pk']},
+            data: {
+                'comment': dataAsJson.comment,
+                'procedure_step': step_pk = $('.stepradio:checked').val(),
+                'my_procedure': procedure_info['pk']
+            },
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
                 "X-CSRFToken": getCookie("csrftoken"),
@@ -21,7 +25,7 @@ formmodal.addBtnForm = function(instance) {
                     icon: 'success',
                     title: gettext("Added"),
                     text: gettext("Saved successfully"),
-                }).then(function() {
+                }).then(function () {
                     datatableelement.ajax.reload();
                 });
             },
@@ -46,7 +50,7 @@ function add_comment() {
 }
 
 function saveForm(state) {
-   Swal.fire({
+    Swal.fire({
         title: message_title,
         text: gettext("Discarding cannot be undone."),
         icon: "warning",
@@ -55,14 +59,14 @@ function saveForm(state) {
         showDenyButton: true,
         showCloseButton: true
 
-        }).then((result) => {
+    }).then((result) => {
 
         if (result.isConfirmed) {
             $.ajax({
                 url: urls['edit'],
                 type: "POST",
                 dataType: "json",
-                data: $('#procedure_form').serialize()+"&status="+state,
+                data: $('#procedure_form').serialize() + "&status=" + state,
                 headers: {
                     "X-Requested-With": "XMLHttpRequest",
                     "X-CSRFToken": getCookie("csrftoken"),
@@ -72,21 +76,21 @@ function saveForm(state) {
                         "",
                         gettext("Saved successfully"),
                         "success"
-                        )
-                    location.href =urls['list'];
+                    )
+                    location.href = urls['list'];
                 },
             });
 
-        } else if (result.isDenied){
+        } else if (result.isDenied) {
         }
-        })
+    })
 }
 
-function edit_comment(pk){
+function edit_comment(pk) {
     localStorage.setItem('comment', pk);
     let url = urls['get_comment'].replace('0', pk);
     $.ajax({
-    url: url,
+        url: url,
         type: "GET",
         dataType: "json",
         headers: {
@@ -101,8 +105,8 @@ function edit_comment(pk){
                 denyButtonText: gettext("No"),
                 showDenyButton: true,
                 showCloseButton: true,
-                inputValue:success.comment
-            }).then(function(result) {
+                inputValue: success.comment
+            }).then(function (result) {
                 if (result.isConfirmed) {
                     update_comment(result.value, pk)
                 }
@@ -111,77 +115,84 @@ function edit_comment(pk){
     });
 }
 
-function update_comment(comment, pk){
-     let url = urls['update_comment'].replace('0', pk);
-     localStorage.removeItem('comment');
-     $.ajax({
-            url: url,
-            type: "PUT",
-            dataType: "json",
-            data: {'comment':comment},
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-            success: (success) => {
-                Swal.fire(
-                    '',
-                    gettext("Successfully updated"),
-                    'success'
-                ).then(function(result) {
-                    datatableelement.ajax.reload();
-                })
-            },
-        });
+function update_comment(comment, pk) {
+    let url = urls['update_comment'].replace('0', pk);
+    localStorage.removeItem('comment');
+    $.ajax({
+        url: url,
+        type: "PUT",
+        dataType: "json",
+        data: {'comment': comment},
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
+        },
+        success: (success) => {
+            Swal.fire(
+                '',
+                gettext("Successfully updated"),
+                'success'
+            ).then(function (result) {
+                datatableelement.ajax.reload();
+            })
+        },
+    });
 }
 
-function delete_comment(comment){
-    let url = urls['delete_comment'].replace('0',comment);
+function delete_comment(comment) {
+    let url = urls['delete_comment'].replace('0', comment);
     Swal.fire({
-    title: gettext("Delete the observation"),
-    text: gettext("Do you want to remove the observation?"),
-    icon: "error",
-    confirmButtonText: gettext("Yes"),
-    denyButtonText: gettext("No"),
-    showDenyButton: true,
-    showCloseButton: true
+        title: gettext("Delete the observation"),
+        text: gettext("Do you want to remove the observation?"),
+        icon: "error",
+        confirmButtonText: gettext("Yes"),
+        denyButtonText: gettext("No"),
+        showDenyButton: true,
+        showCloseButton: true
     }).then((result) => {
-    if (result.isConfirmed) {
-        $.ajax({
-            url: url,
-            type: "DELETE",
-            dataType: "json",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-            success: (success) => {
-                Swal.fire(
-                   gettext("Successfully deleted"),
-                    ).then(function(result) {
-                    datatableelement.ajax.reload();
-                })
-            },
-        });
-    }
+        if (result.isConfirmed) {
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                dataType: "json",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: (success) => {
+                    Swal.fire(
+                        gettext("Successfully deleted"),
+                    ).then(function (result) {
+                        datatableelement.ajax.reload();
+                    })
+                },
+            });
+        }
     });
 }
 
 document.table_default_dom = "<'row'<'col-sm-6 col-md-6 p-0' f>" +
-             "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
-             "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
-             "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
+    "<'col-sm-11 col-md-11 mt-1 p-0 d-flex align-items-center justify-content-start'l>" +
+    "<'col-sm-1 col-md-1 mt-1 d-flex align-items-center justify-content-end 'B>>" +
+    "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>";
 
-datatableelement=createDataTable('#datatableelement', urls['get_datatable_info'], {
- columns: [
+datatableelement = createDataTable('#datatableelement', urls['get_datatable_info'], {
+    columns: [
         {data: "created_by", name: "created_by", title: gettext("Creator"), type: "string", visible: true},
-        {data: "created_by_at", name: "created_by_at", title: gettext("Creation Date"), type: "date", visible: true, "dateformat":  urls['datetime_format']},
+        {
+            data: "created_by_at",
+            name: "created_by_at",
+            title: gettext("Creation Date"),
+            type: "date",
+            visible: true,
+            "dateformat": urls['datetime_format']
+        },
         {data: "comment", name: "comment", title: gettext("Comment"), type: "string", visible: true}
     ],
     ajax: {
         url: urls['get_datatable_info'],
         type: 'GET',
-        data: function(dataTableParams, settings) {
+        data: function (dataTableParams, settings) {
             var data = formatDataTableParams(dataTableParams, settings);
             data['procedure_step'] = $('.stepradio:checked').val();
             data['my_procedure'] = procedure_info["pk"];
@@ -192,7 +203,7 @@ datatableelement=createDataTable('#datatableelement', urls['get_datatable_info']
         {
             targets: 3,
             data: null,
-            render: function ( data, type, row, meta ) {
+            render: function (data, type, row, meta) {
                 return `<div class="text-end" style="top:0;">
                             <i  data-id="${row.id}" class="fa fa-edit beditbtn"></i>
                             <i  data-id="${row.id}" class="fa fa-trash deletebtn"></i></div>
@@ -203,15 +214,15 @@ datatableelement=createDataTable('#datatableelement', urls['get_datatable_info']
     buttons: [
         {
             text: '<i class="fa fa-plus" aria-hidden="true"></i>',
-            action: function() {
+            action: function () {
                 add_comment();
             }
         }
     ]
-}, addfilter=true);
+}, addfilter = true);
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('.dataTables_filter').addClass('w-100');
     $('.dataTables_filter input').addClass('filter-input').css('width', '96%');
     $('.dataTables_filter label').addClass('filter-label').css('width', '100%');
@@ -220,14 +231,14 @@ $(document).ready(function() {
     $('#datatableelement').removeClass('dtr-inline');
 });
 
-$('#datatableelement tbody').on( 'click', 'i', function () {
+$('#datatableelement tbody').on('click', 'i', function () {
 
     var action = this.className;
     var id = this.dataset.id;
 
-    if (action==="fa fa-edit beditbtn") {
+    if (action === "fa fa-edit beditbtn") {
         edit_comment(id);
-    } else if (action=="fa fa-trash deletebtn") {
+    } else if (action == "fa fa-trash deletebtn") {
         delete_comment(id);
     }
 
@@ -235,6 +246,79 @@ $('#datatableelement tbody').on( 'click', 'i', function () {
 
 document.getElementById("form_name").textContent = procedure_info["name"];
 
-$('.stepradio').on('change', function(e) {
+$('.stepradio').on('change', function (e) {
     datatableelement.ajax.reload();
+    change_form($(this).val());
 });
+
+let currentFormioInstance = null;
+let currentStepPk = null;
+
+function change_form(step_pk) {
+    const formioEl = document.getElementById('formio');
+    const noStepMsg = document.getElementById('no-step-message');
+    const formDetails = document.getElementById('form');
+    const saveBtn = document.getElementById('save-step-form-btn');
+
+    const schema = steps_forms_schemas.find(s => s["step"] == step_pk);
+    if (schema) {
+        if (noStepMsg) noStepMsg.classList.add('d-none');
+        if (saveBtn) saveBtn.classList.remove('d-none');
+        formDetails.setAttribute('open', '');
+        if (currentFormioInstance) {
+            currentFormioInstance.destroy();
+            currentFormioInstance = null;
+        }
+        formioEl.innerHTML = '';
+        currentStepPk = step_pk;
+        const savedData = steps_data[step_pk] || {};
+        console.log((schema['form']['components']).length);
+        if ((schema['form']['components']).length > 0) {
+             saveBtn.disabled = false;
+            saveBtn.style.display = '';
+            Formio.createForm(formioEl, {components: schema['form']['components']}).then(function (form) {
+                currentFormioInstance = form;
+                if (Object.keys(savedData).length > 0) {
+                    form.submission = {data: savedData};
+                }
+            });
+        } else {
+            saveBtn.disabled = true;
+            saveBtn.style.display = 'none';
+        }
+    } else {
+        if (currentFormioInstance) {
+            currentFormioInstance.destroy();
+            currentFormioInstance = null;
+        }
+        formioEl.innerHTML = '';
+        currentStepPk = null;
+        if (noStepMsg) noStepMsg.classList.remove('d-none');
+        if (saveBtn) saveBtn.classList.add('d-none');
+        saveBtn.disabled = true;
+        saveBtn.visible = false;
+    }
+}
+
+function saveStepForm() {
+    if (!currentFormioInstance || !currentStepPk) return;
+    const data = currentFormioInstance.submission.data;
+    $.ajax({
+        url: urls['edit'],
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            'save_step_form': '1',
+            'step_pk': currentStepPk,
+            'step_form_data': JSON.stringify(data),
+        },
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        success: function () {
+            steps_data[currentStepPk] = data;
+            Swal.fire('', gettext('Saved successfully'), 'success');
+        },
+    });
+}

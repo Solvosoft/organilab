@@ -57,7 +57,7 @@
     "model": "auth_and_perms.rol",
     "pk": 1,
     "fields": {
-      "name": "Gestión de Reporte de Incidentes",
+      "name": "Gesti\u00f3n de Reporte de Incidentes",
       "color": "#337193",
       "permissions": [
         [
@@ -72,7 +72,7 @@
     "model": "auth_and_perms.rol",
     "pk": 2,
     "fields": {
-      "name": "Gestión de Informes",
+      "name": "Gesti\u00f3n de Informes",
       "color": "#337193",
       "permissions": [
         [
@@ -102,7 +102,7 @@
     "model": "auth_and_perms.rol",
     "pk": 3,
     "fields": {
-      "name": "Gestión de Estantes",
+      "name": "Gesti\u00f3n de Estantes",
       "color": "#337193",
       "permissions": [
         [
@@ -132,7 +132,7 @@
     "model": "auth_and_perms.rol",
     "pk": 4,
     "fields": {
-      "name": "Gestión de Desechos",
+      "name": "Gesti\u00f3n de Desechos",
       "color": "#337193",
       "permissions": [
         [
@@ -152,7 +152,7 @@
     "model": "auth_and_perms.rol",
     "pk": 5,
     "fields": {
-      "name": "Gestión de Muebles",
+      "name": "Gesti\u00f3n de Muebles",
       "color": "#337193",
       "permissions": [
         [
@@ -177,7 +177,7 @@
     "model": "auth_and_perms.rol",
     "pk": 6,
     "fields": {
-      "name": "Gestión de Proveedores",
+      "name": "Gesti\u00f3n de Proveedores",
       "color": "#337193",
       "permissions": [
         [
@@ -202,7 +202,7 @@
     "model": "auth_and_perms.rol",
     "pk": 7,
     "fields": {
-      "name": "Gestión de Usuarios",
+      "name": "Gesti\u00f3n de Usuarios",
       "color": "#337193",
       "permissions": [
         [
@@ -217,7 +217,7 @@
     "model": "auth_and_perms.rol",
     "pk": 8,
     "fields": {
-      "name": "Gestión de Objetos",
+      "name": "Gesti\u00f3n de Objetos",
       "color": "#337193",
       "permissions": [
         [
@@ -247,7 +247,7 @@
     "model": "auth_and_perms.rol",
     "pk": 9,
     "fields": {
-      "name": "Gestión de Reportes",
+      "name": "Gesti\u00f3n de Reportes",
       "color": "#337193",
       "permissions": [
         [
@@ -267,7 +267,7 @@
     "model": "auth_and_perms.rol",
     "pk": 10,
     "fields": {
-      "name": "Gestión de Protocolos",
+      "name": "Gesti\u00f3n de Protocolos",
       "color": "#337193",
       "permissions": [
         [
@@ -287,7 +287,7 @@
     "model": "auth_and_perms.rol",
     "pk": 11,
     "fields": {
-      "name": "Gestión de Perfiles",
+      "name": "Gesti\u00f3n de Perfiles",
       "color": "#337193",
       "permissions": [
         [
@@ -307,7 +307,7 @@
     "model": "auth_and_perms.rol",
     "pk": 12,
     "fields": {
-      "name": "Gestión de Características de Objetos",
+      "name": "Gesti\u00f3n de Caracter\u00edsticas de Objetos",
       "color": "#337193",
       "permissions": [
         [
@@ -332,7 +332,7 @@
     "model": "auth_and_perms.rol",
     "pk": 13,
     "fields": {
-      "name": "Gestión de Laboratorio",
+      "name": "Gesti\u00f3n de Laboratorio",
       "color": "#337193",
       "permissions": [
         [
@@ -362,7 +362,7 @@
     "model": "auth_and_perms.rol",
     "pk": 14,
     "fields": {
-      "name": "Gestión de Sala de Laboratorio",
+      "name": "Gesti\u00f3n de Sala de Laboratorio",
       "color": "#337193",
       "permissions": [
         [
@@ -392,7 +392,7 @@
     "model": "auth_and_perms.rol",
     "pk": 15,
     "fields": {
-      "name": "Gestión de la Estructura de la Organización",
+      "name": "Gesti\u00f3n de la Estructura de la Organizaci\u00f3n",
       "color": "#337193",
       "permissions": [
         [
@@ -417,7 +417,7 @@
     "model": "auth_and_perms.rol",
     "pk": 16,
     "fields": {
-      "name": "Gestión de Objeto en el Estante",
+      "name": "Gesti\u00f3n de Objeto en el Estante",
       "color": "#337193",
       "permissions": [
         [
@@ -447,7 +447,7 @@
     "model": "auth_and_perms.rol",
     "pk": 17,
     "fields": {
-      "name": "Gestión de Transferencia de Objeto",
+      "name": "Gesti\u00f3n de Transferencia de Objeto",
       "color": "#337193",
       "permissions": [
         [
@@ -477,7 +477,7 @@
     "model": "auth_and_perms.rol",
     "pk": 18,
     "fields": {
-      "name": "Gestión de Reserva de Productos",
+      "name": "Gesti\u00f3n de Reserva de Productos",
       "color": "#337193",
       "permissions": [
         [
@@ -492,7 +492,7 @@
     "model": "auth_and_perms.rol",
     "pk": 19,
     "fields": {
-      "name": "Gestión de Observaciones del Objeto en el Estante",
+      "name": "Gesti\u00f3n de Observaciones del Objeto en el Estante",
       "color": "#337193",
       "permissions": [
         [
@@ -512,7 +512,7 @@
     "model": "auth_and_perms.rol",
     "pk": 20,
     "fields": {
-      "name": "Gestión de Catalogos",
+      "name": "Gesti\u00f3n de Catalogos",
       "color": "#337193",
       "permissions": [
         [
@@ -527,7 +527,7 @@
     "model": "auth_and_perms.rol",
     "pk": 21,
     "fields": {
-      "name": "Gestión de Agendador de Informes",
+      "name": "Gesti\u00f3n de Agendador de Informes",
       "color": "#337193",
       "permissions": [
         [
@@ -552,7 +552,7 @@
     "model": "auth_and_perms.rol",
     "pk": 22,
     "fields": {
-      "name": "Gestión de Reservaciones",
+      "name": "Gesti\u00f3n de Reservaciones",
       "color": "#337193",
       "permissions": [
         [
@@ -567,10 +567,10 @@
     "model": "auth_and_perms.rol",
     "pk": 24,
     "fields": {
-      "name": "Gestión de Comentarios de informes",
+      "name": "Gesti\u00f3n de Comentarios de informes",
       "color": "#337193",
       "permissions": [
-          [
+        [
           "view_commentinform",
           "laboratory",
           "commentinform"
@@ -862,7 +862,7 @@
     "model": "laboratory.laboratoryroom",
     "pk": 3,
     "fields": {
-      "name": "Sala de equipos de protección individual",
+      "name": "Sala de equipos de protecci\u00f3n individual",
       "creation_date": "2023-01-25T20:46:09.591Z",
       "last_update": "2023-01-25T20:46:09.591Z",
       "laboratory": 2
@@ -986,7 +986,7 @@
     "fields": {
       "name": "Lavado de manos",
       "file": "protocols/test.pdf",
-      "short_description": "Higienización de las manos previa para el ingreso al laboratorio y manipulación de los instrumentos del mismo.",
+      "short_description": "Higienizaci\u00f3n de las manos previa para el ingreso al laboratorio y manipulaci\u00f3n de los instrumentos del mismo.",
       "laboratory": 1,
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
@@ -999,7 +999,7 @@
     "fields": {
       "name": "Control de plagas",
       "file": "protocols/test.pdf",
-      "short_description": "Saneamiento y fumigación del área de trabajo y exteriores",
+      "short_description": "Saneamiento y fumigaci\u00f3n del \u00e1rea de trabajo y exteriores",
       "laboratory": 1,
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
@@ -1010,9 +1010,9 @@
     "model": "laboratory.protocol",
     "pk": 3,
     "fields": {
-      "name": "Manipulación de instrumentos de laboratorio",
+      "name": "Manipulaci\u00f3n de instrumentos de laboratorio",
       "file": "protocols/test.pdf",
-      "short_description": "Esterilización y uso de instrumentos de laboratorio.",
+      "short_description": "Esterilizaci\u00f3n y uso de instrumentos de laboratorio.",
       "laboratory": 1,
       "upload_by": 1,
       "creation_date": "2023-01-25T20:46:09.591Z",
@@ -1027,10 +1027,10 @@
       "creation_date": "2023-01-12T21:31:49.385Z",
       "last_update": "2023-01-12T21:31:49.385Z",
       "created_by": null,
-      "name": "Gestión de laboratorio",
+      "name": "Gesti\u00f3n de laboratorio",
       "status": "admin",
       "schema": {
-        "name": "Gestión de laboratorio",
+        "name": "Gesti\u00f3n de laboratorio",
         "status": "admin",
         "components": []
       }
@@ -1044,10 +1044,10 @@
       "creation_date": "2023-01-12T21:31:49.385Z",
       "last_update": "2023-01-12T21:31:49.385Z",
       "created_by": null,
-      "name": "Recolección de muestras",
+      "name": "Recolecci\u00f3n de muestras",
       "status": "admin",
       "schema": {
-        "name": "Recolección de muestras",
+        "name": "Recolecci\u00f3n de muestras",
         "status": "admin",
         "components": []
       }
@@ -1061,13 +1061,13 @@
       "creation_date": "2023-01-12T21:32:20.813Z",
       "last_update": "2023-01-12T21:32:50.220Z",
       "created_by": null,
-      "name": "Gestión de laboratorio",
+      "name": "Gesti\u00f3n de laboratorio",
       "custom_form": 1,
       "content_type": 1,
       "object_id": 1,
       "status": "In Review",
       "schema": {
-        "name": "Gestión de laboratorio",
+        "name": "Gesti\u00f3n de laboratorio",
         "status": "admin",
         "components": []
       }
@@ -1081,13 +1081,13 @@
       "creation_date": "2023-01-12T21:32:20.813Z",
       "last_update": "2023-01-12T21:32:50.220Z",
       "created_by": null,
-      "name": "Recolección de muestras",
+      "name": "Recolecci\u00f3n de muestras",
       "custom_form": 2,
       "content_type": 1,
       "object_id": 2,
       "status": "In Review",
       "schema": {
-        "name": "Recolección de muestras",
+        "name": "Recolecci\u00f3n de muestras",
         "status": "admin",
         "components": []
       }
@@ -1292,7 +1292,7 @@
     "pk": 7,
     "fields": {
       "furniture": 3,
-      "name": "Séptimo Estante",
+      "name": "S\u00e9ptimo Estante",
       "container_shelf": null,
       "type": 74,
       "color": "#73879C",
@@ -1386,7 +1386,7 @@
     "pk": 10,
     "fields": {
       "furniture": 4,
-      "name": "Décimo Estante",
+      "name": "D\u00e9cimo Estante",
       "container_shelf": null,
       "type": 74,
       "color": "#73879C",
@@ -1486,7 +1486,7 @@
     "pk": 1,
     "fields": {
       "name": "Reactivo",
-      "description": "Es un reactivo en la industria química."
+      "description": "Es un reactivo en la industria qu\u00edmica."
     }
   },
   {
@@ -1752,7 +1752,7 @@
       "creation_date": "2023-02-09T23:35:53.666Z",
       "last_update": "2023-02-09T23:35:53.666Z",
       "created_by": 1,
-      "name": "Gestión de reactivos",
+      "name": "Gesti\u00f3n de reactivos",
       "start_application_date": "2023-02-09",
       "close_application_date": "2023-02-09",
       "period_on_days": 365,
@@ -1768,7 +1768,7 @@
       "creation_date": "2023-02-09T23:35:53.666Z",
       "last_update": "2023-02-09T23:35:53.666Z",
       "created_by": 1,
-      "name": "Gestión de equipo",
+      "name": "Gesti\u00f3n de equipo",
       "start_application_date": "2023-02-09",
       "close_application_date": "2023-02-09",
       "period_on_days": 365,
@@ -2075,7 +2075,7 @@
     "pk": 15,
     "fields": {
       "furniture": 7,
-      "name": "Estante líquido",
+      "name": "Estante l\u00edquido",
       "container_shelf": null,
       "type": 75,
       "color": "#73879C",
@@ -2122,7 +2122,7 @@
       "container": null
     }
   },
-    {
+  {
     "model": "laboratory.shelfobject",
     "pk": 8,
     "fields": {
@@ -2258,7 +2258,7 @@
       "container": null
     }
   },
-    {
+  {
     "model": "laboratory.shelfobject",
     "pk": 14,
     "fields": {
@@ -2274,7 +2274,7 @@
       "container": 6
     }
   },
-    {
+  {
     "model": "laboratory.shelfobject",
     "pk": 15,
     "fields": {
@@ -2307,7 +2307,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1],
+      "features": [
+        1
+      ],
       "is_container": false
     }
   },
@@ -2328,7 +2330,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1],
+      "features": [
+        1
+      ],
       "is_container": false
     }
   },
@@ -2349,7 +2353,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1],
+      "features": [
+        1
+      ],
       "is_container": false
     }
   },
@@ -2370,7 +2376,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1],
+      "features": [
+        1
+      ],
       "is_container": false
     }
   },
@@ -2391,7 +2399,9 @@
       "model": "",
       "serie": "",
       "plaque": "",
-      "features": [1],
+      "features": [
+        1
+      ],
       "is_container": false
     }
   },
@@ -2399,8 +2409,8 @@
     "model": "laboratory.equipmenttype",
     "pk": 1,
     "fields": {
-      "name": "Equipo Análitico",
-      "description": "Proporcionan información detallada acerca de las características químicas del material a identificar."
+      "name": "Equipo An\u00e1litico",
+      "description": "Proporcionan informaci\u00f3n detallada acerca de las caracter\u00edsticas qu\u00edmicas del material a identificar."
     }
   },
   {
@@ -2411,7 +2421,7 @@
       "description": "Permiten realizar las actividades cotidianas en una clase de laboratorio."
     }
   },
-    {
+  {
     "model": "laboratory.shelfobjectequipmentcharacteristics",
     "pk": 1,
     "fields": {
@@ -2429,7 +2439,37 @@
       "notes": "Good",
       "available_to_use": true,
       "first_date_use": "2024-03-23",
-      "authorized_roles_to_use_equipment": [1, 5]
+      "authorized_roles_to_use_equipment": [
+        1,
+        5
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 4,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "rol": [
+        14
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 5,
+    "fields": {
+      "organization": 1,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 2
     }
   }
 ]

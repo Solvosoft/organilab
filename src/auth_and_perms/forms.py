@@ -158,6 +158,7 @@ class LaboratoryOfOrganizationForm(GTForm):
         widget=AutocompleteSelect(
             "laborgbase", attrs={"data-s2filter-organization": ".nodeorg:checked"}
         ),
+        label=_("Laboratories"),
     )
 
 
@@ -189,6 +190,7 @@ class ProfileListForm(GTForm):
                 "data-dropdownparent": "#relprofilelabmodal",
             },
         ),
+        label=_("User"),
     )
     addlaboratories = forms.ModelMultipleChoiceField(
         queryset=Laboratory.objects.all(),
@@ -201,12 +203,12 @@ class ProfileListForm(GTForm):
                 "data-dropdownparent": "#relprofilelabmodal",
             },
         ),
-        label=_("Laboratories"),
+        label=_("Laboratory"),
     )
 
 
 class IncludeEmailExternalUserForm(GTForm):
-    email = forms.EmailField(widget=genwidgets.EmailInput)
+    email = forms.EmailField(widget=genwidgets.EmailInput, label=_("Email"))
 
 
 class OrganizationActions(GTForm):
@@ -272,11 +274,12 @@ class ProfileGroupForm(GTForm):
         widget=AutocompleteSelect(
             "usersbyorg", attrs={"data-s2filter-organization": ".nodeorg:checked"}
         ),
-        label=_("Profile")
+        label=_("Profile"),
     )
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), widget=genwidgets.SelectMultiple,
-        label=_("Groups")
+        queryset=Group.objects.all(),
+        widget=genwidgets.SelectMultiple,
+        label=_("Groups"),
     )
     organization = forms.IntegerField(widget=genwidgets.HiddenInput)
 
@@ -292,6 +295,7 @@ class OrgTreeForm(GTForm):
     organization = forms.ModelChoiceField(
         queryset=OrganizationStructure.objects.all(),
         widget=AutocompleteSelect("orgtree"),
+        label=_("Organization"),
     )
 
 

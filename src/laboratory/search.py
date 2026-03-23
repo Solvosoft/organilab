@@ -9,7 +9,6 @@ Free as freedom will be 26/8/2016
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Q
 from django.utils.decorators import method_decorator
-from .utils import get_pk_org_ancestors_decendants
 from .views.djgeneric import ListView
 from laboratory.models import ShelfObject, Laboratory, OrganizationStructure
 from laboratory.forms import (
@@ -35,11 +34,11 @@ class SearchDisposalObject(ListView):
     template_name = "laboratory/disposal_substance.html"
 
     def get_queryset(self):
-        user = self.request.user
+        org = OrganizationStructure.objects.get(pk=self.org)
+        org_pks = [self.org] + list(org.descendants().values_list("pk", flat=True))
         labs = Laboratory.objects.filter(
-            profile__user=user.pk,
-            organization=self.org,
-            laboratoryroom__furniture__shelf__discard=True,
+            organization__in=org_pks,
+            laboratoryroom__furniture__shelf__shelfobject__marked_as_discard=True,
         ).distinct()
 
         return labs

@@ -1,4 +1,5 @@
 from django.db.models import Sum
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from laboratory.utils_base_unit import get_base_unit
 
@@ -14,6 +15,8 @@ from laboratory.models import (
 )
 from laboratory.utils_base_unit import get_base_unit
 from django.utils.translation import gettext_lazy as _
+
+from report.utils import create_notification
 
 
 def create_informsperiods(informscheduler, now=timezone.now()):
@@ -48,6 +51,18 @@ def create_informsperiods(informscheduler, now=timezone.now()):
                 schema=informscheduler.inform_template.schema,
             )
             ip.informs.add(inform)
+            if lab.responsible:
+                create_notification(
+                    lab.responsible,
+                    _("New period inform was created in the laboratory %s") % lab.name,
+                    reverse(
+                        "laboratory:get_informs",
+                        kwargs={
+                            "org_pk": informscheduler.organization.pk,
+                            "lab_pk": lab.pk,
+                        },
+                    ),
+                )
 
 
 def save_object_report_precursor(report):
