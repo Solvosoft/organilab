@@ -53,8 +53,18 @@ class EditUserForm(forms.ModelForm, GTForm):
     phone_number = forms.CharField(
         max_length=25, label=_("Phone"), widget=djgenwidgets.TextInput
     )
-    language = forms.ChoiceField(choices=settings.LANGUAGES, widget=djgenwidgets.Select)
-    identification = forms.CharField(label=_("Identification"), max_length=100, widget=djgenwidgets.TextInput, required=False)
+    language = forms.ChoiceField(
+        choices=settings.LANGUAGES, widget=djgenwidgets.Select, label=_("Language")
+    )
+    job_position = forms.CharField(
+        label=_("Job Position"), max_length=100, widget=djgenwidgets.TextInput
+    )
+    identification = forms.CharField(
+        label=_("Identification"),
+        max_length=100,
+        widget=djgenwidgets.TextInput,
+        required=False,
+    )
     address = forms.CharField(widget=djgenwidgets.Textarea, label=_("Address"))
     workplace = forms.ModelMultipleChoiceField(
         widget=djgenwidgets.SelectMultiple,
@@ -66,7 +76,9 @@ class EditUserForm(forms.ModelForm, GTForm):
         self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        self.fields["workplace"].queryset = OrganizationStructure.os_manager.filter_user(self.user)
+        self.fields["workplace"].queryset = (
+            OrganizationStructure.os_manager.filter_user(self.user)
+        )
 
     class Meta:
         model = User
@@ -76,7 +88,6 @@ class EditUserForm(forms.ModelForm, GTForm):
             "first_name": djgenwidgets.TextInput,
             "last_name": djgenwidgets.TextInput,
             "email": djgenwidgets.EmailMaskInput,
-
         }
 
 
