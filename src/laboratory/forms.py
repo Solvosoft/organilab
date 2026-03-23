@@ -1423,7 +1423,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
     )
 
     cas_id_number = forms.CharField(
-        widget=genwidgets.TextInput, required=False, label=_("Cas ID Number")
+        widget=genwidgets.TextInput, required=False, label=_("Cas number")
     )
 
     security_sheet = forms.FileField(
@@ -1518,6 +1518,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
+        self.fields["name"].label = _("Substance Name")
 
     class Meta:
         model = Object
