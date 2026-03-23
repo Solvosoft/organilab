@@ -728,6 +728,20 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             relobj=org_pk,
         )
 
+    root_org = org.root
+    if root_org.pk != org.pk:
+        root_user_org = UserOrganization.objects.filter(organization=root_org, user=user)
+        if not root_user_org.exists():
+            root_user_org = UserOrganization.objects.create(organization=root_org, user=user)
+            organilab_logentry(
+                user,
+                root_user_org,
+                ADDITION,
+                "user organization",
+                changed_data=["organization", "user"],
+                relobj=root_org.pk,
+            )
+
     # Login Log - relobj(USER) - action(CHANGE)
     organilab_logentry(
         user, user, CHANGE, "user", changed_data=["Login", qr_obj.pk], relobj=org
