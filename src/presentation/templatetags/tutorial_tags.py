@@ -69,8 +69,10 @@ def tutorial_launcher(context):
     except Exception:
         return ''
 
-    org_pk = context.get('org_pk') or (
-        request.resolver_match.kwargs.get('org_pk') if request.resolver_match else None
+    org_pk = (
+        context.get('org_pk')
+        or (request.resolver_match.kwargs.get('org_pk') if request.resolver_match else None)
+        or request.GET.get('org_pk')
     )
     url_name = (
         request.resolver_match.view_name if request.resolver_match else None
