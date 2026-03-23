@@ -276,6 +276,46 @@ class SustanceCharacteristics(models.Model):
         verbose_name_plural = _("Sustance characteristics")
 
 
+class SDSTraceability(BaseCreationObj):
+    SDS_SOURCE_CHOICES = [
+        ("merck", "Merck/Sigma-Aldrich"),
+        ("pubchem", "PubChem"),
+        ("fisher", "Fisher/Thermo"),
+        ("panreac", "Panreac"),
+        ("carlo_erba", "Carlo Erba"),
+        ("jt_baker", "JT Baker"),
+        ("honeywell", "Honeywell/Fluka"),
+        ("unknown", _("Unknown")),
+        ("manual", _("Manual upload")),
+    ]
+
+    sustance_characteristics = models.ForeignKey(
+        SustanceCharacteristics,
+        on_delete=models.CASCADE,
+        related_name="sds_traceability",
+    )
+    source = models.CharField(
+        _("SDS source"), max_length=50, choices=SDS_SOURCE_CHOICES, default="unknown"
+    )
+    revision_date = models.DateField(_("SDS revision date"), null=True, blank=True)
+    download_url = models.URLField(
+        _("Download URL"), max_length=500, blank=True, default=""
+    )
+    security_sheet = models.FileField(
+        _("Security sheet"), upload_to=upload_files, null=True, blank=True
+    )
+
+    class Meta:
+        verbose_name = _("SDS traceability")
+        verbose_name_plural = _("SDS traceability records")
+        ordering = ["-creation_date"]
+
+    def __str__(self):
+        return (
+            f"{self.sustance_characteristics_id} - {self.source} ({self.creation_date})"
+        )
+
+
 class ShelfObjectLimits(models.Model):
     minimum_limit = models.FloatField(
         _("Limit material quantity"),
@@ -1679,7 +1719,7 @@ class InformScheduler(AbstractOrganizationRef):
     inform_template = models.ForeignKey(
         "derb.CustomForm", verbose_name=_("Inform template"), on_delete=models.CASCADE
     )
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True, verbose_name=_("Active"))
 
     def __str__(self):
         return self.name

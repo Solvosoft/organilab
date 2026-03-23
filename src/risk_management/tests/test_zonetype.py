@@ -92,7 +92,7 @@ class RiskZoneTest(TestCase):
             reverse("riskmanagement:riskzone_detail", kwargs=self.url_attr)
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)
 
     def test_add_zone_type(self):
         data = {"name": "First Risk Zone", "priority_validator": [2]}

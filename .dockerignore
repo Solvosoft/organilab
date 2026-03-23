@@ -23,3 +23,12 @@ docker/*.env
 **/.env
 **/.aws
 **/.ssh
+docs/
+*.md
+!requirements.txt
+Makefile
+.editorconfig
+.git
+__pycache__
+*.pyc
+*.pyo

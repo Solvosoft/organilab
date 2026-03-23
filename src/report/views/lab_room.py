@@ -32,7 +32,7 @@ def get_dataset(report, column_list=None):
             data_column = {
                 "code": shelfobject.object.code,
                 "object": shelfobject.object.name,
-                "quantity": f"{shelfobject.quantity} {shelf_unit}",
+                "quantity": f"{round(shelfobject.quantity, 3)} {shelf_unit}",
                 "laboratory": shelfobject.in_where_laboratory.name,
                 "laboratory_room": furniture.labroom.name,
                 "furniture": furniture.name,

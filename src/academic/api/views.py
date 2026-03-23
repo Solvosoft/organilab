@@ -1,8 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required, login_required
 from django.contrib.contenttypes.models import ContentType
-from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.template.loader import render_to_string, get_template
+from django.utils import timezone
 from django.utils.decorators import method_decorator
+from weasyprint import HTML
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, mixins
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
@@ -29,6 +32,31 @@ from .serializers import (
     ProcedureStepCommentFilterSet,
     ValidateUserAccessOrgSerializer,
 )
+
+FORMIO_SKIP_TYPES = {"button", "columns", "panel", "well", "htmlelement", "content"}
+
+
+def _extract_form_fields(components, submission_data):
+    """Recursively extract (label, value) pairs from formio components."""
+    fields = []
+    for comp in components:
+        comp_type = comp.get("type", "")
+        if comp_type in FORMIO_SKIP_TYPES:
+            nested = comp.get("components", [])
+            if nested:
+                fields.extend(_extract_form_fields(nested, submission_data))
+            for col in comp.get("columns", []):
+                fields.extend(_extract_form_fields(col.get("components", []), submission_data))
+            continue
+        key = comp.get("key")
+        label = comp.get("label", key)
+        if key:
+            value = submission_data.get(key, "")
+            fields.append({"label": label, "value": value})
+        nested = comp.get("components", [])
+        if nested:
+            fields.extend(_extract_form_fields(nested, submission_data))
+    return fields
 
 
 class ProcedureStepCommentTableView(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -285,6 +313,59 @@ class MyProceduresAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             return Response(
                 validate_serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+    @action(detail=True, methods=["get"])
+    def download_my_procedures(self, request, org_pk, lab_pk, pk=None):
+        organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=org_pk
+        )
+        user_is_allowed_on_organization(request.user, organization)
+        laboratory = get_object_or_404(
+            Laboratory.objects.using(settings.READONLY_DATABASE), pk=lab_pk
+        )
+        organization_can_change_laboratory(
+            laboratory, organization, raise_exec=True
+        )
+        my_procedure = get_object_or_404(MyProcedure, pk=pk)
+        steps = ProcedureStep.objects.filter(procedure=my_procedure.custom_procedure)
+        saved_data = my_procedure.schema.get("steps_data", {})
+
+        steps_data = []
+        for step in steps:
+            fields = []
+            if step.form and step.form.schema:
+                step_submission = saved_data.get(str(step.pk), {})
+                fields = _extract_form_fields(
+                    step.form.schema.get("components", []), step_submission
+                )
+            comments = CommentProcedureStep.objects.filter(
+                my_procedure=my_procedure, procedure_step=step
+            ).order_by("created_by_at")
+            steps_data.append({
+                "title": step.title,
+                "fields": fields,
+                "comments": comments,
+            })
+
+        context = {
+            "my_procedure": my_procedure,
+            "steps_data": steps_data,
+            "title": my_procedure.name,
+            "user": request.user,
+            "datetime": timezone.now(),
+        }
+        template = get_template("academic/my_procedure_pdf.html")
+        html = template.render(context=context)
+        pdf = HTML(
+            string=html, encoding="utf-8", base_url=request.build_absolute_uri()
+        ).write_pdf()
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = (
+            f'attachment; filename="procedure_{my_procedure.pk}.pdf"'
+        )
+        return response
+
+
+
 
 
 @method_decorator(login_required, name="dispatch")

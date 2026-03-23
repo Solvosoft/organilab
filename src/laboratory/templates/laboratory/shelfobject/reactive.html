@@ -9,7 +9,7 @@
 
 {% endblock %}
 
-{% block title %}{% trans 'Consumption record' %}{% endblock %}
+{% block title %}{% trans 'Consumption reorder' %}{% endblock %}
 
 {% block container %}container-fluid{% endblock %}
 
@@ -18,7 +18,7 @@
 		<div class="card-body">
 			{# Titulo de tabla #}
 			<div class="card-title titles">
-				<h1 class="text-center"> {% trans 'Consumption record' %} </h1>
+				<h1 class="text-center"> {% trans 'Consumption reorder' %} </h1>
 			</div>
 
 			{# Contenido de tabla #}
@@ -34,13 +34,13 @@
 	{# Modales de acciones #}
 	{% url "laboratory:api-shelobjectsreactives-list" org_pk lab_pk as list_obj_url %}
 
-	{% url "laboratory:api-shelobjectsreactives-increase" lab_pk=laboratory org_pk=org_pk as increase_so_url %}#}
+	{% url "laboratory:api-shelobjectsreactives-increase" lab_pk=laboratory org_pk=org_pk as increase_so_url %}
 	{% trans 'Add' as increase_so_tittle %}
-	{% include 'gentelella/blocks/modal_template.html' with form=increaseForm id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}#}
+	{% include 'gentelella/blocks/modal_template.html' with form=increaseForm id="increasesomodal" title=increase_so_tittle form_id="increasesoform" url=increase_so_url %}
 
-	{% url "laboratory:api-shelobjectsreactives-decrease" lab_pk=laboratory org_pk=org_pk as increase_so_url %}#}
+	{% url "laboratory:api-shelobjectsreactives-decrease" lab_pk=laboratory org_pk=org_pk as increase_so_url %}
 	{% trans 'Decrease' as increase_so_tittle %}
-	{% include 'gentelella/blocks/modal_template.html' with form=decreaseForm id="decreasesomodal" title=increase_so_tittle form_id="decreasesoform" url=increase_so_url %}#}
+	{% include 'gentelella/blocks/modal_template.html' with form=decreaseForm id="decreasesomodal" title=increase_so_tittle form_id="decreasesoform" url=increase_so_url %}
 
 {% endblock %}
 

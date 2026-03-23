@@ -114,8 +114,10 @@ class ListZone(ListView):
             )
             if latest_log:
                 object.status = latest_log.establishment_status
+                object.xls_url = latest_log.xls_content.url if latest_log.xls_content else None
             else:
                 object.status = "Desconocido"
+                object.xls_url = None
 
         return context
 
@@ -431,6 +433,10 @@ class ZoneDashboard(TemplateView):
             + x,
             "nfpachart": reverse(
                 "nfpachart-detail", kwargs={"pk": self.kwargs["org_pk"]}
+            )
+            + x,
+            "substancetonschart": reverse(
+                "substancetonschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
             )
             + x,
         }

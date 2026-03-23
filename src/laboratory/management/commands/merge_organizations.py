@@ -9,7 +9,7 @@ from laboratory.models import OrganizationStructure, Laboratory, Object, \
     ShelfObjectMaintenance, ShelfObjectCalibrate, ShelfObjectTraining, \
     ShelfObjectGuarantee, UserOrganization, ObjectLogChange, Inform, InformScheduler, \
     InformsPeriod, OrganizationStructureRelations, LabOrgLogEntry, RegisterUserQR
-from msds.models import MSDSObject
+
 from reservations_management.models import ReservedProducts
 from risk_management.models import RiskZone, PriorityConstrain, IncidentReport, Regent, \
     Buildings, Structure
@@ -145,8 +145,7 @@ class Command(BaseCommand):
          update(organization=self.parent_org))
 
     def merge_msds(self):
-        (MSDSObject.objects.filter(organization__in=self.child_org).
-         update(organization=self.parent_org))
+        pass
 
     def merge_academic(self):
         org_contenttype = (ContentType.objects.filter(app_label="laboratory",

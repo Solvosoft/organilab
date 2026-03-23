@@ -1195,6 +1195,41 @@ msgstr "Tipo de Equipo"
 msgid "Donated"
 msgstr "Donado"
 
+msgid "Limits"
+msgstr "Límites"
+
+msgid "Decrease"
+msgstr "Disminuir"
+
+msgid "Source"
+msgstr "Fuente"
+
+msgid "Revision Date"
+msgstr "Fecha de Revisión"
+
+msgid "Break threshold"
+msgstr "Umbral superado"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Skip"
+msgstr "Omitir"
+
+msgid "Finish"
+msgstr "Finalizar"
+
+msgid "Available tutorials"
+msgstr "Tutoriales disponibles"
+
+msgid "Tutorial completed!"
+msgstr "¡Tutorial completado!"
+
+msgid "CAS number"
+msgstr "Número CAS"
 
 msgid "Edit task"
 msgstr "Editar tarea"

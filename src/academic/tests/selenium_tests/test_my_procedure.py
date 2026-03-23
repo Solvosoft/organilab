@@ -183,11 +183,11 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
 
     @modifies_db
     def test_add_observation_my_procedure(self):
-        """Test adding an observation to a personal procedure.
+        """Test adding an observation and filling the step formio form.
 
         Flow: Navigate to my procedures list -> Click edit icon
-        on first row -> Select a step -> Click add comment ->
-        Enter comment -> Save.
+        on first row -> Select a step -> Fill formio form field ->
+        Save form -> Click add comment -> Enter comment -> Save.
 
         GIF: docs/source/_static/gif/add_my_procedure_observation.gif
         """
@@ -200,6 +200,41 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//input[contains(@class, 'stepradio')]",
                 "wait_ready": True,
+            },
+            {
+                "path": "//details[@id='form']",
+                "extra_action": "script",
+                "value": "document.getElementById('form').setAttribute('open','')",
+                "sleep": 2,
+            },
+            {
+                "path": "//div[@id='formio']",
+                "extra_action": "script",
+                "value": (
+                    "var inp = document.querySelector('#formio input[type=\"text\"]');"
+                    "if(inp){"
+                    "  inp.value='Muestra de laboratorio A';"
+                    "  inp.dispatchEvent(new Event('input',{bubbles:true}));"
+                    "  inp.dispatchEvent(new Event('change',{bubbles:true}));"
+                    "}"
+                ),
+                "scroll": "window.scrollTo(0, 300)",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='save-step-form-btn']",
+                "sleep": 1,
+            },
+            {
+                "path": "//button[contains(@class, 'swal2-confirm')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//details[@id='observation']",
+                "extra_action": "script",
+                "value": "document.getElementById('observation').setAttribute('open','')",
+                "scroll": "window.scrollTo(0, 0)",
+                "sleep": 1,
             },
             {
                 "path": "//*[@id='datatableelement_wrapper']//button[.//i[contains(@class, 'fa-plus')]]",
@@ -240,6 +275,12 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//input[contains(@class, 'stepradio')]",
                 "wait_ready": True,
+            },
+            {
+                "path": "//input[contains(@class, 'stepradio')]",
+                "extra_action": "script",
+                "value": "null",
+                "sleep": 3,
             },
             {
                 "path": "//i[contains(@class, 'beditbtn')]",
@@ -284,6 +325,18 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
             {
                 "path": "//input[contains(@class, 'stepradio')]",
                 "wait_ready": True,
+            },
+            {
+                "path": "//input[contains(@class, 'stepradio')]",
+                "extra_action": "script",
+                "value": "null",
+                "sleep": 3,
+            },
+            {
+                "path": "//details[@id='observation']",
+                "extra_action": "script",
+                "value": "document.getElementById('observation').setAttribute('open','')",
+                "sleep": 1,
             },
             {
                 "path": "//i[contains(@class, 'deletebtn')]",
@@ -353,3 +406,28 @@ class MyProcedureSeleniumTest(OptimizedSeleniumBase):
         ]
         self.create_gif_process(path_list, "review_my_procedure")
         self.finalize_myprocedure()
+
+    def test_download_myprocedure_pdf(self):
+        """Test that the PDF download link exists and points to the correct endpoint.
+
+        Flow: Navigate to my procedures list -> Wait for table ->
+        Read the href of the download icon on first row ->
+        Assert the URL contains the download endpoint.
+
+        GIF: docs/source/_static/gif/download_myprocedure_pdf.gif
+        """
+        self.navigate_to_my_procedures()
+        path_list = [
+            {
+                "path": "//table[@id='my_procedures']//tbody/tr[1]//i[contains(@class, 'fa-download')]",
+                "sleep": 2,
+                "screenshot_name": "download_myprocedure_pdf",
+            },
+        ]
+        self.create_gif_process(path_list, "download_myprocedure_pdf")
+        download_href = self.selenium.execute_script(
+            "return document.querySelector("
+            "\"table#my_procedures tbody tr:first-child a[href*='download']\""
+            ").href;"
+        )
+        self.assertIn("download_my_procedures", download_href)

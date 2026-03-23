@@ -143,50 +143,27 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         data = data.copy()
-        data["initial_date"] = re.sub(r"(:\d{2}):\d{2}$", r"\1", data["initial_date"])
-        data["final_date"] = re.sub(r"(:\d{2}):\d{2}$", r"\1", data["final_date"])
         return super().to_internal_value(data)
 
     def validate(self, data):
-        current_date = now().date()
-        initial_date = data["initial_date"].date()
-        final_date = data["final_date"].date()
+        current_datetime = now()
+        initial_date = data["initial_date"]
+        final_date = data["final_date"]
 
-        if initial_date == final_date:
-            logger.debug(
-                f"ReserveShelfObjectSerializer --> initial_date ({initial_date}) == final_date ({final_date})"
-            )
+        if initial_date >= final_date:
             raise serializers.ValidationError(
-                {"final_date": _("Final date cannot be equal to initial date.")}
+                {"final_date": _(
+                    "Final date cannot be equal or lower than initial date.")}
             )
-        if initial_date > final_date:
-            logger.debug(
-                f"ReserveShelfObjectSerializer --> initial_date ({initial_date}) > final_date ({final_date})"
-            )
+        if initial_date <= current_datetime:
             raise serializers.ValidationError(
-                {"initial_date": _("Initial date cannot be greater than final date.")}
+                {"initial_date": _(
+                    "Initial date cannot be equal or lower than current date.")}
             )
-        elif initial_date <= current_date:
-            logger.debug(
-                f"ReserveShelfObjectSerializer --> initial_date ({initial_date}) <= current_date ({current_date})"
-            )
+        if final_date <= current_datetime:
             raise serializers.ValidationError(
-                {
-                    "initial_date": _(
-                        "Initial date cannot be equal or lower than current date."
-                    )
-                }
-            )
-        elif final_date <= current_date:
-            logger.debug(
-                f"ReserveShelfObjectSerializer --> final_date ({final_date}) <= current_date ({current_date})"
-            )
-            raise serializers.ValidationError(
-                {
-                    "final_date": _(
-                        "Final date cannot be equal or lower than current date."
-                    )
-                }
+                {"final_date": _(
+                    "Final date cannot be equal or lower than current date.")}
             )
 
         return data

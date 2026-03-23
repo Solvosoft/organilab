@@ -1,7 +1,7 @@
 .PHONY: help clean clean-pyc clean-build list test test-parallel test-selenium test-selenium-4 test-selenium-xvfb docs release sdist
 
 # Variables
-setup_version := `python src/organilab/__init__.py`
+setup_version := `python3 src/organilab/__init__.py`
 current_path := `pwd`
 
 
@@ -53,6 +53,21 @@ create-profile: ## - create user and user profile
 	user = User.objects.last(); \
 	Profile.objects.get_or_create(user=user)"
 
+check-move-organization-data: ## Validate organization migration (Example: make check-move-organization-data FROM=5 TO=9)
+	@echo "Validating organization data migration..."
+	@echo "FROM=$(FROM) → TO=$(TO)"
+	cd src && python manage.py move_organization_data --from-org $(FROM) --to-org $(TO) --dry-run
+
+
+move-organization-data: ## Execute organization migration (Example: make move-move-organization-data FROM=5 TO=9)
+	@echo "You are about to move data from one organization to another"
+	@echo "FROM=$(FROM) → TO=$(TO)"
+	@read -p "Do you want to continue? [y/N]: " confirm; \
+	if [ "$$confirm" = "y" ]; then \
+		cd src && python manage.py move_organization_data --from-org $(FROM) --to-org $(TO); \
+	else \
+		echo "Operation cancelled"; \
+	fi
 
 ##--------------------------------------------------------
 ## Project build
@@ -127,9 +142,9 @@ dist: ##  - print current version of organilab
 	git push origin "refs/tags/v$(setup_version)"
 
 build_docker: ##  - build docker images
-	$(MAKE) clean && $(MAKE) trans && \
 	docker pull python:3.13-trixie && \
-	docker build  -t organilab:$(setup_version)  .
+	docker pull python:3.13-slim-trixie && \
+	docker build --no-cache  -t organilab:$(setup_version) -t organilab:latest .
 
 build_docker_selenium: ##  - build docker images with selenium
 	docker build -f docker/Dockerfile.selenium -t organilabselenium:$(setup_version)  .
@@ -142,3 +157,9 @@ load-perms: ## - load permissions
 ##--------------------------------------------------------
 lint: ## - check style with flake8
 	pycodestyle --exclude=*/migrations/*  --max-line-length=200 src
+
+update_sds: ## - update SDS files in batches
+	cd src && python manage.py update_sds --batch-size 10 --batch-delay 30 --delay 2
+
+clean_orphan_media: ## - elimina archivos en MEDIA_ROOT no referenciados en la BD
+	cd src && python manage.py clean_orphan_media

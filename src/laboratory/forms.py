@@ -244,12 +244,23 @@ class ReservationModalForm(GTForm, ModelForm):
             "Entered date should be greater than current date and time"
         )
 
+    initial_date = forms.DateTimeField(
+        widget=genwidgets.DateTimeInput,
+        input_formats=settings.DATETIME_INPUT_FORMATS,
+        required=True,
+        label=_("Initial Date"),
+    )
+    final_date = forms.DateTimeField(
+        widget=genwidgets.DateTimeInput,
+        input_formats=settings.DATETIME_INPUT_FORMATS,
+        required=True,
+        label=_("Final Date"),
+    )
+
     class Meta:
         model = ReservedProducts
         fields = ["amount_required", "initial_date", "final_date"]
         widgets = {
-            "initial_date": genwidgets.DateTimeInput,
-            "final_date": genwidgets.DateTimeInput,
             "amount_required": genwidgets.TextInput,
         }
 
@@ -1412,7 +1423,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
     )
 
     cas_id_number = forms.CharField(
-        widget=genwidgets.TextInput, required=False, label=_("Cas ID Number")
+        widget=genwidgets.TextInput, required=False, label=_("Cas number")
     )
 
     security_sheet = forms.FileField(
@@ -1507,6 +1518,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
         self.fields["model"].required = True
+        self.fields["name"].label = _("Substance Name")
 
     class Meta:
         model = Object
@@ -1732,8 +1744,24 @@ class LoadArchiveForm(GTForm, forms.Form):
     file = forms.FileField(
         widget=FileChunkedUpload, required=False, label=_("Load archive")
     )
+    now_places = forms.BooleanField(
+        required=False,
+        label=_("Know places"),
+        initial=True,
+        widget=genwidgets.YesNoInput(
+            shparent=".mb-3",
+            attrs={
+                "rel": [
+                    "#id_create-lab_room",
+                    "#id_create-furniture",
+                    "#id_create-shelf",
+                ]
+            },
+        ),
+    )
     lab_room = forms.ModelChoiceField(
         label=_("Laboratory Room"),
+        required=False,
         widget=AutocompleteSelect(
             "lab_room",
             attrs={
@@ -1742,12 +1770,14 @@ class LoadArchiveForm(GTForm, forms.Form):
                 "data-groupname": "rooms",
                 "data-s2filter-organization": "#org",
                 "data-s2filter-laboratory": "#lab",
+                "class": "zzz",
             },
         ),
         queryset=LaboratoryRoom.objects.all(),
     )
     furniture = forms.ModelChoiceField(
         label=_("Furniture"),
+        required=False,
         widget=AutocompleteSelect(
             "furniture",
             attrs={
@@ -1763,6 +1793,7 @@ class LoadArchiveForm(GTForm, forms.Form):
     )
     shelf = forms.ModelChoiceField(
         label=_("Shelf"),
+        required=False,
         widget=AutocompleteSelect(
             "shelf",
             attrs={

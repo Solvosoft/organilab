@@ -160,17 +160,21 @@ class LaboratoryRoomsList(ListView):
     def get_suggestions_tag(self):
         color_by_obj = self.get_obj_colors()
         suggestions_tag = self.get_whitelist_by_object(
-            "laboratoryroom", {"laboratory": self.lab}, color_by_obj["labroom"]
+            "laboratoryroom", {"laboratory__pk": self.lab}, color_by_obj["labroom"]
         )
         suggestions_tag += self.get_whitelist_by_object(
-            "furniture", {"labroom__laboratory": self.lab}, color_by_obj["furniture"]
+            "furniture",
+            {"labroom__laboratory__pk": self.lab},
+            color_by_obj["furniture"],
         )
         suggestions_tag += self.get_whitelist_by_object(
-            "shelf", {"furniture__labroom__laboratory": self.lab}, color_by_obj["shelf"]
+            "shelf",
+            {"furniture__labroom__laboratory__pk": self.lab},
+            color_by_obj["shelf"],
         )
         suggestions_tag += self.get_whitelist_by_object(
             "shelfobject",
-            {"in_where_laboratory": self.lab, "containershelfobject": None},
+            {"in_where_laboratory__pk": self.lab, "containershelfobject": None},
             color_by_obj["shelfobject"],
             filter_values=["pk", "object__name", "object__code"],
             value="object__name",

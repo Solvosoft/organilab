@@ -7,7 +7,11 @@ from typing import List, Dict, Optional, Tuple
 import math
 import json
 import argparse
+import io
 import pandas as pd
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment
+from django.core.files.base import ContentFile
 
 from risk_management.models import EstablishmentLogs
 from sga.models import DangerSubstance, DangerSubstanceCategory, DangerIndication
@@ -19,7 +23,6 @@ def get_inventory(filters=None):
         filters = {}
     dict_objs = []
     objs_max = ObjectMaximumLimit.objects.filter(**filters)
-
     objs = Object.objects.filter(
         pk__in=objs_max.values_list("object__pk", flat=True),
     ).distinct()
@@ -87,11 +90,12 @@ def get_inventory(filters=None):
                 total_shelfobjects += max_obj.quantity
             else:
                 try:
-                    total_shelfobjects += (
+                    total_shelfobjects += round(
                         get_conversion_units_to_kilograms(
                             max_obj.measurement_unit, max_obj.quantity, density
                         )
-                        / 1000
+                        / 1000,
+                        3,
                     )
                 except ZeroDivisionError:
                     total_shelfobjects += 0
@@ -99,7 +103,7 @@ def get_inventory(filters=None):
             data = {
                 "nombre": obj.name,
                 "cas": obj.cas_code,
-                "cantidad_t": 0,
+                "cantidad_t": total_shelfobjects,
                 "h_codes": ";".join(h_codes),
                 "condicion_proceso": "",
             }
@@ -637,6 +641,96 @@ def contribuciones_por_sustancia(
     return resultado
 
 
+def build_establishment_xls(res):
+    """Genera un archivo Excel con la misma información del JSON de clasificación."""
+    wb = openpyxl.Workbook()
+
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(fill_type="solid", fgColor="2F5496")
+    center = Alignment(horizontal="center")
+
+    # --- Hoja 1: Resumen ---
+    ws_summary = wb.active
+    ws_summary.title = _("Resumen")
+
+    ws_summary.append([_("Clasificación"), res.get("clasificacion", "")])
+    ws_summary.append([_("Criterio"), res.get("criterio", "")])
+    ws_summary.append([])
+    ws_summary.append([_("Sumatorias por Categoría")])
+    ws_summary.append([_("Categoría"), _("Valor")])
+    for cat, val in res.get("sumatorias_por_categoria", {}).items():
+        ws_summary.append([cat, val])
+
+    for row in ws_summary.iter_rows(min_row=1, max_row=ws_summary.max_row):
+        for cell in row:
+            cell.alignment = Alignment(wrap_text=True)
+
+    ws_summary.column_dimensions["A"].width = 30
+    ws_summary.column_dimensions["B"].width = 60
+
+    # --- Hoja 2: Detalles por Sustancia ---
+    ws_det = wb.create_sheet(title=_("Detalle Sustancias"))
+
+    headers = [
+        _("Nombre"),
+        _("CAS"),
+        _("Cantidad (t)"),
+        _("Nominada C3"),
+        _("Umbral C3 (t)"),
+        _("Ratio C3"),
+        _("H-codes"),
+        _("Físico"),
+        _("Salud"),
+        _("Ambiental"),
+        _("Regla cruzada Salud"),
+        _("Detalle Contribuciones"),
+        _("Advertencias"),
+    ]
+    ws_det.append(headers)
+    for cell in ws_det[1]:
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center
+
+    for det in res.get("detalles", []):
+        contribuciones = det.get("contribuciones", {})
+        ws_det.append([
+            det.get("nombre", ""),
+            det.get("cas", ""),
+            det.get("cantidad_t", ""),
+            det.get("nominada_c3", ""),
+            det.get("umbral_c3", ""),
+            det.get("ratio_c3", ""),
+            det.get("h_codes", ""),
+            contribuciones.get("Físico", ""),
+            contribuciones.get("Salud", ""),
+            contribuciones.get("Ambiental", ""),
+            det.get("regla_cruzada_salud", ""),
+            "\n".join(det.get("detalle_contribuciones", [])),
+            "\n".join(det.get("advertencias", [])),
+        ])
+
+    for col_idx in range(1, len(headers) + 1):
+        ws_det.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = 20
+    ws_det.column_dimensions[openpyxl.utils.get_column_letter(12)].width = 50
+    ws_det.column_dimensions[openpyxl.utils.get_column_letter(13)].width = 40
+
+    # --- Hoja 3: Advertencias globales ---
+    advertencias = res.get("advertencias", [])
+    if advertencias:
+        ws_adv = wb.create_sheet(title=_("Advertencias"))
+        ws_adv.append([_("Advertencias")])
+        ws_adv["A1"].font = Font(bold=True)
+        for adv in advertencias:
+            ws_adv.append([adv])
+        ws_adv.column_dimensions["A"].width = 80
+
+    buffer = io.BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return buffer.read()
+
+
 def create_estableshment_logs_data(element, day, labs):
     filters = {
         "object__type": 0,
@@ -658,16 +752,19 @@ def create_estableshment_logs_data(element, day, labs):
         if not inv.empty:
             res = clasificar_establecimiento(inv, c3, c4, mapH_tipo)
             sumatories = res.get("sumatorias_por_categoria", {})
-            EstablishmentLogs.objects.create(
+            xls_bytes = build_establishment_xls(res)
+            filename = f"establishment_{element.pk}_{day}.xlsx"
+            log = EstablishmentLogs.objects.create(
                 content_type=ct,
                 object_id=element.pk,
                 table_content=json.dumps(res, indent=2),
-                environmental=sumatories["Ambiental"],
-                health=sumatories["Salud"],
-                physical=sumatories["Físico"],
+                environmental=sumatories.get("Ambiental", 0.0),
+                health=sumatories.get("Salud", 0.0),
+                physical=sumatories.get("Físico", 0.0),
                 establishment_status=res["clasificacion"].capitalize(),
                 date=day,
             )
+            log.xls_content.save(filename, ContentFile(xls_bytes), save=True)
         else:
             EstablishmentLogs.objects.create(
                 content_type=ct,

@@ -165,6 +165,11 @@ class ShelObjectReactiveFilter(FilterSet):
     measurement_key = CharFilter(
         field_name="measurement_unit__key", lookup_expr="exact", distinct=True
     )
+    cas_code = CharFilter(
+        field_name="object__sustancecharacteristics__cas_id_number",
+        lookup_expr="icontains",
+        distinct=True,
+    )
 
     class Meta:
         model = ShelfObject

@@ -95,7 +95,7 @@ def report_regency_xlsx(report):
                 [
                     details["nombre"],
                     details["cas"],
-                    details["cantidad_t"],
+                    round(details["cantidad_t"], 3),
                     builder.safe_bool(details["nominada_c3"]),
                     details["umbral_c3"],
                     details["ratio_c3"],
@@ -109,9 +109,9 @@ def report_regency_xlsx(report):
                     " | ".join(
                         details["advertencias"] if details["advertencias"] else ""
                     ),
-                    details["contribuciones"].get("Salud", 0.0),
-                    details["contribuciones"].get("Físico", 0.0),
-                    details["contribuciones"].get("Ambiental", 0.0),
+                    round(details["contribuciones"].get("Salud", 0.0), 3),
+                    round(details["contribuciones"].get("Físico", 0.0), 3),
+                    round(details["contribuciones"].get("Ambiental", 0.0), 3),
                 ]
             )
         builder.style_header()
@@ -188,7 +188,11 @@ def report_regency_doc(report):
             [],
             [_("Totals by category")],
             [_("Physical"), _("Health"), _("Environmental")],
-            [sumatoria["Físico"], sumatoria["Salud"], sumatoria["Ambiental"]],
+            [
+                sumatoria["Físico"],
+                sumatoria["Salud"],
+                sumatoria["Ambiente"],
+            ],
         ]
         content.append([])
         content.append([_("Details of the substances")])
@@ -215,7 +219,7 @@ def report_regency_doc(report):
                 [
                     details["nombre"],
                     details["cas"],
-                    details["cantidad_t"],
+                    round(details["cantidad_t"], 3),
                     _("Yes") if details["nominada_c3"] else _("No"),
                     details["umbral_c3"],
                     details["ratio_c3"],
@@ -229,9 +233,9 @@ def report_regency_doc(report):
                     " | ".join(
                         details["advertencias"] if details["advertencias"] else ""
                     ),
-                    details["contribuciones"].get("Salud", 0.0),
-                    details["contribuciones"].get("Físico", 0.0),
-                    details["contribuciones"].get("Ambiental", 0.0),
+                    round(details["contribuciones"].get("Salud", 0.0), 3),
+                    round(details["contribuciones"].get("Físico", 0.0), 3),
+                    round(details["contribuciones"].get("Ambiental", 0.0), 3),
                 ]
             )
     except Exception as e:
@@ -347,9 +351,15 @@ def get_pdf_regency_table_content(report):
         pdf_table += "<td>%s</td>" % (
             data["advertencias"] if data["advertencias"] else "No hay advertencias"
         )
-        pdf_table += "<td>%s</td>" % (data["contribuciones"].get("Salud", 0.0))
-        pdf_table += "<td>%s</td>" % (data["contribuciones"].get("Físico", 0.0))
-        pdf_table += "<td>%s</td>" % data["contribuciones"].get("Ambiental", 0.0)
+        pdf_table += "<td>%s</td>" % (
+            round(data["contribuciones"].get("Salud", 0.0), 3)
+        )
+        pdf_table += "<td>%s</td>" % (
+            round(data["contribuciones"].get("Físico", 0.0), 3)
+        )
+        pdf_table += "<td>%s</td>" % (
+            round(data["contribuciones"].get("Ambiental", 0.0), 3)
+        )
         pdf_table += "</tr>"
     pdf_table += "</tbody></table>"
 

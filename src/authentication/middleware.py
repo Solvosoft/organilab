@@ -166,6 +166,10 @@ class HandleErrorMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         if response.status_code in (403, 404):
+            content_type = response.get("Content-Type", "")
+            if "application/json" in content_type:
+                return response
+
             error_path = reverse("error_view")
 
             if request.path != error_path:

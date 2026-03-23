@@ -29,6 +29,11 @@ class Profile(models.Model):
     address = models.TextField(
         verbose_name=_("Address"), null=True, blank=True, default=""
     )
+    show_tutorials = models.BooleanField(
+        default=True,
+        verbose_name=_("Show tutorials"),
+        help_text=_("Enable automatic tutorial display on page visits")
+    )
     workplace = models.ManyToManyField(
         "laboratory.OrganizationStructure",
         blank=True,
