@@ -749,8 +749,34 @@ class ReactiveLimitAdmin(admin.ModelAdmin):
     )
     list_filter = ("laboratory", "measurement_unit")
 
+class UserOrganizationInline(admin.TabularInline):
+    model = models.UserOrganization
+    fields = ('user', 'type_in_organization', 'status')
+    extra = 1
+    autocomplete_fields = ('user',)
+
+
+@admin.register(models.OrganizationStructure)
+class OrganizationStructureAdmin(admin.ModelAdmin):
+    list_display = ('indented_name', 'parent', 'level', 'position', 'active')
+    list_filter = ('active', 'level')
+    search_fields = ('name',)
+    list_editable = ('active',)
+    ordering = ('level', 'position', 'name')
+    fields = ('name', 'parent', 'position', 'level', 'active', 'rol')
+    readonly_fields = ('level', 'position')
+    filter_horizontal = ('rol',)
+    autocomplete_fields = ('parent',)
+    inlines = [UserOrganizationInline]
+
+    def indented_name(self, obj):
+        indent = '—' * obj.level
+        return f'{indent} {obj.name}' if obj.level else obj.name
+    indented_name.short_description = 'Name'
+
 
 admin.site.register(models.PrecursorReport, PrecursorReportAdmin)
 admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
+
 admin.site.site_header = _("Organilab Administration site")
