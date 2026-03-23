@@ -1209,3 +1209,6 @@ msgstr "Fecha de Revisión"
 
 msgid "Break threshold"
 msgstr "Umbral superado"
+
+msgid "CAS number"
+msgstr "Número CAS"
