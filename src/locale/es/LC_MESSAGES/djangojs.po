@@ -1227,3 +1227,6 @@ msgstr "Tutoriales disponibles"
 
 msgid "Tutorial completed!"
 msgstr "¡Tutorial completado!"
+
+msgid "CAS number"
+msgstr "Número CAS"

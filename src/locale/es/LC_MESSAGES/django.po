@@ -5720,3 +5720,9 @@ msgstr "En proceso"
 
 msgid "Not started"
 msgstr "No iniciado"
+
+msgid "Management system for risk management in warehouses and laboratories where reagents and chemicals are stored"
+msgstr "Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los que se almacena reactivos y productos químicos"
+
+msgid "Workers"
+msgstr "Trabajadores"
