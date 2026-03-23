@@ -1209,3 +1209,24 @@ msgstr "Fecha de Revisión"
 
 msgid "Break threshold"
 msgstr "Umbral superado"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Skip"
+msgstr "Omitir"
+
+msgid "Finish"
+msgstr "Finalizar"
+
+msgid "Available tutorials"
+msgstr "Tutoriales disponibles"
+
+msgid "Tutorial completed!"
+msgstr "¡Tutorial completado!"
+
+msgid "CAS number"
+msgstr "Número CAS"

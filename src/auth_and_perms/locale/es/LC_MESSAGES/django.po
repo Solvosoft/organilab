@@ -1219,3 +1219,9 @@ msgstr "Categoría de Sustancia Peligrosa"
 
 msgid "View Register User"
 msgstr "Ver Registro de Usuario"
+
+msgid "Additional resources"
+msgstr "Recursos adicionales"
+
+msgid "Dismissed"
+msgstr "Omitido"

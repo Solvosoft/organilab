@@ -5241,8 +5241,8 @@ msgstr "Registro de consumo"
 msgid "List Reagents"
 msgstr "Listar Reactivos"
 
-msgid "Reorder Reactives"
-msgstr "Reordenar Reactivos"
+msgid "Consumption log"
+msgstr "Registro de consumo"
 
 msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
 msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
@@ -5699,3 +5699,30 @@ msgstr "Revisar datos extraídos"
 
 msgid "SDS Coverage"
 msgstr "Cobertura SDS"
+
+msgid "Interactive guides to help you use the system. Click on a tutorial to start it."
+msgstr "Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial para iniciarlo."
+
+msgid "Enable tutorials"
+msgstr "Activar tutoriales"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgid "steps"
+msgstr "pasos"
+
+msgid "Completed"
+msgstr "Completado"
+
+msgid "In progress"
+msgstr "En proceso"
+
+msgid "Not started"
+msgstr "No iniciado"
+
+msgid "Management system for risk management in warehouses and laboratories where reagents and chemicals are stored"
+msgstr "Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los que se almacena reactivos y productos químicos"
+
+msgid "Workers"
+msgstr "Trabajadores"

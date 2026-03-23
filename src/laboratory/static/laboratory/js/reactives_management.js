@@ -14,8 +14,8 @@ datatable_inits = {
         {
             data: "cas_code",
             name: "cas_code",
-            title: gettext("Nº CAS"),
-            type: "readonly",
+            title: gettext("CAS number"),
+            type: "string",
             visible: true
         },
         {
