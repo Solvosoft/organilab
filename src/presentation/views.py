@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 from django.views.generic import CreateView
 
@@ -25,6 +26,7 @@ from presentation.models import (
 logger = logging.getLogger("organilab")
 
 
+@never_cache
 @login_required
 @permission_required("auth_and_perms.institution_can_access", raise_exception=True)
 def index_tutorial(request, org_pk):
