@@ -3099,22 +3099,22 @@ URLNAME_PERMISSIONS = {
         {
             "name": "Add Pending Task",
             "category": "Pending Task",
-            "permission": "pending_task.add_pendingtask",
+            "permission": "pending_tasks.add_pendingtask",
         },
         {
             "name": "Change Pending Task",
             "category": "Pending Task",
-            "permission": "pending_task.change_pendingtask",
+            "permission": "pending_tasks.change_pendingtask",
         },
         {
             "name": "Delete Pending Task",
             "category": "Pending Task",
-            "permission": "pending_task.delete_pendingtask",
+            "permission": "pending_tasks.delete_pendingtask",
         },
         {
             "name": "View Pending Task",
             "category": "Pending Task",
-            "permission": "pending_task.view_pendingtask",
+            "permission": "pending_tasks.view_pendingtask",
         },
     ],
 }
