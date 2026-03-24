@@ -14,6 +14,7 @@ from risk_management.models import (
     Structure,
     RiskZone,
     IncidentReport,
+    Workday,
 )
 
 
@@ -323,3 +324,63 @@ class RiskZoneSerializer(serializers.Serializer):
         allow_null=True,
         allow_empty=True,
     )
+
+
+class DataWorkdaySerializer(serializers.Serializer):
+    actions = serializers.SerializerMethodField()
+    workday = ChoicesGTS2Serializer(choices=Workday.WORKDAYS, many=False)
+    num_workers = serializers.IntegerField()
+    start_time = serializers.TimeField()
+    end_time = serializers.TimeField()
+    id = serializers.IntegerField(required=False)
+    organization = GTS2SerializerBase(many=False)
+    risk_zone = GTS2SerializerBase(many=False)
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        perms = {
+            "list": user.has_perm("risk_management.view_workday"),
+            "create": user.has_perm("risk_management.add_workday"),
+            "update": user.has_perm("risk_management.change_workday"),
+            "destroy": user.has_perm("risk_management.delete_workday"),
+        }
+
+        return perms
+
+    class Meta:
+        model = Workday
+        fields = [
+            "id",
+            "workday",
+            "num_workers",
+            "start_time",
+            "end_time",
+            "risk_zone",
+            "organization",
+        ]
+
+
+class WorkdayDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=DataWorkdaySerializer(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class WorkdaysSerializer(serializers.ModelSerializer):
+    workday = serializers.ChoiceField(
+        choices=Workday.WORKDAYS,
+        required=True,
+    )
+    num_workers = serializers.IntegerField(required=True)
+    start_time = serializers.TimeField(required=True)
+    end_time = serializers.TimeField(required=True)
+
+    class Meta:
+        model = Workday
+        fields = (
+            "workday",
+            "num_workers",
+            "start_time",
+            "end_time",
+        )

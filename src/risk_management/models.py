@@ -349,3 +349,24 @@ class EstablishmentLogs(models.Model):
         indexes = [
             models.Index(fields=["content_type", "object_id"]),
         ]
+
+
+class Workday(AbstractOrganizationRef):
+    WORKDAYS = (
+        ("day shift", _("Day shift")),
+        ("mixed shift", _("Mixed shift")),
+        ("night shift", _("Night shift")),
+    )
+    workday = models.CharField(
+        max_length=20, choices=WORKDAYS, verbose_name=_("Workday")
+    )
+    num_workers = models.SmallIntegerField(verbose_name=_("Number of workers (aprox)"))
+    start_time = models.TimeField(verbose_name=_("Start Time"))
+    end_time = models.TimeField(verbose_name=_("End Time"))
+    risk_zone = models.ForeignKey(
+        "risk_management.RiskZone",
+        verbose_name=_("Risk Zone"),
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+    )

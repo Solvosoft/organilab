@@ -9,6 +9,7 @@ from risk_management.api.viewset import (
     BuildingViewSet,
     StructureViewSet,
     IncidentViewSet,
+    WorkdaysViewSet,
 )
 
 risk_router = DefaultRouter()
@@ -20,6 +21,9 @@ structure_router.register("api_structure", StructureViewSet, basename="api-struc
 
 incident_router = DefaultRouter()
 incident_router.register("api_incident", IncidentViewSet, basename="api-incident")
+workday_router = DefaultRouter()
+workday_router.register("api_workday", WorkdaysViewSet, basename="api-workday")
+
 urlpatterns = [
     path("riskzone/list/", zoneviews.ListZone.as_view(), name="riskzone_list"),
     path("riskzone/create/", zoneviews.ZoneCreate.as_view(), name="riskzone_create"),
@@ -90,4 +94,14 @@ urlpatterns = [
     path("api/structure/", include(structure_router.urls)),
     path("api/incident/<int:risk>/", include(incident_router.urls)),
     path("reports/", zoneviews.RiskZoneReport.as_view(), name="risk_report"),
+    path(
+        "workdays/<int:risk_zone>/",
+        zoneviews.workday_view,
+        name="workday_list",
+    ),
+    path(
+        "api/workday/<int:risk>/",
+        include(workday_router.urls),
+        name="api-workday",
+    ),
 ]
