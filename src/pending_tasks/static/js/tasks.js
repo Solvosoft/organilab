@@ -5,43 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
         FINISHED: 2,
     };
 
-    let temporaryTasks = [
-        {
-            id: 1,
-            description: "Documentar organilab",
-            status: STATUS.PENDING,
-            profile: "Wilfredo",
-            link: "",
-        },
-        {
-            id: 2,
-            description: "Renombrar los reportes a nombres más significativos",
-            status: STATUS.PENDING,
-            profile: "Wilfredo",
-            link: "",
-        },
-        {
-            id: 3,
-            description: "Eliminar async notification",
-            status: STATUS.PENDING,
-            profile: null,
-            link: "",
-        },
-        {
-            id: 4,
-            description: "Migrar de Django 5.2 a 6",
-            status: STATUS.IN_PROCESS,
-            profile: "Admin",
-            link: "",
-        },
-        {
-            id: 5,
-            description: "Agregar el Punto G",
-            status: STATUS.FINISHED,
-            profile: null,
-            link: "https://example.com",
-        },
-    ];
+    let tasks = [];
 
     const columnMap = {
         [STATUS.PENDING]: document.querySelector('[data-status="0"]'),
@@ -55,18 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
         [STATUS.FINISHED]: document.querySelector('[data-counter-status="2"]'),
     };
 
-    const createTaskBtn = document.getElementById("create-task-btn");
-
-    function getStatusColor(status) {
-        if (status === STATUS.PENDING) return "border-warning";
-        if (status === STATUS.IN_PROCESS) return "border-info";
-        if (status === STATUS.FINISHED) return "border-success";
-        return "border-secondary";
-    }
-
-    // console.log("columnMap:", columnMap);
-    // console.log("counters:", counters);
-
     Object.entries(columnMap).forEach(([status, element]) => {
         if (!element) {
             console.warn(`No se encontró la columna para el estado ${status}`);
@@ -79,17 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    function getStatusColor(status) {
+        if (status === STATUS.PENDING) return "border-warning";
+        if (status === STATUS.IN_PROCESS) return "border-info";
+        if (status === STATUS.FINISHED) return "border-success";
+        return "border-secondary";
+    }
+
+
     function escapeHtml(text) {
         const div = document.createElement("div");
         div.textContent = text ?? "";
         return div.innerHTML;
-    }
-
-    function getStatusLabel(status) {
-        if (status === STATUS.PENDING) return gettext("Pending");
-        if (status === STATUS.IN_PROCESS) return gettext("In process");
-        if (status === STATUS.FINISHED) return gettext("Finished");
-        return "";
     }
 
     function createTaskCard(task) {
@@ -101,9 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
         card.innerHTML = `
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div class="pe-2 flex-grow-1">
-                        <h6 class="card-title mb-1">#${task.id} ${escapeHtml(task.description)}</h6>
-                        <div class="small text-muted">${getStatusLabel(task.status)}</div>
+                    <div class="pe-2 flex-grow-1  border-bottom pb-1 mb-2">
+                        <h6 class="card-title mb-1 text-break"
+                            ${task.name.length > 60 ? `title="${escapeHtml(task.name)}" data-bs-toggle="tooltip"` : ""}
+                        >${escapeHtml(task.name.length > 60 ? task.name.slice(0, 60) + "…" : task.name)}</h6>
                     </div>
 
                     <div class="dropdown">
@@ -119,13 +73,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <button class="dropdown-item js-edit-task" type="button" data-task-id="${task.id}">
+                                <button class="dropdown-item update-task-btn" type="button" data-task-id="${task.id}">
                                     <i class="fa fa-pencil me-2 text-warning" aria-hidden="true"></i>
                                     ${gettext("Edit task")}
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item js-delete-task" type="button" data-task-id="${task.id}">
+                                <button class="dropdown-item delete-task-btn" type="button" data-task-id="${task.id}" data-task-name="${ task.name }">
                                     <i class="fa fa-trash me-2 text-danger" aria-hidden="true"></i>
                                     ${gettext("Delete task")}
                                 </button>
@@ -133,6 +87,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         </ul>
                     </div>
                 </div>
+
+                ${
+            task.description
+                ? `
+                        <div class="mb-2 small text-secondary text-break"
+                            ${task.description.length > 200 ? `title="${escapeHtml(task.description)}" data-bs-toggle="tooltip"` : ""}
+                        >${escapeHtml(task.description.length > 200 ? task.description.slice(0, 200) + "…" : task.description)}</div>
+                    `
+                : ""
+        }
 
                 ${
             task.profile
@@ -179,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        temporaryTasks.forEach(task => {
+        tasks.forEach(task => {
             const column = columnMap[task.status];
             if (column) {
                 column.appendChild(createTaskCard(task));
@@ -188,14 +152,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderEmptyStates();
         updateCounters();
-        bindCardActions();
     }
 
     function renderEmptyStates() {
         Object.entries(columnMap).forEach(([status, column]) => {
             if (!column) return;
 
-            const hasTasks = temporaryTasks.some(task => String(task.status) === String(status));
+            const hasTasks = tasks.some(task => String(task.status) === String(status));
 
             if (!hasTasks) {
                 const empty = document.createElement("div");
@@ -210,9 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateCounters() {
-        const pendingCount = temporaryTasks.filter(task => task.status === STATUS.PENDING).length;
-        const inProcessCount = temporaryTasks.filter(task => task.status === STATUS.IN_PROCESS).length;
-        const finishedCount = temporaryTasks.filter(task => task.status === STATUS.FINISHED).length;
+        const pendingCount = tasks.filter(task => task.status === STATUS.PENDING).length;
+        const inProcessCount = tasks.filter(task => task.status === STATUS.IN_PROCESS).length;
+        const finishedCount = tasks.filter(task => task.status === STATUS.FINISHED).length;
 
         if (counters[STATUS.PENDING]) {
             counters[STATUS.PENDING].textContent = pendingCount;
@@ -227,59 +190,26 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function bindCardActions() {
-        document.querySelectorAll(".js-delete-task").forEach(button => {
-            button.addEventListener("click", () => {
-                const taskId = Number(button.dataset.taskId);
-                deleteTask(taskId);
+    function loadTasks() {
+        fetch(object_urls.list_url, {
+            headers: {"X-CSRFToken": getCookie("csrftoken")}
+        })
+            .then(r => r.json())
+            .then(data => {
+                tasks = (data.data || []).map(task => ({
+                    id: task.id,
+                    name: task.name,
+                    description: task.description,
+                    status: task.status.id,
+                    profile: task.profile ? task.profile.text : null,
+                    link: task.link || "",
+                    is_archived: task.is_archived
+                }));
+                renderTasks();
+            })
+            .catch(err => {
+                console.error("Error loading tasks:", err);
             });
-        });
-
-        document.querySelectorAll(".js-edit-task").forEach(button => {
-            button.addEventListener("click", () => {
-                const taskId = Number(button.dataset.taskId);
-                editTask(taskId);
-            });
-        });
-    }
-
-    function createTemporaryTask() {
-        const description = window.prompt("Ingrese la descripción de la tarea:");
-        if (!description || !description.trim()) return;
-
-        const maxId = temporaryTasks.length
-            ? Math.max(...temporaryTasks.map(task => task.id))
-            : 0;
-
-        const newTask = {
-            id: maxId + 1,
-            description: description.trim(),
-            status: STATUS.PENDING,
-            profile: null,
-            link: "",
-        };
-
-        temporaryTasks.unshift(newTask);
-        renderTasks();
-    }
-
-    function editTask(taskId) {
-        const task = temporaryTasks.find(item => item.id === taskId);
-        if (!task) return;
-
-        const newDescription = window.prompt("Editar descripción de la tarea:", task.description);
-        if (!newDescription || !newDescription.trim()) return;
-
-        task.description = newDescription.trim();
-        renderTasks();
-    }
-
-    function deleteTask(taskId) {
-        const confirmed = window.confirm("¿Desea eliminar esta tarea?");
-        if (!confirmed) return;
-
-        temporaryTasks = temporaryTasks.filter(task => task.id !== taskId);
-        renderTasks();
     }
 
     let draggedTaskId = null;
@@ -322,17 +252,109 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function moveTaskToStatus(taskId, newStatus) {
-        const task = temporaryTasks.find(item => item.id === taskId);
-        if (!task) return;
+        const task = tasks.find(item => item.id === taskId);
+        if (!task || task.status === newStatus) return;
 
-        task.status = newStatus;
-        renderTasks();
+        fetch(object_urls.update_url.replace("/0/", "/" + taskId + "/"), {
+            method: "PATCH",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({status: newStatus}),
+        })
+            .then(r => {
+                if (!r.ok) {
+                    console.error("Error updating task status:", r.status, r.statusText);
+                    return;
+                }
+                loadTasks();
+            })
+            .catch(err => console.error("Error updating task status:", err));
     }
+
+    // Created action
+    const createTaskBtn = document.getElementById("create-task-btn");
+    let gtformecreate = GTBaseFormModal("#create_obj_modal", {}, {reload_table: false, type: "POST"});
+    gtformecreate.hide_modal = function () {
+        $(gtformecreate.form).find("ul.form_errors").remove();
+        gtformecreate.instance.modal('hide');
+    };
+    gtformecreate.success = function (instance, data) {
+        loadTasks();
+    };
+    gtformecreate.init();
 
     if (createTaskBtn) {
-        createTaskBtn.addEventListener("click", createTemporaryTask);
+        createTaskBtn.addEventListener("click", () => {
+            gtformecreate.instance.modal("show");
+        });
     }
 
+    // Update action
+    let gtformupdate = GTBaseFormModal("#update_obj_modal", {}, {reload_table: false, type: "PUT"});
+    gtformupdate.hide_modal = function () {
+        $(gtformupdate.form).find("ul.form_errors").remove();
+        gtformupdate.instance.modal('hide');
+    };
+    gtformupdate.success = function (instance, data) {
+        loadTasks();
+    };
+    gtformupdate.init();
+
+    let pendingUpdateData = null;
+    let updateModalInitialized = false;
+
+    gtformupdate.instance.on("shown.bs.modal", function () {
+        if (!updateModalInitialized) {
+            gt_find_initialize(gtformupdate.instance);
+            updateModalInitialized = true;
+        }
+        if (pendingUpdateData) {
+            gtformupdate.fill_form(pendingUpdateData);
+            pendingUpdateData = null;
+        }
+    });
+
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".update-task-btn");
+        if (!btn) return;
+
+        const taskId = btn.dataset.taskId;
+        gtformupdate.url = object_urls.update_url.replace("/0/", "/" + taskId + "/");
+
+        fetch(object_urls.get_values_for_update_url.replace("/0/", "/" + taskId + "/"), {
+            headers: {"X-CSRFToken": getCookie("csrftoken")}
+        })
+            .then(r => r.json())
+            .then(data => {
+                pendingUpdateData = data;
+                gtformupdate.instance.modal("show");
+            });
+    });
+
+    // Delete action
+    let gtformdelete = GTBaseFormModal("#delete_obj_modal", {}, {reload_table: false, type: "DELETE", btn_class: ".delbtn"});
+    gtformdelete.hide_modal = function () {
+        gtformdelete.instance.modal('hide');
+    };
+    gtformdelete.success = function (instance, data) {
+        loadTasks();
+    };
+    gtformdelete.init();
+
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".delete-task-btn");
+        if (!btn) return;
+
+        const taskId = btn.dataset.taskId;
+        const taskName = btn.dataset.taskName;
+
+        gtformdelete.url = object_urls.destroy_url.replace("/0/", "/" + taskId + "/");
+        gtformdelete.instance.find(".objtext").text(taskName);
+        gtformdelete.instance.modal("show");
+    });
+
     setupColumnsDragAndDrop();
-    renderTasks();
+    loadTasks();
 });

@@ -1,33 +1,44 @@
 import logging
 
-from django.contrib.admin.models import CHANGE
+from django.contrib.admin.models import CHANGE, ADDITION
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from pending_tasks.api.model_viewset_without_create import AuthAllPermBaseObjectWithoutCreate
+from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 
+from laboratory.models import OrganizationStructure
 from laboratory.utils import organilab_logentry
 from pending_tasks.api import filterset
 from pending_tasks.models import PendingTask
 from pending_tasks.api.serializers import PendingTaskSerializer, \
     PendingTaskListSerializer, PendingTaskValidateSerializer, ProfileValidateSerializer, \
-    CurrentStatusValidateSerializer, NewStatusValidateSerializer
+    CurrentStatusValidateSerializer, NewStatusValidateSerializer, PendingTaskGetValuesSerializer
 
 logger = logging.getLogger("organilab")
 
 
-class PendingTaskViewSet(AuthAllPermBaseObjectWithoutCreate):
+class PendingTaskViewSet(mixins.CreateModelMixin, AuthAllPermBaseObjectWithoutCreate):
     serializer_class = {
         'list': PendingTaskListSerializer,
+        'create': PendingTaskValidateSerializer,
         'destroy': PendingTaskSerializer,
         'update': PendingTaskValidateSerializer,
+        'partial_update': PendingTaskValidateSerializer,
+        'retrieve': PendingTaskGetValuesSerializer,
+        'get_values_for_update': PendingTaskGetValuesSerializer,
     }
 
     perms = {
         'list': ["pending_tasks.view_pendingtask"],
+        'create': ["pending_tasks.add_pendingtask"],
+        'retrieve': ["pending_tasks.view_pendingtask"],
+        'get_values_for_update': ["pending_tasks.view_pendingtask"],
         'update': ["pending_tasks.change_pendingtask"],
+        'partial_update': ["pending_tasks.change_pendingtask"],
         'destroy': ["pending_tasks.delete_pendingtask"],
         'task_assign': ["pending_tasks.change_pendingtask"],
         'task_unassign': ["pending_tasks.change_pendingtask"],
@@ -39,6 +50,11 @@ class PendingTaskViewSet(AuthAllPermBaseObjectWithoutCreate):
     filterset_class = filterset.PendingTaskFilterSet
     ordering_fields = ['creation_date']
     ordering = ('-creation_date',)
+
+    def perform_create(self, serializer):
+        org = get_object_or_404(OrganizationStructure, pk=self.kwargs.get("org_pk"))
+        instance = serializer.save(organization=org, created_by=self.request.user)
+        organilab_logentry(self.request.user, instance, ADDITION, changed_data=['name', 'description', 'status'])
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)

@@ -10,8 +10,8 @@
 {% endblock %}
 
 {% block extra_head %}
- 	{{ block.super }}
-		<link rel="stylesheet" href="{% static '/css/tasks.css' %}">
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static '/css/tasks.css' %}">
 {% endblock %}
 
 {% block title %}
@@ -47,10 +47,30 @@
 			</div>
 		</div>
 	</div>
+
+	{% url "pending_tasks:api-pending_tasks-list" org_pk as list_obj_url %}
+	{% trans 'Create task' as create_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class="modal-lg" %}
+
+	{% url "pending_tasks:api-pending_tasks-detail" org_pk 0 as detail_obj_url %}
+	{% trans 'Update task' as update_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class="modal-lg" %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+
 {% endblock %}
 
 {% block js %}
 	{{ block.super }}
+
+	<script>
+		var object_urls = {
+			list_url: "{% url 'pending_tasks:api-pending_tasks-list' org_pk %}",
+			create_url: "{% url 'pending_tasks:api-pending_tasks-list' org_pk %}",
+			destroy_url: "{% url 'pending_tasks:api-pending_tasks-detail' org_pk 0 %}",
+			update_url: "{% url 'pending_tasks:api-pending_tasks-detail' org_pk 0 %}",
+			get_values_for_update_url: "{% url 'pending_tasks:api-pending_tasks-get-values-for-update' org_pk 0 %}"
+		}
+	</script>
 
 	<script src="{% static '/js/tasks.js' %}?v={% get_organilab_version %}"></script>
 
