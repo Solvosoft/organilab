@@ -5723,3 +5723,48 @@ msgstr "Sistema regencial para la gestión de riesgo en bodegas y laboratorios e
 
 msgid "Workers"
 msgstr "Trabajadores"
+
+msgid "Day shift"
+msgstr "Jornada diurna"
+
+msgid "Mixed shift"
+msgstr "Jornada mixta"
+
+msgid "Night shift"
+msgstr "Jornada nocturna"
+
+msgid "Workday"
+msgstr "Jornada Laboral"
+
+msgid "Number of workers"
+msgstr "Número de trabajadores"
+
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+msgid "End Time"
+msgstr "Hora de salida"
+
+msgid "Workdays of the risk zone"
+msgstr "Jornadas Laborales de la zona de riesgo"
+
+msgid "Workdays"
+msgstr "Jornadas Laborales"
+
+msgid "Update Workday"
+msgstr "Actualizar Jornada Laboral"
+
+msgid "Register Workday"
+msgstr "Registrar Jornada Laboral"
+
+msgid "View Workdays"
+msgstr "Ver Jornadas Laborales"
+
+msgid "Delete Workday"
+msgstr "Eliminar Jornada Laboral"
+
+msgid "Register Workdays"
+msgstr "Registrar Jornadas Laborales"
+
+msgid "Update Workdays"
+msgstr "Actualizar Jornadas Laborales"
