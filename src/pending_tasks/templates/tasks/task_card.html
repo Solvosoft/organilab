@@ -4,9 +4,9 @@
 	<div class="card-body">
 
 		<div class="d-flex justify-content-between align-items-start mb-2">
-			<div class="pe-2">
+			<div class="pe-2 flex-grow-1  border-bottom pb-1 mb-2">
 				<h6 class="card-title mb-1">
-					#{{ task.pk }} {{ task.description|truncatechars:60 }}
+				 {{ task.name|truncatechars:60 }}
 				</h6>
 			</div>
 
@@ -23,28 +23,33 @@
 				<ul class="dropdown-menu dropdown-menu-end">
 					{% if perms.pending_task.change_pendingtask %}
 						<li>
-							<a class="dropdown-item" href="#">
+							<button class="dropdown-item update-task-btn"  data-task-id="{{task.pk}}" data-task-name="{{ task.name|truncatechars:60 }}">
 								<i class="fa fa-pencil me-2 text-warning" aria-hidden="true"></i>
 								{% trans 'Edit task' %}
-							</a>
+							</button>
 						</li>
 					{% endif %}
 
 					{% if perms.pending_task.delete_pendingtask %}
 						<li>
-							<a class="dropdown-item" href="#">
+							<button class="dropdown-item delete-task-btn" data-task-id="{{task.pk}}">
 								<i class="fa fa-trash me-2 text-danger" aria-hidden="true"></i> {% trans 'Delete task' %}
-							</a>
+							</button>
 						</li>
 					{% endif %}
 				</ul>
 			</div>
 		</div>
 
-		{% if task.profile %}
+		{% if task.description %}
+		<div class="mb-2 small text-secondary">
+			{{ task.description }}
+		</div>
+	{% endif %}
+
+	{% if task.profile %}
 			<div class="mb-2 text-muted small">
 				<i class="fa fa-user me-1" aria-hidden="true"></i>
-
 				{{ task.profile }}
 			</div>
 		{% endif %}
