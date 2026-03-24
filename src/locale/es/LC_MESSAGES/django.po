@@ -5768,3 +5768,12 @@ msgstr "Registrar Jornadas Laborales"
 
 msgid "Update Workdays"
 msgstr "Actualizar Jornadas Laborales"
+
+msgid "environmental"
+msgstr "ambiental"
+
+msgid "health"
+msgstr "salud"
+
+msgid "physical"
+msgstr "físico"
