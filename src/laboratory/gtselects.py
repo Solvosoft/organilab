@@ -574,7 +574,7 @@ class OrganizationProfileslLookup(BaseSelect2View):
     pagination_class = GPaginatorMoreElements
     authentication_classes = [SessionAuthentication]
     perms = {
-        "list": ["laboratory.view_Profile"],
+        "list": ["laboratory.view_profile"],
     }
     permission_classes = (AnyPermissionByAction,)
 
@@ -610,7 +610,7 @@ class OrganizationProfileslLookup(BaseSelect2View):
     def get_text_display(self, obj):
         name = obj.user.get_full_name()
         if not name:
-            name = obj.username
+            name = obj.user.username
         return name
 
 
