@@ -694,21 +694,23 @@ def build_establishment_xls(res):
 
     for det in res.get("detalles", []):
         contribuciones = det.get("contribuciones", {})
-        ws_det.append([
-            det.get("nombre", ""),
-            det.get("cas", ""),
-            det.get("cantidad_t", ""),
-            det.get("nominada_c3", ""),
-            det.get("umbral_c3", ""),
-            det.get("ratio_c3", ""),
-            det.get("h_codes", ""),
-            contribuciones.get("Físico", ""),
-            contribuciones.get("Salud", ""),
-            contribuciones.get("Ambiental", ""),
-            det.get("regla_cruzada_salud", ""),
-            "\n".join(det.get("detalle_contribuciones", [])),
-            "\n".join(det.get("advertencias", [])),
-        ])
+        ws_det.append(
+            [
+                det.get("nombre", ""),
+                det.get("cas", ""),
+                det.get("cantidad_t", ""),
+                det.get("nominada_c3", ""),
+                det.get("umbral_c3", ""),
+                det.get("ratio_c3", ""),
+                det.get("h_codes", ""),
+                contribuciones.get("Físico", ""),
+                contribuciones.get("Salud", ""),
+                contribuciones.get("Ambiental", ""),
+                det.get("regla_cruzada_salud", ""),
+                "\n".join(det.get("detalle_contribuciones", [])),
+                "\n".join(det.get("advertencias", [])),
+            ]
+        )
 
     for col_idx in range(1, len(headers) + 1):
         ws_det.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = 20
