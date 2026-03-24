@@ -7,7 +7,7 @@ from djgentelella.forms.forms import GTForm
 from djgentelella.widgets.files import FileChunkedUpload
 from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
-from .models import Regent, Structure
+from .models import Regent, Structure, Workday
 from laboratory.models import (
     OrganizationStructureRelations,
     Laboratory,
@@ -361,3 +361,16 @@ class RiskZoneListForm(GTForm, forms.Form):
             self.fields["buildings"].queryset = Buildings.objects.filter(
                 organization__pk=organization
             )
+
+
+class WorkdayForm(forms.ModelForm):
+    class Meta:
+        model = Workday
+        fields = ["workday", "num_workers", "start_time", "end_time"]
+        exclude = ["organization", "risk_zone", "created_by"]
+        widgets = {
+            "workday": genwidgets.Select(attrs={"class": "form-control"}),
+            "num_workers": djgentelella.NumberInput,
+            "start_time": djgentelella.TimeInput,
+            "end_time": djgentelella.TimeInput,
+        }

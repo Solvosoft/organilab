@@ -19,6 +19,8 @@ from risk_management.api.serializer import (
     IncidentReportDataTableSerializer,
     ActionIncidentReportSerializer,
     UpdateRegentSerializer,
+    WorkdaysSerializer,
+    WorkdayDataTableSerializer,
 )
 from risk_management.models import (
     Buildings,
@@ -26,6 +28,7 @@ from risk_management.models import (
     Structure,
     RiskZone,
     IncidentReport,
+    Workday,
 )
 
 
@@ -261,3 +264,67 @@ class EstablishmentLogsViewSet(AuthAllPermBaseObjectManagement):
     perms = {
         "list": ["risk_management.view_establishmentlogs"],
     }
+
+
+class WorkdaysViewSet(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": WorkdayDataTableSerializer,
+        "create": WorkdaysSerializer,
+        "update": WorkdaysSerializer,
+        "destroy": WorkdaysSerializer,
+    }
+    perms = {
+        "list": ["risk_management.view_workday"],
+        "create": ["risk_management.add_workday"],
+        "update": ["risk_management.change_workday"],
+        "destroy": ["risk_management.delete_workday"],
+    }
+
+    permission_classes = ()
+
+    queryset = Workday.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = [
+        "id",
+    ]
+    filterset_class = None
+    ordering_fields = ["id"]
+    ordering = ("id",)
+    organization = None
+    risk_zone = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if "risk" in self.kwargs:
+            risk = self.kwargs["risk"]
+            queryset = queryset.filter(risk_zone__pk=risk)
+
+        return queryset
+
+    def get_organization(self):
+        if not hasattr(self, "_organization"):
+            self.organization = get_object_or_404(
+                OrganizationStructure, pk=self.kwargs.get("org_pk", None)
+            )
+        return self.organization
+
+    def get_risk_zone(self):
+        if not hasattr(self, "_risk_zone"):
+            self.risk_zone = get_object_or_404(
+                RiskZone, pk=self.kwargs.get("risk", None)
+            )
+        return self.risk_zone
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["org_pk"] = self.kwargs.get("org_pk")
+        context["risk_pk"] = self.kwargs.get("risk")
+        return context
+
+    def perform_create(self, serializer):
+        serializer.save(
+            risk_zone=self.get_risk_zone(),
+            created_by=self.request.user,
+            organization=self.get_organization(),
+        )
