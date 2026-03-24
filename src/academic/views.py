@@ -360,6 +360,7 @@ class ProcedureStepCreateView(FormView):
         context["object_form"] = ObjectForm
         context["observation_form"] = ObservationForm
         context["form_schema"] = json.dumps({})
+        context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
     def form_valid(self, form):
@@ -424,6 +425,7 @@ class ProcedureStepUpdateView(DJUpdateView):
         step = ProcedureStep.objects.get(pk=int(self.kwargs["pk"]))
         context["step"] = step
         context["form_schema"] = json.dumps(step.form.schema if step.form else {})
+        context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
     def get_success_url(self, **kwargs):
