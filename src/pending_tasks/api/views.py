@@ -43,6 +43,7 @@ class PendingTaskViewSet(mixins.CreateModelMixin, AuthAllPermBaseObjectWithoutCr
         'task_assign': ["pending_tasks.change_pendingtask"],
         'task_unassign': ["pending_tasks.change_pendingtask"],
         'updated_task_status': ["pending_tasks.change_pendingtask"],
+        'archive_finished': ["pending_tasks.change_pendingtask"],
     }
 
     queryset = PendingTask.objects.all()
@@ -63,7 +64,7 @@ class PendingTaskViewSet(mixins.CreateModelMixin, AuthAllPermBaseObjectWithoutCr
         queryset = queryset.filter(
             Q(profile=profile) |
             Q(profile__isnull=True, rols__in=rols)
-        ).distinct()
+        ).filter(is_archived=False).distinct()
         return queryset
 
     def _get_task_and_data(self, request):
@@ -102,3 +103,18 @@ class PendingTaskViewSet(mixins.CreateModelMixin, AuthAllPermBaseObjectWithoutCr
             task.status = serializer.validated_data.get('status')
             return ['status']
         return self._execute_task_action(request, NewStatusValidateSerializer, apply_changes)
+
+    @action(detail=False, methods=['post'], url_path='archive_finished')
+    def archive_finished(self, request, *args, **kwargs):
+        org = get_object_or_404(OrganizationStructure, pk=self.kwargs.get("org_pk"))
+        profile = request.user.profile
+        rols = profile.profilepermission_set.all().values_list('rol', flat=True)
+        updated = PendingTask.objects.filter(
+            organization=org,
+            status=PendingTask.FINISHED,
+            is_archived=False,
+        ).filter(
+            Q(profile=profile) |
+            Q(profile__isnull=True, rols__in=rols)
+        ).distinct().update(is_archived=True)
+        return Response({'archived': updated}, status=status.HTTP_200_OK)

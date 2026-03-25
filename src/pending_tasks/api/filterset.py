@@ -19,4 +19,5 @@ class PendingTaskFilterSet(FilterSet):
             "description": ["icontains"],
             "profile": ["exact", "isnull"],
             "rols": ["exact"],
+            "is_archived": ["exact"],
         }

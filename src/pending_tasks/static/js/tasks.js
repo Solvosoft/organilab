@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     let tasks = [];
+    let searchQuery = "";
 
     const columnMap = {
         [STATUS.PENDING]: document.querySelector('[data-status="0"]'),
@@ -84,6 +85,14 @@ document.addEventListener("DOMContentLoaded", () => {
                                     ${gettext("Delete task")}
                                 </button>
                             </li>
+                            ${task.status === STATUS.FINISHED ? `
+                            <li>
+                                <button class="dropdown-item archive-task-btn" type="button" data-task-id="${task.id}">
+                                    <i class="fa fa-archive me-2 text-secondary" aria-hidden="true"></i>
+                                    ${gettext("Archive task")}
+                                </button>
+                            </li>
+                            ` : ""}
                         </ul>
                     </div>
                 </div>
@@ -136,6 +145,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return card;
     }
 
+    function getFilteredTasks() {
+        if (!searchQuery) return tasks;
+        const q = searchQuery.toLowerCase();
+        return tasks.filter(task =>
+            task.name.toLowerCase().includes(q) ||
+            (task.profile && task.profile.toLowerCase().includes(q))
+        );
+    }
+
     function renderTasks() {
         Object.values(columnMap).forEach(column => {
             if (column) {
@@ -143,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        tasks.forEach(task => {
+        getFilteredTasks().forEach(task => {
             const column = columnMap[task.status];
             if (column) {
                 column.appendChild(createTaskCard(task));
@@ -152,6 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderEmptyStates();
         updateCounters();
+        updateArchiveFinishedBtn();
     }
 
     function renderEmptyStates() {
@@ -173,9 +192,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateCounters() {
-        const pendingCount = tasks.filter(task => task.status === STATUS.PENDING).length;
-        const inProcessCount = tasks.filter(task => task.status === STATUS.IN_PROCESS).length;
-        const finishedCount = tasks.filter(task => task.status === STATUS.FINISHED).length;
+        const filtered = getFilteredTasks();
+        const pendingCount = filtered.filter(task => task.status === STATUS.PENDING).length;
+        const inProcessCount = filtered.filter(task => task.status === STATUS.IN_PROCESS).length;
+        const finishedCount = filtered.filter(task => task.status === STATUS.FINISHED).length;
 
         if (counters[STATUS.PENDING]) {
             counters[STATUS.PENDING].textContent = pendingCount;
@@ -353,6 +373,65 @@ document.addEventListener("DOMContentLoaded", () => {
         gtformdelete.url = object_urls.destroy_url.replace("/0/", "/" + taskId + "/");
         gtformdelete.instance.find(".objtext").text(taskName);
         gtformdelete.instance.modal("show");
+    });
+
+    // Archive all finished tasks action
+    const archiveFinishedBtn = document.getElementById("archive-finished-btn");
+    if (archiveFinishedBtn) {
+        archiveFinishedBtn.addEventListener("click", function () {
+            fetch(object_urls.archive_finished_url, {
+                method: "POST",
+                headers: {"X-CSRFToken": getCookie("csrftoken")},
+            })
+                .then(r => {
+                    if (!r.ok) {
+                        console.error("Error archiving finished tasks:", r.status, r.statusText);
+                        return;
+                    }
+                    loadTasks();
+                })
+                .catch(err => console.error("Error archiving finished tasks:", err));
+        });
+    }
+
+    function updateArchiveFinishedBtn() {
+        const btn = document.getElementById("archive-finished-btn");
+        if (!btn) return;
+        const finishedCount = tasks.filter(task => task.status === STATUS.FINISHED).length;
+        btn.classList.toggle("d-none", finishedCount < 1);
+    }
+
+    const searchInput = document.getElementById("task-search-input");
+    if (searchInput) {
+        searchInput.addEventListener("input", function () {
+            searchQuery = this.value.trim();
+            renderTasks();
+        });
+    }
+
+    // Archive action
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".archive-task-btn");
+        if (!btn) return;
+
+        const taskId = btn.dataset.taskId;
+
+        fetch(object_urls.update_url.replace("/0/", "/" + taskId + "/"), {
+            method: "PATCH",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({is_archived: true}),
+        })
+            .then(r => {
+                if (!r.ok) {
+                    console.error("Error archiving task:", r.status, r.statusText);
+                    return;
+                }
+                loadTasks();
+            })
+            .catch(err => console.error("Error archiving task:", err));
     });
 
     setupColumnsDragAndDrop();

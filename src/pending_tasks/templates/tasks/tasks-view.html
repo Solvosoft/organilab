@@ -20,16 +20,27 @@
 
 {% block content %}
 	<div class="container-fluid py-4">
-		<div class="d-flex justify-content-between align-items-center mb-4">
-			<div>
-				<h1 class="mb-1">{% trans 'Pending Tasks' %}</h1>
+
+		<div class="row">
+			<h1 class="mb-1">{% trans 'Pending Tasks' %}</h1>
+		</div>
+
+
+		<div class="row align-items-center justify-content-center my-4">
+			<div class="col-md-6 col-12">
+				<div class="input-group">
+					<span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+					<input type="text" id="task-search-input" class="form-control"
+												placeholder="{% trans 'Search by name or user…' %}"/>
+				</div>
 			</div>
 
 			{% if perms.pending_task.add_pendingtask %}
-				<button type="button" class="btn btn-primary" id="create-task-btn">
-					<i class="fa fa-plus" aria-hidden="true"></i>
-					{% trans 'Create task' %}
-				</button>
+				<div class="col-md-6 col-12">
+					<button type="button" class="btn btn-success btn-sm ms-auto" id="create-task-btn" title="{% trans 'Create task' %}">
+						<i class="fa fa-plus" aria-hidden="true"></i>
+					</button>
+				</div>
 			{% endif %}
 		</div>
 
@@ -68,7 +79,8 @@
 			create_url: "{% url 'pending_tasks:api-pending_tasks-list' org_pk %}",
 			destroy_url: "{% url 'pending_tasks:api-pending_tasks-detail' org_pk 0 %}",
 			update_url: "{% url 'pending_tasks:api-pending_tasks-detail' org_pk 0 %}",
-			get_values_for_update_url: "{% url 'pending_tasks:api-pending_tasks-get-values-for-update' org_pk 0 %}"
+			get_values_for_update_url: "{% url 'pending_tasks:api-pending_tasks-get-values-for-update' org_pk 0 %}",
+			archive_finished_url: "{% url 'pending_tasks:api-pending_tasks-archive-finished' org_pk %}"
 		}
 	</script>
 

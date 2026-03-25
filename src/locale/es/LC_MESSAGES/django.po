@@ -5771,3 +5771,6 @@ msgstr "No hay tareas en proceso"
 
 msgid "No finished tasks"
 msgstr "No hay tareas finalizadas"
+
+msgid "Archive all finished tasks"
+msgstr "Archivar todas las tareas terminadas"
