@@ -37,6 +37,7 @@ class PendingTaskSerializer(serializers.ModelSerializer):
             "link",
             "profile",
             "rols",
+            "is_archived",
         ]
 
 
@@ -51,10 +52,20 @@ class PendingTaskValidateSerializer(serializers.ModelSerializer):
     )
     rols = serializers.PrimaryKeyRelatedField(queryset=Rol.objects.all(), many=True)
     link = serializers.URLField(required=False, allow_null=True, allow_blank=True)
+    is_archived = serializers.BooleanField(default=False)
 
     class Meta:
         model = PendingTask
-        fields = ["id", "name", "description", "status", "profile", "rols", "link"]
+        fields = [
+            "id",
+            "name",
+            "description",
+            "status",
+            "profile",
+            "rols",
+            "link",
+            "is_archived",
+        ]
 
 
 class PendingTaskListSerializer(serializers.Serializer):
@@ -123,7 +134,16 @@ class PendingTaskGetValuesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PendingTask
-        fields = ["id", "name", "description", "status", "link", "profile", "rols"]
+        fields = [
+            "id",
+            "name",
+            "description",
+            "status",
+            "link",
+            "profile",
+            "rols",
+            "is_archived",
+        ]
 
 
 class NewStatusValidateSerializer(SessionProfileValidateSerializer):
