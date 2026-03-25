@@ -5774,3 +5774,6 @@ msgstr "No hay tareas finalizadas"
 
 msgid "Archive all finished tasks"
 msgstr "Archivar todas las tareas terminadas"
+
+msgid "New pending task: %s"
+msgstr "Nueva tarea pendiente: %s"
