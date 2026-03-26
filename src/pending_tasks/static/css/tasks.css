@@ -75,3 +75,16 @@
 .border-success .task-status-bar {
     background: #198754;
 }
+
+.description-text{
+    max-height: 50px;
+    overflow-y: auto;
+}
+
+.btn-card-task{
+    font-size: 1em !important;
+}
+
+.btn-card-task:hover i {
+    color: #000 !important;
+}

@@ -100,10 +100,8 @@ class PendingTaskViewSet(mixins.CreateModelMixin, AuthAllPermBaseObjectWithoutCr
         queryset = super().filter_queryset(queryset)
         profile = self.request.user.profile
         rols = profile.profilepermission_set.all().values_list("rol", flat=True)
-        org_pk = self.kwargs.get("org_pk")
         queryset = (
-            queryset.filter(organization_id=org_pk)
-            .filter(
+            queryset.filter(
                 Q(profile=profile) | Q(rols__in=rols) | Q(created_by=self.request.user)
             )
             .filter(is_archived=False)
@@ -159,12 +157,10 @@ class PendingTaskViewSet(mixins.CreateModelMixin, AuthAllPermBaseObjectWithoutCr
 
     @action(detail=False, methods=["post"], url_path="archive_finished")
     def archive_finished(self, request, *args, **kwargs):
-        org = get_object_or_404(OrganizationStructure, pk=self.kwargs.get("org_pk"))
         profile = request.user.profile
         rols = profile.profilepermission_set.all().values_list("rol", flat=True)
         updated = (
             PendingTask.objects.filter(
-                organization=org,
                 status=PendingTask.FINISHED,
                 is_archived=False,
             )

@@ -31,13 +31,13 @@
 				<div class="input-group">
 					<span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
 					<input type="text" id="task-search-input" class="form-control"
-												placeholder="{% trans 'Search by name or user…' %}"/>
+												placeholder="{% trans 'Search by name' %}"/>
 				</div>
 			</div>
 
 			{% if perms.pending_task.add_pendingtask %}
-				<div class="col-md-6 col-12">
-					<button type="button" class="btn btn-success btn-sm ms-auto" id="create-task-btn" title="{% trans 'Create task' %}">
+				<div class="col-md-6 col-12 d-flex justify-content-end">
+					<button type="button" class="btn btn-success btn-sm" id="create-task-btn" title="{% trans 'Create task' %}">
 						<i class="fa fa-plus" aria-hidden="true"></i>
 					</button>
 				</div>
@@ -67,6 +67,8 @@
 	{% trans 'Update task' as update_obj_tittle %}
 	{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class="modal-lg" %}
 	{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+
+ {% include 'tasks/modal_expand.html' %}
 
 {% endblock %}
 

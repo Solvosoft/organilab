@@ -6,6 +6,7 @@ from djgentelella.widgets import core as genwidgets
 from djgentelella.widgets.selects import AutocompleteSelect, AutocompleteSelectMultiple
 
 from pending_tasks.models import PendingTask
+from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 
 class PendingTaskForm(GTForm, forms.ModelForm):
@@ -16,7 +17,7 @@ class PendingTaskForm(GTForm, forms.ModelForm):
         fields = ["name", "description", "status", "profile", "rols", "link"]
         widgets = {
             "name": genwidgets.TextInput,
-            "description": genwidgets.Textarea,
+            "description": TextareaWysiwyg,
             "status": genwidgets.Select,
             "profile": AutocompleteSelect("org_profiles"),
             "rols": AutocompleteSelectMultiple("roluserorgbase"),
