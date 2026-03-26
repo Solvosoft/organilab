@@ -15,17 +15,17 @@ TUTORIALS = [
             {
                 'order': 1, 'step_key': 'bienvenida-modal', 'step_type': 'MODAL',
                 'title': 'Bienvenida a Organilab',
-                'content': 'Organilab es un sistema de gestión de laboratorios diseñado para universidades con múltiples sedes. Le permite gestionar inventario, sustancias químicas, procedimientos, reservaciones y seguridad desde una sola plataforma.',
+                'content': 'Esta herramienta permite la gestión integral de laboratorios universitarios, centralizando la información académica, técnica y administrativa en múltiples sedes, permite gestionar inventario, sustancias químicas, procedimientos, reservaciones y seguridad desde una sola plataforma.',
             },
             {
                 'order': 2, 'step_key': 'seleccionar-org', 'step_type': 'MODAL',
                 'title': 'Seleccione su organización',
-                'content': 'Cada usuario pertenece a una o más organizaciones (sede, facultad, escuela). Seleccione la organización donde desea trabajar. Puede cambiar de organización en cualquier momento desde el menú.',
+                'content': 'Permite una gestión fundamental, ofreciendo acceso a la selección del laboratorio deseado, la aplicación de filtros básicos por laboratorio, organización o perfil, y la visualización de todas tus organizaciones asignadas.',
             },
             {
                 'order': 3, 'step_key': 'estructura-sistema', 'step_type': 'MODAL',
                 'title': 'Estructura del sistema',
-                'content': 'El sistema se organiza así: <strong>Organización</strong> → <strong>Laboratorio</strong> → <strong>Sala</strong> → <strong>Mueble</strong> → <strong>Estante</strong> → <strong>Objetos</strong> (reactivos, materiales, equipos). Los permisos y tutoriales dependen de sus roles en cada organización.',
+                'content': 'El sistema Organilab está dividido en varios módulos, cada una se encarga de algo específico dentro del laboratorio: organiazciones, laboratorios, administración de laboratorios, reservas, seguridad y riesgo, reportes y sustancias químicas.',
             },
         ],
     },
@@ -371,7 +371,7 @@ TUTORIALS = [
             {
                 'order': 1, 'step_key': 'risk-zonas', 'step_type': 'MODAL',
                 'title': 'Zonas de riesgo',
-                'content': 'Las zonas de riesgo representan áreas del laboratorio donde existen peligros específicos. Cada zona tiene un tipo (químico, biológico, radiológico, etc.) y un nivel de riesgo.',
+                'content': 'Las Zonas de Riesgo son áreas específicas dentro del laboratorio donde la manipulación de sustancias peligrosas, equipos especiales o condiciones ambientales particulares requieren medidas de seguridad y protocolos de acceso estrictos.',
             },
             {
                 'order': 2, 'step_key': 'risk-incidentes', 'step_type': 'MODAL',
@@ -415,7 +415,7 @@ TUTORIALS = [
             {
                 'order': 1, 'step_key': 'rep-tipos', 'step_type': 'MODAL',
                 'title': 'Tipos de reportes',
-                'content': 'El sistema genera varios tipos de reportes: inventario por laboratorio, uso de sustancias, precursores químicos, reportes de regencia, y auditoría de cambios.',
+                'content': 'El sistema permite generar reportes que apoyan el control y seguimiento del laboratorio, abarcando inventarios, salud laboral, gestión de reactivos, materiales y equipos, movimientos, desechos, zonas de riesgo y compatibilidad SGA.',
             },
             {
                 'order': 2, 'step_key': 'rep-generar', 'step_type': 'MODAL',

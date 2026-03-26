@@ -3117,4 +3117,33 @@ URLNAME_PERMISSIONS = {
             "permission": "pending_tasks.view_pendingtask",
         },
     ],
+    "workdays": [
+        {
+            "name": "View Workdays",
+            "category": "Workdays",
+            "permission": "risk_management.view_workday",
+        },
+        {
+            "name": "Register Workdays",
+            "category": "Workdays",
+            "permission": "risk_management.add_workday",
+        },
+        {
+            "name": "Update Workday",
+            "category": "Workdays",
+            "permission": "risk_management.change_workday",
+        },
+        {
+            "name": "Delete Workday",
+            "category": "Workdays",
+            "permission": "risk_management.delete_workday",
+        },
+    ],
+    "workdays_list": [
+        {
+            "name": "View Workdays",
+            "category": "Workdays",
+            "permission": "risk_management.view_workday",
+        },
+    ],
 }
