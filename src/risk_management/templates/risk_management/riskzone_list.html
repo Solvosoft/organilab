@@ -4,12 +4,13 @@
 {% block pre_head %}
 	{% define_urlname_action 'riskzone_list' %}
 	{% define_urlname_action 'riskzone_detail' %}
+	{% define_urlname_action 'workdays_list' %}
 {% endblock %}
 {% block content %}
 	{% has_perms "risk_management.change_riskzone" as perm_change_riskzone %}
 	{% has_perms "risk_management.add_riskzone" as perm_add_riskzone %}
 	{% has_perms "risk_management.delete_riskzone" as perm_delete_riskzone %}
-
+	{% has_perms "risk_management.view_workday" as perm_view_workday %}
 
 	<div class="clearfix">
 		<div class="row float-start">
@@ -121,6 +122,11 @@
 												<a class="btn btn-sm btn-outline-warning"
 															href="{% url 'riskmanagement:riskzone_update' org_pk object.pk %}">
 													<i class="fa fa-edit" aria-hidden="true"></i> {% trans 'Update' %}
+												</a>
+											{% endif %}
+											{% if perm_view_workday %}
+												<a class="btn btn-sm btn-outline-success" href="{% url 'riskmanagement:workday_list' org_pk object.pk %}">
+													<i class="fa fa-calendar" aria-hidden="true"></i> {% trans 'Workdays' %}
 												</a>
 											{% endif %}
 											{% if perm_delete_riskzone %}

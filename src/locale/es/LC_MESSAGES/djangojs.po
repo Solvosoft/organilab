@@ -1269,3 +1269,24 @@ msgstr "Archivar tarea"
 
 msgid "Expand description"
 msgstr "Expandir descripción"
+
+msgid "Day shift"
+msgstr "Jornada diurna"
+
+msgid "Mixed shift"
+msgstr "Jornada mixta"
+
+msgid "Night shift"
+msgstr "Jornada nocturna"
+
+msgid "Workday"
+msgstr "Trabajo"
+
+msgid "Number of workers"
+msgstr "Número de trabajadores"
+
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+msgid "End Time"
+msgstr "Hora de salida"
