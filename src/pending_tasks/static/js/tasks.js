@@ -46,6 +46,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return div.innerHTML;
     }
 
+    function stripHtml(html) {
+        const div = document.createElement("div");
+        div.innerHTML = html ?? "";
+        return div.textContent || div.innerText || "";
+    }
+
     function createTaskCard(task) {
         const card = document.createElement("div");
         card.className = `task-card card mb-3 shadow-sm border-2 ${getStatusColor(task.status)}`;
@@ -54,16 +60,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         card.innerHTML = `
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div class="pe-2 flex-grow-1  border-bottom pb-1 mb-2">
+                <div class="d-flex justify-content-between align-items-start mb-2 border-bottom border-3">
+                    <div class="pe-2 flex-grow-1  ">
                         <h6 class="card-title mb-1 text-break"
                             ${task.name.length > 60 ? `title="${escapeHtml(task.name)}" data-bs-toggle="tooltip"` : ""}
                         >${escapeHtml(task.name.length > 60 ? task.name.slice(0, 60) + "…" : task.name)}</h6>
                     </div>
 
-                    <div class="dropdown">
+                  <button class="btn btn-sm text-muted p-0 border-0 me-3 expand-description-btn btn-card-task"
+                                data-task-id="${task.id}"
+                                title="${gettext('Expand description')}"
+                                type="button">
+                                <i class="fa fa-arrows-alt" aria-hidden="true"></i>
+                            </button>
+
+                    <div class="dropdown ">
                         <button
-                            class="btn btn-sm btn-link text-muted p-0"
+                            class="btn btn-sm text-muted p-0 border-0 btn-card-task"
                             type="button"
                             title=${gettext('Actions')}
                             data-bs-toggle="dropdown"
@@ -80,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </button>
                             </li>
                             <li>
-                                <button class="dropdown-item delete-task-btn" type="button" data-task-id="${task.id}" data-task-name="${ task.name }">
+                                <button class="dropdown-item delete-task-btn" type="button" data-task-id="${task.id}" data-task-name="${task.name}">
                                     <i class="fa fa-trash me-2 text-danger" aria-hidden="true"></i>
                                     ${gettext("Delete task")}
                                 </button>
@@ -97,47 +110,35 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
 
-                ${
-            task.description
-                ? `
-                        <div class="mb-2 small text-secondary text-break"
-                            ${task.description.length > 200 ? `title="${escapeHtml(task.description)}" data-bs-toggle="tooltip"` : ""}
-                        >${escapeHtml(task.description.length > 200 ? task.description.slice(0, 200) + "…" : task.description)}</div>
-                    `
-                : ""
-        }
+                ${task.description ? `<div class="mb-2 small text-secondary text-break description-text py-2 wysiwyg-preview"></div>` : ""}
 
-                ${
-            task.profile
-                ? `
-                        <div class="mb-2 text-muted small">
-                            <i class="fa fa-user me-1" aria-hidden="true"></i>
-                            ${escapeHtml(task.profile)}
-                        </div>
-                    `
-                : `
-                        <div class="mb-2 text-muted small">
-                            <i class="fa fa-user me-1" aria-hidden="true"></i>
-                            ${gettext("Unassigned")}
-                        </div>
-                    `
+                <div class="row mb-2 mx-0 gx-2 pt-1">
+                    <div class="col text-muted small text-break"
+                        ${task.profile && task.profile.length > 40 ? `title="${escapeHtml(task.profile)}" data-bs-toggle="tooltip"` : ""}
+                    >
+                        <i class="fa fa-user me-1" aria-hidden="true"></i>
+                        ${task.profile
+            ? escapeHtml(task.profile.length > 40 ? task.profile.slice(0, 40) + "…" : task.profile)
+            : gettext("Unassigned")
         }
-
-                ${
-            task.link
-                ? `
-                        <div class="mb-2">
-                            <a href="${escapeHtml(task.link)}" target="_blank" rel="noopener noreferrer">
-                                <i class="fa fa-link" aria-hidden="true"></i>
-                                ${gettext("Open link")}
-                            </a>
-                        </div>
-                    `
-                : ""
+                    </div>
+                    ${task.link
+            ? `<div class="col-auto small">
+                                <a href="${escapeHtml(task.link)}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fa fa-link" aria-hidden="true"></i>
+                                    ${gettext("Open link")}
+                                </a>
+                            </div>`
+            : ""
         }
+                </div>
 
             </div>
         `;
+
+        if (task.description) {
+            card.querySelector(".wysiwyg-preview").innerHTML = task.description;
+        }
 
         card.addEventListener("dragstart", handleDragStart);
         card.addEventListener("dragend", handleDragEnd);
@@ -145,12 +146,34 @@ document.addEventListener("DOMContentLoaded", () => {
         return card;
     }
 
+    document.addEventListener("click", event => {
+        const btn = event.target.closest(".expand-description-btn");
+        if (!btn) return;
+
+        const task = tasks.find(t => t.id === Number(btn.dataset.taskId));
+        if (!task) return;
+
+        document.getElementById("descriptionModalLabel").textContent = task.name;
+        document.getElementById("descriptionModalBody1").innerHTML = task.description || "";
+        document.getElementById("descriptionModalFooter").textContent = task.profile || gettext("Unassigned");
+
+        const linkRow = document.getElementById("descriptionModalLinkRow");
+        const linkEl = document.getElementById("descriptionModalBody2");
+        if (task.link) {
+            linkEl.href = task.link;
+            linkRow.classList.remove("d-none");
+        } else {
+            linkRow.classList.add("d-none");
+        }
+
+        $("#descriptionModal").modal("show");
+    });
+
     function getFilteredTasks() {
         if (!searchQuery) return tasks;
         const q = searchQuery.toLowerCase();
         return tasks.filter(task =>
-            task.name.toLowerCase().includes(q) ||
-            (task.profile && task.profile.toLowerCase().includes(q))
+            task.name.toLowerCase().includes(q)
         );
     }
 
@@ -401,6 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.classList.toggle("d-none", finishedCount < 1);
     }
 
+    // search action
     const searchInput = document.getElementById("task-search-input");
     if (searchInput) {
         searchInput.addEventListener("input", function () {

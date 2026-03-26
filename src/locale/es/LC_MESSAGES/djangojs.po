@@ -1266,3 +1266,6 @@ msgstr "¿Desea eliminar esta tarea?"
 
 msgid "Archive task"
 msgstr "Archivar tarea"
+
+msgid "Expand description"
+msgstr "Expandir descripción"
