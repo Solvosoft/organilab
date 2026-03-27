@@ -91,7 +91,6 @@ class WarningWordAPI(mixins.ListModelMixin, viewsets.GenericViewSet):
             raise PermissionDenied()
 
     def retrieve(self, request, org_pk, pk=None, *args, **kwargs):
-        print(111)
         self._check_permission_on_organization(request, org_pk, "list")
         if pk:
             warning_word = get_object_or_404(WarningWord, pk=pk)
