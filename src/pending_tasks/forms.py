@@ -17,7 +17,7 @@ class PendingTaskForm(GTForm, forms.ModelForm):
         fields = ["name", "description", "status", "profile", "rols", "link"]
         widgets = {
             "name": genwidgets.TextInput,
-            "description": TextareaWysiwyg(attrs={"data-option-lang": "es"}),
+            "description": TextareaWysiwyg,#(attrs={"data-option-lang": "es"}),
             "status": genwidgets.Select,
             "profile": AutocompleteSelect("org_profiles"),
             "rols": AutocompleteSelectMultiple("roluserorgbase"),
