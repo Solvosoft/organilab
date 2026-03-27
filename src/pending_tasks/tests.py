@@ -69,6 +69,7 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
         task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
+            name="Test task",
             description="Test task",
             status=PendingTask.PENDING,
         )
@@ -81,15 +82,17 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
         task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
-            description="My task",
+            name="My task",
+            description="My task description",
             profile=self.user.profile,
         )
-        self.assertEqual(str(task), f"My task - {self.user.profile}")
+        self.assertEqual(str(task), "My task")
 
     def test_default_status_is_pending(self):
         task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
+            name="Defaults",
             description="Defaults",
         )
         self.assertEqual(task.status, PendingTask.PENDING)
@@ -99,6 +102,7 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
         task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
+            name="SET_NULL test",
             description="SET_NULL test",
             profile=other_user.profile,
         )
@@ -119,12 +123,13 @@ class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):
     def test_create_pending_task_util(self):
         task = create_pending_task(
             created_by=self.user,
+            name="Util task",
             rols=[self.role],
             organization=self.org,
-            description="Util task",
+            description="Util task description",
             link="https://example.com",
         )
-        self.assertEqual(task.description, "Util task")
+        self.assertEqual(task.description, "Util task description")
         self.assertEqual(task.status, PendingTask.PENDING)
         self.assertEqual(task.organization, self.org)
         self.assertEqual(task.link, "https://example.com")
@@ -133,9 +138,10 @@ class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):
     def test_create_pending_task_with_profile(self):
         task = create_pending_task(
             created_by=self.user,
+            name="Assigned task",
             rols=[self.role],
             organization=self.org,
-            description="Assigned task",
+            description="Assigned task description",
             profile=self.user.profile,
         )
         self.assertEqual(task.profile, self.user.profile)
@@ -143,9 +149,10 @@ class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):
     def test_create_pending_task_custom_status(self):
         task = create_pending_task(
             created_by=self.user,
+            name="In process task",
             rols=[self.role],
             organization=self.org,
-            description="In process",
+            description="In process description",
             status=PendingTask.IN_PROCESS,
         )
         self.assertEqual(task.status, PendingTask.IN_PROCESS)
@@ -157,12 +164,16 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
         super().setUp()
         self.task = create_pending_task(
             created_by=self.user,
+            name="Visible task",
             rols=[self.role],
             organization=self.org,
-            description="Visible task",
+            description="Visible task description",
             profile=self.user.profile,
         )
-        self.list_url = reverse("pending_tasks:pending_tasks-list")
+        self.list_url = reverse(
+            "pending_tasks:api-pending_tasks-list",
+            kwargs={"org_pk": self.org.pk},
+        )
 
     def test_list_returns_200(self):
         response = self.client.get(self.list_url)
@@ -182,8 +193,9 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
         other_user = create_user_with_profile("otheruser")
         other_task = PendingTask.objects.create(
             organization=self.org,
-            created_by=self.user,
-            description="Other user task",
+            created_by=other_user,
+            name="Other user task",
+            description="Other user task description",
             profile=other_user.profile,
         )
         response = self.client.get(self.list_url)
@@ -196,7 +208,8 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
         unassigned_task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
-            description="Role-based task",
+            name="Role-based task",
+            description="Role-based task description",
         )
         unassigned_task.rols.add(self.role)
         response = self.client.get(self.list_url)
@@ -224,15 +237,17 @@ class PendingTaskAPIDetailTest(PendingTaskSetUpMixin, TestCase):
         super().setUp()
         self.task = create_pending_task(
             created_by=self.user,
+            name="Detail task",
             rols=[self.role],
             organization=self.org,
-            description="Detail task",
+            description="Detail task description",
             profile=self.user.profile,
         )
 
     def test_destroy_task(self):
         url = reverse(
-            "pending_tasks:pending_tasks-detail", kwargs={"pk": self.task.pk}
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
@@ -240,9 +255,11 @@ class PendingTaskAPIDetailTest(PendingTaskSetUpMixin, TestCase):
 
     def test_update_task(self):
         url = reverse(
-            "pending_tasks:pending_tasks-detail", kwargs={"pk": self.task.pk}
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         data = {
+            "name": "Updated name",
             "description": "Updated description",
             "rols": [self.role.pk],
         }
@@ -261,7 +278,8 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
         self.task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
-            description="Status task",
+            name="Status task",
+            description="Status task description",
             status=PendingTask.PENDING,
             profile=self.user.profile,
         )
@@ -269,8 +287,8 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
 
     def test_update_status_to_in_process(self):
         url = reverse(
-            "pending_tasks:pending_tasks-updated-task-status",
-            kwargs={"pk": self.task.pk},
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         data = {"status": PendingTask.IN_PROCESS}
         response = self.client.patch(
@@ -282,8 +300,8 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
 
     def test_update_status_to_finished(self):
         url = reverse(
-            "pending_tasks:pending_tasks-updated-task-status",
-            kwargs={"pk": self.task.pk},
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         data = {"status": PendingTask.FINISHED}
         response = self.client.patch(
@@ -295,8 +313,8 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
 
     def test_update_status_invalid_value(self):
         url = reverse(
-            "pending_tasks:pending_tasks-updated-task-status",
-            kwargs={"pk": self.task.pk},
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         data = {"status": 99}
         response = self.client.patch(
@@ -305,12 +323,19 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_update_status_not_assigned_to_user(self):
+        # Create a task by another user with no relation to self.user
         other_user = create_user_with_profile("otherstatus")
-        self.task.profile = other_user.profile
-        self.task.save()
+        other_task = PendingTask.objects.create(
+            organization=self.org,
+            created_by=other_user,
+            name="Other task",
+            description="Not for main user",
+            status=PendingTask.PENDING,
+            profile=other_user.profile,
+        )
         url = reverse(
-            "pending_tasks:pending_tasks-updated-task-status",
-            kwargs={"pk": self.task.pk},
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": other_task.pk},
         )
         data = {"status": PendingTask.IN_PROCESS}
         response = self.client.patch(
@@ -322,8 +347,8 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
     def test_update_status_unauthenticated(self):
         self.client.logout()
         url = reverse(
-            "pending_tasks:pending_tasks-updated-task-status",
-            kwargs={"pk": self.task.pk},
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         data = {"status": PendingTask.IN_PROCESS}
         response = self.client.patch(
@@ -340,7 +365,8 @@ class PendingTaskPermissionTest(PendingTaskSetUpMixin, TestCase):
         self.task = PendingTask.objects.create(
             organization=self.org,
             created_by=self.user,
-            description="Permission task",
+            name="Permission task",
+            description="Permission task description",
             status=PendingTask.PENDING,
             profile=self.unprivileged_user.profile,
         )
@@ -348,14 +374,18 @@ class PendingTaskPermissionTest(PendingTaskSetUpMixin, TestCase):
 
     def test_user_without_permissions_cannot_list(self):
         self.client.force_login(self.unprivileged_user)
-        url = reverse("pending_tasks:pending_tasks-list")
+        url = reverse(
+            "pending_tasks:api-pending_tasks-list",
+            kwargs={"org_pk": self.org.pk},
+        )
         response = self.client.get(url)
         self.assertIn(response.status_code, [401, 403])
 
     def test_user_without_permissions_cannot_delete(self):
         self.client.force_login(self.unprivileged_user)
         url = reverse(
-            "pending_tasks:pending_tasks-detail", kwargs={"pk": self.task.pk}
+            "pending_tasks:api-pending_tasks-detail",
+            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
         )
         response = self.client.delete(url)
         self.assertIn(response.status_code, [401, 403])
