@@ -223,7 +223,6 @@ def report_stock(report):
         try:
             laboratory = Laboratory.objects.get(pk=lab_id)
         except Laboratory.DoesNotExist:
-            print("LAB NOT FOUND:", lab_id)
             continue
 
         headers = [

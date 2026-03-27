@@ -1,0 +1,90 @@
+.kanban-column {
+    background-color: #f8f9fa;
+    height: 75vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.75rem;
+     overflow: hidden;
+}
+
+.kanban-column .card-header {
+    flex-shrink: 0;
+}
+
+.kanban-list {
+    flex: 1 1 auto;
+    max-height: 75vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #fafafa;
+    border-radius: 0 0 0.75rem 0.75rem;
+    padding: 0.75rem;
+    transition: background-color 0.2s ease;
+}
+
+.kanban-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.kanban-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.kanban-list::-webkit-scrollbar-thumb {
+    background: #d0d7de;
+    border-radius: 10px;
+}
+
+.kanban-list::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+.kanban-list.drag-over {
+    background: #dbeafe;
+}
+
+.task-card {
+    cursor: grab;
+    border-radius: 0.75rem;
+}
+
+.task-card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.empty-column {
+    border: 2px dashed #ced4da;
+    border-radius: 0.75rem;
+    background: #f8f9fa;
+}
+
+.task-status-bar {
+    height: 4px;
+    border-radius: 4px 4px 0 0;
+}
+
+.border-warning .task-status-bar {
+    background: #ffc107;
+}
+
+.border-info .task-status-bar {
+    background: #0dcaf0;
+}
+
+.border-success .task-status-bar {
+    background: #198754;
+}
+
+.description-text{
+    max-height: 50px;
+    overflow-y: auto;
+}
+
+.btn-card-task{
+    font-size: 1em !important;
+}
+
+.btn-card-task:hover i {
+    color: #000 !important;
+}
