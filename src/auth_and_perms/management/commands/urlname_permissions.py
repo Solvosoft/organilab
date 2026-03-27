@@ -3095,6 +3095,28 @@ URLNAME_PERMISSIONS = {
             "permission": "laboratory.add_shelfobject",
         }
     ],
+    "pendingtask_list": [
+        {
+            "name": "Add Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.add_pendingtask",
+        },
+        {
+            "name": "Change Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.change_pendingtask",
+        },
+        {
+            "name": "Delete Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.delete_pendingtask",
+        },
+        {
+            "name": "View Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.view_pendingtask",
+        },
+    ],
     "workdays": [
         {
             "name": "View Workdays",
