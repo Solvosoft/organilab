@@ -10,30 +10,19 @@ from djgentelella.widgets.wysiwyg import TextareaWysiwyg
 
 
 class PendingTaskForm(GTForm, forms.ModelForm):
-    organization = forms.IntegerField(widget=forms.HiddenInput())
 
     class Meta:
         model = PendingTask
         fields = ["name", "description", "status", "profile", "rols", "link"]
         widgets = {
             "name": genwidgets.TextInput,
-            "description": TextareaWysiwyg,#(attrs={"data-option-lang": "es"}),
+            "description": TextareaWysiwyg,  # (attrs={"data-option-lang": "es"}),
             "status": genwidgets.Select,
-            "profile": AutocompleteSelect("org_profiles"),
+            "profile": AutocompleteSelect("profiles_ref"),
             "rols": AutocompleteSelectMultiple("roluserorgbase"),
             "link": genwidgets.URLInput,
         }
 
     def __init__(self, *args, **kwargs):
-        org_pk = kwargs.pop("org_pk", None)
         super(PendingTaskForm, self).__init__(*args, **kwargs)
         self.fields["profile"].label = _("User")
-        if org_pk:
-            self.fields["organization"].initial = org_pk
-            prefix = self.prefix
-            org_field_id = (
-                f"#id_{prefix}-organization" if prefix else "#id_organization"
-            )
-            self.fields["profile"].widget.attrs.update(
-                {"data-s2filter-organization": org_field_id}
-            )

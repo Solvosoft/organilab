@@ -583,7 +583,8 @@ class OrganizationProfileslLookup(BaseSelect2View):
 
         if self.org:
             queryset = queryset.filter(
-                pk__in=self.org.users.values_list("profile__pk", flat=True)
+                pk__in=self.org.users.values_list("profile__pk", flat=True),
+                user__is_active=True,
             ).distinct()
         else:
             queryset = queryset.none()
@@ -606,6 +607,32 @@ class OrganizationProfileslLookup(BaseSelect2View):
             },
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+    def get_text_display(self, obj):
+        name = obj.user.get_full_name()
+        if not name:
+            name = obj.user.username
+        return name
+
+
+@register_lookups(prefix="profiles_ref", basename="profiles_ref")
+class ProfilesRefLookup(BaseSelect2View):
+    model = Profile
+    org = None
+    fields = ["user__first_name", "user__last_name"]
+    pagination_class = GPaginatorMoreElements
+    authentication_classes = [SessionAuthentication]
+    perms = {
+        "list": ["laboratory.view_profile"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user__is_active=True)
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_text_display(self, obj):
         name = obj.user.get_full_name()
@@ -671,7 +698,9 @@ class UsersOrganizationsLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.org:
-            queryset = queryset.filter(organizationstructure=self.org).distinct()
+            queryset = queryset.filter(
+                organizationstructure=self.org, is_active=True
+            ).distinct()
         else:
             queryset = queryset.none()
 
@@ -746,7 +775,8 @@ class UserseslLookup(BaseSelect2View):
 
         if self.organization:
             queryset = User.objects.filter(
-                pk__in=get_users_from_organization(self.organization.root.pk)
+                pk__in=get_users_from_organization(self.organization.root.pk),
+                is_active=True,
             )
         else:
             queryset = queryset.none()
@@ -908,7 +938,7 @@ class RiskUsersOrganizations(BaseSelect2View):
                 .distinct()
             )
 
-            queryset = queryset.filter(pk__in=user_ids).distinct("pk")
+            queryset = queryset.filter(pk__in=user_ids, is_active=True).distinct("pk")
         else:
             queryset = queryset.none()
 

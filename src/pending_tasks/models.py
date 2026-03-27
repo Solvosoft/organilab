@@ -2,10 +2,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.models import Profile, Rol
-from presentation.models import AbstractOrganizationRef
+from presentation.models import AbstractRegistry
 
 
-class PendingTask(AbstractOrganizationRef):
+class PendingTask(AbstractRegistry):
     PENDING = 0
     IN_PROCESS = 1
     FINISHED = 2
