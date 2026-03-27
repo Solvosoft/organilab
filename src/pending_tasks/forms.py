@@ -27,7 +27,7 @@ class PendingTaskForm(GTForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
         super(PendingTaskForm, self).__init__(*args, **kwargs)
-
+        self.fields["profile"].label = _("User")
         if org_pk:
             self.fields["organization"].initial = org_pk
             prefix = self.prefix
