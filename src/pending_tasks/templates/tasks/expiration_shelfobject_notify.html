@@ -1,0 +1,29 @@
+{% load i18n %}
+<p>Hola</p>
+<p>Usted ha recibido una tarea porque el laboratorio <strong> {{ laboratory.name }} </strong> tiene reactivos pr&oacute;ximos a vencer el d&iacute;a {{ date }}.</p>
+<p>Este mensaje es para notificarle que uno o m&aacute;s reactivos en el laboratorio vencer&aacute;n ma&ntilde;ana.</p>
+<h4 style="text-aling:center;">Reactivos pr&oacute;ximos a vencer:</h4>
+  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+    <thead>
+      <tr style="background-color: #4a90d9; color: white;">
+        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Name' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Laboratory Room' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Furniture' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Shelf' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Quantity' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Measurement Unit' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+				{% for object in objects %}
+					<tr style="background-color: #f9f9f9;">
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.object.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.shelf.furniture.labroom.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.shelf.furniture.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.shelf.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.quantity }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.measurement_unit.description }}</td>
+					</tr>
+				{% endfor %}
+    </tbody>
+  </table>
