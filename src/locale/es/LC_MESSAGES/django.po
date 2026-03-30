@@ -5837,3 +5837,9 @@ msgstr "salud"
 
 msgid "physical"
 msgstr "físico"
+
+msgid "ShelfObject expiration"
+msgstr "Vencimiento de objetos de estante"
+
+msgid "List of ShelfObject in limits"
+msgstr "Lista de objetos de estante con límites"
