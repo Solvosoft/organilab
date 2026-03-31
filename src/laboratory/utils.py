@@ -136,7 +136,7 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
 
     users = (
         UserOrganization.objects.filter(
-            organization__in=orgs, user__isnull=False, status=True
+            organization__in=orgs, user__isnull=False, status=True, **userfilters
         )
         .values_list("user", flat=True)
         .distinct()
@@ -462,7 +462,7 @@ def user_has_pp_on_laboratory(user, lab_pk):
         profile__user=user,
         content_type=lab_content_type,
         object_id=lab_pk,
-        rol__isnull=False
+        rol__isnull=False,
     ).exists()
 
 
@@ -495,7 +495,6 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                     if user_has_pp_on_laboratory(user, lab_id):
                         user_access = True
                         break
-
 
     return user_access
 

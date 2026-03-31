@@ -34,6 +34,7 @@ from laboratory.models import (
     ObjectMaximumLimit,
     LaboratoryProcess,
     MaterialCapacity,
+    UserOrganization,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -86,12 +87,21 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
     ]
 
     def __init__(self, *args, **kwargs):
+        org = kwargs.pop("org")
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
         self.fields["geolocation"].widget.attrs["class"] = "form-control"
-        org = kwargs.get("organization", None)
         if org:
+            organization = OrganizationStructure.objects.filter(pk=org).first().root
             self.fields["responsible"].queryset = User.objects.filter(
-                pk__in=get_users_from_organization(org)
+                pk__in=get_users_from_organization(
+                    organization.pk,
+                    userfilters={
+                        "type_in_organization__in": [
+                            UserOrganization.ADMINISTRATOR,
+                            UserOrganization.LABORATORY_MANAGER,
+                        ]
+                    },
+                )
             )
 
     class Meta:
@@ -172,7 +182,18 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
                 "pk", flat=True
             )
         )
-        self.fields["responsible"].queryset = self.instance.organization.users.all()
+
+        self.fields["responsible"].queryset = User.objects.filter(
+            pk__in=get_users_from_organization(
+                self.instance.organization.root.pk,
+                userfilters={
+                    "type_in_organization__in": [
+                        UserOrganization.ADMINISTRATOR,
+                        UserOrganization.LABORATORY_MANAGER,
+                    ]
+                },
+            )
+        ).distinct("pk")
 
     class Meta:
         model = Laboratory
