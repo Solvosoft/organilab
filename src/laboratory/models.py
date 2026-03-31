@@ -1722,6 +1722,9 @@ class InformScheduler(AbstractOrganizationRef):
         "derb.CustomForm", verbose_name=_("Inform template"), on_delete=models.CASCADE
     )
     active = models.BooleanField(default=True, verbose_name=_("Active"))
+    laboratories = models.ManyToManyField(
+        Laboratory, verbose_name=_("Laboratories"), blank=True
+    )
 
     def __str__(self):
         return self.name

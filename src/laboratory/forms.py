@@ -577,6 +577,7 @@ class InformSchedulerForm(GTForm, forms.ModelForm):
             "close_application_date",
             "period_on_days",
             "inform_template",
+            "laboratories",
             "active",
         ]
         widgets = {
@@ -587,6 +588,12 @@ class InformSchedulerForm(GTForm, forms.ModelForm):
             "period_on_days": genwidgets.NumberInput,
             "inform_template": AutocompleteSelect(
                 "informtemplate", url_suffix="-detail"
+            ),
+            "laboratories": AutocompleteSelectMultiple(
+                "get_laboratories_by_organization",
+                attrs={
+                    "data-s2filter-organization": "#id_organization",
+                },
             ),
             "active": genwidgets.YesNoInput,
         }
@@ -601,13 +608,26 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
 
     class Meta:
         model = InformScheduler
-        fields = ["organization", "name", "period_on_days", "inform_template", "active"]
+        fields = [
+            "organization",
+            "name",
+            "period_on_days",
+            "inform_template",
+            "laboratories",
+            "active",
+        ]
         widgets = {
             "organization": genwidgets.HiddenInput,
             "name": genwidgets.TextInput,
             "period_on_days": genwidgets.NumberInput,
             "inform_template": AutocompleteSelect(
                 "informtemplate", url_suffix="-detail"
+            ),
+            "laboratories": AutocompleteSelectMultiple(
+                "laboratory",
+                attrs={
+                    "data-s2filter-organization": "#id_organization",
+                },
             ),
             "active": genwidgets.YesNoInput,
         }
