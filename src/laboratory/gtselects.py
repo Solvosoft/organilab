@@ -971,3 +971,44 @@ class ImageSelect2Lookup(BaseSelectImg2View):
 
     def get_url(self, obj):
         return obj.pictogram.url
+
+
+@register_lookups(
+    prefix="get_laboratories_by_organization",
+    basename="get_laboratories_by_organization",
+)
+class LaboratoryBtOrganizations(BaseSelect2View):
+    model = Laboratory
+    fields = ["name"]
+    org = None
+    authentication_classes = [SessionAuthentication]
+    pagination_class = GPaginatorMoreElements
+    perms = {
+        "list": ["laboratory.view_laboratory"],
+    }
+    permission_classes = (AnyPermissionByAction,)
+    org = None
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.org:
+            root = get_object_or_404(OrganizationStructure, pk=self.org)
+            queryset = queryset.filter(pk__in=root.get_my_laboratories)
+        else:
+            queryset = queryset.none()
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        if self.request.GET.get("organization", None):
+            self.org = self.request.GET.get("organization", None)
+            return super().list(request, *args, **kwargs)
+
+        return Response(
+            {
+                "status": "Bad request",
+                "errors": _("Organization not found"),
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
