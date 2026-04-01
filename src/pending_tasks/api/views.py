@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.admin.models import ADDITION
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -13,7 +14,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from auth_and_perms.models import Profile
+from auth_and_perms.models import Profile, Rol
+from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import organilab_logentry
 from pending_tasks.api import filterset
 from pending_tasks.models import PendingTask
@@ -24,6 +26,8 @@ from pending_tasks.api.serializers import (
     PendingTaskValidateSerializer,
     PendingTaskGetValuesSerializer,
 )
+from risk_management.api.serializer import RiskZoneSerializer
+from risk_management.models import RiskZone
 
 logger = logging.getLogger("organilab")
 
