@@ -1,5 +1,23 @@
 [
   {
+    "model": "laboratory.baseunitvalues",
+    "pk": 14,
+    "fields": {
+      "measurement_unit_base": 62,
+      "measurement_unit": 62,
+      "si_value": 1.0
+    }
+  },
+  {
+    "model": "laboratory.baseunitvalues",
+    "pk": 15,
+    "fields": {
+      "measurement_unit_base": 62,
+      "measurement_unit": 63,
+      "si_value": 1000.0
+    }
+  },
+  {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
@@ -398,6 +416,20 @@
       "quantity": 900,
       "limit_quantity": 1,
       "measurement_unit": 64,
+      "creation_date": "2023-04-08T19:33:49.008Z",
+      "last_update": "2023-04-30T19:33:49.035Z",
+      "in_where_laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 1,
+      "object": 3,
+      "quantity": 500,
+      "limit_quantity": 10,
+      "measurement_unit": 63,
       "creation_date": "2023-04-08T19:33:49.008Z",
       "last_update": "2023-04-30T19:33:49.035Z",
       "in_where_laboratory": 1
