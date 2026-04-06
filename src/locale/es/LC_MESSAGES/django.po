@@ -5834,3 +5834,6 @@ msgstr "físico"
 
 msgid "Update Reactive"
 msgstr "Actualizar Reactivo"
+
+msgid "Available objects"
+msgstr "Objetos disponibles"
