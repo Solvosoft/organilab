@@ -20,7 +20,10 @@ from django.views.generic import CreateView
 from auth_and_perms.models import ProfilePermission
 from presentation.forms import DonateForm, FeedbackEntryForm
 from presentation.models import (
-    Donation, FeedbackEntry, Tutorial, TutorialProgress,
+    Donation,
+    FeedbackEntry,
+    Tutorial,
+    TutorialProgress,
 )
 
 logger = logging.getLogger("organilab")
@@ -34,21 +37,24 @@ def index_tutorial(request, org_pk):
     user_rol_ids = set()
     try:
         from laboratory.models import OrganizationStructure
+
         org_ct = ContentType.objects.get_for_model(OrganizationStructure)
         for pp in ProfilePermission.objects.filter(
             profile=user.profile, content_type=org_ct, object_id=org_pk
         ):
-            user_rol_ids.update(pp.rol.values_list('id', flat=True))
+            user_rol_ids.update(pp.rol.values_list("id", flat=True))
     except Exception:
         pass
 
-    tutorials = Tutorial.objects.filter(
-        is_active=True
-    ).prefetch_related('steps', 'target_roles').order_by('chapter', 'order')
+    tutorials = (
+        Tutorial.objects.filter(is_active=True)
+        .prefetch_related("steps", "target_roles")
+        .order_by("chapter", "order")
+    )
 
     filtered = []
     for t in tutorials:
-        target_ids = set(t.target_roles.values_list('id', flat=True))
+        target_ids = set(t.target_roles.values_list("id", flat=True))
         if target_ids and not target_ids.intersection(user_rol_ids):
             continue
         filtered.append(t)
@@ -61,6 +67,7 @@ def index_tutorial(request, org_pk):
     lab_pk = None
     try:
         from laboratory.models import Laboratory
+
         lab = Laboratory.objects.filter(organization=org_pk).first()
         if lab:
             lab_pk = lab.pk
@@ -71,11 +78,16 @@ def index_tutorial(request, org_pk):
     if not effective_org_pk:
         try:
             from laboratory.models import OrganizationStructure
+
             root_ct = ContentType.objects.get_for_model(OrganizationStructure)
-            effective_org_pk = ProfilePermission.objects.filter(
-                profile=user.profile,
-                content_type=root_ct,
-            ).values_list('object_id', flat=True).first()
+            effective_org_pk = (
+                ProfilePermission.objects.filter(
+                    profile=user.profile,
+                    content_type=root_ct,
+                )
+                .values_list("object_id", flat=True)
+                .first()
+            )
         except Exception:
             pass
 
@@ -84,6 +96,7 @@ def index_tutorial(request, org_pk):
     if lab_pk:
         try:
             from academic.models import Procedure
+
             proc = Procedure.objects.filter(laboratory__pk=lab_pk).first()
             if proc:
                 procedure_pk = proc.pk
@@ -92,12 +105,12 @@ def index_tutorial(request, org_pk):
 
     def resolve_tutorial_url(url_name):
         kwargs_candidates = [
-            {'org_pk': effective_org_pk, 'lab_pk': lab_pk} if lab_pk else None,
-            {'pk': procedure_pk} if procedure_pk else None,
-            {'org_pk': effective_org_pk, 'pk': effective_org_pk},
-            {'org_pk': effective_org_pk, 'status': 0},
-            {'org_pk': effective_org_pk},
-            {'pk': effective_org_pk},
+            {"org_pk": effective_org_pk, "lab_pk": lab_pk} if lab_pk else None,
+            {"pk": procedure_pk} if procedure_pk else None,
+            {"org_pk": effective_org_pk, "pk": effective_org_pk},
+            {"org_pk": effective_org_pk, "status": 0},
+            {"org_pk": effective_org_pk},
+            {"pk": effective_org_pk},
             {},
         ]
         for kwargs in kwargs_candidates:
@@ -105,8 +118,8 @@ def index_tutorial(request, org_pk):
                 continue
             try:
                 url = reverse(url_name, kwargs=kwargs)
-                if not kwargs.get('org_pk'):
-                    url = f'{url}?org_pk={effective_org_pk}'
+                if not kwargs.get("org_pk"):
+                    url = f"{url}?org_pk={effective_org_pk}"
                 return url
             except Exception:
                 continue
@@ -118,19 +131,25 @@ def index_tutorial(request, org_pk):
         if chapter not in chapters:
             chapters[chapter] = []
         tp = progress_map.get(t.id)
-        first_url_name = t.url_name.split(',')[0].strip()
+        first_url_name = t.url_name.split(",")[0].strip()
         target_url = resolve_tutorial_url(first_url_name)
-        chapters[chapter].append({
-            'tutorial': t,
-            'progress': tp,
-            'step_count': t.steps.count(),
-            'target_url': target_url,
-        })
+        chapters[chapter].append(
+            {
+                "tutorial": t,
+                "progress": tp,
+                "step_count": t.steps.count(),
+                "target_url": target_url,
+            }
+        )
 
-    return render(request, "tutorial.html", context={
-        "org_pk": org_pk,
-        "chapters": chapters,
-    })
+    return render(
+        request,
+        "tutorial.html",
+        context={
+            "org_pk": org_pk,
+            "chapters": chapters,
+        },
+    )
 
 
 @login_required
@@ -139,20 +158,20 @@ def tutorial_progress_api(request):
     try:
         data = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
-        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-    tutorial_id = data.get('tutorial_id')
-    step_order = data.get('step_order', 0)
-    completed = data.get('completed', False)
-    dismissed = data.get('dismissed', False)
+    tutorial_id = data.get("tutorial_id")
+    step_order = data.get("step_order", 0)
+    completed = data.get("completed", False)
+    dismissed = data.get("dismissed", False)
 
     if not tutorial_id:
-        return JsonResponse({'error': 'tutorial_id required'}, status=400)
+        return JsonResponse({"error": "tutorial_id required"}, status=400)
 
     try:
         tutorial = Tutorial.objects.get(pk=tutorial_id)
     except Tutorial.DoesNotExist:
-        return JsonResponse({'error': 'Tutorial not found'}, status=404)
+        return JsonResponse({"error": "Tutorial not found"}, status=404)
 
     progress, created = TutorialProgress.objects.get_or_create(
         user=request.user,
@@ -167,7 +186,7 @@ def tutorial_progress_api(request):
         progress.dismissed = True
     progress.save()
 
-    return JsonResponse({'ok': True})
+    return JsonResponse({"ok": True})
 
 
 @login_required
@@ -176,12 +195,12 @@ def tutorial_toggle_api(request):
     try:
         profile = request.user.profile
     except Exception:
-        return JsonResponse({'error': 'No profile'}, status=400)
+        return JsonResponse({"error": "No profile"}, status=400)
 
     profile.show_tutorials = not profile.show_tutorials
-    profile.save(update_fields=['show_tutorials'])
+    profile.save(update_fields=["show_tutorials"])
 
-    return JsonResponse({'show_tutorials': profile.show_tutorials})
+    return JsonResponse({"show_tutorials": profile.show_tutorials})
 
 
 @login_required
@@ -190,18 +209,20 @@ def tutorial_reactivate_api(request):
     try:
         data = json.loads(request.body)
     except (json.JSONDecodeError, ValueError):
-        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-    tutorial_id = data.get('tutorial_id')
+    tutorial_id = data.get("tutorial_id")
     if not tutorial_id:
-        return JsonResponse({'error': 'tutorial_id required'}, status=400)
+        return JsonResponse({"error": "tutorial_id required"}, status=400)
 
-    TutorialProgress.objects.filter(
-        user=request.user, tutorial_id=tutorial_id
-    ).update(dismissed=False, completed=False, current_step=0, completed_at=None)
+    TutorialProgress.objects.filter(user=request.user, tutorial_id=tutorial_id).update(
+        dismissed=False, completed=False, current_step=0, completed_at=None
+    )
 
-    response = JsonResponse({'ok': True})
-    response.set_cookie('tutorial_reactivated', tutorial_id, max_age=300, samesite='Lax')
+    response = JsonResponse({"ok": True})
+    response.set_cookie(
+        "tutorial_reactivated", tutorial_id, max_age=300, samesite="Lax"
+    )
     return response
 
 

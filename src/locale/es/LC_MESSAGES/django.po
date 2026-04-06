@@ -5837,3 +5837,9 @@ msgstr "Actualizar Reactivo"
 
 msgid "Available objects"
 msgstr "Objetos disponibles"
+
+msgid "Nominated"
+msgstr "Nominada"
+
+msgid "Ratio"
+msgstr "Ratio"
