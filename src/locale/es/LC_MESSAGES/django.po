@@ -5831,3 +5831,6 @@ msgstr "salud"
 
 msgid "physical"
 msgstr "físico"
+
+msgid "Update Reactive"
+msgstr "Actualizar Reactivo"
