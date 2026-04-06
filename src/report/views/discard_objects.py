@@ -40,7 +40,7 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
         data_column = {
             "shelf": obj["shelf__name"] if obj["shelf__name"] else "",
             "object": obj["object__name"] if obj["object__name"] else "",
-            "amount": str(round(["quantity"], 3)),
+            "amount": str(round(obj["quantity"], 3)),
             "unit": (
                 obj["measurement_unit__description"]
                 if obj["measurement_unit__description"]
@@ -129,7 +129,7 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
                 "in_where_laboratory__name": obj["in_where_laboratory__name"],
                 "shelf__name": obj["shelf__name"],
                 "object__name": obj["object__name"],
-                "quantity": str(round(["quantity"], 3)),
+                "quantity": str(round(obj["quantity"], 3)),
                 "measurement_unit__description": obj["measurement_unit__description"],
                 "created_by": (
                     obj["created_by__username"]
