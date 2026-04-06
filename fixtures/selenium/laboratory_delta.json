@@ -240,7 +240,14 @@
       "seveso_list": false,
       "white_organ": [],
       "img_representation": "",
-      "h_code": [],
+      "h_code": [
+        "H220",
+        "H222",
+        "H223",
+        "H224",
+        "H225",
+        "H226"
+      ],
       "ue_code": [],
       "nfpa": [],
       "storage_class": []
@@ -271,7 +278,7 @@
   },
   {
     "model": "laboratory.sustancecharacteristics",
-    "pk": 17,
+    "pk": 18,
     "fields": {
       "obj": 6,
       "iarc": null,
