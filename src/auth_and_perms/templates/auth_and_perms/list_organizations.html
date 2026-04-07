@@ -33,7 +33,7 @@
 						<div class="bs-callout bs-callout-{{ node.1.1 }}">
 							<div class="row" id="rols">
 								<div class="row">
-									<div class="col-11">
+									<div class="col-12 col-md-10">
 										<h6 {% if node.0.active %} data-bs-toggle="collapse" data-bs-target="#collapse{{ node.0.pk }}" class="w-100"
 										{% else %}
 																																					class="disabled text-decoration-line-through"
@@ -41,10 +41,13 @@
 																																					role="button" aria-expanded="false" aria-controls="collapse{{ node.0.pk }}"
 										>{{ node.0 }}</h6>
 									</div>
-									<div class="col-1">
+									<div class="col-12 col-md-2 d-flex">
 										{% if node.0.active %}
-											<input data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes" value="{{ node.0.pk }}"
-												{% if not forloop0 %} selected {% endif %}/>
+											<div class="d-flex">
+												<label for="node_{{ node.0.pk }}" class="mx-2 small text-muted" title="{% trans 'Click to manage this organization' %}">{% trans 'Choose' %}</label>
+												<input id="node_{{ node.0.pk }}" data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes"
+																			value="{{ node.0.pk }}" {% if not forloop0 %} selected {% endif %}/>
+											</div>
 										{% endif %}
 									</div>
 								</div>
@@ -162,14 +165,11 @@
 						</div>
 					</div>
 				</div>
-
 			{% endfor %}
 
 		</div>
 		<div class="col">
-
 			<div class="container">
-
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
 						<a class="nav-link active" id="navbylabs" data-bs-toggle="tab" data-bs-target="#bylabs" type="button" role="tab"
@@ -213,6 +213,7 @@
 						<button type="button" class="btn float-start open_rol_detail_modal"><i aria-hidden="true"
 																																																																													class="fa fa-info-circle"></i></button>
 						<h5 class="float-end">{% trans "Rol used when you don't have rol set on laboratory" %}</h5>
+
 						<div class="clearfix"></div>
 
 						<div class="role table-responsive">
@@ -222,6 +223,7 @@
 							<table id="orpermelement" class="compact nowrap w-100"></table>
 						</div>
 					</div>
+
 					<div class="tab-pane fade" id="byprofile" role="tabpanel" aria-labelledby="navbyprofile">
 						<div class="jumbotron">
 							<h6>{% trans 'Help Text' %}</h6>
@@ -251,8 +253,6 @@
 							</div>
 						</div>
 					</div>
-
-
 				</div>
 			</div>
 		</div>
