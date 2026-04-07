@@ -133,6 +133,13 @@ class RiskSeleniumBase(OptimizedSeleniumBase):
         self.selenium.get(url)
         self.wait_for_page_ready()
 
+    def navigate_to_workday_list(self, risk_zone):
+        url = self.live_server_url + str(
+            reverse("riskmanagement:workday_list", kwargs={"org_pk": 1, "risk_zone": risk_zone})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
 
 @tag("selenium")
 class RiskSeleniumTest(RiskSeleniumBase):
@@ -558,6 +565,62 @@ class RiskSeleniumTest(RiskSeleniumBase):
             },
         ]
         self.create_gif_process(path_list, "download_incidents")
+
+    # --- Workdays CRUD Tests ---
+
+    @modifies_db
+    def test_add_workday(self):
+        """Test creating a new workday from the risk zone list.
+
+        Flow: Navigate to risk zone list -> Click Workdays button on first
+        zone card -> Wait for workday list page -> Click create button in
+        DataTable toolbar -> Select workday type (Day shift) -> Set number
+        of workers to 8 -> Set start time to 07:00 -> Set end time to
+        17:00 -> Submit form.
+
+        GIF: docs/source/_static/gif/add_workday.gif
+        """
+        self.navigate_to_riskzone_list()
+        path_list = [
+            {
+                "path": "//a[contains(@class, 'btn-outline-success') and contains(@href, '/workdays/')]",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='table-workday_wrapper']//button[contains(@class, 'btn-outline-success') or contains(@class, 'btn-success')]",
+                "wait_ready": True,
+                "sleep": 3,
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//div[contains(@class, 'modal-body')]",
+                "extra_action": "script",
+                "value": "$('#id_create-workday').val('day shift').trigger('change');",
+                "sleep": 1,
+            },
+            {
+                "path": "//*[@id='id_create-num_workers']",
+                "extra_action": "clearinput",
+            },
+            {
+                "path": "//*[@id='id_create-num_workers']",
+                "extra_action": "setvalue",
+                "value": "8",
+            },
+            {
+                "path": "//*[@id='id_create-start_time']",
+                "extra_action": "setvalue",
+                "value": "07:00",
+            },
+            {
+                "path": "//*[@id='id_create-end_time']",
+                "extra_action": "setvalue",
+                "value": "17:00",
+            },
+            {
+                "path": "//*[@id='create_obj_modal']//button[contains(@class, 'formadd')]",
+            },
+        ]
+        self.create_gif_process(path_list, "add_workday")
 
     # --- Buildings CRUD Tests ---
 

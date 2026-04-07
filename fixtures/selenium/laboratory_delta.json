@@ -1,5 +1,55 @@
 [
   {
+    "model": "laboratory.catalog",
+    "pk": 159,
+    "fields": {
+      "key": "process_condition",
+      "description": "Gas Inflamable Cat12"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 160,
+    "fields": {
+      "key": "process_condition",
+      "description": "Sobre Punto Ebullicion"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 161,
+    "fields": {
+      "key": "process_condition",
+      "description": "Normal"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 162,
+    "fields": {
+      "key": "process_condition",
+      "description": "Elevada"
+    }
+  },
+  {
+    "model": "laboratory.baseunitvalues",
+    "pk": 14,
+    "fields": {
+      "measurement_unit_base": 62,
+      "measurement_unit": 62,
+      "si_value": 1.0
+    }
+  },
+  {
+    "model": "laboratory.baseunitvalues",
+    "pk": 15,
+    "fields": {
+      "measurement_unit_base": 62,
+      "measurement_unit": 63,
+      "si_value": 1000.0
+    }
+  },
+  {
     "model": "laboratory.laboratoryroom",
     "pk": 1,
     "fields": {
@@ -222,7 +272,14 @@
       "seveso_list": false,
       "white_organ": [],
       "img_representation": "",
-      "h_code": [],
+      "h_code": [
+        "H220",
+        "H222",
+        "H223",
+        "H224",
+        "H225",
+        "H226"
+      ],
       "ue_code": [],
       "nfpa": [],
       "storage_class": []
@@ -253,7 +310,7 @@
   },
   {
     "model": "laboratory.sustancecharacteristics",
-    "pk": 17,
+    "pk": 18,
     "fields": {
       "obj": 6,
       "iarc": null,
@@ -398,6 +455,20 @@
       "quantity": 900,
       "limit_quantity": 1,
       "measurement_unit": 64,
+      "creation_date": "2023-04-08T19:33:49.008Z",
+      "last_update": "2023-04-30T19:33:49.035Z",
+      "in_where_laboratory": 1
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 1,
+      "object": 3,
+      "quantity": 500,
+      "limit_quantity": 10,
+      "measurement_unit": 63,
       "creation_date": "2023-04-08T19:33:49.008Z",
       "last_update": "2023-04-30T19:33:49.035Z",
       "in_where_laboratory": 1
