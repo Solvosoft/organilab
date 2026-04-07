@@ -1110,8 +1110,14 @@ msgstr "Reactivo"
 msgid "Material"
 msgstr "Materiales"
 
+msgid "Materials"
+msgstr "Materiales"
+
 msgid "Equipment"
 msgstr "Equipo"
+
+msgid "Available for use"
+msgstr "A disposición de uso"
 
 msgid "New status"
 msgstr "Nuevo Estado"
