@@ -363,7 +363,9 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                         None if pd.isna(r["umbral_c3"]) else float(r["umbral_c3"])
                     ),
                     "ratio_c3": (
-                        None if pd.isna(r["ratio_c3"]) else float(r["ratio_c3"])
+                        None
+                        if pd.isna(r["ratio_c3"])
+                        else round(float(r["ratio_c3"]), 3)
                     ),
                     "h_codes": r["h_codes"],
                     "contribuciones": {},
@@ -395,7 +397,9 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                             None if pd.isna(r["umbral_c3"]) else float(r["umbral_c3"])
                         ),
                         "ratio_c3": (
-                            None if pd.isna(r["ratio_c3"]) else float(r["ratio_c3"])
+                            None
+                            if pd.isna(r["ratio_c3"])
+                            else round(float(r["ratio_c3"]), 3)
                         ),
                         "h_codes": r["h_codes"],
                         "contribuciones": {},
@@ -443,7 +447,9 @@ def clasificar_establecimiento(inventario, c3, umbral_H_df, map_H_to_tipo):
                     None if pd.isna(fila["umbral_c3"]) else float(fila["umbral_c3"])
                 ),
                 "ratio_c3": (
-                    None if pd.isna(fila["ratio_c3"]) else float(fila["ratio_c3"])
+                    None
+                    if pd.isna(fila["ratio_c3"])
+                    else round(float(fila["ratio_c3"]), 3)
                 ),
                 "h_codes": fila["h_codes"],
                 "contribuciones": res_sust["contribuciones"],
