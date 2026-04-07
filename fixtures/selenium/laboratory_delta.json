@@ -1,5 +1,37 @@
 [
   {
+    "model": "laboratory.catalog",
+    "pk": 159,
+    "fields": {
+      "key": "process_condition",
+      "description": "Gas Inflamable Cat12"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 160,
+    "fields": {
+      "key": "process_condition",
+      "description": "Sobre Punto Ebullicion"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 161,
+    "fields": {
+      "key": "process_condition",
+      "description": "Normal"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 162,
+    "fields": {
+      "key": "process_condition",
+      "description": "Elevada"
+    }
+  },
+  {
     "model": "laboratory.baseunitvalues",
     "pk": 14,
     "fields": {
