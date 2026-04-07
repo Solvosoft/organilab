@@ -103,7 +103,7 @@ def get_stock_dataset(lab_pk, column_list=None):
                     "physical_status": status,
                     "quantity": round(amount, 3),
                     "reactive_unit": base_unit,
-                    "container_capacity": round(capacity, 3),
+                    "container_capacity": capacity,
                     "container_unit": capacity_measurement_unit,
                     "container_quantity": shelfobjects.count(),
                     "container": container_object.object.name,
