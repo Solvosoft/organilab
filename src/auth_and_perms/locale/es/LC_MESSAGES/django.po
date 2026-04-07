@@ -47,6 +47,21 @@ msgstr "Actualizar"
 msgid "Switch to other user"
 msgstr "Actualizar a otro usuario"
 
+msgid "Incognito mode: browse the system as this user without modifying your session"
+msgstr "Modo incógnito: navega el sistema como este usuario sin modificar tu sesión"
+
+msgid "Inherit: propagate the user's profile and roles to all child organizations"
+msgstr "Heredar: propaga el perfil y roles del usuario a todas las sub-organizaciones hijas"
+
+msgid "Roles: manage the user's roles within the organization"
+msgstr "Roles: gestiona los roles del usuario dentro de la organización"
+
+msgid "List Roles: show user's roles"
+msgstr "Listar Roles: muestra los roles del usuario"
+
+msgid "Remove: remove user from organization, can also disable platform access"
+msgstr "Eliminar: remueve al usuario de la organización, también puede deshabilitar el acceso a la plataforma"
+
 # Provider Laboratory
 msgid "Add Provider Laboratory"
 msgstr "Agregar Proveedor de Laboratorio"
@@ -1225,3 +1240,9 @@ msgstr "Recursos adicionales"
 
 msgid "Dismissed"
 msgstr "Omitido"
+
+msgid "Choose"
+msgstr "Elegir"
+
+msgid "Click to manage this organization"
+msgstr "Haga clic para gestionar esta organización"
