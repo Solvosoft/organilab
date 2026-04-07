@@ -91,7 +91,7 @@ class IncreaseShelfObjectForm(GTForm):
         ),
     )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
-    use = forms.CharField(widget=genwidgets.Textarea, required=False)
+    use = forms.CharField(widget=genwidgets.Textarea, required=False, label=_("Use"))
 
 
 class TransferOutShelfObjectForm(GTForm):

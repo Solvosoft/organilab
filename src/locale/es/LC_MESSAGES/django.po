@@ -5870,3 +5870,15 @@ msgstr "Nuevo informe de periodo"
 
 msgid "New period inform was created in the laboratory %s with the name %s"
 msgstr "Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
+
+msgid "Update Reactive"
+msgstr "Actualizar Reactivo"
+
+msgid "Available objects"
+msgstr "Objetos disponibles"
+
+msgid "Nominated"
+msgstr "Nominada"
+
+msgid "Ratio"
+msgstr "Ratio"

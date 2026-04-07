@@ -848,6 +848,10 @@ class ShelfObjectStatusForm(GTForm, forms.ModelForm):
 
 
 class ObservationShelfObjectForm(GTForm, forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ObservationShelfObjectForm, self).__init__(*args, **kwargs)
+        self.fields["description"].label = _("Description")
+
     class Meta:
         model = ShelfObjectObservation
         exclude = ["shelf_object", "created_by"]
