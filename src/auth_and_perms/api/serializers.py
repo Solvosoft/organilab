@@ -9,15 +9,20 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.reverse import reverse_lazy
 from django.contrib.contenttypes.models import ContentType
-from auth_and_perms.models import Rol, Profile, AuthenticateDataRequest
+from auth_and_perms.models import (
+    Rol,
+    Profile,
+    AuthenticateDataRequest,
+    ProfilePermission,
+)
 from auth_and_perms.organization_utils import organization_can_change_laboratory
-from auth_and_perms.utils import get_roles_in_html
 from laboratory.models import (
     OrganizationStructure,
     Laboratory,
     Shelf,
     ShelfObject,
-    Object, OrganizationStructureRelations,
+    Object,
+    OrganizationStructureRelations,
 )
 from django.utils.translation import gettext_lazy as _
 import logging
@@ -25,6 +30,7 @@ import logging
 from django.conf import settings
 
 from laboratory.utils import check_user_access_kwargs_org_lab
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("organilab")
 
@@ -126,27 +132,54 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_rols(self, obj):
         contenttypeobj = self.context["view"].contenttypeobj
         org = self.context["view"].organization.root
-        rol = get_roles_in_html(obj.pk, contenttypeobj, org)
-        if not rol:
-            datatext = (
-                """data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """
-                % (
-                    org.pk,
-                    obj.pk,
-                    contenttypeobj._meta.app_label,
-                    contenttypeobj._meta.model_name,
-                    contenttypeobj.pk,
+        datatext = (
+            """data-org="%d" data-profile="%d" data-appname="%s" data-model="%s" data-objectid="%s" """
+            % (
+                org.pk,
+                obj.pk,
+                contenttypeobj._meta.app_label,
+                contenttypeobj._meta.model_name,
+                contenttypeobj.pk,
+            )
+        )
+        profile_perm = ProfilePermission.objects.filter(
+            profile_id=obj.pk,
+            content_type__app_label=contenttypeobj._meta.app_label,
+            content_type__model=contenttypeobj._meta.model_name,
+            object_id=contenttypeobj.pk,
+        ).first()
+        role_items = ""
+        if profile_perm:
+            for rol in profile_perm.rol.filter(organizationstructure=org):
+                role_items += (
+                    """<li><span class="dropdown-item-text small" style="padding: 1px 8px; line-height: 1.2;">%s</span></li>"""
+                    % (rol.name)
                 )
+
+        if not role_items:
+            role_items = (
+                """<li><span class="dropdown-item-text text-secondary small" style="padding: 1px 8px; line-height: 1.2;">%s</span></li>"""
+                % str(_("No roles assigned"))
             )
 
-            rol = """
-            <i %s class="fa fa-user-md" onclick="newuserrol(%s)" id="profile_%s" aria-hidden="true"></i>
-            """ % (
-                datatext,
-                obj.pk,
-                obj.pk,
-            )
-        return rol
+        return """
+        <div class="btn-group p-0 m-0">
+            <button %s class="btn btn-sm border-0 text-secondary p-0 m-0" type="button" onclick="newuserrol(%s)" id="profile_%s" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
+                <i class="fa fa-user-md" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-sm border-0 text-secondary p-0 m-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">%s</ul>
+        </div>
+        """ % (
+            datatext,
+            obj.pk,
+            obj.pk,
+            str(_("Roles: manage the user's roles within the organization")),
+            str(_("List Roles: show user's roles")),
+            role_items,
+        )
 
     def get_user(self, obj):
         return str(obj)
@@ -173,14 +206,16 @@ class ProfileSerializer(serializers.ModelSerializer):
         impostor = ""
         if self.context["request"].user.has_perm("auth_and_perms.change_impostorlog"):
             if obj.user.pk != self.context["request"].user.pk:
-                impostor = (
-                    '<a class="me-2" href="%s" target="_blank"><i class="fa fa-user-secret" aria-hidden="true"></i></a>'
-                    % (
-                        reverse(
-                            "auth_and_perms:change_to_impostor",
-                            kwargs={"pk": obj.user.pk, "org_pk": org.pk},
-                        )
-                    )
+                impostor = """<a class="me-2" href="%s" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
+                    <i class="fa fa-user-secret" aria-hidden="true"></i>
+                    </a>""" % (
+                    reverse(
+                        "auth_and_perms:change_to_impostor",
+                        kwargs={"pk": obj.user.pk, "org_pk": org.pk},
+                    ),
+                    _(
+                        "Incognito mode: browse the system as this user without modifying your session"
+                    ),
                 )
                 new_uuid = str(uuid.uuid4())
                 data_inerit = (
@@ -195,18 +230,27 @@ class ProfileSerializer(serializers.ModelSerializer):
                         contenttypeobj.pk,
                     )
                 )
-                impostor += """<i %s class='fa fa-users me-2' onclick="inerit_profile('%s', %s)" aria-hidden="true"></i>""" % (
-                    data_inerit,
-                    str(new_uuid),
-                    str(org.pk),
+                impostor += (
+                    """<i %s class='fa fa-users me-2' onclick="inerit_profile('%s', %s)" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="top" title="%s"></i>"""
+                    % (
+                        data_inerit,
+                        str(new_uuid),
+                        str(org.pk),
+                        _(
+                            "Inherit: propagate the user's profile and roles to all child organizations"
+                        ),
+                    )
                 )
 
         return """
-        <i %s class="fa fa-trash me-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true"></i>%s
+        <i %s class="fa fa-trash me-2" onclick="deleteuserlab('%s', %s)" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="top" title="%s"></i>%s
         """ % (
             datatext,
             action_uuid,
             org.pk,
+            _(
+                "Remove: remove user from organization, can also disable platform access"
+            ),
             impostor,
         )
 
@@ -377,15 +421,17 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
             is_related = OrganizationStructureRelations.objects.filter(
                 organization=organization,
                 content_type=lab_content_type,
-                object_id=lab_pk
+                object_id=lab_pk,
             ).exists()
 
             if not is_related:
-                descendant_pks = organization.descendants(include_self=False).values_list("pk", flat=True)
+                descendant_pks = organization.descendants(
+                    include_self=False
+                ).values_list("pk", flat=True)
                 is_related = OrganizationStructureRelations.objects.filter(
                     organization__pk__in=descendant_pks,
                     content_type=lab_content_type,
-                    object_id=lab_pk
+                    object_id=lab_pk,
                 ).exists()
 
             is_owner = shelf_object.in_where_laboratory.organization == organization
@@ -427,14 +473,19 @@ class ValidateUserAccessOrgLabSerializer(UserAccessOrgLabValidateSerializer):
             ).exists()
 
             if not shelf_is_related:
-                descendant_pks = organization.descendants(include_self=False).values_list("pk", flat=True)
+                descendant_pks = organization.descendants(
+                    include_self=False
+                ).values_list("pk", flat=True)
                 shelf_is_related = OrganizationStructureRelations.objects.filter(
                     organization__pk__in=descendant_pks,
                     content_type__model="laboratory",
                     object_id=shelf_lab_pk,
                 ).exists()
 
-            if not shelf_is_related and shelf.furniture.labroom.laboratory.organization != organization:
+            if (
+                not shelf_is_related
+                and shelf.furniture.labroom.laboratory.organization != organization
+            ):
                 logger.debug(
                     f"ValidateUserAccessOrgLabSerializer --> shelf.furniture.labroom.laboratory.organization != organization"
                 )
@@ -551,12 +602,12 @@ class ValidateProfileOrganizationSerializer(serializers.Serializer):
     profile = serializers.PrimaryKeyRelatedField(
         queryset=Profile.objects.using(settings.READONLY_DATABASE),
         many=False,
-        required=True
+        required=True,
     )
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE),
         many=False,
-        required=True
+        required=True,
     )
     app_label = serializers.CharField()
     model = serializers.CharField()
