@@ -56,7 +56,7 @@ class ShelfObjectHcodeSeleniumTest(ShelfObjectHcodeSeleniumBase):
                 "sleep": 1,
             },
             {
-                "path": "/html/body/span/span/span[2]/ul/li[1]",
+                "path": "/html/body/span/span/span[2]/ul/li[2]",
             },
             {
                 "path": "//*[@id='update_obj_modal']//button[contains(@class, 'formadd')]",
