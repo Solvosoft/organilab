@@ -776,6 +776,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.create_gif_process(path_list, "search_reactive_object")
 
 
+# laboratory/tests/selenium_tests/manage_laboratory/test_objects.py
 @tag("selenium")
 class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
 
