@@ -780,6 +780,6 @@ def create_estableshment_logs_data(element, day, labs):
                 environmental=0.0,
                 health=0.0,
                 physical=0.0,
-                establishment_status="riesgo menor",
+                establishment_status="Desconocido",
                 date=day,
             )

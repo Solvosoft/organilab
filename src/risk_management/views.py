@@ -114,7 +114,12 @@ class ListZone(ListView):
                 .first()
             )
             if latest_log:
-                object.status = latest_log.establishment_status
+                all_zero = (
+                    latest_log.health == 0.0
+                    and latest_log.environmental == 0.0
+                    and latest_log.physical == 0.0
+                )
+                object.status = "Desconocido" if all_zero else latest_log.establishment_status
                 object.xls_url = (
                     latest_log.xls_content.url if latest_log.xls_content else None
                 )

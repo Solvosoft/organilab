@@ -67,7 +67,6 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
 
     def test_create_pending_task(self):
         task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="Test task",
             description="Test task",
@@ -80,7 +79,6 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
 
     def test_str_representation(self):
         task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="My task",
             description="My task description",
@@ -90,7 +88,6 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
 
     def test_default_status_is_pending(self):
         task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="Defaults",
             description="Defaults",
@@ -100,7 +97,6 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
     def test_profile_set_null_on_delete(self):
         other_user = create_user_with_profile("tempuser")
         task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="SET_NULL test",
             description="SET_NULL test",
@@ -125,13 +121,11 @@ class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):
             created_by=self.user,
             name="Util task",
             rols=[self.role],
-            organization=self.org,
             description="Util task description",
             link="https://example.com",
         )
         self.assertEqual(task.description, "Util task description")
         self.assertEqual(task.status, PendingTask.PENDING)
-        self.assertEqual(task.organization, self.org)
         self.assertEqual(task.link, "https://example.com")
         self.assertIn(self.role, task.rols.all())
 
@@ -140,7 +134,6 @@ class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):
             created_by=self.user,
             name="Assigned task",
             rols=[self.role],
-            organization=self.org,
             description="Assigned task description",
             profile=self.user.profile,
         )
@@ -151,7 +144,6 @@ class CreatePendingTaskUtilTest(PendingTaskSetUpMixin, TestCase):
             created_by=self.user,
             name="In process task",
             rols=[self.role],
-            organization=self.org,
             description="In process description",
             status=PendingTask.IN_PROCESS,
         )
@@ -166,7 +158,6 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
             created_by=self.user,
             name="Visible task",
             rols=[self.role],
-            organization=self.org,
             description="Visible task description",
             profile=self.user.profile,
         )
@@ -192,7 +183,6 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
     def test_list_filters_by_profile(self):
         other_user = create_user_with_profile("otheruser")
         other_task = PendingTask.objects.create(
-            organization=self.org,
             created_by=other_user,
             name="Other user task",
             description="Other user task description",
@@ -206,7 +196,6 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
 
     def test_list_shows_tasks_by_role_when_no_profile(self):
         unassigned_task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="Role-based task",
             description="Role-based task description",
@@ -239,7 +228,6 @@ class PendingTaskAPIDetailTest(PendingTaskSetUpMixin, TestCase):
             created_by=self.user,
             name="Detail task",
             rols=[self.role],
-            organization=self.org,
             description="Detail task description",
             profile=self.user.profile,
         )
@@ -276,7 +264,6 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
     def setUp(self):
         super().setUp()
         self.task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="Status task",
             description="Status task description",
@@ -326,7 +313,6 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
         # Create a task by another user with no relation to self.user
         other_user = create_user_with_profile("otherstatus")
         other_task = PendingTask.objects.create(
-            organization=self.org,
             created_by=other_user,
             name="Other task",
             description="Not for main user",
@@ -363,7 +349,6 @@ class PendingTaskPermissionTest(PendingTaskSetUpMixin, TestCase):
         super().setUp()
         self.unprivileged_user = create_user_with_profile("noperm")
         self.task = PendingTask.objects.create(
-            organization=self.org,
             created_by=self.user,
             name="Permission task",
             description="Permission task description",
