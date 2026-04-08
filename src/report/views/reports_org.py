@@ -285,13 +285,13 @@ class PrecursorsView(ReportListView):
                     [
                         obj.object.name,
                         obj.measurement_unit.description,
-                        obj.previous_balance,
-                        obj.new_income,
+                        round(obj.new_income, 3),
+                        round(obj.new_income, 3),
                         obj.bills,
                         obj.providers,
-                        obj.stock,
-                        obj.month_expense,
-                        obj.final_balance,
+                        round(obj.stock, 3),
+                        round(obj.month_expense, 3),
+                        round(obj.final_balance, 3),
                         resaon,
                     ]
                 )

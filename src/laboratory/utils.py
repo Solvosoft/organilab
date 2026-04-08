@@ -186,7 +186,11 @@ def get_laboratories_from_organization(rootpk):
 def get_cas(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.cas_id_number
+        result = (
+            object.sustancecharacteristics.cas_id_number
+            if object.sustancecharacteristics.cas_id_number
+            else ""
+        )
     return result
 
 
@@ -194,14 +198,18 @@ def get_imdg(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
         imdg = object.sustancecharacteristics.imdg
-        result = imdg if imdg else ""
+        result = imdg.description if imdg else ""
     return result
 
 
 def get_molecular_formula(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.molecular_formula
+        result = (
+            object.sustancecharacteristics.molecular_formula
+            if object.sustancecharacteristics.molecular_formula
+            else ""
+        )
     return result
 
 
