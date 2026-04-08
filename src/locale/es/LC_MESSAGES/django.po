@@ -5849,3 +5849,9 @@ msgstr "Nominada"
 
 msgid "Ratio"
 msgstr "Ratio"
+
+msgid "Area/Volume"
+msgstr "Área/Volumen"
+
+msgid "New Structure type"
+msgstr "Nuevo Tipo Estructura"
