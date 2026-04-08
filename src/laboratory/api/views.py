@@ -1243,7 +1243,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
             "H225",
             "H226",
         ],
-    )
+    ).distinct()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["object__name", "object__sustancecharacteristics__h_code__code"]

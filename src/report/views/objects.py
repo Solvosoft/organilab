@@ -197,7 +197,7 @@ def get_dataset_reactive_precursor(report, column_list=None):
                 "type": object.get_type_display(),
                 "quantity_total": round(object.quantity_total, 3),
                 "measurement_unit": ShelfObject.get_units(object.measurement_unit),
-                "molecular_formula": str(get_molecular_formula(object)),
+                "molecular_formula": str(get_molecular_formula(object, "")),
                 "cas_id_number": str(get_cas(object, "")),
                 "precursor": precursor,
                 "imdg_type": str(get_imdg(object, "")),
