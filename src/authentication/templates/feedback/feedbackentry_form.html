@@ -7,7 +7,7 @@
 <div class='row'>
   <div class='col-md-12'>
     <h1>{% trans 'Feedback' %}</h1>
-    <p>{% trans 'If you had some problem using Organilab, please let us know about it' %}</p>
+    <p class="py-2">{% trans 'If you had some problem using Organilab, please let us know about it' %}</p>
     <form action="{% url 'feedback' %}"
           method="post" enctype="multipart/form-data">
       {% csrf_token %}

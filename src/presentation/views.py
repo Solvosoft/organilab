@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 
 from async_notifications.utils import send_email_from_template
 from django.conf import settings
@@ -248,44 +249,74 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
         context["org_pk"] = self.org
         return context
 
-    def get_success_url(self):
-        text_message = _(
-            "Thank you for your help. We will check your problem as soon as we can"
-        )
-        messages.add_message(self.request, messages.SUCCESS, text_message)
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
         try:
             lab_pk = int(self.request.POST.get("lab_pk", 0))
             org_pk = int(self.request.POST.get("org_pk", 0))
         except Exception as e:
             logger.error("Error parsing organization or lab id", exc_info=e)
-            lab_pk = None
-            org_pk = None
-        dev = reverse("index")
+            lab_pk = 0
+            org_pk = 0
         if self.request.user.is_authenticated:
             self.object.user = self.request.user
         if lab_pk and org_pk:
             self.object.laboratory_id = lab_pk
-            dev = reverse(
+        self.object.save()
+        upfile = self.object.related_file if self.object.related_file else None
+        admin_path = reverse("admin:presentation_feedbackentry_change", args=[self.object.pk])
+        admin_url = self.request.build_absolute_uri(admin_path)
+        explanation = self._make_images_absolute(self.object.explanation or "")
+        file_url = self.request.build_absolute_uri(upfile.url) if upfile else None
+        try:
+            send_email_from_template(
+                "New feedback",
+                settings.DEFAULT_FROM_EMAIL,
+                context={
+                    "feedback": self.object,
+                    "admin_url": admin_url,
+                    "explanation": explanation,
+                    "file_url": file_url,
+                },
+                enqueued=False,
+                user=None,
+                upfile=upfile,
+            )
+        except Exception as e:
+            logger.error("Error sending feedback email notification", exc_info=e)
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            _("Thank you for your help. We will check your problem as soon as we can"),
+        )
+        return redirect(self.get_success_url())
+
+    def _make_images_absolute(self, html):
+        base = self.request.build_absolute_uri("/").rstrip("/")
+        html = html.replace("../media/", f"{base}/media/")
+        html = re.sub(r'src=(["\'])/media/', rf'src=\g<1>{base}/media/', html)
+        return html
+
+    def get_success_url(self):
+        try:
+            lab_pk = int(self.request.POST.get("lab_pk", 0))
+            org_pk = int(self.request.POST.get("org_pk", 0))
+        except Exception:
+            lab_pk = 0
+            org_pk = 0
+            print("exeption")
+        if lab_pk and org_pk:
+            print("reverse 1")
+            return reverse(
                 "laboratory:labindex", kwargs={"lab_pk": lab_pk, "org_pk": org_pk}
             )
-        if self.request.user.is_authenticated or lab_pk:
-            self.object.save()
-
-        send_email_from_template(
-            "New feedback",
-            settings.DEFAULT_FROM_EMAIL,
-            context={"feedback": self.object},
-            enqueued=True,
-            user=None,
-            upfile=self.object.related_file,
-        )
-
-        return dev
+        print("reverse 2")
+        return reverse("index")
 
 
 def index_organilab(request):
     if request.user.is_authenticated:
-        return redirect(reverse("auth_and_perms:select_organization_by_user"))
+        return redirect(reverse("pending_tasks:view_task"))
     return render(request, "index.html")
 
 

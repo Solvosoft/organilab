@@ -132,6 +132,9 @@ def create_user_organization(
     else:
         org = organization
     set_rol_administrator_on_org(profile, org, type_in_organization=user_type)
+    pending_tasks_group = Group.objects.filter(name="PendingTasks").first()
+    if pending_tasks_group:
+        user.groups.add(pending_tasks_group)
     user.active = True
     user.save()
 

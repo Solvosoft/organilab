@@ -67,11 +67,10 @@
 				<span class="fa fa-user" aria-hidden="true"></span>
 			</a>
 
-			{% if org_pk %}
-				<a href="{% url 'pending_tasks:view_task' org_pk %}" title="{% trans 'Pending Tasks' %}">
+				<a href="{% url 'pending_tasks:view_task' %}" title="{% trans 'Pending Tasks' %}">
 					<span class="fa fa-sticky-note" aria-hidden="true"></span>
 				</a>
-			{% endif %}
+
 		{% endif %}
 
 		{% footer_sidebar_menu %}

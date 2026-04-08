@@ -1,4 +1,6 @@
 import logging
+
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
 from djgentelella.serializers import GTDateTimeField
@@ -88,5 +90,3 @@ class PendingTaskGetValuesSerializer(serializers.ModelSerializer):
             "rols",
             "is_archived",
         ]
-
-
