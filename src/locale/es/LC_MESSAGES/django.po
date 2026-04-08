@@ -5781,6 +5781,12 @@ msgstr "No hay tareas finalizadas"
 msgid "Archive all finished tasks"
 msgstr "Archivar todas las tareas terminadas"
 
+msgid "Archive task"
+msgstr "Archivar tarea"
+
+msgid "Expand description"
+msgstr "Expandir descripción"
+
 msgid "New pending task: %s"
 msgstr "Nueva tarea pendiente: %s"
 
@@ -5837,6 +5843,39 @@ msgstr "salud"
 
 msgid "physical"
 msgstr "físico"
+
+msgid "ShelfObject expiration"
+msgstr "Vencimiento de objetos de estante"
+
+msgid "List of ShelfObject in limits"
+msgstr "Lista de objetos de estante con límites"
+
+msgid "You have been assigned a task because you have a change in a laboratory that you are responsible in the Organilab system."
+msgstr "Usted se le ha asignado una tarea porque tiene un cambio en un laboratorio que eres responsable en el sistema Organilab."
+
+msgid "This message is to notify you that one or more objects in the laboratory"
+msgstr "Este mensaje es para notificarle que uno o más objetos en el laboratorio"
+
+msgid "are at the minimum quota."
+msgstr "están en las cuotas mínimas."
+
+msgid "Detail of objects at the limit"
+msgstr "Detalle de objetos al límite"
+
+msgid "This message is to notify you that one or more reactives in the laboratory"
+msgstr "Este mensaje es para notificarle que uno o más reactivos en el laboratorio"
+
+msgid "will expire tomorrow."
+msgstr "vencerán mañana."
+
+msgid "Reagents nearing their expiration date"
+msgstr "Reactivos próximos a vencer"
+
+msgid "New period inform"
+msgstr "Nuevo informe de periodo"
+
+msgid "New period inform was created in the laboratory %s with the name %s"
+msgstr "Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
 
 msgid "Update Reactive"
 msgstr "Actualizar Reactivo"

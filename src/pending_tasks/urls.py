@@ -11,6 +11,6 @@ router_pending_tasks.register(
 app_name = "pending_tasks"
 
 urlpatterns = [
-    path("<int:org_pk>/api/", include(router_pending_tasks.urls)),
-    path("<int:org_pk>/view-tasks", views.view_task, name="view_task"),
+    path("api/", include(router_pending_tasks.urls)),
+    path("view-tasks", views.view_task, name="view_task"),
 ]

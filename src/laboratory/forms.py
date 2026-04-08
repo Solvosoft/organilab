@@ -34,6 +34,7 @@ from laboratory.models import (
     ObjectMaximumLimit,
     LaboratoryProcess,
     MaterialCapacity,
+    UserOrganization,
 )
 from reservations_management.models import ReservedProducts
 from risk_management.models import Regent
@@ -86,12 +87,21 @@ class LaboratoryCreate(GTForm, forms.ModelForm):
     ]
 
     def __init__(self, *args, **kwargs):
+        org = kwargs.pop("org")
         super(LaboratoryCreate, self).__init__(*args, **kwargs)
         self.fields["geolocation"].widget.attrs["class"] = "form-control"
-        org = kwargs.get("organization", None)
         if org:
+            organization = OrganizationStructure.objects.filter(pk=org).first().root
             self.fields["responsible"].queryset = User.objects.filter(
-                pk__in=get_users_from_organization(org)
+                pk__in=get_users_from_organization(
+                    organization.pk,
+                    userfilters={
+                        "type_in_organization__in": [
+                            UserOrganization.ADMINISTRATOR,
+                            UserOrganization.LABORATORY_MANAGER,
+                        ]
+                    },
+                )
             )
 
     class Meta:
@@ -172,7 +182,18 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
                 "pk", flat=True
             )
         )
-        self.fields["responsible"].queryset = self.instance.organization.users.all()
+
+        self.fields["responsible"].queryset = User.objects.filter(
+            pk__in=get_users_from_organization(
+                self.instance.organization.root.pk,
+                userfilters={
+                    "type_in_organization__in": [
+                        UserOrganization.ADMINISTRATOR,
+                        UserOrganization.LABORATORY_MANAGER,
+                    ]
+                },
+            )
+        ).distinct("pk")
 
     class Meta:
         model = Laboratory
@@ -556,6 +577,7 @@ class InformSchedulerForm(GTForm, forms.ModelForm):
             "close_application_date",
             "period_on_days",
             "inform_template",
+            "laboratories",
             "active",
         ]
         widgets = {
@@ -566,6 +588,12 @@ class InformSchedulerForm(GTForm, forms.ModelForm):
             "period_on_days": genwidgets.NumberInput,
             "inform_template": AutocompleteSelect(
                 "informtemplate", url_suffix="-detail"
+            ),
+            "laboratories": AutocompleteSelectMultiple(
+                "get_laboratories_by_organization",
+                attrs={
+                    "data-s2filter-organization": "#id_organization",
+                },
             ),
             "active": genwidgets.YesNoInput,
         }
@@ -580,13 +608,26 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
 
     class Meta:
         model = InformScheduler
-        fields = ["organization", "name", "period_on_days", "inform_template", "active"]
+        fields = [
+            "organization",
+            "name",
+            "period_on_days",
+            "inform_template",
+            "laboratories",
+            "active",
+        ]
         widgets = {
             "organization": genwidgets.HiddenInput,
             "name": genwidgets.TextInput,
             "period_on_days": genwidgets.NumberInput,
             "inform_template": AutocompleteSelect(
                 "informtemplate", url_suffix="-detail"
+            ),
+            "laboratories": AutocompleteSelectMultiple(
+                "laboratory",
+                attrs={
+                    "data-s2filter-organization": "#id_organization",
+                },
             ),
             "active": genwidgets.YesNoInput,
         }

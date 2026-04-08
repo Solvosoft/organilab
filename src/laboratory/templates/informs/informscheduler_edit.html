@@ -5,6 +5,8 @@
     {% define_urlname_action 'form_list' %}
 {% endblock %}
 {% block content %}
+	<input type="hidden" name="id_organization" value="{{ org_pk }}">
+
   <div class="row">
     <div class="offset-md-1 col-md-8">
       <div class="page-header text-center" align="center">
