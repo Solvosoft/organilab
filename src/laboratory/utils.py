@@ -136,7 +136,7 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
 
     users = (
         UserOrganization.objects.filter(
-            organization__in=orgs, user__isnull=False, status=True
+            organization__in=orgs, user__isnull=False, status=True, **userfilters
         )
         .values_list("user", flat=True)
         .distinct()

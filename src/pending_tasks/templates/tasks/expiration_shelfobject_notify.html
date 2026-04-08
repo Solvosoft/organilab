@@ -1,0 +1,28 @@
+{% load i18n %}
+<p>{% trans 'You have been assigned a task because you have a change in a laboratory that you are responsible in the Organilab system.' %}</p>
+<p>{% trans 'This message is to notify you that one or more reactives in the laboratory' %} <strong>{{ laboratory.name }}</strong> {% trans 'will expire tomorrow.' %}</p>
+<h4 style="text-aling:center;">{% trans "Reagents nearing their expiration date" %}:</h4>
+  <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+    <thead>
+      <tr style="background-color: #4a90d9; color: white;">
+        <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Name' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Laboratory Room' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Furniture' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Shelf' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Quantity' %}</th>
+							<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">{% trans 'Measurement Unit' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+				{% for object in objects %}
+					<tr style="background-color: #f9f9f9;">
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.object.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.shelf.furniture.labroom.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.shelf.furniture.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.shelf.name }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.quantity }}</td>
+						<td style="padding: 10px; border: 1px solid #ddd;">{{ object.measurement_unit.description }}</td>
+					</tr>
+				{% endfor %}
+    </tbody>
+  </table>

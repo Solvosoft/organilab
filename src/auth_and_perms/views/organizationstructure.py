@@ -370,6 +370,9 @@ class AddUser(CreateView):
         group = Group.objects.filter(name="Profile").first()
         if group:
             user.groups.add(group)
+        pending_tasks_group = Group.objects.filter(name="PendingTasks").first()
+        if pending_tasks_group:
+            user.groups.add(pending_tasks_group)
         organilab_logentry(
             user,
             user,

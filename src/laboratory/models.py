@@ -1335,7 +1335,9 @@ class Laboratory(BaseCreationObj):
 
     location = models.CharField(_("Location"), default="", max_length=255)
     geolocation = PlainLocationField(
-        default="9.895804362670006,-84.1552734375", zoom=15
+        default="9.895804362670006,-84.1552734375",
+        zoom=15,
+        verbose_name=_("Geolocation"),
     )
     email = models.EmailField(_("Email"), blank=True)
     coordinator = models.CharField(
@@ -1720,6 +1722,9 @@ class InformScheduler(AbstractOrganizationRef):
         "derb.CustomForm", verbose_name=_("Inform template"), on_delete=models.CASCADE
     )
     active = models.BooleanField(default=True, verbose_name=_("Active"))
+    laboratories = models.ManyToManyField(
+        Laboratory, verbose_name=_("Laboratories"), blank=True
+    )
 
     def __str__(self):
         return self.name

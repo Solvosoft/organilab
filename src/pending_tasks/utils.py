@@ -9,11 +9,17 @@ from pending_tasks.models import PendingTask
 from report.utils import create_notification
 
 
-def create_pending_task(created_by, name, rols, organization=None, description="",
-                        status=PendingTask.PENDING, profile=None, link="",
-                        notify=False):
+def create_pending_task(
+    created_by,
+    name,
+    rols,
+    description="",
+    status=PendingTask.PENDING,
+    profile=None,
+    link="",
+    notify=False,
+):
     pending_task = PendingTask.objects.create(
-        organization=organization,
         created_by=created_by,
         name=name,
         description=description,
@@ -24,18 +30,20 @@ def create_pending_task(created_by, name, rols, organization=None, description="
     pending_task.rols.add(*rols)
 
     organilab_logentry(
-        created_by, pending_task, ADDITION,
+        created_by,
+        pending_task,
+        ADDITION,
         changed_data=["name", "description", "status", "profile", "link"],
     )
 
     if notify:
-        notify_task_created(pending_task, created_by, organization)
+        notify_task_created(pending_task, created_by)
 
     return pending_task
 
 
-def notify_task_created(task, created_by, organization):
-    url = reverse("pending_tasks:view_task", kwargs={"org_pk": organization.pk})
+def notify_task_created(task, created_by):
+    url = reverse("pending_tasks:view_task")
     message = _("New pending task: %s") % task.name
 
     users_to_notify = set()
