@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capítulo 8: Administración del Laboratorio - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="index.html" class="nav-link active"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+            <a href="01-acceso-subareas.html" class="nav-link sub-item">1. Acceso y Subáreas</a>
+            <a href="02-estadisticas-reorden.html" class="nav-link sub-item">2. Estadísticas y Reorden</a>
+            <a href="03-caracteristicas-proveedores.html" class="nav-link sub-item">3. Características y Proveedores</a>
+            <a href="04-carga-masiva.html" class="nav-link sub-item">4. Carga Masiva de Inventario</a>
+
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Administración del Laboratorio</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-gear"></i> Capítulo 8: Administración del Laboratorio</h1>
+
+            <p class="lead">
+                El módulo <strong>Administración del Laboratorio</strong> permite gestionar la configuración
+                operativa del laboratorio. Este módulo centraliza la administración técnica y logística
+                del inventario y la infraestructura del laboratorio.
+            </p>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> ¿Qué cubre este módulo?</strong>
+                A diferencia de "Mis Laboratorios" (que gestiona el inventario día a día), la Administración
+                del Laboratorio se enfoca en la configuración base: estadísticas de cierre, reorden de consumo,
+                características de objetos, proveedores, familias instrumentales y carga masiva de inventario.
+            </div>
+
+            <h2>Subáreas disponibles</h2>
+
+            <p>El módulo contiene las siguientes subáreas:</p>
+
+            <ul>
+                <li>Laboratorio (salas)</li>
+                <li>Reactivos (catálogo maestro)</li>
+                <li>Materiales (catálogo maestro)</li>
+                <li>Equipos (catálogo maestro)</li>
+                <li>Estadísticas de reactivos</li>
+                <li>Reorden de consumo</li>
+                <li>Actualizar condición de proceso de reactivos</li>
+                <li>Características del objeto</li>
+                <li>Familia instrumental</li>
+                <li>Tipo de equipo</li>
+                <li>Proveedores</li>
+                <li>Carga de inventario de reactivos</li>
+            </ul>
+
+            <h2>Contenido del Capítulo</h2>
+
+            <a href="01-acceso-subareas.html" class="chapter-card">
+                <h3><i class="bi bi-door-open"></i> 1. Acceso y Subáreas principales</h3>
+                <p>
+                    Cómo acceder al módulo y descripción de las subáreas Laboratorio, Reactivos,
+                    Materiales y Equipos en el contexto administrativo.
+                </p>
+            </a>
+
+            <a href="02-estadisticas-reorden.html" class="chapter-card">
+                <h3><i class="bi bi-bar-chart"></i> 2. Estadísticas y Reorden de Consumo</h3>
+                <p>
+                    Cierres anuales, análisis de consumo, auditorías y monitoreo de reactivos
+                    próximos a agotarse. Actualización de condición de proceso.
+                </p>
+            </a>
+
+            <a href="03-caracteristicas-proveedores.html" class="chapter-card">
+                <h3><i class="bi bi-tags"></i> 3. Características, Familia Instrumental y Proveedores</h3>
+                <p>
+                    Administración de atributos técnicos, familias instrumentales, tipos de equipo
+                    y gestión del catálogo de proveedores.
+                </p>
+            </a>
+
+            <a href="04-carga-masiva.html" class="chapter-card">
+                <h3><i class="bi bi-upload"></i> 4. Carga Masiva de Inventario</h3>
+                <p>
+                    Proceso de importación masiva de reactivos mediante archivo. Permite actualizar
+                    el inventario de forma rápida sin ingresar cada elemento individualmente.
+                </p>
+            </a>
+
+            <div class="page-navigation">
+                <a href="../registro-usuarios/index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Cap 7: Registro de Usuarios
+                </a>
+                <a href="../reportes/index.html" class="next-page">
+                    Cap 9: Reportes <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

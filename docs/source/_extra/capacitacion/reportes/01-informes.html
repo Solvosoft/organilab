@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informes Formales - Reportes - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-informes.html" class="nav-link sub-item active">1. Informes Formales</a>
+            <a href="02-reportes-operativos.html" class="nav-link sub-item">2. Reportes Operativos</a>
+            <a href="03-procedimiento.html" class="nav-link sub-item">3. Procedimiento General</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Reportes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Informes Formales</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-file-earmark-text"></i> 1. Informes Formales</h1>
+
+            <p class="lead">
+                Los informes formales son documentos estructurados con valor institucional y regulatorio,
+                generados para regentes, autoridades administrativas y entes de control. Se pueden
+                descargar en formatos como PDF, XLS y ODS.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Informe Regencial</h2>
+
+            <p>
+                Este informe es utilizado principalmente por el <strong>regente del laboratorio</strong>
+                para reportar el estado del inventario ante las autoridades competentes.
+            </p>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Obligación regulatoria</strong>
+                En muchas instituciones, el regente químico está obligado a presentar informes periódicos
+                del inventario de sustancias. Este reporte facilita el cumplimiento de esa obligación.
+            </div>
+
+            <p>Permite descargar información en formato:</p>
+            <ul>
+                <li><strong>XLS</strong> — Compatible con Microsoft Excel</li>
+                <li><strong>ODS</strong> — Compatible con LibreOffice Calc (formato abierto)</li>
+            </ul>
+
+            <h3>Datos requeridos</h3>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Elemento</strong></td><td>Selección del elemento o tipo de sustancia a incluir en el informe</td></tr>
+                    <tr><td><strong>Período</strong></td><td>Rango de fechas para el cual se generará el informe</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Procedimiento</h3>
+            <ol class="step-list">
+                <li>Seleccionar el elemento a reportar</li>
+                <li>Indicar el período (fecha inicio y fecha fin)</li>
+                <li>Presionar <strong>Enviar</strong></li>
+                <li>El sistema descarga automáticamente el archivo en el formato seleccionado</li>
+            </ol>
+
+            <!-- ============================================ -->
+            <h2>Informe de Inventario de Sustancias Químicas</h2>
+
+            <p>
+                Genera un inventario completo de las sustancias químicas registradas en el laboratorio.
+                Incluye información detallada sobre cantidades, ubicaciones y características de cada sustancia.
+            </p>
+
+            <p>Campo requerido: <strong>Laboratorio</strong></p>
+
+            <!-- ============================================ -->
+            <h2>Informe de Laboratorio por Compatibilidad</h2>
+
+            <p>
+                Genera un informe sobre la compatibilidad entre sustancias almacenadas en el laboratorio,
+                basado en el Sistema Globalmente Armonizado (SGA). Permite identificar sustancias que
+                no deben almacenarse juntas por incompatibilidad química.
+            </p>
+
+            <p>Campo requerido: <strong>Laboratorio</strong></p>
+
+            <!-- ============================================ -->
+            <h2>Informe de Donaciones</h2>
+
+            <p>
+                Permite consultar y generar el registro de objetos o sustancias que han ingresado
+                al laboratorio por medio de donaciones. Es útil para controles administrativos
+                y auditorías de activos.
+            </p>
+
+            <p>Campo requerido: <strong>Laboratorio</strong></p>
+
+            <!-- ============================================ -->
+            <h2>Comparativa de informes formales</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Informe</th>
+                        <th>Uso principal</th>
+                        <th>Formato</th>
+                        <th>Datos requeridos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Informe Regencial</strong></td>
+                        <td>Reporte regulatorio del regente</td>
+                        <td>XLS / ODS</td>
+                        <td>Elemento + Período</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inventario de Sustancias</strong></td>
+                        <td>Control general de sustancias</td>
+                        <td>PDF</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compatibilidad de Laboratorio</strong></td>
+                        <td>Seguridad química</td>
+                        <td>PDF</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Donaciones</strong></td>
+                        <td>Control de activos donados</td>
+                        <td>PDF</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-reportes-operativos.html" class="next-page">
+                    Reportes Operativos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

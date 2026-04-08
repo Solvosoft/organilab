@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Operativos - Reportes - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-informes.html" class="nav-link sub-item">1. Informes Formales</a>
+            <a href="02-reportes-operativos.html" class="nav-link sub-item active">2. Reportes Operativos</a>
+            <a href="03-procedimiento.html" class="nav-link sub-item">3. Procedimiento General</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Reportes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reportes Operativos</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-clipboard-data"></i> 2. Reportes Operativos y Específicos</h1>
+
+            <p class="lead">
+                Los reportes operativos cubren las necesidades del día a día en la gestión del laboratorio.
+                Cada reporte tiene campos específicos que permiten filtrar la información exacta que se necesita.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Referencia completa de reportes operativos</h2>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Reporte</th>
+                        <th>Descripción</th>
+                        <th>Campos requeridos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Reporte de Salud Laboral</strong></td>
+                        <td>Genera reportes asociados a usuarios o personal del laboratorio para salud ocupacional.</td>
+                        <td>Usuario / registro seleccionado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Muebles</strong></td>
+                        <td>Genera reportes relacionados con muebles y su ubicación física dentro del laboratorio.</td>
+                        <td>Laboratorio, tipo de objeto, precursor (sí/no), sala, filtro de mueble</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Objetos Reactivos Precursores</strong></td>
+                        <td>Genera el detalle de reactivos clasificados como precursores en el laboratorio.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Movimientos de Objetos</strong></td>
+                        <td>Permite consultar todos los movimientos realizados sobre objetos y reactivos durante un período.</td>
+                        <td>Laboratorio, período, precursor (sí/no), resumen (opcional)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Objetos en Límite</strong></td>
+                        <td>Muestra reactivos u objetos que están cercanos al límite mínimo o máximo configurado.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Precursores</strong></td>
+                        <td>Genera un listado exclusivo de sustancias precursoras con su estado actual.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Desechos</strong></td>
+                        <td>Permite descargar reportes sobre sustancias u objetos clasificados como desechos.</td>
+                        <td>Laboratorio, período</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Reactivos</strong></td>
+                        <td>Genera el inventario general de reactivos por laboratorio.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Zonas de Riesgo</strong></td>
+                        <td>Permite generar reportes asociados a zonas de riesgo del laboratorio o institución.</td>
+                        <td>Laboratorio, zona de riesgo, edificio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Inventario de Reactivos</strong></td>
+                        <td>Genera el inventario detallado de reactivos existentes, con información completa por unidad.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Compatibilidad SGA</strong></td>
+                        <td>Genera reportes relacionados con la compatibilidad de sustancias según el SGA.</td>
+                        <td>Zona de riesgo, edificio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Materiales</strong></td>
+                        <td>Genera el inventario de materiales del laboratorio.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte de Equipos</strong></td>
+                        <td>Genera el inventario de equipos del laboratorio.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reporte General por Laboratorio</strong></td>
+                        <td>Consolida toda la información general del laboratorio: inventario, movimientos, usuarios, reactivos, materiales, equipos y estado general.</td>
+                        <td>Laboratorio</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Detalle de reportes clave</h2>
+
+            <h3>Reporte de Movimientos de Objetos</h3>
+            <p>
+                Este reporte es especialmente útil para auditorías, ya que muestra todos los
+                movimientos realizados sobre objetos del laboratorio en un período determinado.
+            </p>
+            <ul>
+                <li><strong>Laboratorio:</strong> Seleccione el laboratorio a consultar</li>
+                <li><strong>Período:</strong> Defina el rango de fechas</li>
+                <li><strong>Precursor:</strong> Filtre solo sustancias precursoras si es necesario</li>
+                <li><strong>Resumen (opcional):</strong> Vista resumida o detallada del movimiento</li>
+            </ul>
+
+            <h3>Reporte de Zonas de Riesgo</h3>
+            <p>
+                Permite analizar el estado de las zonas de riesgo, filtrable por edificio. Útil para
+                inspecciones de seguridad e informes de cumplimiento normativo.
+            </p>
+            <ul>
+                <li><strong>Laboratorio:</strong> Laboratorio asociado a la zona</li>
+                <li><strong>Zona de riesgo:</strong> Zona específica a reportar</li>
+                <li><strong>Edificio:</strong> Edificio donde se ubica la zona</li>
+            </ul>
+
+            <h3>Reporte de Compatibilidad SGA</h3>
+            <p>
+                Genera reportes basados en el Sistema Globalmente Armonizado para verificar la
+                compatibilidad entre sustancias según su zona y edificio de almacenamiento.
+            </p>
+            <ul>
+                <li><strong>Zona de riesgo:</strong> Zona a analizar</li>
+                <li><strong>Edificio:</strong> Edificio donde se ubican las sustancias</li>
+            </ul>
+
+            <h3>Reporte General por Laboratorio</h3>
+            <p>
+                Este reporte es el más completo. Consolida en un solo documento toda la información
+                del laboratorio. Incluye:
+            </p>
+            <ul>
+                <li>Inventario completo</li>
+                <li>Movimientos de objetos</li>
+                <li>Usuarios asociados</li>
+                <li>Reactivos, materiales y equipos</li>
+                <li>Estado general del laboratorio</li>
+            </ul>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Consejo</strong>
+                Use el Reporte General por Laboratorio para presentaciones administrativas o revisiones
+                periódicas completas del laboratorio. Para necesidades específicas, use los reportes
+                individuales correspondientes.
+            </div>
+
+            <div class="page-navigation">
+                <a href="01-informes.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Informes Formales
+                </a>
+                <a href="03-procedimiento.html" class="next-page">
+                    Procedimiento General <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

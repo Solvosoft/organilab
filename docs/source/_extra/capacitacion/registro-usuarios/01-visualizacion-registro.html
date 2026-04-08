@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización y Registro de Usuarios - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-visualizacion-registro.html" class="nav-link sub-item active">1. Visualización y Registro</a>
+            <a href="02-codigo-qr.html" class="nav-link sub-item">2. Código QR</a>
+            <a href="03-gestion-usuarios.html" class="nav-link sub-item">3. Gestión de Usuarios</a>
+
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Registro de Usuarios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Visualización y Registro</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-people"></i> 1. Visualización y Registro de Usuarios</h1>
+
+            <p class="lead">
+                El módulo de Registro de Usuarios permite visualizar todos los usuarios asociados
+                al laboratorio y registrar nuevos usuarios con su código de identificación y QR único.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Acceso al módulo</h2>
+
+            <p>Para ingresar al módulo de Registro de Usuarios:</p>
+
+            <ol class="step-list">
+                <li><strong>Seleccionar la organización activa</strong> — Asegúrese de tener seleccionada la organización correcta.</li>
+                <li><strong>Ingresar a Mis Laboratorios</strong> — Acceda desde el menú principal.</li>
+                <li><strong>Seleccionar el laboratorio correspondiente</strong> — Elija el laboratorio en el que trabaja.</li>
+                <li><strong>En la Vista de laboratorio, elegir la subárea "Registro de usuarios"</strong> — Esta opción aparece en el menú lateral del laboratorio.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Nota</strong>
+                Este módulo es diferente al módulo de "Organizaciones y Permisos". El Registro de Usuarios
+                gestiona la presencia física de las personas en el laboratorio mediante un código QR,
+                mientras que el módulo de permisos gestiona los accesos al sistema.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Visualización de usuarios registrados</h2>
+
+            <p>
+                Al ingresar al módulo, el sistema muestra la lista de usuarios registrados dentro
+                del laboratorio u organización seleccionada.
+            </p>
+
+            <p>La lista puede mostrar la siguiente información por usuario:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre del usuario</strong></td>
+                        <td>Nombre completo de la persona registrada</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Correo electrónico</strong></td>
+                        <td>Dirección de correo asociada al usuario</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rol asignado</strong></td>
+                        <td>Rol del usuario dentro del sistema (Administrador, Técnico, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estado</strong></td>
+                        <td>Activo o Inactivo — determina si puede acceder al sistema</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Código de identificación</strong></td>
+                        <td>Código único institucional del usuario</td>
+                    </tr>
+                    <tr>
+                        <td><strong>QR generado</strong></td>
+                        <td>Indicador de si ya se ha generado el código QR para el usuario</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Organización asociada</strong></td>
+                        <td>Organización o laboratorio al que pertenece</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Registrar un nuevo usuario</h2>
+
+            <p>Para registrar un nuevo usuario en el laboratorio:</p>
+
+            <ol class="step-list">
+                <li><strong>Seleccionar la opción "Crear / Registrar usuario"</strong> — Aparece como botón en la parte superior del listado.</li>
+                <li><strong>Completar la información solicitada</strong> — Llenar todos los campos requeridos del formulario.</li>
+                <li><strong>Generar el código QR</strong> — Una vez completados los datos, el sistema permite generar el QR único.</li>
+                <li><strong>Guardar el registro</strong> — Confirmar y guardar para que el usuario quede registrado.</li>
+            </ol>
+
+            <h3>Datos requeridos en el formulario</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Estado</strong></td>
+                        <td>Indica si el usuario estará Activo o Inactivo desde el inicio</td>
+                        <td>Activo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo de rol</strong></td>
+                        <td>Rol asignado dentro del sistema. Define los permisos disponibles.</td>
+                        <td>Técnico, Regente, Consulta</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Organización</strong></td>
+                        <td>Organización o laboratorio al que pertenece el usuario</td>
+                        <td>UNA / Laboratorio de Química</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Código / Identificador</strong></td>
+                        <td>Código único para identificar al usuario (código interno, número institucional o de acceso)</td>
+                        <td>2024-001, 115230789</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Estado del usuario</h2>
+
+            <p>
+                Al crear un usuario, se debe indicar si estará <strong>Activo</strong> o <strong>Inactivo</strong>.
+                Este campo determina si la persona podrá utilizar el sistema y sus accesos asociados.
+            </p>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-check-circle text-success"></i> Activo</h4>
+                        <p>
+                            El usuario tiene acceso al sistema y puede utilizar sus permisos asignados.
+                            Su código QR es válido para controles de acceso.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-x-circle text-danger"></i> Inactivo</h4>
+                        <p>
+                            El usuario no puede acceder al sistema. Se recomienda desactivar en lugar
+                            de eliminar para preservar el historial y trazabilidad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Roles disponibles</h2>
+
+            <p>Al registrar un usuario se debe asignar un rol. Algunos roles comunes en el sistema:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Descripción general</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Administrador</strong></td>
+                        <td>Acceso completo al laboratorio y sus configuraciones</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Regente</strong></td>
+                        <td>Responsable técnico del laboratorio, puede generar reportes regenciales</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Técnico</strong></td>
+                        <td>Gestiona inventario y operaciones del día a día</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usuario de laboratorio</strong></td>
+                        <td>Acceso básico para uso del laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consulta</strong></td>
+                        <td>Solo puede visualizar información, sin realizar cambios</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Importante</strong>
+                La asignación del rol define los permisos disponibles para el usuario. Asegúrese de
+                asignar el rol correcto según las responsabilidades de cada persona dentro del laboratorio.
+            </div>
+
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-codigo-qr.html" class="next-page">
+                    Código QR <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

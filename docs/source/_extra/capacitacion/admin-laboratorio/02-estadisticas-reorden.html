@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas y Reorden - Admin. Laboratorio - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-acceso-subareas.html" class="nav-link sub-item">1. Acceso y Subáreas</a>
+            <a href="02-estadisticas-reorden.html" class="nav-link sub-item active">2. Estadísticas y Reorden</a>
+            <a href="03-caracteristicas-proveedores.html" class="nav-link sub-item">3. Características y Proveedores</a>
+            <a href="04-carga-masiva.html" class="nav-link sub-item">4. Carga Masiva de Inventario</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Admin. Laboratorio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Estadísticas y Reorden</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-bar-chart"></i> 2. Estadísticas y Reorden de Consumo</h1>
+
+            <p class="lead">
+                Estas subáreas permiten monitorear el comportamiento del inventario a lo largo del tiempo,
+                identificar reactivos próximos a agotarse y mantener actualizadas las condiciones de proceso
+                de los reactivos.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Estadísticas de Reactivos</h2>
+
+            <p>
+                Permite gestionar estadísticas del inventario durante un periodo determinado.
+                Es una herramienta clave para la toma de decisiones administrativas y auditorías.
+            </p>
+
+            <p>Usado principalmente para:</p>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-calendar-check"></i> Cierres anuales</h4>
+                        <p>
+                            Permite registrar el cierre de inventario al final del año fiscal o académico,
+                            documentando las existencias finales de cada reactivo.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-graph-up"></i> Análisis de consumo</h4>
+                        <p>
+                            Visualiza cuánto se ha consumido de cada reactivo en el período seleccionado,
+                            útil para planificar compras y presupuestos.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-people"></i> Toma de decisiones</h4>
+                        <p>
+                            Los datos estadísticos permiten al administrador o regente decidir qué
+                            reactivos reponer, cuáles reducir y cuáles descontinuar.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-search"></i> Auditorías</h4>
+                        <p>
+                            Facilita las auditorías internas y externas al proporcionar un historial
+                            claro del movimiento de inventario durante períodos específicos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Reorden de Consumo</h2>
+
+            <p>
+                Permite monitorear reactivos próximos a agotarse, facilitando la planificación
+                de compras antes de que el stock llegue a cero.
+            </p>
+
+            <p>La lista de reorden incluye la siguiente información por reactivo:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Nombre del reactivo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Número CAS</strong></td>
+                        <td>Identificador químico del reactivo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sala</strong></td>
+                        <td>Sala donde está ubicado el reactivo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mueble</strong></td>
+                        <td>Mueble específico de almacenamiento</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estante</strong></td>
+                        <td>Estante dentro del mueble</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contenedor</strong></td>
+                        <td>Contenedor físico del reactivo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cantidad</strong></td>
+                        <td>Stock actual disponible</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unidad</strong></td>
+                        <td>Unidad de medida (mL, g, kg, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acciones</strong></td>
+                        <td>Opciones disponibles (ver detalle, agregar stock, etc.)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Filtros avanzados</strong>
+                La subárea de Reorden dispone de <strong>filtros avanzados</strong> por palabra clave,
+                lo que permite buscar reactivos específicos rápidamente en laboratorios con gran cantidad
+                de sustancias.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Actualizar condición de proceso de reactivos</h2>
+
+            <p>
+                Permite modificar las condiciones de proceso relacionadas con los reactivos del laboratorio.
+                Esto es útil cuando las condiciones de uso o almacenamiento de una sustancia cambian.
+            </p>
+
+            <p>Campos visualizados y modificables:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Objeto</strong></td>
+                        <td>Reactivo al que se actualiza la condición</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Código CAS</strong></td>
+                        <td>Identificador del reactivo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sala</strong></td>
+                        <td>Sala donde está almacenado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mueble</strong></td>
+                        <td>Mueble de almacenamiento</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estante</strong></td>
+                        <td>Estante específico</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Código H</strong></td>
+                        <td>Frases de peligro asociadas al reactivo (SGA)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Condición de proceso</strong></td>
+                        <td>Estado actual del proceso (en uso, almacenado, en desecho, etc.)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Solo roles autorizados</strong>
+                La modificación de condiciones de proceso requiere permisos de nivel administrador
+                o regente. Los cambios quedan registrados en la auditoría del sistema.
+            </div>
+
+            <div class="page-navigation">
+                <a href="01-acceso-subareas.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Acceso y Subáreas
+                </a>
+                <a href="03-caracteristicas-proveedores.html" class="next-page">
+                    Características y Proveedores <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

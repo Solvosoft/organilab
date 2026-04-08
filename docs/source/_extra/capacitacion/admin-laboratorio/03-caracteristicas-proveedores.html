@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Características y Proveedores - Admin. Laboratorio - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-acceso-subareas.html" class="nav-link sub-item">1. Acceso y Subáreas</a>
+            <a href="02-estadisticas-reorden.html" class="nav-link sub-item">2. Estadísticas y Reorden</a>
+            <a href="03-caracteristicas-proveedores.html" class="nav-link sub-item active">3. Características y Proveedores</a>
+            <a href="04-carga-masiva.html" class="nav-link sub-item">4. Carga Masiva de Inventario</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Admin. Laboratorio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Características y Proveedores</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-tags"></i> 3. Características, Familia Instrumental y Proveedores</h1>
+
+            <p class="lead">
+                Esta sección abarca la configuración de los atributos técnicos de los objetos, la organización
+                de equipos por familia instrumental, la clasificación por tipo de equipo y la administración
+                del catálogo de proveedores.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Características del objeto</h2>
+
+            <p>
+                Permite crear o modificar características técnicas aplicables a reactivos, materiales y equipos.
+                Estas características son atributos adicionales que complementan la información base del objeto.
+            </p>
+
+            <p>Campos requeridos:</p>
+            <ul>
+                <li><strong>Nombre</strong> — Nombre de la característica (ej. "Temperatura de fusión", "Viscosidad")</li>
+                <li><strong>Descripción</strong> — Explicación del atributo técnico</li>
+            </ul>
+
+            <div class="info-box">
+                <strong><i class="bi bi-lightbulb"></i> Uso de las características</strong>
+                Las características creadas aquí pueden asignarse a objetos específicos en el inventario,
+                permitiendo registrar atributos técnicos personalizados según las necesidades del laboratorio.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Familia instrumental</h2>
+
+            <p>
+                Permite registrar familias instrumentales que agrupan equipos del mismo tipo tecnológico
+                o área de aplicación.
+            </p>
+
+            <p>Ejemplos de familias instrumentales:</p>
+            <ul>
+                <li><strong>Microscopía</strong> — Microscopios ópticos, electrónicos, confocales</li>
+                <li><strong>Cromatografía</strong> — HPLC, GC, UPLC</li>
+                <li><strong>Análisis físico-químico</strong> — Espectrofotómetros, pH-metros, conductímetros</li>
+            </ul>
+
+            <p>Solo requiere:</p>
+            <ul>
+                <li><strong>Descripción</strong> — Nombre o descripción de la familia instrumental</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Tipo de equipo</h2>
+
+            <p>
+                Permite administrar las categorías de equipos disponibles en el laboratorio.
+                Estos tipos complementan la clasificación por familia instrumental.
+            </p>
+
+            <p>Campos requeridos:</p>
+            <ul>
+                <li><strong>Nombre</strong> — Nombre del tipo de equipo (ej. "Centrífuga", "Balanza analítica")</li>
+                <li><strong>Descripción</strong> — Descripción de las características del tipo</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Proveedores</h2>
+
+            <p>
+                Permite administrar la lista general de proveedores de materiales, reactivos y equipos
+                del laboratorio. Esta lista centralizada facilita la asociación de proveedores con
+                los objetos del inventario.
+            </p>
+
+            <h3>Información requerida para registrar un proveedor</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Nombre comercial o razón social del proveedor</td>
+                        <td>Sigma-Aldrich, Merck, Fisher Scientific</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Teléfono</strong></td>
+                        <td>Número de contacto principal</td>
+                        <td>+506 2222-3333</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Correo electrónico</strong></td>
+                        <td>Email de contacto para pedidos o soporte</td>
+                        <td>ventas@proveedor.com</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Identidad jurídica</strong></td>
+                        <td>Número de cédula jurídica o identificación fiscal</td>
+                        <td>3-101-123456</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Procedimiento para agregar un proveedor</h3>
+
+            <ol class="step-list">
+                <li>Ingresar a la subárea <strong>Proveedores</strong> dentro de Administración del Laboratorio.</li>
+                <li>Seleccionar <strong>Agregar</strong>.</li>
+                <li>Completar la información solicitada (nombre, teléfono, correo, identidad jurídica).</li>
+                <li>Guardar el registro.</li>
+            </ol>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Buena práctica</strong>
+                Mantenga actualizado el catálogo de proveedores. Un proveedor correctamente registrado
+                puede asociarse a múltiples reactivos, materiales y equipos, facilitando la trazabilidad
+                de compras y el contacto en caso de incidentes o garantías.
+            </div>
+
+            <div class="page-navigation">
+                <a href="02-estadisticas-reorden.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Estadísticas y Reorden
+                </a>
+                <a href="04-carga-masiva.html" class="next-page">
+                    Carga Masiva de Inventario <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

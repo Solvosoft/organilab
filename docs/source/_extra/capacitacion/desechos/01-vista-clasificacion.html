@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista y Clasificación - Desechos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-vista-clasificacion.html" class="nav-link sub-item active">1. Vista y Clasificación</a>
+            <a href="02-consulta-ubicacion.html" class="nav-link sub-item">2. Consulta y Ubicación</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Desechos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Vista y Clasificación</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-list-ul"></i> 1. Vista Principal y Clasificación de Desechos</h1>
+
+            <p class="lead">
+                El módulo de Desechos presenta una lista organizada de todas las sustancias desechadas.
+                Cada residuo tiene información detallada sobre su naturaleza, ubicación y estado.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Vista principal</h2>
+
+            <p>
+                La pantalla principal muestra una <strong>lista de sustancias desechadas</strong>
+                registradas en el sistema. La información visible puede incluir:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Laboratorio</strong></td><td>Laboratorio donde se originó el desecho</td></tr>
+                    <tr><td><strong>Sustancia o reactivo</strong></td><td>Nombre de la sustancia desechada</td></tr>
+                    <tr><td><strong>Cantidad restante</strong></td><td>Cantidad que queda en el contenedor al momento del registro</td></tr>
+                    <tr><td><strong>Ubicación</strong></td><td>Ubicación general dentro del laboratorio</td></tr>
+                    <tr><td><strong>Estante</strong></td><td>Estante donde está almacenado el desecho</td></tr>
+                    <tr><td><strong>Contenedor</strong></td><td>Contenedor físico del residuo</td></tr>
+                    <tr><td><strong>Estado</strong></td><td>Estado actual del desecho (pendiente de disposición, en proceso, etc.)</td></tr>
+                    <tr><td><strong>Fecha de registro</strong></td><td>Fecha en que se registró como desecho</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Clasificación de desechos</h2>
+
+            <p>
+                Dependiendo de la configuración del sistema, el residuo puede estar asociado a una
+                o varias de las siguientes clasificaciones:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Tipo de desecho</th>
+                        <th>Descripción</th>
+                        <th>Ejemplos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Reactivos vencidos</strong></td>
+                        <td>Sustancias cuya fecha de vencimiento ha expirado</td>
+                        <td>Ácido clorhídrico vencido, soluciones estándar caducadas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Materiales contaminados</strong></td>
+                        <td>Materiales que han entrado en contacto con sustancias peligrosas</td>
+                        <td>Guantes, papel absorbente, recipientes contaminados</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Residuos químicos</strong></td>
+                        <td>Restos de reacciones o procesos químicos</td>
+                        <td>Solventes usados, mezclas de reacción, filtrados</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sustancias precursoras</strong></td>
+                        <td>Precursores químicos en desecho que requieren control especial</td>
+                        <td>Residuos de sustancias controladas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Residuos peligrosos</strong></td>
+                        <td>Sustancias con características CRETIB (Corrosivo, Reactivo, Explosivo, Tóxico, Inflamable, Biológico)</td>
+                        <td>Mercurio, ácido sulfúrico concentrado, cianuro</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box danger">
+                <strong><i class="bi bi-exclamation-octagon"></i> Residuos peligrosos</strong>
+                Los residuos clasificados como peligrosos requieren manejo especial para su almacenamiento
+                temporal y disposición final. Deben seguirse los protocolos institucionales y legales
+                para su gestión segura.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Cómo registrar un desecho</h2>
+
+            <p>
+                Los desechos en Organilab se registran principalmente a través del módulo de inventario,
+                cuando se marca una sustancia para transferencia a desecho. El proceso es:
+            </p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Localizar el reactivo o material</strong> — En la vista de laboratorio,
+                    busque el objeto que desea registrar como desecho.
+                </li>
+                <li>
+                    <strong>Seleccionar la opción de transferencia o descarte</strong> — En las acciones
+                    del objeto, elija la opción correspondiente al desecho.
+                </li>
+                <li>
+                    <strong>Indicar si corresponde a desecho</strong> — Al transferir, marque si
+                    el destino es tratamiento como desecho.
+                </li>
+                <li>
+                    <strong>Confirmar</strong> — El sistema registra el movimiento y el objeto aparecerá
+                    en el módulo de Desechos.
+                </li>
+            </ol>
+
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-consulta-ubicacion.html" class="next-page">
+                    Consulta y Ubicación <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

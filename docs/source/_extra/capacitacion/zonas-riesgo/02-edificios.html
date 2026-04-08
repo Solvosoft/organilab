@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edificios - Zonas de Riesgo - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-regentes.html" class="nav-link sub-item">1. Regentes</a>
+            <a href="02-edificios.html" class="nav-link sub-item active">2. Edificios</a>
+            <a href="03-estructuras-zonas.html" class="nav-link sub-item">3. Estructuras y Zonas</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Zonas de Riesgo</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edificios</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-building"></i> 2. Subárea: Edificios</h1>
+
+            <p class="lead">
+                La subárea de <strong>Edificios</strong> permite administrar la información detallada
+                de los edificios asociados a zonas de riesgo. Incluye datos geográficos, ambientales,
+                de responsabilidad y documentación de seguridad.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Visualización de edificios</h2>
+
+            <p>La lista de edificios muestra:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Nombre</strong></td><td>Nombre del edificio</td></tr>
+                    <tr><td><strong>Teléfono</strong></td><td>Número de contacto del edificio</td></tr>
+                    <tr><td><strong>Responsable</strong></td><td>Persona responsable del edificio</td></tr>
+                    <tr><td><strong>Regente asociado</strong></td><td>Regente vinculado al edificio</td></tr>
+                    <tr><td><strong>Edificio cercano</strong></td><td>Edificios adyacentes o cercanos relevantes</td></tr>
+                    <tr><td><strong>Laboratorio</strong></td><td>Laboratorio asociado al edificio</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Crear un nuevo edificio</h2>
+
+            <ol class="step-list">
+                <li>Ingresar a la subárea <strong>Edificios</strong> dentro del módulo Zonas de Riesgo.</li>
+                <li>Seleccionar <strong>Agregar</strong>.</li>
+                <li>Completar todos los campos del formulario.</li>
+                <li>Guardar el registro.</li>
+            </ol>
+
+            <h3>Campos requeridos para el registro del edificio</h3>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre del edificio</strong></td>
+                        <td>Nombre oficial o identificador del edificio</td>
+                        <td>Edificio de Ciencias Naturales</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Teléfono</strong></td>
+                        <td>Número de contacto del edificio</td>
+                        <td>+506 2277-3400</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Edificio asociado</strong></td>
+                        <td>Edificio adyacente (opcional)</td>
+                        <td>Edificio Administrativo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Regente asociado</strong></td>
+                        <td>Regente responsable del edificio</td>
+                        <td>Dr. Carlos Rodríguez</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Laboratorio</strong></td>
+                        <td>Laboratorio vinculado al edificio</td>
+                        <td>Lab. Química Analítica</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Responsable</strong></td>
+                        <td>Persona responsable de la administración del edificio</td>
+                        <td>Ing. María López</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Presencia de ríos o quebradas</strong></td>
+                        <td>Indica si hay cuerpos de agua naturales cerca del edificio</td>
+                        <td>Sí / No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nacientes o manto acuífero</strong></td>
+                        <td>Indica la presencia de fuentes de agua subterránea</td>
+                        <td>Sí / No</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Establecimientos cercanos con concentración de personas</strong></td>
+                        <td>Centros educativos, hospitales, mercados u otros cerca del edificio</td>
+                        <td>Escuela a 200m, Hospital a 500m</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Área</strong></td>
+                        <td>Área total del edificio en m²</td>
+                        <td>1200 m²</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Geolocalización</strong></td>
+                        <td>Coordenadas GPS del edificio para mapas internos</td>
+                        <td>9.9333° N, 84.0833° W</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Documentación asociada al edificio</h2>
+
+            <p>
+                El sistema permite adjuntar documentos de respaldo al registro del edificio.
+                Estos documentos son fundamentales para la gestión de seguridad institucional.
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Documento</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Plan de seguridad</strong></td>
+                        <td>Documento con los protocolos de seguridad del edificio</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plan regulador</strong></td>
+                        <td>Plan de uso de suelo y regulación del área</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plan de emergencia</strong></td>
+                        <td>Protocolos de evacuación y respuesta ante emergencias</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Geolocalización del edificio</h2>
+
+            <p>
+                Dentro del registro del edificio, el sistema permite incorporar la <strong>ubicación geográfica</strong>
+                mediante coordenadas GPS. Esto facilita:
+            </p>
+
+            <ul>
+                <li>Ubicación del riesgo en mapas institucionales</li>
+                <li>Respuesta ante emergencias con información precisa</li>
+                <li>Mapas internos de zonas de riesgo</li>
+                <li>Trazabilidad territorial de incidentes</li>
+            </ul>
+
+            <div class="info-box">
+                <strong><i class="bi bi-geo-alt"></i> Uso de la geolocalización</strong>
+                Las coordenadas GPS del edificio se utilizan en los reportes de zonas de riesgo
+                para ubicar visualmente los puntos de peligro dentro del campus o instalaciones
+                de la institución.
+            </div>
+
+            <div class="page-navigation">
+                <a href="01-regentes.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Regentes
+                </a>
+                <a href="03-estructuras-zonas.html" class="next-page">
+                    Estructuras y Zonas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

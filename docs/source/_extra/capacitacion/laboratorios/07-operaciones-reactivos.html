@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7. Operaciones de Reactivos y Protocolos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-estructura.html" class="nav-link sub-item">1. Estructura del Laboratorio</a>
+            <a href="02-salas-muebles.html" class="nav-link sub-item">2. Salas y Muebles</a>
+            <a href="03-estantes.html" class="nav-link sub-item">3. Estantes</a>
+            <a href="04-objetos.html" class="nav-link sub-item">4. Objetos del Laboratorio</a>
+            <a href="05-transferencias.html" class="nav-link sub-item">5. Transferencias</a>
+            <a href="06-reportes.html" class="nav-link sub-item">6. Reportes y Auditoría</a>
+            <a href="07-operaciones-reactivos.html" class="nav-link sub-item active">7. Operaciones de Reactivos</a>
+
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Laboratorios</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Operaciones de Reactivos y Protocolos</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-flask"></i> 7. Operaciones de Reactivos y Protocolos</h1>
+
+            <p class="lead">
+                Además de las operaciones básicas de inventario, Organilab ofrece acciones especializadas
+                para reactivos: sustraer cantidades, consultar la bitácora, administrar el contenedor,
+                mover a otro estante, descargar información completa del reactivo y gestionar protocolos en PDF.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Acciones disponibles por reactivo</h2>
+
+            <p>
+                Al seleccionar un reactivo en la vista del inventario, el sistema muestra las siguientes
+                acciones disponibles:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Acción</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Ver detalle</strong></td><td>Ver información completa del reactivo</td></tr>
+                    <tr><td><strong>Reservar</strong></td><td>Apartar el reactivo por un período determinado</td></tr>
+                    <tr><td><strong>Agregar</strong></td><td>Registrar nueva cantidad del reactivo existente</td></tr>
+                    <tr><td><strong>Transferir</strong></td><td>Mover el reactivo a otro laboratorio</td></tr>
+                    <tr><td><strong>Sustraer</strong></td><td>Descontar cantidades del inventario</td></tr>
+                    <tr><td><strong>Bitácora</strong></td><td>Ver el historial de movimientos y cambios</td></tr>
+                    <tr><td><strong>Editar</strong></td><td>Modificar la información del reactivo</td></tr>
+                    <tr><td><strong>Administrar contenedor</strong></td><td>Gestionar el contenedor físico del reactivo</td></tr>
+                    <tr><td><strong>Mover</strong></td><td>Reubicar el reactivo dentro del laboratorio</td></tr>
+                    <tr><td><strong>Descargar</strong></td><td>Generar reporte detallado del reactivo</td></tr>
+                    <tr><td><strong>Eliminar</strong></td><td>Eliminar el registro del reactivo</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Sustracción de reactivos</h2>
+
+            <p>
+                La opción <strong>Sustraer</strong> permite descontar cantidades del inventario cuando
+                se utilizan reactivos en experimentos, prácticas o procesos del laboratorio.
+            </p>
+
+            <p>Campos requeridos:</p>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th><th>Ejemplo</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cantidad</strong></td>
+                        <td>Cantidad a descontar del inventario</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descripción</strong></td>
+                        <td>Motivo o descripción del uso del reactivo</td>
+                        <td>Práctica de laboratorio - Titulación ácido-base</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Unidad de medida</strong></td>
+                        <td>Unidad de la cantidad sustraída</td>
+                        <td>mL, g, L</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Bitácora del reactivo</h2>
+
+            <p>
+                La <strong>Bitácora</strong> muestra el historial completo de movimientos y cambios
+                realizados sobre el reactivo. Es fundamental para la trazabilidad y auditoría.
+            </p>
+
+            <p>Incluye los siguientes datos por cada registro:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Acción realizada</strong></td><td>Tipo de operación (sustracción, adición, transferencia, etc.)</td></tr>
+                    <tr><td><strong>Descripción</strong></td><td>Detalle o motivo de la acción</td></tr>
+                    <tr><td><strong>Fecha</strong></td><td>Fecha y hora exacta en que se realizó</td></tr>
+                    <tr><td><strong>Usuario responsable</strong></td><td>Persona que realizó la operación</td></tr>
+                    <tr><td><strong>Estado actualizado</strong></td><td>Estado del reactivo después de la operación</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Administración de contenedor</h2>
+
+            <p>
+                La opción <strong>Administrar contenedor</strong> permite gestionar el contenedor
+                físico donde está almacenado el reactivo.
+            </p>
+
+            <p>Opciones disponibles:</p>
+            <ul>
+                <li><strong>Usar contenedor actual</strong> — Mantener el mismo contenedor existente</li>
+                <li><strong>Crear nuevo contenedor</strong> — Registrar un nuevo contenedor para el reactivo</li>
+                <li><strong>Asociar nuevo contenedor al reactivo</strong> — Vincular un contenedor diferente al reactivo</li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Movimiento a otro estante (Mover)</h2>
+
+            <p>
+                La opción <strong>Mover</strong> permite reubicar el reactivo dentro del mismo laboratorio,
+                cambiando su posición en la estructura física del laboratorio.
+            </p>
+
+            <p>Campos requeridos para el movimiento:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Sala</strong></td><td>Nueva sala de destino dentro del laboratorio</td></tr>
+                    <tr><td><strong>Mueble</strong></td><td>Mueble destino dentro de la sala</td></tr>
+                    <tr><td><strong>Estante</strong></td><td>Estante específico en el mueble destino</td></tr>
+                    <tr><td><strong>Contenedor</strong></td><td>Contenedor destino (puede ser el mismo u otro)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Diferencia entre Mover y Transferir</strong>
+                <ul class="mt-2">
+                    <li><strong>Mover</strong> — Reubica el reactivo dentro del mismo laboratorio (cambia sala/mueble/estante)</li>
+                    <li><strong>Transferir</strong> — Mueve el reactivo a un laboratorio diferente (puede ser otro laboratorio de la organización)</li>
+                </ul>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Descarga de información del reactivo</h2>
+
+            <p>
+                La opción <strong>Descargar</strong> permite generar un reporte detallado del reactivo
+                en formato descargable. Este reporte incluye información técnica completa de la sustancia:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo incluido</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Nombre</strong></td><td>Nombre comercial o IUPAC del reactivo</td></tr>
+                    <tr><td><strong>Cantidad</strong></td><td>Stock actual disponible</td></tr>
+                    <tr><td><strong>Estado físico</strong></td><td>Sólido, líquido, gas</td></tr>
+                    <tr><td><strong>Fecha de caducidad</strong></td><td>Fecha en que vence el reactivo</td></tr>
+                    <tr><td><strong>Contenedor</strong></td><td>Tipo y descripción del contenedor</td></tr>
+                    <tr><td><strong>Fórmula molecular</strong></td><td>Fórmula química (ej. H₂SO₄)</td></tr>
+                    <tr><td><strong>Código CAS</strong></td><td>Número de registro CAS internacional</td></tr>
+                    <tr><td><strong>Biocumulable</strong></td><td>Indica si la sustancia se acumula en organismos vivos</td></tr>
+                    <tr><td><strong>Tipo de almacenamiento</strong></td><td>Condiciones especiales de almacenamiento</td></tr>
+                    <tr><td><strong>Precursor</strong></td><td>Indica si es sustancia precursora controlada</td></tr>
+                    <tr><td><strong>Descripción general</strong></td><td>Descripción completa de la sustancia</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Protocolos</h2>
+
+            <p>
+                La subárea <strong>Protocolos</strong> dentro de Mis Laboratorios permite consultar
+                y cargar protocolos en formato PDF. Los protocolos son documentos de procedimientos
+                específicos del laboratorio.
+            </p>
+
+            <p>Campos del formulario para cargar un protocolo:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th><th>Ejemplo</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre</strong></td>
+                        <td>Nombre identificador del protocolo</td>
+                        <td>Protocolo de Titulación Ácido-Base</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descripción corta</strong></td>
+                        <td>Breve descripción del contenido del protocolo</td>
+                        <td>Procedimiento para titulación con NaOH 0.1N</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Archivo PDF</strong></td>
+                        <td>Archivo del protocolo en formato PDF</td>
+                        <td>protocolo-titulacion.pdf</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Procedimiento para cargar un protocolo</h3>
+
+            <ol class="step-list">
+                <li>Ingresar a <strong>Mis Laboratorios</strong> → seleccionar el laboratorio.</li>
+                <li>Seleccionar la subárea <strong>Protocolos</strong>.</li>
+                <li>Seleccionar <strong>Agregar</strong> o <strong>Cargar protocolo</strong>.</li>
+                <li>Completar el nombre y descripción corta.</li>
+                <li>Subir el archivo PDF desde el computador.</li>
+                <li>Guardar el registro.</li>
+            </ol>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Fin del Capítulo 2 — sección extendida</strong>
+                Ha completado la sección de operaciones avanzadas de reactivos y protocolos.
+                Ahora conoce cómo sustraer reactivos, consultar la bitácora, administrar contenedores,
+                mover reactivos entre estantes, descargar información técnica completa y gestionar
+                protocolos en PDF dentro del módulo de laboratorios.
+            </div>
+
+            <div class="page-navigation">
+                <a href="06-reportes.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Reportes y Auditoría
+                </a>
+                <a href="../sustancias/index.html" class="next-page">
+                    Cap 3: Gestión de Sustancias <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
