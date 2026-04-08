@@ -69,7 +69,7 @@
 							<div class="col-md-4 mb-4 px-2">
 								<div class="card">
 									<div class="card-header">
-										<span class="fs-6 prior_{{ object.priority }} badge">{{ object.laboratories.all.count }}</span>
+										<span class="fs-6 prior_{{ object.priority }} badge">{{ object.incidentreport_set.count }}</span>
 										{% if perms.risk_management.view_riskzone %}
 											<a href="{% url 'riskmanagement:riskzone_detail' org_pk object.pk %}">{{ object }}</a>
 										{% endif %}
