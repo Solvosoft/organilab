@@ -13,6 +13,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
+from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
 
 from auth_and_perms.models import ProfilePermission
 from laboratory.models import (
@@ -30,6 +32,8 @@ from laboratory.models import (
     OrganizationStructure,
     OrganizationStructureRelations,
 )
+from pending_tasks.models import PendingTask
+from pending_tasks.utils import create_pending_task
 from .limit_shelfobject import send_email_limit_objs
 from .task_utils import (
     create_informsperiods,
@@ -50,15 +54,36 @@ def get_limited_shelf_objects(lab):
 
 @app.task
 def notify_about_product_limit_reach():
-    labs = Laboratory.objects.all()
-    object_list = []
+    shelf_objects = ShelfObject.objects.filter(
+        limits__isnull=False, in_where_laboratory__isnull=False
+    ).select_related("object", "shelf__furniture__labroom")
+    labs = Laboratory.objects.filter(
+        pk__in=shelf_objects.values_list("in_where_laboratory", flat=True)
+    ).distinct()
+    object_list = {lab: [] for lab in labs}
+    for shelfobjects in shelf_objects:
+        if shelfobjects.quantity <= shelfobjects.limits.minimum_limit:
+            object_list[shelfobjects.in_where_laboratory].append(shelfobjects)
+
     for lab in labs:
-        for shelfobjects in get_limited_shelf_objects(lab):
-            if shelfobjects.quantity <= shelfobjects.limits.minimum_limit:
-                object_list.append(shelfobjects)
-        if len(object_list) > 0:
-            send_email_limit_objs(lab, object_list, enqueued=False)
-        object_list.clear()
+        if len(object_list[lab]) > 0 and lab.responsible:
+            responsable = lab.responsible
+            create_pending_task(
+                responsable,
+                _("List of ShelfObject in limits"),
+                [],
+                description=render_to_string(
+                    "tasks/limit_shelfobject_notify.html",
+                    {
+                        "objects": object_list[lab],
+                        "laboratory": lab,
+                    },
+                ),
+                status=PendingTask.PENDING,
+                profile=responsable.profile,
+                link="",
+                notify=True,
+            )
 
 
 @app.on_after_configure.connect
@@ -154,44 +179,33 @@ def send_expiration_email():
         object__type=Object.REACTIVE, reactive_expiration_date=tomorrow
     ).select_related("object", "shelf__furniture__labroom")
     reactives_by_lab = defaultdict(list)
+
     for reactive in expiring_reactives:
         lab = reactive.in_where_laboratory
         if lab:
             reactives_by_lab[lab].append(reactive)
 
-    for lab, reactives in reactives_by_lab.items():
-        blocked = BlockedListNotification.objects.filter(
-            laboratory=lab, object__in=[r.object for r in reactives]
-        )
-        blocked_emails = list(blocked.values_list("user__email", flat=True))
-        cc = ContentType.objects.get_for_model(Laboratory)
-        user_ids = ProfilePermission.objects.filter(
-            content_type=cc, object_id=lab.pk
-        ).values_list("profile__user", flat=True)
-        users = User.objects.filter(id__in=user_ids)
-        emails = [
-            user.email
-            for user in users
-            if user.email and user.email not in blocked_emails
-        ]
-        if emails:
-            schema = "https" if not settings.DEBUG else "http"
-            domain = Site.objects.get_current().domain
-            url = f"/lab/{lab.pk}/blocknotifications/"
-            context = {
-                "laboratory": lab,
-                "shelf_object": reactives,
-                "blockurl": f"{schema}://{domain}{url}",
-                "domain": domain,
-            }
-            send_email_from_template(
-                "Expiring reactives",
-                emails,
-                context=context,
-                enqueued=False,
-                user=None,
-                upfile=None,
+    for lab in reactives_by_lab.keys():
+        if lab.responsible:
+            create_pending_task(
+                lab.responsible,
+                _("ShelfObject expiration"),
+                [],
+                description=render_to_string(
+                    "tasks/expiration_shelfobject_notify.html",
+                    {
+                        "objects": reactives_by_lab[lab],
+                        "laboratory": lab,
+                        "date": tomorrow,
+                    },
+                ),
+                status=PendingTask.PENDING,
+                profile=lab.responsible.profile,
+                link="",
+                notify=True,
             )
+        else:
+            continue
 
 
 @app.task()
@@ -225,11 +239,11 @@ def _get_sources_for_substance(sc, force_pubchem_replacement):
     from laboratory.sds_sources import get_sources
 
     is_pubchem = SDSTraceability.objects.filter(
-        sustance_characteristics=sc, source='pubchem'
+        sustance_characteristics=sc, source="pubchem"
     ).exists()
 
     if force_pubchem_replacement and is_pubchem:
-        sources = get_sources(['merck'])
+        sources = get_sources(["merck"])
         return sources, True
 
     return get_sources(), False
@@ -262,16 +276,16 @@ def _update_substance_from_pdf(sc):
     if data is None:
         return False, "failed to extract PDF data"
 
-    pdf_text = data.pop('_text', '')
-    lang = data.get('_lang', 'es')
+    pdf_text = data.pop("_text", "")
+    lang = data.get("_lang", "es")
 
     # Update simple fields (only if extracted value is not None)
     simple_fields = {
-        'molecular_formula': data.get('molecular_formula'),
-        'density': data.get('density'),
-        'bioaccumulable': data.get('bioaccumulable'),
-        'seveso_list': data.get('seveso_list'),
-        'is_precursor': data.get('is_precursor'),
+        "molecular_formula": data.get("molecular_formula"),
+        "density": data.get("density"),
+        "bioaccumulable": data.get("bioaccumulable"),
+        "seveso_list": data.get("seveso_list"),
+        "is_precursor": data.get("is_precursor"),
     }
     for field, value in simple_fields.items():
         if value is not None:
@@ -279,28 +293,44 @@ def _update_substance_from_pdf(sc):
     sc.save()
 
     # H-codes: SET (replace) instead of ADD
-    h_codes = data.get('h_codes', [])
+    h_codes = data.get("h_codes", [])
     if h_codes:
         h_code_objects = list(DangerIndication.objects.filter(code__in=h_codes))
         sc.h_code.set(h_code_objects)
 
     # Catalog fields
-    catalog_keys = ['IARC', 'IDMG', 'white_organ', 'ue_code', 'nfpa', 'storage_class', 'Precursor']
+    catalog_keys = [
+        "IARC",
+        "IDMG",
+        "white_organ",
+        "ue_code",
+        "nfpa",
+        "storage_class",
+        "Precursor",
+    ]
     catalog_data = {}
     for key in catalog_keys:
         catalog_data[key] = list(
-            Catalog.objects.filter(key=key).order_by('pk').values_list('pk', 'description')
+            Catalog.objects.filter(key=key)
+            .order_by("pk")
+            .values_list("pk", "description")
         )
-    catalog_fields = extract_catalog_fields(pdf_text, catalog_data, lang) if pdf_text else {}
+    catalog_fields = (
+        extract_catalog_fields(pdf_text, catalog_data, lang) if pdf_text else {}
+    )
 
     # FK catalog fields
-    for cat_key, model_field in [('iarc', 'iarc_id'), ('imdg', 'imdg_id'), ('precursor_type', 'precursor_type_id')]:
+    for cat_key, model_field in [
+        ("iarc", "iarc_id"),
+        ("imdg", "imdg_id"),
+        ("precursor_type", "precursor_type_id"),
+    ]:
         value = catalog_fields.get(cat_key)
         if value is not None:
             setattr(sc, model_field, value)
 
     # M2M catalog fields: SET (replace)
-    for field_name in ['white_organ', 'ue_code', 'nfpa', 'storage_class']:
+    for field_name in ["white_organ", "ue_code", "nfpa", "storage_class"]:
         pks = catalog_fields.get(field_name, [])
         if pks:
             getattr(sc, field_name).set(pks)
@@ -310,8 +340,9 @@ def _update_substance_from_pdf(sc):
 
 
 @app.task()
-def update_sds_and_extract_data(sc_ids=None, force_pubchem_replacement=True,
-                                max_years=5, delay=2):
+def update_sds_and_extract_data(
+    sc_ids=None, force_pubchem_replacement=True, max_years=5, delay=2
+):
     """Celery task to update SDS documents and extract substance data.
 
     For each substance:
@@ -327,9 +358,11 @@ def update_sds_and_extract_data(sc_ids=None, force_pubchem_replacement=True,
     """
     from laboratory.sds_sources import check_needs_update, update_sds_for_substance
 
-    qs = SustanceCharacteristics.objects.filter(
-        cas_id_number__isnull=False
-    ).exclude(cas_id_number='').select_related('obj')
+    qs = (
+        SustanceCharacteristics.objects.filter(cas_id_number__isnull=False)
+        .exclude(cas_id_number="")
+        .select_related("obj")
+    )
     if sc_ids:
         qs = qs.filter(pk__in=sc_ids)
 
@@ -362,16 +395,23 @@ def update_sds_and_extract_data(sc_ids=None, force_pubchem_replacement=True,
             if needs_download:
                 existing_pdf_path = _resolve_pdf_path(sc)
                 sds_result = update_sds_for_substance(
-                    sc, sources=sources, max_years=max_years, force=force,
-                    existing_pdf_path=existing_pdf_path
+                    sc,
+                    sources=sources,
+                    max_years=max_years,
+                    force=force,
+                    existing_pdf_path=existing_pdf_path,
                 )
-                if sds_result['status'] == 'updated':
-                    task_logger.info("[SDS] %s: downloaded from %s", name, sds_result['source'])
+                if sds_result["status"] == "updated":
+                    task_logger.info(
+                        "[SDS] %s: downloaded from %s", name, sds_result["source"]
+                    )
                     sc.refresh_from_db()
-                elif sds_result['status'] == 'no_source':
+                elif sds_result["status"] == "no_source":
                     task_logger.warning("[SDS] %s: no source could provide SDS", name)
-                elif sds_result['status'] == 'error':
-                    task_logger.warning("[SDS] %s: %s", name, sds_result.get('error', 'unknown'))
+                elif sds_result["status"] == "error":
+                    task_logger.warning(
+                        "[SDS] %s: %s", name, sds_result.get("error", "unknown")
+                    )
 
                 if delay > 0:
                     time.sleep(delay)
@@ -391,11 +431,14 @@ def update_sds_and_extract_data(sc_ids=None, force_pubchem_replacement=True,
 
     task_logger.info(
         "SDS update complete. Processed: %d, Updated: %d, Skipped: %d, Errors: %d",
-        total, updated, skipped, errors
+        total,
+        updated,
+        skipped,
+        errors,
     )
     return {
-        'total': total,
-        'updated': updated,
-        'skipped': skipped,
-        'errors': errors,
+        "total": total,
+        "updated": updated,
+        "skipped": skipped,
+        "errors": errors,
     }

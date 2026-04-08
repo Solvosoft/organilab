@@ -1,8 +1,8 @@
 import logging
 
 from django.contrib.admin.models import ADDITION
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
 from djgentelella.permission_management import AllPermissionByAction
@@ -14,8 +14,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from auth_and_perms.models import Profile
-from laboratory.models import OrganizationStructure
+from auth_and_perms.models import Profile, Rol
+from laboratory.models import OrganizationStructure, Laboratory
 from laboratory.utils import organilab_logentry
 from pending_tasks.api import filterset
 from pending_tasks.models import PendingTask
@@ -26,6 +26,8 @@ from pending_tasks.api.serializers import (
     PendingTaskValidateSerializer,
     PendingTaskGetValuesSerializer,
 )
+from risk_management.api.serializer import RiskZoneSerializer
+from risk_management.models import RiskZone
 
 logger = logging.getLogger("organilab")
 
@@ -92,15 +94,14 @@ class PendingTaskViewSet(
         return Response(self.get_serializer(instance).data)
 
     def perform_create(self, serializer):
-        org = get_object_or_404(OrganizationStructure, pk=self.kwargs.get("org_pk"))
-        instance = serializer.save(organization=org, created_by=self.request.user)
+        instance = serializer.save(created_by=self.request.user)
         organilab_logentry(
             self.request.user,
             instance,
             ADDITION,
             changed_data=["name", "description", "status"],
         )
-        notify_task_created(instance, self.request.user, org)
+        notify_task_created(instance, self.request.user)
 
     def filter_queryset(self, queryset):
         queryset = super().filter_queryset(queryset)
