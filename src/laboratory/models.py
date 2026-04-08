@@ -50,7 +50,7 @@ class CLInventory(models.Model):
 
 class Catalog(models.Model):
     key = models.CharField(max_length=150)
-    description = models.CharField(max_length=500)
+    description = models.CharField(max_length=500, verbose_name=_("Description"))
 
     class Meta:
         ordering = ["pk"]

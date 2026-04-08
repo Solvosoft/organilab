@@ -300,7 +300,9 @@ class Structure(AbstractOrganizationRef):
         key_name="key",
         key_value="structure_type",
     )
-    area = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Area"))
+    area = models.DecimalField(
+        max_digits=10, decimal_places=2, verbose_name=_("Area/Volume")
+    )
     measuerement_unit = catalog.GTForeignKey(
         Catalog,
         on_delete=models.DO_NOTHING,

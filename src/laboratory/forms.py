@@ -139,6 +139,11 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
         widget=genwidgets.SelectMultiple(attrs={"disabled": True}),
         label=_("Regent"),
     )
+    last_update = forms.DateTimeField(
+        widget=genwidgets.DateTimeInput(attrs={"readonly": True}),
+        required=False,
+        label=_("Last update"),
+    )
     default_render_type = "as_grid"
     grid_representation = [
         [
@@ -151,6 +156,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
                 "regent",
                 "nearby_sites",
                 "description",
+                "last_update",
             ],
             [
                 "responsible",
@@ -173,6 +179,7 @@ class LaboratoryEdit(GTForm, forms.ModelForm):
             )
         )
         self.fields["responsible"].queryset = self.instance.organization.users.all()
+        self.fields["last_update"].initial = self.instance.last_update
 
     class Meta:
         model = Laboratory
