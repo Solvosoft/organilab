@@ -413,7 +413,7 @@ class ShelfObject(models.Model):
     )
     quantity = models.FloatField(
         _("Quantity"), help_text=_("Use dot like 0.344 on decimal")
-    )
+    )  # cantidad de x unidad de medida
     quantity_base_unit = models.FloatField(
         default=0,
         verbose_name=_("Quantity Base Unit"),
@@ -511,6 +511,11 @@ class ShelfObject(models.Model):
         key_value="process_condition",
     )
     is_box = models.BooleanField(default=False, verbose_name=_("Is box?"))
+    quantity_units = models.FloatField(
+        default=0,
+        verbose_name=_("Quantity Units per box"),
+        help_text=_("Number of units per box"),
+    )
 
     @staticmethod
     def get_units(unit):
