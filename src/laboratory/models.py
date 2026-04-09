@@ -510,6 +510,7 @@ class ShelfObject(models.Model):
         key_name="key",
         key_value="process_condition",
     )
+    is_box = models.BooleanField(default=False, verbose_name=_("Is box?"))
 
     @staticmethod
     def get_units(unit):
