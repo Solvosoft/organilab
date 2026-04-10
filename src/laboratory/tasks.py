@@ -152,7 +152,7 @@ def add_maximum_object_stock_per_day():
             total = sum(
                 [
                     get_conversion_units(
-                        shelfobject.measurement_unit, shelfobject.quantity
+                        shelfobject.measurement_unit, shelfobject.total_quantity
                     )
                     for shelfobject in ShelfObject.objects.filter(
                         in_where_laboratory=laboratory, object=obj
