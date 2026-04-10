@@ -505,6 +505,82 @@ class ShelfObjectCreateMethods:
 
         return {}, shelfobject
 
+    def create_box(self, serializer):
+        """
+        Create a single box-type ShelfObject.
+        quantity_units (int from form) is expanded into a JSON list of length quantity_box,
+        where each index represents a box and its unit count.
+        Boxes do not use quantity limits.
+
+        :param serializer: BoxShelfObjectSerializer (already validated)
+        :return: ({}, shelfobject) on success
+        """
+        created_by = self.context["request"].user
+        laboratory_id = self.context["laboratory_id"]
+        organization_id = self.context["organization_id"]
+
+        expired_date = get_shelf_object_expiration_date(
+            serializer.validated_data.pop("reactive_expiration_date", None)
+        )
+        units_per_box = serializer.validated_data.pop("quantity_units")
+        quantity_box = serializer.validated_data.pop("quantity_box", 1)
+        quantity_units_list = [units_per_box] * max(1, quantity_box)
+
+        extra_kwargs = dict(
+            created_by=created_by,
+            in_where_laboratory_id=laboratory_id,
+            reactive_expiration_date=expired_date,
+            quantity_units=quantity_units_list,
+            quantity_box=quantity_box,
+        )
+
+        changed_fields = [
+            "object",
+            "shelf",
+            "status",
+            "physical_status",
+            "quantity",
+            "description",
+            "concentration",
+            "measurement_unit",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "reactive_expiration_date",
+            "is_box",
+            "quantity_units",
+            "quantity_box",
+            "created_by",
+            "in_where_laboratory",
+        ]
+
+        shelfobject = serializer.save(**extra_kwargs)
+
+        build_shelfobject_qr(
+            self.context["request"], shelfobject, organization_id, laboratory_id
+        )
+        log_object_change(
+            created_by,
+            laboratory_id,
+            shelfobject,
+            0,
+            shelfobject.quantity,
+            "",
+            ADDITION,
+            _("Income"),
+            create=True,
+            organization=organization_id,
+        )
+        utils.organilab_logentry(
+            created_by,
+            shelfobject,
+            ADDITION,
+            changed_data=changed_fields,
+            relobj=laboratory_id,
+        )
+
+        return {}, shelfobject
+
     def create_equipment(
         self, serializer, limits_serializer, equipment_serializer=None
     ):
@@ -535,7 +611,9 @@ class ShelfObjectCreateMethods:
                 "created_by": created_by.pk,
             }
         )
-        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data, context={"organization": organization_id})
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(
+            data=data, context={"organization": organization_id}
+        )
 
         if equipment_serializer.is_valid():
             save_shelfobject_characteristics(equipment_serializer, created_by)
@@ -610,7 +688,9 @@ class ShelfObjectCreateMethods:
                 "created_by": created_by.pk,
             }
         )
-        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data, context={"organization": organization_id})
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(
+            data=data, context={"organization": organization_id}
+        )
         if equipment_serializer.is_valid():
             save_shelfobject_characteristics(equipment_serializer, created_by)
         else:
@@ -677,6 +757,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "laboratory.delete_tranferobject",
         ],
         "create_shelfobject": ["laboratory.add_shelfobject"],
+        "create_box_shelfobject": ["laboratory.add_shelfobject"],
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
         "reserve": ["reservations_management.add_reservedproducts"],
@@ -852,6 +933,58 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     errors.update(error)
             else:
                 errors.update(limit_serializer.errors)
+        else:
+            errors.update(serializer.errors)
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["post"])
+    def create_box_shelfobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Creates a box-type ShelfObject. is_box is always forced to True.
+
+        :param request: http request
+        :param org_pk: organization pk
+        :param lab_pk: laboratory pk
+        :return: 201 on success, 400 with errors on failure
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "create_box_shelfobject"
+        )
+        serializer = shelfobject_serializers.BoxShelfObjectSerializer(
+            data=request.data,
+            context={"organization_id": org_pk, "laboratory_id": lab_pk},
+        )
+        errors = {}
+        if serializer.is_valid():
+            quantity_box = serializer.validated_data.get("quantity_box", 1)
+            methods_class = ShelfObjectCreateMethods(
+                context={
+                    "organization_id": org_pk,
+                    "laboratory_id": lab_pk,
+                    "request": request,
+                }
+            )
+            error, shelfobject = methods_class.create_box(serializer)
+            if shelfobject:
+                create_shelfobject_observation(
+                    shelfobject,
+                    shelfobject.description,
+                    _("Created Object"),
+                    request.user,
+                    lab_pk,
+                )
+                return Response(
+                    {
+                        "detail": _("%(count)d box(es) created successfully.")
+                        % {"count": quantity_box}
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                errors.update(error)
         else:
             errors.update(serializer.errors)
 

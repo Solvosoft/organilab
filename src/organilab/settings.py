@@ -55,6 +55,8 @@ if os.getenv("ALLOWED_HOSTS", ""):
 else:
     ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
+
+SECURE_REFERRER_POLICY = "origin-when-cross-origin"
 ADMINS = [
     ("Solvo", "sitio@solvosoft.com"),
 ]
