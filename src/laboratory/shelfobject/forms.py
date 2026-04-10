@@ -414,6 +414,14 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
         label=_("Number of boxes"),
     )
 
+    units_per_box = forms.IntegerField(
+        widget=genwidgets.TextInput,
+        required=True,
+        initial=1,
+        min_value=1,
+        label=_("Units per box"),
+    )
+
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
 
@@ -469,10 +477,6 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             label=_("Measurement Unit"),
         )
 
-        self.fields["quantity_units"].label = _("Units per box")
-        self.fields["quantity_units"].initial = 1
-        self.fields["quantity_units"].min_value = 1
-
     class Meta:
         model = ShelfObject
         fields = [
@@ -488,7 +492,6 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             "batch",
             "was_donated",
             "expiration_date",
-            "quantity_units",
         ]
         widgets = {
             "shelf": forms.HiddenInput,
@@ -499,7 +502,6 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             "physical_status": genwidgets.Select,
             "concentration": genwidgets.FloatInput,
             "type_budget": genwidgets.Select,
-            "quantity_units": genwidgets.TextInput,
         }
 
 
