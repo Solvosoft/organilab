@@ -319,6 +319,13 @@ class ShelfObjectLaboratoryViewSerializer(
     actions = serializers.SerializerMethodField()
     quantity = serializers.SerializerMethodField()
 
+    def get_object_type(self, obj):
+
+        if obj.is_box:
+            return _("Box")
+
+        return obj.object.get_type_display()
+
     def get_quantity(self, obj):
         return round(obj.quantity, 3)
 

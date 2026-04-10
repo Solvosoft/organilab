@@ -286,6 +286,63 @@ function show_update_status_modal(instance, event){
     return false;
 }
 
+/**
+ * Tab-aware form submit handler for modals using modal_template_tab.html.
+ * Submits only the form in the currently active tab pane.
+ */
+$(document).on('click', '.formadd-tab', function () {
+    var btn = $(this);
+    var tabContentId = btn.data('tab-content');
+    var tabContent = $('#' + tabContentId);
+
+    var activePane = tabContent.find('.tab-pane.active');
+    var form = activePane.find('form');
+    if (!form.length) return;
+
+    var url = form[0].action;
+    var prefix = form.find('.form_prefix').val() || '';
+    if (prefix.length) prefix = prefix + '-';
+
+    // Reuse data_extras from form_modals (contains shelf and other context values)
+    var modal = btn.closest('.modal');
+    var modalId = modal.attr('id');
+    var extras = (form_modals[modalId] && form_modals[modalId].data_extras) || {};
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: convertToStringJson(form, prefix, extras),
+        headers: {'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json'},
+        success: function (data) {
+            if (typeof datatableelement !== 'undefined') {
+                datatableelement.ajax.reload();
+            }
+            bootstrap.Modal.getInstance(modal[0]).hide();
+            Swal.fire({
+                icon: 'success',
+                title: gettext('Success'),
+                text: data.detail,
+                timer: 1500
+            });
+        },
+        error: function (xhr) {
+            var errors = xhr.responseJSON && xhr.responseJSON.errors;
+            if (errors) {
+                form.find('ul.form_errors').remove();
+                form_field_errors(form, errors, prefix);
+            } else {
+                var error_msg = gettext('There was a problem performing your request. Please try again later or contact the administrator.');
+                if (xhr.status === 403) {
+                    error_msg = gettext('You do not have permission to perform this action.');
+                } else if (xhr.responseJSON && xhr.responseJSON.detail) {
+                    error_msg = xhr.responseJSON.detail;
+                }
+                Swal.fire({icon: 'error', title: gettext('Error'), text: error_msg});
+            }
+        }
+    });
+});
+
 $('#id_move-lab_room').on('change', function(){
     $('#id_move-furniture').val(null).trigger('change');
 });

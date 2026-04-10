@@ -152,18 +152,27 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
         if initial_date >= final_date:
             raise serializers.ValidationError(
-                {"final_date": _(
-                    "Final date cannot be equal or lower than initial date.")}
+                {
+                    "final_date": _(
+                        "Final date cannot be equal or lower than initial date."
+                    )
+                }
             )
         if initial_date <= current_datetime:
             raise serializers.ValidationError(
-                {"initial_date": _(
-                    "Initial date cannot be equal or lower than current date.")}
+                {
+                    "initial_date": _(
+                        "Initial date cannot be equal or lower than current date."
+                    )
+                }
             )
         if final_date <= current_datetime:
             raise serializers.ValidationError(
-                {"final_date": _(
-                    "Final date cannot be equal or lower than current date.")}
+                {
+                    "final_date": _(
+                        "Final date cannot be equal or lower than current date."
+                    )
+                }
             )
 
         return data
@@ -728,6 +737,80 @@ class MaterialRefuseShelfObjectSerializer(
         data = super().validate(data)
         errors = validate_measurement_unit_and_quantity(
             data["shelf"], data["object"], data["quantity"]
+        )
+        if errors:
+            raise serializers.ValidationError(errors)
+        return data
+
+
+class BoxShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):
+    object = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Object.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    status = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    quantity = serializers.FloatField(required=True)
+    description = serializers.CharField(required=False, allow_blank=True)
+    concentration = serializers.FloatField(required=False, default=0.0)
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    type_budget = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="type_budget").using(
+            settings.READONLY_DATABASE
+        ),
+        many=False,
+        required=False,
+        allow_null=True,
+    )
+    batch = serializers.CharField(required=False, default="0")
+    was_donated = serializers.BooleanField(default=False, required=False)
+    reactive_expiration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    physical_status = serializers.ChoiceField(
+        choices=ShelfObject.PHYSICAL_STATUS[1::], required=False, allow_null=True
+    )
+    quantity_units = serializers.FloatField(required=False, default=0)
+    # is_box is always True for box objects
+    is_box = serializers.HiddenField(default=True)
+    # quantity_box is form-only (not a model field): number of boxes to create
+    quantity_box = serializers.FloatField(required=False, default=1)
+
+    class Meta:
+        model = ShelfObject
+        fields = [
+            "object",
+            "shelf",
+            "status",
+            "physical_status",
+            "quantity",
+            "description",
+            "concentration",
+            "measurement_unit",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "reactive_expiration_date",
+            "is_box",
+            "quantity_units",
+            "quantity_box",
+        ]
+
+    def validate(self, data):
+        data = super().validate(data)
+        errors = validate_measurement_unit_and_quantity(
+            data["shelf"],
+            data["object"],
+            data["quantity"],
+            measurement_unit=data["measurement_unit"],
         )
         if errors:
             raise serializers.ValidationError(errors)
