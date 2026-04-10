@@ -516,9 +516,10 @@ class ShelfObject(models.Model):
         verbose_name=_("Units per box"),
         help_text=_("List of integer unit quantities indexed by box position"),
     )
-    quantity_box = models.IntegerField(
-        default=1,
-        verbose_name=_("Quantity Box"),
+    units_per_box = models.IntegerField(
+        default=0,
+        verbose_name=_("Units per box (reference)"),
+        help_text=_("Original number of units per box at creation time"),
     )
 
     @staticmethod

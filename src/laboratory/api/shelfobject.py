@@ -531,7 +531,7 @@ class ShelfObjectCreateMethods:
             in_where_laboratory_id=laboratory_id,
             reactive_expiration_date=expired_date,
             quantity_units=quantity_units_list,
-            quantity_box=quantity_box,
+            units_per_box=units_per_box,
         )
 
         changed_fields = [
@@ -549,7 +549,7 @@ class ShelfObjectCreateMethods:
             "reactive_expiration_date",
             "is_box",
             "quantity_units",
-            "quantity_box",
+            "units_per_box",
             "created_by",
             "in_where_laboratory",
         ]
@@ -959,7 +959,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         errors = {}
         if serializer.is_valid():
-            quantity_box = serializer.validated_data.get("quantity_box", 1)
             methods_class = ShelfObjectCreateMethods(
                 context={
                     "organization_id": org_pk,
@@ -979,7 +978,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 return Response(
                     {
                         "detail": _("%(count)d box(es) created successfully.")
-                        % {"count": quantity_box}
+                        % {"count": len(shelfobject.quantity_units)}
                     },
                     status=status.HTTP_201_CREATED,
                 )

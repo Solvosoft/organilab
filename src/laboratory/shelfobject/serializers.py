@@ -801,7 +801,7 @@ class BoxShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSeriali
             "reactive_expiration_date",
             "is_box",
             "units_per_box",
-            "quantity_box",
+            "quantity_box",  # form-only: not a model field, popped before save
         ]
 
     def validate(self, data):

@@ -5934,3 +5934,12 @@ msgstr "%(boxes)s caja(s) x %(units)s unidades"
 msgid "%(count)d box(es) created successfully."
 msgstr "%(count)d caja(s) creada(s) exitosamente."
 
+msgid "%(name)s (%(quantity)s %(unit)s)"
+msgstr "%(name)s (%(quantity)s %(unit)s)"
+
+msgid "%(units)s unit(s)"
+msgstr "%(units)s unidad(es)"
+
+msgid "%(boxes)s box(es)"
+msgstr "%(boxes)s caja(s)"
+
