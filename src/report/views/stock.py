@@ -66,7 +66,7 @@ def get_stock_dataset(lab_pk, column_list=None):
                 amount = sum(
                     [
                         get_conversion_units(
-                            shelfobj.measurement_unit, shelfobj.quantity
+                            shelfobj.measurement_unit, shelfobj.total_quantity
                         )
                         for shelfobj in shelfobjects
                     ]
@@ -129,7 +129,7 @@ def get_stock_dataset(lab_pk, column_list=None):
         ).first()
         amount = sum(
             [
-                get_conversion_units(shelfobj.measurement_unit, shelfobj.quantity)
+                get_conversion_units(shelfobj.measurement_unit, shelfobj.total_quantity)
                 for shelfobj in ShelfObject.objects.filter(
                     object__pk=obj, container__isnull=True
                 ).distinct("pk")
@@ -315,7 +315,7 @@ def get_stock_cartel_dataset(report, column_list=None):
                 amount = sum(
                     [
                         get_conversion_units(
-                            shelfobj.measurement_unit, shelfobj.quantity
+                            shelfobj.measurement_unit, shelfobj.total_quantity
                         )
                         for shelfobj in ShelfObject.objects.filter(
                             object__pk=obj, **filters
