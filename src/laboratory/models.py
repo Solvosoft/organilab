@@ -511,10 +511,14 @@ class ShelfObject(models.Model):
         key_value="process_condition",
     )
     is_box = models.BooleanField(default=False, verbose_name=_("Is box?"))
-    quantity_units = models.FloatField(
-        default=0,
-        verbose_name=_("Quantity Units per box"),
-        help_text=_("Number of units per box"),
+    quantity_units = models.JSONField(
+        default=list,
+        verbose_name=_("Units per box"),
+        help_text=_("List of integer unit quantities indexed by box position"),
+    )
+    quantity_box = models.IntegerField(
+        default=1,
+        verbose_name=_("Quantity Box"),
     )
 
     @staticmethod

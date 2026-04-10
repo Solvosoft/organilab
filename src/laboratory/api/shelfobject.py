@@ -505,14 +505,15 @@ class ShelfObjectCreateMethods:
 
         return {}, shelfobject
 
-    def create_box(self, serializer, quantity_box=1):
+    def create_box(self, serializer):
         """
-        Create one or more box-type ShelfObjects (one per box requested).
+        Create a single box-type ShelfObject.
+        quantity_units (int from form) is expanded into a JSON list of length quantity_box,
+        where each index represents a box and its unit count.
         Boxes do not use quantity limits.
 
         :param serializer: BoxShelfObjectSerializer (already validated)
-        :param quantity_box: number of box instances to create
-        :return: ({}, last shelfobject) on success
+        :return: ({}, shelfobject) on success
         """
         created_by = self.context["request"].user
         laboratory_id = self.context["laboratory_id"]
@@ -521,13 +522,16 @@ class ShelfObjectCreateMethods:
         expired_date = get_shelf_object_expiration_date(
             serializer.validated_data.pop("reactive_expiration_date", None)
         )
-        # quantity_box is form-only — remove before save reaches the ORM
-        serializer.validated_data.pop("quantity_box", None)
+        units_per_box = serializer.validated_data.pop("quantity_units")
+        quantity_box = serializer.validated_data.pop("quantity_box", 1)
+        quantity_units_list = [units_per_box] * max(1, quantity_box)
 
         extra_kwargs = dict(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             reactive_expiration_date=expired_date,
+            quantity_units=quantity_units_list,
+            quantity_box=quantity_box,
         )
 
         changed_fields = [
@@ -545,41 +549,37 @@ class ShelfObjectCreateMethods:
             "reactive_expiration_date",
             "is_box",
             "quantity_units",
+            "quantity_box",
             "created_by",
             "in_where_laboratory",
         ]
 
-        last_shelfobject = None
-        for i in range(max(1, int(quantity_box))):
-            # Reset instance so each iteration calls create(), not update()
-            serializer.instance = None
-            shelfobject = serializer.save(**extra_kwargs)
+        shelfobject = serializer.save(**extra_kwargs)
 
-            build_shelfobject_qr(
-                self.context["request"], shelfobject, organization_id, laboratory_id
-            )
-            log_object_change(
-                created_by,
-                laboratory_id,
-                shelfobject,
-                0,
-                shelfobject.quantity,
-                "",
-                ADDITION,
-                _("Income"),
-                create=True,
-                organization=organization_id,
-            )
-            utils.organilab_logentry(
-                created_by,
-                shelfobject,
-                ADDITION,
-                changed_data=changed_fields,
-                relobj=laboratory_id,
-            )
-            last_shelfobject = shelfobject
+        build_shelfobject_qr(
+            self.context["request"], shelfobject, organization_id, laboratory_id
+        )
+        log_object_change(
+            created_by,
+            laboratory_id,
+            shelfobject,
+            0,
+            shelfobject.quantity,
+            "",
+            ADDITION,
+            _("Income"),
+            create=True,
+            organization=organization_id,
+        )
+        utils.organilab_logentry(
+            created_by,
+            shelfobject,
+            ADDITION,
+            changed_data=changed_fields,
+            relobj=laboratory_id,
+        )
 
-        return {}, last_shelfobject
+        return {}, shelfobject
 
     def create_equipment(
         self, serializer, limits_serializer, equipment_serializer=None
@@ -957,9 +957,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             data=request.data,
             context={"organization_id": org_pk, "laboratory_id": lab_pk},
         )
-        quantity_box = max(1, int(request.data.get("quantity_box") or 1))
         errors = {}
         if serializer.is_valid():
+            quantity_box = serializer.validated_data.get("quantity_box", 1)
             methods_class = ShelfObjectCreateMethods(
                 context={
                     "organization_id": org_pk,
@@ -967,9 +967,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     "request": request,
                 }
             )
-            error, shelfobject = methods_class.create_box(
-                serializer, quantity_box=quantity_box
-            )
+            error, shelfobject = methods_class.create_box(serializer)
             if shelfobject:
                 create_shelfobject_observation(
                     shelfobject,
