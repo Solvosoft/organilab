@@ -1,5 +1,6 @@
 from django.core.files.base import ContentFile
-from django.db.models import Sum, Min, Count, Case, When, F, FloatField, ExpressionWrapper
+from django.db.models import Sum, Min, Count, Case, When, F, FloatField, ExpressionWrapper, Cast
+from django.db.models.transforms import KeyTextTransform
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 
@@ -188,7 +189,10 @@ def get_dataset_reactive_precursor(report, column_list=None):
                     When(
                         shelfobject__is_box=True,
                         then=ExpressionWrapper(
-                            F("shelfobject__quantity") * F("shelfobject__quantity_units"),
+                            F("shelfobject__quantity") * Cast(
+                                KeyTextTransform("0", "shelfobject__quantity_units"),
+                                output_field=FloatField(),
+                            ) * F("shelfobject__quantity_box"),
                             output_field=FloatField(),
                         ),
                     ),
@@ -443,7 +447,7 @@ def get_limited_shelf_objects(query):
         limits__minimum_limit__gte=0, limits__maximum_limit__gte=0.1
     ):
 
-        current = shelf_object.quantity_units if shelf_object.is_box else shelf_object.quantity
+        current = shelf_object.quantity_box if shelf_object.is_box else shelf_object.quantity
         if (
             shelf_object.limits.minimum_limit == current
             or shelf_object.limits.maximum_limit == current
@@ -477,7 +481,7 @@ def get_dataset_limit_objects(report, column_list=None):
                     "shelf": shelfobj.shelf.name,
                     "code": shelfobj.object.code,
                     "object": shelfobj.object.name,
-                    "quantity": shelfobj.quantity_units if shelfobj.is_box else shelfobj.quantity,
+                    "quantity": shelfobj.quantity_box if shelfobj.is_box else shelfobj.quantity,
                     "measurement_unit": _("Unit") if shelfobj.is_box else shelfobj.get_measurement_unit_display(),
                     "minimun_limit": (
                         shelfobj.limits.minimum_limit

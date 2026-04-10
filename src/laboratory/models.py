@@ -530,12 +530,12 @@ class ShelfObject(models.Model):
     @property
     def total_quantity(self):
         if self.is_box and self.quantity_units:
-            return self.quantity * self.quantity_units
+            return sum(self.quantity_units) * self.quantity
         return self.quantity
 
     @property
     def limit_reached(self):
-        current = self.quantity_units if self.is_box else self.quantity
+        current = self.quantity_box if self.is_box else self.quantity
         return current < self.limit_quantity
 
     def get_measurement_unit_display(self):
