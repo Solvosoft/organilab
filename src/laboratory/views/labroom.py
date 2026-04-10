@@ -28,6 +28,7 @@ from ..shelfobject.forms import (
     ReserveShelfObjectForm,
     ShelfObjectRefuseReactiveForm,
     ShelfObjectMaterialForm,
+    ShelfObjectBoxForm,
     ShelfObjectRefuseMaterialForm,
     ShelfObjectReactiveForm,
     ShelfObjectRefuseEquipmentForm,
@@ -232,6 +233,9 @@ class LaboratoryRoomsList(ListView):
         )
         context["material_form"] = ShelfObjectMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mf"
+        )
+        context["box_form"] = ShelfObjectBoxForm(
+            initial={"objecttype": 0}, org_pk=self.org, prefix="bf"
         )
         context["material_refuse_form"] = ShelfObjectRefuseMaterialForm(
             initial={"objecttype": 1}, org_pk=self.org, prefix="mff"
