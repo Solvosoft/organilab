@@ -24,10 +24,6 @@ function configure_modal(data){
         'model': gettext('Model'),
         'serie': gettext('Serie'),
         'plaque': gettext('Plaque'),
-        'type_budget': gettext('Type Budget'),
-        'container_entry_date': gettext('Container Entry Date'),
-        'container_open_date': gettext('Container Open Date'),
-        'reactive_expiration_date': gettext('Expiration Date'),
     }
     insert_substance_data(data.object.object_inst, tbody_instance, object_titles);
     insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')});
@@ -46,22 +42,22 @@ function configure_modal(data){
         insert_image(data.object['pictograms'], tbody_instance);
         }
        if (data.object['physical_status']){
-           insert_substance_data(data.object, tbody_instance, {'physical_status': gettext('Physical Status')});
+           insert_data(data.object["physical_status"], tbody_instance, gettext('Physical Status'));
         }
        if (data.object['concentration']){
-            insert_substance_data(data.object, tbody_instance, {'concentration': gettext('Concentration')});
+            insert_data(data.object["concentration"], tbody_instance, gettext('Concentration'));
         }
         if (data.object['reactive_expiration_date']){
-            insert_substance_data(data.object, tbody_instance, {'reactive_expiration_date': gettext('Expiration Date')});
+            insert_data(data.object["reactive_expiration_date"], tbody_instance, gettext('Expiration Date'));
         }
         if (data.object['container_entry_date']){
-            insert_substance_data(data.object, tbody_instance, {'container_entry_date': gettext('Container Entry Date')});
+            insert_data(data.object["container_entry_date"], tbody_instance, gettext('Container Entry Date'));
         }
         if (data.object['container_open_date']){
-            insert_substance_data(data.object, tbody_instance, {'container_open_date': gettext('Container Open Date')});
+            insert_data(data.object["container_open_date"], tbody_instance, gettext('Container Open Date'));
         }
         if (data.object['type_budget']){
-            insert_substance_data(data.object, tbody_instance, {'type_budget': gettext('Type Budget')});
+            insert_data(data.object["type_budget"], tbody_instance,  gettext('Type Budget'));
         }
       }
     if (data.object['substance_characteristics']){
@@ -260,5 +256,13 @@ function insert_image(data, inst){
         html_object += `<img src="${obj.pictogram}" class="p-2" width="100px" height="100px" />`
     })
     html_object += `</td></tr>`
+    inst.append(html_object)
+}
+
+function insert_data(value,inst, title){
+    let html_object = ''
+    console.log(title)
+    html_object += `<tr><td class="shelfobject_titles">${title}</td>
+        <td> ${value ? value : ""} </td></tr>`
     inst.append(html_object)
 }
