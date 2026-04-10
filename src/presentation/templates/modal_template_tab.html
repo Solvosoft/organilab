@@ -1,0 +1,97 @@
+{% load static i18n %}
+
+<div aria-hidden="true" id="{{ id }}" class="modal fade {{ principal_class }}"
+					aria-labelledby="{{ id }}_title"
+					data-bs-focus="false" role="dialog" tabindex="-1">
+	<div class="modal-dialog {{ modal_class }}" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<ul class="nav nav-tabs card-header-tabs me-auto" id="{{ id }}_tabs" role="tablist">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link active" id="{{ id }}_tab1_btn"
+														data-bs-toggle="tab"
+														data-bs-target="#{{ id }}_pane1"
+														type="button" role="tab"
+														aria-controls="{{ id }}_pane1"
+														aria-selected="true">
+							{{ title1 }}
+						</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="{{ id }}_tab2_btn"
+														data-bs-toggle="tab"
+														data-bs-target="#{{ id }}_pane2"
+														type="button" role="tab"
+														aria-controls="{{ id }}_pane2"
+														aria-selected="false">
+							{{ title2 }}
+						</button>
+					</li>
+				</ul>
+				<button aria-label="{% trans 'Close' %}" class="btn-close"
+												data-bs-dismiss="modal" type="button">
+				</button>
+			</div>
+			<div class="modal-body">
+				{% if add_shelf_info %}
+					<input name="position" type="hidden" value="{{ shelf_info_position }}"/>
+					{% if shelf_info_position == "top" %}
+						<div class="row mb-3 info_shelf"></div>
+					{% endif %}
+				{% endif %}
+
+				{% if add_shelf_info and shelf_info_position == "left" %}
+					<div class="row">
+					<div class="col-md-6 info_shelf"></div>
+					<div class="col-md-6">
+				{% elif add_shelf_info and shelf_info_position == "right" %}
+					<div class="row">
+					<div class="col-md-6">
+				{% endif %}
+
+				<div class="tab-content" id="{{ id }}_tabContent">
+					<div class="tab-pane fade show active" id="{{ id }}_pane1"
+										role="tabpanel" aria-labelledby="{{ id }}_tab1_btn">
+						<form id="{{ form_id }}" method="POST" autocomplete="off" action="{{ url1 }}">
+							{% csrf_token %}
+							{{ form1.as_horizontal }}
+							<input type="hidden" name="prefix" class="form_prefix"
+														value="{{ form1.prefix|default_if_none:''}}">
+						</form>
+					</div>
+					<div class="tab-pane fade" id="{{ id }}_pane2"
+										role="tabpanel" aria-labelledby="{{ id }}_tab2_btn">
+						<form id="{% if form_id2 %}{{ form_id2 }}{% else %}{{ form_id }}_2{% endif %}" method="POST" autocomplete="off" action="{{ url2 }}">
+							{% csrf_token %}
+							{{ form2.as_horizontal }}
+							<input type="hidden" name="prefix" class="form_prefix"
+														value="{{ form2.prefix|default_if_none:''}}">
+						</form>
+					</div>
+				</div>
+
+				{% if add_shelf_info and shelf_info_position == "left" %}
+					</div>
+					</div>
+				{% elif add_shelf_info and shelf_info_position == "right" %}
+					</div>
+					<div class="col-md-6 info_shelf"></div>
+					</div>
+				{% elif add_shelf_info and shelf_info_position == "bottom" %}
+					<div class="row info_shelf"></div>
+				{% endif %}
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+					{% trans 'Close' %}
+				</button>
+				<button class="btn btn-primary formadd-tab" type="button"
+												data-tab-form1="{{ form_id }}"
+												data-tab-form2="{% if form_id2 %}{{ form_id2 }}{% else %}{{ form_id }}_2{% endif %}"
+												data-tab-content="{{ id }}_tabContent">
+					{% trans 'Save changes' %}
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
