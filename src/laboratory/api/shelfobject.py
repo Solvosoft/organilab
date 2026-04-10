@@ -522,7 +522,7 @@ class ShelfObjectCreateMethods:
         expired_date = get_shelf_object_expiration_date(
             serializer.validated_data.pop("reactive_expiration_date", None)
         )
-        units_per_box = serializer.validated_data.pop("quantity_units")
+        units_per_box = serializer.validated_data.pop("units_per_box")
         quantity_box = serializer.validated_data.pop("quantity_box", 1)
         quantity_units_list = [units_per_box] * max(1, quantity_box)
 
