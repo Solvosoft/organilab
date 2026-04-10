@@ -5910,3 +5910,27 @@ msgstr "Es caja?"
 msgid "Box"
 msgstr "Caja"
 
+msgid "Number of boxes"
+msgstr "Número de cajas"
+
+msgid "Units per box"
+msgstr "Unidades por caja"
+
+msgid "List of integer unit quantities indexed by box position"
+msgstr "Lista de cantidades enteras de unidades indexadas por posición de caja"
+
+msgid "Quantity Box"
+msgstr "Cantidad de cajas"
+
+msgid "Number of box"
+msgstr "Número de cajas"
+
+msgid "%(quantity)s %(unit)s"
+msgstr "%(quantity)s %(unit)s"
+
+msgid "%(boxes)s box(es) x %(units)s units"
+msgstr "%(boxes)s caja(s) x %(units)s unidades"
+
+msgid "%(count)d box(es) created successfully."
+msgstr "%(count)d caja(s) creada(s) exitosamente."
+

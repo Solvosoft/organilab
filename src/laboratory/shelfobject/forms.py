@@ -406,12 +406,12 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
         widget=genwidgets.DateInput, required=False, label=_("Expiration date")
     )
 
-    quantity_box = forms.FloatField(
+    quantity_box = forms.IntegerField(
         widget=genwidgets.TextInput,
-        required=False,
+        required=True,
         initial=1,
-        label=_("Quantity of boxes"),
-        help_text=_("Use dot like 0.344 on decimal"),
+        min_value=1,
+        label=_("Number of boxes"),
     )
 
     def __init__(self, *args, **kwargs):
@@ -469,7 +469,9 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             label=_("Measurement Unit"),
         )
 
+        self.fields["quantity_units"].label = _("Units per box")
         self.fields["quantity_units"].initial = 1
+        self.fields["quantity_units"].min_value = 1
 
     class Meta:
         model = ShelfObject
@@ -497,7 +499,7 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             "physical_status": genwidgets.Select,
             "concentration": genwidgets.FloatInput,
             "type_budget": genwidgets.Select,
-            "quantity_units": genwidgets.FloatInput,
+            "quantity_units": genwidgets.TextInput,
         }
 
 

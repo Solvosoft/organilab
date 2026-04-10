@@ -778,11 +778,11 @@ class BoxShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSeriali
     physical_status = serializers.ChoiceField(
         choices=ShelfObject.PHYSICAL_STATUS[1::], required=False, allow_null=True
     )
-    quantity_units = serializers.FloatField(required=False, default=0)
+    # units_per_box: single integer from the form; serializer builds the list on create
+    quantity_units = serializers.IntegerField(required=True, min_value=1)
     # is_box is always True for box objects
     is_box = serializers.HiddenField(default=True)
-    # quantity_box is form-only (not a model field): number of boxes to create
-    quantity_box = serializers.FloatField(required=False, default=1)
+    quantity_box = serializers.IntegerField(required=False, min_value=1, default=1)
 
     class Meta:
         model = ShelfObject
