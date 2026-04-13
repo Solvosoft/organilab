@@ -561,7 +561,7 @@ class ShelfObjectCreateMethods:
 
         # Generate unique codes now that we have the pk
         quantity_units = []
-        for _ in range(box_count):
+        for _i in range(box_count):
             existing_codes = [b["code"] for b in quantity_units]
             code = generate_box_code(shelfobject.pk, existing_codes)
             quantity_units.append({"code": code, "units": units_per_box})
@@ -789,6 +789,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "get_shelfobject": ["laboratory.view_shelfobject"],
         "get_shelfobject_limits": ["laboratory.view_shelfobject"],
         "edit_shelfobject_limits": ["laboratory.change_shelfobject"],
+        "update_box_shelfobject": ["laboratory.change_shelfobject"],
+        "get_box_edit_data": ["laboratory.view_shelfobject"],
     }
 
     # This is not an API endpoint
@@ -1977,6 +1979,93 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             return JsonResponse(serializers, status=status.HTTP_200_OK)
         else:
             return JsonResponse(serializers, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def get_box_edit_data(self, request, org_pk, lab_pk, pk, **kwargs):
+        """Return current box ShelfObject data to pre-populate the edit form."""
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "get_box_edit_data"
+        )
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+        data = {
+            "object": {"id": shelfobject.object_id, "text": str(shelfobject.object)} if shelfobject.object_id else None,
+            "status": {"id": shelfobject.status_id, "text": str(shelfobject.status)} if shelfobject.status_id else None,
+            "measurement_unit": {"id": shelfobject.measurement_unit_id, "text": str(shelfobject.measurement_unit)} if shelfobject.measurement_unit_id else None,
+            "type_budget": {"id": shelfobject.type_budget_id, "text": str(shelfobject.type_budget)} if shelfobject.type_budget_id else None,
+            "physical_status": shelfobject.physical_status,
+            "quantity": shelfobject.quantity,
+            "description": shelfobject.description or "",
+            "concentration": shelfobject.concentration,
+            "batch": shelfobject.batch or "",
+            "was_donated": shelfobject.was_donated,
+            "reactive_expiration_date": str(shelfobject.reactive_expiration_date) if shelfobject.reactive_expiration_date else "",
+            "units_per_box": shelfobject.units_per_box,
+            "quantity_box": len(shelfobject.quantity_units) if shelfobject.quantity_units else 0,
+        }
+        return JsonResponse(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["put"])
+    def update_box_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+        Update a box-type ShelfObject.
+        - Updates all regular fields.
+        - quantity_box: if increased, adds new boxes; if decreased, removes from end.
+        - units_per_box: updates the reference value only.
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "update_box_shelfobject"
+        )
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+        serializer = shelfobject_serializers.UpdateBoxShelfObjectSerializer(
+            instance=shelfobject, data=request.data, partial=True
+        )
+        if not serializer.is_valid():
+            return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        quantity_box = serializer.validated_data.pop("quantity_box", None)
+        units_per_box = serializer.validated_data.get("units_per_box")
+        obj = serializer.save()
+
+        current_boxes = list(obj.quantity_units or [])
+        current_count = len(current_boxes)
+        quantity_units_changed = False
+
+        # Propagate new units_per_box to all existing boxes
+        if units_per_box is not None:
+            current_boxes = [{"code": b["code"], "units": units_per_box} for b in current_boxes]
+            quantity_units_changed = True
+
+        # Adjust number of boxes
+        if quantity_box is not None:
+            if quantity_box > current_count:
+                effective_units = units_per_box or obj.units_per_box
+                for _i in range(quantity_box - current_count):
+                    existing_codes = [b["code"] for b in current_boxes]
+                    code = generate_box_code(obj.pk, existing_codes)
+                    current_boxes.append({"code": code, "units": effective_units})
+            elif quantity_box < current_count:
+                current_boxes = current_boxes[:quantity_box]
+            quantity_units_changed = True
+
+        if quantity_units_changed:
+            obj.quantity_units = current_boxes
+            obj.save(update_fields=["quantity_units"])
+
+        utils.organilab_logentry(
+            request.user, obj, CHANGE, "shelfobject",
+            changed_data=list(request.data.keys()), relobj=lab_pk
+        )
+        create_shelfobject_observation(
+            obj,
+            obj.description or "",
+            _("Box updated"),
+            request.user,
+            lab_pk,
+        )
+        return JsonResponse(
+            {"detail": _("Box was updated successfully.")},
+            status=status.HTTP_200_OK,
+        )
 
     @action(detail=True, methods=["get"])
     def get_shelfobject_limits(self, request, org_pk, lab_pk, pk, **kwargs):
