@@ -89,6 +89,7 @@ class ReservedProducts(AbstractOrganizationRef):
     laboratory = models.ForeignKey(
         Laboratory, null=True, on_delete=models.CASCADE, verbose_name=_("Laboratory")
     )
+    # unidades de cajas []
 
 
 class ReservationTasks(models.Model):
