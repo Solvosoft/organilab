@@ -1,4 +1,6 @@
 import logging
+import random
+import string
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -31,6 +33,23 @@ from laboratory.utils_base_unit import (
 )
 
 logger = logging.getLogger("organilab")
+
+_BOX_CODE_CHARS = string.digits + string.ascii_lowercase  # 0-9 + a-z
+
+
+def generate_box_code(shelfobject_pk, existing_codes=()):
+    """
+    Generate a unique box code in the format b{pk}-XXXX where XXXX is a
+    4-character alphanumeric suffix (digits + lowercase letters).
+    Retries until a code not present in existing_codes is found.
+    """
+    existing = set(existing_codes)
+    prefix = f"b{shelfobject_pk}-"
+    while True:
+        suffix = "".join(random.choices(_BOX_CODE_CHARS, k=4))
+        code = f"{prefix}{suffix}"
+        if code not in existing:
+            return code
 
 
 def save_increase_decrease_shelf_object(

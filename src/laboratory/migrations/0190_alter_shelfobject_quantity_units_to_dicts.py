@@ -1,4 +1,19 @@
+import random
+import string
+
 from django.db import migrations, models
+
+_BOX_CODE_CHARS = string.digits + string.ascii_lowercase
+
+
+def _generate_box_code(shelfobject_pk, existing_codes):
+    existing = set(existing_codes)
+    prefix = f"b{shelfobject_pk}-"
+    while True:
+        suffix = "".join(random.choices(_BOX_CODE_CHARS, k=4))
+        code = f"{prefix}{suffix}"
+        if code not in existing:
+            return code
 
 
 def convert_quantity_units_to_dicts(apps, schema_editor):
@@ -6,10 +21,12 @@ def convert_quantity_units_to_dicts(apps, schema_editor):
     for obj in ShelfObject.objects.filter(is_box=True):
         old = obj.quantity_units or []
         if old and not isinstance(old[0], dict):
-            obj.quantity_units = [
-                {"code": f"b-{obj.pk}-{i + 1:04d}", "units": int(units)}
-                for i, units in enumerate(old)
-            ]
+            new_units = []
+            for units in old:
+                existing_codes = [b["code"] for b in new_units]
+                code = _generate_box_code(obj.pk, existing_codes)
+                new_units.append({"code": code, "units": int(units)})
+            obj.quantity_units = new_units
             obj.save(update_fields=["quantity_units"])
 
 
