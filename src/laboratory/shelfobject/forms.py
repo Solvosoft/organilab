@@ -428,24 +428,27 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        modal_id = kwargs.pop("modal_id", "#box_form")
+        object_readonly = kwargs.pop("object_readonly", False)
 
         super().__init__(*args, **kwargs)
+        object_attrs = {
+            "data-dropdownparent": modal_id,
+            "data-s2filter-shelf": "#id_shelf",
+            "data-s2filter-laboratory": "#id_laboratory",
+            "data-s2filter-organization": "#id_organization",
+            "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+            "data-s2filter-org_pk": "#id_organization",
+            "data-s2filter-lab_pk": "#id_laboratory",
+        }
+        if object_readonly:
+            object_attrs["disabled"] = "disabled"
         self.fields["object"] = forms.ModelChoiceField(
             queryset=Object.objects.all(),
-            widget=AutocompleteSelect(
-                "objectorgsearch",
-                attrs={
-                    "data-dropdownparent": "#box_form",
-                    "data-s2filter-shelf": "#id_shelf",
-                    "data-s2filter-laboratory": "#id_laboratory",
-                    "data-s2filter-organization": "#id_organization",
-                    "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
-                    "data-s2filter-org_pk": "#id_organization",
-                    "data-s2filter-lab_pk": "#id_laboratory",
-                },
-            ),
+            widget=AutocompleteSelect("objectorgsearch", attrs=object_attrs),
             label=_("Reactive"),
             help_text=_("Search by name, code or CAS number"),
+            required=not object_readonly,
         )
 
         self.fields["status"] = forms.ModelChoiceField(
@@ -453,7 +456,7 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             widget=AutocompleteSelect(
                 "shelfobject_status_search",
                 attrs={
-                    "data-dropdownparent": "#box_form",
+                    "data-dropdownparent": modal_id,
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",
                     "data-s2filter-org_pk": "#id_organization",
@@ -470,7 +473,7 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             widget=AutocompleteSelect(
                 "catalogunit",
                 attrs={
-                    "data-dropdownparent": "#box_form",
+                    "data-dropdownparent": modal_id,
                     "data-s2filter-shelf": "#id_shelf",
                     "data-s2filter-laboratory": "#id_laboratory",
                     "data-s2filter-organization": "#id_organization",

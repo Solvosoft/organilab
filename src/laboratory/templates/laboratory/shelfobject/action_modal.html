@@ -53,7 +53,9 @@
 {% trans "Create Box" as box_title %}
 {% trans "Edit Reactive" as edit_reactive_title %}
 {% trans "Edit Material" as edit_material_title %}
+{% trans "Edit Box" as edit_box_title %}
 
+{% include 'modal_template.html' with id='edit_box_modal' form_id='edit_box_form' title=edit_box_title form=update_box_form url=create_box_shelfobject_url modal_class="modal-xl" %}
 {% include 'modal_template.html' with id='edit_reactive_modal' form_id='edit_reactive_form' title=edit_reactive_title form=edit_form url=create_shelfobject_url modal_class="modal-lg" %}
 {% include 'modal_template.html' with id='edit_material_modal' form_id='edit_material_form' title=edit_material_title form=edit_material_form url=create_shelfobject_url modal_class="modal-lg" %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_modal' form_id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url modal_class="modal-xl" %}

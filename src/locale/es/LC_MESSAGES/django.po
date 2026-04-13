@@ -5961,6 +5961,18 @@ msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
 msgid "No boxes"
 msgstr "Sin cajas"
 
+msgid "Box updated"
+msgstr "Caja actualizada"
+
+msgid "Box was updated successfully."
+msgstr "La caja fue actualizada exitosamente."
+
+msgid "Edit Box"
+msgstr "Editar caja"
+
+msgid "Cannot change the number of boxes or units per box because one or more boxes have already been modified. Use the decrease or increase actions instead."
+msgstr "No se puede cambiar el número de cajas ni las unidades por caja porque una o más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
+
 msgid "Box selection is required for box objects."
 msgstr "La selección de caja es requerida para objetos de tipo caja."
 
