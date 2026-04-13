@@ -115,6 +115,7 @@ from laboratory.shelfobject.utils import (
     save_shelfobject_characteristics,
     delete_shelfobjects,
     get_shelf_object_expiration_date,
+    generate_box_code,
 )
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
@@ -557,10 +558,12 @@ class ShelfObjectCreateMethods:
         shelfobject = serializer.save(**extra_kwargs)
 
         # Generate unique codes now that we have the pk
-        shelfobject.quantity_units = [
-            {"code": f"b-{shelfobject.pk}-{i + 1:04d}", "units": units_per_box}
-            for i in range(box_count)
-        ]
+        quantity_units = []
+        for _ in range(box_count):
+            existing_codes = [b["code"] for b in quantity_units]
+            code = generate_box_code(shelfobject.pk, existing_codes)
+            quantity_units.append({"code": code, "units": units_per_box})
+        shelfobject.quantity_units = quantity_units
         shelfobject.save(update_fields=["quantity_units"])
 
         build_shelfobject_qr(
