@@ -42,9 +42,9 @@
 					data-containername="{{ shelfobject.container }}" data-shelfobject="{{ shelfobject.pk }}"
 					data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-hourglass-end" aria-hidden="true"></i></a>
 		{% else %}
-			<a class="ms-2" onclick="return editReactiveShelfObject(this, event);" data-modalid="edit_reactive_modal"
+			<a class="ms-2" onclick="return editBoxShelfObject(this, event);" data-modalid="edit_box_modal"
 				title="{% trans 'Edit' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
-				data-form="edit_reactive_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+				data-form="edit_box_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 	{% endif %}
 
 	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal"
