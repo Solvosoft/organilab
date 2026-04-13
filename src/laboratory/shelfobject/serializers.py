@@ -846,6 +846,80 @@ class BoxShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSeriali
         return data
 
 
+class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
+    status = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+    )
+    quantity = serializers.FloatField(required=False)
+    description = serializers.CharField(required=False, allow_blank=True)
+    concentration = serializers.FloatField(required=False)
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+    )
+    type_budget = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="type_budget").using(
+            settings.READONLY_DATABASE
+        ),
+        many=False,
+        required=False,
+        allow_null=True,
+    )
+    batch = serializers.CharField(required=False)
+    was_donated = serializers.BooleanField(required=False)
+    reactive_expiration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    physical_status = serializers.ChoiceField(
+        choices=ShelfObject.PHYSICAL_STATUS[1::], required=False, allow_null=True
+    )
+    units_per_box = serializers.IntegerField(required=False, min_value=1)
+    quantity_box = serializers.IntegerField(required=False, min_value=1)
+
+    class Meta:
+        model = ShelfObject
+        fields = [
+            "status",
+            "physical_status",
+            "quantity",
+            "description",
+            "concentration",
+            "measurement_unit",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "reactive_expiration_date",
+            "units_per_box",
+            "quantity_box",
+        ]
+
+    def validate(self, data):
+        instance = self.instance
+        current_box_count = len(instance.quantity_units) if instance.quantity_units else 0
+
+        quantity_box_changed = "quantity_box" in data and data["quantity_box"] != current_box_count
+        units_per_box_changed = "units_per_box" in data and data["units_per_box"] != instance.units_per_box
+
+        if not (quantity_box_changed or units_per_box_changed):
+            return data
+
+        original_units = instance.units_per_box
+        boxes = instance.quantity_units or []
+        boxes_modified = any(box["units"] != original_units for box in boxes)
+
+        if boxes_modified:
+            raise serializers.ValidationError({
+                "quantity_box": _(
+                    "Cannot change the number of boxes or units per box because one or more "
+                    "boxes have already been modified. Use the decrease or increase actions instead."
+                )
+            })
+        return data
+
+
 class EquipmentShelfObjectSerializer(
     ValidateShelfSerializer, serializers.ModelSerializer
 ):

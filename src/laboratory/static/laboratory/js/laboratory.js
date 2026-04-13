@@ -701,6 +701,62 @@ function updateContainerOfShelfObject(instance, event){
 }
 
 
+function editBoxShelfObject(instance, event) {
+    var modalid = $(instance).data('modalid');
+    var form = $(instance).data('form');
+    var shelfobjectPk = $(instance).data('shelfobject');
+    var updateUrl = document.urls["update_box_shelfobject"].replace('0', shelfobjectPk);
+
+    document.getElementById(form).action = updateUrl;
+
+    if (form_modals.hasOwnProperty(modalid)) {
+        delete form_modals[modalid];
+        $("#edit_box_modal").find('.formadd').off('click');
+    }
+    show_me_modal(instance, event);
+    form_modals[modalid].type = 'PUT';
+
+    // Pre-populate form fields from current box data
+    var dataUrl = document.urls["get_box_edit_data"].replace('0', shelfobjectPk);
+    $.ajax({
+        url: dataUrl,
+        type: "GET",
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function (data) {
+            // Plain inputs
+            $('#id_ubf-description').val(data.description);
+            $('#id_ubf-batch').val(data.batch);
+            $('#id_ubf-expiration_date').val(data.reactive_expiration_date);
+            $('#id_ubf-quantity').val(data.quantity);
+            $('#id_ubf-concentration').val(data.concentration);
+            $('#id_ubf-units_per_box').val(data.units_per_box);
+            $('#id_ubf-quantity_box').val(data.quantity_box);
+
+            // Regular select
+            $('#id_ubf-physical_status').val(data.physical_status).trigger('change');
+
+            // Select2 AJAX fields: create Option with text so it renders correctly
+            function setSelect2(selector, item) {
+                if (!item) return;
+                var $el = $(selector);
+                $el.find('option[value="' + item.id + '"]').remove();
+                $el.append(new Option(item.text, item.id, true, true)).trigger('change');
+            }
+            setSelect2('#id_ubf-object', data.object);
+            setSelect2('#id_ubf-status', data.status);
+            setSelect2('#id_ubf-measurement_unit', data.measurement_unit);
+            setSelect2('#id_ubf-type_budget', data.type_budget);
+
+            // Checkbox was_donated
+            if (data.was_donated) {
+                $('#id_ubf-was_donated').prop('checked', true).trigger('change');
+            } else {
+                $('#id_ubf-was_donated').prop('checked', false).trigger('change');
+            }
+        }
+    });
+}
+
 function editReactiveShelfObject(instance, event){
     var modalid= $(instance).data('modalid');
     form = $(instance).data('form');
