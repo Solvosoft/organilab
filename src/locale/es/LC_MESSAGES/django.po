@@ -5913,6 +5913,9 @@ msgstr "Caja"
 msgid "Number of boxes"
 msgstr "Número de cajas"
 
+msgid "Box detail"
+msgstr "Detalle de cajas"
+
 msgid "Units per box"
 msgstr "Unidades por caja"
 
