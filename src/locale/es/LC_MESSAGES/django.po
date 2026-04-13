@@ -5984,3 +5984,6 @@ msgstr "La cantidad a restar no puede ser mayor que las unidades disponibles de 
 
 msgid "boxes"
 msgstr "cajas"
+
+msgid "Boxes to return"
+msgstr "Cajas para devolver"

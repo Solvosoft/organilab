@@ -134,7 +134,6 @@ const populate_box_return_select = (reserved_boxes) => {
         $select.closest('.form-group').show();
         $select.select2({
             dropdownParent: $('#exampleModal'),
-            placeholder: $select.attr('data-placeholder') || 'Choose boxes...',
         });
     } else {
         $select.closest('.form-group').hide();
