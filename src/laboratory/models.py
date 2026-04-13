@@ -1315,7 +1315,6 @@ class UserOrganization(models.Model):
 
 
 # FIXME: Delete this model
-
 # class OrganizationUserManagement(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
@@ -1552,6 +1551,7 @@ class TranferObject(BaseCreationObj):
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
+    # indices de las cajas a transferir []
 
     def get_object_detail(self):
         return "%s %s %s" % (

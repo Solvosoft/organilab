@@ -49,6 +49,54 @@ def save_increase_decrease_shelf_object(
     shelfobject = validated_data["shelf_object"]
     amount = validated_data["amount"]
     use = validated_data.get("use", "")
+
+    # Box objects: decrease/increase units from a specific box slot by index
+    if shelfobject.is_box and not is_increase_process:
+        box_index = validated_data.get("box_index")
+        quantity_units = list(shelfobject.quantity_units)
+        old_units = quantity_units[box_index]
+        new_units = old_units - int(amount)
+        action_taken = _("Box units decreased")
+
+        if new_units <= 0:
+            quantity_units.pop(box_index)
+        else:
+            quantity_units[box_index] = new_units
+
+        shelfobject.quantity_units = quantity_units
+        log_object_change(
+            user,
+            laboratory.pk,
+            shelfobject,
+            old_units,
+            max(new_units, 0),
+            description,
+            2,
+            _("Spend"),
+            create=False,
+            organization=organization,
+        )
+        save_object_by_action(
+            user,
+            shelfobject,
+            [laboratory, shelfobject, organization],
+            ["quantity_units"],
+            CHANGE,
+            "shelfobject",
+        )
+        if not description:
+            description = _("Box %(box)d: %(units)d unit(s) remaining") % {
+                "box": box_index + 1,
+                "units": max(new_units, 0),
+            }
+        ShelfObjectObservation.objects.create(
+            action_taken=action_taken,
+            description=description,
+            shelf_object=shelfobject,
+            created_by=user,
+        )
+        return
+
     old = shelfobject.quantity
     converted_amount = get_conversion_from_two_units(
         measurement_unit, shelfobject.shelf.measurement_unit, amount

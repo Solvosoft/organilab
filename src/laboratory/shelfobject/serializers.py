@@ -302,8 +302,11 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE)
     )
     measurement_unit = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE)
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+        allow_null=True,
     )
+    box_index = serializers.IntegerField(required=False, allow_null=True, min_value=0)
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
@@ -321,9 +324,35 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
     def validate(self, data):
         amount = data["amount"]
         shelf_object = data["shelf_object"]
-        decreased_unit = data["measurement_unit"]
-        query_unit = Catalog.objects.filter(key="units")
         decrease_errors = {}
+
+        # Box-specific validation: decrease units from a specific box slot
+        if shelf_object.is_box:
+            box_index = data.get("box_index")
+            quantity_units = shelf_object.quantity_units or []
+            if box_index is None:
+                raise serializers.ValidationError(
+                    {"box_index": _("Box selection is required for box objects.")}
+                )
+            if box_index >= len(quantity_units):
+                raise serializers.ValidationError(
+                    {"box_index": _("Invalid box selection.")}
+                )
+            if amount > quantity_units[box_index]:
+                decrease_errors["amount"] = _(
+                    "Subtract amount cannot be greater than the available box units."
+                )
+            if decrease_errors:
+                raise serializers.ValidationError(decrease_errors)
+            return data
+
+        # Standard (non-box) validation
+        decreased_unit = data.get("measurement_unit")
+        if not decreased_unit:
+            raise serializers.ValidationError(
+                {"measurement_unit": _("This field is required.")}
+            )
+        query_unit = Catalog.objects.filter(key="units")
 
         measurement_unit = (
             shelf_object.measurement_unit

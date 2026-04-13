@@ -160,6 +160,7 @@ class DecreaseShelfObjectForm(GTForm):
     measurement_unit = forms.ModelChoiceField(
         queryset=Catalog.objects.all(),
         label=_("Measurement Unit"),
+        required=False,
         widget=AutocompleteSelect(
             "catalogunitIncDec",
             attrs={
@@ -181,6 +182,9 @@ class DecreaseShelfObjectForm(GTForm):
         required=False,
     )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+    box_index = forms.IntegerField(
+        widget=forms.HiddenInput, required=False, min_value=0
+    )
 
 
 class MoveShelfObjectForm(GTForm):
