@@ -47,6 +47,20 @@ class ApiReservedProductsCRUD(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def patch(self, request, pk, format=None):
+        reserved_product = self.get_object(pk)
+        last_status = reserved_product.status
+        serializer = ReservedProductSerializer(reserved_product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            if serializer.initial_data.get("status") == "1" and last_status == 0:
+                if reserved_product.initial_date >= timezone.now():
+                    add_decrease_stock_task(reserved_product)
+                else:
+                    decrease_stock.delay(reserved_product.pk)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ApiListReservationReservedProduct(APIView):
 
