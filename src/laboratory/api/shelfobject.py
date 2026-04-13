@@ -53,6 +53,7 @@ from laboratory.shelfobject.serializers import (
     IncreaseShelfObjectSerializer,
     DecreaseShelfObjectSerializer,
     ReserveShelfObjectSerializer,
+    ReturnBoxShelfObjectSerializer,
     UpdateShelfObjectStatusSerializer,
     ShelfObjectObservationDataTableSerializer,
     MoveShelfObjectSerializer,
@@ -104,6 +105,7 @@ from laboratory.shelfobject.serializers import (
 
 from laboratory.shelfobject.utils import (
     save_increase_decrease_shelf_object,
+    save_return_box_shelf_object,
     move_shelfobject_partial_quantity_to,
     build_shelfobject_qr,
     save_shelfobject_limits_from_serializer,
@@ -771,6 +773,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
         "reserve": ["reservations_management.add_reservedproducts"],
+        "return_shelfobject": ["reservations_management.change_reservedproducts"],
         "detail": ["laboratory.view_shelfobject"],
         "tag": [],
         "delete": ["laboratory.delete_shelfobject"],
@@ -1025,7 +1028,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             data=request.data, context={"source_laboratory_id": self.laboratory.pk}
         )
         errors = {}
-
         if serializer.is_valid():
             save_increase_decrease_shelf_object(
                 request.user,
@@ -1036,10 +1038,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             )
         else:
             errors = serializer.errors
-
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-
         return JsonResponse(
             {"detail": _("Shelf object was increased successfully.")},
             status=status.HTTP_200_OK,
@@ -1089,10 +1089,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=["post"])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
         """
-        This action allows the reserved product creation by following data:
-        required quantity, initial and final date validate through serializer,
-        also user needs to have required access permission
-        to do this action related to this specific organization and laboratory.
+        Creates a reservation for a box shelf object.
+
+        Only shelf objects marked as is_box=True are accepted. The amount_required
+        field represents the number of boxes to reserve (e.g. 2.5). The serializer
+        selects the first N complete boxes plus a partial box (ceil of the fractional
+        part × units_per_box) from quantity_units in list order, and stores the
+        selected box codes and units in reserved_boxes on the ReservedProducts instance.
 
         :param request: http request
         :param org_pk: organization related to reserved product and user permissions
@@ -1134,6 +1137,49 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse(
             {"detail": _("Reservation was performed successfully.")},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=False, methods=["post"])
+    def return_shelfobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Returns reserved boxes back to the shelf object's stock.
+
+        Receives a reserved_product pk (must be in BORROWED status). Each box listed
+        in reserved_product.reserved_boxes is added back to quantity_units (restoring
+        its units). quantity_box is updated accordingly and the reservation status is
+        set to RETURNED with amount_returned equal to amount_required.
+
+        :param request: http request
+        :param org_pk: organization related to the reserved product and user permissions
+        :param lab_pk: laboratory related to the shelf object and user permissions
+        :param kwargs: extra params
+        :return: success or error message
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "return_shelfobject"
+        )
+        self.serializer_class = ReturnBoxShelfObjectSerializer
+        serializer = self.serializer_class(
+            data=request.data, context={"source_laboratory_id": self.laboratory.pk}
+        )
+        errors = {}
+
+        if serializer.is_valid():
+            save_return_box_shelf_object(
+                request.user,
+                serializer.validated_data,
+                self.laboratory,
+                self.organization,
+            )
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse(
+            {"detail": _("Boxes were returned successfully.")},
             status=status.HTTP_200_OK,
         )
 

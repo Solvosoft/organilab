@@ -19,6 +19,7 @@ from laboratory.models import (
     BaseUnitValues,
     OrganizationStructure,
 )
+from reservations_management.models import ReservedProducts, RETURNED
 from laboratory.utils import (
     organilab_logentry,
     get_pk_org_ancestors,
@@ -69,7 +70,7 @@ def save_increase_decrease_shelf_object(
     amount = validated_data["amount"]
     use = validated_data.get("use", "")
 
-    # Box objects: decrease/increase units from a specific box slot by index
+    # Box objects: decrease units from a specific box slot by index
     if shelfobject.is_box and not is_increase_process:
         box_index = validated_data.get("box_index")
         quantity_units = list(shelfobject.quantity_units)
@@ -179,6 +180,78 @@ def save_increase_decrease_shelf_object(
         description=description,
         shelf_object=shelfobject,
         created_by=user,
+    )
+
+
+def save_return_box_shelf_object(user, validated_data, laboratory, organization):
+    """
+    Returns boxes from a reservation back into the shelf object's quantity_units.
+
+    For each box in reserved_product.reserved_boxes, if the box code already exists
+    in quantity_units its units are restored; otherwise the entry is re-added.
+    quantity_box is updated and the reservation status is set to RETURNED.
+    """
+    reserved_product = validated_data["reserved_product"]
+    description = validated_data.get("description", "")
+    shelfobject = reserved_product.shelf_object
+
+    quantity_units = {
+        entry["code"]: entry["units"]
+        for entry in shelfobject.quantity_units
+    }
+    affected_codes = []
+
+    for box in reserved_product.reserved_boxes:
+        code = box["code"]
+        returned_units = box["units"]
+        old_units = quantity_units.get(code, 0)
+        new_units = old_units + returned_units
+
+        log_object_change(
+            user,
+            laboratory.pk,
+            shelfobject,
+            old_units,
+            new_units,
+            description,
+            2,
+            _("Return"),
+            create=False,
+            organization=organization,
+        )
+
+        quantity_units[code] = new_units
+        affected_codes.append(code)
+
+    shelfobject.quantity_units = [
+        {"code": code, "units": units}
+        for code, units in quantity_units.items()
+    ]
+
+    save_object_by_action(
+        user,
+        shelfobject,
+        [laboratory, shelfobject, organization],
+        ["quantity_units"],
+        CHANGE,
+        "shelfobject",
+    )
+
+    if not description:
+        description = _("Boxes %(codes)s returned from reservation #%(pk)d") % {
+            "codes": ", ".join(affected_codes),
+            "pk": reserved_product.pk,
+        }
+    ShelfObjectObservation.objects.create(
+        action_taken=_("Box units returned"),
+        description=description,
+        shelf_object=shelfobject,
+        created_by=user,
+    )
+
+    ReservedProducts.objects.filter(pk=reserved_product.pk).update(
+        status=RETURNED,
+        amount_returned=reserved_product.amount_required,
     )
 
 

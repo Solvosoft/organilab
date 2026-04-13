@@ -5982,3 +5982,5 @@ msgstr "Selección de caja inválida."
 msgid "Subtract amount cannot be greater than the available box units."
 msgstr "La cantidad a restar no puede ser mayor que las unidades disponibles de la caja."
 
+msgid "boxes"
+msgstr "cajas"
