@@ -54,14 +54,15 @@ def save_increase_decrease_shelf_object(
     if shelfobject.is_box and not is_increase_process:
         box_index = validated_data.get("box_index")
         quantity_units = list(shelfobject.quantity_units)
-        old_units = quantity_units[box_index]
+        box_entry = quantity_units[box_index]
+        old_units = box_entry["units"]
         new_units = old_units - int(amount)
         action_taken = _("Box units decreased")
 
         if new_units <= 0:
             quantity_units.pop(box_index)
         else:
-            quantity_units[box_index] = new_units
+            quantity_units[box_index] = {"code": box_entry["code"], "units": new_units}
 
         shelfobject.quantity_units = quantity_units
         log_object_change(
@@ -85,8 +86,8 @@ def save_increase_decrease_shelf_object(
             "shelfobject",
         )
         if not description:
-            description = _("Box %(box)d: %(units)d unit(s) remaining") % {
-                "box": box_index + 1,
+            description = _("Box %(box)s: %(units)d unit(s) remaining") % {
+                "box": box_entry["code"],
                 "units": max(new_units, 0),
             }
         ShelfObjectObservation.objects.create(

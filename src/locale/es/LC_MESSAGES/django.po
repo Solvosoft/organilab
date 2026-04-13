@@ -5952,8 +5952,11 @@ msgstr "unidad(es)"
 msgid "Box units decreased"
 msgstr "Unidades de caja disminuidas"
 
-msgid "Box %(box)d: %(units)d unit(s) remaining"
-msgstr "Caja %(box)d: %(units)d unidad(es) restante(s)"
+msgid "Box %(box)s: %(units)d unit(s) remaining"
+msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "No boxes"
+msgstr "Sin cajas"
 
 msgid "Box selection is required for box objects."
 msgstr "La selección de caja es requerida para objetos de tipo caja."

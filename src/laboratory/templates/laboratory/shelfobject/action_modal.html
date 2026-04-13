@@ -108,10 +108,10 @@
 
         var $select = $container.find('#decrease_box_select');
         $select.empty();
-        quantityUnits.forEach(function (units, idx) {
+        quantityUnits.forEach(function (box, idx) {
             $select.append($('<option>', {
                 value: idx,
-                text: '{% trans "Box" %} ' + (idx + 1) + ' (' + units + ' {% trans "unit(s)" %})'
+                text: box.code + ' (' + box.units + ' {% trans "unit(s)" %})'
             }));
         });
         $container.removeClass('d-none');

@@ -509,7 +509,7 @@ class ShelfObjectCreateMethods:
         """
         Create a single box-type ShelfObject.
         quantity_units (int from form) is expanded into a JSON list of length quantity_box,
-        where each index represents a box and its unit count.
+        where each entry is a dict with "code" (e.g. "b-0001") and "units" (integer count).
         Boxes do not use quantity limits.
 
         :param serializer: BoxShelfObjectSerializer (already validated)
@@ -524,13 +524,13 @@ class ShelfObjectCreateMethods:
         )
         units_per_box = serializer.validated_data.pop("units_per_box")
         quantity_box = serializer.validated_data.pop("quantity_box", 1)
-        quantity_units_list = [units_per_box] * max(1, quantity_box)
+        box_count = max(1, quantity_box)
 
         extra_kwargs = dict(
             created_by=created_by,
             in_where_laboratory_id=laboratory_id,
             reactive_expiration_date=expired_date,
-            quantity_units=quantity_units_list,
+            quantity_units=[],
             units_per_box=units_per_box,
         )
 
@@ -555,6 +555,13 @@ class ShelfObjectCreateMethods:
         ]
 
         shelfobject = serializer.save(**extra_kwargs)
+
+        # Generate unique codes now that we have the pk
+        shelfobject.quantity_units = [
+            {"code": f"b-{shelfobject.pk}-{i + 1:04d}", "units": units_per_box}
+            for i in range(box_count)
+        ]
+        shelfobject.save(update_fields=["quantity_units"])
 
         build_shelfobject_qr(
             self.context["request"], shelfobject, organization_id, laboratory_id
