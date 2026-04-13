@@ -514,7 +514,7 @@ class ShelfObject(models.Model):
     quantity_units = models.JSONField(
         default=list,
         verbose_name=_("Units per box"),
-        help_text=_("List of integer unit quantities indexed by box position"),
+        help_text=_('List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'),
     )
     units_per_box = models.IntegerField(
         default=0,

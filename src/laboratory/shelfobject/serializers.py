@@ -338,7 +338,7 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     {"box_index": _("Invalid box selection.")}
                 )
-            if amount > quantity_units[box_index]:
+            if amount > quantity_units[box_index]["units"]:
                 decrease_errors["amount"] = _(
                     "Subtract amount cannot be greater than the available box units."
                 )

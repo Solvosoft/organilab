@@ -337,10 +337,11 @@ class ShelfObjectLaboratoryViewSerializer(
 
     def get_unit(self, obj):
         if obj.is_box:
-            units_each = obj.units_per_box
-            return _("%(units)s unit(s)") % {
-                "units": units_each,
-            }
+            boxes = obj.quantity_units or []
+            return ", ".join(
+                f"{box['code']}: {box['units']} " + str(_("unit(s)"))
+                for box in boxes
+            ) if boxes else _("No boxes")
         return obj.get_measurement_unit_display()
 
     def get_quantity(self, obj):
