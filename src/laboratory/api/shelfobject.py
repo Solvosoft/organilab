@@ -266,6 +266,7 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
@@ -359,6 +360,7 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
