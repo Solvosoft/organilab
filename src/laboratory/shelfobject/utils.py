@@ -76,6 +76,7 @@ def save_increase_decrease_shelf_object(
             _("Spend"),
             create=False,
             organization=organization,
+            is_box=shelfobject.is_box,
         )
         save_object_by_action(
             user,
@@ -125,6 +126,7 @@ def save_increase_decrease_shelf_object(
             bill,
             create=False,
             organization=organization,
+            is_box=shelfobject.is_box,
         )
 
     else:
@@ -139,6 +141,7 @@ def save_increase_decrease_shelf_object(
             _("Spend"),
             create=False,
             organization=organization,
+            is_box=shelfobject.is_box,
         )
 
     shelfobject.quantity = new
@@ -341,6 +344,7 @@ def clone_shelfobject_to(
         _("Income"),
         create=True,
         organization=destination_organization_id,
+        is_box=shelfobject.is_box,
     )
     organilab_logentry(
         request.user,
@@ -445,6 +449,7 @@ def create_new_shelfobject_from_object_in(
         ADDITION,
         _("Income"),
         create=True,
+        is_box=shelfobject.is_box,
     )
     organilab_logentry(
         request.user,
@@ -491,6 +496,7 @@ def move_shelfobject_to(
         CHANGE,
         _("Move out"),
         organization=destination_organization_id,
+        is_box=shelfobject.is_box,
     )
     shelfobject.shelf = destination_shelf
     shelfobject.in_where_laboratory_id = destination_laboratory_id
@@ -512,6 +518,7 @@ def move_shelfobject_to(
         CHANGE,
         _("Move in"),
         organization=destination_organization_id,
+        is_box=shelfobject.is_box,
     )
     organilab_logentry(
         request.user,
@@ -552,6 +559,7 @@ def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
             CHANGE,
             _("Change quantity"),
             organization=organization,
+            is_box=shelfobject.is_box,
         )
         organilab_logentry(user, shelfobject, CHANGE, changed_data=["quantity"])
     else:  # delete those that will be left with quantity of 0 or less with the requested change
@@ -565,6 +573,7 @@ def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
             DELETION,
             _("Delete ShelfObject with no quantity left"),
             organization=organization,
+            is_box=shelfobject.is_box,
         )
         organilab_logentry(user, shelfobject, DELETION)
         shelfobject.delete()
@@ -657,7 +666,13 @@ def limit_objects_by_shelf(shelf, object):
 
 
 def validate_measurement_unit_and_quantity(
-    shelf, object, quantity, measurement_unit=None, container=None, shelf_object=None, increase_unit=None
+    shelf,
+    object,
+    quantity,
+    measurement_unit=None,
+    container=None,
+    shelf_object=None,
+    increase_unit=None,
 ):
     errors = {}
 
@@ -824,5 +839,5 @@ def delete_shelfobjects(shelfobject, user, laboratory):
 def get_shelf_object_expiration_date(expired_date):
     date = now().date()
     if not expired_date:
-        return date+timedelta(days=365*5)
+        return date + timedelta(days=365 * 5)
     return expired_date

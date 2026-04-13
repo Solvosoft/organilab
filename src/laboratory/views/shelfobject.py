@@ -354,6 +354,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
             "Create",
             create=True,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         utils.organilab_logentry(
             self.request.user,
@@ -432,6 +433,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             "Edit",
             create=False,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         utils.organilab_logentry(
             self.request.user,
@@ -513,6 +515,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
             "Update",
             create=False,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         return response
 
@@ -656,6 +659,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 "Transfer",
                 create=False,
                 organization=organization,
+                is_box=transfer.object.is_box,
             )
 
         else:
@@ -700,6 +704,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 "Transfer",
                 create=False,
                 organization=organization,
+                is_box=transfer.object.is_box,
             )
 
             changed_data = [
@@ -734,6 +739,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
             "Transfer",
             create=False,
             organization=organization,
+            is_box=transfer.object.is_box,
         )
         messages.success(request, _("Transfer done successfully"))
     else:
