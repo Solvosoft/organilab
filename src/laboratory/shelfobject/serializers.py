@@ -258,10 +258,6 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 _("Object does not exist in the laboratory.")
             )
-        if not attr.is_box:
-            raise serializers.ValidationError(
-                _("Only box shelf objects can be reserved.")
-            )
         return attr
 
     class Meta:
