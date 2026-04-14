@@ -53,7 +53,11 @@ def generate_box_code(shelfobject_pk, existing_codes=()):
 
 
 def save_increase_decrease_shelf_object(
-    user, validated_data, laboratory, organization, is_increase_process=False
+    user,
+    validated_data,
+    laboratory,
+    organization,
+    is_increase_process=False,
 ):
     provider = None
     if "provider" in validated_data:
@@ -70,53 +74,120 @@ def save_increase_decrease_shelf_object(
     use = validated_data.get("use", "")
 
     # Box objects: decrease/increase units from a specific box slot by index
-    if shelfobject.is_box and not is_increase_process:
-        box_index = validated_data.get("box_index")
-        quantity_units = list(shelfobject.quantity_units)
-        box_entry = quantity_units[box_index]
-        old_units = box_entry["units"]
-        new_units = old_units - int(amount)
-        action_taken = _("Box units decreased")
+    if shelfobject.is_box:
+        if not is_increase_process:
+            box_index = validated_data.get("box_index")
+            quantity_units = list(shelfobject.quantity_units)
+            box_entry = quantity_units[box_index]
+            old_units = box_entry["units"]
+            new_units = old_units - int(amount)
+            action_taken = _("Box units decreased")
 
-        if new_units <= 0:
-            quantity_units.pop(box_index)
+            if new_units <= 0:
+                quantity_units.pop(box_index)
+            else:
+                quantity_units[box_index] = {
+                    "code": box_entry["code"],
+                    "units": new_units,
+                }
+
+            shelfobject.quantity_units = quantity_units
+
+            log_object_change(
+                user,
+                laboratory.pk,
+                shelfobject,
+                old_units,
+                sum(item.get("units", 0) for item in quantity_units),
+                description,
+                2,
+                _("Spend"),
+                create=False,
+                organization=organization,
+                is_box=shelfobject.is_box,
+            )
+            save_object_by_action(
+                user,
+                shelfobject,
+                [laboratory, shelfobject, organization],
+                ["quantity_units"],
+                CHANGE,
+                "shelfobject",
+            )
+            if not description:
+                description = _("Box %(box)s: %(units)d unit(s) remaining") % {
+                    "box": box_entry["code"],
+                    "units": max(new_units, 0),
+                }
+            ShelfObjectObservation.objects.create(
+                action_taken=action_taken,
+                description=description,
+                shelf_object=shelfobject,
+                created_by=user,
+            )
+            return
         else:
-            quantity_units[box_index] = {"code": box_entry["code"], "units": new_units}
 
-        shelfobject.quantity_units = quantity_units
-        log_object_change(
-            user,
-            laboratory.pk,
-            shelfobject,
-            old_units,
-            max(new_units, 0),
-            description,
-            2,
-            _("Spend"),
-            create=False,
-            organization=organization,
-            is_box=shelfobject.is_box,
-        )
-        save_object_by_action(
-            user,
-            shelfobject,
-            [laboratory, shelfobject, organization],
-            ["quantity_units"],
-            CHANGE,
-            "shelfobject",
-        )
-        if not description:
-            description = _("Box %(box)s: %(units)d unit(s) remaining") % {
-                "box": box_entry["code"],
-                "units": max(new_units, 0),
-            }
-        ShelfObjectObservation.objects.create(
-            action_taken=action_taken,
-            description=description,
-            shelf_object=shelfobject,
-            created_by=user,
-        )
-        return
+            quantity_units = shelfobject.get_box_code()
+            totals = sum(item["units"] for item in quantity_units)
+            current_boxes = shelfobject.get_box_code()
+            new_boxes = []
+
+            for _i in range(int(amount)):
+                existing_codes = [b["code"] for b in quantity_units]
+                code = generate_box_code(shelfobject.pk, existing_codes)
+                new_boxes.append({"code": code, "units": shelfobject.units_per_box})
+            current_boxes.extend(new_boxes)
+            shelfobject.quantity_units = current_boxes
+            action_taken = _("Box was increased successfully.")
+            converted_amount = amount * shelfobject.quantity
+            if shelfobject.shelf.measurement_unit is None:
+                converted_amount = get_conversion_from_two_units(
+                    measurement_unit,
+                    shelfobject.measurement_unit,
+                    shelfobject.quantity,
+                )
+                converted_amount *= totals + (amount * shelfobject.units_per_box)
+
+            old_total = totals * shelfobject.quantity
+            new_units = converted_amount
+            log_object_add_change(
+                user,
+                laboratory.pk,
+                shelfobject,
+                old_total,
+                new_units,
+                use if use else _("Income"),
+                provider,
+                bill,
+                create=False,
+                organization=organization,
+                is_box=shelfobject.is_box,
+            )
+
+            save_object_by_action(
+                user,
+                shelfobject,
+                [laboratory, shelfobject, organization],
+                ["quantity_units"],
+                CHANGE,
+                "shelfobject",
+            )
+            for box in new_boxes:
+                description = _(
+                    "Added the box %(box)s: %(units)d unit(s) remaining"
+                ) % {
+                    "box": box["code"],
+                    "units": box["units"],
+                }
+
+                ShelfObjectObservation.objects.create(
+                    action_taken=action_taken,
+                    description=description,
+                    shelf_object=shelfobject,
+                    created_by=user,
+                )
+            return
 
     old = shelfobject.quantity
     converted_amount = get_conversion_from_two_units(
