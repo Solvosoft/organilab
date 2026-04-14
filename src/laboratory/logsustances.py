@@ -17,16 +17,13 @@ def log_object_change(
     create=False,
     organization=None,
 ):
-    factor = sum(b["units"] for b in shelfobject.quantity_units) if shelfobject.is_box and shelfobject.quantity_units else 1
-    old_total = old * factor
-    new_total = new * factor
     attrs = dict(
         object=shelfobject.object,
         laboratory_id=int(laboratory),
         user=user,
-        old_value=old_total,
-        new_value=new_total,
-        diff_value=new_total if create else new_total - old_total,
+        old_value=old,
+        new_value=new,
+        diff_value=new if create else new - old,
         precursor=shelfobject.object.is_precursor,
         measurement_unit=shelfobject.measurement_unit,
         subject=msg,
@@ -52,16 +49,13 @@ def log_object_add_change(
     create=False,
     organization=None,
 ):
-    factor = sum(b["units"] for b in shelfobject.quantity_units) if shelfobject.is_box and shelfobject.quantity_units else 1
-    old_total = old * factor
-    new_total = new * factor
     attrs = dict(
         object=shelfobject.object,
         laboratory_id=int(laboratory),
         user=user,
-        old_value=old_total,
-        new_value=new_total,
-        diff_value=new_total if create else new_total - old_total,
+        old_value=old,
+        new_value=new,
+        diff_value=new if create else new - old,
         precursor=shelfobject.object.is_precursor,
         measurement_unit=shelfobject.measurement_unit,
         subject=msg,
