@@ -237,9 +237,15 @@ function BaseFormModal(modalid,  data_extras={})  {
             var is_box = $(btninstance).data('box');
             var id_modal_data = $(btninstance).data('modalid');
             if(is_box=="True" && id_modal_data=="increasesomodal"){
+                $("#"+id_modal_data).find('#id_expiration_date_info').remove();
+                $("#"+id_modal_data).find('.modal-body').append(`<div id="id_expiration_date_info" class="alert alert-warning text-center" role="alert">
+                ${gettext("If you wish to add a new box, please note that it will be subject to the expiration date of")} ${expiration_date}.
+                </div>`);
                 $("#"+id_modal_data).find('#id_increase-measurement_unit').parent().parent().hide();
-            }else{
+            }else if(id_modal_data=="increasesomodal"){
                 $("#"+id_modal_data).find('#id_increase-measurement_unit').parent().parent().show();
+                $("#"+id_modal_data).find('#id_expiration_date_info').remove();
+
             }
 
             if (shelf_object != undefined){

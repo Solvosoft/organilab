@@ -1290,3 +1290,6 @@ msgstr "Hora de inicio"
 
 msgid "End Time"
 msgstr "Hora de salida"
+
+msgid "If you wish to add a new box, please note that it will be subject to the expiration date of"
+msgstr "Si desea agregar una nueva caja, por favor tenga en cuenta que se asumirá la fecha de vencimiento del"

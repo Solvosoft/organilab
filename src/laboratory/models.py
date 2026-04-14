@@ -558,6 +558,9 @@ class ShelfObject(models.Model):
             str(self.measurement_unit),
         )
 
+    def get_box_code(self):
+        return self.quantity_units
+
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
     shelfobject = models.OneToOneField(ShelfObject, on_delete=models.CASCADE)
