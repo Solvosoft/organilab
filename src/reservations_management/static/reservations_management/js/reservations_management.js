@@ -116,6 +116,35 @@ const get_stored_reserved_product_info = () => {
     return data;
 }
 
+const populate_box_return_select = (reserved_boxes) => {
+    const $select = $('#id_reserved_boxes');
+    if (!$select.length) return;
+
+    // Destroy existing Select2 instance before repopulating
+    if ($select.data('select2')) {
+        $select.select2('destroy');
+    }
+
+    $select.empty().val(null);
+    if (reserved_boxes && reserved_boxes.length > 0) {
+        reserved_boxes.forEach(box => {
+            const option = new Option(`${box.code} (${box.units} units)`, box.code);
+            $select.append(option);
+        });
+        $select.closest('.form-group').show();
+        $select.select2({
+            dropdownParent: $('#exampleModal'),
+        });
+    } else {
+        $select.closest('.form-group').hide();
+    }
+}
+
+const get_selected_box_codes = () => {
+    const selected = $('#id_reserved_boxes').val();
+    return selected ? selected : [];
+}
+
 const load_product_information = async (data) => {
     store_reserved_product_info(data);
     modal_elements.is_returnable_checkbox.checked = data.is_returnable;
@@ -123,6 +152,9 @@ const load_product_information = async (data) => {
     modal_elements.amount_returned.value = data.amount_returned;
     modal_elements.initial_date.value = new Date(data.initial_date).toString();
     modal_elements.final_date.value = new Date(data.final_date).toString();
+
+    // Hide the box select until we know if this is a box product
+    $('#id_reserved_boxes').closest('.form-group').hide();
 
     if (data.status === 1) {
         modal_elements.status_select.selectedIndex = 4;
@@ -132,8 +164,13 @@ const load_product_information = async (data) => {
         modal_elements.amount_returned.readOnly = true;
     }
 
-    $.get(methods_urls.get_product_name_and_quantity_url, { 'id': data.id }, function ({ product_name }) {
+    $.get(methods_urls.get_product_name_and_quantity_url, { 'id': data.id }, function (response) {
+        const { product_name, product_is_box, reserved_boxes } = response;
         modal_elements.modal_title.textContent = product_name.toUpperCase();
+        sessionStorage.setItem('is_box', product_is_box ? 'true' : 'false');
+        if (product_is_box) {
+            populate_box_return_select(reserved_boxes);
+        }
     });
 }
 
@@ -150,15 +187,17 @@ const retrieve_object = (product_id = 0) => {
     });
 }
 
-const increase_stock = (product_id, amount_to_return) => {
+const increase_stock = (product_id, amount_to_return, callback) => {
+    const selected_codes = get_selected_box_codes();
+    const params = { 'id': product_id, 'amount_to_return': amount_to_return };
+    if (selected_codes.length > 0) {
+        params['boxes_codes'] = selected_codes.join(',');
+    }
     $.get(
         methods_urls.increase_stock,
-        {
-            'id': product_id,
-            'amount_to_return': amount_to_return
-        },
+        params,
         function ({ was_increase }) {
-            console.log('Was increased : ', was_increase)
+            if (callback) callback(was_increase);
         });
 }
 
@@ -200,12 +239,24 @@ const update_product_information = () => {
     const can_update = results.can_update;
     const can_increase = results.can_increase;
     const amount_to_return = results.amount_to_return;
+    const is_box = sessionStorage.getItem('is_box') === 'true';
 
     if (can_increase && amount_to_return > 0) {
+        if (is_box) {
+            // For boxes, increase_stock handles status/reserved_boxes/amount_returned.
+            // Skip send_update_request entirely to avoid overwriting those fields.
+            increase_stock(data['id'], amount_to_return, function (was_increase) {
+                if (was_increase) {
+                    $('#exampleModal').modal('hide');
+                    load_reserved_products_list();
+                } else {
+                    error_message.innerHTML = error;
+                }
+            });
+            return;
+        }
         increase_stock(data['id'], amount_to_return);
-    }
-
-    else {
+    } else {
         error_message.innerHTML = error;
     }
 
@@ -218,7 +269,7 @@ const update_product_information = () => {
 const send_update_request = (product_data) => {
     $.ajax({
         url: api_reserved_product_CRUD_url.replace('0', product_data.id),
-        type: 'PUT',
+        type: 'PATCH',
         data: product_data,
         beforeSend: function (xhr) {
             xhr.setRequestHeader('X-CSRFToken', modal_elements.csrf_token);
@@ -240,15 +291,19 @@ const load_reserved_products_list = () => {
     $.get(api_reserved_products_list_url.replace(0, reservation_id),
         function (reserved_products) {
             for (const reserved_product of reserved_products) {
-                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity, product_unit }) {
-                    fill_reserved_products_table(reserved_product, product_name, product_quantity, product_unit);
+                $.get(methods_urls.get_product_name_and_quantity_url, { 'id': reserved_product.id }, function ({ product_name, product_quantity, product_unit, product_is_box }) {
+                    fill_reserved_products_table(reserved_product, product_name, product_quantity, product_unit, product_is_box);
                 });
             }
         });
 }
 
-const fill_reserved_products_table = (reserved_product, product_name, product_quantity, product_unit) => {
+const fill_reserved_products_table = (reserved_product, product_name, product_quantity, product_unit, product_is_box) => {
     const is_returnable = (reserved_product.is_returnable) ? 'Si' : 'No';
+    const unit = product_unit.toLowerCase();
+    const amount_returned_display = (product_is_box && reserved_product.amount_returned <= 0)
+        ? '-'
+        : `${reserved_product.amount_returned} ${unit}`;
     const table_row_template = `<tr>
     <td id="product_name">
     <a href='#' data-bs-toggle="modal" data-bs-target="#exampleModal"
@@ -259,15 +314,15 @@ const fill_reserved_products_table = (reserved_product, product_name, product_qu
     </td>
 
     <td id="product_quantity">
-    ${product_quantity} ${product_unit.toLowerCase()}
+    ${product_quantity} ${unit}
     </td>
 
     <td id="amount_required">
-    ${reserved_product.amount_required} ${product_unit.toLowerCase()}
+    ${reserved_product.amount_required} ${unit}
     </td>
 
-    <td id="amount_required">
-    ${reserved_product.amount_returned} ${product_unit.toLowerCase()}
+    <td id="amount_returned">
+    ${amount_returned_display}
     </td>
 
     <td id="initial_date">
