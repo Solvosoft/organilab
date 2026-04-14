@@ -1558,6 +1558,9 @@ class TranferObject(BaseCreationObj):
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
     # indices de las cajas a transferir []
+    quantity_box = models.IntegerField(default=0)
+    is_box = models.BooleanField(default=False)
+    quantity_units = models.JSONField(default=list)
 
     def get_object_detail(self):
         return "%s %s %s" % (
