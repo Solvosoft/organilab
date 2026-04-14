@@ -1,5 +1,6 @@
 import importlib
 import json
+import math
 from collections import namedtuple
 from datetime import datetime, timedelta
 
@@ -10,16 +11,17 @@ from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from django_celery_beat.models import ClockedSchedule, PeriodicTask
 
 from auth_and_perms.organization_utils import user_is_allowed_on_organization
-from laboratory.models import ShelfObject, OrganizationStructure
-from laboratory.utils import organilab_logentry
+from laboratory.models import ShelfObject, OrganizationStructure, ShelfObjectObservation
+from laboratory.utils import organilab_logentry, save_object_by_action
+from laboratory.logsustances import log_object_change
 from .api.serializers import (
     ValidateReservedProductsSerializer,
-    ValidateReservedProductsAmountSerializer,
 )
-from .models import ReservedProducts, ReservationTasks
+from .models import ReservedProducts, ReservationTasks, BORROWED, RETURNED
 
 app = importlib.import_module(settings.CELERY_MODULE).app
 
@@ -29,14 +31,27 @@ def get_product_name_and_quantity(request, org_pk):
     product_name = ""
     if request.method == "GET":
         product = ReservedProducts.objects.get(id=request.GET["id"])
-        product_name = product.shelf_object.object.name
-        product_quantity = product.shelf_object.quantity
-        product_unit = product.shelf_object.measurement_unit.description
+        shelf_object = product.shelf_object
+        product_name = shelf_object.object.name
+
+        if shelf_object.is_box:
+            product_quantity = len(shelf_object.quantity_units)
+            product_unit = str(_("boxes"))
+            product_is_box = True
+            reserved_boxes = product.reserved_boxes
+        else:
+            product_quantity = shelf_object.quantity
+            product_unit = shelf_object.measurement_unit.description
+            product_is_box = False
+            reserved_boxes = []
+
     return JsonResponse(
         {
             "product_name": product_name,
             "product_quantity": product_quantity,
             "product_unit": product_unit,
+            "product_is_box": product_is_box,
+            "reserved_boxes": reserved_boxes,
         }
     )
 
@@ -418,30 +433,142 @@ def increase_stock(request, org_pk):
     )
     user_is_allowed_on_organization(request.user, organization)
 
-    # Validate if is possible to compute the sum
     if request.method == "GET":
-
-        serializer = ValidateReservedProductsAmountSerializer(
+        serializer = ValidateReservedProductsSerializer(
             data=request.GET, context={"organization_id": org_pk}
         )
 
         if serializer.is_valid():
-
             product = serializer.validated_data["id"]
-            amount_to_return = serializer.validated_data["amount_to_return"]
+            shelf_object = product.shelf_object
 
-            if product.amount_required >= amount_to_return:
-                product.shelf_object.quantity += amount_to_return
-                was_increase = True
-                product.shelf_object.save()
-                organilab_logentry(
-                    request.user,
-                    product.shelf_object,
-                    CHANGE,
-                    relobj=product.shelf_object,
-                )
+            if shelf_object.is_box:
+                boxes_codes = [
+                    c.strip()
+                    for c in request.GET.get("boxes_codes", "").split(",")
+                    if c.strip()
+                ]
+                if not boxes_codes:
+                    return JsonResponse({"was_increase": False, "error": str(_("No boxes selected."))})
+                amount_to_return = float(request.GET.get("amount_to_return", 0) or 0)
+                was_increase = _increase_box_stock(request.user, product, organization, boxes_codes, amount_to_return)
+            else:
+                amount_to_return = float(request.GET.get("amount_to_return", 0) or 0)
+                was_increase = _increase_standard_stock(request.user, product, amount_to_return)
 
     return JsonResponse({"was_increase": was_increase})
+
+
+def _increase_standard_stock(user, product, amount_to_return):
+    if 0 < amount_to_return <= product.amount_required:
+        product.shelf_object.quantity += amount_to_return
+        product.shelf_object.save()
+        organilab_logentry(
+            user,
+            product.shelf_object,
+            CHANGE,
+            relobj=product.shelf_object,
+        )
+        return True
+    return False
+
+
+def _increase_box_stock(user, product, organization, boxes_codes, amount_returned=None):
+    """
+    Restores selected boxes (by code) back into quantity_units.
+
+    If amount_returned is given (e.g. 1.5), the first floor(1.5)=1 selected boxes are
+    restored fully, and the next box is restored partially with
+    ceil(0.5 * units_per_box) units (capped at its reserved units).
+    All processed boxes are removed from reserved_boxes.
+
+    Sets status to RETURNED when all boxes have been returned, BORROWED otherwise.
+    """
+    shelf_object = product.shelf_object
+    codes_set = set(boxes_codes)
+
+    selected_boxes = [b for b in product.reserved_boxes if b["code"] in codes_set]
+
+    if not selected_boxes:
+        return False
+
+    if amount_returned and amount_returned > 0:
+        full_count = int(amount_returned)
+        fraction = amount_returned - full_count
+        units_per_box = getattr(shelf_object, "units_per_box", None) or 1
+        # Only process as many boxes as the amount implies
+        boxes_to_process = selected_boxes[:full_count + (1 if fraction > 0 else 0)]
+    else:
+        full_count = len(selected_boxes)
+        fraction = 0
+        units_per_box = 1
+        boxes_to_process = selected_boxes
+
+    quantity_units = {
+        entry["code"]: entry["units"]
+        for entry in shelf_object.quantity_units
+    }
+    affected_codes = []
+    total_returned = 0.0
+
+    for i, box in enumerate(boxes_to_process):
+        code = box["code"]
+        reserved_units = box["units"]
+
+        if i < full_count:
+            restore_units = reserved_units
+            total_returned += 1
+        else:
+            # Partial box: last entry when there is a fractional amount
+            restore_units = min(math.ceil(fraction * units_per_box), reserved_units)
+            total_returned += fraction
+
+        old_units = quantity_units.get(code, 0)
+        new_units = old_units + restore_units
+
+        log_object_change(
+            user,
+            shelf_object.in_where_laboratory_id,
+            shelf_object,
+            old_units,
+            new_units,
+            str(_("Return via reservation #%(pk)d") % {"pk": product.pk}),
+            2,
+            str(_("Return")),
+            create=False,
+            organization=organization,
+        )
+
+        quantity_units[code] = new_units
+        affected_codes.append(code)
+
+    shelf_object.quantity_units = [
+        {"code": code, "units": units}
+        for code, units in quantity_units.items()
+    ]
+    shelf_object.save(update_fields=["quantity_units"])
+
+    ShelfObjectObservation.objects.create(
+        action_taken=str(_("Box units returned")),
+        description=str(
+            _("Boxes %(codes)s returned from reservation #%(pk)d") % {
+                "codes": ", ".join(affected_codes),
+                "pk": product.pk,
+            }
+        ),
+        shelf_object=shelf_object,
+        created_by=user,
+    )
+
+    processed_codes = set(affected_codes)
+    boxes_remaining = [b for b in product.reserved_boxes if b["code"] not in processed_codes]
+    new_status = RETURNED if not boxes_remaining else BORROWED
+    ReservedProducts.objects.filter(pk=product.pk).update(
+        status=new_status,
+        reserved_boxes=boxes_remaining,
+        amount_returned=product.amount_returned + total_returned,
+    )
+    return True
 
 
 def add_decrease_stock_task(reserved_product):

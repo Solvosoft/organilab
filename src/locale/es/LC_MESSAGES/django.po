@@ -5913,6 +5913,9 @@ msgstr "Caja"
 msgid "Number of boxes"
 msgstr "Número de cajas"
 
+msgid "Box detail"
+msgstr "Detalle de cajas"
+
 msgid "Units per box"
 msgstr "Unidades por caja"
 
@@ -5934,3 +5937,53 @@ msgstr "%(boxes)s caja(s) x %(units)s unidades"
 msgid "%(count)d box(es) created successfully."
 msgstr "%(count)d caja(s) creada(s) exitosamente."
 
+msgid "%(name)s (%(quantity)s %(unit)s)"
+msgstr "%(name)s (%(quantity)s %(unit)s)"
+
+msgid "%(units)s unit(s)"
+msgstr "%(units)s unidad(es)"
+
+msgid "%(boxes)s box(es)"
+msgstr "%(boxes)s caja(s)"
+
+msgid "Select box"
+msgstr "Seleccionar caja"
+
+msgid "unit(s)"
+msgstr "unidad(es)"
+
+msgid "Box units decreased"
+msgstr "Unidades de caja disminuidas"
+
+msgid "Box %(box)s: %(units)d unit(s) remaining"
+msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "No boxes"
+msgstr "Sin cajas"
+
+msgid "Box updated"
+msgstr "Caja actualizada"
+
+msgid "Box was updated successfully."
+msgstr "La caja fue actualizada exitosamente."
+
+msgid "Edit Box"
+msgstr "Editar caja"
+
+msgid "Cannot change the number of boxes or units per box because one or more boxes have already been modified. Use the decrease or increase actions instead."
+msgstr "No se puede cambiar el número de cajas ni las unidades por caja porque una o más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
+
+msgid "Box selection is required for box objects."
+msgstr "La selección de caja es requerida para objetos de tipo caja."
+
+msgid "Invalid box selection."
+msgstr "Selección de caja inválida."
+
+msgid "Subtract amount cannot be greater than the available box units."
+msgstr "La cantidad a restar no puede ser mayor que las unidades disponibles de la caja."
+
+msgid "boxes"
+msgstr "cajas"
+
+msgid "Boxes to return"
+msgstr "Cajas para devolver"

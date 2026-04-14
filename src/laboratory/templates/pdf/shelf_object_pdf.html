@@ -2,268 +2,288 @@
 {% load i18n %}
 {% load humanformat %}
 {% block extra_css %}
-.bold{
-font-weight:bold;
-}
+	.bold{
+	font-weight:bold;
+	}
 
-.thead {
-font-weight: normal;
-}
+	.thead {
+	font-weight: normal;
+	}
 
-table.infoshelfobject tr{
-font-size: 12pt;
-}
+	table.infoshelfobject tr{
+	font-size: 12pt;
+	}
 
-table thead.tborder th{
-boder-bottom-color: black;
-border-bottom: solid 0.07em;
-}
+	table thead.tborder th{
+	boder-bottom-color: black;
+	border-bottom: solid 0.07em;
+	}
 
-table.infoshelfobject {
-width: 100%;
-}
+	table.infoshelfobject {
+	width: 100%;
+	}
 
 {% endblock %}
 {% block pdf_content %}
-{% for obj in object_list %}
-<table class="ttitle">
-    <tbody>
-    <tr>
-        <td>
-            <h3 style="margin-left: 34%;">{{obj.object.name}} {{obj.quantity}} / {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</h3>
-        </td>
-    </tr>
-    </tbody>
-</table>
+	{% for obj in object_list %}
+		<table class="ttitle">
+			<tbody>
+			<tr>
+				<td>
+					<h3 style="margin-left: 34%;">{{ obj.object.name }} {{ obj.quantity }}
+						/ {{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</h3>
+				</td>
+			</tr>
+			</tbody>
+		</table>
 
-<table class="infoshelfobject">
-    <tbody>
-    <tr>
-        <th colspan="2">
-            <table>
-                <thead class="tborder">
-                <tr>
-                    <th class="bold">{% trans "Shelf" %}:</th>
-                    <th class="thead">{{ obj.shelf }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Quantity" %}:</th>
-                    <th class="thead">{{ obj.quantity }} {{ obj.get_measurement_unit_display }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Limit Quantity" %}:</th>
-                    <th class="thead">{{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</th>
-                </tr>
-																{% if obj.object.type == '0' %}
-																<tr>
-																		<th class="bold">{% trans "Physical Status" %}:</th>
-																		<th class="thead">{{ obj.get_physical_status_display|default_if_none:"" }}</th>
-																	</tr>
-																<tr>
-																		<th class="bold">{% trans "Expiration Date" %}:</th>
-																		<th class="thead">{{ obj.reactive_expiration_date }}</th>
-																	</tr>
-																<tr>
-																		<th class="bold">{% trans "Type Budget" %}:</th>
-																		<th class="thead">{{ obj.type_budget.description|default_if_none:"" }}</th>
-																	</tr>
-																<tr>
-																		<th class="bold">{% trans "Container" %}:</th>
-																		<th class="thead">{{ obj.container.object.name }}</th>
-																	</tr>
-																<tr>
-																		<th class="bold">{% trans "Container Entry Date" %}:</th>
-																		<th class="thead">{{ obj.container_entry_date }}</th>
-																	</tr>
-																<tr>
-																		<th class="bold">{% trans "Container Open Date" %}:</th>
-																		<th class="thead">{{ obj.container_open_date }}</th>
-																	</tr>
-																{% endif %}
+		<table class="infoshelfobject">
+			<tbody>
+			<tr>
+				<th colspan="2">
+					<table>
+						<thead class="tborder">
+						<tr>
+							<th class="bold">{% trans "Shelf" %}:</th>
+							<th class="thead">{{ obj.shelf }}</th>
+						</tr>
+						<tr>
+							<th class="bold">{% trans "Quantity" %}:</th>
+							<th class="thead">{{ obj.quantity }} {{ obj.get_measurement_unit_display }}</th>
+						</tr>
+						{% if not obj.is_box %}
+							<tr>
+								<th class="bold">{% trans "Limit Quantity" %}:</th>
+								<th class="thead">{{ obj.limit_quantity }} {{ obj.get_measurement_unit_display }}</th>
+							</tr>
+						{% endif %}
+						{% if obj.object.type == '0' %}
+							<tr>
+								<th class="bold">{% trans "Physical Status" %}:</th>
+								<th class="thead">{{ obj.get_physical_status_display|default_if_none:"" }}</th>
+							</tr>
+							<tr>
+								<th class="bold">{% trans "Expiration Date" %}:</th>
+								<th class="thead">{{ obj.reactive_expiration_date }}</th>
+							</tr>
+							<tr>
+								<th class="bold">{% trans "Type Budget" %}:</th>
+								<th class="thead">{{ obj.type_budget.description|default_if_none:"" }}</th>
+							</tr>
+							{% if not obj.is_box %}
+								<tr>
+									<th class="bold">{% trans "Container" %}:</th>
+									<th class="thead">{{ obj.container.object.name }}</th>
+								</tr>
+								<tr>
+									<th class="bold">{% trans "Container Entry Date" %}:</th>
+									<th class="thead">{{ obj.container_entry_date }}</th>
+								</tr>
+								<tr>
+									<th class="bold">{% trans "Container Open Date" %}:</th>
+									<th class="thead">{{ obj.container_open_date }}</th>
+								</tr>
+							{% endif %}
+						{% endif %}
 
-                <tr>
-                    <th class="bold">{% trans "Code" %}:</th>
-                    <th class="thead">{{ obj.object.code }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Name" %}:</th>
-                    <th class="thead">{{ obj.object.name }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Synonym" %}:</th>
-                    <th class="thead">{{ obj.object.synonym|default_if_none:"" }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Model" %}:</th>
-                    <th class="thead">{{ obj.object.model|default_if_none:"" }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Serie" %}:</th>
-                    <th class="thead">{{ obj.object.serie|default_if_none:"" }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Plaque" %}:</th>
-                    <th class="thead">{{ obj.object.plaque|default_if_none:"" }}</th>
-                </tr>
-                <tr>
-                    <th class="bold">{% trans "Description" %}:</th>
-                    <th class="thead">{{ obj.object.description|default_if_none:"" }}</th>
-                </tr>
-																<tr>
-                    <th class="bold">{% trans "Ingreso por donacion" %}:</th>
-                    <th class="thead">
-																							{% if obj.was_donated %}
-																											Sí
-																							{% else %}
-																											No
-																							{% endif %}
-																			</th>
-                </tr>
-                </thead>
-            </table>
-        </th>
-        <th colspan="2">
-            {% if obj.shelf_object_qr %}
-            <img src="{{domain}}{{obj.shelf_object_qr.url}}" alt=""
-                 style="width: 350px;">
-            {% endif %}
-        </th>
+						<tr>
+							<th class="bold">{% trans "Code" %}:</th>
+							<th class="thead">{{ obj.object.code }}</th>
+						</tr>
+						<tr>
+							<th class="bold">{% trans "Name" %}:</th>
+							<th class="thead">{{ obj.object.name }}</th>
+						</tr>
+						<tr>
+							<th class="bold">{% trans "Synonym" %}:</th>
+							<th class="thead">{{ obj.object.synonym|default_if_none:"" }}</th>
+						</tr>
+						{% if not obj.is_box %}
+							<tr>
+								<th class="bold">{% trans "Model" %}:</th>
+								<th class="thead">{{ obj.object.model|default_if_none:"" }}</th>
+							</tr>
+							<tr>
+								<th class="bold">{% trans "Serie" %}:</th>
+								<th class="thead">{{ obj.object.serie|default_if_none:"" }}</th>
+							</tr>
+							<tr>
+								<th class="bold">{% trans "Plaque" %}:</th>
+								<th class="thead">{{ obj.object.plaque|default_if_none:"" }}</th>
+							</tr>
+						{% endif %}
 
-    </tr>
-    </tbody>
-</table>
+						<tr>
+							<th class="bold">{% trans "Description" %}:</th>
+							<th class="thead">{{ obj.object.description|default_if_none:"" }}</th>
+						</tr>
+						<tr>
+							<th class="bold">{% trans "Ingreso por donacion" %}:</th>
+							<th class="thead">
+								{% if obj.was_donated %}
+									Sí
+								{% else %}
+									No
+								{% endif %}
+							</th>
+						</tr>
+						{% if obj.is_box %}
+							<tr>
+								<th class="bold">{% trans "Number of boxes" %}:</th>
+								<th class="thead">{{ obj.quantity_units|length }}</th>
+							</tr>
+							<tr>
+								<th class="bold">{% trans "Box detail" %}:</th>
+								<th class="thead">
+									{% for box in obj.quantity_units %}
+										<div>{{ box.code }}: {{ box.units }} {% trans "unit(s)" %}</div>
+									{% endfor %}
+								</th>
+							</tr>
+						{% endif %}
+						</thead>
+					</table>
+				</th>
+				<th colspan="2">
+					{% if obj.shelf_object_qr %}
+						<img src="{{ domain }}{{ obj.shelf_object_qr.url }}" alt=""
+											style="width: 350px;">
+					{% endif %}
+				</th>
+			</tr>
+			</tbody>
+		</table>
 
-{% if obj.object.sustancecharacteristics %}
-<table class="infoshelfobject">
+		{% if obj.object.sustancecharacteristics %}
+			<table class="infoshelfobject">
 
-
-    <thead class="tborder">
-    <tr>
-
-        <th class="bold">{% trans "Molecular formula" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.molecular_formula|default_if_none:"" }}</th>
-        <th class="bold">{% trans "IMDG" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.imdg|default_if_none:"" }}</th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "Bioaccumulable" %}:</th>
-        <th class="thead">{{obj.object.sustancecharacteristics.bioaccumulable|yesnotext }}</th>
-        <th class="bold">{% trans "Is Seveso list III?" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.seveso_list|yesnotext }}</th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "CAS Number" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.cas_id_number|default_if_none:"" }}</th>
-        <th class="bold">{% trans "White Organ" %}:</th>
-        <th class="thead">
-            {% for worgan in obj.object.sustancecharacteristics.white_organ.all %}
-            <div>* {{ worgan }}</div>
-            {% endfor %}
-        </th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "Storage Classes" %}:</th>
-        <th class="thead">
-            {% for stoclass in obj.object.sustancecharacteristics.storage_class.all %}
-            <div>* {{ stoclass }}</div>
-            {% endfor %}
-        </th>
-        <th class="bold">{% trans "NFPA Codes" %}:</th>
-        <th class="thead">
-            {% for nfpa in obj.object.sustancecharacteristics.nfpa.all %}
-            <div>* {{ nfpa }}</div>
-            {% endfor %}
-        </th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "Features" %}:</th>
-        <th class="thead">
-            {% for feature in obj.object.features.all %}
-            <div>* {{ feature }}</div>
-            {% endfor %}
-        </th>
-        <th class="bold">{% trans "IARC" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.iarc|default_if_none:"" }}</th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "H Codes" %}:</th>
-        <th class="thead">
-            {% for hcode in obj.object.sustancecharacteristics.h_code.all %}
-            <div>* {{ hcode }}</div>
-            {% endfor %}
-        </th>
-        <th class="bold">{% trans "UE Codes" %}:</th>
-        <th class="thead">
-            {% for uecode in obj.object.sustancecharacteristics.ue_code.all %}
-            <div>* {{ uecode }}</div>
-            {% endfor %}
-        </th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "Is precursor?" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.is_precursor|yesnotext }}</th>
-        {% if obj.object.sustancecharacteristics.is_precursor %}
-
-        <th class="bold">{% trans "Precursor Type" %}:</th>
-        <th class="thead">{{ obj.object.sustancecharacteristics.precursor_type }}</th>
-
-        {% endif %}
-    </tr>
-    </thead>
-</table>
-{% endif %}
-{% if obj.shelfobjectequipmentcharacteristics %}
-<table class="infoshelfobject">
-
-    <thead class="tborder">
-    <tr>
-        <th class="bold">{% trans "Provider" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.provider|default_if_none:"" }}</th>
-        <th class="bold">{% trans "Price" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.equipment_price|default_if_none:"" }}</th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "Purchase Date" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.purchase_equipment_date }}</th>
-        <th class="bold">{% trans "Delivery Date" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.delivery_equipment_date }}</th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "First date use" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.first_date_use }}</th>
-        <th class="bold">{% trans "Is available to use?" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.available_to_use|yesnotext }}</th>
-    </tr>
-
-    <tr>
-        <th class="bold">{% trans "Has guarantee?" %}:</th>
-        <th class="thead">{{ obj.shelfobjectequipmentcharacteristics.have_guarantee|yesnotext }}</th>
-
-    </tr>
-    <tr>
-								<th class="bold" colspan="1">{% trans "Note" %}:</th>
-        <th class="thead" colspan="3">{{ obj.shelfobjectequipmentcharacteristics.notes|default_if_none:"" }}</th>
-    </tr>
+				<thead class="tborder">
 				<tr>
-        <th class="bold" colspan="2">{% trans "Authorized roles to use equipment" %}:</th>
-        <th class="thead" colspan="2">
-            {% for roles in obj.shelfobjectequipmentcharacteristics.authorized_roles_to_use_equipment.all %}
-            <div>* {{ roles }}</div>
-            {% endfor %}
-        </th>    </tr>
-    </thead>
-</table>
-{% endif %}
+					<th class="bold">{% trans "Molecular formula" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.molecular_formula|default_if_none:"" }}</th>
+					<th class="bold">{% trans "IMDG" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.imdg|default_if_none:"" }}</th>
+				</tr>
 
-{% empty %}
-{% trans "No Objects Elements" %}
-{% endfor %}
+				<tr>
+					<th class="bold">{% trans "Bioaccumulable" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.bioaccumulable|yesnotext }}</th>
+					<th class="bold">{% trans "Is Seveso list III?" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.seveso_list|yesnotext }}</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "CAS Number" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.cas_id_number|default_if_none:"" }}</th>
+					<th class="bold">{% trans "White Organ" %}:</th>
+					<th class="thead">
+						{% for worgan in obj.object.sustancecharacteristics.white_organ.all %}
+							<div>* {{ worgan }}</div>
+						{% endfor %}
+					</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "Storage Classes" %}:</th>
+					<th class="thead">
+						{% for stoclass in obj.object.sustancecharacteristics.storage_class.all %}
+							<div>* {{ stoclass }}</div>
+						{% endfor %}
+					</th>
+					<th class="bold">{% trans "NFPA Codes" %}:</th>
+					<th class="thead">
+						{% for nfpa in obj.object.sustancecharacteristics.nfpa.all %}
+							<div>* {{ nfpa }}</div>
+						{% endfor %}
+					</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "Features" %}:</th>
+					<th class="thead">
+						{% for feature in obj.object.features.all %}
+							<div>* {{ feature }}</div>
+						{% endfor %}
+					</th>
+					<th class="bold">{% trans "IARC" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.iarc|default_if_none:"" }}</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "H Codes" %}:</th>
+					<th class="thead">
+						{% for hcode in obj.object.sustancecharacteristics.h_code.all %}
+							<div>* {{ hcode }}</div>
+						{% endfor %}
+					</th>
+					<th class="bold">{% trans "UE Codes" %}:</th>
+					<th class="thead">
+						{% for uecode in obj.object.sustancecharacteristics.ue_code.all %}
+							<div>* {{ uecode }}</div>
+						{% endfor %}
+					</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "Is precursor?" %}:</th>
+					<th class="thead">{{ obj.object.sustancecharacteristics.is_precursor|yesnotext }}</th>
+					{% if obj.object.sustancecharacteristics.is_precursor %}
+
+						<th class="bold">{% trans "Precursor Type" %}:</th>
+						<th class="thead">{{ obj.object.sustancecharacteristics.precursor_type }}</th>
+
+					{% endif %}
+				</tr>
+				</thead>
+			</table>
+		{% endif %}
+		{% if obj.shelfobjectequipmentcharacteristics %}
+			<table class="infoshelfobject">
+
+				<thead class="tborder">
+				<tr>
+					<th class="bold">{% trans "Provider" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.provider|default_if_none:"" }}</th>
+					<th class="bold">{% trans "Price" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.equipment_price|default_if_none:"" }}</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "Purchase Date" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.purchase_equipment_date }}</th>
+					<th class="bold">{% trans "Delivery Date" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.delivery_equipment_date }}</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "First date use" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.first_date_use }}</th>
+					<th class="bold">{% trans "Is available to use?" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.available_to_use|yesnotext }}</th>
+				</tr>
+
+				<tr>
+					<th class="bold">{% trans "Has guarantee?" %}:</th>
+					<th class="thead">{{ obj.shelfobjectequipmentcharacteristics.have_guarantee|yesnotext }}</th>
+
+				</tr>
+				<tr>
+					<th class="bold" colspan="1">{% trans "Note" %}:</th>
+					<th class="thead" colspan="3">{{ obj.shelfobjectequipmentcharacteristics.notes|default_if_none:"" }}</th>
+				</tr>
+				<tr>
+					<th class="bold" colspan="2">{% trans "Authorized roles to use equipment" %}:</th>
+					<th class="thead" colspan="2">
+						{% for roles in obj.shelfobjectequipmentcharacteristics.authorized_roles_to_use_equipment.all %}
+							<div>* {{ roles }}</div>
+						{% endfor %}
+					</th>
+				</tr>
+				</thead>
+			</table>
+		{% endif %}
+
+		{% empty %}
+		{% trans "No Objects Elements" %}
+	{% endfor %}
 {% endblock %}
