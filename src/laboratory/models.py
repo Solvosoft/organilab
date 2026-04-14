@@ -514,11 +514,12 @@ class ShelfObject(models.Model):
     quantity_units = models.JSONField(
         default=list,
         verbose_name=_("Units per box"),
-        help_text=_("List of integer unit quantities indexed by box position"),
+        help_text=_('List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'),
     )
-    quantity_box = models.IntegerField(
-        default=1,
-        verbose_name=_("Quantity Box"),
+    units_per_box = models.IntegerField(
+        default=0,
+        verbose_name=_("Units per box (reference)"),
+        help_text=_("Original number of units per box at creation time"),
     )
 
     @staticmethod
@@ -1321,7 +1322,6 @@ class UserOrganization(models.Model):
 
 
 # FIXME: Delete this model
-
 # class OrganizationUserManagement(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
@@ -1558,6 +1558,7 @@ class TranferObject(BaseCreationObj):
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
+    # indices de las cajas a transferir []
 
     def get_object_detail(self):
         return "%s %s %s" % (

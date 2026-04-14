@@ -53,7 +53,9 @@
 {% trans "Create Box" as box_title %}
 {% trans "Edit Reactive" as edit_reactive_title %}
 {% trans "Edit Material" as edit_material_title %}
+{% trans "Edit Box" as edit_box_title %}
 
+{% include 'modal_template.html' with id='edit_box_modal' form_id='edit_box_form' title=edit_box_title form=update_box_form url=create_box_shelfobject_url modal_class="modal-xl" %}
 {% include 'modal_template.html' with id='edit_reactive_modal' form_id='edit_reactive_form' title=edit_reactive_title form=edit_form url=create_shelfobject_url modal_class="modal-lg" %}
 {% include 'modal_template.html' with id='edit_material_modal' form_id='edit_material_form' title=edit_material_title form=edit_material_form url=create_shelfobject_url modal_class="modal-lg" %}
 {% include 'modal_template.html' with add_shelf_info=True shelf_info_position='left' id='reactive_modal' form_id='reactive_form' title=reactive_title form=reactive_form url=create_shelfobject_url modal_class="modal-xl" %}
@@ -69,3 +71,85 @@
 {% url "laboratory:api-shelfobject-transfer-in-approve" lab_pk=laboratory org_pk=org_pk as transfer_in_approve_url %}
 {% trans "Approve Transfer In - Container" as transfer_in_approve_with_container_title %}
 {% include 'modal_template.html' with form=transfer_in_approve_with_container_form id="transfer_in_approve_with_container_id_modal" title=transfer_in_approve_with_container_title form_id="transfer_in_approve_with_container_form" url=transfer_in_approve_url %}
+
+<script>
+(function () {
+    var lastDecreaseBtn = null;
+
+    window.show_decrease_modal = function (instance, event) {
+        lastDecreaseBtn = instance;
+        show_me_modal(instance, event);
+        return false;
+    };
+
+    function getBoxIndexInput() {
+        return $('#decreasesomodal form').find('input[name$="box_index"]');
+    }
+
+    function getMeasurementUnitRow() {
+        return $('#decreasesomodal form').find('[name$="measurement_unit"]').closest('.form-group');
+    }
+
+    function buildBoxSelect(quantityUnits) {
+        var $modal = $('#decreasesomodal');
+        var $container = $modal.find('#decrease_box_selection_container');
+
+        if (!$container.length) {
+            var $form = $modal.find('form');
+            $form.prepend(
+                '<div id="decrease_box_selection_container" class="form-group row mb-3">' +
+                '<label class="col-sm-2 control-label">{% trans "Select box" %}</label>' +
+                '<div class="col-sm-10"><select id="decrease_box_select" class="form-control"></select></div>' +
+                '</div>'
+            );
+            $container = $modal.find('#decrease_box_selection_container');
+            $(document).on('change', '#decrease_box_select', function () {
+                getBoxIndexInput().val($(this).val());
+            });
+        }
+
+        var $select = $container.find('#decrease_box_select');
+        $select.empty();
+        quantityUnits.forEach(function (box, idx) {
+            $select.append($('<option>', {
+                value: idx,
+                text: box.code + ' (' + box.units + ' {% trans "unit(s)" %})'
+            }));
+        });
+        $container.removeClass('d-none');
+        getBoxIndexInput().val($select.val());
+
+        // Hide measurement_unit row (not needed for boxes)
+        getMeasurementUnitRow().addClass('d-none');
+    }
+
+    function resetDecreaseBoxUI() {
+        var $modal = $('#decreasesomodal');
+        $modal.find('#decrease_box_selection_container').addClass('d-none');
+        getMeasurementUnitRow().removeClass('d-none');
+        getBoxIndexInput().val('');
+    }
+
+    // DOM is already ready when this include script runs — no need for DOMContentLoaded
+    var modalEl = document.getElementById('decreasesomodal');
+    if (modalEl) {
+        modalEl.addEventListener('shown.bs.modal', function () {
+            if (!lastDecreaseBtn) return;
+            var isBox = $(lastDecreaseBtn).data('is-box');
+            if (isBox === true || isBox === 'true') {
+                var raw = $(lastDecreaseBtn).attr('data-quantity-units') || '[]';
+                var quantityUnits;
+                try { quantityUnits = JSON.parse(raw.replace(/'/g, '"')); } catch (e) { quantityUnits = []; }
+                buildBoxSelect(quantityUnits);
+            } else {
+                resetDecreaseBoxUI();
+            }
+        });
+
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            resetDecreaseBoxUI();
+            lastDecreaseBtn = null;
+        });
+    }
+}());
+</script>
