@@ -39,16 +39,17 @@ def get_dataset_report_discard_objects(report, laboratory, column_list=None):
     )
 
     for obj in shelfobjects.distinct():
-        total = sum(b["units"] for b in obj["quantity_units"]) * obj["quantity"] if obj["is_box"] and obj["quantity_units"] else obj["quantity"]
+        if obj["is_box"]:
+            total = len(obj["quantity_units"]) if obj["quantity_units"] else 0
+            unit = _("Box")
+        else:
+            total = obj["quantity"]
+            unit = obj["measurement_unit__description"] if obj["measurement_unit__description"] else ""
         data_column = {
             "shelf": obj["shelf__name"] if obj["shelf__name"] else "",
             "object": obj["object__name"] if obj["object__name"] else "",
             "amount": str(round(total, 3)),
-            "unit": (
-                obj["measurement_unit__description"]
-                if obj["measurement_unit__description"]
-                else ""
-            ),
+            "unit": unit,
             "date": obj["creation_date"].strftime("%Y-%m-%d"),
             "created_by": (
                 obj["created_by__username"]
@@ -130,13 +131,18 @@ def get_dataset_report_discard_objects_html(report, column_list=None):
         )
 
         for obj in shelfobjects.distinct():
-            total = sum(b["units"] for b in obj["quantity_units"]) * obj["quantity"] if obj["is_box"] and obj["quantity_units"] else obj["quantity"]
+            if obj["is_box"]:
+                total = len(obj["quantity_units"]) if obj["quantity_units"] else 0
+                unit = _("Box")
+            else:
+                total = obj["quantity"]
+                unit = obj["measurement_unit__description"] if obj["measurement_unit__description"] else ""
             data_column = {
                 "in_where_laboratory__name": obj["in_where_laboratory__name"],
                 "shelf__name": obj["shelf__name"],
                 "object__name": obj["object__name"],
                 "quantity": str(round(total, 3)),
-                "measurement_unit__description": obj["measurement_unit__description"],
+                "measurement_unit__description": unit,
                 "created_by": (
                     obj["created_by__username"]
                     if obj["created_by__username"]

@@ -79,18 +79,25 @@ def save_increase_decrease_shelf_object(
         new_units = old_units - int(amount)
         action_taken = _("Box units decreased")
 
+        # Compute total substance before the change
+        old_total = sum(b["units"] for b in quantity_units) * shelfobject.quantity
+
         if new_units <= 0:
             quantity_units.pop(box_index)
         else:
             quantity_units[box_index] = {"code": box_entry["code"], "units": new_units}
 
         shelfobject.quantity_units = quantity_units
+
+        # Compute total substance after the change
+        new_total = sum(b["units"] for b in quantity_units) * shelfobject.quantity
+
         log_object_change(
             user,
             laboratory.pk,
             shelfobject,
-            old_units,
-            max(new_units, 0),
+            old_total,
+            new_total,
             description,
             2,
             _("Spend"),
