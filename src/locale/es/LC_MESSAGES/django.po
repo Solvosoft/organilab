@@ -5987,3 +5987,9 @@ msgstr "Se agregó la caja %(box)s: %(units)d unidad(es) restante(s)"
 
 msgid "Box was increased successfully."
 msgstr "La caja fue incrementada exitosamente."
+
+msgid "boxes"
+msgstr "cajas"
+
+msgid "Boxes to return"
+msgstr "Cajas para devolver"

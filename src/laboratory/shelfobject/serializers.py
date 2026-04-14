@@ -1,4 +1,5 @@
 import logging
+import math
 import re
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -145,6 +146,69 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         data = data.copy()
         return super().to_internal_value(data)
 
+    def _select_boxes(self, shelf_object, amount_required):
+        """
+        Select boxes from shelf_object.quantity_units.
+
+        Complete boxes (units >= units_per_box) are used for the integer part of
+        amount_required. The fractional part takes the next available box
+        (complete or partial) that has at least ceil(fraction * units_per_box) units.
+
+        For amount_required=2.5 and units_per_box=12:
+          - full_count=2  → take 2 complete boxes, reserving units_per_box each
+          - fraction=0.5  → need ceil(0.5 * 12) = 6 units from the next available box
+
+        Returns a list of dicts [{"code": "b-0001", "units": N}, ...] representing
+        the boxes (and units) that will be reserved.
+        """
+        quantity_units = shelf_object.quantity_units or []
+        units_per_box = shelf_object.units_per_box
+
+        full_count = int(amount_required)
+        fraction = amount_required - full_count
+        min_partial_units = math.ceil(fraction * units_per_box) if fraction > 0 else 0
+
+        # Separate complete boxes from partial ones
+        complete_boxes = [b for b in quantity_units if b["units"] >= units_per_box]
+        partial_boxes = [b for b in quantity_units if b["units"] < units_per_box]
+
+        if len(complete_boxes) < full_count:
+            raise serializers.ValidationError(
+                {
+                    "amount_required": _(
+                        "Not enough complete boxes available. "
+                        "%(needed)d complete box(es) required but only %(available)d available."
+                    )
+                    % {"needed": full_count, "available": len(complete_boxes)}
+                }
+            )
+
+        selected = []
+
+        # Reserve full boxes using exactly units_per_box units each
+        for box in complete_boxes[:full_count]:
+            selected.append({"code": box["code"], "units": units_per_box})
+
+        # Reserve fractional part from the next available box (complete first, then partial)
+        if min_partial_units > 0:
+            candidates = complete_boxes[full_count:] + partial_boxes
+            for box in candidates:
+                if box["units"] >= min_partial_units:
+                    selected.append({"code": box["code"], "units": min_partial_units})
+                    break
+            else:
+                raise serializers.ValidationError(
+                    {
+                        "amount_required": _(
+                            "No box with enough units for the partial amount "
+                            "(%(needed)d unit(s) required)."
+                        )
+                        % {"needed": min_partial_units}
+                    }
+                )
+
+        return selected
+
     def validate(self, data):
         current_datetime = now()
         initial_date = data["initial_date"]
@@ -175,6 +239,12 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
                 }
             )
 
+        shelf_object = data["shelf_object"]
+        if shelf_object.is_box:
+            data["reserved_boxes"] = self._select_boxes(
+                shelf_object, data["amount_required"]
+            )
+
         return data
 
     def validate_shelf_object(self, value):
@@ -192,7 +262,7 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReservedProducts
-        fields = ["amount_required", "shelf_object", "initial_date", "final_date"]
+        fields = ["amount_required", "shelf_object", "initial_date", "final_date", "reserved_boxes"]
 
 
 class IncreaseShelfObjectSerializer(serializers.Serializer):
@@ -325,7 +395,7 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         shelf_object = data["shelf_object"]
         decrease_errors = {}
 
-        # Box-specific validation: decrease units from a specific box slot
+        # Box-specific validation: decrease units from a specific box slot by index
         if shelf_object.is_box:
             box_index = data.get("box_index")
             quantity_units = shelf_object.quantity_units or []
@@ -346,6 +416,8 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
             return data
 
         # Standard (non-box) validation
+        amount = data.get("amount")
+
         decreased_unit = data.get("measurement_unit")
         if not decreased_unit:
             raise serializers.ValidationError(
@@ -404,6 +476,35 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         if decrease_errors:
             raise serializers.ValidationError(decrease_errors)
 
+        return data
+
+
+class ReturnBoxShelfObjectSerializer(serializers.Serializer):
+    reserved_product = serializers.PrimaryKeyRelatedField(
+        queryset=ReservedProducts.objects.using(settings.READONLY_DATABASE)
+    )
+    description = serializers.CharField(required=False, allow_blank=True)
+
+    def validate_reserved_product(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.shelf_object.in_where_laboratory_id != source_laboratory_id:
+            raise serializers.ValidationError(
+                _("Reservation does not belong to this laboratory.")
+            )
+        if not attr.shelf_object.is_box:
+            raise serializers.ValidationError(
+                _("Only box shelf object reservations can be returned through this action.")
+            )
+        return attr
+
+    def validate(self, data):
+        from reservations_management.models import BORROWED
+        reserved_product = data["reserved_product"]
+        if reserved_product.status != BORROWED:
+            raise serializers.ValidationError(
+                {"reserved_product": _("Only borrowed reservations can be returned.")}
+            )
         return data
 
 

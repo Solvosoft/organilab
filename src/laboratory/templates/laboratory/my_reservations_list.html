@@ -34,7 +34,13 @@
         {% for obj in object_list%}
             <tr id="table_data">
                 <td id="shelf_object">{{obj.shelf_object}}</td>
-                <td id="amount_required">{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
+                <td id="amount_required">
+                    {% if obj.shelf_object.is_box %}
+                        {{obj.amount_required}} {% trans "boxes" %}
+                    {% else %}
+                        {{obj.amount_required}} {{obj.shelf_object.measurement_unit}}
+                    {% endif %}
+                </td>
                 <td id="initial_date">{{obj.initial_date}}</td>
                 <td id="final_date">{{obj.final_date}}</td>
                 <td id="status">{{obj.get_status_display}}</td>
