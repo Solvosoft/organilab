@@ -17,7 +17,7 @@ def log_object_change(
     create=False,
     organization=None,
 ):
-    factor = sum(shelfobject.quantity_units) if shelfobject.is_box and shelfobject.quantity_units else 1
+    factor = sum(b["units"] for b in shelfobject.quantity_units) if shelfobject.is_box and shelfobject.quantity_units else 1
     old_total = old * factor
     new_total = new * factor
     attrs = dict(
@@ -52,7 +52,7 @@ def log_object_add_change(
     create=False,
     organization=None,
 ):
-    factor = sum(shelfobject.quantity_units) if shelfobject.is_box and shelfobject.quantity_units else 1
+    factor = sum(b["units"] for b in shelfobject.quantity_units) if shelfobject.is_box and shelfobject.quantity_units else 1
     old_total = old * factor
     new_total = new * factor
     attrs = dict(

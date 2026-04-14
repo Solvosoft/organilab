@@ -7,10 +7,7 @@ from django.db.models import (
     When,
     F,
     FloatField,
-    ExpressionWrapper,
 )
-from django.db.models.fields.json import KeyTextTransform
-from django.db.models.functions import Cast
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 
@@ -193,27 +190,26 @@ def get_dataset_reactive_precursor(report, column_list=None):
         rpo = rpo.filter(
             type=Object.REACTIVE, sustancecharacteristics__is_precursor=True
         )
-        objects = rpo.annotate(
-            quantity_total=Sum(
-                Case(
-                    When(
-                        shelfobject__is_box=True,
-                        then=ExpressionWrapper(
-                            F("shelfobject__quantity")
-                            * Cast(
-                                KeyTextTransform("0", "shelfobject__quantity_units"),
-                                output_field=FloatField(),
-                            )
-                            * F("shelfobject__quantity_box"),
-                            output_field=FloatField(),
-                        ),
-                    ),
-                    default=F("shelfobject__quantity"),
-                    output_field=FloatField(),
-                )
-            ),
-            measurement_unit=Min("shelfobject__measurement_unit"),
-        )
+        # Compute per-object totals in Python to avoid PostgreSQL grouping
+        # issues with correlated jsonb_array_elements inside aggregates.
+        all_sos = ShelfObject.objects.filter(
+            object__in=rpo,
+            shelf__furniture__labroom__laboratory__pk=lab_pk,
+        ).values("object_id", "quantity", "is_box", "quantity_units", "measurement_unit")
+
+        obj_totals = {}
+        obj_measurement_units = {}
+        for so in all_sos:
+            obj_id = so["object_id"]
+            if so["is_box"] and so["quantity_units"]:
+                item_total = so["quantity"] * sum(b["units"] for b in so["quantity_units"])
+            else:
+                item_total = so["quantity"]
+            obj_totals[obj_id] = obj_totals.get(obj_id, 0) + item_total
+            if obj_id not in obj_measurement_units:
+                obj_measurement_units[obj_id] = so["measurement_unit"]
+
+        objects = rpo.distinct()
         laboratory = Laboratory.objects.filter(pk=lab_pk).first()
 
         for object in objects:
@@ -223,8 +219,8 @@ def get_dataset_reactive_precursor(report, column_list=None):
                 "code": object.code,
                 "name": object.name,
                 "type": object.get_type_display(),
-                "quantity_total": round(object.quantity_total, 3),
-                "measurement_unit": ShelfObject.get_units(object.measurement_unit),
+                "quantity_total": round(obj_totals.get(object.pk, 0), 3),
+                "measurement_unit": ShelfObject.get_units(obj_measurement_units.get(object.pk)),
                 "molecular_formula": str(get_molecular_formula(object, "")),
                 "cas_id_number": str(get_cas(object, "")),
                 "precursor": precursor,
@@ -460,7 +456,7 @@ def get_limited_shelf_objects(query):
     ):
 
         current = (
-            shelf_object.quantity_box if shelf_object.is_box else shelf_object.quantity
+            len(shelf_object.quantity_units) if shelf_object.is_box else shelf_object.quantity
         )
         if (
             shelf_object.limits.minimum_limit == current
@@ -496,7 +492,7 @@ def get_dataset_limit_objects(report, column_list=None):
                     "code": shelfobj.object.code,
                     "object": shelfobj.object.name,
                     "quantity": (
-                        shelfobj.quantity_box if shelfobj.is_box else shelfobj.quantity
+                        len(shelfobj.quantity_units) if shelfobj.is_box else shelfobj.quantity
                     ),
                     "measurement_unit": (
                         _("Unit")
