@@ -190,7 +190,7 @@ function BaseFormModal(modalid,  data_extras={})  {
                 });
             }
         },
-        "showShelfInfo": function(div, id_shelf, position='top'){
+        "showShelfInfo": function(div, id_shelf, position='top', expiration_date=null){
             $.ajax({
                 url: document.urls.shelf_availability_information,
                 type: 'GET',
@@ -201,7 +201,8 @@ function BaseFormModal(modalid,  data_extras={})  {
                         div.find('div.shelfinfocontainer').remove();
                     }
                     div.prepend(data.shelf_info);
-                },
+                    div.find('#shelfobject_expiration_date').text(expiration_date!="None" ? expiration_date : gettext("Unknown"));
+                                    },
                 error: function(xhr, resp, text){
                     Swal.fire({
                         icon: 'error',
@@ -232,6 +233,20 @@ function BaseFormModal(modalid,  data_extras={})  {
             var shelf = $(btninstance).data('shelf');
             var add_creation_help = $(btninstance).data('add_creation_help');
             var objecttype = $(btninstance).data('objecttype');
+            var expiration_date = $(btninstance).data('expiration');
+            var is_box = $(btninstance).data('box');
+            var id_modal_data = $(btninstance).data('modalid');
+            if(is_box=="True" && id_modal_data=="increasesomodal"){
+                $("#"+id_modal_data).find('#id_expiration_date_info').remove();
+                $("#"+id_modal_data).find('.modal-body').append(`<div id="id_expiration_date_info" class="alert alert-warning text-center" role="alert">
+                ${gettext("If you wish to add a new box, please note that it will be subject to the expiration date of")} ${expiration_date}.
+                </div>`);
+                $("#"+id_modal_data).find('#id_increase-measurement_unit').parent().parent().hide();
+            }else if(id_modal_data=="increasesomodal"){
+                $("#"+id_modal_data).find('#id_increase-measurement_unit').parent().parent().show();
+                $("#"+id_modal_data).find('#id_expiration_date_info').remove();
+
+            }
 
             if (shelf_object != undefined){
                 this.data_extras['shelf_object'] = shelf_object;
@@ -243,7 +258,7 @@ function BaseFormModal(modalid,  data_extras={})  {
             var position = this.instance.find('input[name="position"]');
 
             if (info_shelf != undefined && shelf != undefined && position != undefined){
-                this.showShelfInfo($(info_shelf[0]), shelf, position=$(position[0]).val());
+                this.showShelfInfo($(info_shelf[0]), shelf, position=$(position[0]).val(), expiration_date);
                 if(add_creation_help && !$(info_shelf[0]).find("div.creation_help").length){
                    add_creation_help_func($(info_shelf[0]), objecttype);
                 }

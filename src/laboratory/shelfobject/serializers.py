@@ -282,31 +282,29 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
     use = serializers.CharField(required=False)
 
     def validate_shelf_object(self, value):
-        attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
-        if attr.in_where_laboratory_id != source_laboratory_id:
+        if value.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f"IncreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != "
+                f"IncreaseShelfObjectSerializer --> value.in_where_laboratory_id ({value.in_where_laboratory_id}) != "
                 f"source_laboratory_id ({source_laboratory_id})"
             )
             raise serializers.ValidationError(
                 _("Object does not exist in the laboratory.")
             )
-        return attr
+        return value
 
     def validate_provider(self, value):
-        attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
-        if attr:
-            if attr.laboratory_id != source_laboratory_id:
+        if value:
+            if value.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f"IncreaseShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != "
+                    f"IncreaseShelfObjectSerializer --> value.laboratory ({value.laboratory}) != "
                     f"source_laboratory_id ({source_laboratory_id})"
                 )
                 raise serializers.ValidationError(
                     _("Provider does not exist in the laboratory.")
                 )
-        return attr
+        return value
 
     def validate(self, data):
         data = super().validate(data)
@@ -316,6 +314,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         increase_unit = data["measurement_unit"]
         query_unit = Catalog.objects.filter(key="units")
         updated_errors = {}
+        is_box = shelf_object.is_box
 
         measurement_unit = (
             shelf_object.measurement_unit
@@ -999,10 +998,16 @@ class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         instance = self.instance
-        current_box_count = len(instance.quantity_units) if instance.quantity_units else 0
+        current_box_count = (
+            len(instance.quantity_units) if instance.quantity_units else 0
+        )
 
-        quantity_box_changed = "quantity_box" in data and data["quantity_box"] != current_box_count
-        units_per_box_changed = "units_per_box" in data and data["units_per_box"] != instance.units_per_box
+        quantity_box_changed = (
+            "quantity_box" in data and data["quantity_box"] != current_box_count
+        )
+        units_per_box_changed = (
+            "units_per_box" in data and data["units_per_box"] != instance.units_per_box
+        )
 
         if not (quantity_box_changed or units_per_box_changed):
             return data
@@ -1012,12 +1017,14 @@ class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
         boxes_modified = any(box["units"] != original_units for box in boxes)
 
         if boxes_modified:
-            raise serializers.ValidationError({
-                "quantity_box": _(
-                    "Cannot change the number of boxes or units per box because one or more "
-                    "boxes have already been modified. Use the decrease or increase actions instead."
-                )
-            })
+            raise serializers.ValidationError(
+                {
+                    "quantity_box": _(
+                        "Cannot change the number of boxes or units per box because one or more "
+                        "boxes have already been modified. Use the decrease or increase actions instead."
+                    )
+                }
+            )
         return data
 
 

@@ -514,7 +514,9 @@ class ShelfObject(models.Model):
     quantity_units = models.JSONField(
         default=list,
         verbose_name=_("Units per box"),
-        help_text=_('List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'),
+        help_text=_(
+            'List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'
+        ),
     )
     units_per_box = models.IntegerField(
         default=0,
@@ -562,6 +564,9 @@ class ShelfObject(models.Model):
             self.quantity,
             str(self.measurement_unit),
         )
+
+    def get_box_code(self):
+        return self.quantity_units
 
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
@@ -1481,6 +1486,7 @@ class ObjectLogChange(models.Model):
     organization_where_action_taken = models.ForeignKey(
         OrganizationStructure, on_delete=models.SET_NULL, null=True
     )
+    is_box = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -1559,6 +1565,9 @@ class TranferObject(BaseCreationObj):
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
     # indices de las cajas a transferir []
+    quantity_box = models.IntegerField(default=0)
+    is_box = models.BooleanField(default=False)
+    quantity_units = models.JSONField(default=list)
 
     def get_object_detail(self):
         return "%s %s %s" % (

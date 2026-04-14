@@ -269,6 +269,7 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
@@ -362,6 +363,7 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
@@ -1025,9 +1027,23 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             request, org_pk, lab_pk, "fill_increase_shelfobject"
         )
         self.serializer_class = IncreaseShelfObjectSerializer
-        serializer = self.serializer_class(
-            data=request.data, context={"source_laboratory_id": self.laboratory.pk}
-        )
+        serializer = None
+        if "shelf_object" in request.data:
+            shelfobject = get_object_or_404(
+                ShelfObject, pk=request.data["shelf_object"]
+            )
+            request.data["measurement_unit"] = shelfobject.measurement_unit.pk
+            serializer = self.serializer_class(
+                data=request.data,
+                context={
+                    "source_laboratory_id": self.laboratory.pk,
+                    "is_box": shelfobject.is_box,
+                },
+            )
+        else:
+            serializer = self.serializer_class(
+                data=request.data, context={"source_laboratory_id": self.laboratory.pk}
+            )
         errors = {}
         if serializer.is_valid():
             save_increase_decrease_shelf_object(
@@ -2033,19 +2049,44 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
         data = {
-            "object": {"id": shelfobject.object_id, "text": str(shelfobject.object)} if shelfobject.object_id else None,
-            "status": {"id": shelfobject.status_id, "text": str(shelfobject.status)} if shelfobject.status_id else None,
-            "measurement_unit": {"id": shelfobject.measurement_unit_id, "text": str(shelfobject.measurement_unit)} if shelfobject.measurement_unit_id else None,
-            "type_budget": {"id": shelfobject.type_budget_id, "text": str(shelfobject.type_budget)} if shelfobject.type_budget_id else None,
+            "object": (
+                {"id": shelfobject.object_id, "text": str(shelfobject.object)}
+                if shelfobject.object_id
+                else None
+            ),
+            "status": (
+                {"id": shelfobject.status_id, "text": str(shelfobject.status)}
+                if shelfobject.status_id
+                else None
+            ),
+            "measurement_unit": (
+                {
+                    "id": shelfobject.measurement_unit_id,
+                    "text": str(shelfobject.measurement_unit),
+                }
+                if shelfobject.measurement_unit_id
+                else None
+            ),
+            "type_budget": (
+                {"id": shelfobject.type_budget_id, "text": str(shelfobject.type_budget)}
+                if shelfobject.type_budget_id
+                else None
+            ),
             "physical_status": shelfobject.physical_status,
             "quantity": shelfobject.quantity,
             "description": shelfobject.description or "",
             "concentration": shelfobject.concentration,
             "batch": shelfobject.batch or "",
             "was_donated": shelfobject.was_donated,
-            "reactive_expiration_date": str(shelfobject.reactive_expiration_date) if shelfobject.reactive_expiration_date else "",
+            "reactive_expiration_date": (
+                str(shelfobject.reactive_expiration_date)
+                if shelfobject.reactive_expiration_date
+                else ""
+            ),
             "units_per_box": shelfobject.units_per_box,
-            "quantity_box": len(shelfobject.quantity_units) if shelfobject.quantity_units else 0,
+            "quantity_box": (
+                len(shelfobject.quantity_units) if shelfobject.quantity_units else 0
+            ),
         }
         return JsonResponse(data, status=status.HTTP_200_OK)
 
@@ -2065,7 +2106,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             instance=shelfobject, data=request.data, partial=True
         )
         if not serializer.is_valid():
-            return JsonResponse({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         quantity_box = serializer.validated_data.pop("quantity_box", None)
         units_per_box = serializer.validated_data.get("units_per_box")
@@ -2077,7 +2120,9 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         # Propagate new units_per_box to all existing boxes
         if units_per_box is not None:
-            current_boxes = [{"code": b["code"], "units": units_per_box} for b in current_boxes]
+            current_boxes = [
+                {"code": b["code"], "units": units_per_box} for b in current_boxes
+            ]
             quantity_units_changed = True
 
         # Adjust number of boxes
@@ -2097,8 +2142,12 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             obj.save(update_fields=["quantity_units"])
 
         utils.organilab_logentry(
-            request.user, obj, CHANGE, "shelfobject",
-            changed_data=list(request.data.keys()), relobj=lab_pk
+            request.user,
+            obj,
+            CHANGE,
+            "shelfobject",
+            changed_data=list(request.data.keys()),
+            relobj=lab_pk,
         )
         create_shelfobject_observation(
             obj,
