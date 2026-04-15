@@ -262,7 +262,13 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReservedProducts
-        fields = ["amount_required", "shelf_object", "initial_date", "final_date", "reserved_boxes"]
+        fields = [
+            "amount_required",
+            "shelf_object",
+            "initial_date",
+            "final_date",
+            "reserved_boxes",
+        ]
 
 
 class IncreaseShelfObjectSerializer(serializers.Serializer):
@@ -494,12 +500,15 @@ class ReturnBoxShelfObjectSerializer(serializers.Serializer):
             )
         if not attr.shelf_object.is_box:
             raise serializers.ValidationError(
-                _("Only box shelf object reservations can be returned through this action.")
+                _(
+                    "Only box shelf object reservations can be returned through this action."
+                )
             )
         return attr
 
     def validate(self, data):
         from reservations_management.models import BORROWED
+
         reserved_product = data["reserved_product"]
         if reserved_product.status != BORROWED:
             raise serializers.ValidationError(
@@ -1135,6 +1144,24 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
             )
         return attr
 
+    def validate(self, data):
+        data = super().validate(data)
+        shelfobject = data.get("shelf_object")
+        if shelfobject.is_box:
+            if len(shelfobject.quantity_units) < int(data.get("amount_to_transfer")):
+                logger.debug(
+                    f"TransferOutShelfObjectSerializer --> shelfobject.quantity_units "
+                    f"({shelfobject.quantity_units}) < amount_to_transfer ({data.get('amount_to_transfer')})"
+                )
+                raise serializers.ValidationError(
+                    {
+                        "amount_to_transfer": _(
+                            "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
+                        )
+                    }
+                )
+        return data
+
 
 class ShelfObjectDeleteSerializer(serializers.Serializer):
     shelfobj = serializers.PrimaryKeyRelatedField(
@@ -1386,13 +1413,20 @@ class TransferObjectSerializer(serializers.ModelSerializer):
     quantity = serializers.SerializerMethodField()
 
     def get_object(self, obj):
-        return {"name": obj.object.object.name, "type": obj.object.object.type}
+        return {
+            "name": (
+                obj.object.object.name
+                if not obj.is_box
+                else _("Box of ") + obj.object.object.name
+            ),
+            "type": obj.object.object.type,
+        }
 
     def get_laboratory_send(self, obj):
         return obj.laboratory_send.name
 
     def get_quantity(self, obj):
-        return f"{obj.quantity} {obj.object.get_measurement_unit_display()}"
+        return f"{obj.quantity} {obj.object.get_measurement_unit_display() if not obj.is_box else 'Unidades'}"
 
     class Meta:
         model = TranferObject
@@ -1403,6 +1437,7 @@ class TransferObjectSerializer(serializers.ModelSerializer):
             "laboratory_send",
             "update_time",
             "mark_as_discard",
+            "is_box",
         )
 
 
@@ -1649,6 +1684,7 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
 
     def validate_transfer_object(self, value):
         attr = super().validate(value)
+        is_box = attr.is_box
         if attr.laboratory_received_id != self.context.get("laboratory_id"):
             logger.debug(
                 f"TransferInShelfObjectSerializer --> attr.laboratory_received ({attr.laboratory_received}) != "
@@ -1670,7 +1706,8 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
                         "The transfer in cannot be performed since the source object no longer belongs to the laboratory that sent it."
                     )
                 )
-            if attr.quantity > attr.object.quantity:
+
+            if attr.quantity > attr.object.quantity and not is_box:
                 logger.debug(
                     f"TransferInShelfObjectSerializer --> attr.quantity ({attr.quantity}) > "
                     f"attr.object.quantity ({attr.object.quantity})"
@@ -1687,24 +1724,43 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
         data = super().validate(data)
         if self.context.get("validate_for_approval"):
             transfer_object = data["transfer_object"]
+            is_box = transfer_object.is_box
             # do it here instead of in validate_transfer_object so shelf is already validated when used - only validate measurement unit for reactive
             measurement_unit = (
                 transfer_object.object.measurement_unit
                 if transfer_object.object.object.type == Object.REACTIVE
                 else None
             )
-            container = get_selected_container(data)
-            errors = validate_measurement_unit_and_quantity(
-                data["shelf"],
-                transfer_object.object.object,
-                transfer_object.quantity,
-                measurement_unit=measurement_unit,
-                container=container,
-            )
+            validate_measurement = {
+                "shelf": data["shelf"],
+                "object": transfer_object.object.object,
+                "quantity": transfer_object.quantity,
+                "measurement_unit": transfer_object.object.measurement_unit,
+                "container": get_selected_container(data),
+            }
+
+            if is_box:
+                del validate_measurement["container"]
+                validate_measurement["quantity"] = (
+                    sum(item["units"] for item in transfer_object.quantity_units)
+                    * transfer_object.object.quantity
+                )
+
+            errors = validate_measurement_unit_and_quantity(**validate_measurement)
+
             if errors:
                 updated_errors = group_object_errors_for_serializer(
                     errors, save_to_key="transfer_object"
                 )
+                if is_box:
+                    if len(transfer_object.quantity_units) < int(
+                        transfer_object.amount_to_transfer
+                    ):
+                        updated_errors["quantity"].append(
+                            _(
+                                "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
+                            )
+                        )
                 raise serializers.ValidationError(updated_errors)
         return data
 
