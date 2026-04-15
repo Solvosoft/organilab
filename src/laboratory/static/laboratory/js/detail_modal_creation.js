@@ -3,7 +3,7 @@ Method that gets the data from the API Response and creates a modal with it
 I: data (JSON)
 O: None
 */
-function configure_modal(data){
+function configure_modal(data) {
     const instance = $('#shelfobject_detail_modal_body')
     $('#detail_modal_container').on('hidden.bs.modal', function () {
         instance.html("")
@@ -13,20 +13,33 @@ function configure_modal(data){
     let content = '<table class="table table-striped"><tbody id="shelfobject_detail_tbody"></tbody></table>'
     instance.append(content)
     let tbody_instance = $('#shelfobject_detail_tbody')
-    if(data['qr'] !== undefined){
+    if (data['qr'] !== undefined) {
         insert_qr(data['qr'], data['url'])
     }
+    // let object_titles = {
+    //     'code': gettext('Code'),
+    //     'name': gettext('Name'),
+    //     'synonym': gettext('Synonym'),
+    //     'description': gettext('Description'),
+    //     'model': gettext('Model'),
+    //     'serie': gettext('Serie'),
+    //     'plaque': gettext('Plaque'),
+    // }
     let object_titles = {
         'code': gettext('Code'),
         'name': gettext('Name'),
         'synonym': gettext('Synonym'),
         'description': gettext('Description'),
-        'model': gettext('Model'),
-        'serie': gettext('Serie'),
-        'plaque': gettext('Plaque'),
     }
+
+    if (!data.object.is_box) {
+        object_titles['model'] = gettext('Model')
+        object_titles['serie'] = gettext('Serie')
+        object_titles['plaque'] = gettext('Plaque')
+    }
+
     insert_substance_data(data.object.object_inst, tbody_instance, object_titles);
-    insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')});
+    // insert_substance_data(data.object, tbody_instance, {'unit': gettext('Unit')});
     insert_substance_data({
         ...data.object,
         was_donated: data.object.was_donated ? gettext('Yes') : gettext('No')
@@ -34,40 +47,42 @@ function configure_modal(data){
         'was_donated': gettext('Donated income'),
         'unit': gettext('Unit')
     });
-    if(data.object['object_features']){
+    if (data.object['object_features']) {
         append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance);
     }
-    if (data.object["object_type"] == '0'){
-       if (data.object['pictograms']){
-        insert_image(data.object['pictograms'], tbody_instance);
+    if (data.object["object_type"] == '0') {
+        if (data.object['pictograms'] && !data.object.is_box) {
+            insert_image(data.object['pictograms'], tbody_instance);
         }
-       if (data.object['physical_status']){
-           insert_data(data.object["physical_status"], tbody_instance, gettext('Physical Status'));
+        if (data.object['physical_status']) {
+            insert_data(data.object["physical_status"], tbody_instance, gettext('Physical Status'));
         }
-       if (data.object['concentration']){
+        if (data.object['concentration']) {
             insert_data(data.object["concentration"], tbody_instance, gettext('Concentration'));
         }
-        if (data.object['reactive_expiration_date']){
+        if (data.object['reactive_expiration_date']) {
             insert_data(data.object["reactive_expiration_date"], tbody_instance, gettext('Expiration Date'));
         }
-        if (data.object['container_entry_date']){
+        if (data.object['container_entry_date']) {
             insert_data(data.object["container_entry_date"], tbody_instance, gettext('Container Entry Date'));
         }
-        if (data.object['container_open_date']){
+        if (data.object['container_open_date']) {
             insert_data(data.object["container_open_date"], tbody_instance, gettext('Container Open Date'));
         }
-        if (data.object['type_budget']){
-            insert_data(data.object["type_budget"], tbody_instance,  gettext('Type Budget'));
+        if (data.object['type_budget']) {
+            insert_data(data.object["type_budget"], tbody_instance, gettext('Type Budget'));
         }
-      }
-    if (data.object['substance_characteristics']){
+    }
+    if (data.object['substance_characteristics']) {
         manage_substance_characteristics(data.object['substance_characteristics'], tbody_instance);
     }
-    if (data.object['equipment_characteristics']){
+    if (data.object['equipment_characteristics']) {
         manage_equipment_characteristics(data.object['equipment_characteristics'], tbody_instance);
     }
-
- }
+    if (data.object.is_box) {
+        insert_box_data(data.object, tbody_instance);
+    }
+}
 
 
 /*
@@ -75,7 +90,7 @@ Method that inserts the QR Code in the modal, if there is one available
 I: qr (b64 image), url(string)
 O: None
 */
-function insert_qr(qr, url){
+function insert_qr(qr, url) {
     let qr_container = `<div class="form-group row qr_img">
         <img src="data:image/svg+xml;base64,${qr}" alt="${gettext('Download QR')}">
         </div>
@@ -86,7 +101,7 @@ function insert_qr(qr, url){
                 ${gettext('Download QR')}</a>
             </div>
         </div>`
-        $('#shelfobject_detail_modal_body').prepend(qr_container)
+    $('#shelfobject_detail_modal_body').prepend(qr_container)
 }
 
 /*
@@ -94,7 +109,7 @@ Method that creates the substance characteristics
 I: data (JSON), inst(Instance of HTML to append to)
 O: None
 */
-function manage_substance_characteristics(data, inst){
+function manage_substance_characteristics(data, inst) {
     let characteristics = define_usable_keys_detail(data)
     let characteristics_lists = {
         'white_organ': gettext('White Organs'),
@@ -105,12 +120,12 @@ function manage_substance_characteristics(data, inst){
     data = change_boolean_to_affirmation(data)
     insert_substance_data(data, inst, characteristics)
     append_data_lists(data, characteristics_lists, inst)
-    if (data['security_sheet']){
+    if (data['security_sheet']) {
         let security_html = `<tr><td class="shelfobject_titles">${gettext('Security Sheet')}</td>
             <td><a href="${data['security_sheet']}" target="_blank"> ${gettext('Download')}</a></td></tr>`
         inst.append(security_html)
     }
-    if(data['img_representation']){
+    if (data['img_representation']) {
         let image_rep_html = `<tr><td class="shelfobject_titles">${gettext('Sustance Representation')}</td>
             <img href="${data['img_representation']}" width="200px" height="200px" /></tr>`
         inst.append(image_rep_html)
@@ -122,13 +137,13 @@ Method that creates a dictionary with the necessary keys from the substance char
 I: data (JSON)
 O: values (dict)
 */
-function define_usable_keys_detail(data){
+function define_usable_keys_detail(data) {
     let values = {
-            'cas_id_number': gettext('Cas Number'),
-            'is_precursor': gettext('Is Precursor'),
+        'cas_id_number': gettext('Cas Number'),
+        'is_precursor': gettext('Is Precursor'),
 
     }
-    if (data['is_precursor']){
+    if (data['is_precursor']) {
         values['precursor_type'] = gettext('Precursor Type')
     }
     values['iarc'] = gettext('IARC')
@@ -145,12 +160,12 @@ Method that changes the boolean value of some data to 'Yes' or 'No'
 I: data (JSON)
 O: data (JSON)
 */
-function change_boolean_to_affirmation(data){
+function change_boolean_to_affirmation(data) {
     let positive = gettext('Yes')
     let negative = gettext('No')
-    data['is_precursor'] = data['is_precursor'] ? positive:negative
-    data['seveso_list'] = data['seveso_list'] ? positive:negative
-    data['bioaccumulable'] = data['molecular_formula'] ? positive:negative
+    data['is_precursor'] = data['is_precursor'] ? positive : negative
+    data['seveso_list'] = data['seveso_list'] ? positive : negative
+    data['bioaccumulable'] = data['molecular_formula'] ? positive : negative
     return data
 }
 
@@ -159,10 +174,10 @@ Method that creates the iterable data if there is data to show
 I: data (JSON), inst(Instance of HTML to append to)
 O: None
 */
-function append_data_lists(data, data_lists, inst, nested_key){
+function append_data_lists(data, data_lists, inst, nested_key) {
     titles = Object.keys(data_lists)
-    titles.forEach( (title) => {
-        if (data[title].length > 0){
+    titles.forEach((title) => {
+        if (data[title].length > 0) {
             load_array_data(data[title], data_lists[title], inst, nested_key)
         }
     })
@@ -173,12 +188,12 @@ Method that inserts all the substance data except for the ones containing arrays
 I: data (JSON), inst(Instance of HTML to append to), object_titles (dict)
 O: None
 */
-function insert_substance_data(data, inst, object_titles){
+function insert_substance_data(data, inst, object_titles) {
     let html_object = ''
     titles = Object.keys(object_titles)
-    titles.forEach( (title) => {
+    titles.forEach((title) => {
         let value = data[title]
-        if(typeof value == 'object' && value){
+        if (typeof value == 'object' && value) {
             value = value.description
         }
         html_object += `<tr><td class="shelfobject_titles">${object_titles[title]}</td>
@@ -192,12 +207,12 @@ Method that inserts all the substance characteristics that are arrays
 I: array_list (Array), title(String), inst(Instance of HTML to append to)
 O: None
 */
-function load_array_data(array_list, title, inst){
+function load_array_data(array_list, title, inst) {
     let html_object = ""
     let nested_key = Object.keys(array_list[0])[0]
     array_list.forEach((item) => {
         let value = item
-        if (nested_key){
+        if (nested_key) {
             value = value[nested_key]
         }
         html_object += `<li>${value}</li>`
@@ -212,7 +227,7 @@ Method that creates the substance characteristics
 I: data (JSON), inst(Instance of HTML to append to)
 O: None
 */
-function manage_equipment_characteristics(data, inst){
+function manage_equipment_characteristics(data, inst) {
     let characteristics_lists = {
         'provider': gettext('Provider'),
         'have_guarantee': gettext('Has guarantee?'),
@@ -225,7 +240,7 @@ function manage_equipment_characteristics(data, inst){
 
     }
     insert_substance_data(data, inst, characteristics_lists)
-    insert_data_url(data,inst, {'contract_of_maintenance': gettext('Contract of maintenance')})
+    insert_data_url(data, inst, {'contract_of_maintenance': gettext('Contract of maintenance')})
     append_data_lists(data, {"authorized_roles_to_use_equipment": gettext("Authorized roles to use equipment")}, inst)
 
 }
@@ -235,31 +250,57 @@ Method that inserts all the substance data except for the ones containing arrays
 I: data (JSON), inst(Instance of HTML to append to), object_titles (dict)
 O: None
 */
-function insert_data_url(data, inst, object_titles){
+function insert_data_url(data, inst, object_titles) {
     let html_object = ''
     titles = Object.keys(object_titles)
-    titles.forEach( (title) => {
+    titles.forEach((title) => {
         let value = data[title]
         html_object += `<tr><td class="shelfobject_titles">${object_titles[title]}</td>`
-        if(value && data['can_download_contract']){
+        if (value && data['can_download_contract']) {
             html_object += `<td><a class="btn btn-outline-success" href="${value}"><i class="fa fa-file-text-o"></i> ${gettext("Download")} </a></td></tr>`
-        }else{
+        } else {
             html_object += `<td></td></tr>`
         }
     })
     inst.append(html_object)
 }
 
-function insert_image(data, inst){
+function insert_image(data, inst) {
     let html_object = `<tr><td class="shelfobject_titles">${gettext('Pictograms')}</td><td>`
-    data.forEach((obj)=>{
+    data.forEach((obj) => {
         html_object += `<img src="${obj.pictogram}" class="p-2" width="100px" height="100px" />`
     })
     html_object += `</td></tr>`
     inst.append(html_object)
 }
 
-function insert_data(value,inst, title){
+function insert_box_data(data, inst) {
+    if (!data.is_box) return;
+
+    if (data.units_per_box) {
+        insert_data(data.units_per_box, inst, gettext('Units per box'));
+    }
+
+    if (data.quantity_units && data.quantity_units.length > 0) {
+        insert_data(data.quantity_units.length, inst, gettext('Number of boxes'));
+
+        let html_object = '';
+        data.quantity_units.forEach((box) => {
+            html_object += `<li>${box.code}: ${box.units} ${gettext('unit(s)')}</li>`;
+        });
+
+        let html_section = `<tr>
+            <td class="shelfobject_titles">${gettext('Box detail')}</td>
+            <td>
+                <ul class="shelfobject_list_elem">${html_object}</ul>
+            </td>
+        </tr>`;
+
+        inst.append(html_section);
+    }
+}
+
+function insert_data(value, inst, title) {
     let html_object = ''
     console.log(title)
     html_object += `<tr><td class="shelfobject_titles">${title}</td>
