@@ -164,7 +164,7 @@ function transferInObjectApprove(btn, event){
     let transferListDataTable = $('#transfer-list-datatable').DataTable()
     let transfer_data = transferListDataTable.row($(btn).closest('tr')).data();
     let shelfObjectDataTable = $("#shelfobjecttable").DataTable();
-    if(transfer_data.object.type === '0'){  // type - Reactive
+    if(transfer_data.object.type === '0'&& !transfer_data.is_box){  // type - Reactive
         show_hide_container_selects("#transfer_in_approve_with_container_form", 'none');
         $("#transfer_in_approve_with_container_form #id_transfer_object").val(transfer_data.id);
         $("#transfer_in_approve_with_container_form #id_shelf").val(tableObject.get_active_shelf());

@@ -118,6 +118,7 @@ from laboratory.shelfobject.utils import (
     delete_shelfobjects,
     get_shelf_object_expiration_date,
     generate_box_code,
+    move_box_partial_quantity_to,
 )
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
@@ -1275,7 +1276,17 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                     quantity=amount_to_transfer,
                     mark_as_discard=serializer.validated_data["mark_as_discard"],
                     created_by=request.user,
+                    is_box=shelf_object.is_box,
                 )
+                if shelf_object.is_box:
+                    quantity_units = shelf_object.quantity_units or []
+                    quantity_units = sorted(
+                        quantity_units, key=lambda x: x["units"], reverse=True
+                    )
+                    transfer_obj.quantity_units = quantity_units[
+                        : int(amount_to_transfer)
+                    ]
+                    transfer_obj.save()
                 utils.organilab_logentry(
                     request.user,
                     transfer_obj,
@@ -1407,11 +1418,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         transfer_obj = get_object_or_404(
             TranferObject, pk=request.data.get("transfer_object")
         )
-        self.serializer_class = (
-            TransferInShelfObjectApproveWithContainerSerializer
-            if transfer_obj.object.object.type == Object.REACTIVE
-            else TransferInShelfObjectSerializer
-        )
+        if (
+            transfer_obj.object.object.type == Object.REACTIVE
+            and not transfer_obj.is_box
+        ):
+            self.serializer_class = TransferInShelfObjectApproveWithContainerSerializer
+        else:
+            self.serializer_class = TransferInShelfObjectSerializer
 
         serializer = self.get_serializer(
             data=request.data,
@@ -1426,17 +1439,75 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             # once we get here everything is validated and ready for the transfer in to happen
             transfer_object = serializer.validated_data["transfer_object"]
 
-            previous_quantity = transfer_object.quantity
+            previous_quantity = (
+                transfer_object.quantity
+                if not transfer_obj.is_box
+                else transfer_object.get_box_totals()
+            )
+            shelfobject_quantity = (
+                transfer_object.quantity
+                if not transfer_obj.is_box
+                else transfer_object.object.get_box_totals()
+            )
 
             if not transfer_object.object.measurement_unit.description == "Unidades":
                 if serializer.validated_data["shelf"].measurement_unit:
                     previous_quantity = get_conversion_from_two_units(
                         serializer.validated_data["shelf"].measurement_unit,
                         transfer_object.object.measurement_unit,
-                        transfer_object.quantity,
+                        (
+                            transfer_object.quantity
+                            if not transfer_obj.is_box
+                            else transfer_object.get_box_totals()
+                        ),
                     )
-
-            if previous_quantity == transfer_object.object.quantity:
+            if transfer_obj.is_box:
+                if transfer_object.quantity == transfer_object.object.get_box_totals():
+                    if (
+                        not transfer_object.object.measurement_unit.description
+                        == "Unidades"
+                    ):
+                        shelf = transfer_object.object.shelf
+                        if serializer.validated_data["shelf"].measurement_unit:
+                            transfer_object.object.measurement_unit = (
+                                serializer.validated_data["shelf"].measurement_unit
+                            )
+                            # converted_quantity = get_conversion_from_two_units(
+                        #     transfer_object.object.measurement_unit,
+                        #     serializer.validated_data["shelf"].measurement_unit,
+                        #     transfer_object.quantity,
+                        # )
+                        #
+                        # transfer_object.object.quanty = converted_quantity
+                        # move the entire shelfobject instead of copy it, so history is not lost
+                    new_shelf_object = move_shelfobject_to(
+                        transfer_object.object,
+                        org_pk,
+                        lab_pk,
+                        serializer.validated_data["shelf"],
+                        request,
+                        shelf=shelf,
+                    )
+                else:
+                    if (
+                        not transfer_object.object.measurement_unit.description
+                        == "Unidades"
+                    ):
+                        if serializer.validated_data["shelf"].measurement_unit:
+                            transfer_object.object.measurement_unit = (
+                                serializer.validated_data["shelf"].measurement_unit
+                            )
+                    # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
+                    new_shelf_object = move_box_partial_quantity_to(
+                        transfer_object.object,
+                        org_pk,
+                        lab_pk,
+                        serializer.validated_data["shelf"],
+                        request,
+                        transfer_object.get_box_totals(),
+                        transfer_obj.quantity,
+                    )
+            elif previous_quantity == transfer_object.object.quantity:
                 if (
                     not transfer_object.object.measurement_unit.description
                     == "Unidades"
@@ -1483,18 +1554,19 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             new_shelf_object.marked_as_discard = transfer_object.mark_as_discard
 
             # it is a transfer that has a container - get the container and assign it to the shelfobject, it will assign None if no container_select_option provided
-            new_shelf_object.container = (
-                get_or_create_container_based_on_selected_option(
-                    serializer.validated_data.get("container_select_option"),
-                    org_pk,
-                    lab_pk,
-                    serializer.validated_data["shelf"],
-                    request,
-                    serializer.validated_data.get("container_for_cloning"),
-                    serializer.validated_data.get("available_container"),
-                    transfer_object.object,
+            if not transfer_obj.is_box:
+                new_shelf_object.container = (
+                    get_or_create_container_based_on_selected_option(
+                        serializer.validated_data.get("container_select_option"),
+                        org_pk,
+                        lab_pk,
+                        serializer.validated_data["shelf"],
+                        request,
+                        serializer.validated_data.get("container_for_cloning"),
+                        serializer.validated_data.get("available_container"),
+                        transfer_object.object,
+                    )
                 )
-            )
             new_shelf_object.save()
             utils.organilab_logentry(
                 request.user,
@@ -1548,7 +1620,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 request.user,
                 lab_pk,
                 shelfobject,
-                shelfobject.quantity,
+                (
+                    shelfobject.quantity
+                    if not shelfobject.is_box
+                    else shelfobject.get_box_totals()
+                ),
                 0,
                 "",
                 DELETION,
