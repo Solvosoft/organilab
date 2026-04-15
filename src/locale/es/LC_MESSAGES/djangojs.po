@@ -1293,3 +1293,15 @@ msgstr "Hora de salida"
 
 msgid "If you wish to add a new box, please note that it will be subject to the expiration date of"
 msgstr "Si desea agregar una nueva caja, por favor tenga en cuenta que se asumirá la fecha de vencimiento del"
+
+msgid "Units per box"
+msgstr "Unidades por caja"
+
+msgid "Number of boxes"
+msgstr "Número de cajas"
+
+msgid "Box detail"
+msgstr "Detalle de cajas"
+
+msgid "unit(s)"
+msgstr "unidad(es)"
