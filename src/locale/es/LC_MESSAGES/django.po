@@ -5996,3 +5996,6 @@ msgstr "Cajas para devolver"
 
 msgid "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
 msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponibles para el objeto de origen es menor que la cantidad a transferir."
+
+msgid "Laboratories map"
+msgstr "Mapa de laboratorios"
