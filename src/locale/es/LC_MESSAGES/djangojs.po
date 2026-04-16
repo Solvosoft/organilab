@@ -1305,3 +1305,6 @@ msgstr "Detalle de cajas"
 
 msgid "unit(s)"
 msgstr "unidad(es)"
+
+msgid "Select box"
+msgstr "Seleccionar caja"

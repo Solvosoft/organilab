@@ -95,7 +95,7 @@ def save_object_report_precursor(report):
         ).first()
 
         if obj:
-            add_quantity = precursor.quantity_base_unit
+            add_quantity = precursor.total_quantity
             obj.quantity += add_quantity
             if reports.count() > 1:
                 if reports[1].report_values.count() == 0:

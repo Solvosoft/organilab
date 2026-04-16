@@ -109,7 +109,7 @@ def get_dataset_report(report, column_list=None):
         shelfobjects = ShelfObject.objects.filter(object=reactive).distinct()
         total_shelfobjects = sum(
             [
-                get_conversion_units(obj.measurement_unit, obj.quantity)
+                get_conversion_units(obj.measurement_unit, obj.total_quantity)
                 for obj in shelfobjects
             ]
         )

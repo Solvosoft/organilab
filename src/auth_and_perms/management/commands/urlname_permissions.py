@@ -2437,6 +2437,13 @@ URLNAME_PERMISSIONS = {
             "permission": "risk_management.view_riskzone",
         },
     ],
+    "riskzone_map": [
+        {
+            "name": "View Risk Zone",
+            "category": "Risk Zone",
+            "permission": "risk_management.view_riskzone",
+        },
+    ],
     "incident_detail": [
         {
             "name": "View Incident Report",

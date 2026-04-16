@@ -54,6 +54,7 @@ from laboratory.utils import (
     get_profile_by_organization,
     get_organizations_by_user,
     get_laboratories_from_organization,
+    get_user_laboratories,
     organilab_logentry,
 )
 
@@ -696,3 +697,24 @@ class OrganizationButtons(APIView):
             return JsonResponse(
                 {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class LaboratoryGeolocationsAPI(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        labs = get_user_laboratories(request.user).select_related("organization").exclude(geolocation="")
+        data = []
+        for lab in labs:
+            try:
+                lat, lng = lab.geolocation.split(",")
+                data.append({
+                    "lat": float(lat),
+                    "lng": float(lng),
+                    "lab": lab.name,
+                    "organization": lab.organization.name if lab.organization else "",
+                })
+            except (ValueError, AttributeError):
+                continue
+        return JsonResponse({"laboratories": data})

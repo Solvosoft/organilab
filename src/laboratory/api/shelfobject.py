@@ -1822,7 +1822,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             object_repr = "shelf object"
             user = request.user
 
-            if shelf_object.object.type == Object.REACTIVE:
+            if shelf_object.object.type == Object.REACTIVE and not shelf_object.is_box:
                 if serializer_container.is_valid():
                     container_option = serializer_container.validated_data.get(
                         "container_select_option"
