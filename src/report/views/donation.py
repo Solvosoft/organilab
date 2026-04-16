@@ -28,16 +28,23 @@ def get_dataset(report, column_list=None):
     for shelfobject in shelf_objects:
         furniture = shelfobject.shelf.furniture
         if shelfobject.is_box and shelfobject.quantity_units:
-            quantity = sum(b["units"] for b in shelfobject.quantity_units) * shelfobject.quantity
-            shelf_unit = shelfobject.get_measurement_unit_display()
+            quantity = len(shelfobject.quantity_units)
+            units_per_box = sum(b["units"] for b in shelfobject.quantity_units)
+            shelf_unit = _("(%(units)s) units per box") % {"units": units_per_box}
+            name = _("Box of %(name)s (%(quantity)s %(unit)s)") % {
+                "name": shelfobject.object.name,
+                "quantity": shelfobject.quantity,
+                "unit": str(shelfobject.measurement_unit),
+            }
         else:
             quantity = shelfobject.quantity
             shelf_unit = shelfobject.get_measurement_unit_display()
+            name = shelfobject.object.name
         data_column = {
             "code": shelfobject.object.code,
             "type": str(object_type[shelfobject.object.type]),
             "status": shelfobject.status.description if shelfobject.status else "",
-            "object": shelfobject.object.name,
+            "object": name,
             "quantity": round(quantity, 3),
             "unit": shelf_unit,
             "laboratory": shelfobject.in_where_laboratory.name,
