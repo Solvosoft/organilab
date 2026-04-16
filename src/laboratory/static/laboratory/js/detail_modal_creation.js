@@ -302,7 +302,6 @@ function insert_box_data(data, inst) {
 
 function insert_data(value, inst, title) {
     let html_object = ''
-    console.log(title)
     html_object += `<tr><td class="shelfobject_titles">${title}</td>
         <td> ${value ? value : ""} </td></tr>`
     inst.append(html_object)

@@ -629,7 +629,6 @@ def create_new_shelfobject_from_object_in(
         ADDITION,
         _("Income"),
         create=True,
-        is_box=shelfobject.is_box,
     )
     organilab_logentry(
         request.user,
@@ -676,7 +675,6 @@ def move_shelfobject_to(
         CHANGE,
         _("Move out"),
         organization=destination_organization_id,
-        is_box=shelfobject.is_box,
     )
     shelfobject.shelf = destination_shelf
     shelfobject.in_where_laboratory_id = destination_laboratory_id
@@ -698,7 +696,6 @@ def move_shelfobject_to(
         CHANGE,
         _("Move in"),
         organization=destination_organization_id,
-        is_box=shelfobject.is_box,
     )
     organilab_logentry(
         request.user,
@@ -751,7 +748,6 @@ def update_shelfobject_quantity(
             CHANGE,
             _("Change quantity"),
             organization=organization,
-            is_box=shelfobject.is_box,
         )
         organilab_logentry(user, shelfobject, CHANGE, changed_data=["quantity"])
     else:  # delete those that will be left with quantity of 0 or less with the requested change
@@ -765,7 +761,6 @@ def update_shelfobject_quantity(
             DELETION,
             _("Delete ShelfObject with no quantity left"),
             organization=organization,
-            is_box=shelfobject.is_box,
         )
         organilab_logentry(user, shelfobject, DELETION)
         shelfobject.delete()

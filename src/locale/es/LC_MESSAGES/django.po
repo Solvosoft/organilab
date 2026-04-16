@@ -5970,6 +5970,12 @@ msgstr "La caja fue actualizada exitosamente."
 msgid "Edit Box"
 msgstr "Editar caja"
 
+msgid "(%(units)s) units per box"
+msgstr "(%(units)s) unidades por caja"
+
+msgid "Box of %(name)s (%(quantity)s %(unit)s)"
+msgstr "Caja de %(name)s (%(quantity)s %(unit)s)"
+
 msgid "Cannot change the number of boxes or units per box because one or more boxes have already been modified. Use the decrease or increase actions instead."
 msgstr "No se puede cambiar el número de cajas ni las unidades por caja porque una o más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
 
@@ -5996,3 +6002,6 @@ msgstr "Cajas para devolver"
 
 msgid "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
 msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponibles para el objeto de origen es menor que la cantidad a transferir."
+
+msgid "Laboratories map"
+msgstr "Mapa de laboratorios"

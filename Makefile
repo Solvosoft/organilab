@@ -142,8 +142,10 @@ dist: ##  - print current version of organilab
 	git push origin "refs/tags/v$(setup_version)"
 
 build_docker: ##  - build docker images
-	docker pull python:3.13-trixie && \
-	docker pull python:3.13-slim-trixie && \
+	$(MAKE) docs
+	cp -r docs/build/capacitacion docs/capacitacion
+	docker pull python:3.13-trixie
+	docker pull python:3.13-slim-trixie
 	docker build --no-cache  -t organilab:$(setup_version) -t organilab:latest .
 
 build_docker_selenium: ##  - build docker images with selenium
