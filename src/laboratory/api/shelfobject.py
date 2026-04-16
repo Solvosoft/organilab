@@ -589,12 +589,13 @@ class ShelfObjectCreateMethods:
             laboratory_id,
             shelfobject,
             0,
-            shelfobject.quantity,
+            quantity * units_per_box,
             "",
             ADDITION,
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,

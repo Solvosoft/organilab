@@ -563,12 +563,14 @@ class ShelfObject(models.Model):
 
     def get_box_totals(self):
         # Retorna la cantidad total de objetos en cajas
-        total = sum(item["quantity"] for item in self.quantity_units)
+        total = sum(item["quantity"] for item in list(self.quantity_units))
         return total
 
     def order_by_boxes(self, order=False):
         # Retorna los objetos ordenados por cantidad de cajas
-        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
+        return sorted(
+            list(self.quantity_units), key=lambda x: x["units"], reverse=order
+        )
 
     def get_obj_conversion_from_two_units(self):
         # Retorna la conversion de unidades de medida

@@ -81,6 +81,7 @@ def save_increase_decrease_shelf_object(
             quantity_units = list(shelfobject.quantity_units)
             box_entry = quantity_units[box_index]
             old_units = box_entry["units"]
+            old_quantity = shelfobject.get_box_totals()
             new_units = old_units - int(amount)
             action_taken = _("Box units decreased")
 
@@ -88,11 +89,11 @@ def save_increase_decrease_shelf_object(
                 quantity_units.pop(box_index)
             else:
                 box_quantity = box_entry["quantity"]
-
+                new_quantity = box_quantity - (box_quantity / box_entry["units"])
                 quantity_units[box_index] = {
                     "code": box_entry["code"],
                     "units": new_units,
-                    "quantity": box_quantity - (box_quantity / box_entry["units"]),
+                    "quantity": new_quantity,
                 }
 
             shelfobject.quantity_units = quantity_units
@@ -101,8 +102,8 @@ def save_increase_decrease_shelf_object(
                 user,
                 laboratory.pk,
                 shelfobject,
-                old_units,
-                sum(item.get("units", 0) for item in quantity_units),
+                old_quantity,
+                sum(item.get("quantity", 0) for item in quantity_units),
                 description,
                 2,
                 _("Spend"),
@@ -132,9 +133,9 @@ def save_increase_decrease_shelf_object(
             return
         else:
 
-            quantity_units = shelfobject.get_box_code()
-            totals = sum(item["units"] for item in quantity_units)
-            current_boxes = shelfobject.get_box_code()
+            quantity_units = shelfobject.quantity_units or []
+            totals = shelfobject.get_box_totals()
+            current_boxes = quantity_units
             new_boxes = []
 
             for _i in range(int(amount)):
@@ -144,26 +145,26 @@ def save_increase_decrease_shelf_object(
                     {
                         "code": code,
                         "units": shelfobject.units_per_box,
-                        "quantity": shelfobject.get_obj_conversion_from_two_units(),
+                        "quantity": shelfobject.get_obj_conversion_from_two_units()
+                        * shelfobject.units_per_box,
                     }
                 )
             current_boxes.extend(new_boxes)
             shelfobject.quantity_units = current_boxes
             action_taken = _("Box was increased successfully.")
-            converted_amount = amount * shelfobject.quantity
+            converted_amount = amount * shelfobject.quantity * shelfobject.units_per_box
             quantity_base = shelfobject.get_obj_conversion_from_two_units()
             if shelfobject.shelf.measurement_unit is not None:
                 converted_amount = quantity_base
-                converted_amount *= totals + (amount * shelfobject.units_per_box)
+                converted_amount *= shelfobject.units_per_box
 
-            old_total = totals * quantity_base
-            new_units = converted_amount
+            old_total = totals
             log_object_add_change(
                 user,
                 laboratory.pk,
                 shelfobject,
                 old_total,
-                new_units,
+                shelfobject.get_box_totals(),
                 use if use else _("Income"),
                 provider,
                 bill,
