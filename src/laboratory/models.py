@@ -562,12 +562,22 @@ class ShelfObject(models.Model):
         return self.quantity_units
 
     def get_box_totals(self):
-        total = sum(item["units"] for item in self.quantity_units)
-        total = total * self.quantity
+        # Retorna la cantidad total de objetos en cajas
+        total = sum(item["quantity"] for item in self.quantity_units)
         return total
 
     def order_by_boxes(self, order=False):
+        # Retorna los objetos ordenados por cantidad de cajas
         return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
+
+    def get_obj_conversion_from_two_units(self):
+        # Retorna la conversion de unidades de medida
+        if self.shelf.measurement_unit:
+            return get_shelfobject_conversion_from_two_units(
+                self.measurement_unit, self.shelf.measurement_unit, self.quantity
+            )
+        else:
+            return self.quantity
 
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
@@ -1925,3 +1935,27 @@ class TemporalUploadReactive(BaseCreationObj):
         related_name="shelf_temp",
     )
     data = JSONField()
+
+
+def get_shelfobject_conversion_from_two_units(shelfobject_unit, shelf_unit, amount):
+    query = BaseUnitValues.objects.filter(measurement_unit=shelfobject_unit)
+    query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
+    if shelf_unit is None:
+        return amount
+    if query.exists() and query2.exists():
+        unit1 = query.first()
+        value1 = unit1.si_value
+
+        unit2 = query2.first()
+        value2 = unit2.si_value
+
+        if unit1.measurement_unit.description == "Unidades":
+            return amount
+
+        if value1 > value2:
+            result = amount / (value1 / value2)
+        else:
+            result = amount * (value2 / value1)
+        return result
+    else:
+        return None

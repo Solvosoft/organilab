@@ -87,9 +87,12 @@ def save_increase_decrease_shelf_object(
             if new_units <= 0:
                 quantity_units.pop(box_index)
             else:
+                box_quantity = box_entry["quantity"]
+
                 quantity_units[box_index] = {
                     "code": box_entry["code"],
                     "units": new_units,
+                    "quantity": box_quantity - (box_quantity / box_entry["units"]),
                 }
 
             shelfobject.quantity_units = quantity_units
@@ -137,20 +140,23 @@ def save_increase_decrease_shelf_object(
             for _i in range(int(amount)):
                 existing_codes = [b["code"] for b in quantity_units]
                 code = generate_box_code(shelfobject.pk, existing_codes)
-                new_boxes.append({"code": code, "units": shelfobject.units_per_box})
+                new_boxes.append(
+                    {
+                        "code": code,
+                        "units": shelfobject.units_per_box,
+                        "quantity": shelfobject.get_obj_conversion_from_two_units(),
+                    }
+                )
             current_boxes.extend(new_boxes)
             shelfobject.quantity_units = current_boxes
             action_taken = _("Box was increased successfully.")
             converted_amount = amount * shelfobject.quantity
-            if shelfobject.shelf.measurement_unit is None:
-                converted_amount = get_conversion_from_two_units(
-                    measurement_unit,
-                    shelfobject.measurement_unit,
-                    shelfobject.quantity,
-                )
+            quantity_base = shelfobject.get_obj_conversion_from_two_units()
+            if shelfobject.shelf.measurement_unit is not None:
+                converted_amount = quantity_base
                 converted_amount *= totals + (amount * shelfobject.units_per_box)
 
-            old_total = totals * shelfobject.quantity
+            old_total = totals * quantity_base
             new_units = converted_amount
             log_object_add_change(
                 user,
