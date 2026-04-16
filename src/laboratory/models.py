@@ -568,6 +568,14 @@ class ShelfObject(models.Model):
     def get_box_code(self):
         return self.quantity_units
 
+    def get_box_totals(self):
+        total = sum(item["units"] for item in self.quantity_units)
+        total = total * self.quantity
+        return total
+
+    def order_by_boxes(self, order=False):
+        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
+
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
     shelfobject = models.OneToOneField(ShelfObject, on_delete=models.CASCADE)
@@ -1575,6 +1583,14 @@ class TranferObject(BaseCreationObj):
             self.quantity,
             str(self.object.measurement_unit),
         )
+
+    def get_box_totals(self):
+        total = sum(item["units"] for item in self.quantity_units)
+        total = total * self.object.quantity
+        return total
+
+    def order_by_boxes(self, order=False):
+        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
 
 
 MONTHS = (
