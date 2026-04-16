@@ -142,11 +142,12 @@ function BaseFormModal(modalid,  data_extras={})  {
         "prefix": prefix,
         "type": "POST",
         "data_extras": data_extras,
+        "_lastBtn": null,
         "init": function(btninstance){
             var myModalEl = this.instance[0];
-            myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this))
+            myModalEl.addEventListener('hidden.bs.modal', this.hidemodalevent(this));
+            myModalEl.addEventListener('shown.bs.modal', this.shownmodalevent(this));
             this.instance.find('.formadd').on('click', this.addBtnForm(this));
-
         },
         "addBtnForm": function(instance){
 
@@ -216,8 +217,15 @@ function BaseFormModal(modalid,  data_extras={})  {
         },
         "error": function(instance, xhr, resp, text){
         },
+        "shown": function(instance){
+        },
+        "hidden": function(instance){
+        },
         "hidemodal": function(){
             this.instance.modal('hide');
+        },
+        "shownmodalevent": function(instance){
+            return function(event){ instance.shown(instance); }
         },
         "hidemodalevent": function(instance){
             return function(event){
@@ -226,9 +234,11 @@ function BaseFormModal(modalid,  data_extras={})  {
                 if(instance.data_extras.hasOwnProperty('shelf_object')){
                     delete instance.data_extras.shelf_object;
                 }
+                instance.hidden(instance);
             }
         },
         "showmodal": function(btninstance){
+            this._lastBtn = btninstance;
             var shelf_object = $(btninstance).data('shelfobject');
             var shelf = $(btninstance).data('shelf');
             var add_creation_help = $(btninstance).data('add_creation_help');
@@ -365,3 +375,65 @@ $('#id_move-lab_room').on('change', function(){
 $('#id_move-furniture').on('change', function(){
     $('#id_move-shelf').val(null).trigger('change');
 });
+
+function show_decrease_modal(instance, event) {
+    var modalid = $(instance).data('modalid');
+
+    if (!form_modals.hasOwnProperty(modalid)) {
+        var formmodal = BaseFormModal("#" + modalid);
+
+        formmodal.shown = function (inst) {
+            var modal = inst.instance;
+            var form = inst.form;
+            var isBox = $(inst._lastBtn).data('is-box');
+
+            if (isBox === true || isBox === 'true') {
+                var raw = $(inst._lastBtn).attr('data-quantity-units') || '[]';
+                var quantityUnits;
+                try { quantityUnits = JSON.parse(raw.replace(/'/g, '"')); } catch (e) { quantityUnits = []; }
+
+                var $container = modal.find('#decrease_box_selection_container');
+                if (!$container.length) {
+                    form.prepend(
+                        '<div id="decrease_box_selection_container" class="form-group row mb-3">' +
+                        '<label class="col-sm-2 control-label">' + gettext("Select box") + '</label>' +
+                        '<div class="col-sm-10"><select id="decrease_box_select" class="form-control"></select></div>' +
+                        '</div>'
+                    );
+                    $container = modal.find('#decrease_box_selection_container');
+                    $(document).on('change', '#decrease_box_select', function () {
+                        form.find('input[name$="box_index"]').val($(this).val());
+                    });
+                }
+
+                var $select = $container.find('#decrease_box_select');
+                $select.empty();
+                quantityUnits.forEach(function (box, idx) {
+                    $select.append($('<option>', {
+                        value: idx,
+                        text: box.code + ' (' + box.units + ' ' + gettext("unit(s)") + ')'
+                    }));
+                });
+                $container.removeClass('d-none');
+                form.find('input[name$="box_index"]').val($select.val());
+                form.find('[name$="measurement_unit"]').closest('.form-group').addClass('d-none');
+            } else {
+                modal.find('#decrease_box_selection_container').addClass('d-none');
+                form.find('[name$="measurement_unit"]').closest('.form-group').removeClass('d-none');
+                form.find('input[name$="box_index"]').val('');
+            }
+        };
+
+        formmodal.hidden = function (inst) {
+            inst.instance.find('#decrease_box_selection_container').addClass('d-none');
+            inst.form.find('[name$="measurement_unit"]').closest('.form-group').removeClass('d-none');
+            inst.form.find('input[name$="box_index"]').val('');
+        };
+
+        formmodal.init(instance);
+        form_modals[modalid] = formmodal;
+    }
+
+    form_modals[modalid].showmodal(instance);
+    return false;
+}
