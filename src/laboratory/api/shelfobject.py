@@ -564,10 +564,20 @@ class ShelfObjectCreateMethods:
 
         # Generate unique codes now that we have the pk
         quantity_units = []
+        quantity = shelfobject.quantity
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            quantity = shelfobject.get_obj_conversion_from_two_units()
+
         for _i in range(box_count):
             existing_codes = [b["code"] for b in quantity_units]
             code = generate_box_code(shelfobject.pk, existing_codes)
-            quantity_units.append({"code": code, "units": units_per_box})
+            quantity_units.append(
+                {
+                    "code": code,
+                    "units": units_per_box,
+                    "quantity": quantity * units_per_box,
+                }
+            )
         shelfobject.quantity_units = quantity_units
         shelfobject.save(update_fields=["quantity_units"])
 
@@ -1472,12 +1482,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                             transfer_object.object.measurement_unit = (
                                 serializer.validated_data["shelf"].measurement_unit
                             )
-                            # converted_quantity = get_conversion_from_two_units(
-                        #     transfer_object.object.measurement_unit,
-                        #     serializer.validated_data["shelf"].measurement_unit,
-                        #     transfer_object.quantity,
-                        # )
-                        #
+
                         # transfer_object.object.quanty = converted_quantity
                         # move the entire shelfobject instead of copy it, so history is not lost
                     new_shelf_object = move_shelfobject_to(
