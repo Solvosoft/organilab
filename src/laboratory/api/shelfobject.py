@@ -574,12 +574,13 @@ class ShelfObjectCreateMethods:
         build_shelfobject_qr(
             self.context["request"], shelfobject, organization_id, laboratory_id
         )
+        total_units = sum(b["units"] for b in shelfobject.quantity_units)
         log_object_change(
             created_by,
             laboratory_id,
             shelfobject,
             0,
-            shelfobject.quantity,
+            total_units * shelfobject.quantity,
             "",
             ADDITION,
             _("Income"),
@@ -1816,7 +1817,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             object_repr = "shelf object"
             user = request.user
 
-            if shelf_object.object.type == Object.REACTIVE:
+            if shelf_object.object.type == Object.REACTIVE and not shelf_object.is_box:
                 if serializer_container.is_valid():
                     container_option = serializer_container.validated_data.get(
                         "container_select_option"

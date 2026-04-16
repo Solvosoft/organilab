@@ -49,9 +49,15 @@
 				data-form="edit_box_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 	{% endif %}
 
-	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal"
-				title="{% trans 'Move' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
-		class="fa fa-arrows" aria-hidden="true"></i></a>
+	{% if not shelfobject.is_box %}
+		<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal"
+					title="{% trans 'Move' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
+			class="fa fa-arrows" aria-hidden="true"></i></a>
+	{% else %}
+		<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesomodal" title="{% trans 'Move' %}"
+					data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-arrows"
+																																																																																								aria-hidden="true"></i></a>
+	{% endif %}
 {% else %}
 	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesomodal" title="{% trans 'Move' %}"
 				data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-arrows"
