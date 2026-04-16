@@ -486,19 +486,27 @@ def get_dataset_limit_objects(report, column_list=None):
 
             shelf_objects = get_limited_shelf_objects(shelf_objects)
             for shelfobj in shelf_objects:
+                if shelfobj.is_box and shelfobj.quantity_units:
+                    obj_quantity = len(shelfobj.quantity_units)
+                    units_per_box = sum(b["units"] for b in shelfobj.quantity_units)
+                    obj_unit = _("(%(units)s) units per box") % {
+                        "units": units_per_box}
+                    obj_name = _("Box of %(name)s (%(quantity)s %(unit)s)") % {
+                        "name": shelfobj.object.name,
+                        "quantity": shelfobj.quantity,
+                        "unit": str(shelfobj.measurement_unit),
+                    }
+                else:
+                    obj_quantity = shelfobj.quantity
+                    obj_name = shelfobj.object.name
+                    obj_unit = shelfobj.get_measurement_unit_display()
                 data_column = {
                     "laboratory": lab.name,
                     "shelf": shelfobj.shelf.name,
                     "code": shelfobj.object.code,
-                    "object": shelfobj.object.name,
-                    "quantity": (
-                        len(shelfobj.quantity_units) if shelfobj.is_box else shelfobj.quantity
-                    ),
-                    "measurement_unit": (
-                        _("Unit")
-                        if shelfobj.is_box
-                        else shelfobj.get_measurement_unit_display()
-                    ),
+                    "object": obj_name,
+                    "quantity": obj_quantity,
+                    "measurement_unit": obj_unit,
                     "minimun_limit": (
                         shelfobj.limits.minimum_limit
                         if shelfobj.limits.minimum_limit > 0
