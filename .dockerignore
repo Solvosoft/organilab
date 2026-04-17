@@ -24,7 +24,10 @@ docker/*.env
 **/.aws
 **/.ssh
 docs/
-!docs/capacitacion/
+!/docs/source/
+!/docs/source/_extra/
+!/docs/source/_extra/capacitacion/
+!/docs/source/_extra/capacitacion/**
 *.md
 !requirements.txt
 Makefile
