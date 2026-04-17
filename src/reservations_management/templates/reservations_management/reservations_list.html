@@ -97,7 +97,7 @@
 									<a class="btn btn-md btn-success"
 												href="{% url 'reservations_management:manage_reservation' org_pk reservation.id %}"
 												title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
-									{% if reservation.status == 1 or reservation.status == 2 %}
+									{% if reservation.status == 0 or reservation.status == 1 or reservation.status == 2 %}
 										<form method="POST"
 											  action="{% url 'reservations_management:close_reservation' org_pk reservation.id %}"
 											  class="d-inline close-reservation-form">

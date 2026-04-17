@@ -25,7 +25,7 @@
             <ul class="nav navbar-right panel_toolbox"></ul>
         </div>
 
-        {% if perms.reservations_management.change_reservations and object.status == 0 %}
+        {% if perms.reservations_management.change_reservations and object.status == 0 and not has_partial %}
         <form method="POST">
             {% csrf_token %}
             {{ form.as_plain }}

@@ -6079,3 +6079,6 @@ msgstr "Ya devuelto"
 
 msgid "The reservation has not started yet. Returns are not allowed before the initial date."
 msgstr "La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha de inicio."
+
+msgid "Return"
+msgstr "Devolver"
