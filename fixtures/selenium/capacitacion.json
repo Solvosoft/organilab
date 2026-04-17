@@ -1,1812 +1,1867 @@
 [
-    {
-        "model": "auth.user",
-        "pk": 1,
-        "fields": {
-            "password": "pbkdf2_sha256$600000$salt$hash",
-            "last_login": "2026-01-10T10:00:00Z",
-            "is_superuser": true,
-            "username": "admin_university",
-            "first_name": "Admin",
-            "last_name": "Universidad",
-            "email": "admin@universidad.ac.cr",
-            "is_staff": true,
-            "is_active": true,
-            "date_joined": "2025-01-01T00:00:00Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 2,
-        "fields": {
-            "password": "pbkdf2_sha256$600000$salt$hash",
-            "last_login": "2026-01-10T10:00:00Z",
-            "is_superuser": true,
-            "username": "lab_manager",
-            "first_name": "Carlos",
-            "last_name": "Quesada",
-            "email": "carlos.quesada@universidad.ac.cr",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2025-01-01T00:00:00Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 3,
-        "fields": {
-            "password": "pbkdf2_sha256$600000$salt$hash",
-            "last_login": "2026-01-10T10:00:00Z",
-            "is_superuser": false,
-            "username": "lab_technician",
-            "first_name": "Maria",
-            "last_name": "Solano",
-            "email": "maria.solano@universidad.ac.cr",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2025-01-01T00:00:00Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 4,
-        "fields": {
-            "password": "pbkdf2_sha256$600000$salt$hash",
-            "last_login": "2026-01-10T10:00:00Z",
-            "is_superuser": false,
-            "username": "teacher_user",
-            "first_name": "Jose",
-            "last_name": "Ramirez",
-            "email": "jose.ramirez@universidad.ac.cr",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2025-01-01T00:00:00Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth.user",
-        "pk": 5,
-        "fields": {
-            "password": "pbkdf2_sha256$600000$salt$hash",
-            "last_login": "2026-01-10T10:00:00Z",
-            "is_superuser": false,
-            "username": "student_user",
-            "first_name": "Ana",
-            "last_name": "Mora",
-            "email": "ana.mora@universidad.ac.cr",
-            "is_staff": false,
-            "is_active": true,
-            "date_joined": "2025-01-01T00:00:00Z",
-            "groups": [],
-            "user_permissions": []
-        }
-    },
-    {
-        "model": "auth_and_perms.profile",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "phone_number": "2511-0000",
-            "id_card": "1-0000-0001",
-            "job_position": "Administrador",
-            "language": "es",
-            "laboratories": []
-        }
-    },
-    {
-        "model": "auth_and_perms.profile",
-        "pk": 2,
-        "fields": {
-            "user": 2,
-            "phone_number": "2511-0002",
-            "id_card": "1-0000-0002",
-            "job_position": "Gestor de Laboratorio",
-            "language": "es",
-            "laboratories": []
-        }
-    },
-    {
-        "model": "auth_and_perms.profile",
-        "pk": 3,
-        "fields": {
-            "user": 3,
-            "phone_number": "2511-0003",
-            "id_card": "1-0000-0003",
-            "job_position": "Tecnico de Laboratorio",
-            "language": "es",
-            "laboratories": []
-        }
-    },
-    {
-        "model": "auth_and_perms.profile",
-        "pk": 4,
-        "fields": {
-            "user": 4,
-            "phone_number": "2511-0004",
-            "id_card": "1-0000-0004",
-            "job_position": "Docente",
-            "language": "es",
-            "laboratories": []
-        }
-    },
-    {
-        "model": "auth_and_perms.profile",
-        "pk": 5,
-        "fields": {
-            "user": 5,
-            "phone_number": "2511-0005",
-            "id_card": "1-0000-0005",
-            "job_position": "Estudiante",
-            "language": "es",
-            "laboratories": []
-        }
-    },
-    {
-        "model": "auth_and_perms.rol",
-        "pk": 1,
-        "fields": {
-            "name": "Regente Quimico",
-            "color": "#e74c3c",
-            "permissions": [
-                [
-                    "add_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "change_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "delete_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "view_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "add_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "change_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "delete_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "view_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "add_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "change_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "delete_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "view_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "view_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "add_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "change_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "delete_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "view_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "add_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "change_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "delete_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "view_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "add_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "change_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "delete_shelf",
-                    "laboratory",
-                    "shelf"
-                ]
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.rol",
-        "pk": 2,
-        "fields": {
-            "name": "Administrador de Laboratorio",
-            "color": "#3498db",
-            "permissions": [
-                [
-                    "add_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "change_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "delete_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "view_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "add_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "change_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "delete_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "view_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "add_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "change_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "delete_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "view_furniture",
-                    "laboratory",
-                    "furniture"
-                ],
-                [
-                    "add_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "change_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "delete_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "view_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "add_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "change_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "delete_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "view_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "add_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "change_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "delete_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "view_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "add_inform",
-                    "laboratory",
-                    "inform"
-                ],
-                [
-                    "change_inform",
-                    "laboratory",
-                    "inform"
-                ],
-                [
-                    "delete_inform",
-                    "laboratory",
-                    "inform"
-                ],
-                [
-                    "view_inform",
-                    "laboratory",
-                    "inform"
-                ]
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.rol",
-        "pk": 3,
-        "fields": {
-            "name": "Tecnico de Laboratorio",
-            "color": "#2ecc71",
-            "permissions": [
-                [
-                    "add_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "change_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "view_shelfobject",
-                    "laboratory",
-                    "shelfobject"
-                ],
-                [
-                    "add_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "change_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "view_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "add_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "change_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "view_shelf",
-                    "laboratory",
-                    "shelf"
-                ],
-                [
-                    "view_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "view_laboratoryroom",
-                    "laboratory",
-                    "laboratoryroom"
-                ],
-                [
-                    "view_furniture",
-                    "laboratory",
-                    "furniture"
-                ]
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.rol",
-        "pk": 4,
-        "fields": {
-            "name": "Docente",
-            "color": "#f39c12",
-            "permissions": [
-                [
-                    "view_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "view_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "add_procedure",
-                    "academic",
-                    "procedure"
-                ],
-                [
-                    "change_procedure",
-                    "academic",
-                    "procedure"
-                ],
-                [
-                    "view_procedure",
-                    "academic",
-                    "procedure"
-                ],
-                [
-                    "add_myprocedure",
-                    "academic",
-                    "myprocedure"
-                ],
-                [
-                    "change_myprocedure",
-                    "academic",
-                    "myprocedure"
-                ],
-                [
-                    "view_myprocedure",
-                    "academic",
-                    "myprocedure"
-                ],
-                [
-                    "add_reservedproducts",
-                    "reservations_management",
-                    "reservedproducts"
-                ]
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.rol",
-        "pk": 5,
-        "fields": {
-            "name": "Estudiante",
-            "color": "#9b59b6",
-            "permissions": [
-                [
-                    "view_laboratory",
-                    "laboratory",
-                    "laboratory"
-                ],
-                [
-                    "view_object",
-                    "laboratory",
-                    "object"
-                ],
-                [
-                    "add_reservedproducts",
-                    "reservations_management",
-                    "reservedproducts"
-                ],
-                [
-                    "view_procedure",
-                    "academic",
-                    "procedure"
-                ]
-            ]
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 1,
-        "fields": {
-            "parent": null,
-            "name": "Universidad Nacional",
-            "position": 0,
-            "level": 0,
-            "rol": [
-                1,
-                2,
-                3,
-                4,
-                5
-            ],
-            "users": [
-                1
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 2,
-        "fields": {
-            "parent": 1,
-            "name": "Sede Central",
-            "position": 0,
-            "level": 1,
-            "rol": [],
-            "users": [
-                1
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 3,
-        "fields": {
-            "parent": 2,
-            "name": "Facultad de Ciencias",
-            "position": 0,
-            "level": 2,
-            "rol": [],
-            "users": [
-                1,
-                2
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 4,
-        "fields": {
-            "parent": 3,
-            "name": "Departamento de Quimica",
-            "position": 0,
-            "level": 3,
-            "rol": [],
-            "users": [
-                1,
-                2,
-                3,
-                4,
-                5
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 5,
-        "fields": {
-            "parent": 2,
-            "name": "Facultad de Ingenieria",
-            "position": 1,
-            "level": 2,
-            "rol": [],
-            "users": [
-                1
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 6,
-        "fields": {
-            "parent": 5,
-            "name": "Departamento de Materiales",
-            "position": 0,
-            "level": 3,
-            "rol": [],
-            "users": [
-                1
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.organizationstructure",
-        "pk": 7,
-        "fields": {
-            "parent": 1,
-            "name": "Sede Regional",
-            "position": 1,
-            "level": 1,
-            "rol": [],
-            "users": [
-                1
-            ],
-            "active": true
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 1,
-        "fields": {
-            "organization": 1,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 2,
-        "fields": {
-            "organization": 2,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 3,
-        "fields": {
-            "organization": 3,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 4,
-        "fields": {
-            "organization": 3,
-            "user": 2,
-            "status": true,
-            "type_in_organization": 2
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 5,
-        "fields": {
-            "organization": 4,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 6,
-        "fields": {
-            "organization": 4,
-            "user": 2,
-            "status": true,
-            "type_in_organization": 2
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 7,
-        "fields": {
-            "organization": 4,
-            "user": 3,
-            "status": true,
-            "type_in_organization": 3
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 8,
-        "fields": {
-            "organization": 4,
-            "user": 4,
-            "status": true,
-            "type_in_organization": 3
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 9,
-        "fields": {
-            "organization": 4,
-            "user": 5,
-            "status": true,
-            "type_in_organization": 3
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 10,
-        "fields": {
-            "organization": 5,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 11,
-        "fields": {
-            "organization": 6,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.userorganization",
-        "pk": 12,
-        "fields": {
-            "organization": 7,
-            "user": 1,
-            "status": true,
-            "type_in_organization": 1
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 59,
-        "fields": {
-            "key": "units",
-            "description": "Metros"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 62,
-        "fields": {
-            "key": "units",
-            "description": "Litros"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 63,
-        "fields": {
-            "key": "units",
-            "description": "Mililitros"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 64,
-        "fields": {
-            "key": "units",
-            "description": "Unidades"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 65,
-        "fields": {
-            "key": "units",
-            "description": "Gramos"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 66,
-        "fields": {
-            "key": "units",
-            "description": "Kilogramos"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 67,
-        "fields": {
-            "key": "units",
-            "description": "Miligramos"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 72,
-        "fields": {
-            "key": "container_type",
-            "description": "Espacio"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 73,
-        "fields": {
-            "key": "container_type",
-            "description": "Gaveta"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 74,
-        "fields": {
-            "key": "furniture_type",
-            "description": "Cajon"
-        }
-    },
-    {
-        "model": "laboratory.catalog",
-        "pk": 75,
-        "fields": {
-            "key": "furniture_type",
-            "description": "Estante"
-        }
-    },
-    {
-        "model": "laboratory.laboratory",
-        "pk": 1,
-        "fields": {
-            "name": "Laboratorio de Quimica General",
-            "phone_number": "2511-4000",
-            "location": "Edificio A, Piso 2",
-            "geolocation": "9.895804362670006,-84.1552734375",
-            "email": "quimica.general@universidad.ac.cr",
-            "coordinator": "Carlos Quesada",
-            "unit": "Depto. Quimica",
-            "organization": 4,
-            "description": "Laboratorio principal de quimica general",
-            "area": 120.0,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.laboratory",
-        "pk": 2,
-        "fields": {
-            "name": "Laboratorio de Materiales",
-            "phone_number": "2511-5000",
-            "location": "Edificio B, Piso 1",
-            "geolocation": "9.895804362670006,-84.1552734375",
-            "email": "materiales@universidad.ac.cr",
-            "coordinator": "",
-            "unit": "Depto. Materiales",
-            "organization": 6,
-            "description": "Laboratorio de ciencia de materiales",
-            "area": 80.0,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.organizationstructurerelations",
-        "pk": 1,
-        "fields": {
-            "organization": 4,
-            "content_type": [
-                "laboratory",
-                "laboratory"
-            ],
-            "object_id": 1
-        }
-    },
-    {
-        "model": "laboratory.organizationstructurerelations",
-        "pk": 2,
-        "fields": {
-            "organization": 6,
-            "content_type": [
-                "laboratory",
-                "laboratory"
-            ],
-            "object_id": 2
-        }
-    },
-    {
-        "model": "laboratory.laboratoryroom",
-        "pk": 1,
-        "fields": {
-            "name": "Sala de Almacenamiento",
-            "laboratory": 1,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.laboratoryroom",
-        "pk": 2,
-        "fields": {
-            "name": "Sala de Trabajo",
-            "laboratory": 1,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.laboratoryroom",
-        "pk": 3,
-        "fields": {
-            "name": "Almacen de Materiales",
-            "laboratory": 2,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.furniture",
-        "pk": 1,
-        "fields": {
-            "labroom": 1,
-            "name": "Gabinete Principal",
-            "type": 75,
-            "color": "#73879C",
-            "dataconfig": "[[1, 2]]",
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.furniture",
-        "pk": 2,
-        "fields": {
-            "labroom": 2,
-            "name": "Mesa de Trabajo Central",
-            "type": 75,
-            "color": "#73879C",
-            "dataconfig": "[[3]]",
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.furniture",
-        "pk": 3,
-        "fields": {
-            "labroom": 3,
-            "name": "Estanteria de Materiales",
-            "type": 75,
-            "color": "#73879C",
-            "dataconfig": "[[4]]",
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelf",
-        "pk": 1,
-        "fields": {
-            "furniture": 1,
-            "name": "Estante Reactivos A",
-            "type": 72,
-            "color": "#73879C",
-            "discard": false,
-            "quantity": 0,
-            "measurement_unit": 64,
-            "infinity_quantity": true,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelf",
-        "pk": 2,
-        "fields": {
-            "furniture": 1,
-            "name": "Estante Reactivos B",
-            "type": 72,
-            "color": "#73879C",
-            "discard": false,
-            "quantity": 0,
-            "measurement_unit": 64,
-            "infinity_quantity": true,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelf",
-        "pk": 3,
-        "fields": {
-            "furniture": 2,
-            "name": "Estante Equipos",
-            "type": 72,
-            "color": "#73879C",
-            "discard": false,
-            "quantity": 0,
-            "measurement_unit": 64,
-            "infinity_quantity": true,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelf",
-        "pk": 4,
-        "fields": {
-            "furniture": 3,
-            "name": "Estante Materiales",
-            "type": 72,
-            "color": "#73879C",
-            "discard": false,
-            "quantity": 0,
-            "measurement_unit": 64,
-            "infinity_quantity": true,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.object",
-        "pk": 1,
-        "fields": {
-            "code": "HCl-001",
-            "name": "Acido Clorhidrico",
-            "type": "0",
-            "is_public": true,
-            "description": "Acido clorhidrico concentrado al 37%",
-            "organization": 4,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.object",
-        "pk": 2,
-        "fields": {
-            "code": "BKR-500",
-            "name": "Beaker 500ml",
-            "type": "1",
-            "is_public": true,
-            "description": "Beaker de vidrio borosilicato 500ml",
-            "organization": 4,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.object",
-        "pk": 3,
-        "fields": {
-            "code": "BAL-001",
-            "name": "Balanza Analitica",
-            "type": "2",
-            "is_public": true,
-            "description": "Balanza analitica de precision 0.0001g",
-            "organization": 4,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.object",
-        "pk": 4,
-        "fields": {
-            "code": "NaOH-001",
-            "name": "Hidroxido de Sodio",
-            "type": "0",
-            "is_public": true,
-            "description": "Hidroxido de sodio en lentejas grado analitico",
-            "organization": 4,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.object",
-        "pk": 5,
-        "fields": {
-            "code": "PIP-010",
-            "name": "Pipeta Graduada 10ml",
-            "type": "1",
-            "is_public": true,
-            "description": "Pipeta graduada de vidrio 10ml",
-            "organization": 4,
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelfobject",
-        "pk": 1,
-        "fields": {
-            "shelf": 1,
-            "object": 1,
-            "batch": "LOTE-2025-001",
-            "quantity": 5.0,
-            "quantity_base_unit": 5.0,
-            "limit_quantity": 0,
-            "measurement_unit": 62,
-            "in_where_laboratory": 1,
-            "marked_as_discard": false,
-            "description": "Acido Clorhidrico 37% - Lote 2025",
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelfobject",
-        "pk": 2,
-        "fields": {
-            "shelf": 1,
-            "object": 4,
-            "batch": "LOTE-2025-002",
-            "quantity": 2.0,
-            "quantity_base_unit": 2000.0,
-            "limit_quantity": 0,
-            "measurement_unit": 66,
-            "in_where_laboratory": 1,
-            "marked_as_discard": false,
-            "description": "NaOH lentejas",
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "laboratory.shelfobject",
-        "pk": 3,
-        "fields": {
-            "shelf": 3,
-            "object": 3,
-            "batch": "EQ-2025-001",
-            "quantity": 1.0,
-            "quantity_base_unit": 1.0,
-            "limit_quantity": 0,
-            "measurement_unit": 64,
-            "in_where_laboratory": 1,
-            "marked_as_discard": false,
-            "description": "Balanza Analitica - Sala de Trabajo",
-            "creation_date": "2025-06-01T10:00:00Z",
-            "last_update": "2025-06-01T10:00:00Z"
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 1,
-        "fields": {
-            "profile": 1,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 1,
-            "rol": [
-                1
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 2,
-        "fields": {
-            "profile": 2,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 3,
-            "rol": [
-                2
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 3,
-        "fields": {
-            "profile": 2,
-            "content_type": [
-                "laboratory",
-                "laboratory"
-            ],
-            "object_id": 1,
-            "rol": [
-                2
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 4,
-        "fields": {
-            "profile": 3,
-            "content_type": [
-                "laboratory",
-                "laboratory"
-            ],
-            "object_id": 1,
-            "rol": [
-                3
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 5,
-        "fields": {
-            "profile": 4,
-            "content_type": [
-                "laboratory",
-                "laboratory"
-            ],
-            "object_id": 1,
-            "rol": [
-                4
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 6,
-        "fields": {
-            "profile": 5,
-            "content_type": [
-                "laboratory",
-                "laboratory"
-            ],
-            "object_id": 1,
-            "rol": [
-                5
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 7,
-        "fields": {
-            "profile": 3,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 4,
-            "rol": [
-                3
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 8,
-        "fields": {
-            "profile": 4,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 4,
-            "rol": [
-                4
-            ]
-        }
-    },
-    {
-        "model": "auth_and_perms.profilepermission",
-        "pk": 9,
-        "fields": {
-            "profile": 5,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 4,
-            "rol": [
-                5
-            ]
-        }
-    },
-    {
-        "model": "admin.logentry",
-        "pk": 1,
-        "fields": {
-            "action_time": "2025-06-01T10:00:00Z",
-            "user": 1,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 1,
-            "object_repr": "Organization has been added",
-            "action_flag": 1,
-            "change_message": "[{\"added\": {\"fields\": [\"organization\", \"users\"]}}]"
-        }
-    },
-    {
-        "model": "laboratory.laborglogentry",
-        "pk": 1,
-        "fields": {
-            "log_entry": 1,
-            "content_type": [
-                "laboratory",
-                "organizationstructure"
-            ],
-            "object_id": 1
-        }
-    },
-
-    {
-        "model": "risk_management.zonetype",
-        "pk": 1,
-        "fields": {
-            "name": "Zona de Almacenamiento Quimico"
-        }
-    },
-    {
-        "model": "risk_management.zonetype",
-        "pk": 2,
-        "fields": {
-            "name": "Zona de Trabajo General"
-        }
-    },
-    {
-        "model": "risk_management.riskzone",
-        "pk": 1,
-        "fields": {
-            "organization": 4,
-            "name": "Zona de Reactivos Peligrosos",
-            "laboratories": [1],
-            "buildings": [],
-            "num_workers": 5,
-            "zone_type": 1,
-            "priority": 1,
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-    {
-        "model": "risk_management.riskzone",
-        "pk": 2,
-        "fields": {
-            "organization": 4,
-            "name": "Zona de Trabajo Practico",
-            "laboratories": [1],
-            "buildings": [],
-            "num_workers": 20,
-            "zone_type": 2,
-            "priority": 2,
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-
-    {
-        "model": "sga.warningword",
-        "pk": 1,
-        "fields": {
-            "name": "Peligro",
-            "weigth": 1
-        }
-    },
-    {
-        "model": "sga.warningword",
-        "pk": 2,
-        "fields": {
-            "name": "Atencion",
-            "weigth": 2
-        }
-    },
-    {
-        "model": "sga.dangerindication",
-        "pk": "H314",
-        "fields": {
-            "code": "H314",
-            "description": "Provoca quemaduras graves en la piel y lesiones oculares graves",
-            "warning_words": 1,
-            "warning_class": [],
-            "warning_category": [],
-            "prudence_advice": [],
-            "danger_type": "physical"
-        }
-    },
-    {
-        "model": "sga.dangerindication",
-        "pk": "H331",
-        "fields": {
-            "code": "H331",
-            "description": "Toxico en caso de inhalacion",
-            "warning_words": 1,
-            "warning_class": [],
-            "warning_category": [],
-            "prudence_advice": [],
-            "danger_type": "health"
-        }
-    },
-    {
-        "model": "sga.dangerindication",
-        "pk": "H290",
-        "fields": {
-            "code": "H290",
-            "description": "Puede ser corrosivo para los metales",
-            "warning_words": 2,
-            "warning_class": [],
-            "warning_category": [],
-            "prudence_advice": [],
-            "danger_type": "physical"
-        }
-    },
-    {
-        "model": "sga.substance",
-        "pk": 1,
-        "fields": {
-            "organization": 4,
-            "comercial_name": "Acido Clorhidrico 37%",
-            "uipa_name": "Hydrogen chloride",
-            "brand": "Merck",
-            "status": 2,
-            "components_sga": [],
-            "danger_indications": ["H314", "H331", "H290"],
-            "synonymous": "Acido muriatico, HCl",
-            "agrochemical": false,
-            "description": "Acido clorhidrico concentrado al 37% grado analitico",
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-    {
-        "model": "sga.substancecharacteristics",
-        "pk": 1,
-        "fields": {
-            "substance": 1,
-            "bioaccumulable": false,
-            "molecular_formula": "HCl",
-            "cas_id_number": "7647-01-0",
-            "is_precursor": true,
-            "h_code": ["H314", "H331", "H290"],
-            "valid_molecular_formula": true,
-            "seveso_list": false,
-            "number_index": "017-002-01-X",
-            "number_ce": "231-595-7",
-            "molecular_weight": "36.46",
-            "concentration": "37"
-        }
-    },
-
-    {
-        "model": "laboratory.sustancecharacteristics",
-        "pk": 1,
-        "fields": {
-            "obj": 1,
-            "bioaccumulable": false,
-            "molecular_formula": "HCl",
-            "cas_id_number": "7647-01-0",
-            "is_precursor": true,
-            "h_code": ["H314", "H331", "H290"],
-            "valid_molecular_formula": true,
-            "seveso_list": false,
-            "density": 1.19
-        }
-    },
-
-    {
-        "model": "laboratory.precursorreportvalues",
-        "pk": 1,
-        "fields": {
-            "precursor_report": 1,
-            "object": 1,
-            "measurement_unit": 62,
-            "quantity": 5.0,
-            "previous_balance": 8.0,
-            "new_income": 2.0,
-            "bills": "FAC-2026-001",
-            "providers": "Merck Costa Rica",
-            "stock": 5.0,
-            "month_expense": 5.0,
-            "final_balance": 5.0,
-            "reason_to_spend": "Practicas de laboratorio de quimica general"
-        }
-    },
-    {
-        "model": "laboratory.precursorreportvalues",
-        "pk": 2,
-        "fields": {
-            "precursor_report": 1,
-            "object": 4,
-            "measurement_unit": 66,
-            "quantity": 2.0,
-            "previous_balance": 3.0,
-            "new_income": 1.0,
-            "bills": "FAC-2026-002",
-            "providers": "Sigma-Aldrich",
-            "stock": 2.0,
-            "month_expense": 2.0,
-            "final_balance": 2.0,
-            "reason_to_spend": "Preparacion de soluciones"
-        }
-    },
-    {
-        "model": "laboratory.precursorreport",
-        "pk": 1,
-        "fields": {
-            "month": 1,
-            "year": 2026,
-            "laboratory": 1,
-            "consecutive": 1,
-            "month_belong": 1
-        }
-    },
-
-    {
-        "model": "reservations_management.reservations",
-        "pk": 1,
-        "fields": {
-            "user": 4,
-            "status": 0,
-            "comments": "Reservacion para practica de laboratorio",
-            "is_massive": false
-        }
-    },
-    {
-        "model": "reservations_management.reservations",
-        "pk": 2,
-        "fields": {
-            "user": 4,
-            "status": 1,
-            "comments": "Reservacion aprobada para clase de quimica",
-            "is_massive": false
-        }
-    },
-      {
-        "model": "reservations_management.reservations",
-        "pk": 3,
-        "fields": {
-            "user": 2,
-            "status": 0,
-            "comments": "Reservacion para practica de laboratorio",
-            "is_massive": false
-        }
-    },
-    {
-        "model": "reservations_management.reservations",
-        "pk": 4,
-        "fields": {
-            "user": 2,
-            "status": 1,
-            "comments": "Reservacion aprobada para clase de quimica",
-            "is_massive": false
-        }
-    },
-
-    {
-        "model": "reservations_management.reservedproducts",
-        "pk": 1,
-        "fields": {
-            "organization": 4,
-            "shelf_object": 1,
-            "user": 4,
-            "reservation": 1,
-            "is_returnable": true,
-            "amount_required": 0.5,
-            "amount_returned": 0,
-            "initial_date": "2026-02-01T08:00:00Z",
-            "final_date": "2026-02-01T12:00:00Z",
-            "status": 0,
-            "laboratory": 1,
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-    {
-        "model": "reservations_management.reservedproducts",
-        "pk": 2,
-        "fields": {
-            "organization": 4,
-            "shelf_object": 3,
-            "user": 4,
-            "reservation": 1,
-            "is_returnable": true,
-            "amount_required": 1.0,
-            "amount_returned": 0,
-            "initial_date": "2026-02-01T08:00:00Z",
-            "final_date": "2026-02-01T12:00:00Z",
-            "status": 0,
-            "laboratory": 1,
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-    {
-        "model": "reservations_management.reservedproducts",
-        "pk": 3,
-        "fields": {
-            "organization": 4,
-            "shelf_object": 1,
-            "user": 4,
-            "reservation": 2,
-            "is_returnable": true,
-            "amount_required": 1.0,
-            "amount_returned": 0,
-            "initial_date": "2026-02-15T08:00:00Z",
-            "final_date": "2026-02-15T17:00:00Z",
-            "status": 1,
-            "laboratory": 1,
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-    {
-        "model": "reservations_management.reservedproducts",
-        "pk": 4,
-        "fields": {
-            "organization": 4,
-            "shelf_object": 2,
-            "user": 4,
-            "reservation": 2,
-            "is_returnable": false,
-            "amount_required": 0.1,
-            "amount_returned": 0,
-            "initial_date": "2026-02-15T08:00:00Z",
-            "final_date": "2026-02-15T17:00:00Z",
-            "status": 1,
-            "laboratory": 1,
-            "creation_date": "2026-01-01T00:00:00Z",
-            "last_update": "2026-01-01T00:00:00Z",
-            "created_by": null
-        }
-    },
-
-    {
-        "model": "laboratory.blockedlistnotification",
-        "pk": 1,
-        "fields": {
-            "laboratory": 1,
-            "user": 2,
-            "object": 1
-        }
-    },
-
-    {
-        "model": "django_celery_beat.intervalschedule",
-        "pk": 1,
-        "fields": {
-            "every": 24,
-            "period": "hours"
-        }
-    },
-    {
-        "model": "django_celery_beat.crontabschedule",
-        "pk": 1,
-        "fields": {
-            "minute": "0",
-            "hour": "6",
-            "day_of_week": "*",
-            "day_of_month": "*",
-            "month_of_year": "*",
-            "timezone": "America/Costa_Rica"
-        }
-    },
-    {
-        "model": "django_celery_beat.crontabschedule",
-        "pk": 2,
-        "fields": {
-            "minute": "0",
-            "hour": "0",
-            "day_of_week": "*",
-            "day_of_month": "1",
-            "month_of_year": "*",
-            "timezone": "America/Costa_Rica"
-        }
-    },
-    {
-        "model": "django_celery_beat.periodictask",
-        "pk": 1,
-        "fields": {
-            "name": "Notificar limite de inventario",
-            "task": "laboratory.tasks.notify_about_product_limit_reach",
-            "interval": null,
-            "crontab": 1,
-            "enabled": true,
-            "description": "Envia alertas cuando productos alcanzan su limite minimo de inventario",
-            "date_changed": "2026-01-01T00:00:00Z"
-        }
-    },
-    {
-        "model": "django_celery_beat.periodictask",
-        "pk": 2,
-        "fields": {
-            "name": "Generar reportes de precursores",
-            "task": "laboratory.tasks.create_precursor_reports",
-            "interval": null,
-            "crontab": 2,
-            "enabled": true,
-            "description": "Genera reportes mensuales de sustancias precursoras",
-            "date_changed": "2026-01-01T00:00:00Z"
-        }
-    },
-    {
-        "model": "django_celery_beat.periodictask",
-        "pk": 3,
-        "fields": {
-            "name": "Notificar expiracion de reactivos",
-            "task": "laboratory.tasks.send_expiration_email",
-            "interval": null,
-            "crontab": 1,
-            "enabled": true,
-            "description": "Envia alertas sobre reactivos proximos a expirar",
-            "date_changed": "2026-01-01T00:00:00Z"
-        }
-    },
-    {
-        "model": "django_celery_beat.periodictask",
-        "pk": 4,
-        "fields": {
-            "name": "Limpieza de sesiones expiradas",
-            "task": "django.contrib.sessions.tasks.clearsessions",
-            "interval": 1,
-            "crontab": null,
-            "enabled": true,
-            "description": "Elimina sesiones expiradas de la base de datos",
-            "date_changed": "2026-01-01T00:00:00Z"
-        }
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$salt$hash",
+      "last_login": "2026-01-10T10:00:00Z",
+      "is_superuser": true,
+      "username": "admin_university",
+      "first_name": "Admin",
+      "last_name": "Universidad",
+      "email": "admin@universidad.ac.cr",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
     }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$salt$hash",
+      "last_login": "2026-01-10T10:00:00Z",
+      "is_superuser": true,
+      "username": "lab_manager",
+      "first_name": "Carlos",
+      "last_name": "Quesada",
+      "email": "carlos.quesada@universidad.ac.cr",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$salt$hash",
+      "last_login": "2026-01-10T10:00:00Z",
+      "is_superuser": false,
+      "username": "lab_technician",
+      "first_name": "Maria",
+      "last_name": "Solano",
+      "email": "maria.solano@universidad.ac.cr",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$salt$hash",
+      "last_login": "2026-01-10T10:00:00Z",
+      "is_superuser": false,
+      "username": "teacher_user",
+      "first_name": "Jose",
+      "last_name": "Ramirez",
+      "email": "jose.ramirez@universidad.ac.cr",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$salt$hash",
+      "last_login": "2026-01-10T10:00:00Z",
+      "is_superuser": false,
+      "username": "student_user",
+      "first_name": "Ana",
+      "last_name": "Mora",
+      "email": "ana.mora@universidad.ac.cr",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2025-01-01T00:00:00Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "phone_number": "2511-0000",
+      "id_card": "1-0000-0001",
+      "job_position": "Administrador",
+      "language": "es",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "phone_number": "2511-0002",
+      "id_card": "1-0000-0002",
+      "job_position": "Gestor de Laboratorio",
+      "language": "es",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 3,
+    "fields": {
+      "user": 3,
+      "phone_number": "2511-0003",
+      "id_card": "1-0000-0003",
+      "job_position": "Tecnico de Laboratorio",
+      "language": "es",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 4,
+    "fields": {
+      "user": 4,
+      "phone_number": "2511-0004",
+      "id_card": "1-0000-0004",
+      "job_position": "Docente",
+      "language": "es",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.profile",
+    "pk": 5,
+    "fields": {
+      "user": 5,
+      "phone_number": "2511-0005",
+      "id_card": "1-0000-0005",
+      "job_position": "Estudiante",
+      "language": "es",
+      "laboratories": []
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 1,
+    "fields": {
+      "name": "Regente Quimico",
+      "color": "#e74c3c",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "add_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "change_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "delete_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "view_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "add_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "change_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "delete_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "view_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "add_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "change_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "delete_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "view_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "add_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "change_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "delete_shelf",
+          "laboratory",
+          "shelf"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 2,
+    "fields": {
+      "name": "Administrador de Laboratorio",
+      "color": "#3498db",
+      "permissions": [
+        [
+          "add_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "change_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "delete_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "add_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "change_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "delete_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "view_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "add_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "change_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "delete_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "view_furniture",
+          "laboratory",
+          "furniture"
+        ],
+        [
+          "add_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "change_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "delete_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "view_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "delete_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "add_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "change_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "delete_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "add_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "change_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "delete_inform",
+          "laboratory",
+          "inform"
+        ],
+        [
+          "view_inform",
+          "laboratory",
+          "inform"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 3,
+    "fields": {
+      "name": "Tecnico de Laboratorio",
+      "color": "#2ecc71",
+      "permissions": [
+        [
+          "add_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "change_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "view_shelfobject",
+          "laboratory",
+          "shelfobject"
+        ],
+        [
+          "add_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "change_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "add_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "change_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "view_shelf",
+          "laboratory",
+          "shelf"
+        ],
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_laboratoryroom",
+          "laboratory",
+          "laboratoryroom"
+        ],
+        [
+          "view_furniture",
+          "laboratory",
+          "furniture"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 4,
+    "fields": {
+      "name": "Docente",
+      "color": "#f39c12",
+      "permissions": [
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "add_procedure",
+          "academic",
+          "procedure"
+        ],
+        [
+          "change_procedure",
+          "academic",
+          "procedure"
+        ],
+        [
+          "view_procedure",
+          "academic",
+          "procedure"
+        ],
+        [
+          "add_myprocedure",
+          "academic",
+          "myprocedure"
+        ],
+        [
+          "change_myprocedure",
+          "academic",
+          "myprocedure"
+        ],
+        [
+          "view_myprocedure",
+          "academic",
+          "myprocedure"
+        ],
+        [
+          "add_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
+        ],
+        [
+          "add_reservations",
+          "reservations_management",
+          "reservations"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.rol",
+    "pk": 5,
+    "fields": {
+      "name": "Estudiante",
+      "color": "#9b59b6",
+      "permissions": [
+        [
+          "view_laboratory",
+          "laboratory",
+          "laboratory"
+        ],
+        [
+          "view_object",
+          "laboratory",
+          "object"
+        ],
+        [
+          "add_reservedproducts",
+          "reservations_management",
+          "reservedproducts"
+        ],
+        [
+          "view_procedure",
+          "academic",
+          "procedure"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 1,
+    "fields": {
+      "parent": null,
+      "name": "Universidad Nacional",
+      "position": 0,
+      "level": 0,
+      "rol": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "users": [
+        1
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 2,
+    "fields": {
+      "parent": 1,
+      "name": "Sede Central",
+      "position": 0,
+      "level": 1,
+      "rol": [],
+      "users": [
+        1
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 3,
+    "fields": {
+      "parent": 2,
+      "name": "Facultad de Ciencias",
+      "position": 0,
+      "level": 2,
+      "rol": [],
+      "users": [
+        1,
+        2
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 4,
+    "fields": {
+      "parent": 3,
+      "name": "Departamento de Quimica",
+      "position": 0,
+      "level": 3,
+      "rol": [],
+      "users": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 5,
+    "fields": {
+      "parent": 2,
+      "name": "Facultad de Ingenieria",
+      "position": 1,
+      "level": 2,
+      "rol": [],
+      "users": [
+        1
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 6,
+    "fields": {
+      "parent": 5,
+      "name": "Departamento de Materiales",
+      "position": 0,
+      "level": 3,
+      "rol": [],
+      "users": [
+        1
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.organizationstructure",
+    "pk": 7,
+    "fields": {
+      "parent": 1,
+      "name": "Sede Regional",
+      "position": 1,
+      "level": 1,
+      "rol": [],
+      "users": [
+        1
+      ],
+      "active": true
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 1,
+    "fields": {
+      "organization": 1,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 2,
+    "fields": {
+      "organization": 2,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 3,
+    "fields": {
+      "organization": 3,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 4,
+    "fields": {
+      "organization": 3,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 2
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 5,
+    "fields": {
+      "organization": 4,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 6,
+    "fields": {
+      "organization": 4,
+      "user": 2,
+      "status": true,
+      "type_in_organization": 2
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 7,
+    "fields": {
+      "organization": 4,
+      "user": 3,
+      "status": true,
+      "type_in_organization": 3
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 8,
+    "fields": {
+      "organization": 4,
+      "user": 4,
+      "status": true,
+      "type_in_organization": 3
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 9,
+    "fields": {
+      "organization": 4,
+      "user": 5,
+      "status": true,
+      "type_in_organization": 3
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 10,
+    "fields": {
+      "organization": 5,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 11,
+    "fields": {
+      "organization": 6,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.userorganization",
+    "pk": 12,
+    "fields": {
+      "organization": 7,
+      "user": 1,
+      "status": true,
+      "type_in_organization": 1
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 59,
+    "fields": {
+      "key": "units",
+      "description": "Metros"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 62,
+    "fields": {
+      "key": "units",
+      "description": "Litros"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 63,
+    "fields": {
+      "key": "units",
+      "description": "Mililitros"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 64,
+    "fields": {
+      "key": "units",
+      "description": "Unidades"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 65,
+    "fields": {
+      "key": "units",
+      "description": "Gramos"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 66,
+    "fields": {
+      "key": "units",
+      "description": "Kilogramos"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 67,
+    "fields": {
+      "key": "units",
+      "description": "Miligramos"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 72,
+    "fields": {
+      "key": "container_type",
+      "description": "Espacio"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 73,
+    "fields": {
+      "key": "container_type",
+      "description": "Gaveta"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 74,
+    "fields": {
+      "key": "furniture_type",
+      "description": "Cajon"
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 75,
+    "fields": {
+      "key": "furniture_type",
+      "description": "Estante"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 1,
+    "fields": {
+      "name": "Laboratorio de Quimica General",
+      "phone_number": "2511-4000",
+      "location": "Edificio A, Piso 2",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "quimica.general@universidad.ac.cr",
+      "coordinator": "Carlos Quesada",
+      "unit": "Depto. Quimica",
+      "organization": 4,
+      "description": "Laboratorio principal de quimica general",
+      "area": 120.0,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratory",
+    "pk": 2,
+    "fields": {
+      "name": "Laboratorio de Materiales",
+      "phone_number": "2511-5000",
+      "location": "Edificio B, Piso 1",
+      "geolocation": "9.895804362670006,-84.1552734375",
+      "email": "materiales@universidad.ac.cr",
+      "coordinator": "",
+      "unit": "Depto. Materiales",
+      "organization": 6,
+      "description": "Laboratorio de ciencia de materiales",
+      "area": 80.0,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 1,
+    "fields": {
+      "organization": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "laboratory.organizationstructurerelations",
+    "pk": 2,
+    "fields": {
+      "organization": 6,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 2
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 1,
+    "fields": {
+      "name": "Sala de Almacenamiento",
+      "laboratory": 1,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 2,
+    "fields": {
+      "name": "Sala de Trabajo",
+      "laboratory": 1,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.laboratoryroom",
+    "pk": 3,
+    "fields": {
+      "name": "Almacen de Materiales",
+      "laboratory": 2,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 1,
+    "fields": {
+      "labroom": 1,
+      "name": "Gabinete Principal",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[1, 2]]",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 2,
+    "fields": {
+      "labroom": 2,
+      "name": "Mesa de Trabajo Central",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[3]]",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.furniture",
+    "pk": 3,
+    "fields": {
+      "labroom": 3,
+      "name": "Estanteria de Materiales",
+      "type": 75,
+      "color": "#73879C",
+      "dataconfig": "[[4]]",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 1,
+    "fields": {
+      "furniture": 1,
+      "name": "Estante Reactivos A",
+      "type": 72,
+      "color": "#73879C",
+      "discard": false,
+      "quantity": 0,
+      "measurement_unit": 64,
+      "infinity_quantity": true,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 2,
+    "fields": {
+      "furniture": 1,
+      "name": "Estante Reactivos B",
+      "type": 72,
+      "color": "#73879C",
+      "discard": false,
+      "quantity": 0,
+      "measurement_unit": 64,
+      "infinity_quantity": true,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 3,
+    "fields": {
+      "furniture": 2,
+      "name": "Estante Equipos",
+      "type": 72,
+      "color": "#73879C",
+      "discard": false,
+      "quantity": 0,
+      "measurement_unit": 64,
+      "infinity_quantity": true,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelf",
+    "pk": 4,
+    "fields": {
+      "furniture": 3,
+      "name": "Estante Materiales",
+      "type": 72,
+      "color": "#73879C",
+      "discard": false,
+      "quantity": 0,
+      "measurement_unit": 64,
+      "infinity_quantity": true,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 1,
+    "fields": {
+      "code": "HCl-001",
+      "name": "Acido Clorhidrico",
+      "type": "0",
+      "is_public": true,
+      "description": "Acido clorhidrico concentrado al 37%",
+      "organization": 4,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 2,
+    "fields": {
+      "code": "BKR-500",
+      "name": "Beaker 500ml",
+      "type": "1",
+      "is_public": true,
+      "description": "Beaker de vidrio borosilicato 500ml",
+      "organization": 4,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 3,
+    "fields": {
+      "code": "BAL-001",
+      "name": "Balanza Analitica",
+      "type": "2",
+      "is_public": true,
+      "description": "Balanza analitica de precision 0.0001g",
+      "organization": 4,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 4,
+    "fields": {
+      "code": "NaOH-001",
+      "name": "Hidroxido de Sodio",
+      "type": "0",
+      "is_public": true,
+      "description": "Hidroxido de sodio en lentejas grado analitico",
+      "organization": 4,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.object",
+    "pk": 5,
+    "fields": {
+      "code": "PIP-010",
+      "name": "Pipeta Graduada 10ml",
+      "type": "1",
+      "is_public": true,
+      "description": "Pipeta graduada de vidrio 10ml",
+      "organization": 4,
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 1,
+    "fields": {
+      "shelf": 1,
+      "object": 1,
+      "batch": "LOTE-2025-001",
+      "quantity": 5.0,
+      "quantity_base_unit": 5.0,
+      "limit_quantity": 0,
+      "measurement_unit": 62,
+      "in_where_laboratory": 1,
+      "marked_as_discard": false,
+      "description": "Acido Clorhidrico 37% - Lote 2025",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 2,
+    "fields": {
+      "shelf": 1,
+      "object": 4,
+      "batch": "LOTE-2025-002",
+      "quantity": 2.0,
+      "quantity_base_unit": 2000.0,
+      "limit_quantity": 0,
+      "measurement_unit": 66,
+      "in_where_laboratory": 1,
+      "marked_as_discard": false,
+      "description": "NaOH lentejas",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "laboratory.shelfobject",
+    "pk": 3,
+    "fields": {
+      "shelf": 3,
+      "object": 3,
+      "batch": "EQ-2025-001",
+      "quantity": 1.0,
+      "quantity_base_unit": 1.0,
+      "limit_quantity": 0,
+      "measurement_unit": 64,
+      "in_where_laboratory": 1,
+      "marked_as_discard": false,
+      "description": "Balanza Analitica - Sala de Trabajo",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 1,
+    "fields": {
+      "profile": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "rol": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 2,
+    "fields": {
+      "profile": 2,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 3,
+      "rol": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 3,
+    "fields": {
+      "profile": 2,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 4,
+    "fields": {
+      "profile": 3,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 5,
+    "fields": {
+      "profile": 4,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 6,
+    "fields": {
+      "profile": 5,
+      "content_type": [
+        "laboratory",
+        "laboratory"
+      ],
+      "object_id": 1,
+      "rol": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 7,
+    "fields": {
+      "profile": 3,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 4,
+      "rol": [
+        3
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 8,
+    "fields": {
+      "profile": 4,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 4,
+      "rol": [
+        4
+      ]
+    }
+  },
+  {
+    "model": "auth_and_perms.profilepermission",
+    "pk": 9,
+    "fields": {
+      "profile": 5,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 4,
+      "rol": [
+        5
+      ]
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2025-06-01T10:00:00Z",
+      "user": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1,
+      "object_repr": "Organization has been added",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {\"fields\": [\"organization\", \"users\"]}}]"
+    }
+  },
+  {
+    "model": "laboratory.laborglogentry",
+    "pk": 1,
+    "fields": {
+      "log_entry": 1,
+      "content_type": [
+        "laboratory",
+        "organizationstructure"
+      ],
+      "object_id": 1
+    }
+  },
+  {
+    "model": "risk_management.zonetype",
+    "pk": 1,
+    "fields": {
+      "name": "Zona de Almacenamiento Quimico"
+    }
+  },
+  {
+    "model": "risk_management.zonetype",
+    "pk": 2,
+    "fields": {
+      "name": "Zona de Trabajo General"
+    }
+  },
+  {
+    "model": "risk_management.riskzone",
+    "pk": 1,
+    "fields": {
+      "organization": 4,
+      "name": "Zona de Reactivos Peligrosos",
+      "laboratories": [
+        1
+      ],
+      "buildings": [],
+      "num_workers": 5,
+      "zone_type": 1,
+      "priority": 1,
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "risk_management.riskzone",
+    "pk": 2,
+    "fields": {
+      "organization": 4,
+      "name": "Zona de Trabajo Practico",
+      "laboratories": [
+        1
+      ],
+      "buildings": [],
+      "num_workers": 20,
+      "zone_type": 2,
+      "priority": 2,
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "sga.warningword",
+    "pk": 1,
+    "fields": {
+      "name": "Peligro",
+      "weigth": 1
+    }
+  },
+  {
+    "model": "sga.warningword",
+    "pk": 2,
+    "fields": {
+      "name": "Atencion",
+      "weigth": 2
+    }
+  },
+  {
+    "model": "sga.dangerindication",
+    "pk": "H314",
+    "fields": {
+      "code": "H314",
+      "description": "Provoca quemaduras graves en la piel y lesiones oculares graves",
+      "warning_words": 1,
+      "warning_class": [],
+      "warning_category": [],
+      "prudence_advice": [],
+      "danger_type": "physical"
+    }
+  },
+  {
+    "model": "sga.dangerindication",
+    "pk": "H331",
+    "fields": {
+      "code": "H331",
+      "description": "Toxico en caso de inhalacion",
+      "warning_words": 1,
+      "warning_class": [],
+      "warning_category": [],
+      "prudence_advice": [],
+      "danger_type": "health"
+    }
+  },
+  {
+    "model": "sga.dangerindication",
+    "pk": "H290",
+    "fields": {
+      "code": "H290",
+      "description": "Puede ser corrosivo para los metales",
+      "warning_words": 2,
+      "warning_class": [],
+      "warning_category": [],
+      "prudence_advice": [],
+      "danger_type": "physical"
+    }
+  },
+  {
+    "model": "sga.substance",
+    "pk": 1,
+    "fields": {
+      "organization": 4,
+      "comercial_name": "Acido Clorhidrico 37%",
+      "uipa_name": "Hydrogen chloride",
+      "brand": "Merck",
+      "status": 2,
+      "components_sga": [],
+      "danger_indications": [
+        "H314",
+        "H331",
+        "H290"
+      ],
+      "synonymous": "Acido muriatico, HCl",
+      "agrochemical": false,
+      "description": "Acido clorhidrico concentrado al 37% grado analitico",
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "sga.substancecharacteristics",
+    "pk": 1,
+    "fields": {
+      "substance": 1,
+      "bioaccumulable": false,
+      "molecular_formula": "HCl",
+      "cas_id_number": "7647-01-0",
+      "is_precursor": true,
+      "h_code": [
+        "H314",
+        "H331",
+        "H290"
+      ],
+      "valid_molecular_formula": true,
+      "seveso_list": false,
+      "number_index": "017-002-01-X",
+      "number_ce": "231-595-7",
+      "molecular_weight": "36.46",
+      "concentration": "37"
+    }
+  },
+  {
+    "model": "laboratory.sustancecharacteristics",
+    "pk": 1,
+    "fields": {
+      "obj": 1,
+      "bioaccumulable": false,
+      "molecular_formula": "HCl",
+      "cas_id_number": "7647-01-0",
+      "is_precursor": true,
+      "h_code": [
+        "H314",
+        "H331",
+        "H290"
+      ],
+      "valid_molecular_formula": true,
+      "seveso_list": false,
+      "density": 1.19
+    }
+  },
+  {
+    "model": "laboratory.precursorreportvalues",
+    "pk": 1,
+    "fields": {
+      "precursor_report": 1,
+      "object": 1,
+      "measurement_unit": 62,
+      "quantity": 5.0,
+      "previous_balance": 8.0,
+      "new_income": 2.0,
+      "bills": "FAC-2026-001",
+      "providers": "Merck Costa Rica",
+      "stock": 5.0,
+      "month_expense": 5.0,
+      "final_balance": 5.0,
+      "reason_to_spend": "Practicas de laboratorio de quimica general"
+    }
+  },
+  {
+    "model": "laboratory.precursorreportvalues",
+    "pk": 2,
+    "fields": {
+      "precursor_report": 1,
+      "object": 4,
+      "measurement_unit": 66,
+      "quantity": 2.0,
+      "previous_balance": 3.0,
+      "new_income": 1.0,
+      "bills": "FAC-2026-002",
+      "providers": "Sigma-Aldrich",
+      "stock": 2.0,
+      "month_expense": 2.0,
+      "final_balance": 2.0,
+      "reason_to_spend": "Preparacion de soluciones"
+    }
+  },
+  {
+    "model": "laboratory.precursorreport",
+    "pk": 1,
+    "fields": {
+      "month": 1,
+      "year": 2026,
+      "laboratory": 1,
+      "consecutive": 1,
+      "month_belong": 1
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 1,
+    "fields": {
+      "user": 4,
+      "status": 0,
+      "comments": "Reservacion para practica de laboratorio",
+      "is_massive": false
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 2,
+    "fields": {
+      "user": 4,
+      "status": 1,
+      "comments": "Reservacion aprobada para clase de quimica",
+      "is_massive": false
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 3,
+    "fields": {
+      "user": 2,
+      "status": 0,
+      "comments": "Reservacion para practica de laboratorio",
+      "is_massive": false
+    }
+  },
+  {
+    "model": "reservations_management.reservations",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "status": 1,
+      "comments": "Reservacion aprobada para clase de quimica",
+      "is_massive": false
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 1,
+    "fields": {
+      "organization": 4,
+      "shelf_object": 1,
+      "user": 4,
+      "reservation": 1,
+      "is_returnable": true,
+      "amount_required": 0.5,
+      "amount_returned": 0,
+      "initial_date": "2026-02-01T08:00:00Z",
+      "final_date": "2026-02-01T12:00:00Z",
+      "status": 0,
+      "laboratory": 1,
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 2,
+    "fields": {
+      "organization": 4,
+      "shelf_object": 3,
+      "user": 4,
+      "reservation": 1,
+      "is_returnable": true,
+      "amount_required": 1.0,
+      "amount_returned": 0,
+      "initial_date": "2026-02-01T08:00:00Z",
+      "final_date": "2026-02-01T12:00:00Z",
+      "status": 0,
+      "laboratory": 1,
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 3,
+    "fields": {
+      "organization": 4,
+      "shelf_object": 1,
+      "user": 4,
+      "reservation": 2,
+      "is_returnable": true,
+      "amount_required": 1.0,
+      "amount_returned": 0,
+      "initial_date": "2026-02-15T08:00:00Z",
+      "final_date": "2026-02-15T17:00:00Z",
+      "status": 1,
+      "laboratory": 1,
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 4,
+    "fields": {
+      "organization": 4,
+      "shelf_object": 2,
+      "user": 4,
+      "reservation": 2,
+      "is_returnable": false,
+      "amount_required": 0.1,
+      "amount_returned": 0,
+      "initial_date": "2026-02-15T08:00:00Z",
+      "final_date": "2026-02-15T17:00:00Z",
+      "status": 1,
+      "laboratory": 1,
+      "creation_date": "2026-01-01T00:00:00Z",
+      "last_update": "2026-01-01T00:00:00Z",
+      "created_by": null
+    }
+  },
+  {
+    "model": "laboratory.blockedlistnotification",
+    "pk": 1,
+    "fields": {
+      "laboratory": 1,
+      "user": 2,
+      "object": 1
+    }
+  },
+  {
+    "model": "django_celery_beat.intervalschedule",
+    "pk": 1,
+    "fields": {
+      "every": 24,
+      "period": "hours"
+    }
+  },
+  {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 1,
+    "fields": {
+      "minute": "0",
+      "hour": "6",
+      "day_of_week": "*",
+      "day_of_month": "*",
+      "month_of_year": "*",
+      "timezone": "America/Costa_Rica"
+    }
+  },
+  {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 2,
+    "fields": {
+      "minute": "0",
+      "hour": "0",
+      "day_of_week": "*",
+      "day_of_month": "1",
+      "month_of_year": "*",
+      "timezone": "America/Costa_Rica"
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 1,
+    "fields": {
+      "name": "Notificar limite de inventario",
+      "task": "laboratory.tasks.notify_about_product_limit_reach",
+      "interval": null,
+      "crontab": 1,
+      "enabled": true,
+      "description": "Envia alertas cuando productos alcanzan su limite minimo de inventario",
+      "date_changed": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 2,
+    "fields": {
+      "name": "Generar reportes de precursores",
+      "task": "laboratory.tasks.create_precursor_reports",
+      "interval": null,
+      "crontab": 2,
+      "enabled": true,
+      "description": "Genera reportes mensuales de sustancias precursoras",
+      "date_changed": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 3,
+    "fields": {
+      "name": "Notificar expiracion de reactivos",
+      "task": "laboratory.tasks.send_expiration_email",
+      "interval": null,
+      "crontab": 1,
+      "enabled": true,
+      "description": "Envia alertas sobre reactivos proximos a expirar",
+      "date_changed": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 4,
+    "fields": {
+      "name": "Limpieza de sesiones expiradas",
+      "task": "django.contrib.sessions.tasks.clearsessions",
+      "interval": 1,
+      "crontab": null,
+      "enabled": true,
+      "description": "Elimina sesiones expiradas de la base de datos",
+      "date_changed": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 5,
+    "fields": {
+      "organization": 4,
+      "shelf_object": 1,
+      "user": 4,
+      "reservation": null,
+      "is_returnable": true,
+      "amount_required": 1.0,
+      "amount_returned": 0,
+      "initial_date": "2026-05-01T08:00:00Z",
+      "final_date": "2026-05-01T17:00:00Z",
+      "status": 3,
+      "laboratory": 1,
+      "creation_date": "2026-04-01T00:00:00Z",
+      "last_update": "2026-04-01T00:00:00Z",
+      "created_by": null,
+      "reserved_boxes": []
+    }
+  },
+  {
+    "model": "reservations_management.reservedproducts",
+    "pk": 6,
+    "fields": {
+      "organization": 4,
+      "shelf_object": 2,
+      "user": 4,
+      "reservation": null,
+      "is_returnable": false,
+      "amount_required": 0.5,
+      "amount_returned": 0,
+      "initial_date": "2026-05-01T08:00:00Z",
+      "final_date": "2026-05-01T17:00:00Z",
+      "status": 3,
+      "laboratory": 1,
+      "creation_date": "2026-04-01T00:00:00Z",
+      "last_update": "2026-04-01T00:00:00Z",
+      "created_by": null,
+      "reserved_boxes": []
+    }
+  }
 ]
