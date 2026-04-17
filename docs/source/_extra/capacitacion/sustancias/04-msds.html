@@ -71,6 +71,36 @@
             <a href="../tareas/index.html" class="nav-link">
                 <i class="bi bi-clock-history"></i> Tareas Programadas
             </a>
+
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link">
+                <i class="bi bi-person-badge"></i> Registro de Usuarios
+            </a>
+
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link">
+                <i class="bi bi-gear"></i> Admin. del Laboratorio
+            </a>
+
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link">
+                <i class="bi bi-file-earmark-bar-graph"></i> Reportes
+            </a>
+
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link">
+                <i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo
+            </a>
+
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link">
+                <i class="bi bi-trash"></i> Desechos
+            </a>
+
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link">
+                <i class="bi bi-book"></i> Tutoriales y Documentación
+            </a>
         </div>
     </nav>
 
@@ -202,55 +232,148 @@
                 </tbody>
             </table>
 
-            <h2>Gestión de MSDS en Organilab</h2>
+            <h2>Módulo MSDS en Organilab</h2>
 
             <p>
-                Organilab gestiona las hojas de seguridad a través del modelo <strong>MSDSObject</strong>,
-                que permite asociar archivos PDF de hojas de seguridad a los productos químicos registrados
-                en el sistema. Los campos principales son:
+                El módulo MSDS (Material Safety Data Sheet) de Organilab permite buscar, visualizar
+                y cargar hojas de seguridad asociadas a las sustancias registradas en la organización.
+                Se accede desde el menú principal de la organización.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Búsqueda con filtros</h2>
+
+            <p>
+                El módulo MSDS ofrece un sistema de búsqueda con múltiples filtros para localizar
+                rápidamente la hoja de seguridad deseada dentro del catálogo de la organización.
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Filtro</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre de la sustancia</strong></td>
+                        <td>Buscar por nombre comercial o IUPAC del producto</td>
+                        <td>Ácido sulfúrico, NaOH</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Código CAS</strong></td>
+                        <td>Número de registro CAS internacional de la sustancia</td>
+                        <td>7664-93-9</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fuente / Proveedor</strong></td>
+                        <td>Nombre del fabricante o proveedor que emitió la hoja</td>
+                        <td>Sigma-Aldrich, Merck</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fecha de revisión</strong></td>
+                        <td>Fecha en que fue revisada la hoja de seguridad</td>
+                        <td>2023-01-15</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Última actualización</strong></td>
+                        <td>Fecha en que se registró o actualizó en el sistema</td>
+                        <td>2024-06-01</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Procedimiento de búsqueda:</p>
+            <ol class="step-list">
+                <li>Acceder al módulo <strong>MSDS</strong> desde el menú de la organización.</li>
+                <li>Ingresar uno o más criterios en los campos de búsqueda disponibles.</li>
+                <li>Presionar <strong>Buscar</strong> o aplicar los filtros.</li>
+                <li>El sistema muestra las hojas que coinciden con los criterios ingresados.</li>
+                <li>Seleccionar la hoja deseada para ver su detalle completo.</li>
+            </ol>
+
+            <!-- ============================================ -->
+            <h2>Visualización completa de una hoja de seguridad</h2>
+
+            <p>
+                Al seleccionar una hoja de seguridad en el listado, el sistema muestra la información
+                completa del registro. Los campos disponibles en la vista de detalle son:
+            </p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Nombre de la sustancia</strong></td><td>Identificación del producto químico asociado</td></tr>
+                    <tr><td><strong>Proveedor / Fuente</strong></td><td>Empresa o laboratorio que emitió la hoja de seguridad</td></tr>
+                    <tr><td><strong>Fecha de emisión</strong></td><td>Fecha en que fue emitida originalmente la hoja</td></tr>
+                    <tr><td><strong>Fecha de revisión</strong></td><td>Última revisión realizada por el proveedor</td></tr>
+                    <tr><td><strong>Versión</strong></td><td>Número de versión del documento</td></tr>
+                    <tr><td><strong>Archivo PDF</strong></td><td>Enlace para visualizar o descargar el documento PDF completo</td></tr>
+                    <tr><td><strong>Código CAS</strong></td><td>Número CAS de la sustancia</td></tr>
+                </tbody>
+            </table>
+
+            <p>
+                Desde la vista de detalle, el usuario puede <strong>abrir el archivo PDF</strong>
+                directamente en el navegador para consultar las 16 secciones de la hoja de seguridad,
+                o descargarlo para uso sin conexión.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Cargar una nueva hoja de seguridad (SDS)</h2>
+
+            <p>
+                Para registrar una nueva hoja de seguridad en el sistema, siga este procedimiento:
+            </p>
+
+            <ol class="step-list">
+                <li>Acceder al módulo <strong>MSDS</strong> desde el menú principal de la organización.</li>
+                <li>Seleccionar la opción <strong>Crear nuevo archivo SDS</strong> o <strong>Agregar hoja de seguridad</strong>.</li>
+                <li>Completar el formulario con los datos de la hoja:
+                    <ul>
+                        <li>Nombre de la sustancia o seleccionar del catálogo</li>
+                        <li>Proveedor / fuente del documento</li>
+                        <li>Fecha de emisión y revisión</li>
+                        <li>Versión del documento</li>
+                    </ul>
+                </li>
+                <li>Presionar <strong>Examinar</strong> para seleccionar el archivo PDF desde el computador.</li>
+                <li>Verificar que el archivo seleccionado sea correcto.</li>
+                <li>Presionar <strong>Guardar</strong> para registrar la hoja en el sistema.</li>
+            </ol>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Formato requerido</strong>
+                El archivo de la hoja de seguridad debe estar en formato <strong>PDF</strong>. Asegúrese
+                de que el documento esté completo y corresponda exactamente a la sustancia que está
+                registrando para evitar confusiones en consultas de emergencia.
+            </div>
+
+            <h2>Consultar MSDS desde la vista de sustancia</h2>
+
+            <p>
+                Las hojas de seguridad también pueden consultarse de manera contextual:
             </p>
 
             <ul>
-                <li><strong>Proveedor:</strong> El fabricante o distribuidor que proporciona la hoja de seguridad.</li>
-                <li><strong>Archivo (PDF):</strong> El documento de la hoja de seguridad en formato PDF.</li>
-                <li><strong>Producto:</strong> La sustancia o reactivo al que corresponde la hoja.</li>
+                <li><strong>Desde la vista de detalle del reactivo:</strong> Al consultar los detalles de
+                    un reactivo en el inventario, si tiene hoja de seguridad asociada aparece un enlace directo.</li>
+                <li><strong>Desde las características de la sustancia:</strong> El campo de hoja de seguridad
+                    en las características permite adjuntar o consultar el archivo directamente.</li>
+                <li><strong>Desde el módulo MSDS:</strong> Listado completo de todas las hojas disponibles
+                    en la organización con opciones de búsqueda y descarga.</li>
             </ul>
-
-            <h3>Subir una Hoja de Seguridad</h3>
-
-            <ol class="step-list">
-                <li>Acceda al módulo <strong>MSDS</strong> desde el menú de la organización (ruta: /msds/&lt;org_pk&gt;/).</li>
-                <li>Seleccione la opción <strong>Agregar hoja de seguridad</strong>.</li>
-                <li>Seleccione el proveedor de la lista disponible o registre uno nuevo.</li>
-                <li>Suba el archivo PDF de la hoja de seguridad desde su computadora.</li>
-                <li>Asocie la hoja al producto químico correspondiente seleccionándolo del catálogo.</li>
-                <li>Guarde el registro para que la hoja quede disponible para consulta.</li>
-            </ol>
 
             <div class="screenshot-container">
                 <img src="../../_static/gif/cap3_msds_upload_form.gif" alt="Formulario para subir una nueva hoja de seguridad en el módulo MSDS" loading="lazy">
                 <p class="screenshot-caption">Formulario para subir una nueva hoja de seguridad en el módulo MSDS</p>
-            </div>
-
-            <h3>Consultar Hojas de Seguridad</h3>
-
-            <p>
-                Las hojas de seguridad pueden consultarse de varias formas dentro de Organilab:
-            </p>
-
-            <ul>
-                <li><strong>Desde el módulo MSDS:</strong> Navegue al listado completo de hojas de seguridad
-                    disponibles en la organización y busque por nombre de producto o proveedor.</li>
-                <li><strong>Desde la vista de sustancia:</strong> Al consultar los detalles de un reactivo,
-                    encontrará un enlace directo a su hoja de seguridad si esta ha sido cargada.</li>
-                <li><strong>Desde las características de sustancia:</strong> El campo <em>security_sheet</em>
-                    permite adjuntar directamente un archivo de hoja de seguridad a las características
-                    de la sustancia.</li>
-            </ul>
-
-            <div class="screenshot-container">
-                <img src="../../_static/cap3_msds_list.png" alt="Lista de hojas de seguridad disponibles con opciones de búsqueda y descarga" loading="lazy">
-                <p class="screenshot-caption">Lista de hojas de seguridad disponibles con opciones de búsqueda y descarga</p>
             </div>
 
             <h2>Árbol de Seguridad (SecurityLeaf)</h2>

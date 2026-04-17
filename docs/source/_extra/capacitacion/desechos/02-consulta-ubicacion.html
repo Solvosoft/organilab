@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta y Ubicación - Desechos - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link"><i class="bi bi-gear"></i> Admin. del Laboratorio</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-vista-clasificacion.html" class="nav-link sub-item">1. Vista y Clasificación</a>
+            <a href="02-consulta-ubicacion.html" class="nav-link sub-item active">2. Consulta y Ubicación</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Desechos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Consulta y Ubicación</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-geo-alt"></i> 2. Consulta por Laboratorio y Ubicación Física</h1>
+
+            <p class="lead">
+                El módulo permite consultar los desechos organizados por laboratorio y rastrear la
+                ubicación física exacta de cada residuo dentro del laboratorio.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Consulta de desechos</h2>
+
+            <p>
+                El sistema permite visualizar el detalle general de cada desecho registrado. La lista
+                está <strong>organizada por laboratorio</strong>, lo que facilita la revisión individual
+                de residuos por área de trabajo.
+            </p>
+
+            <h3>Formas de ver el detalle de un desecho</h3>
+
+            <p>El módulo permite consultar el detalle de un desecho de dos formas:</p>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-list-ul"></i> Desde la opción de detalle en la lista</h4>
+                        <p>
+                            Desde la lista general de desechos, haga clic en el ícono de detalle
+                            de cualquier registro para ver toda su información.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-building"></i> Desde la vista por laboratorio</h4>
+                        <p>
+                            También puede acceder al detalle desde la vista del laboratorio,
+                            navegando directamente al registro del desecho.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Información mostrada en el detalle</h2>
+
+            <p>Al consultar el detalle de un desecho, el sistema muestra:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Información</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Detalle del laboratorio</strong></td><td>Información del laboratorio donde se originó el desecho</td></tr>
+                    <tr><td><strong>Ubicación física</strong></td><td>Ruta completa: sala → mueble → estante → contenedor</td></tr>
+                    <tr><td><strong>Estante</strong></td><td>Estante específico donde está almacenado</td></tr>
+                    <tr><td><strong>Lugar donde estaba ubicado</strong></td><td>Ubicación original antes de convertirse en desecho</td></tr>
+                    <tr><td><strong>Información restante del desecho</strong></td><td>Cantidad, unidad, estado, fecha de registro</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Ubicación física del desecho</h2>
+
+            <p>
+                Una de las características más importantes del módulo es la capacidad de identificar
+                la <strong>ubicación física exacta</strong> de cada residuo. Esta información es clave
+                para los procesos de recolección y disposición final.
+            </p>
+
+            <p>Los campos relacionados con la ubicación son:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>Laboratorio</strong></td>
+                        <td>El laboratorio donde está almacenado el desecho</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>Sala</strong></td>
+                        <td>La sala específica dentro del laboratorio</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><strong>Mueble</strong></td>
+                        <td>El mueble o estantería donde está el desecho</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><strong>Estante</strong></td>
+                        <td>El nivel de estante específico</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><strong>Contenedor</strong></td>
+                        <td>El contenedor físico donde está depositado el residuo</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <strong><i class="bi bi-info-circle"></i> Importancia de la ubicación exacta</strong>
+                La información de ubicación física es clave para los procesos de recolección y disposición
+                final. Permite a los equipos de gestión ambiental localizar con precisión los residuos
+                sin necesidad de buscar en todo el laboratorio.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Consulta por laboratorio</h2>
+
+            <p>
+                La información de desechos se presenta por cada laboratorio registrado. Esto permite:
+            </p>
+
+            <ul>
+                <li><strong>Control por unidad</strong> — Monitorear los desechos de cada laboratorio individualmente</li>
+                <li><strong>Auditoría interna</strong> — Revisar el cumplimiento de gestión de residuos por área</li>
+                <li><strong>Gestión ambiental por sede</strong> — Consolidar la información por sede o edificio</li>
+                <li><strong>Control de residuos acumulados</strong> — Identificar laboratorios con acumulación excesiva</li>
+            </ul>
+
+            <div class="info-box success">
+                <strong><i class="bi bi-check-circle"></i> Fin del Capítulo 11</strong>
+                Ha completado el capítulo sobre Desechos. Ahora conoce cómo ver la lista de desechos,
+                entender las clasificaciones de residuos, consultar el detalle por laboratorio y
+                rastrear la ubicación física exacta de cada residuo para su correcta gestión ambiental.
+            </div>
+
+            <div class="page-navigation">
+                <a href="01-vista-clasificacion.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Vista y Clasificación
+                </a>
+                <a href="../tutoriales-doc/index.html" class="next-page">
+                    Cap 12: Tutoriales y Documentación <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>

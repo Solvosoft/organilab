@@ -71,6 +71,36 @@
             <a href="../tareas/index.html" class="nav-link">
                 <i class="bi bi-clock-history"></i> Tareas Programadas
             </a>
+
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link">
+                <i class="bi bi-person-badge"></i> Registro de Usuarios
+            </a>
+
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="../admin-laboratorio/index.html" class="nav-link">
+                <i class="bi bi-gear"></i> Admin. del Laboratorio
+            </a>
+
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link">
+                <i class="bi bi-file-earmark-bar-graph"></i> Reportes
+            </a>
+
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link">
+                <i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo
+            </a>
+
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link">
+                <i class="bi bi-trash"></i> Desechos
+            </a>
+
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link">
+                <i class="bi bi-book"></i> Tutoriales y Documentación
+            </a>
         </div>
     </nav>
 
@@ -246,15 +276,114 @@
                 <p class="diagram-caption">Disposición de los elementos obligatorios en una etiqueta SGA</p>
             </div>
 
-            <h2>Generar Etiquetas en Organilab</h2>
+            <h2>Crear una etiqueta SGA en Organilab</h2>
 
             <p>
                 Organilab incluye un sistema de plantillas de etiquetas SGA (TemplateSGA) que permite
-                generar etiquetas conformes al estándar directamente desde el sistema. El proceso es el siguiente:
+                generar etiquetas conformes al estándar directamente desde el sistema.
             </p>
 
+            <p>El proceso requiere dos elementos clave:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Elemento</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre de la sustancia</strong></td>
+                        <td>El reactivo o sustancia para la cual se genera la etiqueta. Debe estar registrado en el catálogo.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Plantilla (TemplateSGA)</strong></td>
+                        <td>Diseño de la etiqueta que define el formato visual, dimensiones y disposición de los elementos.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Procedimiento para crear una etiqueta:</p>
+
             <ol class="step-list">
-                <li>Acceda al módulo <strong>SGA</strong> desde el menú principal de la organización.</li>
+                <li>Acceder al módulo <strong>SGA</strong> desde el menú principal de la organización.</li>
+                <li>Seleccionar la opción <strong>Crear etiqueta</strong> o <strong>Nueva etiqueta</strong>.</li>
+                <li>Ingresar o seleccionar el <strong>nombre de la sustancia</strong> del catálogo.</li>
+                <li>Seleccionar la <strong>plantilla de etiqueta</strong> (TemplateSGA) del listado disponible.</li>
+                <li>Revisar la vista previa de la etiqueta con pictogramas, frases H y P autogeneradas.</li>
+                <li>Descargar la etiqueta en formato PDF para impresión.</li>
+            </ol>
+
+            <h2>Aplicación física en el laboratorio</h2>
+
+            <p>
+                Una vez generadas e impresas, las etiquetas SGA deben ser aplicadas físicamente en
+                los espacios y contenedores del laboratorio. La correcta aplicación garantiza la
+                comunicación de peligros en todo momento.
+            </p>
+
+            <p>Espacios y superficies donde se aplican las etiquetas:</p>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-droplet"></i> Frascos y envases</h4>
+                        <p>
+                            Todo frasco o envase que contenga sustancias químicas debe tener su etiqueta
+                            SGA completa, incluyendo nombre, pictogramas, palabra de advertencia y frases H y P.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-box-seam"></i> Contenedores de almacenamiento</h4>
+                        <p>
+                            Los contenedores grandes o de almacenamiento secundario deben indicar
+                            qué sustancias contienen y los peligros asociados.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-layout-three-columns"></i> Estantes y muebles</h4>
+                        <p>
+                            Los estantes y muebles del laboratorio pueden señalizarse con etiquetas
+                            que indiquen el tipo de sustancias almacenadas y los peligros de esa zona.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-exclamation-triangle"></i> Zonas de almacenamiento</h4>
+                        <p>
+                            Las áreas específicas del laboratorio donde se almacenan sustancias peligrosas
+                            deben señalizarse con los pictogramas de peligro correspondientes.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="scenario-card">
+                        <h4><i class="bi bi-trash"></i> Contenedores de residuos</h4>
+                        <p>
+                            Los recipientes para desechos de sustancias químicas deben estar etiquetados
+                            indicando el tipo de residuo, clase de peligro y restricciones de mezcla.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Regla de re-etiquetado</strong>
+                Cuando se transvase una sustancia a un recipiente diferente (botella, frasco, vaso de precipitado),
+                siempre se debe colocar una nueva etiqueta SGA completa. Nunca use recipientes sin etiqueta,
+                ni siquiera temporalmente.
+            </div>
+
+            <h2>Generar e imprimir etiquetas</h2>
+
+            <ol class="step-list">
+                <li>Acceder al módulo <strong>SGA</strong> desde el menú principal de la organización.</li>
                 <li>Seleccione la sustancia para la cual desea generar la etiqueta.</li>
                 <li>Verifique que la sustancia tenga registrados sus códigos H, pictogramas y palabra de advertencia.</li>
                 <li>Seleccione la opción <strong>Generar etiqueta</strong> desde la vista de detalle de la sustancia.</li>

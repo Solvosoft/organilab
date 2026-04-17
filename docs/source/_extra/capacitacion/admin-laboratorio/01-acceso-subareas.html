@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso y Subáreas - Admin. Laboratorio - Capacitación Organilab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <button class="sidebar-toggle" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+    <div class="sidebar-overlay"></div>
+
+    <nav class="sidebar">
+        <div class="sidebar-header"><h5>Organilab</h5><small>Capacitación</small></div>
+        <div class="sidebar-nav">
+            <div class="nav-section">Inicio</div>
+            <a href="../index.html" class="nav-link"><i class="bi bi-house-door"></i> Página Principal</a>
+            <div class="nav-section">Cap 1: Permisos</div>
+            <a href="../permisos/index.html" class="nav-link"><i class="bi bi-shield-lock"></i> Sistema de Permisos</a>
+            <div class="nav-section">Cap 2: Laboratorios</div>
+            <a href="../laboratorios/index.html" class="nav-link"><i class="bi bi-box-seam"></i> Gestión de Laboratorios</a>
+            <div class="nav-section">Cap 3: Sustancias</div>
+            <a href="../sustancias/index.html" class="nav-link"><i class="bi bi-droplet-half"></i> Gestión de Sustancias</a>
+            <div class="nav-section">Cap 4: Procedimientos</div>
+            <a href="../procedimientos/index.html" class="nav-link"><i class="bi bi-list-check"></i> Procedimientos</a>
+            <div class="nav-section">Cap 5: Reservaciones</div>
+            <a href="../reservaciones/index.html" class="nav-link"><i class="bi bi-calendar-check"></i> Reservaciones</a>
+            <div class="nav-section">Cap 6: Tareas</div>
+            <a href="../tareas/index.html" class="nav-link"><i class="bi bi-clock-history"></i> Tareas Programadas</a>
+            <div class="nav-section">Cap 7: Registro de Usuarios</div>
+            <a href="../registro-usuarios/index.html" class="nav-link"><i class="bi bi-person-badge"></i> Registro de Usuarios</a>
+            <div class="nav-section">Cap 8: Adm. Laboratorio</div>
+            <a href="index.html" class="nav-link"><i class="bi bi-journal-text"></i> Índice del Capítulo</a>
+            <a href="01-acceso-subareas.html" class="nav-link sub-item active">1. Acceso y Subáreas</a>
+            <a href="02-estadisticas-reorden.html" class="nav-link sub-item">2. Estadísticas y Reorden</a>
+            <a href="03-caracteristicas-proveedores.html" class="nav-link sub-item">3. Características y Proveedores</a>
+            <a href="04-carga-masiva.html" class="nav-link sub-item">4. Carga Masiva de Inventario</a>
+            <div class="nav-section">Cap 9: Reportes</div>
+            <a href="../reportes/index.html" class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+            <div class="nav-section">Cap 10: Zonas de Riesgo</div>
+            <a href="../zonas-riesgo/index.html" class="nav-link"><i class="bi bi-exclamation-triangle"></i> Zonas de Riesgo</a>
+            <div class="nav-section">Cap 11: Desechos</div>
+            <a href="../desechos/index.html" class="nav-link"><i class="bi bi-trash"></i> Desechos</a>
+            <div class="nav-section">Cap 12: Tutoriales y Doc.</div>
+            <a href="../tutoriales-doc/index.html" class="nav-link"><i class="bi bi-book"></i> Tutoriales y Documentación</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-wrapper">
+
+            <nav class="breadcrumb-nav" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="index.html">Admin. Laboratorio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Acceso y Subáreas</li>
+                </ol>
+            </nav>
+
+            <h1><i class="bi bi-door-open"></i> 1. Acceso y Subáreas del Módulo</h1>
+
+            <p class="lead">
+                El módulo de Administración del Laboratorio centraliza la configuración técnica y logística.
+                Aquí se gestionan los catálogos maestros de reactivos, materiales y equipos, así como
+                las estadísticas, proveedores y la estructura interna del laboratorio.
+            </p>
+
+            <!-- ============================================ -->
+            <h2>Cómo acceder al módulo</h2>
+
+            <ol class="step-list">
+                <li><strong>Seleccionar la organización activa</strong> — Confirme la organización de trabajo.</li>
+                <li><strong>Ingresar a Mis Laboratorios</strong> — Desde el menú principal del sistema.</li>
+                <li><strong>Seleccionar el laboratorio correspondiente</strong> — Elija el laboratorio a administrar.</li>
+                <li><strong>Elegir la opción "Administración del laboratorio"</strong> — Aparece en el menú lateral del laboratorio seleccionado.</li>
+            </ol>
+
+            <div class="info-box warning">
+                <strong><i class="bi bi-exclamation-triangle"></i> Permisos requeridos</strong>
+                Solo los roles autorizados (Administrador, Regente) pueden acceder a este módulo.
+                Los roles de solo lectura no tendrán acceso a las funciones de creación, edición,
+                eliminación o carga de inventario.
+            </div>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Laboratorio (Salas)</h2>
+
+            <p>
+                Permite administrar las salas de laboratorio existentes. Desde esta subárea se puede:
+            </p>
+
+            <ul>
+                <li>Visualizar salas actuales del laboratorio</li>
+                <li>Agregar nuevas salas</li>
+                <li>Actualizar datos de salas existentes</li>
+                <li>Eliminar salas cuando sea necesario</li>
+            </ul>
+
+            <h3>Crear una nueva sala</h3>
+            <p>Campos requeridos:</p>
+            <ul>
+                <li><strong>Nombre de la sala</strong></li>
+            </ul>
+            <p>Procedimiento:</p>
+            <ol class="step-list">
+                <li>Seleccionar <strong>Agregar</strong></li>
+                <li>Ingresar el nombre de la sala</li>
+                <li>Guardar</li>
+            </ol>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Reactivos (Catálogo maestro)</h2>
+
+            <p>
+                Permite administrar el catálogo maestro de reactivos disponibles en el laboratorio.
+                Esta subárea es diferente al inventario de reactivos en "Mis Laboratorios": aquí se
+                gestiona el <em>catálogo de sustancias</em>, no los objetos físicos almacenados.
+            </p>
+
+            <p>Información solicitada al crear o editar una sustancia en el catálogo:</p>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr><th>Campo</th><th>Descripción</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Código</td><td>Identificador único de la sustancia</td></tr>
+                    <tr><td>Nombre de la sustancia</td><td>Nombre comercial o IUPAC</td></tr>
+                    <tr><td>Sinónimo</td><td>Nombres alternativos</td></tr>
+                    <tr><td>Descripción</td><td>Descripción general de la sustancia</td></tr>
+                    <tr><td>Peligrosidad</td><td>Nivel de peligro asociado</td></tr>
+                    <tr><td>Fórmula molecular</td><td>Ej. H₂SO₄, NaCl</td></tr>
+                    <tr><td>Número CAS</td><td>Identificador químico internacional</td></tr>
+                    <tr><td>Hoja de seguridad</td><td>Referencia a la MSDS asociada</td></tr>
+                    <tr><td>Precursor</td><td>Indica si es sustancia precursora</td></tr>
+                    <tr><td>Indicadores de riesgo</td><td>Códigos H (frases de peligro SGA)</td></tr>
+                    <tr><td>Biocumulable</td><td>Si la sustancia se acumula en organismos vivos</td></tr>
+                    <tr><td>Clase de almacenamiento</td><td>Categoría para almacenamiento seguro</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Materiales (Catálogo maestro)</h2>
+
+            <p>Permite registrar y administrar materiales de laboratorio en el catálogo general.</p>
+
+            <p>Campos requeridos:</p>
+            <ul>
+                <li><strong>Código</strong></li>
+                <li><strong>Nombre</strong></li>
+                <li><strong>Sinónimos</strong></li>
+                <li><strong>Descripción</strong></li>
+                <li><strong>Características del objeto</strong></li>
+                <li><strong>Compartido con otros</strong> (si aplica)</li>
+                <li><strong>Contenedor</strong></li>
+            </ul>
+
+            <!-- ============================================ -->
+            <h2>Subárea: Equipos (Catálogo maestro)</h2>
+
+            <p>Permite visualizar y administrar el catálogo de equipos del laboratorio.</p>
+
+            <p>El catálogo incluye:</p>
+            <ul>
+                <li>Lista de equipos registrados</li>
+                <li>Segmentación por proveedor</li>
+                <li>Familias instrumentales asociadas</li>
+                <li>Tipos de equipo</li>
+                <li>Características técnicas de los objetos</li>
+            </ul>
+
+            <div class="page-navigation">
+                <a href="index.html" class="prev-page">
+                    <i class="bi bi-arrow-left"></i> Índice del Capítulo
+                </a>
+                <a href="02-estadisticas-reorden.html" class="next-page">
+                    Estadísticas y Reorden <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
