@@ -19,7 +19,7 @@ from laboratory.models import (
     BaseUnitValues,
     OrganizationStructure,
 )
-from reservations_management.models import ReservedProducts, RETURNED
+from reservations_management.models import ReservedProducts, RETURNED, CLOSED
 from laboratory.utils import (
     organilab_logentry,
     get_pk_org_ancestors,
@@ -1024,6 +1024,12 @@ def save_shelfobject_characteristics(characteristic, user):
         "provider",
     ]
     organilab_logentry(user, obj, ADDITION, changed_data=changed_data)
+
+
+def has_active_reservations(shelfobject):
+    return ReservedProducts.objects.filter(
+        shelf_object=shelfobject
+    ).exclude(reservation__status=CLOSED).exists()
 
 
 def delete_shelfobjects(shelfobject, user, laboratory):
