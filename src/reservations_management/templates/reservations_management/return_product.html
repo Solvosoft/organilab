@@ -1,0 +1,60 @@
+{% extends 'gentelella/base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans 'Return Product' %}{% endblock %}
+
+{% block content %}
+
+<div class="card gencrud">
+    <div class="card-body">
+        <div class="card-title titles">
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a href="{% url 'reservations_management:manage_reservation' org_pk reservation.pk %}"
+                       title="{% trans 'Back to reservation' %}">
+                        <i class="fs-5 fa fa-angle-double-left red"></i>
+                    </a>
+                </li>
+            </ul>
+            <h2>
+                {% trans 'Return' %}: <strong>{{ product.shelf_object.object.name }}</strong>
+            </h2>
+            <ul class="nav navbar-right panel_toolbox"></ul>
+        </div>
+
+        <div class="mb-3">
+            <p>
+                <strong>{% trans 'Amount Required' %}:</strong>
+                {{ product.amount_required }}
+                {% if product.shelf_object.is_box %}
+                    {% trans 'boxes' %}
+                {% else %}
+                    {{ product.shelf_object.measurement_unit.description }}
+                {% endif %}
+            </p>
+            {% if product.amount_returned > 0 %}
+            <p>
+                <strong>{% trans 'Already Returned' %}:</strong> {{ product.amount_returned }}
+            </p>
+            {% endif %}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_plain }}
+            <div class="form-group mt-3">
+                <div class="controls text-end">
+                    <a href="{% url 'reservations_management:manage_reservation' org_pk reservation.pk %}"
+                       class="btn btn-danger">
+                        <i class="fa fa-times"></i> {% trans 'Cancel' %}
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-undo"></i> {% trans 'Confirm Return' %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
