@@ -2202,8 +2202,6 @@ msgstr "Eliminar el elemento seleccionado"
 msgid "Do you want to delete this item?"
 msgstr "¿Desea eliminar este elemento?"
 
-msgid "Accept"
-msgstr "Aceptar"
 
 msgid "Delete All Selected Items"
 msgstr "Borrar todos los elementos seleccionados"
@@ -2213,6 +2211,18 @@ msgstr "¿Desea eliminar todos los elementos seleccionados?"
 
 msgid "My reservations"
 msgstr "Mis reservaciones"
+
+msgid "Pending Reservations"
+msgstr "Reservaciones Pendientes"
+
+msgid "Reservation History"
+msgstr "Historial de Reservaciones"
+
+msgid "No pending reservations."
+msgstr "No hay reservaciones pendientes."
+
+msgid "No reservation history found."
+msgstr "No se encontró historial de reservaciones."
 
 msgid "Cancel all selected products"
 msgstr "Cancelar todos los productos seleccionados"
@@ -3351,6 +3361,15 @@ msgstr "Reservaciones Denegadas"
 
 msgid "Closed Reservations"
 msgstr "Reservaciones Cerradas"
+
+msgid "Are you sure you want to close this reservation?"
+msgstr "¿Está seguro de que desea cerrar esta reserva?"
+
+msgid "Close reservation"
+msgstr "Cerrar reserva"
+
+msgid "Yes, close it"
+msgstr "Sí, cerrarla"
 
 msgid "Risk Management"
 msgstr "Manejo de Riesgo"
@@ -6022,3 +6041,51 @@ msgstr "No hay suficientes cajas completas disponibles. Se requieren %(needed)d 
 msgid "This item cannot be deleted because it has active reservations. Please close all reservations first."
 msgstr "Este artículo no puede eliminarse porque tiene reservas activas. Por favor, cierre todas las reservas primero."
 
+
+msgid "Select at least one box to return."
+msgstr "Seleccione al menos una caja para devolver."
+
+msgid "Units must be greater than 0 for box %(code)s."
+msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
+
+msgid "Units must be between 0 and the reserved amount for each box."
+msgstr "Las unidades deben estar entre 0 y la cantidad reservada para cada caja."
+
+msgid "Amount to return must be greater than 0."
+msgstr "La cantidad a devolver debe ser mayor a 0."
+
+msgid "Amount to return cannot exceed the required amount (%(max)s)."
+msgstr "La cantidad a devolver no puede superar la cantidad requerida (%(max)s)."
+
+msgid "Could not process the return. Please verify the values."
+msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
+
+msgid "Amount to return"
+msgstr "Cantidad a devolver"
+
+msgid "Reserved units"
+msgstr "Unidades reservadas"
+
+msgid "Units to return"
+msgstr "Unidades a devolver"
+
+msgid "Confirm Return"
+msgstr "Confirmar devolución"
+
+msgid "Accept"
+msgstr "Aceptar"
+
+msgid "Reject"
+msgstr "Rechazar"
+
+msgid "No products in this reservation."
+msgstr "No hay productos en esta reserva."
+
+msgid "Already Returned"
+msgstr "Ya devuelto"
+
+msgid "The reservation has not started yet. Returns are not allowed before the initial date."
+msgstr "La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha de inicio."
+
+msgid "Return"
+msgstr "Devolver"
