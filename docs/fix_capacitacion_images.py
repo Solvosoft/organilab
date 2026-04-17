@@ -13,6 +13,7 @@ DOCS_DIR = Path(__file__).parent
 SOURCE_STATIC = DOCS_DIR / "source" / "_static"
 CAP_DIR = DOCS_DIR / "source" / "_extra" / "capacitacion"
 IMG_DIR = CAP_DIR / "img"
+FAVICON_SRC = DOCS_DIR.parent / "src" / "presentation" / "static" / "favicon.png"
 
 # Matches src=".../_static/(gif/)?filename.ext"
 SRC_PATTERN = re.compile(
@@ -32,6 +33,9 @@ def collect_images():
         for f in gif_dir.glob("*.gif"):
             shutil.copy2(f, IMG_DIR / f.name)
             count += 1
+    if FAVICON_SRC.exists():
+        shutil.copy2(FAVICON_SRC, IMG_DIR / "favicon.png")
+        count += 1
     return count
 
 
@@ -46,6 +50,11 @@ def fix_html_files():
             return f'src="{rel_img}/{m.group(1)}"'
 
         new_content = SRC_PATTERN.sub(replace_src, content)
+
+        favicon_tag = f'<link rel="icon" type="image/png" href="{rel_img}/favicon.png">'
+        if 'rel="icon"' not in new_content:
+            new_content = new_content.replace("</head>", f"    {favicon_tag}\n</head>", 1)
+
         if new_content != content:
             html_file.write_text(new_content, encoding="utf-8")
             updated += 1
