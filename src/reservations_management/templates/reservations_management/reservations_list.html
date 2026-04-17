@@ -97,6 +97,17 @@
 									<a class="btn btn-md btn-success"
 												href="{% url 'reservations_management:manage_reservation' org_pk reservation.id %}"
 												title="{% trans 'Manage' %}"><i class="fa fa-cogs" aria-hidden="true"></i></a>
+									{% if reservation.status == 1 or reservation.status == 2 %}
+										<form method="POST"
+											  action="{% url 'reservations_management:close_reservation' org_pk reservation.id %}"
+											  class="d-inline close-reservation-form">
+											{% csrf_token %}
+											<button type="button" class="btn btn-md btn-secondary btn-close-reservation"
+													title="{% trans 'Close' %}">
+												<i class="fa fa-times-circle" aria-hidden="true"></i>
+											</button>
+										</form>
+									{% endif %}
 								{% endif %}
 							</td>
 						</tr>
@@ -146,6 +157,24 @@
 	</script>
 	<script
 		src="{% static 'reservations_management/js/reservations_management.js' %}?v={% get_organilab_version %}"></script>
-
+	<script>
+	document.querySelectorAll('.btn-close-reservation').forEach(function(btn) {
+		btn.addEventListener('click', function() {
+			var form = btn.closest('.close-reservation-form');
+			Swal.fire({
+				title: '{% trans "Close reservation" %}',
+				text: '{% trans "Are you sure you want to close this reservation?" %}',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '{% trans "Yes, close it" %}',
+				cancelButtonText: '{% trans "Cancel" %}',
+			}).then(function(result) {
+				if (result.isConfirmed) {
+					form.submit();
+				}
+			});
+		});
+	});
+	</script>
 
 {% endblock %}

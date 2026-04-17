@@ -1,119 +1,296 @@
-{% extends 'reservations_management/product_modal.html' %}
-{% load i18n %}
+{% extends 'gentelella/base.html' %}
+{% load i18n static organilab_tags %}
 
-{% load static %}
-{% load urlname_tags %}
-{% load organilab_tags %}
-
-{% block pre_head %}
-	{% define_urlname_action 'increase_stock' %}
-	{% define_urlname_action 'manage_reservation' %}
-	{% define_urlname_action 'get_product_name_and_quantity' %}
-	{% define_urlname_action 'validate_reservation' %}
-{% endblock %}
 {% block title %}{% trans 'Manage Reservation' %}{% endblock %}
 
 {% block content %}
-	{{ block.super }}
 
+<div class="card gencrud">
+    <div class="card-body">
+        <div class="card-title titles">
+            <ul class="nav navbar-left panel_toolbox">
+                <li>
+                    <a href="{% url 'reservations_management:reservations_list' org_pk object.status %}"
+                       title="{% trans 'Back to the reservations list' %}">
+                        <i class="fs-5 fa fa-angle-double-left red"></i>
+                    </a>
+                </li>
+            </ul>
+            <h2>
+                {% trans 'Reservation from' %} <strong>{{ object.user.username }}</strong>
+                {% with lab=object.reservedproducts_set.first.laboratory %}
+                    {% if lab %}{% trans 'for laboratory' %} <strong>{{ lab.name }}</strong>{% endif %}
+                {% endwith %}
+            </h2>
+            <ul class="nav navbar-right panel_toolbox"></ul>
+        </div>
 
-	<div class="management_id" hidden id="manage_urls">
-		<input type="hidden" id="reservation_id" value="{{ object.id }}">
-		<input type="hidden" id='api_reserved_product_CRUD_url' value=" {% url 'api_reservation_management' 0 %}">
-		<input type="hidden" id='api_reserved_products_list_url' value=" {% url 'api_reservation_products_list' 0 %}">
+        {% if perms.reservations_management.change_reservations and object.status == 0 %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_plain }}
+            <div class="form-group mt-2">
+                <div class="controls text-end">
+                    <a href="{% url 'reservations_management:reservations_list' org_pk object.status %}"
+                       class="btn btn-secondary">
+                        <i class="fa fa-times"></i> {% trans 'Cancel' %}
+                    </a>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger">
+                        <i class="fa fa-ban"></i> {% trans 'Reject' %}
+                    </button>
+                    <button type="submit" name="action" value="accept" class="btn btn-success">
+                        <i class="fa fa-check"></i> {% trans 'Accept' %}
+                    </button>
+                </div>
+            </div>
+        </form>
+        {% else %}
+            {% if object.comments %}
+            <p class="mt-2"><strong>{% trans 'Comments' %}:</strong> {{ object.comments }}</p>
+            {% endif %}
+        {% endif %}
+    </div>
 
-		<input type="hidden" name="get_product_name_and_quantity" id="get_product_name_and_quantity"
-									value="{% url 'reservations_management:get_product_name_and_quantity' org_pk %}">
-		<input type="hidden" name="validate_reservation" id="validate_reservation"
-									value="{% url 'reservations_management:validate_reservation' org_pk %}">
-		<input type="hidden" name="increase_stock" id="increase_stock"
-									value="{% url 'reservations_management:increase_stock' org_pk %}">
+    <div class="card-body">
+        <h3 class="card-title">{% trans 'Products List' %}</h3>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered text-center">
+                <thead>
+                <tr class="text-center align-middle">
+                    <th>{% trans 'Product name' %}</th>
+                    <th>{% trans 'Available quantity' %}</th>
+                    <th>{% trans 'Amount Required' %}</th>
+                    <th>{% trans 'Amount Returned' %}</th>
+                    <th>{% trans 'Start Date' %}</th>
+                    <th>{% trans 'End Date' %}</th>
+                    <th>{% trans 'Is Returnable' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.shelf_object.object.name }}</td>
+                    <td>
+                        {% if product.shelf_object.is_box %}
+                            {{ product.shelf_object.quantity_units|length }} {% trans 'boxes' %}
+                        {% else %}
+                            {{ product.shelf_object.quantity }} {{ product.shelf_object.measurement_unit.description }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ product.amount_required }}
+                        {% if product.shelf_object.is_box %}
+                            {% trans 'boxes' %}
+                        {% else %}
+                            {{ product.shelf_object.measurement_unit.description }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if product.amount_returned > 0 %}
+                            {{ product.amount_returned }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ product.initial_date }}</td>
+                    <td>{{ product.final_date }}</td>
+                    <td>
+                        {% if product.is_returnable %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}
+                    </td>
+                    <td>
+                        <strong class="
+                            {% if product.status == 0 %}text-warning
+                            {% elif product.status == 1 %}text-info
+                            {% elif product.status == 2 %}text-danger
+                            {% elif product.status == 3 %}text-dark
+                            {% elif product.status == 4 %}text-success
+                            {% endif %}">
+                            {{ product.get_status_display }}
+                        </strong>
+                    </td>
+                    <td>
+                        {% if perms.reservations_management.change_reservedproducts %}
+                            {% if product.status == 0 %}
+                                <form method="POST"
+                                      action="{% url 'reservations_management:product_action' org_pk object.pk product.pk %}"
+                                      class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" name="action" value="accept"
+                                            class="btn btn-sm btn-success">
+                                        <i class="fa fa-check"></i> {% trans 'Accept' %}
+                                    </button>
+                                    <button type="submit" name="action" value="reject"
+                                            class="btn btn-sm btn-danger">
+                                        <i class="fa fa-ban"></i> {% trans 'Reject' %}
+                                    </button>
+                                </form>
+                            {% elif product.status == 1 and product.is_returnable %}
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        data-product-pk="{{ product.pk }}"
+                                        data-get-url="{% url 'reservations_management:get_product_name_and_quantity' org_pk %}"
+                                        data-return-url="{% url 'reservations_management:return_product' org_pk object.pk product.pk %}"
+                                        onclick="openReturnModal(this)">
+                                    <i class="fa fa-undo"></i> {% trans 'Return' %}
+                                </button>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">{% trans 'No products in this reservation.' %}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-	</div>
-
-
-	<div class="card gencrud">
-
-		<div class="card-body">
-			<div class="card-title titles">
-				<ul class="nav navbar-left panel_toolbox">
-					<li>
-						<a href="{% url 'reservations_management:reservations_list' org_pk object.status %}"
-									title="{% trans 'Back to the reservations list' %}">
-							<i class="fs-5 fa fa-angle-double-left red"></i>
-						</a>
-					</li>
-				</ul>
-				<h2>{% trans 'Reservation from' %} <strong>{{ object.user.username }}</strong> {% trans 'for laboratory' %}
-					<strong>
-						{{ object.laboratory.name }}</strong></h2>
-
-				<ul class="nav navbar-right panel_toolbox">
-
-				</ul>
-
-			</div>
-			{% if perms.reservations_management.change_reservations %}
-
-
-
-				<form method="POST" id="form">
-					{% csrf_token %}
-					{{ reservation_form.as_plain }}
-
-					<div class="form-group mt-2">
-						<div class="controls text-end">
-
-							<a href="{% url 'reservations_management:reservations_list' org_pk object.status %}" class="btn btn-danger"><i
-								class='fa fa-times'></i> {% trans 'Cancel' %}</a>
-
-							<button type="submit" class="btn btn-success"><i class='fa fa-floppy-o'></i> {% trans 'Save' %}</button>
-						</div>
-					</div>
-
-				</form>
-			{% endif %}
-		</div>
-
-
-		<div class="card-body">
-
-			<h3 class="card-title">{% trans 'Products List' %}</h3>
-
-			<div class="table-responsive">
-
-				<table class="table table-sm table-bordered text-center" id="reserved_products_table">
-					<thead>
-					<tr class="text-center align-middle">
-						<th>{% trans 'Product name' %}</th>
-						<th>{% trans 'Available quantity' %}</th>
-						<th>{% trans 'Amount Required' %}</th>
-						<th>{% trans 'Amount Returned' %}</th>
-						<th>{% trans 'Start Date' %}</th>
-						<th>{% trans 'End Date' %}</th>
-						<th>{% trans 'Is Returnable' %}</th>
-						<th>{% trans 'Status' %}</th>
-					</tr>
-					</thead>
-
-					<tbody id="reserved_products_table_body" class="align-middle">
-
-					</tbody>
-				</table>
-			</div>
-
-		</div>
-
-	</div>
+<!-- Return modal -->
+<div class="modal fade" id="returnModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnModalLabel">{% trans 'Return Product' %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="returnFormContent"></div>
+                <div id="returnError" class="text-danger mt-2 d-none"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="fa fa-times"></i> {% trans 'Cancel' %}
+                </button>
+                <button type="button" class="btn btn-success" id="confirmReturnBtn">
+                    <i class="fa fa-undo"></i> {% trans 'Confirm Return' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
 {% block js %}
-	{{ block.super }}
-	<script>
-		const has_perm = {{ perms.reservations_management.change_reservations|yesno:"true,false" }};
-	</script>
-	<script
-		src="{% static 'reservations_management/js/reservations_management.js' %}?v={% get_organilab_version %}"></script>
+<script>
+let returnUrl = null;
+let isBoxProduct = false;
+const csrfToken = '{{ csrf_token }}';
 
+const i18n = {
+    code:          "{% trans 'Code' %}",
+    reservedUnits: "{% trans 'Reserved units' %}",
+    unitsToReturn: "{% trans 'Units to return' %}",
+    amountLabel:   "{% trans 'Amount to return' %}",
+    selectBox:     "{% trans 'Enter units greater than 0 for at least one box.' %}",
+    enterAmount:   "{% trans 'Enter a valid amount.' %}",
+    invalidUnits:  "{% trans 'Units must be between 0 and the reserved amount for each box.' %}",
+};
+
+function openReturnModal(btn) {
+    returnUrl = btn.dataset.returnUrl;
+    document.getElementById('returnError').classList.add('d-none');
+    document.getElementById('returnFormContent').innerHTML =
+        '<p class="text-center"><i class="fa fa-spinner fa-spin fa-2x"></i></p>';
+    $('#returnModal').modal('show');
+
+    $.get(btn.dataset.getUrl, {id: btn.dataset.productPk}, function(data) {
+        isBoxProduct = data.product_is_box;
+        document.getElementById('returnModalLabel').textContent = data.product_name;
+
+        let html = '';
+        if (data.product_is_box) {
+            const boxes = data.reserved_boxes || [];
+            if (!boxes.length) {
+                html = '<div class="alert alert-warning">{% trans "No reserved box information found for this product." %}</div>';
+            } else {
+                html  = '<table class="table table-sm table-bordered">';
+                html += '<thead><tr><th>' + i18n.code + '</th><th>' + i18n.reservedUnits + '</th><th>' + i18n.unitsToReturn + '</th></tr></thead><tbody>';
+                boxes.forEach(function(box) {
+                    html += '<tr>' +
+                        '<td>' + box.code + '</td>' +
+                        '<td>' + box.units + '</td>' +
+                        '<td><input type="number" class="form-control form-control-sm box-return-input"' +
+                            ' data-code="' + box.code + '" value="' + box.units + '"' +
+                            ' min="0" max="' + box.units + '" step="1"></td>' +
+                        '</tr>';
+                });
+                html += '</tbody></table>';
+            }
+        } else {
+            html = '<div class="mb-3">' +
+                '<label class="form-label">' + i18n.amountLabel + ' (' + data.product_unit + ')</label>' +
+                '<input type="number" class="form-control" id="returnAmountInput" min="0" max="' + data.product_quantity + '" step="0.01">' +
+                '</div>';
+        }
+        document.getElementById('returnFormContent').innerHTML = html;
+    }).fail(function(xhr) {
+        document.getElementById('returnFormContent').innerHTML =
+            '<div class="alert alert-danger">{% trans "Error loading product data." %} (' + xhr.status + ')</div>';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('confirmReturnBtn').addEventListener('click', function() {
+        const errorDiv = document.getElementById('returnError');
+        errorDiv.classList.add('d-none');
+        let postData = {csrfmiddlewaretoken: csrfToken};
+
+        if (isBoxProduct) {
+            const boxes = [];
+            let validationError = false;
+            document.querySelectorAll('.box-return-input').forEach(function(input) {
+                const units = parseInt(input.value, 10);
+                const max = parseInt(input.max, 10);
+                if (isNaN(units) || units < 0) {
+                    validationError = true;
+                    return;
+                }
+                if (units > max) {
+                    validationError = true;
+                    return;
+                }
+                boxes.push({code: input.dataset.code, units: units});
+            });
+            if (validationError) {
+                errorDiv.textContent = i18n.invalidUnits;
+                errorDiv.classList.remove('d-none');
+                return;
+            }
+            if (!boxes.length) {
+                errorDiv.textContent = i18n.selectBox;
+                errorDiv.classList.remove('d-none');
+                return;
+            }
+            postData.boxes_to_return = JSON.stringify(boxes);
+        } else {
+            const amountRaw = document.getElementById('returnAmountInput').value;
+            const amount = parseFloat(amountRaw);
+            if (amountRaw === '' || isNaN(amount) || amount < 0) {
+                errorDiv.textContent = i18n.enterAmount;
+                errorDiv.classList.remove('d-none');
+                return;
+            }
+            postData.amount_returned = amount;
+        }
+
+        $.post(returnUrl, postData, function(response) {
+            if (response.success) {
+                $('#returnModal').modal('hide');
+                location.reload();
+            } else {
+                errorDiv.textContent = response.error || 'Error';
+                errorDiv.classList.remove('d-none');
+            }
+        }).fail(function() {
+            errorDiv.textContent = 'Request failed';
+            errorDiv.classList.remove('d-none');
+        });
+    });
+});
+</script>
 {% endblock %}
