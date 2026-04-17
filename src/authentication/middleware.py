@@ -170,9 +170,6 @@ class HandleErrorMiddleware:
             if "application/json" in content_type:
                 return response
 
-            if request.path.startswith("/docs/"):
-                return response
-
             error_path = reverse("error_view")
 
             if request.path != error_path:
