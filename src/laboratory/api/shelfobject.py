@@ -589,7 +589,7 @@ class ShelfObjectCreateMethods:
             laboratory_id,
             shelfobject,
             0,
-            quantity * units_per_box,
+            quantity_box * (quantity * units_per_box),
             "",
             ADDITION,
             _("Income"),
@@ -1455,11 +1455,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 if not transfer_obj.is_box
                 else transfer_object.get_box_totals()
             )
-            shelfobject_quantity = (
-                transfer_object.quantity
-                if not transfer_obj.is_box
-                else transfer_object.object.get_box_totals()
-            )
 
             if not transfer_object.object.measurement_unit.description == "Unidades":
                 if serializer.validated_data["shelf"].measurement_unit:
@@ -1473,7 +1468,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         ),
                     )
             if transfer_obj.is_box:
-                if transfer_object.quantity == transfer_object.object.get_box_totals():
+                shelf = transfer_object.object.shelf
+                if transfer_object.quantity == len(
+                    transfer_object.object.quantity_units
+                ):
                     if (
                         not transfer_object.object.measurement_unit.description
                         == "Unidades"
@@ -1484,7 +1482,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                 serializer.validated_data["shelf"].measurement_unit
                             )
 
-                        # transfer_object.object.quanty = converted_quantity
                         # move the entire shelfobject instead of copy it, so history is not lost
                     new_shelf_object = move_shelfobject_to(
                         transfer_object.object,
@@ -1504,6 +1501,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                 serializer.validated_data["shelf"].measurement_unit
                             )
                     # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
+                    request.data["amount_transfer"] = transfer_object.quantity
                     new_shelf_object = move_box_partial_quantity_to(
                         transfer_object.object,
                         org_pk,

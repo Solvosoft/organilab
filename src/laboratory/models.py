@@ -570,7 +570,7 @@ class ShelfObject(models.Model):
 
     def get_box_totals(self):
         # Retorna la cantidad total de objetos en cajas
-        total = sum(item["quantity"] for item in list(self.quantity_units))
+        total = sum(item.get("quantity", 0) for item in list(self.quantity_units))
         return total
 
     def order_by_boxes(self, order=False):
@@ -579,11 +579,34 @@ class ShelfObject(models.Model):
             list(self.quantity_units), key=lambda x: x["units"], reverse=order
         )
 
+    def get_shelfobject_conversion_from_two_units(self, shelf_unit, amount):
+        query = BaseUnitValues.objects.filter(measurement_unit=self.measurement_unit)
+        query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
+        if shelf_unit is None:
+            return amount
+        if query.exists() and query2.exists():
+            unit1 = query.first()
+            value1 = unit1.si_value
+
+            unit2 = query2.first()
+            value2 = unit2.si_value
+
+            if unit1.measurement_unit.description == "Unidades":
+                return amount
+
+            if value1 > value2:
+                result = amount / (value1 / value2)
+            else:
+                result = amount * (value2 / value1)
+            return result
+        else:
+            return None
+
     def get_obj_conversion_from_two_units(self):
         # Retorna la conversion de unidades de medida
         if self.shelf.measurement_unit:
-            return get_shelfobject_conversion_from_two_units(
-                self.measurement_unit, self.shelf.measurement_unit, self.quantity
+            return self.get_shelfobject_conversion_from_two_units(
+                self.shelf.measurement_unit, self.quantity
             )
         else:
             return self.quantity
@@ -1492,7 +1515,7 @@ class ObjectLogChange(models.Model):
         key_name="key",
         key_value="units",
     )
-    subject = models.CharField(max_length=100, blank=True, null=True)
+    subject = models.TextField(default="", blank=True, null=True)
     provider = models.ForeignKey(
         Provider,
         blank=True,
@@ -1502,7 +1525,7 @@ class ObjectLogChange(models.Model):
     )
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action = models.IntegerField(default=0)
-    note = models.CharField(default="", blank=True, null=True, max_length=255)
+    note = models.TextField(default="", blank=True, null=True)
     organization_where_action_taken = models.ForeignKey(
         OrganizationStructure, on_delete=models.SET_NULL, null=True
     )
@@ -1944,27 +1967,3 @@ class TemporalUploadReactive(BaseCreationObj):
         related_name="shelf_temp",
     )
     data = JSONField()
-
-
-def get_shelfobject_conversion_from_two_units(shelfobject_unit, shelf_unit, amount):
-    query = BaseUnitValues.objects.filter(measurement_unit=shelfobject_unit)
-    query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
-    if shelf_unit is None:
-        return amount
-    if query.exists() and query2.exists():
-        unit1 = query.first()
-        value1 = unit1.si_value
-
-        unit2 = query2.first()
-        value2 = unit2.si_value
-
-        if unit1.measurement_unit.description == "Unidades":
-            return amount
-
-        if value1 > value2:
-            result = amount / (value1 / value2)
-        else:
-            result = amount * (value2 / value1)
-        return result
-    else:
-        return None

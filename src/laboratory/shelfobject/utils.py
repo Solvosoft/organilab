@@ -88,12 +88,11 @@ def save_increase_decrease_shelf_object(
             if new_units <= 0:
                 quantity_units.pop(box_index)
             else:
-                box_quantity = box_entry["quantity"]
-                new_quantity = box_quantity - (box_quantity / box_entry["units"])
+                totals_original = shelfobject.get_obj_conversion_from_two_units()
                 quantity_units[box_index] = {
                     "code": box_entry["code"],
                     "units": new_units,
-                    "quantity": new_quantity,
+                    "quantity": totals_original * new_units,
                 }
 
             shelfobject.quantity_units = quantity_units
@@ -491,15 +490,16 @@ def clone_shelfobject_to(
         None  # to save the container with some changes into a new one (clone it)
     )
     total_in_boxes = 0
+    msg = _("Income")
     if shelfobject.is_box:
-        total_in_boxes = get_conversion_from_two_units(
-            shelf.measurement_unit,
-            destination_shelf.measurement_unit,
-            quantity,
-        )
         shelfobject.quantity_units = shelfobject.order_by_boxes()[
-            :: -int(total_in_boxes)
+            -int(request.data["amount_transfer"]) :
         ]
+        msg = _("Income the boxes %(boxes)s from the laboratory %(lab)s.") % {
+            "boxes": ", ".join([x.get("code") for x in shelfobject.quantity_units]),
+            "lab": shelfobject.in_where_laboratory.name,
+        }
+
     shelfobject.shelf = destination_shelf
     shelfobject.in_where_laboratory_id = destination_laboratory_id
     shelfobject.limits = new_limits
@@ -521,7 +521,7 @@ def clone_shelfobject_to(
         shelfobject.quantity if not shelfobject.is_box else total_in_boxes,
         "",
         ADDITION,
-        _("Income"),
+        msg,
         create=True,
         organization=destination_organization_id,
         is_box=shelfobject.is_box,
@@ -1060,25 +1060,39 @@ def move_shelfobject_to(
     build_shelfobject_qr(
         request, shelfobject, destination_organization_id, destination_laboratory_id
     )
-    total_in_boxes = 0
-    if (
-        shelfobject.is_box
-        and shelf.measurement_unit.pk != shelfobject.object.measurement_unit.pk
-    ):
-        total_in_boxes = get_conversion_from_two_units(
-            shelf.measurement_unit,
-            destination_shelf.measurement_unit,
-            shelfobject.get_box_totals(),
-        )
+
+    msg = _("Move in")
+    if shelfobject.is_box:
+        if shelf.measurement_unit:
+            if shelf.measurement_unit.pk != shelfobject.object.measurement_unit.pk:
+                total_in_boxes = shelfobject.get_shelfobject_conversion_from_two_units(
+                    destination_shelf.measurement_unit,
+                    shelf.quantity,
+                )
+                i = 0
+
+                for box in shelfobject.quantity_units:
+                    shelfobject.quantity_units[i] = total_in_boxes * box["units"]
+                    i += 1
+
+        msg = _("Move in the boxes %(boxes)s from the laboratory %(lab)s.") % {
+            "boxes": ", ".join([x.get("code") for x in shelfobject.quantity_units]),
+            "lab": shelfobject.in_where_laboratory.name,
+        }
+
     log_object_change(
         request.user,
         destination_laboratory_id,
         shelfobject,
         0,
-        shelfobject.quantity if not shelfobject.is_box else total_in_boxes,
+        (
+            shelfobject.quantity
+            if not shelfobject.is_box
+            else sum([x["quantity"] for x in shelfobject.quantity_units])
+        ),
         "",
         CHANGE,
-        _("Move in"),
+        msg,
         organization=destination_organization_id,
         is_box=shelfobject.is_box,
     )
