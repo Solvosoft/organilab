@@ -56,6 +56,7 @@ class ManageReservationView(PermissionRequiredMixin, UpdateView):
         context["products"] = self.object.reservedproducts_set.select_related(
             'shelf_object', 'shelf_object__object', 'shelf_object__measurement_unit'
         ).all()
+        context["has_partial"] = self.object.reservedproducts_set.exclude(status=REQUESTED).exists()
         return context
 
     def form_valid(self, form):
