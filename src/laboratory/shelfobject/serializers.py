@@ -1148,7 +1148,10 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
         data = super().validate(data)
         shelfobject = data.get("shelf_object")
         if shelfobject.is_box:
+            print(len(shelfobject.quantity_units))
+            print(data.get("amount_to_transfer"))
             if len(shelfobject.quantity_units) < int(data.get("amount_to_transfer")):
+                print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                 logger.debug(
                     f"TransferOutShelfObjectSerializer --> shelfobject.quantity_units "
                     f"({shelfobject.quantity_units}) < amount_to_transfer ({data.get('amount_to_transfer')})"

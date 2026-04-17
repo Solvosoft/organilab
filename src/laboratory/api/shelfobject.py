@@ -1278,27 +1278,31 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             shelf_object = serializer.validated_data["shelf_object"]
             amount_to_transfer = serializer.validated_data["amount_to_transfer"]
-            if amount_to_transfer <= shelf_object.quantity:
-                source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-                target_laboratory = serializer.validated_data["laboratory"]
-                transfer_obj = TranferObject.objects.create(
-                    object=shelf_object,
-                    laboratory_send=source_laboratory,
-                    laboratory_received=target_laboratory,
-                    quantity=amount_to_transfer,
-                    mark_as_discard=serializer.validated_data["mark_as_discard"],
-                    created_by=request.user,
-                    is_box=shelf_object.is_box,
+            source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            target_laboratory = serializer.validated_data["laboratory"]
+            transfer_obj = None
+            data_transfer = {
+                "object": shelf_object,
+                "quantity": amount_to_transfer,
+                "mark_as_discard": serializer.validated_data["mark_as_discard"],
+                "created_by": request.user,
+                "is_box": shelf_object.is_box,
+                "laboratory_send": source_laboratory,
+                "laboratory_received": target_laboratory,
+            }
+            if shelf_object.is_box:
+                quantity_units = shelf_object.quantity_units or []
+                quantity_units = sorted(
+                    quantity_units, key=lambda x: x["units"], reverse=True
                 )
-                if shelf_object.is_box:
-                    quantity_units = shelf_object.quantity_units or []
-                    quantity_units = sorted(
-                        quantity_units, key=lambda x: x["units"], reverse=True
-                    )
-                    transfer_obj.quantity_units = quantity_units[
-                        : int(amount_to_transfer)
-                    ]
-                    transfer_obj.save()
+                data_transfer["quantity_units"] = quantity_units[
+                    : int(amount_to_transfer)
+                ]
+                transfer_obj = TranferObject.objects.create(**data_transfer)
+
+            if amount_to_transfer <= shelf_object.quantity:
+                transfer_obj = TranferObject.objects.create(**data_transfer)
+            if transfer_obj:
                 utils.organilab_logentry(
                     request.user,
                     transfer_obj,
@@ -1620,7 +1624,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             shelfobject = serializer.validated_data["shelfobj"]
             if has_active_reservations(shelfobject):
                 return JsonResponse(
-                    {"detail": _("This item cannot be deleted because it has active reservations. Please close all reservations first.")},
+                    {
+                        "detail": _(
+                            "This item cannot be deleted because it has active reservations. Please close all reservations first."
+                        )
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             utils.organilab_logentry(
