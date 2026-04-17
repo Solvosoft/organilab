@@ -13,15 +13,19 @@
 	class="fa fa-shopping-basket" aria-hidden="true"></i></a>
 {% if shelfobject.object.type != shelfobject.object.EQUIPMENT %}
 	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="increasesomodal" title="{% trans 'Add' %}"
-				data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-plus text-success"
+				data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}" data-box="{{ shelfobject.is_box }}",
+	data-expiration="{{ shelfobject.reactive_expiration_date }}"><i class="fa fa-plus text-success"
 																																																																																							aria-hidden="true"></i></a>
 {% endif %}
 <a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="transfer_out_obj_id_modal"
-			title="{% trans 'Transfer Out' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
+			title="{% trans 'Transfer Out' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
+			data-expiration="{{ shelfobject.reactive_expiration_date }}"><i
 	class="fa fa-window-restore" aria-hidden="true"></i></a>
 {% if shelfobject.object.type != shelfobject.object.EQUIPMENT %}
-	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="decreasesomodal"
-				title="{% trans 'Substract' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
+	<a class="ms-2" onclick="return show_decrease_modal(this, event);" data-modalid="decreasesomodal"
+				title="{% trans 'Substract' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
+				data-is-box="{{ shelfobject.is_box|yesno:'true,false' }}"
+				data-quantity-units="{{ shelfobject.quantity_units }}"><i
 		class="fa fa-minus text-danger" aria-hidden="true"></i></a>
 {% endif %}
 {% if perms.laboratory.view_shelfobject and perms.laboratory.view_shelfobjectobservation %}
@@ -30,16 +34,30 @@
 				target="_blank" title="{% trans 'Log' %}"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
 {% endif %}
 {% if shelfobject.object.type == shelfobject.object.REACTIVE %}
+	{% if not shelfobject.is_box %}
 	<a class="ms-2" onclick="return editReactiveShelfObject(this, event);" data-modalid="edit_reactive_modal"
 				title="{% trans 'Edit' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
 				data-form="edit_reactive_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-	<a class="ms-2" onclick="return updateContainerOfShelfObject(this, event);" data-modalid="managecontainermodal"
-				title="{% trans 'Manage Container' %}" data-container="{{ shelfobject.container.pk }}"
-				data-containername="{{ shelfobject.container }}" data-shelfobject="{{ shelfobject.pk }}"
-				data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-hourglass-end" aria-hidden="true"></i></a>
-	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal"
-				title="{% trans 'Move' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
-		class="fa fa-arrows" aria-hidden="true"></i></a>
+
+		<a class="ms-2" onclick="return updateContainerOfShelfObject(this, event);" data-modalid="managecontainermodal"
+					title="{% trans 'Manage Container' %}" data-container="{{ shelfobject.container.pk }}"
+					data-containername="{{ shelfobject.container }}" data-shelfobject="{{ shelfobject.pk }}"
+					data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-hourglass-end" aria-hidden="true"></i></a>
+		{% else %}
+			<a class="ms-2" onclick="return editBoxShelfObject(this, event);" data-modalid="edit_box_modal"
+				title="{% trans 'Edit' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"
+				data-form="edit_box_form"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+	{% endif %}
+
+	{% if not shelfobject.is_box %}
+		<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesocontainermodal"
+					title="{% trans 'Move' %}" data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i
+			class="fa fa-arrows" aria-hidden="true"></i></a>
+	{% else %}
+		<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesomodal" title="{% trans 'Move' %}"
+					data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-arrows"
+																																																																																								aria-hidden="true"></i></a>
+	{% endif %}
 {% else %}
 	<a class="ms-2" onclick="return show_me_modal(this, event);" data-modalid="movesomodal" title="{% trans 'Move' %}"
 				data-shelfobject="{{ shelfobject.pk }}" data-shelf="{{ shelfobject.shelf.pk }}"><i class="fa fa-arrows"

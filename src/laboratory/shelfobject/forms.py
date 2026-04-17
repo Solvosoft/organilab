@@ -160,6 +160,7 @@ class DecreaseShelfObjectForm(GTForm):
     measurement_unit = forms.ModelChoiceField(
         queryset=Catalog.objects.all(),
         label=_("Measurement Unit"),
+        required=False,
         widget=AutocompleteSelect(
             "catalogunitIncDec",
             attrs={
@@ -181,6 +182,9 @@ class DecreaseShelfObjectForm(GTForm):
         required=False,
     )
     shelf_object = forms.IntegerField(widget=forms.HiddenInput)
+    box_index = forms.IntegerField(
+        widget=forms.HiddenInput, required=False, min_value=0
+    )
 
 
 class MoveShelfObjectForm(GTForm):
@@ -394,6 +398,117 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "marked_as_discard": genwidgets.CheckboxInput,
             "batch": genwidgets.TextInput,
             "was_donated": genwidgets.CheckboxInput,
+        }
+
+
+class ShelfObjectBoxForm(forms.ModelForm, GTForm):
+    objecttype = forms.IntegerField(
+        widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True
+    )
+
+    expiration_date = forms.DateField(
+        widget=genwidgets.DateInput, required=False, label=_("Expiration date")
+    )
+
+    quantity_box = forms.IntegerField(
+        widget=genwidgets.TextInput,
+        required=True,
+        initial=1,
+        min_value=1,
+        label=_("Number of boxes"),
+    )
+
+    units_per_box = forms.IntegerField(
+        widget=genwidgets.TextInput,
+        required=True,
+        initial=1,
+        min_value=1,
+        label=_("Units per box"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        org_pk = kwargs.pop("org_pk", None)
+        modal_id = kwargs.pop("modal_id", "#box_form")
+        object_readonly = kwargs.pop("object_readonly", False)
+
+        super().__init__(*args, **kwargs)
+        object_attrs = {
+            "data-dropdownparent": modal_id,
+            "data-s2filter-shelf": "#id_shelf",
+            "data-s2filter-laboratory": "#id_laboratory",
+            "data-s2filter-organization": "#id_organization",
+            "data-s2filter-objecttype": f"#id_{self.prefix}-objecttype",
+            "data-s2filter-org_pk": "#id_organization",
+            "data-s2filter-lab_pk": "#id_laboratory",
+        }
+        if object_readonly:
+            object_attrs["disabled"] = "disabled"
+        self.fields["object"] = forms.ModelChoiceField(
+            queryset=Object.objects.all(),
+            widget=AutocompleteSelect("objectorgsearch", attrs=object_attrs),
+            label=_("Reactive"),
+            help_text=_("Search by name, code or CAS number"),
+            required=not object_readonly,
+        )
+
+        self.fields["status"] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect(
+                "shelfobject_status_search",
+                attrs={
+                    "data-dropdownparent": modal_id,
+                    "data-s2filter-laboratory": "#id_laboratory",
+                    "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
+                },
+            ),
+            help_text='<a class="add_status float-end fw-bold">%s</a>'
+            % (_("New status")),
+            label=_("Status"),
+        )
+
+        self.fields["measurement_unit"] = forms.ModelChoiceField(
+            queryset=Catalog.objects.all(),
+            widget=AutocompleteSelect(
+                "catalogunit",
+                attrs={
+                    "data-dropdownparent": modal_id,
+                    "data-s2filter-shelf": "#id_shelf",
+                    "data-s2filter-laboratory": "#id_laboratory",
+                    "data-s2filter-organization": "#id_organization",
+                    "data-s2filter-org_pk": "#id_organization",
+                    "data-s2filter-lab_pk": "#id_laboratory",
+                },
+            ),
+            label=_("Measurement Unit"),
+        )
+
+    class Meta:
+        model = ShelfObject
+        fields = [
+            "object",
+            "shelf",
+            "status",
+            "physical_status",
+            "quantity",
+            "measurement_unit",
+            "concentration",
+            "description",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "expiration_date",
+        ]
+        widgets = {
+            "shelf": forms.HiddenInput,
+            "quantity": genwidgets.TextInput,
+            "description": genwidgets.Textarea,
+            "batch": genwidgets.TextInput,
+            "was_donated": genwidgets.CheckboxInput,
+            "physical_status": genwidgets.Select,
+            "concentration": genwidgets.FloatInput,
+            "type_budget": genwidgets.Select,
         }
 
 

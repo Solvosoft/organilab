@@ -12,6 +12,7 @@ from auth_and_perms.api.viewsets import (
     SearchShelfObjectOrganization,
     OrganizationButtons,
     ExternalUserToOrganizationViewSet,
+    LaboratoryGeolocationsAPI,
 )
 from auth_and_perms.views import organizationstructure as orgstruct
 
@@ -20,7 +21,10 @@ from rest_framework.routers import SimpleRouter
 from auth_and_perms.views import user_org_creation
 from auth_and_perms.views import fva_rest_authentication
 from auth_and_perms.views.impostor import add_user_impostor, remove_impostor
-from auth_and_perms.views.select_organization import select_organization_by_user
+from auth_and_perms.views.select_organization import (
+    select_organization_by_user,
+    map_of_laboratories_view,
+)
 from authentication.views import SignDataRequestViewSet
 
 routes = SimpleRouter()
@@ -87,6 +91,11 @@ urlpatterns = [
         name="organizationManager",
     ),
     path(
+        "organization/map/laboratories/",
+        map_of_laboratories_view,
+        name="map_of_laboratories",
+    ),
+    path(
         "organization/manage/addusersorganization/<int:pk>/",
         orgstruct.add_users_organization,
         name="addusersorganization",
@@ -144,5 +153,10 @@ urlpatterns = [
         "get_rol/<int:pk>/",
         orgstruct.get_rol,
         name="get_rol",
+    ),
+    path(
+        "api/laboratory_geolocations/",
+        LaboratoryGeolocationsAPI.as_view(),
+        name="api_laboratory_geolocations",
     ),
 ]

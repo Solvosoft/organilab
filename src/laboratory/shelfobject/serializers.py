@@ -1,4 +1,5 @@
 import logging
+import math
 import re
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -145,6 +146,69 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
         data = data.copy()
         return super().to_internal_value(data)
 
+    def _select_boxes(self, shelf_object, amount_required):
+        """
+        Select boxes from shelf_object.quantity_units.
+
+        Complete boxes (units >= units_per_box) are used for the integer part of
+        amount_required. The fractional part takes the next available box
+        (complete or partial) that has at least ceil(fraction * units_per_box) units.
+
+        For amount_required=2.5 and units_per_box=12:
+          - full_count=2  → take 2 complete boxes, reserving units_per_box each
+          - fraction=0.5  → need ceil(0.5 * 12) = 6 units from the next available box
+
+        Returns a list of dicts [{"code": "b-0001", "units": N}, ...] representing
+        the boxes (and units) that will be reserved.
+        """
+        quantity_units = shelf_object.quantity_units or []
+        units_per_box = shelf_object.units_per_box
+
+        full_count = int(amount_required)
+        fraction = amount_required - full_count
+        min_partial_units = math.ceil(fraction * units_per_box) if fraction > 0 else 0
+
+        # Separate complete boxes from partial ones
+        complete_boxes = [b for b in quantity_units if b["units"] >= units_per_box]
+        partial_boxes = [b for b in quantity_units if b["units"] < units_per_box]
+
+        if len(complete_boxes) < full_count:
+            raise serializers.ValidationError(
+                {
+                    "amount_required": _(
+                        "Not enough complete boxes available. "
+                        "%(needed)d complete box(es) required but only %(available)d available."
+                    )
+                    % {"needed": full_count, "available": len(complete_boxes)}
+                }
+            )
+
+        selected = []
+
+        # Reserve full boxes using exactly units_per_box units each
+        for box in complete_boxes[:full_count]:
+            selected.append({"code": box["code"], "units": units_per_box})
+
+        # Reserve fractional part from the next available box (complete first, then partial)
+        if min_partial_units > 0:
+            candidates = complete_boxes[full_count:] + partial_boxes
+            for box in candidates:
+                if box["units"] >= min_partial_units:
+                    selected.append({"code": box["code"], "units": min_partial_units})
+                    break
+            else:
+                raise serializers.ValidationError(
+                    {
+                        "amount_required": _(
+                            "No box with enough units for the partial amount "
+                            "(%(needed)d unit(s) required)."
+                        )
+                        % {"needed": min_partial_units}
+                    }
+                )
+
+        return selected
+
     def validate(self, data):
         current_datetime = now()
         initial_date = data["initial_date"]
@@ -152,18 +216,33 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
         if initial_date >= final_date:
             raise serializers.ValidationError(
-                {"final_date": _(
-                    "Final date cannot be equal or lower than initial date.")}
+                {
+                    "final_date": _(
+                        "Final date cannot be equal or lower than initial date."
+                    )
+                }
             )
         if initial_date <= current_datetime:
             raise serializers.ValidationError(
-                {"initial_date": _(
-                    "Initial date cannot be equal or lower than current date.")}
+                {
+                    "initial_date": _(
+                        "Initial date cannot be equal or lower than current date."
+                    )
+                }
             )
         if final_date <= current_datetime:
             raise serializers.ValidationError(
-                {"final_date": _(
-                    "Final date cannot be equal or lower than current date.")}
+                {
+                    "final_date": _(
+                        "Final date cannot be equal or lower than current date."
+                    )
+                }
+            )
+
+        shelf_object = data["shelf_object"]
+        if shelf_object.is_box:
+            data["reserved_boxes"] = self._select_boxes(
+                shelf_object, data["amount_required"]
             )
 
         return data
@@ -183,7 +262,13 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReservedProducts
-        fields = ["amount_required", "shelf_object", "initial_date", "final_date"]
+        fields = [
+            "amount_required",
+            "shelf_object",
+            "initial_date",
+            "final_date",
+            "reserved_boxes",
+        ]
 
 
 class IncreaseShelfObjectSerializer(serializers.Serializer):
@@ -203,31 +288,29 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
     use = serializers.CharField(required=False)
 
     def validate_shelf_object(self, value):
-        attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
-        if attr.in_where_laboratory_id != source_laboratory_id:
+        if value.in_where_laboratory_id != source_laboratory_id:
             logger.debug(
-                f"IncreaseShelfObjectSerializer --> attr.in_where_laboratory_id ({attr.in_where_laboratory_id}) != "
+                f"IncreaseShelfObjectSerializer --> value.in_where_laboratory_id ({value.in_where_laboratory_id}) != "
                 f"source_laboratory_id ({source_laboratory_id})"
             )
             raise serializers.ValidationError(
                 _("Object does not exist in the laboratory.")
             )
-        return attr
+        return value
 
     def validate_provider(self, value):
-        attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
-        if attr:
-            if attr.laboratory_id != source_laboratory_id:
+        if value:
+            if value.laboratory_id != source_laboratory_id:
                 logger.debug(
-                    f"IncreaseShelfObjectSerializer --> attr.laboratory ({attr.laboratory}) != "
+                    f"IncreaseShelfObjectSerializer --> value.laboratory ({value.laboratory}) != "
                     f"source_laboratory_id ({source_laboratory_id})"
                 )
                 raise serializers.ValidationError(
                     _("Provider does not exist in the laboratory.")
                 )
-        return attr
+        return value
 
     def validate(self, data):
         data = super().validate(data)
@@ -237,6 +320,7 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
         increase_unit = data["measurement_unit"]
         query_unit = Catalog.objects.filter(key="units")
         updated_errors = {}
+        is_box = shelf_object.is_box
 
         measurement_unit = (
             shelf_object.measurement_unit
@@ -293,8 +377,11 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE)
     )
     measurement_unit = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE)
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+        allow_null=True,
     )
+    box_index = serializers.IntegerField(required=False, allow_null=True, min_value=0)
 
     def validate_shelf_object(self, value):
         attr = super().validate(value)
@@ -312,9 +399,37 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
     def validate(self, data):
         amount = data["amount"]
         shelf_object = data["shelf_object"]
-        decreased_unit = data["measurement_unit"]
-        query_unit = Catalog.objects.filter(key="units")
         decrease_errors = {}
+
+        # Box-specific validation: decrease units from a specific box slot by index
+        if shelf_object.is_box:
+            box_index = data.get("box_index")
+            quantity_units = shelf_object.quantity_units or []
+            if box_index is None:
+                raise serializers.ValidationError(
+                    {"box_index": _("Box selection is required for box objects.")}
+                )
+            if box_index >= len(quantity_units):
+                raise serializers.ValidationError(
+                    {"box_index": _("Invalid box selection.")}
+                )
+            if amount > quantity_units[box_index]["units"]:
+                decrease_errors["amount"] = _(
+                    "Subtract amount cannot be greater than the available box units."
+                )
+            if decrease_errors:
+                raise serializers.ValidationError(decrease_errors)
+            return data
+
+        # Standard (non-box) validation
+        amount = data.get("amount")
+
+        decreased_unit = data.get("measurement_unit")
+        if not decreased_unit:
+            raise serializers.ValidationError(
+                {"measurement_unit": _("This field is required.")}
+            )
+        query_unit = Catalog.objects.filter(key="units")
 
         measurement_unit = (
             shelf_object.measurement_unit
@@ -367,6 +482,38 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
         if decrease_errors:
             raise serializers.ValidationError(decrease_errors)
 
+        return data
+
+
+class ReturnBoxShelfObjectSerializer(serializers.Serializer):
+    reserved_product = serializers.PrimaryKeyRelatedField(
+        queryset=ReservedProducts.objects.using(settings.READONLY_DATABASE)
+    )
+    description = serializers.CharField(required=False, allow_blank=True)
+
+    def validate_reserved_product(self, value):
+        attr = super().validate(value)
+        source_laboratory_id = self.context.get("source_laboratory_id")
+        if attr.shelf_object.in_where_laboratory_id != source_laboratory_id:
+            raise serializers.ValidationError(
+                _("Reservation does not belong to this laboratory.")
+            )
+        if not attr.shelf_object.is_box:
+            raise serializers.ValidationError(
+                _(
+                    "Only box shelf object reservations can be returned through this action."
+                )
+            )
+        return attr
+
+    def validate(self, data):
+        from reservations_management.models import BORROWED
+
+        reserved_product = data["reserved_product"]
+        if reserved_product.status != BORROWED:
+            raise serializers.ValidationError(
+                {"reserved_product": _("Only borrowed reservations can be returned.")}
+            )
         return data
 
 
@@ -734,6 +881,162 @@ class MaterialRefuseShelfObjectSerializer(
         return data
 
 
+class BoxShelfObjectSerializer(ValidateShelfSerializer, serializers.ModelSerializer):
+    object = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Object.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    status = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    quantity = serializers.FloatField(required=True)
+    description = serializers.CharField(required=False, allow_blank=True)
+    concentration = serializers.FloatField(required=False, default=0.0)
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=True,
+    )
+    type_budget = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="type_budget").using(
+            settings.READONLY_DATABASE
+        ),
+        many=False,
+        required=False,
+        allow_null=True,
+    )
+    batch = serializers.CharField(required=False, default="0")
+    was_donated = serializers.BooleanField(default=False, required=False)
+    reactive_expiration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    physical_status = serializers.ChoiceField(
+        choices=ShelfObject.PHYSICAL_STATUS[1::], required=False, allow_null=True
+    )
+    # units_per_box: single integer from the form; create_box builds the JSON list from it
+    units_per_box = serializers.IntegerField(required=True, min_value=1)
+    # is_box is always True for box objects
+    is_box = serializers.HiddenField(default=True)
+    quantity_box = serializers.IntegerField(required=False, min_value=1, default=1)
+
+    class Meta:
+        model = ShelfObject
+        fields = [
+            "object",
+            "shelf",
+            "status",
+            "physical_status",
+            "quantity",
+            "description",
+            "concentration",
+            "measurement_unit",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "reactive_expiration_date",
+            "is_box",
+            "units_per_box",
+            "quantity_box",  # form-only: not a model field, popped before save
+        ]
+
+    def validate(self, data):
+        data = super().validate(data)
+        errors = validate_measurement_unit_and_quantity(
+            data["shelf"],
+            data["object"],
+            data["quantity"],
+            measurement_unit=data["measurement_unit"],
+        )
+        if errors:
+            raise serializers.ValidationError(errors)
+        return data
+
+
+class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
+    status = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+    )
+    quantity = serializers.FloatField(required=False)
+    description = serializers.CharField(required=False, allow_blank=True)
+    concentration = serializers.FloatField(required=False)
+    measurement_unit = serializers.PrimaryKeyRelatedField(
+        many=False,
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+    )
+    type_budget = serializers.PrimaryKeyRelatedField(
+        queryset=Catalog.objects.filter(key="type_budget").using(
+            settings.READONLY_DATABASE
+        ),
+        many=False,
+        required=False,
+        allow_null=True,
+    )
+    batch = serializers.CharField(required=False)
+    was_donated = serializers.BooleanField(required=False)
+    reactive_expiration_date = DateFieldWithEmptyString(
+        input_formats=settings.DATE_INPUT_FORMATS, required=False, allow_null=True
+    )
+    physical_status = serializers.ChoiceField(
+        choices=ShelfObject.PHYSICAL_STATUS[1::], required=False, allow_null=True
+    )
+    units_per_box = serializers.IntegerField(required=False, min_value=1)
+    quantity_box = serializers.IntegerField(required=False, min_value=1)
+
+    class Meta:
+        model = ShelfObject
+        fields = [
+            "status",
+            "physical_status",
+            "quantity",
+            "description",
+            "concentration",
+            "measurement_unit",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "reactive_expiration_date",
+            "units_per_box",
+            "quantity_box",
+        ]
+
+    def validate(self, data):
+        instance = self.instance
+        current_box_count = (
+            len(instance.quantity_units) if instance.quantity_units else 0
+        )
+
+        quantity_box_changed = (
+            "quantity_box" in data and data["quantity_box"] != current_box_count
+        )
+        units_per_box_changed = (
+            "units_per_box" in data and data["units_per_box"] != instance.units_per_box
+        )
+
+        if not (quantity_box_changed or units_per_box_changed):
+            return data
+
+        original_units = instance.units_per_box
+        boxes = instance.quantity_units or []
+        boxes_modified = any(box["units"] != original_units for box in boxes)
+
+        if boxes_modified:
+            raise serializers.ValidationError(
+                {
+                    "quantity_box": _(
+                        "Cannot change the number of boxes or units per box because one or more "
+                        "boxes have already been modified. Use the decrease or increase actions instead."
+                    )
+                }
+            )
+        return data
+
+
 class EquipmentShelfObjectSerializer(
     ValidateShelfSerializer, serializers.ModelSerializer
 ):
@@ -840,6 +1143,24 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
                 _("Object does not exist in the laboratory.")
             )
         return attr
+
+    def validate(self, data):
+        data = super().validate(data)
+        shelfobject = data.get("shelf_object")
+        if shelfobject.is_box:
+            if len(shelfobject.quantity_units) < int(data.get("amount_to_transfer")):
+                logger.debug(
+                    f"TransferOutShelfObjectSerializer --> shelfobject.quantity_units "
+                    f"({shelfobject.quantity_units}) < amount_to_transfer ({data.get('amount_to_transfer')})"
+                )
+                raise serializers.ValidationError(
+                    {
+                        "amount_to_transfer": _(
+                            "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
+                        )
+                    }
+                )
+        return data
 
 
 class ShelfObjectDeleteSerializer(serializers.Serializer):
@@ -1092,13 +1413,20 @@ class TransferObjectSerializer(serializers.ModelSerializer):
     quantity = serializers.SerializerMethodField()
 
     def get_object(self, obj):
-        return {"name": obj.object.object.name, "type": obj.object.object.type}
+        return {
+            "name": (
+                obj.object.object.name
+                if not obj.is_box
+                else _("Box of ") + obj.object.object.name
+            ),
+            "type": obj.object.object.type,
+        }
 
     def get_laboratory_send(self, obj):
         return obj.laboratory_send.name
 
     def get_quantity(self, obj):
-        return f"{obj.quantity} {obj.object.get_measurement_unit_display()}"
+        return f"{obj.quantity} {obj.object.get_measurement_unit_display() if not obj.is_box else 'Unidades'}"
 
     class Meta:
         model = TranferObject
@@ -1109,6 +1437,7 @@ class TransferObjectSerializer(serializers.ModelSerializer):
             "laboratory_send",
             "update_time",
             "mark_as_discard",
+            "is_box",
         )
 
 
@@ -1355,6 +1684,7 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
 
     def validate_transfer_object(self, value):
         attr = super().validate(value)
+        is_box = attr.is_box
         if attr.laboratory_received_id != self.context.get("laboratory_id"):
             logger.debug(
                 f"TransferInShelfObjectSerializer --> attr.laboratory_received ({attr.laboratory_received}) != "
@@ -1376,7 +1706,8 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
                         "The transfer in cannot be performed since the source object no longer belongs to the laboratory that sent it."
                     )
                 )
-            if attr.quantity > attr.object.quantity:
+
+            if attr.quantity > attr.object.quantity and not is_box:
                 logger.debug(
                     f"TransferInShelfObjectSerializer --> attr.quantity ({attr.quantity}) > "
                     f"attr.object.quantity ({attr.object.quantity})"
@@ -1393,24 +1724,43 @@ class TransferInShelfObjectSerializer(ValidateShelfSerializer):
         data = super().validate(data)
         if self.context.get("validate_for_approval"):
             transfer_object = data["transfer_object"]
+            is_box = transfer_object.is_box
             # do it here instead of in validate_transfer_object so shelf is already validated when used - only validate measurement unit for reactive
             measurement_unit = (
                 transfer_object.object.measurement_unit
                 if transfer_object.object.object.type == Object.REACTIVE
                 else None
             )
-            container = get_selected_container(data)
-            errors = validate_measurement_unit_and_quantity(
-                data["shelf"],
-                transfer_object.object.object,
-                transfer_object.quantity,
-                measurement_unit=measurement_unit,
-                container=container,
-            )
+            validate_measurement = {
+                "shelf": data["shelf"],
+                "object": transfer_object.object.object,
+                "quantity": transfer_object.quantity,
+                "measurement_unit": transfer_object.object.measurement_unit,
+                "container": get_selected_container(data),
+            }
+
+            if is_box:
+                del validate_measurement["container"]
+                validate_measurement["quantity"] = (
+                    sum(item["units"] for item in transfer_object.quantity_units)
+                    * transfer_object.object.quantity
+                )
+
+            errors = validate_measurement_unit_and_quantity(**validate_measurement)
+
             if errors:
                 updated_errors = group_object_errors_for_serializer(
                     errors, save_to_key="transfer_object"
                 )
+                if is_box:
+                    if len(transfer_object.quantity_units) < int(
+                        transfer_object.amount_to_transfer
+                    ):
+                        updated_errors["quantity"].append(
+                            _(
+                                "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
+                            )
+                        )
                 raise serializers.ValidationError(updated_errors)
         return data
 

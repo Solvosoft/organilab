@@ -547,6 +547,8 @@ class ShelfObjectAdmin(admin.ModelAdmin):
         "id",
         "object",
         "quantity",
+        "is_box",
+        "quantity_units",
         "measurement_unit",
         "laboratory_name_display",
         "organization_id_display",

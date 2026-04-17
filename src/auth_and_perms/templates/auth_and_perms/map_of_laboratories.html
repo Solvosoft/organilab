@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load gtsettings i18n static laboratory %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+
+	{% define_urlname_action 'riskzone_map' %}
+	<link rel="stylesheet" href="{% static 'location_field/leaflet/leaflet.css' %}">
+{% endblock %}
+
+{% block content %}
+	<div class="row mt-4">
+		<h4> {% trans "Laboratories" %} </h4>
+		<div class="col-12">
+			<div id="org-map" style="height: 600px; border-radius: 8px; border: 1px solid #ccc;"></div>
+		</div>
+	</div>
+
+
+{% endblock %}
+{% block js %}
+	{{ block.super }}
+	<script src="{% static 'location_field/leaflet/leaflet.js' %}"></script>
+	<script>
+		 const laboratory_geolocations_url = "{% url 'auth_and_perms:api_laboratory_geolocations' %}";
+	</script>
+	<script src="{% static 'js/auth_and_perms/map_of_laboratories.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

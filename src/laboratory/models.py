@@ -511,10 +511,17 @@ class ShelfObject(models.Model):
         key_value="process_condition",
     )
     is_box = models.BooleanField(default=False, verbose_name=_("Is box?"))
-    quantity_units = models.FloatField(
+    quantity_units = models.JSONField(
+        default=list,
+        verbose_name=_("Units per box"),
+        help_text=_(
+            'List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'
+        ),
+    )
+    units_per_box = models.IntegerField(
         default=0,
-        verbose_name=_("Quantity Units per box"),
-        help_text=_("Number of units per box"),
+        verbose_name=_("Units per box (reference)"),
+        help_text=_("Original number of units per box at creation time"),
     )
 
     @staticmethod
@@ -524,8 +531,15 @@ class ShelfObject(models.Model):
         return str(unit)
 
     @property
+    def total_quantity(self):
+        if self.is_box and self.quantity_units:
+            return sum(b["units"] for b in self.quantity_units) * self.quantity
+        return self.quantity
+
+    @property
     def limit_reached(self):
-        return self.quantity < self.limit_quantity
+        current = len(self.quantity_units) if self.is_box else self.quantity
+        return current < self.limit_quantity
 
     def get_measurement_unit_display(self):
         return (
@@ -550,6 +564,17 @@ class ShelfObject(models.Model):
             self.quantity,
             str(self.measurement_unit),
         )
+
+    def get_box_code(self):
+        return self.quantity_units
+
+    def get_box_totals(self):
+        total = sum(item["units"] for item in self.quantity_units)
+        total = total * self.quantity
+        return total
+
+    def order_by_boxes(self, order=False):
+        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
 
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
@@ -1310,7 +1335,6 @@ class UserOrganization(models.Model):
 
 
 # FIXME: Delete this model
-
 # class OrganizationUserManagement(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
@@ -1470,6 +1494,7 @@ class ObjectLogChange(models.Model):
     organization_where_action_taken = models.ForeignKey(
         OrganizationStructure, on_delete=models.SET_NULL, null=True
     )
+    is_box = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -1547,6 +1572,10 @@ class TranferObject(BaseCreationObj):
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
+    # indices de las cajas a transferir []
+    quantity_box = models.IntegerField(default=0)
+    is_box = models.BooleanField(default=False)
+    quantity_units = models.JSONField(default=list)
 
     def get_object_detail(self):
         return "%s %s %s" % (
@@ -1554,6 +1583,14 @@ class TranferObject(BaseCreationObj):
             self.quantity,
             str(self.object.measurement_unit),
         )
+
+    def get_box_totals(self):
+        total = sum(item["units"] for item in self.quantity_units)
+        total = total * self.object.quantity
+        return total
+
+    def order_by_boxes(self, order=False):
+        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
 
 
 MONTHS = (
