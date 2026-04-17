@@ -6005,3 +6005,6 @@ msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponi
 
 msgid "Laboratories map"
 msgstr "Mapa de laboratorios"
+
+msgid "This item cannot be deleted because it has active reservations. Please close all reservations first."
+msgstr "Este artículo no puede eliminarse porque tiene reservas activas. Por favor, cierre todas las reservas primero."

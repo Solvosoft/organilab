@@ -116,6 +116,7 @@ from laboratory.shelfobject.utils import (
     clone_shelfobject_to,
     save_shelfobject_characteristics,
     delete_shelfobjects,
+    has_active_reservations,
     get_shelf_object_expiration_date,
     generate_box_code,
     move_box_partial_quantity_to,
@@ -1614,6 +1615,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         if serializer.is_valid():
             shelfobject = serializer.validated_data["shelfobj"]
+            if has_active_reservations(shelfobject):
+                return JsonResponse(
+                    {"detail": _("This item cannot be deleted because it has active reservations. Please close all reservations first.")},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             utils.organilab_logentry(
                 self.request.user, shelfobject, DELETION, relobj=self.laboratory
             )
