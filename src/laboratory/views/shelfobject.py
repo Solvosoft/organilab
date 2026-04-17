@@ -32,6 +32,7 @@ from auth_and_perms.organization_utils import (
     organization_can_change_laboratory,
 )
 from laboratory import utils
+from laboratory.shelfobject.utils import has_active_reservations
 from laboratory.forms import (
     ReservationModalForm,
     ShelfObjectListForm,
@@ -354,6 +355,7 @@ class ShelfObjectCreate(AJAXMixin, CreateView):
             "Create",
             create=True,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         utils.organilab_logentry(
             self.request.user,
@@ -432,6 +434,7 @@ class ShelfObjectEdit(AJAXMixin, UpdateView):
             "Edit",
             create=False,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         utils.organilab_logentry(
             self.request.user,
@@ -513,6 +516,7 @@ class ShelfObjectSearchUpdate(AJAXMixin, UpdateView):
             "Update",
             create=False,
             organization=self.org,
+            is_box=self.object.is_box,
         )
         return response
 
@@ -547,6 +551,14 @@ class ShelfObjectDelete(AJAXMixin, DeleteView):
     success_url = "/"
 
     def form_valid(self, form):
+        if has_active_reservations(self.object):
+            msg = str(_("This item cannot be deleted because it has active reservations. Please close all reservations first."))
+            data = {
+                "inner-fragments": {
+                    "#closemodal": f'<script>$("#object_delete").modal("hide"); Swal.fire({{title: "{str(_("Error"))}", text: "{msg}", icon: "error"}});</script>'
+                }
+            }
+            return data
         utils.organilab_logentry(
             self.request.user, self.object, DELETION, relobj=self.lab
         )
@@ -656,6 +668,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 "Transfer",
                 create=False,
                 organization=organization,
+                is_box=transfer.object.is_box,
             )
 
         else:
@@ -700,6 +713,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
                 "Transfer",
                 create=False,
                 organization=organization,
+                is_box=transfer.object.is_box,
             )
 
             changed_data = [
@@ -734,6 +748,7 @@ def objects_transfer(request, org_pk, lab_pk, transfer_pk, shelf_pk):
             "Transfer",
             create=False,
             organization=organization,
+            is_box=transfer.object.is_box,
         )
         messages.success(request, _("Transfer done successfully"))
     else:
