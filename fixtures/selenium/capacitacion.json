@@ -1125,7 +1125,7 @@
     "pk": 2,
     "fields": {
       "code": "BKR-500",
-      "name": "Beaker 500ml",
+      "name": "Butanona",
       "type": "1",
       "is_public": true,
       "description": "Beaker de vidrio borosilicato 500ml",
@@ -1862,6 +1862,14 @@
       "last_update": "2026-04-01T00:00:00Z",
       "created_by": null,
       "reserved_boxes": []
+    }
+  },
+  {
+    "model": "laboratory.catalog",
+    "pk": 158,
+    "fields": {
+      "key": "shelfobject_status",
+      "description": "Ingresado"
     }
   }
 ]
