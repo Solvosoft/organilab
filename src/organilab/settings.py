@@ -454,3 +454,8 @@ FIRMADOR_DELETE_FILE_URL = FIRMADOR_DOMAIN + "/firma/delete"
 REGISTER_DEFAULT_USER_API = False
 
 TINYMCE_UPLOAD_PATH = "editorupload/"
+
+# Capacitation
+CAPACITATION_URL = os.getenv(
+    "CAPACITATION_URL", "https://organilab.una.ac.cr/docs/capacitacion/"
+)

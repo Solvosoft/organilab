@@ -149,6 +149,7 @@ def index_tutorial(request, org_pk):
         context={
             "org_pk": org_pk,
             "chapters": chapters,
+            "capacitation_url": settings.CAPACITATION_URL,
         },
     )
 
@@ -264,7 +265,9 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
             self.object.laboratory_id = lab_pk
         self.object.save()
         upfile = self.object.related_file if self.object.related_file else None
-        admin_path = reverse("admin:presentation_feedbackentry_change", args=[self.object.pk])
+        admin_path = reverse(
+            "admin:presentation_feedbackentry_change", args=[self.object.pk]
+        )
         admin_url = self.request.build_absolute_uri(admin_path)
         explanation = self._make_images_absolute(self.object.explanation or "")
         file_url = self.request.build_absolute_uri(upfile.url) if upfile else None
@@ -294,7 +297,7 @@ class FeedbackView(PermissionRequiredMixin, CreateView):
     def _make_images_absolute(self, html):
         base = self.request.build_absolute_uri("/").rstrip("/")
         html = html.replace("../media/", f"{base}/media/")
-        html = re.sub(r'src=(["\'])/media/', rf'src=\g<1>{base}/media/', html)
+        html = re.sub(r'src=(["\'])/media/', rf"src=\g<1>{base}/media/", html)
         return html
 
     def get_success_url(self):
