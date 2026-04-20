@@ -726,7 +726,7 @@ function editBoxShelfObject(instance, event) {
             // Plain inputs
             $('#id_ubf-description').val(data.description);
             $('#id_ubf-batch').val(data.batch);
-            $('#id_ubf-expiration_date').val(data.reactive_expiration_date);
+            $('#id_ubf-reactive_expiration_date').val(data.reactive_expiration_date).trigger('change');
             $('#id_ubf-quantity').val(data.quantity);
             $('#id_ubf-concentration').val(data.concentration);
             $('#id_ubf-units_per_box').val(data.units_per_box);
@@ -790,7 +790,7 @@ function get_shelfobject_data(shelfobject){
             document.querySelector("#id_edit-maximum_limit").value = data.maximum_limit;
             document.querySelector("#id_edit-description").value = data.description;
             document.querySelector("#id_edit-batch").value = data.batch;
-            document.querySelector("#id_edit-reactive_expiration_date").value = data.reactive_expiration_date;
+            $('#id_edit-reactive_expiration_date').val(data.reactive_expiration_date).trigger('change');
             $('#id_edit-physical_status').val(data.physical_status).trigger('change');
             $('#id_edit-status').val(data.status).trigger('change');
             if(data.type_budget){

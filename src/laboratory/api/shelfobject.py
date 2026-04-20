@@ -2172,7 +2172,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "batch": shelfobject.batch or "",
             "was_donated": shelfobject.was_donated,
             "reactive_expiration_date": (
-                str(shelfobject.reactive_expiration_date)
+                shelfobject.reactive_expiration_date.strftime("%d/%m/%Y")
                 if shelfobject.reactive_expiration_date
                 else ""
             ),
