@@ -304,6 +304,18 @@ class SDSTraceability(BaseCreationObj):
     security_sheet = models.FileField(
         _("Security sheet"), upload_to=upload_files, null=True, blank=True
     )
+    verified_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Verified by"),
+        related_name="sds_verified_by",
+    )
+    verified_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Verified date")
+    )
+    is_verified = models.BooleanField(default=False, verbose_name=_("Is verified"))
 
     class Meta:
         verbose_name = _("SDS traceability")

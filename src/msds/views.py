@@ -18,7 +18,10 @@ from django.urls.base import reverse
 from django.utils.translation import gettext as _
 
 from laboratory.models import (
-    Catalog, Object, OrganizationStructure, SDSTraceability,
+    Catalog,
+    Object,
+    OrganizationStructure,
+    SDSTraceability,
     SustanceCharacteristics,
 )
 from laboratory.utils_pdf import extract_catalog_fields, extract_msds_data
@@ -34,8 +37,9 @@ logger = logging.getLogger("organilab")
 def index_msds(request, org_pk):
     source_labels = dict(SDSTraceability.SDS_SOURCE_CHOICES)
     existing_sources = (
-        SDSTraceability.objects
-        .filter(sustance_characteristics__obj__organization__pk=org_pk)
+        SDSTraceability.objects.filter(
+            sustance_characteristics__obj__organization__pk=org_pk
+        )
         .order_by("source")
         .values_list("source", flat=True)
         .distinct()
@@ -68,13 +72,19 @@ def get_list_msds(request, org_pk):
         )
 
     # Column filters (sent by formatDataTableParams)
-    substance_filter = request.GET.get("substance__icontains") or request.GET.get("substance")
+    substance_filter = request.GET.get("substance__icontains") or request.GET.get(
+        "substance"
+    )
     if substance_filter:
-        objs = objs.filter(sustance_characteristics__obj__name__icontains=substance_filter)
+        objs = objs.filter(
+            sustance_characteristics__obj__name__icontains=substance_filter
+        )
 
     cas_filter = request.GET.get("cas_code__icontains") or request.GET.get("cas_code")
     if cas_filter:
-        objs = objs.filter(sustance_characteristics__cas_id_number__icontains=cas_filter)
+        objs = objs.filter(
+            sustance_characteristics__cas_id_number__icontains=cas_filter
+        )
 
     source_filter = request.GET.get("source")
     if source_filter:
@@ -109,7 +119,15 @@ def get_list_msds(request, org_pk):
     p = Paginator(objs, page_size)
     if page_num > p.num_pages and p.num_pages > 0:
         page_num = 1
-    page = p.page(page_num) if p.num_pages > 0 else p.page(1) if records_filtered == 0 and p.num_pages == 0 else p.page(page_num)
+    page = (
+        p.page(page_num)
+        if p.num_pages > 0
+        else (
+            p.page(1)
+            if records_filtered == 0 and p.num_pages == 0
+            else p.page(page_num)
+        )
+    )
 
     data = []
     for trace in page.object_list:
@@ -123,7 +141,8 @@ def get_list_msds(request, org_pk):
         sheet = trace.security_sheet or (sc.security_sheet if sc else None)
         if sheet:
             download = '<a href="%s" target="_blank">%s</a>' % (
-                sheet.url, _("Download")
+                sheet.url,
+                _("Download"),
             )
         else:
             download = "N/A"
@@ -164,8 +183,15 @@ def sds_create(request, org_pk):
 
 def _build_catalog_dict():
     """Build the catalogs dict expected by extract_catalog_fields."""
-    catalog_keys = ["IARC", "IDMG", "white_organ", "ue_code", "nfpa",
-                    "storage_class", "Precursor"]
+    catalog_keys = [
+        "IARC",
+        "IDMG",
+        "white_organ",
+        "ue_code",
+        "nfpa",
+        "storage_class",
+        "Precursor",
+    ]
     catalogs = {}
     for key in catalog_keys:
         catalogs[key] = list(
@@ -191,7 +217,9 @@ def _sds_create_upload(request, org_pk, context):
         extracted = {}
         messages.warning(
             request,
-            _("Could not extract data from the PDF. Please fill in the fields manually."),
+            _(
+                "Could not extract data from the PDF. Please fill in the fields manually."
+            ),
         )
 
     h_codes = extracted.get("h_codes", [])
@@ -202,7 +230,9 @@ def _sds_create_upload(request, org_pk, context):
     catalog_fields = {}
     if text:
         catalogs = _build_catalog_dict()
-        catalog_fields = extract_catalog_fields(text, catalogs, extracted.get('_lang', 'es'))
+        catalog_fields = extract_catalog_fields(
+            text, catalogs, extracted.get("_lang", "es")
+        )
 
     # Pre-select h_code DangerIndication objects by code
     h_code_pks = list(
@@ -337,3 +367,9 @@ def download_all_regulations(request):
     z.close()
     response["Content-Disposition"] = 'attachment; filename="regulations.zip"'
     return response
+
+
+@login_required
+@permission_required("laboratory.view_sdstraceability", raise_exception=True)
+def verified_sds(request, org_pk):
+    return render(request, "msds/verified_sds.html", context={"org_pk": org_pk})

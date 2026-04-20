@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+	{% define_urlname_action 'validate_sds' %}
+{% load organilab_tags %}
+
+{% endblock %}
+{% block content %}
+
+<div class="text-center mb-3">
+	<h1 class="text-center">{% trans 'List of Sds' %}</h1>
+</div>
+<table id="sds-traceability-table" class="display table table-striped w-100"></table>
+
+{% endblock %}
+{% block js %}
+{{ block.super }}
+
+<script>
+		var object_urls = {
+		list_url: "{% url 'msds:api-sds-traceability-list' org_pk %}",
+	}
+	const verified_urls = {
+	 verify_url: "{% url 'msds:api-sds-traceability-verify' org_pk=org_pk %}",
+	 }
+</script>
+<script src="{% static 'msds/msds.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}
