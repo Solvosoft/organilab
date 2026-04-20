@@ -6025,6 +6025,13 @@ msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponi
 msgid "Laboratories map"
 msgstr "Mapa de laboratorios"
 
+
+msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
+msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
+
+msgid "Box of"
+msgstr "Caja de"
+
 msgid "Your reservation #%(pk)d was denied: not enough box stock to fulfill the request (%(units)d units short)."
 msgstr "Su reserva #%(pk)d fue denegada: no hay suficiente stock de cajas para cumplir la solicitud (%(units)d unidades faltantes)."
 
