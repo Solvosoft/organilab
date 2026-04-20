@@ -102,7 +102,7 @@ def save_increase_decrease_shelf_object(
                 laboratory.pk,
                 shelfobject,
                 old_quantity,
-                sum(item.get("quantity", 0) for item in quantity_units),
+                shelfobject.get_box_totals(),
                 description,
                 2,
                 _("Spend"),
