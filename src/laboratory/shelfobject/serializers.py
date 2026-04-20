@@ -3131,6 +3131,8 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     labroom = serializers.SerializerMethodField()
     furniture = serializers.SerializerMethodField()
+    quantity_box = serializers.SerializerMethodField()
+    box_units = serializers.SerializerMethodField()
 
     def get_container(self, obj):
         if obj.container and obj.container.object:
@@ -3149,6 +3151,16 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
 
     def get_cas_code(self, obj):
         return obj.object.cas_code
+
+    def get_quantity_box(self, obj):
+        if obj.is_box and obj.quantity_units:
+            return len(obj.quantity_units)
+        return 0
+
+    def get_box_units(self, obj):
+        if obj.is_box and obj.quantity_units:
+            return obj.quantity_units
+        return []
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -3175,7 +3187,9 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
     )
     description = serializers.CharField(required=True)
     measurement_unit = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE)
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+        allow_null=True,
     )
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE),
@@ -3209,9 +3223,18 @@ class IncreaseReactiveShelfObjectSerializer(serializers.Serializer):
                 {"shelf_object": _("Shelf object is required.")}
             )
 
+        # For box objects, skip measurement unit and quantity validation
+        if shelf_object.is_box:
+            return data
+
+        increase_unit = data.get("measurement_unit")
+        if not increase_unit:
+            raise serializers.ValidationError(
+                {"measurement_unit": _("This field is required.")}
+            )
+
         shelf = shelf_object.shelf
         amount = data["amount"]
-        increase_unit = data["measurement_unit"]
 
         query_unit = Catalog.objects.filter(key="units")
         updated_errors = {}
@@ -3291,11 +3314,12 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
     )
     description = serializers.CharField(required=False, allow_blank=True)
     measurement_unit = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=True
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=False, allow_null=True
     )
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), required=True
     )
+    box_index = serializers.IntegerField(required=False, allow_null=True, min_value=0)
 
     def validate_shelf_object(self, value):
         """Validar que el shelf_object pertenezca al laboratorio correcto"""
@@ -3325,7 +3349,31 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
 
         amount = data["amount"]
         shelf_object = data["shelf_object"]
-        decreased_unit = data["measurement_unit"]
+
+        # Box-specific validation: decrease units from a specific box slot
+        if shelf_object.is_box:
+            box_index = data.get("box_index")
+            quantity_units = shelf_object.quantity_units or []
+            if box_index is None:
+                raise serializers.ValidationError(
+                    {"box_index": _("Box selection is required for box objects.")}
+                )
+            if box_index >= len(quantity_units):
+                raise serializers.ValidationError(
+                    {"box_index": _("Invalid box selection.")}
+                )
+            if amount > quantity_units[box_index]["units"]:
+                raise serializers.ValidationError(
+                    {"amount": _("Subtract amount cannot be greater than the available box units.")}
+                )
+            return data
+
+        decreased_unit = data.get("measurement_unit")
+        if not decreased_unit:
+            raise serializers.ValidationError(
+                {"measurement_unit": _("This field is required.")}
+            )
+
         query_unit = Catalog.objects.filter(key="units")
         decrease_errors = {}
 

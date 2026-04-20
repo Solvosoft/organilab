@@ -1499,6 +1499,7 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
         min_value=settings.DEFAULT_MIN_QUANTITY,
         label=_("Amount"),
     )
+    box_index = forms.IntegerField(widget=forms.HiddenInput, required=False, min_value=0)
 
     def __init__(self, *args, **kwargs):
         prefix = kwargs.get("prefix", "")
