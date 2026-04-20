@@ -565,28 +565,38 @@ class ShelfObjectCreateMethods:
 
         # Generate unique codes now that we have the pk
         quantity_units = []
+        quantity = shelfobject.quantity
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            quantity = shelfobject.get_obj_conversion_from_two_units()
+
         for _i in range(box_count):
             existing_codes = [b["code"] for b in quantity_units]
             code = generate_box_code(shelfobject.pk, existing_codes)
-            quantity_units.append({"code": code, "units": units_per_box})
+            quantity_units.append(
+                {
+                    "code": code,
+                    "units": units_per_box,
+                    "quantity": quantity * units_per_box,
+                }
+            )
         shelfobject.quantity_units = quantity_units
         shelfobject.save(update_fields=["quantity_units"])
 
         build_shelfobject_qr(
             self.context["request"], shelfobject, organization_id, laboratory_id
         )
-        total_units = sum(b["units"] for b in shelfobject.quantity_units)
         log_object_change(
             created_by,
             laboratory_id,
             shelfobject,
             0,
-            total_units * shelfobject.quantity,
+            quantity_box * (quantity * units_per_box),
             "",
             ADDITION,
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
@@ -1268,27 +1278,31 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             shelf_object = serializer.validated_data["shelf_object"]
             amount_to_transfer = serializer.validated_data["amount_to_transfer"]
-            if amount_to_transfer <= shelf_object.quantity:
-                source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-                target_laboratory = serializer.validated_data["laboratory"]
-                transfer_obj = TranferObject.objects.create(
-                    object=shelf_object,
-                    laboratory_send=source_laboratory,
-                    laboratory_received=target_laboratory,
-                    quantity=amount_to_transfer,
-                    mark_as_discard=serializer.validated_data["mark_as_discard"],
-                    created_by=request.user,
-                    is_box=shelf_object.is_box,
+            source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            target_laboratory = serializer.validated_data["laboratory"]
+            transfer_obj = None
+            data_transfer = {
+                "object": shelf_object,
+                "quantity": amount_to_transfer,
+                "mark_as_discard": serializer.validated_data["mark_as_discard"],
+                "created_by": request.user,
+                "is_box": shelf_object.is_box,
+                "laboratory_send": source_laboratory,
+                "laboratory_received": target_laboratory,
+            }
+            if shelf_object.is_box:
+                quantity_units = shelf_object.quantity_units or []
+                quantity_units = sorted(
+                    quantity_units, key=lambda x: x["units"], reverse=True
                 )
-                if shelf_object.is_box:
-                    quantity_units = shelf_object.quantity_units or []
-                    quantity_units = sorted(
-                        quantity_units, key=lambda x: x["units"], reverse=True
-                    )
-                    transfer_obj.quantity_units = quantity_units[
-                        : int(amount_to_transfer)
-                    ]
-                    transfer_obj.save()
+                data_transfer["quantity_units"] = quantity_units[
+                    : int(amount_to_transfer)
+                ]
+                transfer_obj = TranferObject.objects.create(**data_transfer)
+
+            if amount_to_transfer <= shelf_object.quantity:
+                transfer_obj = TranferObject.objects.create(**data_transfer)
+            if transfer_obj:
                 utils.organilab_logentry(
                     request.user,
                     transfer_obj,
@@ -1446,11 +1460,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 if not transfer_obj.is_box
                 else transfer_object.get_box_totals()
             )
-            shelfobject_quantity = (
-                transfer_object.quantity
-                if not transfer_obj.is_box
-                else transfer_object.object.get_box_totals()
-            )
 
             if not transfer_object.object.measurement_unit.description == "Unidades":
                 if serializer.validated_data["shelf"].measurement_unit:
@@ -1464,7 +1473,10 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                         ),
                     )
             if transfer_obj.is_box:
-                if transfer_object.quantity == transfer_object.object.get_box_totals():
+                shelf = transfer_object.object.shelf
+                if transfer_object.quantity == len(
+                    transfer_object.object.quantity_units
+                ):
                     if (
                         not transfer_object.object.measurement_unit.description
                         == "Unidades"
@@ -1474,13 +1486,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                             transfer_object.object.measurement_unit = (
                                 serializer.validated_data["shelf"].measurement_unit
                             )
-                            # converted_quantity = get_conversion_from_two_units(
-                        #     transfer_object.object.measurement_unit,
-                        #     serializer.validated_data["shelf"].measurement_unit,
-                        #     transfer_object.quantity,
-                        # )
-                        #
-                        # transfer_object.object.quanty = converted_quantity
+
                         # move the entire shelfobject instead of copy it, so history is not lost
                     new_shelf_object = move_shelfobject_to(
                         transfer_object.object,
@@ -1500,6 +1506,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                                 serializer.validated_data["shelf"].measurement_unit
                             )
                     # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
+                    request.data["amount_transfer"] = transfer_object.quantity
                     new_shelf_object = move_box_partial_quantity_to(
                         transfer_object.object,
                         org_pk,
@@ -1617,7 +1624,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             shelfobject = serializer.validated_data["shelfobj"]
             if has_active_reservations(shelfobject):
                 return JsonResponse(
-                    {"detail": _("This item cannot be deleted because it has active reservations. Please close all reservations first.")},
+                    {
+                        "detail": _(
+                            "This item cannot be deleted because it has active reservations. Please close all reservations first."
+                        )
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             utils.organilab_logentry(
@@ -2192,36 +2203,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        quantity_box = serializer.validated_data.pop("quantity_box", None)
-        units_per_box = serializer.validated_data.get("units_per_box")
         obj = serializer.save()
-
-        current_boxes = list(obj.quantity_units or [])
-        current_count = len(current_boxes)
-        quantity_units_changed = False
-
-        # Propagate new units_per_box to all existing boxes
-        if units_per_box is not None:
-            current_boxes = [
-                {"code": b["code"], "units": units_per_box} for b in current_boxes
-            ]
-            quantity_units_changed = True
-
-        # Adjust number of boxes
-        if quantity_box is not None:
-            if quantity_box > current_count:
-                effective_units = units_per_box or obj.units_per_box
-                for _i in range(quantity_box - current_count):
-                    existing_codes = [b["code"] for b in current_boxes]
-                    code = generate_box_code(obj.pk, existing_codes)
-                    current_boxes.append({"code": code, "units": effective_units})
-            elif quantity_box < current_count:
-                current_boxes = current_boxes[:quantity_box]
-            quantity_units_changed = True
-
-        if quantity_units_changed:
-            obj.quantity_units = current_boxes
-            obj.save(update_fields=["quantity_units"])
 
         utils.organilab_logentry(
             request.user,

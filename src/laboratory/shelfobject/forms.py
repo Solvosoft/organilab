@@ -483,6 +483,32 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             ),
             label=_("Measurement Unit"),
         )
+        if modal_id == "#edit_box_form":
+            self.fields["units_per_box"].widget.attrs.update(
+                {
+                    "readonly": True,
+                    "disabled": True,
+                }
+            )
+            self.fields["measurement_unit"].widget.attrs.update(
+                {
+                    "readonly": True,
+                    "disabled": True,
+                }
+            )
+            self.fields["quantity"].widget.attrs.update(
+                {
+                    "readonly": True,
+                    "disabled": True,
+                }
+            )
+
+            self.fields["quantity_box"].widget.attrs.update(
+                {
+                    "readonly": True,
+                    "disabled": True,
+                }
+            )
 
     class Meta:
         model = ShelfObject
