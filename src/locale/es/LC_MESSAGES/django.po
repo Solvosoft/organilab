@@ -6089,3 +6089,9 @@ msgstr "La reserva aún no ha iniciado. No se permiten devoluciones antes de la 
 
 msgid "Return"
 msgstr "Devolver"
+
+msgid "Training Resources"
+msgstr "Capacitaciones"
+
+msgid "Access learning resources to understand how to use the system step by step."
+msgstr "Accede a material de capacitación para aprender a usar el sistema paso a paso."
