@@ -406,7 +406,7 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
         widget=genwidgets.HiddenInput, min_value=0, max_value=3, required=True
     )
 
-    expiration_date = forms.DateField(
+    reactive_expiration_date = forms.DateField(
         widget=genwidgets.DateInput, required=False, label=_("Expiration date")
     )
 
@@ -524,7 +524,7 @@ class ShelfObjectBoxForm(forms.ModelForm, GTForm):
             "type_budget",
             "batch",
             "was_donated",
-            "expiration_date",
+            "reactive_expiration_date",
         ]
         widgets = {
             "shelf": forms.HiddenInput,
