@@ -961,14 +961,14 @@ class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
         queryset=Catalog.objects.using(settings.READONLY_DATABASE),
         required=False,
     )
-    quantity = serializers.FloatField(required=False)
+    # quantity = serializers.FloatField(required=False)
     description = serializers.CharField(required=False, allow_blank=True)
     concentration = serializers.FloatField(required=False)
-    measurement_unit = serializers.PrimaryKeyRelatedField(
-        many=False,
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
-        required=False,
-    )
+    # measurement_unit = serializers.PrimaryKeyRelatedField(
+    #     many=False,
+    #     queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+    #     required=False,
+    # )
     type_budget = serializers.PrimaryKeyRelatedField(
         queryset=Catalog.objects.filter(key="type_budget").using(
             settings.READONLY_DATABASE
@@ -985,24 +985,20 @@ class UpdateBoxShelfObjectSerializer(serializers.ModelSerializer):
     physical_status = serializers.ChoiceField(
         choices=ShelfObject.PHYSICAL_STATUS[1::], required=False, allow_null=True
     )
-    units_per_box = serializers.IntegerField(required=False, min_value=1)
-    quantity_box = serializers.IntegerField(required=False, min_value=1)
 
     class Meta:
         model = ShelfObject
         fields = [
             "status",
             "physical_status",
-            "quantity",
+            # "quantity",
             "description",
             "concentration",
-            "measurement_unit",
+            # "measurement_unit",
             "type_budget",
             "batch",
             "was_donated",
             "reactive_expiration_date",
-            "units_per_box",
-            "quantity_box",
         ]
 
     def validate(self, data):

@@ -2203,36 +2203,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        quantity_box = serializer.validated_data.pop("quantity_box", None)
-        units_per_box = serializer.validated_data.get("units_per_box")
         obj = serializer.save()
-
-        current_boxes = list(obj.quantity_units or [])
-        current_count = len(current_boxes)
-        quantity_units_changed = False
-
-        # Propagate new units_per_box to all existing boxes
-        if units_per_box is not None:
-            current_boxes = [
-                {"code": b["code"], "units": units_per_box} for b in current_boxes
-            ]
-            quantity_units_changed = True
-
-        # Adjust number of boxes
-        if quantity_box is not None:
-            if quantity_box > current_count:
-                effective_units = units_per_box or obj.units_per_box
-                for _i in range(quantity_box - current_count):
-                    existing_codes = [b["code"] for b in current_boxes]
-                    code = generate_box_code(obj.pk, existing_codes)
-                    current_boxes.append({"code": code, "units": effective_units})
-            elif quantity_box < current_count:
-                current_boxes = current_boxes[:quantity_box]
-            quantity_units_changed = True
-
-        if quantity_units_changed:
-            obj.quantity_units = current_boxes
-            obj.save(update_fields=["quantity_units"])
 
         utils.organilab_logentry(
             request.user,
