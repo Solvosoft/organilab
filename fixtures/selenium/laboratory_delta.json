@@ -1321,5 +1321,39 @@
         ]
       }
     }
+  },
+      {
+  "model": "laboratory.sdstraceability",
+  "pk": 1,
+  "fields": {
+    "created_by": 1,
+    "creation_date": "2026-03-15T02:19:17.970Z",
+    "last_update": "2026-03-15T02:19:17.970Z",
+    "sustance_characteristics": 17,
+    "source": "una",
+    "revision_date": null,
+    "download_url": "",
+    "security_sheet": "",
+    "verified_by": null,
+    "verified_date": null,
+    "is_verified": true
   }
+},
+{
+  "model": "laboratory.sdstraceability",
+  "pk": 2,
+  "fields": {
+    "created_by": 1,
+    "creation_date": "2026-03-15T02:19:18.414Z",
+    "last_update": "2026-03-15T02:19:18.414Z",
+    "sustance_characteristics": 18,
+    "source": "merck",
+    "revision_date": "2018-06-29",
+    "download_url": "",
+    "security_sheet": "",
+    "verified_by": null,
+    "verified_date": null,
+    "is_verified": false
+  }
+}
 ]
