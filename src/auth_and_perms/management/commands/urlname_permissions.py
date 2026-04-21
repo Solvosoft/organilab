@@ -3153,4 +3153,11 @@ URLNAME_PERMISSIONS = {
             "permission": "risk_management.view_workday",
         },
     ],
+    "validate_sds": [
+        {
+            "name": "Verify SDS",
+            "category": "Verify SDS",
+            "permission": "laboratory.change_sdstraceability",
+        }
+    ],
 }

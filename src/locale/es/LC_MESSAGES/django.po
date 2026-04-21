@@ -6095,3 +6095,21 @@ msgstr "Capacitaciones"
 
 msgid "Access learning resources to understand how to use the system step by step."
 msgstr "Accede a material de capacitación para aprender a usar el sistema paso a paso."
+
+msgid "The unverification was performed successfully."
+msgstr "La desverificación se ha realizado con éxito."
+
+msgid "The verification was performed successfully."
+msgstr "La verificación se ha realizado con éxito."
+
+msgid "Unverify SDS"
+msgstr "Desverificar SDS"
+
+msgid "Verify SDS"
+msgstr "Verificar SDS"
+
+msgid "No file"
+msgstr "No hay archivo"
+
+msgid "List of SDS"
+msgstr "Listado de SDS"
