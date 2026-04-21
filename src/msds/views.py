@@ -17,6 +17,7 @@ from django.shortcuts import render, get_object_or_404
 from django.urls.base import reverse
 from django.utils.translation import gettext as _
 
+from auth_and_perms.organization_utils import user_is_allowed_on_organization
 from laboratory.models import (
     Catalog,
     Object,
@@ -372,4 +373,6 @@ def download_all_regulations(request):
 @login_required
 @permission_required("laboratory.view_sdstraceability", raise_exception=True)
 def verified_sds(request, org_pk):
+    organization = get_object_or_404(OrganizationStructure, pk=org_pk)
+    user_is_allowed_on_organization(request.user, organization)
     return render(request, "msds/verified_sds.html", context={"org_pk": org_pk})
