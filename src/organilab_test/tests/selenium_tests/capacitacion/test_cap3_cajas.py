@@ -150,3 +150,149 @@ class Cap3BoxesTest(CapacitacionSeleniumBase):
             },
         ]
         self.create_gif_process(path_list, "cap3_create_box")
+
+    def test_decrease_box(self):
+        """Escenario 3.8: Disminuir cantidad de una caja desde la tabla del estante.
+
+        Flujo:
+        1. Navegar a rooms -> expandir sala -> expandir mueble -> seleccionar estante
+        2. Esperar que cargue la tabla DataTables
+        3. Clic en boton disminuir (fa-minus text-danger) de la fila de caja (is_box=true)
+        4. Rellenar formulario: sin cambiar seleccion de caja, cantidad=10, descripcion
+        5. Guardar cambios
+
+        Fixture: ShelfObject pk=4, shelf=1, object=2 (Butanona), is_box=True,
+                 quantity_units=[{code:CAJA-001, units:10}, {code:CAJA-002, units:10}]
+
+        GIF: docs/source/_static/gif/cap3_decrease_box.gif
+        """
+        self.navigate_to_rooms(org_pk=4, lab_pk=1)
+
+        path_list = [
+            # Expandir Sala de Almacenamiento (labroom pk=1)
+            {
+                "path": "//*[@id='labroom_1']",
+                "sleep": 1,
+            },
+            # Expandir mueble Gabinete Principal (furniture pk=1)
+            {
+                "path": "//*[@id='furniture_1']",
+                "sleep": 1,
+            },
+            # Seleccionar estante Estante Reactivos A (shelf pk=1)
+            {
+                "path": "//*[@id='shelf_1']",
+                "scroll": "window.scrollTo(0, 250)",
+                "sleep": 2,
+            },
+            # Bajar a la tabla y hacer clic en el boton disminuir de la fila de caja
+            {
+                "path": "//a[@data-modalid='decreasesomodal' and @data-is-box='true']",
+                "scroll": "window.scrollTo(0, document.body.scrollHeight)",
+                "sleep": 2,
+            },
+            # Ingresar cantidad a disminuir (10)
+            {
+                "path": "//*[@id='id_decrease-amount']",
+                "extra_action": "script",
+                "value": "document.getElementById('id_decrease-amount').value = '10';",
+                "sleep": 1,
+            },
+            # Ingresar descripcion
+            {
+                "path": "//*[@id='id_decrease-description']",
+                "extra_action": "script",
+                "value": "document.getElementById('id_decrease-description').value = 'Prueba de disminucion de caja';",
+                "sleep": 1,
+            },
+            # Clic en boton Guardar cambios (formadd dentro del modal de disminuir)
+            {
+                "path": "//*[@id='decreasesomodal']//button[contains(@class,'formadd')]",
+                "sleep": 2,
+            },
+            # Capturar resultado tras guardar
+            {
+                "path": "//body",
+                "wait_ready": True,
+                "screenshot_name": "cap3_decrease_box",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap3_decrease_box")
+
+    def test_increase_box(self):
+        """Escenario 3.9: Agregar cajas a un ShelfObject de tipo caja.
+
+        Flujo:
+        1. Navegar a rooms -> expandir sala -> expandir mueble -> seleccionar estante
+        2. Esperar que cargue la tabla DataTables
+        3. Clic en boton agregar (fa-plus text-success) de la fila de caja (data-box=True)
+        4. Rellenar formulario: cantidad=2, numero de factura, sin proveedor, uso
+        5. Guardar cambios
+
+        Fixture: ShelfObject pk=4, shelf=1, object=2 (Butanona), is_box=True
+
+        GIF: docs/source/_static/gif/cap3_increase_box.gif
+        """
+        self.navigate_to_rooms(org_pk=4, lab_pk=1)
+
+        path_list = [
+            # Expandir Sala de Almacenamiento (labroom pk=1)
+            {
+                "path": "//*[@id='labroom_1']",
+                "sleep": 1,
+            },
+            # Expandir mueble Gabinete Principal (furniture pk=1)
+            {
+                "path": "//*[@id='furniture_1']",
+                "sleep": 1,
+            },
+            # Seleccionar estante Estante Reactivos A (shelf pk=1)
+            {
+                "path": "//*[@id='shelf_1']",
+                "scroll": "window.scrollTo(0, 250)",
+                "sleep": 2,
+            },
+            # Bajar a la tabla y hacer clic en el boton agregar de la fila de caja
+            {
+                "path": "//a[@data-modalid='increasesomodal' and @data-box='True']",
+                "scroll": "window.scrollTo(0, document.body.scrollHeight)",
+                "sleep": 2,
+            },
+            # Ingresar cantidad de cajas a agregar (2)
+            {
+                "path": "//*[@id='id_increase-amount']",
+                "extra_action": "script",
+                "value": "document.getElementById('id_increase-amount').value = '2';",
+                "sleep": 1,
+            },
+            # Ingresar numero de factura
+            {
+                "path": "//*[@id='id_increase-bill']",
+                "extra_action": "script",
+                "value": "document.getElementById('id_increase-bill').value = 'FACT-2025-001';",
+                "sleep": 1,
+            },
+            # Ingresar uso
+            {
+                "path": "//*[@id='id_increase-use']",
+                "extra_action": "script",
+                "value": "document.getElementById('id_increase-use').value = 'Uso en practica de laboratorio';",
+                "sleep": 1,
+            },
+            # Clic en boton Guardar cambios (formadd dentro del modal de agregar)
+            {
+                "path": "//*[@id='increasesomodal']//button[contains(@class,'formadd')]",
+                "sleep": 2,
+            },
+            # Capturar resultado tras guardar
+            {
+                "path": "//body",
+                "wait_ready": True,
+                "screenshot_name": "cap3_increase_box",
+                "extra_action": "script",
+                "value": "",
+            },
+        ]
+        self.create_gif_process(path_list, "cap3_increase_box")

@@ -1231,6 +1231,35 @@
     }
   },
   {
+    "model": "laboratory.shelfobject",
+    "pk": 4,
+    "fields": {
+      "shelf": 1,
+      "object": 2,
+      "batch": "BOX-2025-001",
+      "quantity": 2.0,
+      "quantity_base_unit": 20.0,
+      "limit_quantity": 0,
+      "measurement_unit": 64,
+      "in_where_laboratory": 1,
+      "is_box": true,
+      "quantity_units": [
+        {
+          "code": "CAJA-001",
+          "units": 10
+        },
+        {
+          "code": "CAJA-002",
+          "units": 10
+        }
+      ],
+      "marked_as_discard": false,
+      "description": "Caja de material Butanona",
+      "creation_date": "2025-06-01T10:00:00Z",
+      "last_update": "2025-06-01T10:00:00Z"
+    }
+  },
+  {
     "model": "auth_and_perms.profilepermission",
     "pk": 1,
     "fields": {
