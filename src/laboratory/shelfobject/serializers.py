@@ -3122,7 +3122,8 @@ class ShelfObjectMaterialLimitsSerializer(serializers.ModelSerializer):
 
 class ShelObjectReactiveSerializer(serializers.ModelSerializer):
     shelf = GTS2SerializerBase(many=False)
-    object = GTS2SerializerBase(many=False)
+    object = serializers.SerializerMethodField()
+    quantity = serializers.SerializerMethodField()
     limits = GTS2SerializerBase(many=False)
     in_where_laboratory = GTS2SerializerBase(many=False)
     container = serializers.SerializerMethodField()
@@ -3133,6 +3134,12 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
     furniture = serializers.SerializerMethodField()
     quantity_box = serializers.SerializerMethodField()
     box_units = serializers.SerializerMethodField()
+
+    def get_quantity(self, obj):
+        if obj.is_box:
+            total =  sum(item.get("units", 0) for item in obj.quantity_units) * obj.quantity
+            return total
+        return round(obj.quantity, 3)
 
     def get_container(self, obj):
         if obj.container and obj.container.object:
@@ -3168,6 +3175,15 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
             "increase": user.has_perm("laboratory.change_shelfobject"),
             "decrease": user.has_perm("laboratory.change_shelfobject"),
         }
+
+    def get_object(self, obj):
+        if obj.is_box:
+            return _("%(name)s (%(quantity)s %(unit)s)") % {
+                "name": obj.object.name,
+                "quantity": round(obj.quantity, 3),
+                "unit": obj.get_measurement_unit_display(),
+            }
+        return obj.object.name
 
     class Meta:
         model = ShelfObject

@@ -7,7 +7,6 @@ datatable_inits = {
             data: "object",
             name: "object_name",
             title: gettext("Name"),
-            render: selectobjprint({display_name: "text"}),
             visible: true,
             type: "string",
         },

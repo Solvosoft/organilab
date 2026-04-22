@@ -111,7 +111,7 @@ test-selenium-single-fast: ## Run a single Selenium test without GIF generation 
 	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(TEST) --tag=selenium --no-input -v 2
 
 
-docs: ##  - generate Sphinx HTML documentation, including API docs
+docs: clean ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
