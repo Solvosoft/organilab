@@ -70,27 +70,21 @@ datatable_inits = {
             title: gettext("Actions"),
             visible: true,
             filterable: false,
-            sortable: false
+            sortable: false,
+            render: function(data, type, row, meta) {
+                if (!data.verified) {
+                    return `<a class="validate_sds" data-sds="${row.id}" data-verified="true" title="${gettext("Verified")}"><i class="fa fa-check-square-o text-success" title="${gettext("Verified")}"></i></a>`;
+                } else {
+                    return `<a class="validate_sds" data-sds="${row.id}" data-verified="false" title="${gettext("Unverified")}"><i class="fa fa-close text-danger"></i></a>`;
+                }
+            }
         },
     ],
     addfilter: true,
 }
 const actions = {
     table_actions: [],
-    object_actions: [
-    {
-        "name": "verify_sds",
-        "action": 'verify_sds',
-        "in_action_column": true,
-        "i_class": 'fa fa-check-square-o text-success',
-        "method": 'POST',
-        "title": gettext("Mark as Verified"),
-        "data_fn": function (data) {
-            return data;
-        },
-    },
-
-],
+    object_actions: [],
     title: gettext('Actions'),
     className: "no-export-col"
 }
@@ -111,8 +105,12 @@ const objconfig = {
 
 const crud = ObjectCRUD("sds_traceability_crud", objconfig);
 
-crud.verify_sds = function (data) {
-    let verified = data.is_verified===false ? true : false;
+crud.init();
+
+
+$(document).on('click', '.validate_sds', function(){
+    let sds = $(this).data('sds');
+    let verified = $(this).data('verified');
     Swal.fire({
         title: verified ? gettext("Verify SDS") : gettext("Unverify SDS"),
         text: verified ? gettext("Do you want to mark this SDS as verified?"): gettext("Do you want to mark this SDS as unverified?"),
@@ -127,7 +125,7 @@ crud.verify_sds = function (data) {
                 url: verified_urls.verify_url,
                 type: "POST",
                 dataType: "json",
-                data: {id: data.id, is_verified: verified},
+                data: {id: sds, is_verified: verified},
                 headers: {
                     "X-CSRFToken": getCookie("csrftoken"),
                 },
@@ -150,6 +148,4 @@ crud.verify_sds = function (data) {
             });
         }
     });
-}
-
-crud.init();
+});

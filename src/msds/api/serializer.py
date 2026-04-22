@@ -20,6 +20,7 @@ class SDSTraceabilitySerializer(serializers.ModelSerializer):
             "create": False,
             "update": False,
             "destroy": False,
+            "verified": obj.is_verified,
         }
 
     def get_sustance_characteristics_name(self, obj):
