@@ -92,14 +92,14 @@
             <h1><i class="bi bi-box-seam"></i> 8. Gestión de Cajas</h1>
 
             <p class="lead">
-                Las cajas son un mecanismo especial del inventario que permite agrupar unidades de un material
+                Las cajas son un mecanismo especial del inventario que permite agrupar unidades de una sustancia o reactivo
                 bajo un mismo lote o fecha de vencimiento. Organilab gestiona el ciclo completo de las cajas:
                 creación, agrupación por vencimiento, disminución de unidades y reserva por cantidad de cajas.
             </p>
 
             <div class="info-box">
                 <strong><i class="bi bi-info-circle"></i> ¿Qué es una caja?</strong>
-                Una caja representa un conjunto de unidades de un mismo material (objeto de tipo Material)
+                Una caja representa un conjunto de unidades de una misma sustancia (objeto de tipo Reactivo)
                 que comparten fecha de vencimiento y están físicamente agrupadas. Cada caja puede contener
                 múltiples unidades y su cantidad se controla de forma independiente dentro del estante.
             </div>
@@ -112,8 +112,9 @@
             <p>
                 Las cajas se crean desde el formulario <strong>Crear material</strong>, que se muestra en la
                 <strong>segunda ventana</strong> del proceso de creación de caja. Este formulario permite
-                registrar el material junto con los datos específicos de la caja: cantidad de unidades y
-                fecha de vencimiento.
+                registrar el material junto con los datos específicos de la caja y de la sustancia(reactivo): cantidad de unidades por caja,
+																cantidad de cajas, fecha de vencimiento y los datos de reactivo como lo es la la cantidad de litros, mililitros
+															contenidos en un unidad de la caja y la unidad de medida por la cual se rige el empaque.
             </p>
 
             <h3>Pasos para crear una caja</h3>
@@ -123,15 +124,17 @@
                     Acceda al estante donde desea agregar la caja dentro del laboratorio.
                 </li>
                 <li>
-                    Haga clic en el botón <strong>Agregar objeto</strong> o en la opción correspondiente
-                    del menú del estante.
+                    Haga clic en el botón <strong>Crear material</strong>.
+                </li>
+															<li>
+																    Luego da click en el botón <strong>Crear caja</strong>.
+                <li>
+                    Ingrese los datos específicosde la caja: cantidad de unidades por caja cantidad de cajas
+													       y la fecha de vencimiento correspondiente; a su vez se ingresan los datos de la sustancia(reactivo)
+																    que contiene cada unidad de la caja.
                 </li>
                 <li>
-                    En la <strong>segunda ventana — Crear material</strong>, ingrese los datos específicos
-                    de la caja: cantidad de unidades por caja y la fecha de vencimiento correspondiente.
-                </li>
-                <li>
-                    Confirme la creación. El sistema registrará la caja asociada al material en el estante.
+                    Confirme la creación. El sistema registrará la caja que contiene las unidades de la sustancia(reactivo) en el estante.
                 </li>
             </ol>
 
