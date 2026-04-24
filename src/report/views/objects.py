@@ -195,14 +195,16 @@ def get_dataset_reactive_precursor(report, column_list=None):
         all_sos = ShelfObject.objects.filter(
             object__in=rpo,
             shelf__furniture__labroom__laboratory__pk=lab_pk,
-        ).values("object_id", "quantity", "is_box", "quantity_units", "measurement_unit")
+        ).values(
+            "object_id", "quantity", "is_box", "quantity_units", "measurement_unit"
+        )
 
         obj_totals = {}
         obj_measurement_units = {}
         for so in all_sos:
             obj_id = so["object_id"]
             if so["is_box"] and so["quantity_units"]:
-                item_total = so["quantity"] * sum(b["units"] for b in so["quantity_units"])
+                item_total = sum(b["quantity"] for b in so["quantity_units"])
             else:
                 item_total = so["quantity"]
             obj_totals[obj_id] = obj_totals.get(obj_id, 0) + item_total
@@ -220,7 +222,9 @@ def get_dataset_reactive_precursor(report, column_list=None):
                 "name": object.name,
                 "type": object.get_type_display(),
                 "quantity_total": round(obj_totals.get(object.pk, 0), 3),
-                "measurement_unit": ShelfObject.get_units(obj_measurement_units.get(object.pk)),
+                "measurement_unit": ShelfObject.get_units(
+                    obj_measurement_units.get(object.pk)
+                ),
                 "molecular_formula": str(get_molecular_formula(object, "")),
                 "cas_id_number": str(get_cas(object, "")),
                 "precursor": precursor,
@@ -456,7 +460,9 @@ def get_limited_shelf_objects(query):
     ):
 
         current = (
-            len(shelf_object.quantity_units) if shelf_object.is_box else shelf_object.quantity
+            len(shelf_object.quantity_units)
+            if shelf_object.is_box
+            else shelf_object.quantity
         )
         if (
             shelf_object.limits.minimum_limit == current
@@ -489,8 +495,7 @@ def get_dataset_limit_objects(report, column_list=None):
                 if shelfobj.is_box and shelfobj.quantity_units:
                     obj_quantity = len(shelfobj.quantity_units)
                     units_per_box = sum(b["units"] for b in shelfobj.quantity_units)
-                    obj_unit = _("(%(units)s) units per box") % {
-                        "units": units_per_box}
+                    obj_unit = _("(%(units)s) units per box") % {"units": units_per_box}
                     obj_name = _("Box of %(name)s (%(quantity)s %(unit)s)") % {
                         "name": shelfobj.object.name,
                         "quantity": shelfobj.quantity,

@@ -74,7 +74,9 @@ def get_stock_dataset(lab_pk, column_list=None):
                 # if reactive.object.is_pure:
                 cas_id = reactive.object.cas_code
                 sc = getattr(reactive.object, "sustancecharacteristics", None)
-                molecular_formula = sc.molecular_formula if sc and sc.molecular_formula else ""
+                molecular_formula = (
+                    sc.molecular_formula if sc and sc.molecular_formula else ""
+                )
                 expiration_date = reactive.reactive_expiration_date
                 if expiration_date:
                     expiration_date = expiration_date.strftime("%d/%m/%Y")
@@ -124,13 +126,32 @@ def get_stock_dataset(lab_pk, column_list=None):
     for obj in object_no_containers:
         data_column = {}
         reactive = ShelfObject.objects.filter(
-            object__pk=obj, container__isnull=True
+            object__pk=obj, container__isnull=True, **filters
         ).first()
+        print(
+            reactive.object.name,
+            reactive.total_quantity,
+            reactive.get_box_totals(),
+            reactive.is_box,
+        )
+        if reactive.object.name == "Tolueno":
+            print(
+                ShelfObject.objects.filter(
+                    object=reactive.object, container__isnull=True
+                )
+            )
         amount = sum(
             [
-                get_conversion_units(shelfobj.measurement_unit, shelfobj.total_quantity)
+                get_conversion_units(
+                    shelfobj.measurement_unit,
+                    (
+                        shelfobj.total_quantity
+                        if not shelfobj.is_box
+                        else shelfobj.get_box_totals()
+                    ),
+                )
                 for shelfobj in ShelfObject.objects.filter(
-                    object__pk=obj, container__isnull=True
+                    object__pk=obj, container__isnull=True, **filters
                 ).distinct("pk")
             ]
         )
@@ -141,7 +162,9 @@ def get_stock_dataset(lab_pk, column_list=None):
         if reactive.object.is_pure:
             cas_id = reactive.object.cas_code
             sc = getattr(reactive.object, "sustancecharacteristics", None)
-            molecular_formula = sc.molecular_formula if sc and sc.molecular_formula else ""
+            molecular_formula = (
+                sc.molecular_formula if sc and sc.molecular_formula else ""
+            )
         expiration_date = reactive.reactive_expiration_date
         if expiration_date:
             expiration_date = expiration_date.strftime("%d/%m/%Y")
