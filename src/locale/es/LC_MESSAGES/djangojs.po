@@ -1357,4 +1357,3 @@ msgstr "No verificado"
 msgid "Get Substance Information"
 msgstr "Obtener información de la sustancia"
 
-msgid "Information from "
