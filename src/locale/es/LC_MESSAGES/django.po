@@ -6102,14 +6102,14 @@ msgstr "La desverificación se ha realizado con éxito."
 msgid "The verification was performed successfully."
 msgstr "La verificación se ha realizado con éxito."
 
-msgid "Unverify SDS"
-msgstr "Desverificar SDS"
+msgid "Unverify FDS"
+msgstr "Desverificar FDS"
 
-msgid "Verify SDS"
-msgstr "Verificar SDS"
+msgid "Verify FDS"
+msgstr "Verificar FDS"
 
 msgid "No file"
 msgstr "No hay archivo"
 
-msgid "List of SDS"
-msgstr "Listado de SDS"
+msgid "List of FDS"
+msgstr "Listado de FDS"

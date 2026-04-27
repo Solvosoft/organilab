@@ -10,10 +10,73 @@
 {% block content %}
 
 <div class="text-center mb-3">
-	<h1 class="text-center">{% trans 'List of SDS' %}</h1>
+	<h1 class="text-center">{% trans 'List of FDS' %}</h1>
 </div>
 <table id="sds-traceability-table" class="display table table-striped w-100"></table>
 
+<div class="modal fade" id="fds_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="object_title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+							<table class="table table-bordered">
+            <tbody>
+															<tr>
+                    <td><strong>{% trans 'Name' %}</strong></td>
+                    <td id="obj_name"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'CAS Number' %}</strong></td>
+                    <td id="cas"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'Molecular Formula' %}</strong></td>
+                    <td id="molecular"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'Is Precursor' %}</strong></td>
+                    <td id="precursor"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'White Organ' %}</strong></td>
+                    <td>
+                        <ul id="white_organ">
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'H Codes' %}</strong></td>
+                    <td>
+                        <ul id="h_code">
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'UE Codes' %}</strong></td>
+                    <td>
+                        <ul id="ue_code">
+                        </ul>
+                    </td>
+                </tr>
+															<tr>
+                    <td><strong>{% trans 'Storage Class' %}</strong></td>
+                    <td>
+                        <ul id="storage_class">
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+						</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block js %}
 {{ block.super }}
@@ -24,6 +87,7 @@
 	}
 	const verified_urls = {
 	 verify_url: "{% url 'msds:api-sds-traceability-verify' org_pk=org_pk %}",
+	 get_sustance_characteristics_info_url: "{% url 'msds:api-sds-traceability-get-sustance-characteristics-info' org_pk=org_pk %}",
 	 }
 </script>
 <script src="{% static 'msds/msds.js' %}?v={% get_organilab_version %}"></script>
