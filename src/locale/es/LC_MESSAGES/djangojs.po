@@ -1321,26 +1321,35 @@ msgstr "¿Está verificado?"
 msgid "Verified Date"
 msgstr "Fecha de verificación"
 
-msgid "SDS marked as unverified"
-msgstr "SDS marcado como no verificado"
+msgid "FDS marked as unverified"
+msgstr "FDS marcado como no verificado"
 
-msgid "SDS marked as verified"
-msgstr "SDS marcado como verificado"
+msgid "FDS marked as verified"
+msgstr "FDS marcado como verificado"
 
-msgid "Do you want to mark this SDS as unverified?"
-msgstr "¿Desea marcar este SDS como no verificado?"
+msgid "Do you want to mark this FDS as unverified?"
+msgstr "¿Desea marcar este FDS como no verificado?"
 
-msgid "Do you want to mark this SDS as verified?"
-msgstr "¿Desea marcar este SDS como verificado?"
+msgid "Do you want to mark this FDS as verified?"
+msgstr "¿Desea marcar este FDS como verificado?"
 
-msgid "Unverify SDS"
-msgstr "Desverificar SDS"
+msgid "Unverify FDS"
+msgstr "Desverificar FDS"
 
-msgid "Verify SDS"
-msgstr "Verificar SDS"
+msgid "Verify FDS"
+msgstr "Verificar FDS"
 
 msgid "Mark as Verified"
 msgstr "Marcar como verificado"
 
 msgid "Mark as Unverified"
 msgstr "Marcar como no verificado"
+
+msgid "Information from "
+msgstr "Información de "
+
+msgid "Verified"
+msgstr "Verificado"
+
+msgid "Unverified"
+msgstr "No verificado"
