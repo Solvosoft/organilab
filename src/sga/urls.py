@@ -72,6 +72,11 @@ urlpatterns = [
         substance.detail_substance,
         name="detail_substance",
     ),
+    path(
+        "generate_label/<int:pk>/",
+        substance.generate_label,
+        name="generate_label",
+    ),
     # sga/get_get_templateList
     path("labels/", editor.create_personal_template, name="add_personal"),
     path("edit_personal/<int:pk>", editor.edit_personal_template, name="edit_personal"),
