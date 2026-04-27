@@ -210,7 +210,6 @@ O: None
 function load_array_data(array_list, title, inst) {
     let html_object = ""
     let nested_key = Object.keys(array_list[0])[0]
-        console.log(title);
     array_list.forEach((item) => {
         let value = item
         if (nested_key && !["Códigos H", "H-codes"].includes(title)) {
