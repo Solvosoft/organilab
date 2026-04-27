@@ -107,7 +107,7 @@ class PendingTaskModelTest(PendingTaskSetUpMixin, TestCase):
         self.assertIsNone(task.profile)
 
     def test_meta_ordering(self):
-        self.assertEqual(PendingTask._meta.ordering, ['-creation_date'])
+        self.assertEqual(PendingTask._meta.ordering, ["-creation_date"])
 
     def test_meta_verbose_name(self):
         self.assertEqual(str(PendingTask._meta.verbose_name), "Pending task")
@@ -161,10 +161,7 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
             description="Visible task description",
             profile=self.user.profile,
         )
-        self.list_url = reverse(
-            "pending_tasks:api-pending_tasks-list",
-            kwargs={"org_pk": self.org.pk},
-        )
+        self.list_url = reverse("pending_tasks:api-pending_tasks-list")
 
     def test_list_returns_200(self):
         response = self.client.get(self.list_url)
@@ -212,9 +209,7 @@ class PendingTaskAPIListTest(PendingTaskSetUpMixin, TestCase):
         self.assertGreaterEqual(data["recordsFiltered"], 1)
 
     def test_list_status_filter(self):
-        response = self.client.get(
-            self.list_url, {"status": PendingTask.PENDING}
-        )
+        response = self.client.get(self.list_url, {"status": PendingTask.PENDING})
         data = json.loads(response.content)
         for t in data["data"]:
             self.assertEqual(t["status"]["id"], PendingTask.PENDING)
@@ -235,7 +230,7 @@ class PendingTaskAPIDetailTest(PendingTaskSetUpMixin, TestCase):
     def test_destroy_task(self):
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
@@ -244,7 +239,7 @@ class PendingTaskAPIDetailTest(PendingTaskSetUpMixin, TestCase):
     def test_update_task(self):
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         data = {
             "name": "Updated name",
@@ -275,7 +270,7 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
     def test_update_status_to_in_process(self):
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         data = {"status": PendingTask.IN_PROCESS}
         response = self.client.patch(
@@ -288,7 +283,7 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
     def test_update_status_to_finished(self):
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         data = {"status": PendingTask.FINISHED}
         response = self.client.patch(
@@ -301,7 +296,7 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
     def test_update_status_invalid_value(self):
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         data = {"status": 99}
         response = self.client.patch(
@@ -321,7 +316,7 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
         )
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": other_task.pk},
+            kwargs={"pk": other_task.pk},
         )
         data = {"status": PendingTask.IN_PROCESS}
         response = self.client.patch(
@@ -334,7 +329,7 @@ class PendingTaskUpdateStatusTest(PendingTaskSetUpMixin, TestCase):
         self.client.logout()
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         data = {"status": PendingTask.IN_PROCESS}
         response = self.client.patch(
@@ -361,7 +356,6 @@ class PendingTaskPermissionTest(PendingTaskSetUpMixin, TestCase):
         self.client.force_login(self.unprivileged_user)
         url = reverse(
             "pending_tasks:api-pending_tasks-list",
-            kwargs={"org_pk": self.org.pk},
         )
         response = self.client.get(url)
         self.assertIn(response.status_code, [401, 403])
@@ -370,7 +364,7 @@ class PendingTaskPermissionTest(PendingTaskSetUpMixin, TestCase):
         self.client.force_login(self.unprivileged_user)
         url = reverse(
             "pending_tasks:api-pending_tasks-detail",
-            kwargs={"org_pk": self.org.pk, "pk": self.task.pk},
+            kwargs={"pk": self.task.pk},
         )
         response = self.client.delete(url)
         self.assertIn(response.status_code, [401, 403])

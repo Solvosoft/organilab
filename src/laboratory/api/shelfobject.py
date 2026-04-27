@@ -1660,6 +1660,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 {"detail": _("The item was deleted successfully")},
                 status=status.HTTP_200_OK,
             )
+        print(serializer.errors)
 
         return JsonResponse(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST

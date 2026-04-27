@@ -41,7 +41,7 @@ class ReservationsTest(TestCase):
             response,
             reverse(
                 "reservations_management:reservations_list",
-                kwargs={"status": 3, "org_pk": 1},
+                kwargs={"org_pk": 1, "status": 1},
             ),
         )
 

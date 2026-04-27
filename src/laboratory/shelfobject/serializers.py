@@ -187,14 +187,26 @@ class ReserveShelfObjectSerializer(serializers.ModelSerializer):
 
         # Reserve full boxes using exactly units_per_box units each
         for box in complete_boxes[:full_count]:
-            selected.append({"code": box["code"], "units": units_per_box})
+            selected.append(
+                {
+                    "code": box["code"],
+                    "units": units_per_box,
+                    "quantity": box["quantity"],
+                }
+            )
 
         # Reserve fractional part from the next available box (complete first, then partial)
         if min_partial_units > 0:
             candidates = complete_boxes[full_count:] + partial_boxes
             for box in candidates:
                 if box["units"] >= min_partial_units:
-                    selected.append({"code": box["code"], "units": min_partial_units})
+                    selected.append(
+                        {
+                            "code": box["code"],
+                            "units": min_partial_units,
+                            "quantity": box["quantity"],
+                        }
+                    )
                     break
             else:
                 raise serializers.ValidationError(

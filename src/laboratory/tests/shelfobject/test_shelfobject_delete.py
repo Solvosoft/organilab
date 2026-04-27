@@ -12,20 +12,21 @@ class ShelfObjectDeleteTest(ShelfObjectAPITest):
         """
         Test for API delete success case, where the data is correctly given
         """
+        shelfobj_pk = 2
 
         delete_url = reverse(
             "laboratory:api-shelfobject-delete",
             kwargs={"org_pk": self.org_pk, "lab_pk": self.lab.id},
         )
         response = self.client.delete(
-            delete_url, data={"shelfobj": 1}, content_type="application/json"
+            delete_url, data={"shelfobj": shelfobj_pk}, content_type="application/json"
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            ShelfObjectObservation.objects.filter(shelf_object=1).count(), 0
+            ShelfObjectObservation.objects.filter(shelf_object=shelfobj_pk).count(), 0
         )
         log = LogEntry.objects.first()
-        self.assertEqual(log.object_id, "1")
+        self.assertEqual(log.object_id, str(shelfobj_pk))
         self.assertEqual(log.user, self.user)
         self.assertEqual(log.action_flag, 3)
 
