@@ -81,10 +81,10 @@ datatable_inits = {
             render: function(data, type, row, meta) {
                 if (!data.verified) {
                     return `<a class="validate_sds" data-sds="${row.id}" data-verified="true" title=${gettext("Verified")}><i class="fa fa-square-o text-success" title="${gettext("Verified")}"></i></a>
-                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title=${gettext("Get Substance Characteristics")}><i class="fa fa-info-circle text-info" title=${gettext("Get Substance Characteristics")}></i></a>`;
+                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title=${gettext("Get Substance Characteristics")}><i class="fa fa-info-circle text-secondary" title=${gettext("Get Substance Information")}></i></a>`;
                 } else {
                     return `<a class="validate_sds" data-sds="${row.id}" data-verified="false" title=${gettext("Unverified")}><i class="fa fa-check-square-o text-success"></i></a>
-                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title=${gettext("Get Substance Characteristics")}><i class="fa fa-info-circle text-info" title=${gettext("Get Substance Characteristics")}></i></a>`;
+                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title=${gettext("Get Substance Characteristics")}><i class="fa fa-info-circle text-secondary" title=${gettext("Get Substance Information")}></i></a>`;
                 }
 
             }
@@ -173,7 +173,7 @@ $(document).on('click', '.get_sustance_characteristics_info', function(){
             "X-CSRFToken": getCookie("csrftoken"),
         },
         success: function(response) {
-            $('#object_title').html(gettext('Information from' ) + ' ' + response.obj_name);
+            $('#object_title').html(gettext('Information from ' ) + ' ' + response.obj_name);
             add_single_data("obj_name", response.obj_name);
             add_single_data("cas", response.cas_id_number);
             add_single_data("molecular", response.molecular_formula);
