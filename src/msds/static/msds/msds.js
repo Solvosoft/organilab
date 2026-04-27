@@ -80,13 +80,12 @@ datatable_inits = {
             sortable: false,
             render: function(data, type, row, meta) {
                 if (!data.verified) {
-                    return `<a class="validate_sds" data-sds="${row.id}" data-verified="true"><i class="fa fa-square-o text-success" title=${gettext("Verified")}></i></a>
-                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title=${gettext("Get Substance Characteristics")}><i class="fa fa-info-circle text-secondary" title=${gettext("Get Substance Information")}></i></a>`;
+                    return `<a class="validate_sds" data-sds="${row.id}" data-verified="true" title="${gettext('Verified')}"><i class="fa fa-square-o text-success"></i></a>
+                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title="${gettext("Get Substance Information")}"><i class="fa fa-info-circle text-secondary"></i></a>`;
                 } else {
-                    return `<a class="validate_sds" data-sds="${row.id}" data-verified="false"><i class="fa fa-check-square-o text-success" title=${gettext("Unverified")}></i></a>
-                    <a class="get_sustance_characteristics_info" data-sds="${row.id}"><i class="fa fa-info-circle text-secondary" title=${gettext("Get Substance Information")}></i></a>`;
+                    return `<a class="validate_sds" data-sds="${row.id}" data-verified="false" title="${gettext('Unverified')}"><i class="fa fa-check-square-o text-success"></i></a>
+                    <a class="get_sustance_characteristics_info" data-sds="${row.id}" title="${gettext("Get Substance Information")}"><i class="fa fa-info-circle text-secondary"></i></a>`;
                 }
-
             }
         },
     ],

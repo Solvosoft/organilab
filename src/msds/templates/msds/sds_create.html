@@ -6,7 +6,7 @@
 <div class="offset-md-1 col-md-10">
 
 {% if step == 1 %}
-    <h3 class="text-center mb-4">{% trans 'Upload SDS File' %}</h3>
+    <h3 class="text-center mb-4">{% trans 'Upload FDS File' %}</h3>
 
     <form method="post" enctype="multipart/form-data" action="{% url 'msds:sds_create' org_pk %}">
         {% csrf_token %}
