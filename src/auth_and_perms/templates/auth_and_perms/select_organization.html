@@ -6,31 +6,32 @@
 {% load user_rol_tags %}
 
 {% block pre_head %}
-{% define_true  "use_datatables" %}
-{% define_urlname_action 'organizationManager' %}
-{% define_urlname_action 'view_disposal' %}
+	{% define_true "use_datatables" %}
+	{% define_urlname_action 'organizationManager' %}
+	{% define_urlname_action 'view_disposal' %}
 {% endblock %}
 
 {% block content %}
-<div class="p-4">
+	<div class="p-4">
 
 		<div class="row">
-		{{orgtree_form.as_horizontal}}
+			{{ orgtree_form.as_horizontal }}
+		</div>
+
+		<div class="row mt-3" id="orginfo"></div>
+
+		<div class="row mt-5" id="searchobjdiv" style="display: none;">
+			{{ searchobjbyorg_form.as_horizontal }}
+			<table class="table table-striped" id="objecttable"></table>
+		</div>
 	</div>
 
-	<div class="row mt-3" id="orginfo"></div>
-
-	<div class="row mt-5" id="searchobjdiv" style="display: none;">
-		{{searchobjbyorg_form.as_horizontal}}
-		<table class="table table-striped" id="objecttable"></table>
-	</div>
-</div>
 {% endblock %}
 {% block js %}
-{{block.super}}
-<script>
-searchshelfobjectorg_api_url = "{% url 'auth_and_perms:api-searchshelfobjectorg-list' %}";
-organization_buttons_api_url = "{% url 'auth_and_perms:api_organization_buttons' %}";
-</script>
-<script src="{% static 'js/auth_and_perms/select_organization.js' %}?v={% get_organilab_version %}"></script>
-{% endblock%}
+	{{ block.super }}
+	<script>
+		searchshelfobjectorg_api_url = "{% url 'auth_and_perms:api-searchshelfobjectorg-list' %}";
+		organization_buttons_api_url = "{% url 'auth_and_perms:api_organization_buttons' %}";
+	</script>
+	<script src="{% static 'js/auth_and_perms/select_organization.js' %}?v={% get_organilab_version %}"></script>
+{% endblock %}

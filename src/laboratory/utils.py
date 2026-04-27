@@ -136,7 +136,7 @@ def get_users_from_organization(rootpk, userfilters={}, org=None):
 
     users = (
         UserOrganization.objects.filter(
-            organization__in=orgs, user__isnull=False, status=True
+            organization__in=orgs, user__isnull=False, status=True, **userfilters
         )
         .values_list("user", flat=True)
         .distinct()
@@ -186,7 +186,11 @@ def get_laboratories_from_organization(rootpk):
 def get_cas(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.cas_id_number
+        result = (
+            object.sustancecharacteristics.cas_id_number
+            if object.sustancecharacteristics.cas_id_number
+            else ""
+        )
     return result
 
 
@@ -194,14 +198,18 @@ def get_imdg(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
         imdg = object.sustancecharacteristics.imdg
-        result = imdg if imdg else ""
+        result = imdg.description if imdg else ""
     return result
 
 
 def get_molecular_formula(object, default=None):
     result = default
     if hasattr(object, "sustancecharacteristics") and object.sustancecharacteristics:
-        result = object.sustancecharacteristics.molecular_formula
+        result = (
+            object.sustancecharacteristics.molecular_formula
+            if object.sustancecharacteristics.molecular_formula
+            else ""
+        )
     return result
 
 
@@ -462,7 +470,7 @@ def user_has_pp_on_laboratory(user, lab_pk):
         profile__user=user,
         content_type=lab_content_type,
         object_id=lab_pk,
-        rol__isnull=False
+        rol__isnull=False,
     ).exists()
 
 
@@ -495,7 +503,6 @@ def check_user_access_kwargs_org_lab(org, lab, user):
                     if user_has_pp_on_laboratory(user, lab_id):
                         user_access = True
                         break
-
 
     return user_access
 

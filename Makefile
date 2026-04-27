@@ -111,12 +111,13 @@ test-selenium-single-fast: ## Run a single Selenium test without GIF generation 
 	cd src && GENERATE_SCREENSHOTS=False python manage.py test $(TEST) --tag=selenium --no-input -v 2
 
 
-docs: ##  - generate Sphinx HTML documentation, including API docs
+docs: clean ##  - generate Sphinx HTML documentation, including API docs
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
+	python docs/fix_capacitacion_images.py
 
 docs_full: ##  - generate full docs, Sphinx HTML documentation, including API docs
 	xvfb-run --auto-servernum --server-args="-screen 0 1280x720x24" sh -c "cd src && python manage.py test  --no-input --tag=selenium --parallel 12"
@@ -125,6 +126,7 @@ docs_full: ##  - generate full docs, Sphinx HTML documentation, including API do
 	pip install 'sphinx==8.2.3' sphinx-rtd-theme==3.0.2
 	sphinx-build -b linkcheck ./docs/source ./docs/build/
 	sphinx-build -b html ./docs/source ./docs/build/
+	python docs/fix_capacitacion_images.py
 
 messages: ##  - extract messages for translations
 	cd src && django-admin makemessages --all --no-location --no-obsolete && django-admin makemessages -d djangojs -l es  --ignore *.min.js --no-location --no-obsolete
@@ -142,8 +144,9 @@ dist: ##  - print current version of organilab
 	git push origin "refs/tags/v$(setup_version)"
 
 build_docker: ##  - build docker images
-	docker pull python:3.13-trixie && \
-	docker pull python:3.13-slim-trixie && \
+	$(MAKE) docs
+	docker pull python:3.13-trixie
+	docker pull python:3.13-slim-trixie
 	docker build --no-cache  -t organilab:$(setup_version) -t organilab:latest .
 
 build_docker_selenium: ##  - build docker images with selenium
@@ -163,7 +166,3 @@ update_sds: ## - update SDS files in batches
 
 clean_orphan_media: ## - elimina archivos en MEDIA_ROOT no referenciados en la BD
 	cd src && python manage.py clean_orphan_media
-
-load_backup: ## - load database from backups/respaldo.sql.gz
-	createdb -W -U organilab_user organilab
-	gunzip -c backups/respaldo.sql.gz | psql -U organilab_user -W -d organilab

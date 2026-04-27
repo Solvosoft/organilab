@@ -29,6 +29,13 @@
 					</a>
 				</li>
 			{% endif %}
+			{% if perms.laboratory.change_sdstraceability %}
+				<li>
+					<a href="{% url 'msds:verified_sds' org_pk=org_pk %}">
+						{% trans 'Verify SDS' %}
+					</a>
+				</li>
+			{% endif %}
 			{% include 'partials/sga_complements.html' %}
 			{% if perms.sga.view_builderinformation %}
 				<li>

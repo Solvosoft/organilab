@@ -42,7 +42,7 @@ def get_roles_in_html(user, lab, org):
                 % (org.pk, user, lab._meta.app_label, lab._meta.model_name, lab.pk)
             )
             roles.append(
-                """<span class="applyasrole" onclick="applyasrole('%s', %s)" id="rol_%s" style="color: %s;" title="%s" %s>%s</span>"""
+                """<span class="applyasrole small" onclick="applyasrole('%s', %s)" id="rol_%s" style="color: %s;" title="%s" %s>%s</span>"""
                 % (
                     rol_uuid,
                     user,

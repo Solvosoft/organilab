@@ -2437,6 +2437,13 @@ URLNAME_PERMISSIONS = {
             "permission": "risk_management.view_riskzone",
         },
     ],
+    "riskzone_map": [
+        {
+            "name": "View Risk Zone",
+            "category": "Risk Zone",
+            "permission": "risk_management.view_riskzone",
+        },
+    ],
     "incident_detail": [
         {
             "name": "View Incident Report",
@@ -3093,6 +3100,64 @@ URLNAME_PERMISSIONS = {
             "name": "Upload Reactives",
             "category": "Upload Reactives",
             "permission": "laboratory.add_shelfobject",
+        }
+    ],
+    "pendingtask_list": [
+        {
+            "name": "Add Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.add_pendingtask",
+        },
+        {
+            "name": "Change Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.change_pendingtask",
+        },
+        {
+            "name": "Delete Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.delete_pendingtask",
+        },
+        {
+            "name": "View Pending Task",
+            "category": "Pending Task",
+            "permission": "pending_tasks.view_pendingtask",
+        },
+    ],
+    "workdays": [
+        {
+            "name": "View Workdays",
+            "category": "Workdays",
+            "permission": "risk_management.view_workday",
+        },
+        {
+            "name": "Register Workdays",
+            "category": "Workdays",
+            "permission": "risk_management.add_workday",
+        },
+        {
+            "name": "Update Workday",
+            "category": "Workdays",
+            "permission": "risk_management.change_workday",
+        },
+        {
+            "name": "Delete Workday",
+            "category": "Workdays",
+            "permission": "risk_management.delete_workday",
+        },
+    ],
+    "workdays_list": [
+        {
+            "name": "View Workdays",
+            "category": "Workdays",
+            "permission": "risk_management.view_workday",
+        },
+    ],
+    "validate_sds": [
+        {
+            "name": "Verify SDS",
+            "category": "Verify SDS",
+            "permission": "laboratory.change_sdstraceability",
         }
     ],
 }

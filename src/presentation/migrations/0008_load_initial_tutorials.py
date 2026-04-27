@@ -15,17 +15,17 @@ TUTORIALS = [
             {
                 'order': 1, 'step_key': 'bienvenida-modal', 'step_type': 'MODAL',
                 'title': 'Bienvenida a Organilab',
-                'content': 'Organilab es un sistema de gestión de laboratorios diseñado para universidades con múltiples sedes. Le permite gestionar inventario, sustancias químicas, procedimientos, reservaciones y seguridad desde una sola plataforma.',
+                'content': 'Esta herramienta permite la gestión integral de laboratorios universitarios, centralizando la información académica, técnica y administrativa en múltiples sedes, permite gestionar inventario, sustancias químicas, procedimientos, reservaciones y seguridad desde una sola plataforma.',
             },
             {
                 'order': 2, 'step_key': 'seleccionar-org', 'step_type': 'MODAL',
                 'title': 'Seleccione su organización',
-                'content': 'Cada usuario pertenece a una o más organizaciones (sede, facultad, escuela). Seleccione la organización donde desea trabajar. Puede cambiar de organización en cualquier momento desde el menú.',
+                'content': 'Permite una gestión fundamental, ofreciendo acceso a la selección del laboratorio deseado, la aplicación de filtros básicos por laboratorio, organización o perfil, y la visualización de todas tus organizaciones asignadas.',
             },
             {
                 'order': 3, 'step_key': 'estructura-sistema', 'step_type': 'MODAL',
                 'title': 'Estructura del sistema',
-                'content': 'El sistema se organiza así: <strong>Organización</strong> → <strong>Laboratorio</strong> → <strong>Sala</strong> → <strong>Mueble</strong> → <strong>Estante</strong> → <strong>Objetos</strong> (reactivos, materiales, equipos). Los permisos y tutoriales dependen de sus roles en cada organización.',
+                'content': 'El sistema Organilab está dividido en varios módulos, cada una se encarga de algo específico dentro del laboratorio: organiazciones, laboratorios, administración de laboratorios, reservas, seguridad y riesgo, reportes y sustancias químicas.',
             },
         ],
     },
@@ -92,7 +92,7 @@ TUTORIALS = [
         'title': 'Gestión de Usuarios',
         'slug': 'gestion-usuarios',
         'description': 'Registrar usuarios y asignar tipos en la organización',
-        'url_name': 'auth_and_perms:addusersorganization',
+        'url_name': 'auth_and_perms:organizationManager',
         'chapter': 'PERMISOS',
         'auto_start': False,
         'order': 3,
@@ -173,7 +173,7 @@ TUTORIALS = [
         'title': 'Gestión de Inventario',
         'slug': 'gestion-inventario',
         'description': 'Tipos de objetos, agregar al inventario y alertas',
-        'url_name': 'laboratory:list_shelfobject',
+        'url_name': 'laboratory:rooms_list',
         'chapter': 'LABORATORIOS',
         'auto_start': False,
         'order': 6,
@@ -205,7 +205,7 @@ TUTORIALS = [
         'title': 'Transferencias entre Laboratorios',
         'slug': 'transferencias',
         'description': 'Flujo de transferencia de objetos',
-        'url_name': 'laboratory:list_shelfobject',
+        'url_name': 'laboratory:rooms_list',
         'chapter': 'LABORATORIOS',
         'auto_start': False,
         'order': 7,
@@ -252,28 +252,6 @@ TUTORIALS = [
                 'order': 4, 'step_key': 'sga-almacenamiento', 'step_type': 'MODAL',
                 'title': 'Clases de almacenamiento',
                 'content': 'Las clases de almacenamiento (1-8) determinan cómo debe guardarse la sustancia: explosivos, gases comprimidos, líquidos inflamables, etc. El sistema verifica compatibilidad para prevenir almacenamiento inadecuado.',
-            },
-        ],
-    },
-    {
-        'title': 'Etiquetado SGA',
-        'slug': 'etiquetado-sga',
-        'description': 'Generar etiquetas SGA para sustancias',
-        'url_name': 'sga:sgalabel_step_one',
-        'chapter': 'SUSTANCIAS',
-        'auto_start': False,
-        'order': 9,
-        'roles': [16, 1, 6, 10],
-        'steps': [
-            {
-                'order': 1, 'step_key': 'etiqueta-contenido', 'step_type': 'MODAL',
-                'title': 'Contenido de la etiqueta',
-                'content': 'Una etiqueta SGA contiene: nombre de la sustancia, pictogramas de peligro, palabra de advertencia (Peligro/Atención), indicaciones H y consejos P, e información del proveedor.',
-            },
-            {
-                'order': 2, 'step_key': 'etiqueta-generar', 'step_type': 'MODAL',
-                'title': 'Generar etiquetas',
-                'content': 'Las etiquetas se generan automáticamente a partir de la clasificación SGA de la sustancia. Puede personalizarlas con el editor visual e imprimirlas para colocar en los envases del laboratorio.',
             },
         ],
     },
@@ -344,7 +322,7 @@ TUTORIALS = [
             {
                 'order': 3, 'step_key': 'proc-ejecutar', 'step_type': 'MODAL',
                 'title': 'Ejecutar procedimiento',
-                'content': 'Al ejecutar un procedimiento se crea una <strong>instancia</strong> (MyProcedure) que pasa por estados: Borrador → En Revisión → Finalizado. En cada paso puede completar formularios y agregar observaciones.',
+                'content': 'Al ejecutar un procedimiento se crea una <strong>instancia</strong> (Mis Procedimientos) que pasa por estados: Borrador → En Revisión → Finalizado. En cada paso puede completar formularios y agregar observaciones.',
             },
             {
                 'order': 4, 'step_key': 'proc-reservar', 'step_type': 'MODAL',
@@ -393,7 +371,7 @@ TUTORIALS = [
             {
                 'order': 1, 'step_key': 'risk-zonas', 'step_type': 'MODAL',
                 'title': 'Zonas de riesgo',
-                'content': 'Las zonas de riesgo representan áreas del laboratorio donde existen peligros específicos. Cada zona tiene un tipo (químico, biológico, radiológico, etc.) y un nivel de riesgo.',
+                'content': 'Las Zonas de Riesgo son áreas específicas dentro del laboratorio donde la manipulación de sustancias peligrosas, equipos especiales o condiciones ambientales particulares requieren medidas de seguridad y protocolos de acceso estrictos.',
             },
             {
                 'order': 2, 'step_key': 'risk-incidentes', 'step_type': 'MODAL',
@@ -437,7 +415,7 @@ TUTORIALS = [
             {
                 'order': 1, 'step_key': 'rep-tipos', 'step_type': 'MODAL',
                 'title': 'Tipos de reportes',
-                'content': 'El sistema genera varios tipos de reportes: inventario por laboratorio, uso de sustancias, precursores químicos, reportes de regencia, y auditoría de cambios.',
+                'content': 'El sistema permite generar reportes que apoyan el control y seguimiento del laboratorio, abarcando inventarios, salud laboral, gestión de reactivos, materiales y equipos, movimientos, desechos, zonas de riesgo y compatibilidad SGA.',
             },
             {
                 'order': 2, 'step_key': 'rep-generar', 'step_type': 'MODAL',

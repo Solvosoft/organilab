@@ -2,6 +2,7 @@ import json
 
 from django import template
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 from auth_and_perms.models import ProfilePermission
@@ -68,11 +69,13 @@ def tutorial_launcher(context):
     except Exception:
         return ''
 
-    org_pk = context.get('org_pk') or (
-        request.resolver_match.kwargs.get('org_pk') if request.resolver_match else None
+    org_pk = (
+        context.get('org_pk')
+        or (request.resolver_match.kwargs.get('org_pk') if request.resolver_match else None)
+        or request.GET.get('org_pk')
     )
     url_name = (
-        request.resolver_match.url_name if request.resolver_match else None
+        request.resolver_match.view_name if request.resolver_match else None
     )
 
     tutorials = _get_tutorials_for_page(request.user, org_pk, url_name)
@@ -127,6 +130,11 @@ def tutorial_launcher(context):
         })
         if t.auto_start and t.id not in progress_map:
             auto_start_slugs.append(t.slug)
+            TutorialProgress.objects.get_or_create(
+                user=request.user,
+                tutorial=t,
+                defaults={'current_step': 0},
+            )
 
     if not tutorials_data:
         return ''
@@ -134,7 +142,7 @@ def tutorial_launcher(context):
     config = {
         'tutorials': tutorials_data,
         'autoStart': auto_start_slugs,
-        'progressUrl': '/tutorial/api/progress/',
+        'progressUrl': reverse('tutorial_progress_api'),
     }
 
     html = (

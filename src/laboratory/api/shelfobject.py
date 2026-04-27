@@ -53,6 +53,7 @@ from laboratory.shelfobject.serializers import (
     IncreaseShelfObjectSerializer,
     DecreaseShelfObjectSerializer,
     ReserveShelfObjectSerializer,
+    ReturnBoxShelfObjectSerializer,
     UpdateShelfObjectStatusSerializer,
     ShelfObjectObservationDataTableSerializer,
     MoveShelfObjectSerializer,
@@ -104,6 +105,7 @@ from laboratory.shelfobject.serializers import (
 
 from laboratory.shelfobject.utils import (
     save_increase_decrease_shelf_object,
+    save_return_box_shelf_object,
     move_shelfobject_partial_quantity_to,
     build_shelfobject_qr,
     save_shelfobject_limits_from_serializer,
@@ -114,7 +116,10 @@ from laboratory.shelfobject.utils import (
     clone_shelfobject_to,
     save_shelfobject_characteristics,
     delete_shelfobjects,
+    has_active_reservations,
     get_shelf_object_expiration_date,
+    generate_box_code,
+    move_box_partial_quantity_to,
 )
 
 from laboratory.utils import save_object_by_action, PermissionByLaboratoryInOrganization
@@ -266,6 +271,7 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
@@ -359,6 +365,7 @@ class ShelfObjectCreateMethods:
             _("Income"),
             create=True,
             organization=organization_id,
+            is_box=shelfobject.is_box,
         )
         utils.organilab_logentry(
             created_by,
@@ -505,6 +512,102 @@ class ShelfObjectCreateMethods:
 
         return {}, shelfobject
 
+    def create_box(self, serializer):
+        """
+        Create a single box-type ShelfObject.
+        quantity_units (int from form) is expanded into a JSON list of length quantity_box,
+        where each entry is a dict with "code" (e.g. "b-0001") and "units" (integer count).
+        Boxes do not use quantity limits.
+
+        :param serializer: BoxShelfObjectSerializer (already validated)
+        :return: ({}, shelfobject) on success
+        """
+        created_by = self.context["request"].user
+        laboratory_id = self.context["laboratory_id"]
+        organization_id = self.context["organization_id"]
+
+        expired_date = get_shelf_object_expiration_date(
+            serializer.validated_data.pop("reactive_expiration_date", None)
+        )
+        units_per_box = serializer.validated_data.pop("units_per_box")
+        quantity_box = serializer.validated_data.pop("quantity_box", 1)
+        box_count = max(1, quantity_box)
+
+        extra_kwargs = dict(
+            created_by=created_by,
+            in_where_laboratory_id=laboratory_id,
+            reactive_expiration_date=expired_date,
+            quantity_units=[],
+            units_per_box=units_per_box,
+        )
+
+        changed_fields = [
+            "object",
+            "shelf",
+            "status",
+            "physical_status",
+            "quantity",
+            "description",
+            "concentration",
+            "measurement_unit",
+            "type_budget",
+            "batch",
+            "was_donated",
+            "reactive_expiration_date",
+            "is_box",
+            "quantity_units",
+            "units_per_box",
+            "created_by",
+            "in_where_laboratory",
+        ]
+
+        shelfobject = serializer.save(**extra_kwargs)
+
+        # Generate unique codes now that we have the pk
+        quantity_units = []
+        quantity = shelfobject.quantity
+        if shelfobject.measurement_unit and shelfobject.shelf.measurement_unit:
+            quantity = shelfobject.get_obj_conversion_from_two_units()
+
+        for _i in range(box_count):
+            existing_codes = [b["code"] for b in quantity_units]
+            code = generate_box_code(shelfobject.pk, existing_codes)
+            quantity_units.append(
+                {
+                    "code": code,
+                    "units": units_per_box,
+                    "quantity": quantity * units_per_box,
+                }
+            )
+        shelfobject.quantity_units = quantity_units
+        shelfobject.save(update_fields=["quantity_units"])
+
+        build_shelfobject_qr(
+            self.context["request"], shelfobject, organization_id, laboratory_id
+        )
+        log_object_change(
+            created_by,
+            laboratory_id,
+            shelfobject,
+            0,
+            quantity_box * (quantity * units_per_box),
+            "",
+            ADDITION,
+            _("Income"),
+            create=True,
+            organization=organization_id,
+            is_box=shelfobject.is_box,
+        )
+        utils.organilab_logentry(
+            created_by,
+            shelfobject,
+            ADDITION,
+            changed_data=changed_fields,
+            relobj=laboratory_id,
+        )
+
+        return {}, shelfobject
+
     def create_equipment(
         self, serializer, limits_serializer, equipment_serializer=None
     ):
@@ -535,7 +638,9 @@ class ShelfObjectCreateMethods:
                 "created_by": created_by.pk,
             }
         )
-        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data, context={"organization": organization_id})
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(
+            data=data, context={"organization": organization_id}
+        )
 
         if equipment_serializer.is_valid():
             save_shelfobject_characteristics(equipment_serializer, created_by)
@@ -610,7 +715,9 @@ class ShelfObjectCreateMethods:
                 "created_by": created_by.pk,
             }
         )
-        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(data=data, context={"organization": organization_id})
+        equipment_serializer = EquimentShelfobjectCharacteristicSerializer(
+            data=data, context={"organization": organization_id}
+        )
         if equipment_serializer.is_valid():
             save_shelfobject_characteristics(equipment_serializer, created_by)
         else:
@@ -677,9 +784,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             "laboratory.delete_tranferobject",
         ],
         "create_shelfobject": ["laboratory.add_shelfobject"],
+        "create_box_shelfobject": ["laboratory.add_shelfobject"],
         "fill_increase_shelfobject": ["laboratory.change_shelfobject"],
         "fill_decrease_shelfobject": ["laboratory.change_shelfobject"],
         "reserve": ["reservations_management.add_reservedproducts"],
+        "return_shelfobject": ["reservations_management.change_reservedproducts"],
         "detail": ["laboratory.view_shelfobject"],
         "tag": [],
         "delete": ["laboratory.delete_shelfobject"],
@@ -696,6 +805,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         "get_shelfobject": ["laboratory.view_shelfobject"],
         "get_shelfobject_limits": ["laboratory.view_shelfobject"],
         "edit_shelfobject_limits": ["laboratory.change_shelfobject"],
+        "update_box_shelfobject": ["laboratory.change_shelfobject"],
+        "get_box_edit_data": ["laboratory.view_shelfobject"],
     }
 
     # This is not an API endpoint
@@ -860,6 +971,57 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=["post"])
+    def create_box_shelfobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Creates a box-type ShelfObject. is_box is always forced to True.
+
+        :param request: http request
+        :param org_pk: organization pk
+        :param lab_pk: laboratory pk
+        :return: 201 on success, 400 with errors on failure
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "create_box_shelfobject"
+        )
+        serializer = shelfobject_serializers.BoxShelfObjectSerializer(
+            data=request.data,
+            context={"organization_id": org_pk, "laboratory_id": lab_pk},
+        )
+        errors = {}
+        if serializer.is_valid():
+            methods_class = ShelfObjectCreateMethods(
+                context={
+                    "organization_id": org_pk,
+                    "laboratory_id": lab_pk,
+                    "request": request,
+                }
+            )
+            error, shelfobject = methods_class.create_box(serializer)
+            if shelfobject:
+                create_shelfobject_observation(
+                    shelfobject,
+                    shelfobject.description,
+                    _("Created Object"),
+                    request.user,
+                    lab_pk,
+                )
+                return Response(
+                    {
+                        "detail": _("%(count)d box(es) created successfully.")
+                        % {"count": len(shelfobject.quantity_units)}
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                errors.update(error)
+        else:
+            errors.update(serializer.errors)
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=["post"])
     def fill_increase_shelfobject(self, request, org_pk, lab_pk, **kwargs):
         """
         This action allows the shelf object increase by following data:
@@ -877,11 +1039,24 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             request, org_pk, lab_pk, "fill_increase_shelfobject"
         )
         self.serializer_class = IncreaseShelfObjectSerializer
-        serializer = self.serializer_class(
-            data=request.data, context={"source_laboratory_id": self.laboratory.pk}
-        )
+        serializer = None
+        if "shelf_object" in request.data:
+            shelfobject = get_object_or_404(
+                ShelfObject, pk=request.data["shelf_object"]
+            )
+            request.data["measurement_unit"] = shelfobject.measurement_unit.pk
+            serializer = self.serializer_class(
+                data=request.data,
+                context={
+                    "source_laboratory_id": self.laboratory.pk,
+                    "is_box": shelfobject.is_box,
+                },
+            )
+        else:
+            serializer = self.serializer_class(
+                data=request.data, context={"source_laboratory_id": self.laboratory.pk}
+            )
         errors = {}
-
         if serializer.is_valid():
             save_increase_decrease_shelf_object(
                 request.user,
@@ -892,10 +1067,8 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             )
         else:
             errors = serializer.errors
-
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
-
         return JsonResponse(
             {"detail": _("Shelf object was increased successfully.")},
             status=status.HTTP_200_OK,
@@ -945,10 +1118,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=["post"])
     def reserve(self, request, org_pk, lab_pk, **kwargs):
         """
-        This action allows the reserved product creation by following data:
-        required quantity, initial and final date validate through serializer,
-        also user needs to have required access permission
-        to do this action related to this specific organization and laboratory.
+        Creates a reservation for a box shelf object.
+
+        Only shelf objects marked as is_box=True are accepted. The amount_required
+        field represents the number of boxes to reserve (e.g. 2.5). The serializer
+        selects the first N complete boxes plus a partial box (ceil of the fractional
+        part × units_per_box) from quantity_units in list order, and stores the
+        selected box codes and units in reserved_boxes on the ReservedProducts instance.
 
         :param request: http request
         :param org_pk: organization related to reserved product and user permissions
@@ -990,6 +1166,49 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
 
         return JsonResponse(
             {"detail": _("Reservation was performed successfully.")},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(detail=False, methods=["post"])
+    def return_shelfobject(self, request, org_pk, lab_pk, **kwargs):
+        """
+        Returns reserved boxes back to the shelf object's stock.
+
+        Receives a reserved_product pk (must be in BORROWED status). Each box listed
+        in reserved_product.reserved_boxes is added back to quantity_units (restoring
+        its units). quantity_box is updated accordingly and the reservation status is
+        set to RETURNED with amount_returned equal to amount_required.
+
+        :param request: http request
+        :param org_pk: organization related to the reserved product and user permissions
+        :param lab_pk: laboratory related to the shelf object and user permissions
+        :param kwargs: extra params
+        :return: success or error message
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "return_shelfobject"
+        )
+        self.serializer_class = ReturnBoxShelfObjectSerializer
+        serializer = self.serializer_class(
+            data=request.data, context={"source_laboratory_id": self.laboratory.pk}
+        )
+        errors = {}
+
+        if serializer.is_valid():
+            save_return_box_shelf_object(
+                request.user,
+                serializer.validated_data,
+                self.laboratory,
+                self.organization,
+            )
+        else:
+            errors = serializer.errors
+
+        if errors:
+            return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse(
+            {"detail": _("Boxes were returned successfully.")},
             status=status.HTTP_200_OK,
         )
 
@@ -1059,17 +1278,31 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         if serializer.is_valid():
             shelf_object = serializer.validated_data["shelf_object"]
             amount_to_transfer = serializer.validated_data["amount_to_transfer"]
-            if amount_to_transfer <= shelf_object.quantity:
-                source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
-                target_laboratory = serializer.validated_data["laboratory"]
-                transfer_obj = TranferObject.objects.create(
-                    object=shelf_object,
-                    laboratory_send=source_laboratory,
-                    laboratory_received=target_laboratory,
-                    quantity=amount_to_transfer,
-                    mark_as_discard=serializer.validated_data["mark_as_discard"],
-                    created_by=request.user,
+            source_laboratory = get_object_or_404(Laboratory, pk=lab_pk)
+            target_laboratory = serializer.validated_data["laboratory"]
+            transfer_obj = None
+            data_transfer = {
+                "object": shelf_object,
+                "quantity": amount_to_transfer,
+                "mark_as_discard": serializer.validated_data["mark_as_discard"],
+                "created_by": request.user,
+                "is_box": shelf_object.is_box,
+                "laboratory_send": source_laboratory,
+                "laboratory_received": target_laboratory,
+            }
+            if shelf_object.is_box:
+                quantity_units = shelf_object.quantity_units or []
+                quantity_units = sorted(
+                    quantity_units, key=lambda x: x["units"], reverse=True
                 )
+                data_transfer["quantity_units"] = quantity_units[
+                    : int(amount_to_transfer)
+                ]
+                transfer_obj = TranferObject.objects.create(**data_transfer)
+
+            if amount_to_transfer <= shelf_object.quantity and not shelf_object.is_box:
+                transfer_obj = TranferObject.objects.create(**data_transfer)
+            if transfer_obj:
                 utils.organilab_logentry(
                     request.user,
                     transfer_obj,
@@ -1201,11 +1434,13 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         transfer_obj = get_object_or_404(
             TranferObject, pk=request.data.get("transfer_object")
         )
-        self.serializer_class = (
-            TransferInShelfObjectApproveWithContainerSerializer
-            if transfer_obj.object.object.type == Object.REACTIVE
-            else TransferInShelfObjectSerializer
-        )
+        if (
+            transfer_obj.object.object.type == Object.REACTIVE
+            and not transfer_obj.is_box
+        ):
+            self.serializer_class = TransferInShelfObjectApproveWithContainerSerializer
+        else:
+            self.serializer_class = TransferInShelfObjectSerializer
 
         serializer = self.get_serializer(
             data=request.data,
@@ -1220,17 +1455,68 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             # once we get here everything is validated and ready for the transfer in to happen
             transfer_object = serializer.validated_data["transfer_object"]
 
-            previous_quantity = transfer_object.quantity
+            previous_quantity = (
+                transfer_object.quantity
+                if not transfer_obj.is_box
+                else transfer_object.get_box_totals()
+            )
 
             if not transfer_object.object.measurement_unit.description == "Unidades":
                 if serializer.validated_data["shelf"].measurement_unit:
                     previous_quantity = get_conversion_from_two_units(
                         serializer.validated_data["shelf"].measurement_unit,
                         transfer_object.object.measurement_unit,
-                        transfer_object.quantity,
+                        (
+                            transfer_object.quantity
+                            if not transfer_obj.is_box
+                            else transfer_object.get_box_totals()
+                        ),
                     )
+            if transfer_obj.is_box:
+                shelf = transfer_object.object.shelf
+                if transfer_object.quantity == len(
+                    transfer_object.object.quantity_units
+                ):
+                    if (
+                        not transfer_object.object.measurement_unit.description
+                        == "Unidades"
+                    ):
+                        shelf = transfer_object.object.shelf
+                        if serializer.validated_data["shelf"].measurement_unit:
+                            transfer_object.object.measurement_unit = (
+                                serializer.validated_data["shelf"].measurement_unit
+                            )
 
-            if previous_quantity == transfer_object.object.quantity:
+                        # move the entire shelfobject instead of copy it, so history is not lost
+                    new_shelf_object = move_shelfobject_to(
+                        transfer_object.object,
+                        org_pk,
+                        lab_pk,
+                        serializer.validated_data["shelf"],
+                        request,
+                        shelf=shelf,
+                    )
+                else:
+                    if (
+                        not transfer_object.object.measurement_unit.description
+                        == "Unidades"
+                    ):
+                        if serializer.validated_data["shelf"].measurement_unit:
+                            transfer_object.object.measurement_unit = (
+                                serializer.validated_data["shelf"].measurement_unit
+                            )
+                    # partially transfer the shelfobject to the new laboratory - it will copy it with the required quantity and decrease the original one
+                    request.data["amount_transfer"] = transfer_object.quantity
+                    new_shelf_object = move_box_partial_quantity_to(
+                        transfer_object.object,
+                        org_pk,
+                        lab_pk,
+                        serializer.validated_data["shelf"],
+                        request,
+                        transfer_object.get_box_totals(),
+                        transfer_obj.quantity,
+                    )
+            elif previous_quantity == transfer_object.object.quantity:
                 if (
                     not transfer_object.object.measurement_unit.description
                     == "Unidades"
@@ -1277,18 +1563,19 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             new_shelf_object.marked_as_discard = transfer_object.mark_as_discard
 
             # it is a transfer that has a container - get the container and assign it to the shelfobject, it will assign None if no container_select_option provided
-            new_shelf_object.container = (
-                get_or_create_container_based_on_selected_option(
-                    serializer.validated_data.get("container_select_option"),
-                    org_pk,
-                    lab_pk,
-                    serializer.validated_data["shelf"],
-                    request,
-                    serializer.validated_data.get("container_for_cloning"),
-                    serializer.validated_data.get("available_container"),
-                    transfer_object.object,
+            if not transfer_obj.is_box:
+                new_shelf_object.container = (
+                    get_or_create_container_based_on_selected_option(
+                        serializer.validated_data.get("container_select_option"),
+                        org_pk,
+                        lab_pk,
+                        serializer.validated_data["shelf"],
+                        request,
+                        serializer.validated_data.get("container_for_cloning"),
+                        serializer.validated_data.get("available_container"),
+                        transfer_object.object,
+                    )
                 )
-            )
             new_shelf_object.save()
             utils.organilab_logentry(
                 request.user,
@@ -1335,6 +1622,15 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         if serializer.is_valid():
             shelfobject = serializer.validated_data["shelfobj"]
+            if has_active_reservations(shelfobject):
+                return JsonResponse(
+                    {
+                        "detail": _(
+                            "This item cannot be deleted because it has active reservations. Please close all reservations first."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             utils.organilab_logentry(
                 self.request.user, shelfobject, DELETION, relobj=self.laboratory
             )
@@ -1342,7 +1638,11 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 request.user,
                 lab_pk,
                 shelfobject,
-                shelfobject.quantity,
+                (
+                    shelfobject.quantity
+                    if not shelfobject.is_box
+                    else shelfobject.get_box_totals()
+                ),
                 0,
                 "",
                 DELETION,
@@ -1534,7 +1834,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             object_repr = "shelf object"
             user = request.user
 
-            if shelf_object.object.type == Object.REACTIVE:
+            if shelf_object.object.type == Object.REACTIVE and not shelf_object.is_box:
                 if serializer_container.is_valid():
                     container_option = serializer_container.validated_data.get(
                         "container_select_option"
@@ -1833,6 +2133,97 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             return JsonResponse(serializers, status=status.HTTP_200_OK)
         else:
             return JsonResponse(serializers, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["get"])
+    def get_box_edit_data(self, request, org_pk, lab_pk, pk, **kwargs):
+        """Return current box ShelfObject data to pre-populate the edit form."""
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "get_box_edit_data"
+        )
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+        data = {
+            "object": (
+                {"id": shelfobject.object_id, "text": str(shelfobject.object)}
+                if shelfobject.object_id
+                else None
+            ),
+            "status": (
+                {"id": shelfobject.status_id, "text": str(shelfobject.status)}
+                if shelfobject.status_id
+                else None
+            ),
+            "measurement_unit": (
+                {
+                    "id": shelfobject.measurement_unit_id,
+                    "text": str(shelfobject.measurement_unit),
+                }
+                if shelfobject.measurement_unit_id
+                else None
+            ),
+            "type_budget": (
+                {"id": shelfobject.type_budget_id, "text": str(shelfobject.type_budget)}
+                if shelfobject.type_budget_id
+                else None
+            ),
+            "physical_status": shelfobject.physical_status,
+            "quantity": shelfobject.quantity,
+            "description": shelfobject.description or "",
+            "concentration": shelfobject.concentration,
+            "batch": shelfobject.batch or "",
+            "was_donated": shelfobject.was_donated,
+            "reactive_expiration_date": (
+                shelfobject.reactive_expiration_date.strftime("%d/%m/%Y")
+                if shelfobject.reactive_expiration_date
+                else ""
+            ),
+            "units_per_box": shelfobject.units_per_box,
+            "quantity_box": (
+                len(shelfobject.quantity_units) if shelfobject.quantity_units else 0
+            ),
+        }
+        return JsonResponse(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["put"])
+    def update_box_shelfobject(self, request, org_pk, lab_pk, pk, **kwargs):
+        """
+        Update a box-type ShelfObject.
+        - Updates all regular fields.
+        - quantity_box: if increased, adds new boxes; if decreased, removes from end.
+        - units_per_box: updates the reference value only.
+        """
+        self._check_permission_on_laboratory(
+            request, org_pk, lab_pk, "update_box_shelfobject"
+        )
+        shelfobject = self._get_shelfobject_with_check(pk, lab_pk)
+        serializer = shelfobject_serializers.UpdateBoxShelfObjectSerializer(
+            instance=shelfobject, data=request.data, partial=True
+        )
+        if not serializer.is_valid():
+            return JsonResponse(
+                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        obj = serializer.save()
+
+        utils.organilab_logentry(
+            request.user,
+            obj,
+            CHANGE,
+            "shelfobject",
+            changed_data=list(request.data.keys()),
+            relobj=lab_pk,
+        )
+        create_shelfobject_observation(
+            obj,
+            obj.description or "",
+            _("Box updated"),
+            request.user,
+            lab_pk,
+        )
+        return JsonResponse(
+            {"detail": _("Box was updated successfully.")},
+            status=status.HTTP_200_OK,
+        )
 
     @action(detail=True, methods=["get"])
     def get_shelfobject_limits(self, request, org_pk, lab_pk, pk, **kwargs):

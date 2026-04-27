@@ -1,0 +1,23 @@
+{% load i18n %}
+<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered  modal-dialog-scrollable modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-break text-wrap" id="descriptionModalLabel"></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<p id="descriptionModalBody1" class="text-secondary text-break text-wrap"></p>
+			</div>
+			<div class="modal-footer d-flex justify-content-between">
+				<p id="descriptionModalFooter" class="text-secondary text-break text-wrap mb-0"></p>
+				<div id="descriptionModalLinkRow" class="d-none mt-2 small">
+					<a id="descriptionModalBody2" href="#" target="_blank" rel="noopener noreferrer">
+						<i class="fa fa-link me-1" aria-hidden="true"></i>
+						{% trans "Open link" %}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

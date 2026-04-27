@@ -10,7 +10,7 @@
 	{% define_urlname_action 'remove_object' %}
 	{% define_urlname_action 'procedure_list' %}
 {% endblock %}
-{% block extra_css %}
+{% block css %}
 	<link rel="stylesheet" href="{% static 'formio/formio.full.min.css' %}?v={% get_organilab_version %}">
 {% endblock %}
 {% block title %}{% trans "Procedures Steps" %}{% endblock %}
@@ -119,10 +119,12 @@
 {% block js %}
 	<script>
 		document.urls = {
+			{% if step %}
 			save_object: "{% url 'academic:save_object' pk=step.id org_pk=org_pk %}",
 			remove_object: "{% url 'academic:remove_object' pk=step.id org_pk=org_pk %}",
 			save_observation: "{% url 'academic:add_observation' pk=step.id org_pk=org_pk %}",
 			remove_observation: "{% url 'academic:remove_observation' pk=step.id org_pk=org_pk %}"
+			{% endif %}
 		}
 	</script>
 	<script src="{% static 'js/procedures.js' %}?v={% get_organilab_version %}"></script>

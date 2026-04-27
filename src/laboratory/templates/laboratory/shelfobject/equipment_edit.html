@@ -211,7 +211,7 @@ window.name = "equipmenteditview";
 						providers :"{% url 'org_providers-list' %}"+"?organization="+"{{org_pk}}",
 						users :"{% url 'userorg-list' %}"+"?organization="+"{{org_pk}}",
 		}
-	const provider_url = "{% url 'laboratory:list_provider' lab_pk=lab_pk org_pk=org_pk %}";
+	const provider_url = "{% url 'laboratory:provider_view' lab_pk=lab_pk org_pk=org_pk %}";
 
 </script>
 <script type="text/javascript" src="{% static 'laboratory/js/shelfobject_equipment_tables.js' %}?v={% get_organilab_version %}"></script>

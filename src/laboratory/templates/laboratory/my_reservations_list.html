@@ -4,65 +4,161 @@
 {% load organilab_tags %}
 {% block title %}{% trans 'My reservations' %}{% endblock %}
 {% block pre_head %}
-    {% define_true 'use_datatables' %}
-    {% define_urlname_action 'my_reservations' %}
-    {% define_urlname_action 'api_individual_reservation_create' %}
-    {% define_urlname_action 'get_lab_id' %}
+	{% define_true 'use_datatables' %}
+	{% define_urlname_action 'my_reservations' %}
+	{% define_urlname_action 'api_individual_reservation_create' %}
+	{% define_urlname_action 'get_lab_id' %}
 {% endblock %}
 {% block content %}
-    {% include 'laboratory/my_reservation_delete.html' %}
-    {% include 'laboratory/my_reservation_delete_all.html' %}
-    <div id="management_buttons">
-        <input data-bs-toggle="modal"
-            data-bs-target="#delete_all_obj_reservation_modal" type="button"
-            disabled="disabled" value="{% trans 'Cancel all selected products' %}" class="float-end btn btn-danger"
-            id="cancel_all_products_btn">
-        <input id="reserve_btn" class="float-end btn btn-success" type="button" onclick="make_reservation()" disabled="disabled" value='{% trans "Reserve" %}'>
-    </div>
-    <table id="table_id" class="display table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>{% trans 'Object' %}</th>
-                <th>{% trans 'Amount required' %}</th>
-                <th>{% trans 'Initial date' %}</th>
-                <th>{% trans 'Final date' %}</th>
-                <th>{% trans 'Status' %}</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for obj in object_list%}
-            <tr id="table_data">
-                <td id="shelf_object">{{obj.shelf_object}}</td>
-                <td id="amount_required">{{obj.amount_required}}  {{obj.shelf_object.measurement_unit}}</td>
-                <td id="initial_date">{{obj.initial_date}}</td>
-                <td id="final_date">{{obj.final_date}}</td>
-                <td id="status">{{obj.get_status_display}}</td>
-                <td>
-                    {% if obj.status == 3 %}
-                        <button class="btn btn-danger" data-bs-toggle="modal"
-                                data-bs-target="#delete_selected_obj_reservation_modal"
-                                aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{obj.id}})">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
-                        <input type="hidden" name="user_id" value="{{obj.user.id}}">
-                        <input type="hidden" name="rp_id" id="rp_id{{obj.id}}" value="{{obj.id}}">
-                        <input type="hidden" name="so_id" id="so_id{{obj.shelf_object.id}}" value="{{obj.shelf_object.id}}">
-                    {% endif %}
-                    <input type="hidden" name="status_num" value="{{obj.status}}">
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	{% include 'laboratory/my_reservation_delete.html' %}
+	{% include 'laboratory/my_reservation_delete_all.html' %}
+
+	<!-- Pending reservations -->
+	<div class="card mb-4">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h2>{% trans 'Pending Reservations' %}</h2>
+			</div>
+			<div class="d-flex gap-2">
+				<input data-bs-toggle="modal"
+											data-bs-target="#delete_all_obj_reservation_modal"
+											type="button"
+											disabled="disabled"
+											value="{% trans 'Cancel all selected products' %}"
+											class="btn btn-danger"
+											id="cancel_all_products_btn">
+
+				<input id="reserve_btn"
+											class="btn btn-success"
+											type="button"
+											onclick="make_reservation()"
+											disabled="disabled"
+											value='{% trans "Reserve" %}'>
+			</div>
+			<div class="table-responsive">
+				<table id="table_id" class="display table table-striped table-bordered" style="width:100%">
+					<thead>
+					<tr>
+						<th>{% trans 'Object' %}</th>
+						<th>{% trans 'Amount required' %}</th>
+						<th>{% trans 'Initial date' %}</th>
+						<th>{% trans 'Final date' %}</th>
+						<th>{% trans 'Status' %}</th>
+						<th></th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for obj in pending_products %}
+						<tr id="table_data">
+							<td id="shelf_object">{{ obj.shelf_object }}</td>
+							<td id="amount_required">
+								{% if obj.shelf_object.is_box %}
+									{{ obj.amount_required }} {% trans "boxes" %}
+								{% else %}
+									{{ obj.amount_required }} {{ obj.shelf_object.measurement_unit }}
+								{% endif %}
+							</td>
+							<td id="initial_date">{{ obj.initial_date }}</td>
+							<td id="final_date">{{ obj.final_date }}</td>
+							<td id="status">{{ obj.get_status_display }}</td>
+							<td>
+								{% if obj.status == 3 %}
+									<button class="btn btn-danger" data-bs-toggle="modal"
+																	data-bs-target="#delete_selected_obj_reservation_modal"
+																	aria-label="{% trans 'Remove' %}" type="button" onclick="init_remove_reservation({{ obj.id }})">
+										<i class="fa fa-trash" aria-hidden="true"></i>
+									</button>
+									<input type="hidden" name="user_id" value="{{ obj.user.id }}">
+									<input type="hidden" name="rp_id" id="rp_id{{ obj.id }}" value="{{ obj.id }}">
+									<input type="hidden" name="so_id" id="so_id{{ obj.shelf_object.id }}" value="{{ obj.shelf_object.id }}">
+								{% endif %}
+								<input type="hidden" name="status_num" value="{{ obj.status }}">
+							</td>
+						</tr>
+						{% empty %}
+						<tr>
+							<td colspan="6" class="text-center text-muted">{% trans 'No pending reservations.' %}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Reservation history -->
+	<div class="card">
+		<div class="card-body">
+			<div class="card-title titles">
+				<h2>{% trans 'Reservation History' %}</h2>
+			</div>
+			<div class="table-responsive">
+				<table id="table_history" class="display table table-striped table-bordered" style="width:100%">
+					<thead>
+					<tr>
+						<th>{% trans 'Object' %}</th>
+						<th>{% trans 'Amount required' %}</th>
+						<th>{% trans 'Amount returned' %}</th>
+						<th>{% trans 'Initial date' %}</th>
+						<th>{% trans 'Final date' %}</th>
+						<th>{% trans 'Status' %}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for obj in history_products %}
+						<tr>
+							<td>{{ obj.shelf_object }}</td>
+							<td>
+								{% if obj.shelf_object.is_box %}
+									{{ obj.amount_required }} {% trans "boxes" %}
+								{% else %}
+									{{ obj.amount_required }} {{ obj.shelf_object.measurement_unit }}
+								{% endif %}
+							</td>
+							<td>
+								{% if obj.amount_returned > 0 %}
+									{{ obj.amount_returned }}
+								{% else %}
+									-
+								{% endif %}
+							</td>
+							<td>{{ obj.initial_date }}</td>
+							<td>{{ obj.final_date }}</td>
+							<td>
+								<strong class="
+                                    {% if obj.status == 0 %}text-warning
+                                    {% elif obj.status == 1 %}text-info
+                                    {% elif obj.status == 2 %}text-danger
+                                    {% elif obj.status == 3 %}text-dark
+                                    {% elif obj.status == 4 %}text-success
+                                    {% endif %}">
+									{{ obj.get_status_display }}
+								</strong>
+							</td>
+						</tr>
+						{% empty %}
+						<tr>
+							<td colspan="6" class="text-center text-muted">{% trans 'No reservation history found.' %}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 {% block js %}
-    <script>
-        document.get_lab_id_script_url = '{% url "laboratory:get_lab_id"%}';
-        document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
-        document.api_create_reservation = '{% url "laboratory:api_individual_reservation_create"%}';
-        document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
-        document.lab_pk = {{laboratory}};
-    </script>
-    <script type="text/javascript" src="{% static 'js/my_reservations.js' %}?v={% get_organilab_version %}"></script>
+	<script>
+		document.get_lab_id_script_url = '{% url "laboratory:get_lab_id"%}';
+		document.api_modal_delete = '{% url "laboratory:api_reservation_delete" 0%}';
+		document.api_create_reservation = '{% url "laboratory:api_individual_reservation_create"%}';
+		document.api_update_product = '{% url "laboratory:api_reservation_update" 0%}';
+		document.lab_pk = {{laboratory}};
+	</script>
+	<script type="text/javascript" src="{% static 'js/my_reservations.js' %}?v={% get_organilab_version %}"></script>
+	<script>
+		$(document).ready(function () {
+			$('#table_history').DataTable();
+		});
+	</script>
 {% endblock %}

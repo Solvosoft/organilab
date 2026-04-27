@@ -1110,8 +1110,14 @@ msgstr "Reactivo"
 msgid "Material"
 msgstr "Materiales"
 
+msgid "Materials"
+msgstr "Materiales"
+
 msgid "Equipment"
 msgstr "Equipo"
+
+msgid "Available for use"
+msgstr "A disposición de uso"
 
 msgid "New status"
 msgstr "Nuevo Estado"
@@ -2196,8 +2202,6 @@ msgstr "Eliminar el elemento seleccionado"
 msgid "Do you want to delete this item?"
 msgstr "¿Desea eliminar este elemento?"
 
-msgid "Accept"
-msgstr "Aceptar"
 
 msgid "Delete All Selected Items"
 msgstr "Borrar todos los elementos seleccionados"
@@ -2207,6 +2211,18 @@ msgstr "¿Desea eliminar todos los elementos seleccionados?"
 
 msgid "My reservations"
 msgstr "Mis reservaciones"
+
+msgid "Pending Reservations"
+msgstr "Reservaciones Pendientes"
+
+msgid "Reservation History"
+msgstr "Historial de Reservaciones"
+
+msgid "No pending reservations."
+msgstr "No hay reservaciones pendientes."
+
+msgid "No reservation history found."
+msgstr "No se encontró historial de reservaciones."
 
 msgid "Cancel all selected products"
 msgstr "Cancelar todos los productos seleccionados"
@@ -3345,6 +3361,15 @@ msgstr "Reservaciones Denegadas"
 
 msgid "Closed Reservations"
 msgstr "Reservaciones Cerradas"
+
+msgid "Are you sure you want to close this reservation?"
+msgstr "¿Está seguro de que desea cerrar esta reserva?"
+
+msgid "Close reservation"
+msgstr "Cerrar reserva"
+
+msgid "Yes, close it"
+msgstr "Sí, cerrarla"
 
 msgid "Risk Management"
 msgstr "Manejo de Riesgo"
@@ -5235,14 +5260,11 @@ msgstr "Categoría de peligro"
 msgid "Intitution can access"
 msgstr "Institución puede acceder"
 
-msgid "Consumption record"
-msgstr "Registro de consumo"
-
 msgid "List Reagents"
 msgstr "Listar Reactivos"
 
-msgid "Reorder Reactives"
-msgstr "Reordenar Reactivos"
+msgid "Consumption reorder"
+msgstr "Reorden de consumo"
 
 msgid "Quantity cannot be less than the container object minimun limit: %(limit)s."
 msgstr "La cantidad no puede ser menor que el límite mínimo del contenedor: %(limit)s."
@@ -5699,3 +5721,395 @@ msgstr "Revisar datos extraídos"
 
 msgid "SDS Coverage"
 msgstr "Cobertura SDS"
+
+msgid "Interactive guides to help you use the system. Click on a tutorial to start it."
+msgstr "Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial para iniciarlo."
+
+msgid "Enable tutorials"
+msgstr "Activar tutoriales"
+
+msgid "Restart"
+msgstr "Reiniciar"
+
+msgid "steps"
+msgstr "pasos"
+
+msgid "Completed"
+msgstr "Completado"
+
+msgid "In progress"
+msgstr "En proceso"
+
+msgid "Not started"
+msgstr "No iniciado"
+
+msgid "Management system for risk management in warehouses and laboratories where reagents and chemicals are stored"
+msgstr "Sistema regencial para la gestión de riesgo en bodegas y laboratorios en los que se almacena reactivos y productos químicos"
+
+msgid "Workers"
+msgstr "Trabajadores"
+
+msgid "Pending Tasks"
+msgstr "Tareas Pendientes"
+
+msgid "Add Pending Task"
+msgstr "Agregar tarea pendiente"
+
+msgid "Change Pending Task"
+msgstr "Modificar tarea pendiente"
+
+msgid "Delete Pending Task"
+msgstr "Eliminar tarea pendiente"
+
+msgid "View Pending Task"
+msgstr "Ver tarea pendiente"
+
+msgid "Pending Task"
+msgstr "Tarea pendiente"
+
+msgid "Create task"
+msgstr "Crear tarea"
+
+msgid "Edit task"
+msgstr "Editar tarea"
+
+msgid "Delete task"
+msgstr "Eliminar tarea"
+
+msgid "Open link"
+msgstr "Abrir enlace"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "In process"
+msgstr "En proceso"
+
+msgid "Finished"
+msgstr "Finalizada"
+
+msgid "No pending tasks"
+msgstr "No hay tareas pendientes"
+
+msgid "No tasks in process"
+msgstr "No hay tareas en proceso"
+
+msgid "No finished tasks"
+msgstr "No hay tareas finalizadas"
+
+msgid "Archive all finished tasks"
+msgstr "Archivar todas las tareas terminadas"
+
+msgid "Archive task"
+msgstr "Archivar tarea"
+
+msgid "Expand description"
+msgstr "Expandir descripción"
+
+msgid "New pending task: %s"
+msgstr "Nueva tarea pendiente: %s"
+
+msgid "Day shift"
+msgstr "Jornada diurna"
+
+msgid "Mixed shift"
+msgstr "Jornada mixta"
+
+msgid "Night shift"
+msgstr "Jornada nocturna"
+
+msgid "Workday"
+msgstr "Jornada Laboral"
+
+msgid "Number of workers"
+msgstr "Número de trabajadores"
+
+msgid "Start Time"
+msgstr "Hora de inicio"
+
+msgid "End Time"
+msgstr "Hora de salida"
+
+msgid "Workdays of the risk zone"
+msgstr "Jornadas Laborales de la zona de riesgo"
+
+msgid "Workdays"
+msgstr "Jornadas Laborales"
+
+msgid "Update Workday"
+msgstr "Actualizar Jornada Laboral"
+
+msgid "Register Workday"
+msgstr "Registrar Jornada Laboral"
+
+msgid "View Workdays"
+msgstr "Ver Jornadas Laborales"
+
+msgid "Delete Workday"
+msgstr "Eliminar Jornada Laboral"
+
+msgid "Register Workdays"
+msgstr "Registrar Jornadas Laborales"
+
+msgid "Update Workdays"
+msgstr "Actualizar Jornadas Laborales"
+
+msgid "environmental"
+msgstr "ambiental"
+
+msgid "health"
+msgstr "salud"
+
+msgid "physical"
+msgstr "físico"
+
+msgid "ShelfObject expiration"
+msgstr "Vencimiento de objetos de estante"
+
+msgid "List of ShelfObject in limits"
+msgstr "Lista de objetos de estante con límites"
+
+msgid "You have been assigned a task because you have a change in a laboratory that you are responsible in the Organilab system."
+msgstr "Usted se le ha asignado una tarea porque tiene un cambio en un laboratorio que eres responsable en el sistema Organilab."
+
+msgid "This message is to notify you that one or more objects in the laboratory"
+msgstr "Este mensaje es para notificarle que uno o más objetos en el laboratorio"
+
+msgid "are at the minimum quota."
+msgstr "están en las cuotas mínimas."
+
+msgid "Detail of objects at the limit"
+msgstr "Detalle de objetos al límite"
+
+msgid "This message is to notify you that one or more reactives in the laboratory"
+msgstr "Este mensaje es para notificarle que uno o más reactivos en el laboratorio"
+
+msgid "will expire tomorrow."
+msgstr "vencerán mañana."
+
+msgid "Reagents nearing their expiration date"
+msgstr "Reactivos próximos a vencer"
+
+msgid "New period inform"
+msgstr "Nuevo informe de periodo"
+
+msgid "New period inform was created in the laboratory %s with the name %s"
+msgstr "Se creó un nuevo informe de periodo en el laboratorio %s con el nombre %s"
+
+msgid "Update Reactive"
+msgstr "Actualizar Reactivo"
+
+msgid "Available objects"
+msgstr "Objetos disponibles"
+
+msgid "Nominated"
+msgstr "Nominada"
+
+msgid "Ratio"
+msgstr "Ratio"
+
+msgid "Area/Volume"
+msgstr "Área/Volumen"
+
+msgid "New Structure type"
+msgstr "Nuevo Tipo Estructura"
+
+msgid "Create Box"
+msgstr "Crear caja"
+
+msgid "Quantity of boxes"
+msgstr "Cantidad de cajas"
+
+msgid "Quantity Units per box"
+msgstr "Unidades por caja"
+
+msgid "Is box?"
+msgstr "Es caja?"
+
+msgid "Box"
+msgstr "Caja"
+
+msgid "Number of boxes"
+msgstr "Número de cajas"
+
+msgid "Box detail"
+msgstr "Detalle de cajas"
+
+msgid "Units per box"
+msgstr "Unidades por caja"
+
+msgid "List of integer unit quantities indexed by box position"
+msgstr "Lista de cantidades enteras de unidades indexadas por posición de caja"
+
+msgid "Quantity Box"
+msgstr "Cantidad de cajas"
+
+msgid "Number of box"
+msgstr "Número de cajas"
+
+msgid "%(quantity)s %(unit)s"
+msgstr "%(quantity)s %(unit)s"
+
+msgid "%(boxes)s box(es) x %(units)s units"
+msgstr "%(boxes)s caja(s) x %(units)s unidades"
+
+msgid "%(count)d box(es) created successfully."
+msgstr "%(count)d caja(s) creada(s) exitosamente."
+
+msgid "%(name)s (%(quantity)s %(unit)s)"
+msgstr "%(name)s (%(quantity)s %(unit)s)"
+
+msgid "%(units)s unit(s)"
+msgstr "%(units)s unidad(es)"
+
+msgid "%(boxes)s box(es)"
+msgstr "%(boxes)s caja(s)"
+
+msgid "Select box"
+msgstr "Seleccionar caja"
+
+msgid "unit(s)"
+msgstr "unidad(es)"
+
+msgid "Box units decreased"
+msgstr "Unidades de caja disminuidas"
+
+msgid "Box %(box)s: %(units)d unit(s) remaining"
+msgstr "Caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "No boxes"
+msgstr "Sin cajas"
+
+msgid "Box updated"
+msgstr "Caja actualizada"
+
+msgid "Box was updated successfully."
+msgstr "La caja fue actualizada exitosamente."
+
+msgid "Edit Box"
+msgstr "Editar caja"
+
+msgid "(%(units)s) units per box"
+msgstr "(%(units)s) unidades por caja"
+
+msgid "Box of %(name)s (%(quantity)s %(unit)s)"
+msgstr "Caja de %(name)s (%(quantity)s %(unit)s)"
+
+msgid "Cannot change the number of boxes or units per box because one or more boxes have already been modified. Use the decrease or increase actions instead."
+msgstr "No se puede cambiar el número de cajas ni las unidades por caja porque una o más cajas ya fueron modificadas. Use las acciones de disminuir o aumentar."
+
+msgid "Box selection is required for box objects."
+msgstr "La selección de caja es requerida para objetos de tipo caja."
+
+msgid "Invalid box selection."
+msgstr "Selección de caja inválida."
+
+msgid "Subtract amount cannot be greater than the available box units."
+msgstr "La cantidad a restar no puede ser mayor que las unidades disponibles de la caja."
+
+msgid "Added the box %(box)s: %(units)d unit(s) remaining"
+msgstr "Se agregó la caja %(box)s: %(units)d unidad(es) restante(s)"
+
+msgid "Box was increased successfully."
+msgstr "La caja fue incrementada exitosamente."
+
+msgid "boxes"
+msgstr "cajas"
+
+msgid "Boxes to return"
+msgstr "Cajas para devolver"
+
+msgid "The transfer out cannot be performed since the boxes available for the source object is less than the amount to transfer."
+msgstr "La transferencia no puede realizarse porque la cantidad de cajas disponibles para el objeto de origen es menor que la cantidad a transferir."
+
+msgid "Laboratories map"
+msgstr "Mapa de laboratorios"
+
+
+msgid "Move in the boxes %(boxes)s from the laboratory %(lab)s."
+msgstr "Movió las cajas %(boxes)s desde el laboratorio %(lab)s."
+
+msgid "Box of"
+msgstr "Caja de"
+
+msgid "Your reservation #%(pk)d was denied: not enough box stock to fulfill the request (%(units)d units short)."
+msgstr "Su reserva #%(pk)d fue denegada: no hay suficiente stock de cajas para cumplir la solicitud (%(units)d unidades faltantes)."
+
+msgid "Not enough complete boxes available. %(needed)d complete box(es) required but only %(available)d available."
+msgstr "No hay suficientes cajas completas disponibles. Se requieren %(needed)d caja(s) completa(s) pero solo hay %(available)d disponible(s)."
+
+msgid "This item cannot be deleted because it has active reservations. Please close all reservations first."
+msgstr "Este artículo no puede eliminarse porque tiene reservas activas. Por favor, cierre todas las reservas primero."
+
+
+msgid "Select at least one box to return."
+msgstr "Seleccione al menos una caja para devolver."
+
+msgid "Units must be greater than 0 for box %(code)s."
+msgstr "Las unidades deben ser mayores a 0 para la caja %(code)s."
+
+msgid "Units must be between 0 and the reserved amount for each box."
+msgstr "Las unidades deben estar entre 0 y la cantidad reservada para cada caja."
+
+msgid "Amount to return must be greater than 0."
+msgstr "La cantidad a devolver debe ser mayor a 0."
+
+msgid "Amount to return cannot exceed the required amount (%(max)s)."
+msgstr "La cantidad a devolver no puede superar la cantidad requerida (%(max)s)."
+
+msgid "Could not process the return. Please verify the values."
+msgstr "No se pudo procesar la devolución. Por favor verifique los valores."
+
+msgid "Amount to return"
+msgstr "Cantidad a devolver"
+
+msgid "Reserved units"
+msgstr "Unidades reservadas"
+
+msgid "Units to return"
+msgstr "Unidades a devolver"
+
+msgid "Confirm Return"
+msgstr "Confirmar devolución"
+
+msgid "Accept"
+msgstr "Aceptar"
+
+msgid "Reject"
+msgstr "Rechazar"
+
+msgid "No products in this reservation."
+msgstr "No hay productos en esta reserva."
+
+msgid "Already Returned"
+msgstr "Ya devuelto"
+
+msgid "The reservation has not started yet. Returns are not allowed before the initial date."
+msgstr "La reserva aún no ha iniciado. No se permiten devoluciones antes de la fecha de inicio."
+
+msgid "Return"
+msgstr "Devolver"
+
+msgid "Training Resources"
+msgstr "Capacitaciones"
+
+msgid "Access learning resources to understand how to use the system step by step."
+msgstr "Accede a material de capacitación para aprender a usar el sistema paso a paso."
+
+msgid "The unverification was performed successfully."
+msgstr "La desverificación se ha realizado con éxito."
+
+msgid "The verification was performed successfully."
+msgstr "La verificación se ha realizado con éxito."
+
+msgid "Unverify SDS"
+msgstr "Desverificar SDS"
+
+msgid "Verify SDS"
+msgstr "Verificar SDS"
+
+msgid "No file"
+msgstr "No hay archivo"
+
+msgid "List of SDS"
+msgstr "Listado de SDS"

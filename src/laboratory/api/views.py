@@ -1243,7 +1243,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
             "H225",
             "H226",
         ],
-    )
+    ).distinct()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["object__name", "object__sustancecharacteristics__h_code__code"]
@@ -1631,6 +1631,7 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         "quantity",
         "measurement_unit__description",
         "measurement_unit__key",
+        "object__sustancecharacteristics__cas_id_number",
     ]
     filterset_class = filterset.ShelObjectReactiveFilter
     ordering_fields = ["id"]
@@ -1667,6 +1668,10 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         data = request.data.copy()
         if "shelfobject" in data and "shelf_object" not in data:
             data["shelf_object"] = data["shelfobject"]
+        if "shelf_object" in data and not data.get("measurement_unit"):
+            shelfobject = ShelfObject.objects.filter(pk=data["shelf_object"]).first()
+            if shelfobject and shelfobject.measurement_unit_id:
+                data["measurement_unit"] = shelfobject.measurement_unit_id
         serializer = self.serializer_class(
             data=data, context={"request": request, "source_laboratory_id": lab_pk}
         )
@@ -1698,6 +1703,9 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
 
         if "shelfobject" in data and "shelf_object" not in data:
             data["shelf_object"] = data["shelfobject"]
+
+        if not data.get("box_index") and data.get("box_index") != 0:
+            data.pop("box_index", None)
 
         serializer = DecreaseReactiveShelfObjectSerializer(
             data=data, context={"request": request, "source_laboratory_id": lab_pk}
