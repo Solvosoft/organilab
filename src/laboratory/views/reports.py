@@ -255,42 +255,40 @@ def sds_coverage_svg(request, org_pk):
 
     # Get latest traceability source per substance
     latest_trace = SDSTraceability.objects.filter(
-        sustance_characteristics=OuterRef('pk')
-    ).order_by('-creation_date')
+        sustance_characteristics=OuterRef("pk")
+    ).order_by("-creation_date")
 
-    annotated = qs.annotate(
-        latest_source=Subquery(latest_trace.values('source')[:1])
-    )
+    annotated = qs.annotate(latest_source=Subquery(latest_trace.values("source")[:1]))
 
     source_counts = {}
     no_sds_count = 0
-    for row in annotated.values_list('latest_source', flat=True):
+    for row in annotated.values_list("latest_source", flat=True):
         if row is None:
             no_sds_count += 1
         else:
             source_counts[row] = source_counts.get(row, 0) + 1
 
     SOURCE_COLORS = {
-        'merck': '#E59E40',
-        'pubchem': '#00A896',
-        'fisher': '#CF82B6',
-        'panreac': '#0280A0',
-        'carlo_erba': '#F07060',
-        'jt_baker': '#A597C3',
-        'honeywell': '#A1B2C8',
-        'unknown': '#F5D890',
-        'manual': '#99EBA8',
+        "merck": "#E59E40",
+        "pubchem": "#00A896",
+        "fisher": "#CF82B6",
+        "panreac": "#0280A0",
+        "carlo_erba": "#F07060",
+        "jt_baker": "#A597C3",
+        "honeywell": "#A1B2C8",
+        "unknown": "#F5D890",
+        "manual": "#99EBA8",
     }
-    NO_SDS_COLOR = '#D9D9D9'
+    NO_SDS_COLOR = "#D9D9D9"
     SOURCE_LABELS = dict(SDSTraceability.SDS_SOURCE_CHOICES)
 
     segments = []
     for source_key, count in sorted(source_counts.items(), key=lambda x: -x[1]):
         label = str(SOURCE_LABELS.get(source_key, source_key))
-        color = SOURCE_COLORS.get(source_key, '#BBBBBB')
+        color = SOURCE_COLORS.get(source_key, "#BBBBBB")
         segments.append((label, count, color))
     if no_sds_count > 0:
-        segments.append((str(_('Sin SDS')), no_sds_count, NO_SDS_COLOR))
+        segments.append((str(_("Sin FDS")), no_sds_count, NO_SDS_COLOR))
 
     with_sds = total - no_sds_count
     coverage_pct = (with_sds / total * 100) if total else 0
@@ -314,21 +312,21 @@ def sds_coverage_svg(request, org_pk):
         f'viewBox="0 0 {svg_w} {svg_h}">'
     )
     parts.append(
-        '<style>'
+        "<style>"
         'text { font-family: "Segoe UI", Arial, sans-serif; }'
-        '.title { font-size: 18px; font-weight: bold; fill: #333; }'
-        '.center-pct { font-size: 28px; font-weight: bold; fill: #333; }'
-        '.center-label { font-size: 12px; fill: #666; }'
-        '.legend-text { font-size: 13px; fill: #333; }'
-        '.table-header { font-size: 12px; font-weight: bold; fill: #fff; }'
-        '.table-cell { font-size: 12px; fill: #333; }'
-        '.table-total { font-size: 12px; font-weight: bold; fill: #333; }'
-        '</style>'
+        ".title { font-size: 18px; font-weight: bold; fill: #333; }"
+        ".center-pct { font-size: 28px; font-weight: bold; fill: #333; }"
+        ".center-label { font-size: 12px; fill: #666; }"
+        ".legend-text { font-size: 13px; fill: #333; }"
+        ".table-header { font-size: 12px; font-weight: bold; fill: #fff; }"
+        ".table-cell { font-size: 12px; fill: #333; }"
+        ".table-total { font-size: 12px; font-weight: bold; fill: #333; }"
+        "</style>"
     )
 
     parts.append(
         f'<text x="{svg_w // 2}" y="30" text-anchor="middle" class="title">'
-        f'Cobertura SDS</text>'
+        f"Cobertura FDS</text>"
     )
 
     # Donut chart
@@ -337,9 +335,7 @@ def sds_coverage_svg(request, org_pk):
         parts.append(
             f'<circle cx="{cx}" cy="{donut_cy}" r="{r_outer}" fill="{segments[0][2]}" />'
         )
-        parts.append(
-            f'<circle cx="{cx}" cy="{donut_cy}" r="{r_inner}" fill="white" />'
-        )
+        parts.append(f'<circle cx="{cx}" cy="{donut_cy}" r="{r_inner}" fill="white" />')
     else:
         angle = 0
         for _label, count, color in segments:
@@ -356,11 +352,11 @@ def sds_coverage_svg(request, org_pk):
     # Center text
     parts.append(
         f'<text x="{cx}" y="{donut_cy - 5}" text-anchor="middle" class="center-pct">'
-        f'{coverage_pct:.0f}%</text>'
+        f"{coverage_pct:.0f}%</text>"
     )
     parts.append(
         f'<text x="{cx}" y="{donut_cy + 15}" text-anchor="middle" class="center-label">'
-        f'con SDS</text>'
+        f"con SDS</text>"
     )
 
     # Legend
@@ -371,7 +367,7 @@ def sds_coverage_svg(request, org_pk):
         )
         parts.append(
             f'<text x="{legend_x + 20}" y="{ly + 2}" class="legend-text">'
-            f'{label} ({count})</text>'
+            f"{label} ({count})</text>"
         )
         ly += 24
 
@@ -384,7 +380,7 @@ def sds_coverage_svg(request, org_pk):
         f'<rect x="{table_x}" y="{table_y}" width="{total_w}" '
         f'height="{row_h}" rx="4" fill="#4a90a4" />'
     )
-    headers = [str(_('Fuente')), str(_('Cantidad')), str(_('Porcentaje'))]
+    headers = [str(_("Fuente")), str(_("Cantidad")), str(_("Porcentaje"))]
     hx = table_x
     for i, header in enumerate(headers):
         parts.append(
@@ -395,7 +391,7 @@ def sds_coverage_svg(request, org_pk):
 
     ry = table_y + row_h
     for idx, (label, count, color) in enumerate(segments):
-        bg = '#f8f8f8' if idx % 2 == 0 else '#ffffff'
+        bg = "#f8f8f8" if idx % 2 == 0 else "#ffffff"
         parts.append(
             f'<rect x="{table_x}" y="{ry}" width="{total_w}" height="{row_h}" fill="{bg}" />'
         )
@@ -439,6 +435,6 @@ def sds_coverage_svg(request, org_pk):
         f'height="{table_total_h}" rx="4" fill="none" stroke="#ddd" stroke-width="1" />'
     )
 
-    parts.append('</svg>')
-    svg_content = '\n'.join(parts)
+    parts.append("</svg>")
+    svg_content = "\n".join(parts)
     return HttpResponse(svg_content, content_type="image/svg+xml")

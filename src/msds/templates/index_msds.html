@@ -9,12 +9,12 @@
 {% block content %}
 
 <div class="text-center mb-3">
-    <img src="{% url 'laboratory:sds_coverage_svg' org_pk %}" alt="{% trans 'SDS Coverage' %}" />
+    <img src="{% url 'laboratory:sds_coverage_svg' org_pk %}" alt="{% trans 'FDS Coverage' %}" />
 </div>
 
-<h1 class="text-center">{% trans 'Search SDS' %}
+<h1 class="text-center">{% trans 'Search FDS' %}
 <a class="btn btn-success float-end" href="{% url 'msds:sds_create' org_pk %}">
-{% trans 'Upload SDS' %}
+{% trans 'Upload FDS' %}
 </a>
 </h1>
 

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static i18n gtsettings %}
+{% load urlname_tags %}
+{% block pre_head %}
+    {% define_true  "use_datatables" %}
+	{% define_urlname_action 'validate_sds' %}
+{% load organilab_tags %}
+
+{% endblock %}
+{% block content %}
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+							<table class="table table-bordered">
+            <tbody>
+															<tr>
+                    <td><strong>{% trans 'Name' %}</strong></td>
+                    <td id="obj_name"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'CAS Number' %}</strong></td>
+                    <td id="cas"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'Molecular Formula' %}</strong></td>
+                    <td id="molecular"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'Is Precursor' %}</strong></td>
+                    <td id="precursor"></td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'White Organ' %}</strong></td>
+                    <td>
+                        <ul id="white_organ">
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'H Codes' %}</strong></td>
+                    <td>
+                        <ul id="h_code">
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>{% trans 'UE Codes' %}</strong></td>
+                    <td>
+                        <ul id="ue_code">
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+						</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -3413,8 +3413,8 @@ msgstr "Etiquetas SGA"
 msgid "SGA Editor"
 msgstr "Editor SGA"
 
-msgid "MSDS: Security sheets"
-msgstr "MSDS: Hojas de seguridad"
+msgid "FDS: Security sheets"
+msgstr "FDS: Hojas de seguridad"
 
 msgid "Companies Managment"
 msgstr "Gestión de Compañías"
@@ -5677,20 +5677,20 @@ msgstr "Lugares conocidos"
 msgid "Density"
 msgstr "Densidad"
 
-msgid "Search SDS"
-msgstr "Buscar SDS"
+msgid "Search FDS"
+msgstr "Buscar FDS"
 
-msgid "Upload SDS"
-msgstr "Subir SDS"
+msgid "Upload FDS"
+msgstr "Subir FDS"
 
 msgid "Analyze"
 msgstr "Analizar"
 
-msgid "Upload SDS File"
-msgstr "Subir archivo SDS"
+msgid "Upload FDS File"
+msgstr "Subir archivo FDS"
 
-msgid "SDS File (PDF)"
-msgstr "Archivo SDS (PDF)"
+msgid "FDS File (PDF)"
+msgstr "Archivo FDS (PDF)"
 
 msgid "Diagnostic"
 msgstr "Diagnóstico"
@@ -5719,8 +5719,8 @@ msgstr "Códigos H únicos"
 msgid "Review extracted data"
 msgstr "Revisar datos extraídos"
 
-msgid "SDS Coverage"
-msgstr "Cobertura SDS"
+msgid "FDS Coverage"
+msgstr "Cobertura FDS"
 
 msgid "Interactive guides to help you use the system. Click on a tutorial to start it."
 msgstr "Guías interactivas para ayudarte a usar el sistema. Haz clic en un tutorial para iniciarlo."
@@ -6113,3 +6113,12 @@ msgstr "No hay archivo"
 
 msgid "List of FDS"
 msgstr "Listado de FDS"
+
+msgid "Register Incident"
+msgstr "Registrar Incidente"
+
+msgid "Update Incident"
+msgstr "Actualizar Incidente"
+
+msgid "Delete Incident"
+msgstr "Eliminar Incidente"
