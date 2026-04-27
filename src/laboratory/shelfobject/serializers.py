@@ -1144,10 +1144,7 @@ class TransferOutShelfObjectSerializer(serializers.Serializer):
         data = super().validate(data)
         shelfobject = data.get("shelf_object")
         if shelfobject.is_box:
-            print(len(shelfobject.quantity_units))
-            print(data.get("amount_to_transfer"))
             if len(shelfobject.quantity_units) < int(data.get("amount_to_transfer")):
-                print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                 logger.debug(
                     f"TransferOutShelfObjectSerializer --> shelfobject.quantity_units "
                     f"({shelfobject.quantity_units}) < amount_to_transfer ({data.get('amount_to_transfer')})"
@@ -1416,7 +1413,12 @@ class TransferObjectSerializer(serializers.ModelSerializer):
             "name": (
                 obj.object.object.name
                 if not obj.is_box
-                else _("Box of ") + obj.object.object.name
+                else _("Box of %(name)s (%(quantity)s %(unit)s)")
+                % {
+                    "name": obj.object.object.name,
+                    "quantity": obj.quantity,
+                    "unit": obj.object.get_measurement_unit_display(),
+                }
             ),
             "type": obj.object.object.type,
         }
@@ -3137,7 +3139,9 @@ class ShelObjectReactiveSerializer(serializers.ModelSerializer):
 
     def get_quantity(self, obj):
         if obj.is_box:
-            total =  sum(item.get("units", 0) for item in obj.quantity_units) * obj.quantity
+            total = (
+                sum(item.get("units", 0) for item in obj.quantity_units) * obj.quantity
+            )
             return total
         return round(obj.quantity, 3)
 
@@ -3330,7 +3334,9 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
     )
     description = serializers.CharField(required=False, allow_blank=True)
     measurement_unit = serializers.PrimaryKeyRelatedField(
-        queryset=Catalog.objects.using(settings.READONLY_DATABASE), required=False, allow_null=True
+        queryset=Catalog.objects.using(settings.READONLY_DATABASE),
+        required=False,
+        allow_null=True,
     )
     shelf_object = serializers.PrimaryKeyRelatedField(
         queryset=ShelfObject.objects.using(settings.READONLY_DATABASE), required=True
@@ -3380,7 +3386,11 @@ class DecreaseReactiveShelfObjectSerializer(serializers.Serializer):
                 )
             if amount > quantity_units[box_index]["units"]:
                 raise serializers.ValidationError(
-                    {"amount": _("Subtract amount cannot be greater than the available box units.")}
+                    {
+                        "amount": _(
+                            "Subtract amount cannot be greater than the available box units."
+                        )
+                    }
                 )
             return data
 

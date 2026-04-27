@@ -1300,7 +1300,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 ]
                 transfer_obj = TranferObject.objects.create(**data_transfer)
 
-            if amount_to_transfer <= shelf_object.quantity:
+            if amount_to_transfer <= shelf_object.quantity and not shelf_object.is_box:
                 transfer_obj = TranferObject.objects.create(**data_transfer)
             if transfer_obj:
                 utils.organilab_logentry(
