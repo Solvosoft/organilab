@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% load i18n laboratory static %}
+{% load gtsettings %}
+{% load urlname_tags %}
+{% load organilab_tags %}
+
+{% block pre_head %}
+	{% define_urlname_action 'pendingtask_list' %}
+{% endblock %}
+
+{% block extra_head %}
+	{{ block.super }}
+	<link rel="stylesheet" href="{% static '/css/tasks.css' %}">
+{% endblock %}
+
+{% block title %}
+	{% trans 'Pending Tasks' %}
+{% endblock %}
+
+{% block content %}
+	<div class="container-fluid py-4">
+
+		<div class="row">
+			<h1 class="mb-1">{% trans 'Pending Tasks' %}</h1>
+		</div>
+
+
+		<div class="row align-items-center justify-content-center my-4">
+			<div class="col-md-6 col-12">
+				<div class="input-group">
+					<span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+					<input type="text" id="task-search-input" class="form-control"
+												placeholder="{% trans 'Search by name' %}"/>
+				</div>
+			</div>
+
+			{% if perms.pending_task.add_pendingtask %}
+				<div class="col-md-6 col-12 d-flex justify-content-end">
+					<button type="button" class="btn btn-success btn-sm" id="create-task-btn" title="{% trans 'Create task' %}">
+						<i class="fa fa-plus" aria-hidden="true"></i>
+					</button>
+				</div>
+			{% endif %}
+		</div>
+
+		<div class="row g-3 kanban-board">
+			<div class="col-12 col-lg-4">
+				{% include 'tasks/task_column.html' with column_id='status-pending' title=_('Pending') count=pending_tasks|length tasks=pending_tasks status='0' empty_message=_('No pending tasks') header_class='bg-warning-subtle' %}
+			</div>
+
+			<div class="col-12 col-lg-4">
+				{% include 'tasks/task_column.html' with column_id='status-in-process' title=_('In process') count=in_process_tasks|length tasks=in_process_tasks status='1' empty_message=_('No tasks in process') header_class='bg-info-subtle' %}
+			</div>
+
+			<div class="col-12 col-lg-4">
+				{% include 'tasks/task_column.html' with column_id='status-finished' title=_('Finished') count=finished_tasks|length tasks=finished_tasks status='2' empty_message=_('No finished tasks') header_class='bg-success-subtle' %}
+			</div>
+		</div>
+	</div>
+
+	{% url "pending_tasks:api-pending_tasks-list"  as list_obj_url %}
+	{% trans 'Create task' as create_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=create_form id="create_obj_modal" title=create_obj_tittle form_id="create_obj_form" url=list_obj_url principal_class="modal-lg" %}
+
+	{% url "pending_tasks:api-pending_tasks-detail"  0 as detail_obj_url %}
+	{% trans 'Edit task' as update_obj_tittle %}
+	{% include 'gentelella/blocks/modal_template.html' with form=update_form id="update_obj_modal" title=update_obj_tittle form_id="update_obj_form" url=detail_obj_url principal_class="modal-lg" %}
+	{% include 'gentelella/blocks/modal_template_delete.html' with form=delete_form id="delete_obj_modal" form_id="delete_obj_form" url=detail_obj_url %}
+
+ {% include 'tasks/modal_expand.html' %}
+
+	<template id="task-card-tpl">
+		{% include 'tasks/task_card.html' %}
+	</template>
+
+{% endblock %}
+
+{% block js %}
+	{{ block.super }}
+
+	<script>
+		var object_urls = {
+			list_url: "{% url 'pending_tasks:api-pending_tasks-list'  %}",
+			create_url: "{% url 'pending_tasks:api-pending_tasks-list'  %}",
+			destroy_url: "{% url 'pending_tasks:api-pending_tasks-detail'  0 %}",
+			update_url: "{% url 'pending_tasks:api-pending_tasks-detail'  0 %}",
+			get_values_for_update_url: "{% url 'pending_tasks:api-pending_tasks-get-values-for-update'  0 %}",
+			archive_finished_url: "{% url 'pending_tasks:api-pending_tasks-archive-finished'  %}"
+		}
+	</script>
+
+	<script src="{% static '/js/tasks.js' %}?v={% get_organilab_version %}"></script>
+
+{% endblock %}

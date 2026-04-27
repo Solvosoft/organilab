@@ -319,7 +319,37 @@ class ShelfObjectLaboratoryViewSerializer(
     actions = serializers.SerializerMethodField()
     quantity = serializers.SerializerMethodField()
 
+    def get_object_type(self, obj):
+
+        if obj.is_box:
+            return _("Box")
+
+        return obj.object.get_type_display()
+
+    def get_object_name(self, obj):
+        if obj.is_box:
+            return _("%(name)s (%(quantity)s %(unit)s)") % {
+                "name": obj.object.name,
+                "quantity": round(obj.quantity, 3),
+                "unit": obj.get_measurement_unit_display(),
+            }
+        return obj.object.name
+
+    def get_unit(self, obj):
+        if obj.is_box:
+            boxes = obj.quantity_units or []
+            return ", ".join(
+                f"{box['code']}: {box['units']} " + str(_("unit(s)"))
+                for box in boxes
+            ) if boxes else _("No boxes")
+        return obj.get_measurement_unit_display()
+
     def get_quantity(self, obj):
+        if obj.is_box:
+            total_boxes = len(obj.quantity_units) if obj.quantity_units else 0
+            return _("%(boxes)s box(es)") % {
+                "boxes": total_boxes,
+            }
         return round(obj.quantity, 3)
 
     def get_actions(self, obj):

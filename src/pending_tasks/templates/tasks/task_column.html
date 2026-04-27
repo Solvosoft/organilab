@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<div class="kanban-column card border-0 shadow-sm h-100">
+    <div class="card-header {{ header_class }} d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ title }}</h5>
+        <div class="d-flex align-items-center gap-2">
+            {% if status == '2' %}
+            <button
+                type="button"
+                id="archive-finished-btn"
+                class="btn btn-sm btn-link text-muted p-0{% if count < 1 %} d-none{% endif %}"
+                title="{% trans 'Archive all finished tasks' %}"
+            >
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </button>
+            {% endif %}
+            <span
+                class="badge bg-white shadow text-muted"
+                data-counter-status="{{ status }}"
+            >
+                {{ count }}
+            </span>
+        </div>
+    </div>
+
+    <div class="card-body kanban-list"
+         id="{{ column_id }}"
+         data-status="{{ status }}">
+        {% for task in tasks %}
+            {% include 'tasks/task_card.html' with task=task %}
+        {% empty %}
+            <div class="empty-column text-center text-muted py-4">
+													<i class="fa fa-inbox fs-3 d-block mb-2" aria-hidden="true"></i>
+                {{ empty_message }}
+            </div>
+        {% endfor %}
+    </div>
+</div>

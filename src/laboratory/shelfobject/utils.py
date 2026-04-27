@@ -1,4 +1,6 @@
 import logging
+import random
+import string
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -17,6 +19,7 @@ from laboratory.models import (
     BaseUnitValues,
     OrganizationStructure,
 )
+from reservations_management.models import ReservedProducts, RETURNED, CLOSED
 from laboratory.utils import (
     organilab_logentry,
     get_pk_org_ancestors,
@@ -32,9 +35,30 @@ from laboratory.utils_base_unit import (
 
 logger = logging.getLogger("organilab")
 
+_BOX_CODE_CHARS = string.digits + string.ascii_lowercase  # 0-9 + a-z
+
+
+def generate_box_code(shelfobject_pk, existing_codes=()):
+    """
+    Generate a unique box code in the format b{pk}-XXXX where XXXX is a
+    4-character alphanumeric suffix (digits + lowercase letters).
+    Retries until a code not present in existing_codes is found.
+    """
+    existing = set(existing_codes)
+    prefix = f"b{shelfobject_pk}-"
+    while True:
+        suffix = "".join(random.choices(_BOX_CODE_CHARS, k=4))
+        code = f"{prefix}{suffix}"
+        if code not in existing:
+            return code
+
 
 def save_increase_decrease_shelf_object(
-    user, validated_data, laboratory, organization, is_increase_process=False
+    user,
+    validated_data,
+    laboratory,
+    organization,
+    is_increase_process=False,
 ):
     provider = None
     if "provider" in validated_data:
@@ -49,6 +73,129 @@ def save_increase_decrease_shelf_object(
     shelfobject = validated_data["shelf_object"]
     amount = validated_data["amount"]
     use = validated_data.get("use", "")
+
+    # Box objects: decrease/increase units from a specific box slot by index
+    if shelfobject.is_box:
+        if not is_increase_process:
+            box_index = validated_data.get("box_index")
+            quantity_units = list(shelfobject.quantity_units)
+            box_entry = quantity_units[box_index]
+            old_units = box_entry["units"]
+            old_quantity = shelfobject.get_box_totals()
+            new_units = old_units - int(amount)
+            action_taken = _("Box units decreased")
+
+            if new_units <= 0:
+                quantity_units.pop(box_index)
+            else:
+                totals_original = shelfobject.get_obj_conversion_from_two_units()
+                quantity_units[box_index] = {
+                    "code": box_entry["code"],
+                    "units": new_units,
+                    "quantity": totals_original * new_units,
+                }
+
+            shelfobject.quantity_units = quantity_units
+
+            log_object_change(
+                user,
+                laboratory.pk,
+                shelfobject,
+                old_quantity,
+                shelfobject.get_box_totals(),
+                description,
+                2,
+                _("Spend"),
+                create=False,
+                organization=organization,
+                is_box=shelfobject.is_box,
+            )
+            save_object_by_action(
+                user,
+                shelfobject,
+                [laboratory, shelfobject, organization],
+                ["quantity_units"],
+                CHANGE,
+                "shelfobject",
+            )
+            if not description:
+                description = _("Box %(box)s: %(units)d unit(s) remaining") % {
+                    "box": box_entry["code"],
+                    "units": max(new_units, 0),
+                }
+            ShelfObjectObservation.objects.create(
+                action_taken=action_taken,
+                description=description,
+                shelf_object=shelfobject,
+                created_by=user,
+            )
+            return
+        else:
+
+            quantity_units = shelfobject.quantity_units or []
+            totals = shelfobject.get_box_totals()
+            current_boxes = quantity_units
+            new_boxes = []
+
+            for _i in range(int(amount)):
+                existing_codes = [b["code"] for b in quantity_units]
+                code = generate_box_code(shelfobject.pk, existing_codes)
+                new_boxes.append(
+                    {
+                        "code": code,
+                        "units": shelfobject.units_per_box,
+                        "quantity": shelfobject.get_obj_conversion_from_two_units()
+                        * shelfobject.units_per_box,
+                    }
+                )
+            current_boxes.extend(new_boxes)
+            shelfobject.quantity_units = current_boxes
+            action_taken = _("Box was increased successfully.")
+            converted_amount = amount * shelfobject.quantity * shelfobject.units_per_box
+            quantity_base = shelfobject.get_obj_conversion_from_two_units()
+            if shelfobject.shelf.measurement_unit is not None:
+                converted_amount = quantity_base
+                converted_amount *= shelfobject.units_per_box
+
+            old_total = totals
+            log_object_add_change(
+                user,
+                laboratory.pk,
+                shelfobject,
+                old_total,
+                shelfobject.get_box_totals(),
+                use if use else _("Income"),
+                provider,
+                bill,
+                create=False,
+                organization=organization,
+                is_box=shelfobject.is_box,
+            )
+
+            save_object_by_action(
+                user,
+                shelfobject,
+                [laboratory, shelfobject, organization],
+                ["quantity_units"],
+                CHANGE,
+                "shelfobject",
+            )
+            for box in new_boxes:
+                description = _(
+                    "Added the box %(box)s: %(units)d unit(s) remaining"
+                ) % {
+                    "box": box["code"],
+                    "units": box["units"],
+                }
+
+                ShelfObjectObservation.objects.create(
+                    action_taken=action_taken,
+                    description=description,
+                    shelf_object=shelfobject,
+                    created_by=user,
+                )
+            return
+
     old = shelfobject.quantity
     converted_amount = get_conversion_from_two_units(
         measurement_unit, shelfobject.shelf.measurement_unit, amount
@@ -76,6 +223,7 @@ def save_increase_decrease_shelf_object(
             bill,
             create=False,
             organization=organization,
+            is_box=shelfobject.is_box,
         )
 
     else:
@@ -90,6 +238,7 @@ def save_increase_decrease_shelf_object(
             _("Spend"),
             create=False,
             organization=organization,
+            is_box=shelfobject.is_box,
         )
 
     shelfobject.quantity = new
@@ -111,6 +260,76 @@ def save_increase_decrease_shelf_object(
         description=description,
         shelf_object=shelfobject,
         created_by=user,
+    )
+
+
+def save_return_box_shelf_object(user, validated_data, laboratory, organization):
+    """
+    Returns boxes from a reservation back into the shelf object's quantity_units.
+
+    For each box in reserved_product.reserved_boxes, if the box code already exists
+    in quantity_units its units are restored; otherwise the entry is re-added.
+    quantity_box is updated and the reservation status is set to RETURNED.
+    """
+    reserved_product = validated_data["reserved_product"]
+    description = validated_data.get("description", "")
+    shelfobject = reserved_product.shelf_object
+
+    quantity_units = {
+        entry["code"]: entry["units"] for entry in shelfobject.quantity_units
+    }
+    affected_codes = []
+
+    for box in reserved_product.reserved_boxes:
+        code = box["code"]
+        returned_units = box["units"]
+        old_units = quantity_units.get(code, 0)
+        new_units = old_units + returned_units
+
+        log_object_change(
+            user,
+            laboratory.pk,
+            shelfobject,
+            old_units,
+            new_units,
+            description,
+            2,
+            _("Return"),
+            create=False,
+            organization=organization,
+        )
+
+        quantity_units[code] = new_units
+        affected_codes.append(code)
+
+    shelfobject.quantity_units = [
+        {"code": code, "units": units} for code, units in quantity_units.items()
+    ]
+
+    save_object_by_action(
+        user,
+        shelfobject,
+        [laboratory, shelfobject, organization],
+        ["quantity_units"],
+        CHANGE,
+        "shelfobject",
+    )
+
+    if not description:
+        description = _("Boxes %(codes)s returned from reservation #%(pk)d") % {
+            "codes": ", ".join(affected_codes),
+            "pk": reserved_product.pk,
+        }
+    ShelfObjectObservation.objects.create(
+        action_taken=_("Box units returned"),
+        description=description,
+        shelf_object=shelfobject,
+        created_by=user,
+    )
+
+    ReservedProducts.objects.filter(pk=reserved_product.pk).update(
+        status=RETURNED,
+        amount_returned=reserved_product.amount_required,
     )
 
 
@@ -262,17 +481,30 @@ def clone_shelfobject_to(
     quantity=1,
 ):
     # clones a shelfobject and saves it in the provided organization, laboratory and shelf
-
-    new_limits = clone_shelfobject_limits(shelfobject, request.user)
+    new_limits = None
+    shelf = shelfobject.shelf
+    if not shelfobject.is_box:
+        new_limits = clone_shelfobject_limits(shelfobject, request.user)
 
     shelfobject.pk = (
         None  # to save the container with some changes into a new one (clone it)
     )
+    total_in_boxes = 0
+    msg = _("Income")
+    if shelfobject.is_box:
+        shelfobject.quantity_units = shelfobject.order_by_boxes()[
+            -int(request.data["amount_transfer"]) :
+        ]
+        msg = _("Income the boxes %(boxes)s from the laboratory %(lab)s.") % {
+            "boxes": ", ".join([x.get("code") for x in shelfobject.quantity_units]),
+            "lab": shelfobject.in_where_laboratory.name,
+        }
+
     shelfobject.shelf = destination_shelf
     shelfobject.in_where_laboratory_id = destination_laboratory_id
     shelfobject.limits = new_limits
     shelfobject.created_by = request.user
-    shelfobject.quantity = quantity
+    shelfobject.quantity = quantity if not shelfobject.is_box else shelfobject.quantity
     shelfobject.shelf_object_qr = None
     shelfobject.shelf_object_url = None
     shelfobject._state.adding = True
@@ -286,12 +518,13 @@ def clone_shelfobject_to(
         destination_laboratory_id,
         shelfobject,
         0,
-        shelfobject.quantity,
+        shelfobject.quantity if not shelfobject.is_box else total_in_boxes,
         "",
         ADDITION,
-        _("Income"),
+        msg,
         create=True,
         organization=destination_organization_id,
+        is_box=shelfobject.is_box,
     )
     organilab_logentry(
         request.user,
@@ -488,10 +721,22 @@ def move_shelfobject_to(
     return shelfobject
 
 
-def update_shelfobject_quantity(shelfobject, new_quantity, user, organization):
+def update_shelfobject_quantity(
+    shelfobject, new_quantity, user, organization, box_totals=0
+):
     if new_quantity > 0:
-        old_quantity = shelfobject.quantity
-        shelfobject.quantity = new_quantity
+        old_quantity = (
+            shelfobject.quantity
+            if not shelfobject.is_box
+            else shelfobject.get_box_totals()
+        )
+        if not shelfobject.is_box:
+            shelfobject.quantity = new_quantity
+        else:
+            quantity_units = sorted(
+                shelfobject.quantity_units, key=lambda x: x["units"], reverse=False
+            )
+            shelfobject.quantity_units = quantity_units[: -int(box_totals)]
         shelfobject.save()
         log_object_change(
             user,
@@ -608,7 +853,13 @@ def limit_objects_by_shelf(shelf, object):
 
 
 def validate_measurement_unit_and_quantity(
-    shelf, object, quantity, measurement_unit=None, container=None, shelf_object=None, increase_unit=None
+    shelf,
+    object,
+    quantity,
+    measurement_unit=None,
+    container=None,
+    shelf_object=None,
+    increase_unit=None,
 ):
     errors = {}
 
@@ -767,6 +1018,12 @@ def save_shelfobject_characteristics(characteristic, user):
     organilab_logentry(user, obj, ADDITION, changed_data=changed_data)
 
 
+def has_active_reservations(shelfobject):
+    return ReservedProducts.objects.filter(
+        shelf_object=shelfobject
+    ).exclude(reservation__status=CLOSED).exists()
+
+
 def delete_shelfobjects(shelfobject, user, laboratory):
     organilab_logentry(user, shelfobject, DELETION, relobj=laboratory)
     shelfobject.delete()
@@ -775,5 +1032,132 @@ def delete_shelfobjects(shelfobject, user, laboratory):
 def get_shelf_object_expiration_date(expired_date):
     date = now().date()
     if not expired_date:
-        return date+timedelta(days=365*5)
+        return date + timedelta(days=365 * 5)
     return expired_date
+
+
+def move_shelfobject_to(
+    shelfobject,
+    destination_organization_id,
+    destination_laboratory_id,
+    destination_shelf,
+    request,
+    observation_text="Moved Object",
+    shelf=None,
+):
+    log_object_change(
+        request.user,
+        shelfobject.in_where_laboratory.pk,
+        shelfobject,
+        shelfobject.quantity,
+        0,
+        "",
+        CHANGE,
+        _("Move out"),
+        organization=destination_organization_id,
+        is_box=shelfobject.is_box,
+    )
+    shelfobject.shelf = destination_shelf
+    shelfobject.in_where_laboratory_id = destination_laboratory_id
+    shelfobject.created_by = request.user
+    shelfobject.shelf_object_qr = None
+    shelfobject.shelf_object_url = None
+    shelfobject.save()
+    build_shelfobject_qr(
+        request, shelfobject, destination_organization_id, destination_laboratory_id
+    )
+
+    msg = _("Move in")
+    if shelfobject.is_box:
+        if shelf.measurement_unit:
+            if shelf.measurement_unit.pk != shelfobject.object.measurement_unit.pk:
+                total_in_boxes = shelfobject.get_shelfobject_conversion_from_two_units(
+                    destination_shelf.measurement_unit,
+                    shelf.quantity,
+                )
+                i = 0
+
+                for box in shelfobject.quantity_units:
+                    shelfobject.quantity_units[i] = total_in_boxes * box["units"]
+                    i += 1
+
+        msg = _("Move in the boxes %(boxes)s from the laboratory %(lab)s.") % {
+            "boxes": ", ".join([x.get("code") for x in shelfobject.quantity_units]),
+            "lab": shelfobject.in_where_laboratory.name,
+        }
+
+    log_object_change(
+        request.user,
+        destination_laboratory_id,
+        shelfobject,
+        0,
+        (
+            shelfobject.quantity
+            if not shelfobject.is_box
+            else sum([x["quantity"] for x in shelfobject.quantity_units])
+        ),
+        "",
+        CHANGE,
+        msg,
+        organization=destination_organization_id,
+        is_box=shelfobject.is_box,
+    )
+    organilab_logentry(
+        request.user,
+        shelfobject,
+        CHANGE,
+        changed_data=[
+            "shelf",
+            "in_where_laboratory",
+            "created_by",
+            "shelf_object_qr",
+            "shelf_object_url",
+        ],
+        relobj=destination_laboratory_id,
+    )
+    create_shelfobject_observation(
+        shelfobject,
+        shelfobject.description,
+        _(observation_text),
+        request.user,
+        destination_laboratory_id,
+    )
+
+    return shelfobject
+
+
+def move_box_partial_quantity_to(
+    shelfobject,
+    destination_organization_id,
+    destination_laboratory_id,
+    destination_shelf,
+    request,
+    quantity,
+    box_totals=0,
+):
+    # it will create a new shelfobject in the destination shelf and laboratory with provided quantity and decrease the quantity on the original shelfobject
+
+    original_shelfobject = ShelfObject.objects.get(pk=shelfobject.pk)
+
+    shelfobject = clone_shelfobject_to(
+        shelfobject,
+        destination_organization_id,
+        destination_laboratory_id,
+        destination_shelf,
+        request,
+        quantity,
+    )
+
+    previous_quantity = get_conversion_from_two_units(
+        shelfobject.measurement_unit, original_shelfobject.measurement_unit, quantity
+    )
+
+    update_shelfobject_quantity(
+        original_shelfobject,
+        original_shelfobject.get_box_totals() - previous_quantity,
+        request.user,
+        organization=destination_organization_id,
+        box_totals=box_totals,
+    )
+
+    return shelfobject

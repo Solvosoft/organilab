@@ -145,6 +145,13 @@ class CapacitacionSeleniumBase(SeleniumBase):
         self.selenium.get(url)
         self.wait_for_page_ready()
 
+    def navigate_to_my_reservations(self, org_pk, lab_pk):
+        url = self.live_server_url + str(
+            reverse("laboratory:my_reservations", kwargs={"org_pk": org_pk, "lab_pk": lab_pk})
+        )
+        self.selenium.get(url)
+        self.wait_for_page_ready()
+
     def navigate_to_manage_reservation(self, org_pk, reservation_pk):
         url = self.live_server_url + str(
             reverse(

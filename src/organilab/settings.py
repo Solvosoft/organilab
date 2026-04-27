@@ -55,6 +55,8 @@ if os.getenv("ALLOWED_HOSTS", ""):
 else:
     ALLOWED_HOSTS = ["*"]
     CORS_ALLOW_ALL_ORIGINS = True
+
+SECURE_REFERRER_POLICY = "origin-when-cross-origin"
 ADMINS = [
     ("Solvo", "sitio@solvosoft.com"),
 ]
@@ -231,7 +233,7 @@ FIXTURE_DIRS = os.getenv("FIXTURE_DIRS", str(BASE_DIR.parent / "fixtures/")).spl
 DOCS_SOURCE_DIR = os.getenv("DOCS_STATIC_DIR", str(BASE_DIR.parent / "docs/source/"))
 
 # Authentication settings
-LOGIN_REDIRECT_URL = reverse_lazy("auth_and_perms:select_organization_by_user")
+LOGIN_REDIRECT_URL = reverse_lazy("pending_tasks:view_task")
 LOGOUT_REDIRECT_URL = reverse_lazy("index")
 
 # Email development settings
@@ -450,3 +452,10 @@ FIRMADOR_SIGN_URL = FIRMADOR_DOMAIN + "/firma/firme"
 FIRMADOR_SIGN_COMPLETE = FIRMADOR_DOMAIN + "/firma/completa"
 FIRMADOR_DELETE_FILE_URL = FIRMADOR_DOMAIN + "/firma/delete"
 REGISTER_DEFAULT_USER_API = False
+
+TINYMCE_UPLOAD_PATH = "editorupload/"
+
+# Capacitation
+CAPACITATION_URL = os.getenv(
+    "CAPACITATION_URL", "https://organilab.una.ac.cr/docs/capacitacion/"
+)

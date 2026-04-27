@@ -50,7 +50,7 @@ class CLInventory(models.Model):
 
 class Catalog(models.Model):
     key = models.CharField(max_length=150)
-    description = models.CharField(max_length=500)
+    description = models.CharField(max_length=500, verbose_name=_("Description"))
 
     class Meta:
         ordering = ["pk"]
@@ -304,6 +304,18 @@ class SDSTraceability(BaseCreationObj):
     security_sheet = models.FileField(
         _("Security sheet"), upload_to=upload_files, null=True, blank=True
     )
+    verified_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Verified by"),
+        related_name="sds_verified_by",
+    )
+    verified_date = models.DateField(
+        null=True, blank=True, verbose_name=_("Verified date")
+    )
+    is_verified = models.BooleanField(default=False, verbose_name=_("Is verified"))
 
     class Meta:
         verbose_name = _("SDS traceability")
@@ -413,7 +425,7 @@ class ShelfObject(models.Model):
     )
     quantity = models.FloatField(
         _("Quantity"), help_text=_("Use dot like 0.344 on decimal")
-    )
+    )  # cantidad de x unidad de medida
     quantity_base_unit = models.FloatField(
         default=0,
         verbose_name=_("Quantity Base Unit"),
@@ -510,6 +522,19 @@ class ShelfObject(models.Model):
         key_name="key",
         key_value="process_condition",
     )
+    is_box = models.BooleanField(default=False, verbose_name=_("Is box?"))
+    quantity_units = models.JSONField(
+        default=list,
+        verbose_name=_("Units per box"),
+        help_text=_(
+            'List of box entries, each with "code" (e.g. "b-0001") and "units" (integer count)'
+        ),
+    )
+    units_per_box = models.IntegerField(
+        default=0,
+        verbose_name=_("Units per box (reference)"),
+        help_text=_("Original number of units per box at creation time"),
+    )
 
     @staticmethod
     def get_units(unit):
@@ -518,8 +543,15 @@ class ShelfObject(models.Model):
         return str(unit)
 
     @property
+    def total_quantity(self):
+        if self.is_box and self.quantity_units:
+            return sum(b["units"] for b in self.quantity_units) * self.quantity
+        return self.quantity
+
+    @property
     def limit_reached(self):
-        return self.quantity < self.limit_quantity
+        current = len(self.quantity_units) if self.is_box else self.quantity
+        return current < self.limit_quantity
 
     def get_measurement_unit_display(self):
         return (
@@ -544,6 +576,52 @@ class ShelfObject(models.Model):
             self.quantity,
             str(self.measurement_unit),
         )
+
+    def get_box_code(self):
+        return self.quantity_units
+
+    def get_box_totals(self):
+        # Retorna la cantidad total de objetos en cajas
+        total = sum(item.get("quantity", 0) for item in list(self.quantity_units))
+        return total
+
+    def order_by_boxes(self, order=False):
+        # Retorna los objetos ordenados por cantidad de cajas
+        return sorted(
+            list(self.quantity_units), key=lambda x: x["units"], reverse=order
+        )
+
+    def get_shelfobject_conversion_from_two_units(self, shelf_unit, amount):
+        query = BaseUnitValues.objects.filter(measurement_unit=self.measurement_unit)
+        query2 = BaseUnitValues.objects.filter(measurement_unit=shelf_unit)
+        if shelf_unit is None:
+            return amount
+        if query.exists() and query2.exists():
+            unit1 = query.first()
+            value1 = unit1.si_value
+
+            unit2 = query2.first()
+            value2 = unit2.si_value
+
+            if unit1.measurement_unit.description == "Unidades":
+                return amount
+
+            if value1 > value2:
+                result = amount / (value1 / value2)
+            else:
+                result = amount * (value2 / value1)
+            return result
+        else:
+            return None
+
+    def get_obj_conversion_from_two_units(self):
+        # Retorna la conversion de unidades de medida
+        if self.shelf.measurement_unit:
+            return self.get_shelfobject_conversion_from_two_units(
+                self.shelf.measurement_unit, self.quantity
+            )
+        else:
+            return self.quantity
 
 
 class ShelfObjectEquipmentCharacteristics(AbstractOrganizationRef):
@@ -1304,7 +1382,6 @@ class UserOrganization(models.Model):
 
 
 # FIXME: Delete this model
-
 # class OrganizationUserManagement(models.Model):
 #    organization = models.ForeignKey(
 #        OrganizationStructure, verbose_name=_("Organization"), on_delete=models.CASCADE)
@@ -1335,7 +1412,9 @@ class Laboratory(BaseCreationObj):
 
     location = models.CharField(_("Location"), default="", max_length=255)
     geolocation = PlainLocationField(
-        default="9.895804362670006,-84.1552734375", zoom=15
+        default="9.895804362670006,-84.1552734375",
+        zoom=15,
+        verbose_name=_("Geolocation"),
     )
     email = models.EmailField(_("Email"), blank=True)
     coordinator = models.CharField(
@@ -1448,7 +1527,7 @@ class ObjectLogChange(models.Model):
         key_name="key",
         key_value="units",
     )
-    subject = models.CharField(max_length=100, blank=True, null=True)
+    subject = models.TextField(default="", blank=True, null=True)
     provider = models.ForeignKey(
         Provider,
         blank=True,
@@ -1458,10 +1537,11 @@ class ObjectLogChange(models.Model):
     )
     bill = models.CharField(max_length=100, blank=True, null=True)
     type_action = models.IntegerField(default=0)
-    note = models.CharField(default="", blank=True, null=True, max_length=255)
+    note = models.TextField(default="", blank=True, null=True)
     organization_where_action_taken = models.ForeignKey(
         OrganizationStructure, on_delete=models.SET_NULL, null=True
     )
+    is_box = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -1539,6 +1619,10 @@ class TranferObject(BaseCreationObj):
     state = models.BooleanField(default=True)
     status = models.SmallIntegerField(choices=TRANFEROBJECT_STATUS, default=REQUESTED)
     mark_as_discard = models.BooleanField(default=False)
+    # indices de las cajas a transferir []
+    quantity_box = models.IntegerField(default=0)
+    is_box = models.BooleanField(default=False)
+    quantity_units = models.JSONField(default=list)
 
     def get_object_detail(self):
         return "%s %s %s" % (
@@ -1546,6 +1630,14 @@ class TranferObject(BaseCreationObj):
             self.quantity,
             str(self.object.measurement_unit),
         )
+
+    def get_box_totals(self):
+        total = sum(item["units"] for item in self.quantity_units)
+        total = total * self.object.quantity
+        return total
+
+    def order_by_boxes(self, order=False):
+        return sorted(self.quantity_units, key=lambda x: x["units"], reverse=order)
 
 
 MONTHS = (
@@ -1720,6 +1812,9 @@ class InformScheduler(AbstractOrganizationRef):
         "derb.CustomForm", verbose_name=_("Inform template"), on_delete=models.CASCADE
     )
     active = models.BooleanField(default=True, verbose_name=_("Active"))
+    laboratories = models.ManyToManyField(
+        Laboratory, verbose_name=_("Laboratories"), blank=True
+    )
 
     def __str__(self):
         return self.name

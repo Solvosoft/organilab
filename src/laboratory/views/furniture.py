@@ -126,9 +126,7 @@ class FurnitureUpdateView(UpdateView):
 
     def form_valid(self, form):
         shelfs = form.cleaned_data["shelfs"]
-        print(shelfs)
         if shelfs:
-            print(44)
             Shelf.objects.filter(pk__in=shelfs).delete()
         self.object = form.save()
 

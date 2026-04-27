@@ -30,6 +30,7 @@ from risk_management.forms import (
     DocFormatForm,
     UpdateRegentForm,
     RiskZoneListForm,
+    WorkdayForm,
 )
 
 from risk_management.models import (
@@ -113,8 +114,15 @@ class ListZone(ListView):
                 .first()
             )
             if latest_log:
-                object.status = latest_log.establishment_status
-                object.xls_url = latest_log.xls_content.url if latest_log.xls_content else None
+                all_zero = (
+                    latest_log.health == 0.0
+                    and latest_log.environmental == 0.0
+                    and latest_log.physical == 0.0
+                )
+                object.status = "Desconocido" if all_zero else latest_log.establishment_status
+                object.xls_url = (
+                    latest_log.xls_content.url if latest_log.xls_content else None
+                )
             else:
                 object.status = "Desconocido"
                 object.xls_url = None
@@ -477,3 +485,19 @@ class RiskZoneReport(ListView):
             }
         )
         return context
+
+
+@login_required
+@permission_required("risk_management.view_workday", raise_exception=True)
+def workday_view(request, org_pk, risk_zone):
+    user_is_allowed_on_organization(request.user, org_pk)
+    risk = get_object_or_404(RiskZone, pk=risk_zone)
+    context = {
+        "org_pk": org_pk,
+        "risk": risk,
+        "form_create": WorkdayForm(
+            prefix="create",
+        ),
+        "form_update": WorkdayForm(prefix="update"),
+    }
+    return render(request, "risk_management/workday_list.html", context=context)

@@ -89,6 +89,11 @@ class ReservedProducts(AbstractOrganizationRef):
     laboratory = models.ForeignKey(
         Laboratory, null=True, on_delete=models.CASCADE, verbose_name=_("Laboratory")
     )
+    reserved_boxes = models.JSONField(
+        default=list,
+        verbose_name=_("Reserved boxes"),
+        help_text=_("List of reserved box entries: [{'code': 'b-0001', 'units': 12}]"),
+    )
 
 
 class ReservationTasks(models.Model):

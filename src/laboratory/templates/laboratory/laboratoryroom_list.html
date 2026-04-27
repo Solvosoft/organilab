@@ -126,7 +126,9 @@ document.urls = {
     edit_shelfobject: '{% url "laboratory:api-shelfobject-edit-reactive-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
     get_shelfobject_data: '{% url "laboratory:api-shelfobject-get-reactive-edit-data" org_pk=org_pk lab_pk=laboratory pk=0 %}',
     edit_material_shelfobject: '{% url "laboratory:api-shelfobject-edit-material-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
-    get_shelfobject_limits: '{% url "laboratory:api-shelfobject-get-shelfobject-limits" org_pk=org_pk lab_pk=laboratory pk=0 %}'
+    get_shelfobject_limits: '{% url "laboratory:api-shelfobject-get-shelfobject-limits" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+    update_box_shelfobject: '{% url "laboratory:api-shelfobject-update-box-shelfobject" org_pk=org_pk lab_pk=laboratory pk=0 %}',
+    get_box_edit_data: '{% url "laboratory:api-shelfobject-get-box-edit-data" org_pk=org_pk lab_pk=laboratory pk=0 %}'
 }
 document.furniture_list = '{% url "laboratory:furniture_list" lab_pk=laboratory org_pk=org_pk %}';
 document.shelfobject_list = '{% url "laboratory:list_shelfobject" lab_pk=laboratory org_pk=org_pk %}';

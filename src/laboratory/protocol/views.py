@@ -58,7 +58,7 @@ class ProtocolCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):
-        print(form.errors)
+        return super().form_invalid(form)
 
 
 @method_decorator(permission_required("laboratory.change_protocol"), name="dispatch")

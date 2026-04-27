@@ -48,7 +48,8 @@ from laboratory.utils import (
     get_laboratories_by_user_profile,
     register_laboratory_contenttype,
     delete_profile_roles_related_to_laboratory,
-    delete_relation_between_laboratory_with_other_models, get_lab_ids,
+    delete_relation_between_laboratory_with_other_models,
+    get_lab_ids,
 )
 from laboratory.views.djgeneric import CreateView, UpdateView, ListView, DeleteView
 from laboratory.views.laboratory_utils import filter_by_user_and_hcode
@@ -147,8 +148,9 @@ class CreateLaboratoryFormView(FormView):
     success_url = ""
 
     def get_form_kwargs(self):
-        kwargs = super(CreateLaboratoryFormView, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs["initial"] = {"organization": self.kwargs["org_pk"]}
+        kwargs["org"] = self.kwargs["org_pk"]
         return kwargs
 
     def get_context_data(self, **kwargs):
@@ -727,6 +729,24 @@ def add_user_to_rel_obj(request, user, org_pk, lab_pk, qr_obj, id_card=None):
             changed_data=["organization", "user"],
             relobj=org_pk,
         )
+
+    root_org = org.root
+    if root_org.pk != org.pk:
+        root_user_org = UserOrganization.objects.filter(
+            organization=root_org, user=user
+        )
+        if not root_user_org.exists():
+            root_user_org = UserOrganization.objects.create(
+                organization=root_org, user=user
+            )
+            organilab_logentry(
+                user,
+                root_user_org,
+                ADDITION,
+                "user organization",
+                changed_data=["organization", "user"],
+                relobj=root_org.pk,
+            )
 
     # Login Log - relobj(USER) - action(CHANGE)
     organilab_logentry(

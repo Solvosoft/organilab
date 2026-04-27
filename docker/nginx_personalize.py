@@ -19,7 +19,7 @@ map $proxy_add_x_forwarded_for $client_ip {
   "~^([^,]+)" $1;
   default     "";
 }
-map $http_host $default_host_match {
+map $host $default_host_match {
     %s 1;
     default 0;
 }

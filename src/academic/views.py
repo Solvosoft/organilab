@@ -1,4 +1,5 @@
 import json
+import math
 
 from django.contrib.admin.models import ADDITION, CHANGE, DELETION
 from django.contrib.auth.decorators import permission_required, login_required
@@ -360,6 +361,7 @@ class ProcedureStepCreateView(FormView):
         context["object_form"] = ObjectForm
         context["observation_form"] = ObservationForm
         context["form_schema"] = json.dumps({})
+        context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
     def form_valid(self, form):
@@ -424,6 +426,7 @@ class ProcedureStepUpdateView(DJUpdateView):
         step = ProcedureStep.objects.get(pk=int(self.kwargs["pk"]))
         context["step"] = step
         context["form_schema"] = json.dumps(step.form.schema if step.form else {})
+        context["org_pk"] = self.kwargs.get("org_pk")
         return context
 
     def get_success_url(self, **kwargs):
@@ -679,14 +682,30 @@ def generate_reservation(request, org_pk, lab_pk):
         if procedure_obj.exists():
 
             for obj in procedure_obj:
-                shelfobjects = ShelfObject.objects.filter(
+                box_qs = ShelfObject.objects.filter(
                     in_where_laboratory=lab,
                     object=obj.object,
+                    is_box=True,
                     measurement_unit=obj.measurement_unit,
-                ).aggregate(total=Coalesce(Sum("quantity"), 0.0))
-
-                if shelfobjects["total"] < obj.quantity:
-                    obj_unknown.append(obj.object.__str__())
+                )
+                if box_qs.exists():
+                    # Each quantity_units entry stores its remaining units in the
+                    # shelf object's measurement_unit (same unit as obj.quantity).
+                    total_material_units = sum(
+                        item["units"]
+                        for so in box_qs
+                        for item in so.quantity_units
+                    )
+                    if total_material_units < obj.quantity:
+                        obj_unknown.append(obj.object.__str__())
+                else:
+                    shelfobjects = ShelfObject.objects.filter(
+                        in_where_laboratory=lab,
+                        object=obj.object,
+                        measurement_unit=obj.measurement_unit,
+                    ).aggregate(total=Coalesce(Sum("quantity"), 0.0))
+                    if shelfobjects["total"] < obj.quantity:
+                        obj_unknown.append(obj.object.__str__())
 
             if obj_unknown:
                 result = status.HTTP_400_BAD_REQUEST
@@ -722,38 +741,133 @@ def generate_reservation(request, org_pk, lab_pk):
 
 def add_procedure_reservation(request, objects, form, lab, org):
     for obj in objects:
-        shelf_objects = (
+        box_shelf_objects = list(
             ShelfObject.objects.filter(
                 in_where_laboratory=lab,
                 object=obj.object,
+                is_box=True,
                 measurement_unit=obj.measurement_unit,
-            )
-            .distinct()
-            .order_by("quantity")
+            ).order_by("pk")
         )
-        obj_quantity = obj.quantity
-        total = 0
-        for shelf_object in shelf_objects:
-            shelf_object_total = shelf_object.quantity
-            result = 0
+        if box_shelf_objects:
+            _add_box_reservation(request, obj, box_shelf_objects, form, lab, org)
+        else:
+            _add_non_box_reservation(request, obj, form, lab, org)
 
-            if total < obj_quantity:
-                if obj_quantity <= shelf_object_total:
-                    result = obj_quantity - total
-                elif total + shelf_object_total > obj_quantity:
-                    result = obj_quantity - total
-                else:
-                    result += shelf_object_total
-                total += result
-                reserved = ReservedProducts.objects.create(
-                    shelf_object=shelf_object,
-                    user=request.user,
-                    initial_date=form.cleaned_data["initial_date"],
-                    final_date=form.cleaned_data["final_date"],
-                    amount_required=result,
-                    laboratory=lab,
-                    organization=org
-                )
-                organilab_logentry(
-                    request.user, reserved, ADDITION, changed_data=form.changed_data
-                )
+
+def _add_non_box_reservation(request, obj, form, lab, org):
+    shelf_objects = (
+        ShelfObject.objects.filter(
+            in_where_laboratory=lab,
+            object=obj.object,
+            measurement_unit=obj.measurement_unit,
+        )
+        .distinct()
+        .order_by("quantity")
+    )
+    obj_quantity = obj.quantity
+    total = 0
+    for shelf_object in shelf_objects:
+        shelf_object_total = shelf_object.quantity
+        result = 0
+        if total < obj_quantity:
+            if obj_quantity <= shelf_object_total:
+                result = obj_quantity - total
+            elif total + shelf_object_total > obj_quantity:
+                result = obj_quantity - total
+            else:
+                result += shelf_object_total
+            total += result
+            reserved = ReservedProducts.objects.create(
+                shelf_object=shelf_object,
+                user=request.user,
+                initial_date=form.cleaned_data["initial_date"],
+                final_date=form.cleaned_data["final_date"],
+                amount_required=result,
+                laboratory=lab,
+                organization=org,
+            )
+            organilab_logentry(
+                request.user, reserved, ADDITION, changed_data=form.changed_data
+            )
+
+
+def _select_boxes_for_shelf(shelf_object, amount_required):
+    """
+    Select boxes from shelf_object.quantity_units for a reservation.
+    Full boxes (integer part) take units_per_box units each.
+    Fractional part always rounds up (ceil) when selecting partial units.
+    Returns a list of {"code": ..., "units": ...} dicts.
+    """
+    quantity_units = shelf_object.quantity_units or []
+    units_per_box = shelf_object.units_per_box or 1
+
+    full_count = int(amount_required)
+    fraction = amount_required - full_count
+    min_partial_units = math.ceil(fraction * units_per_box) if fraction > 0 else 0
+
+    complete_boxes = [b for b in quantity_units if b["units"] >= units_per_box]
+    partial_boxes = [b for b in quantity_units if b["units"] < units_per_box]
+
+    selected = []
+    for box in complete_boxes[:full_count]:
+        selected.append({"code": box["code"], "units": units_per_box})
+
+    if min_partial_units > 0:
+        candidates = complete_boxes[full_count:] + partial_boxes
+        for box in candidates:
+            if box["units"] >= min_partial_units:
+                selected.append({"code": box["code"], "units": min_partial_units})
+                break
+
+    return selected
+
+
+def _add_box_reservation(request, obj, box_shelf_objects, form, lab, org):
+    remaining_units = obj.quantity  # material units (grams, mL, etc.)
+    for shelf_object in box_shelf_objects:
+        if remaining_units <= 0:
+            break
+        units_per_box = shelf_object.units_per_box or 1
+
+        if remaining_units < units_per_box:
+            # Need less than one full box entry: find any single box that has
+            # at least remaining_units available and take only that fraction.
+            available_box = next(
+                (b for b in (shelf_object.quantity_units or []) if b["units"] >= remaining_units),
+                None,
+            )
+            if available_box is None:
+                continue
+            boxes_amount = remaining_units / units_per_box  # fraction < 1
+            selected = _select_boxes_for_shelf(shelf_object, boxes_amount)
+            if not selected:
+                continue
+            units_from_this = remaining_units  # requirement fully satisfied by this shelf
+        else:
+            # Need one or more full box entries
+            available_units = sum(
+                item["units"] for item in (shelf_object.quantity_units or [])
+            )
+            if available_units <= 0:
+                continue
+            units_from_this = min(available_units, remaining_units)
+            boxes_amount = units_from_this / units_per_box
+            selected = _select_boxes_for_shelf(shelf_object, boxes_amount)
+            if not selected:
+                continue
+
+        reserved = ReservedProducts.objects.create(
+            shelf_object=shelf_object,
+            user=request.user,
+            initial_date=form.cleaned_data["initial_date"],
+            final_date=form.cleaned_data["final_date"],
+            amount_required=boxes_amount,
+            reserved_boxes=selected,
+            laboratory=lab,
+            organization=org,
+        )
+        organilab_logentry(
+            request.user, reserved, ADDITION, changed_data=form.changed_data
+        )
+        remaining_units -= units_from_this

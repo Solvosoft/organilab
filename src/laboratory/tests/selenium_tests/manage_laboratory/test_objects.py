@@ -776,6 +776,7 @@ class ObjectSeleniumTest(ObjectSeleniumBase):
         self.create_gif_process(path_list, "search_reactive_object")
 
 
+# laboratory/tests/selenium_tests/manage_laboratory/test_objects.py
 @tag("selenium")
 class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
 
@@ -849,7 +850,7 @@ class ObjectFeaturesSeleniumTest(ObjectSeleniumBase):
                 "path": "//*[@id='create_obj_modal']//button[contains(@class, 'btn-primary')]",
             },
         ]
-        self.create_gif_process(path_list, "view_object_features")
+        self.create_gif_process(path_list, "create_object_features")
 
     @modifies_db
     def test_edit_object_features(self):

@@ -3,6 +3,7 @@
 <div class="left_col scroll-view">
 	<div class="navbar nav_title" style="border: 0;  ">
 		<a href="
+
 			{% if laboratory and org_pk %}{% url 'laboratory:labindex' org_pk laboratory %}{% else %}{% url 'index' %}{% endif %}"
 					class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
 	</div>
@@ -35,7 +36,7 @@
 				{% endif %}
 				{% include 'partials/auth_and_perms.html' %}
 
-			<!--	<li>
+				<!--	<li>
 					<a class="nav-link" href="'blog:entrylist'"
 								title="{% trans 'blog entries' %}">
 						<i class="fa fa-edit fa-fw"></i> {% trans 'Blog' %}
@@ -65,7 +66,13 @@
 			<a href="{% url 'laboratory:profile' user.pk %}" title="{% trans 'Profile' %}">
 				<span class="fa fa-user" aria-hidden="true"></span>
 			</a>
+
+				<a href="{% url 'pending_tasks:view_task' %}" title="{% trans 'Pending Tasks' %}">
+					<span class="fa fa-sticky-note" aria-hidden="true"></span>
+				</a>
+
 		{% endif %}
+
 		{% footer_sidebar_menu %}
 		<a title="{% trans 'Logout' %}" href="{% url 'logout' %}">
 			<span class="fa fa-power-off" aria-hidden="true"></span>

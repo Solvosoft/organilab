@@ -1,4 +1,5 @@
 from django.urls import reverse
+from laboratory.models import ShelfObject
 from laboratory.tests.utils import BaseLaboratorySetUpTest
 
 
@@ -33,6 +34,9 @@ class ReviewSubstanceViewTest(BaseLaboratorySetUpTest):
         self.assertIn("Sulfuro de calcio", response.content.decode())
 
     def test_disposal_substance(self):
+        ShelfObject.objects.filter(
+            shelf__furniture__labroom__laboratory=self.lab
+        ).update(marked_as_discard=True)
         url = reverse("laboratory:disposal_substance", kwargs={"org_pk": self.org.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)

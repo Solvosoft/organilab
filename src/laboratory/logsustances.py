@@ -16,6 +16,7 @@ def log_object_change(
     msg=None,
     create=False,
     organization=None,
+    is_box=False,
 ):
     attrs = dict(
         object=shelfobject.object,
@@ -29,6 +30,7 @@ def log_object_change(
         subject=msg,
         type_action=type_action,
         note=note,
+        is_box=is_box,
     )
     if isinstance(organization, (int, str)):
         attrs["organization_where_action_taken_id"] = organization
@@ -48,6 +50,7 @@ def log_object_add_change(
     bill,
     create=False,
     organization=None,
+    is_box=False,
 ):
     attrs = dict(
         object=shelfobject.object,
@@ -63,6 +66,7 @@ def log_object_add_change(
         provider=provider,
         bill=bill,
         note="",
+        is_box=is_box,
     )
     if isinstance(organization, (int, str)):
         attrs["organization_where_action_taken_id"] = organization
