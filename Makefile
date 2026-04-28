@@ -145,6 +145,7 @@ dist: ##  - print current version of organilab
 
 build_docker: ##  - build docker images
 	$(MAKE) docs
+	$(MAKE) trans
 	docker pull python:3.13-trixie
 	docker pull python:3.13-slim-trixie
 	docker build --no-cache  -t organilab:$(setup_version) -t organilab:latest .
