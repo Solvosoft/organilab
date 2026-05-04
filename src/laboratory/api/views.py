@@ -298,7 +298,7 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     search_fields = ["object_repr", "action_flag"]
     filterset_class = LogEntryFilterSet
     ordering_fields = ["pk"]
-    ordering = ("pk",)
+    ordering = ("-pk",)
     can_use_inactive_organization = True
 
     def get_queryset(self):
@@ -308,15 +308,21 @@ class LogEntryViewSet(viewsets.ModelViewSet):
         queryset = self.queryset.none()
 
         if not qr_obj:
+            orga = OrganizationStructure.objects.filter(pk=org).first()
             log_entries = get_logentries_org_management(self, org)
-            filters.update({"pk__in": log_entries})
+            logs = self.queryset.filter(
+                content_type__app_label="laboratory",
+                content_type__model__in=["laboratory", "organizationstructure"],
+                object_id__in=set(orga.get_my_laboratories),
+            ).values_list("pk", flat=True)
+            filters.update({"pk__in": set(logs).union(set(log_entries))})
         else:
             if qr_obj.isnumeric():
                 self.serializer_class = LogEntryUserDataTableSerializer
                 qr_obj = int(qr_obj)
                 detail = [
-                    "[{'changed': {'fields': ['Login', %d]}}]" % (qr_obj),
-                    "[{'added': {'fields': ['Register', %d]}}]" % (qr_obj),
+                    _("[{'changed': {'fields': ['Login', %d]}}]") % (qr_obj),
+                    _("[{'added': {'fields': ['Register', %d]}}]") % (qr_obj),
                 ]
 
                 filters.update(
@@ -1023,7 +1029,7 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
                 if hasattr(instance, "sustancecharacteristics"):
                     organilab_logentry(
                         request.user,
-                        instance,
+                        instance.sustancecharacteristics,
                         ADDITION,
                         "sustance characteristics",
                         changed_data=reactive_ch_changed_data,

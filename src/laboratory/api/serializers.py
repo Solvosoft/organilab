@@ -338,10 +338,14 @@ class ShelfObjectLaboratoryViewSerializer(
     def get_unit(self, obj):
         if obj.is_box:
             boxes = obj.quantity_units or []
-            return ", ".join(
-                f"{box['code']}: {box['units']} " + str(_("unit(s)"))
-                for box in boxes
-            ) if boxes else _("No boxes")
+            return (
+                ", ".join(
+                    f"{box['code']}: {box['units']} " + str(_("unit(s)"))
+                    for box in boxes
+                )
+                if boxes
+                else _("No boxes")
+            )
         return obj.get_measurement_unit_display()
 
     def get_quantity(self, obj):
@@ -798,9 +802,9 @@ class ValidateReactiveSerializer(serializers.ModelSerializer):
     organization = serializers.PrimaryKeyRelatedField(
         queryset=OrganizationStructure.objects.using(settings.READONLY_DATABASE)
     )
-    model = serializers.CharField(max_length=50, required=True)
-    serie = serializers.CharField(max_length=50)
-    plaque = serializers.CharField(max_length=50)
+    model = serializers.CharField(max_length=50, required=False, default="")
+    serie = serializers.CharField(max_length=50, required=False, default="")
+    plaque = serializers.CharField(max_length=50, required=False, default="")
     is_dangerous = serializers.BooleanField(required=False)
     has_threshold = serializers.BooleanField(required=False)
     threshold = serializers.FloatField(default=0.0, required=False)
@@ -1200,9 +1204,6 @@ class ReactiveSerializer(serializers.ModelSerializer):
             "type",
             "organization",
             "created_by",
-            "model",
-            "serie",
-            "plaque",
             "iarc",
             "imdg",
             "white_organ",
