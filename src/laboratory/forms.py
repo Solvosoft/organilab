@@ -630,7 +630,7 @@ class InformSchedulerFormEdit(GTForm, forms.ModelForm):
                 "informtemplate", url_suffix="-detail"
             ),
             "laboratories": AutocompleteSelectMultiple(
-                "laboratory",
+                "get_laboratories_by_organization",
                 attrs={
                     "data-s2filter-organization": "#id_organization",
                 },
