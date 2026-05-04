@@ -1425,14 +1425,12 @@ class ReactiveForm(GTForm, forms.ModelForm):
         [["code"], ["bioaccumulable"], ["iarc"]],
         [["synonym"], ["is_precursor"], ["imdg"]],
         [["is_public"], ["precursor_type"], ["white_organ"]],
-        [["features"], ["h_code"], ["nfpa"]],
-        [["model"], ["molecular_formula"], ["ue_code"]],
-        [["plaque"], ["img_representation"], ["storage_class"]],
-        [["serie"], ["is_pure"], ["seveso_list"]],
-        [["type"], ["organization"], ["created_by"]],
+        [["features"], ["h_code"], ["nfpa"], ["molecular_formula"]],
+        [["ue_code"], ["img_representation"], ["storage_class"]],
+        [["is_pure"], ["seveso_list"], ["density"]],
         [["is_dangerous"], ["has_threshold"], ["threshold"]],
         [["description"]],
-        [["density"], ["laboratory"]],
+        [["organization"], ["type"], ["created_by"], ["laboratory"]],
     ]
 
     laboratory = forms.IntegerField(widget=genwidgets.HiddenInput)
@@ -1568,12 +1566,11 @@ class ReactiveForm(GTForm, forms.ModelForm):
         kwargs.pop("laboratory_pk")
         prefix = kwargs.get("prefix", "")
         super(ReactiveForm, self).__init__(*args, **kwargs)
-        self.fields["model"].required = True
         self.fields["name"].label = _("Substance Name")
 
     class Meta:
         model = Object
-        exclude = ["is_container"]
+        exclude = ["is_container", "model", "serie", "plaque"]
         widgets = {
             "features": genwidgets.SelectMultiple(),
             "code": genwidgets.TextInput,
@@ -1584,9 +1581,6 @@ class ReactiveForm(GTForm, forms.ModelForm):
             "type": genwidgets.HiddenInput,
             "organization": genwidgets.HiddenInput,
             "created_by": genwidgets.HiddenInput,
-            "model": genwidgets.TextInput,
-            "serie": genwidgets.TextInput,
-            "plaque": genwidgets.TextInput,
             "is_pure": genwidgets.YesNoInput,
         }
 
