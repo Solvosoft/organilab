@@ -756,6 +756,10 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
                     ADDITION,
                     "catalog",
                     changed_data=["key", "description"],
+                    relobj=get_object_or_404(
+                        OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                        pk=self.org_pk,
+                    ),
                 )
         return create
 
@@ -766,7 +770,16 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         instance = self.get_object()
-        organilab_logentry(request.user, instance, DELETION, "catalog")
+        organilab_logentry(
+            request.user,
+            instance,
+            DELETION,
+            "catalog",
+            relobj=get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=self.org_pk,
+            ),
+        )
         destroy = super().destroy(request, *args, **kwargs)
         return destroy
 
@@ -781,6 +794,10 @@ class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
             CHANGE,
             "catalog",
             changed_data=["key", "description"],
+            relobj=get_object_or_404(
+                OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                pk=self.org_pk,
+            ),
         )
         return update
 
@@ -1224,6 +1241,13 @@ class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
     def perform_create(self, serializer):
 
         serializer.save(created_by=self.request.user)
+        organilab_logentry(
+            self.request.user,
+            serializer.instance,
+            ADDITION,
+            "LaboratoryProcess",
+            relobj=get_object_or_404(Laboratory, pk=self.kwargs.get("lab_pk")),
+        )
         return super().perform_create(serializer)
 
 
@@ -1284,7 +1308,7 @@ class ShelfObjectHcodeViewset(AuthAllPermBaseObjectManagement):
             CHANGE,
             "shelfobject",
             changed_data=changed_fields,
-            relobj=lab_pk,
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
         if changed_fields:
             ShelfObjectObservation.objects.create(
@@ -1350,7 +1374,7 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             "provider",
             changed_data=[],  # no necesaria en create
-            relobj=lab_pk,  # para LabOrgLogEntry
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
     def perform_update(self, serializer):
@@ -1383,7 +1407,7 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "provider",
             changed_data=changed_fields,
-            relobj=lab_pk,
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
     def perform_destroy(self, instance):
@@ -1399,7 +1423,7 @@ class ProviderViewSet(AuthAllPermBaseObjectManagement):
             "provider",
             changed_data=[],  # no aplica en delete
             object_repr=provider_repr,
-            relobj=lab_pk,
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
         instance.delete()
@@ -1448,7 +1472,7 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             "objectfeatures",
             changed_data=[],  # no necesaria en create
-            relobj=lab_pk,  # para LabOrgLogEntry
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
     def perform_update(self, serializer):
@@ -1476,7 +1500,7 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "objectfeatures",
             changed_data=changed_fields,
-            relobj=lab_pk,
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
     def perform_destroy(self, instance):
@@ -1492,7 +1516,7 @@ class ObjectFeatureViewSet(AuthAllPermBaseObjectManagement):
             "objectfeatures",
             changed_data=[],  # no aplica en delete
             object_repr=objectfeatures_repr,
-            relobj=lab_pk,
+            relobj=get_object_or_404(Laboratory, pk=lab_pk),
         )
 
         instance.delete()
@@ -1546,6 +1570,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
             organization_id=org_pk,
             created_by=self.request.user,
         )
+        org = get_object_or_404(OrganizationStructure, pk=org_pk)
 
         organilab_logentry(
             self.request.user,
@@ -1553,7 +1578,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
             ADDITION,
             "object",
             changed_data=[],  # no necesaria en create
-            relobj=org_pk,  # para LabOrgLogEntry
+            relobj=org.root,  # para LabOrgLogEntry
         )
 
     def perform_update(self, serializer):
@@ -1585,6 +1610,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         }
 
         changed_fields = [k for k in after.keys() if before.get(k) != after.get(k)]
+        org = get_object_or_404(OrganizationStructure, pk=org_pk)
 
         organilab_logentry(
             self.request.user,
@@ -1592,11 +1618,12 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
             CHANGE,
             "object",
             changed_data=changed_fields,
-            relobj=org_pk,
+            relobj=org.root,
         )
 
     def perform_destroy(self, instance):
         org_pk = self.get_org_pk_or_error()
+        org = get_object_or_404(OrganizationStructure, pk=org_pk)
 
         object_id = instance.pk
         object_repr = str(instance)
@@ -1608,7 +1635,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
             "object",
             changed_data=[],  # no aplica en delete
             object_repr=object_repr,
-            relobj=org_pk,
+            relobj=org.root,
         )
 
         instance.delete()
