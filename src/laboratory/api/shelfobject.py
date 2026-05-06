@@ -1040,22 +1040,22 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         self.serializer_class = IncreaseShelfObjectSerializer
         serializer = None
-        if "shelf_object" in request.data:
-            shelfobject = get_object_or_404(
-                ShelfObject, pk=request.data["shelf_object"]
-            )
-            request.data["measurement_unit"] = shelfobject.measurement_unit.pk
-            serializer = self.serializer_class(
-                data=request.data,
-                context={
-                    "source_laboratory_id": self.laboratory.pk,
-                    "is_box": shelfobject.is_box,
-                },
-            )
-        else:
-            serializer = self.serializer_class(
-                data=request.data, context={"source_laboratory_id": self.laboratory.pk}
-            )
+        data = request.data.copy()
+        if "shelf_object" in data:
+            shelfobject = get_object_or_404(ShelfObject, pk=data["shelf_object"])
+            if shelfobject.is_box:
+                data["measurement_unit"] = shelfobject.measurement_unit.pk
+                serializer = self.serializer_class(
+                    data=data,
+                    context={
+                        "source_laboratory_id": self.laboratory.pk,
+                        "is_box": shelfobject.is_box,
+                    },
+                )
+            else:
+                serializer = self.serializer_class(
+                    data=data, context={"source_laboratory_id": self.laboratory.pk}
+                )
         errors = {}
         if serializer.is_valid():
             save_increase_decrease_shelf_object(
@@ -1067,6 +1067,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
             )
         else:
             errors = serializer.errors
+
         if errors:
             return JsonResponse({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
         return JsonResponse(

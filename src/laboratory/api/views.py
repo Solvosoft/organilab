@@ -310,11 +310,13 @@ class LogEntryViewSet(viewsets.ModelViewSet):
         if not qr_obj:
             orga = OrganizationStructure.objects.filter(pk=org).first()
             log_entries = get_logentries_org_management(self, org)
-            logs = self.queryset.filter(
-                content_type__app_label="laboratory",
-                content_type__model__in=["laboratory", "organizationstructure"],
-                object_id__in=set(orga.get_my_laboratories),
-            ).values_list("pk", flat=True)
+            logs = set()
+            if orga:
+                logs = self.queryset.filter(
+                    content_type__app_label="laboratory",
+                    content_type__model__in=["laboratory", "organizationstructure"],
+                    object_id__in=set(orga.get_my_laboratories),
+                ).values_list("pk", flat=True)
             filters.update({"pk__in": set(logs).union(set(log_entries))})
         else:
             if qr_obj.isnumeric():
