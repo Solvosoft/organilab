@@ -114,7 +114,10 @@ class Command(BaseCommand):
                         susta.h_code.remove(*resultado["Quitar"])
                     if len(resultado["Agregar"]) > 0:
                         susta.h_code.add(*resultado["Agregar"])
-                    susta.save()
+
+                if "Cambiar códigos actuales por 'Ninguno'" in fila[4]:
+                    susta.h_code.clear()
+                susta.save()
             else:
                 print(f"No encontro objeto {fila[0]}")
 
