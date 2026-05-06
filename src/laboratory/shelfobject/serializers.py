@@ -354,14 +354,11 @@ class IncreaseShelfObjectSerializer(serializers.Serializer):
 
         if increase_unit:
             related_units = get_related_units(shelf.measurement_unit, query_unit)
-
             if measurement_unit is None:
                 related_units = get_related_units(64, query_unit)
             elif related_units is None:
                 related_units = get_related_units(measurement_unit.pk, query_unit)
-
             if increase_unit not in related_units:
-
                 updated_errors["measurement_unit"] = _("Measurement unit is not valid")
 
         if errors or updated_errors:
