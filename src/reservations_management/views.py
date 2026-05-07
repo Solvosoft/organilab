@@ -70,7 +70,7 @@ class ManageReservationView(PermissionRequiredMixin, UpdateView):
             reservation.status = ACCEPTED
             reservation.save()
             for product in reservation.reservedproducts_set.filter(status=REQUESTED):
-                if product.final_date >= timezone.now():
+                if product.final_date >= timezone.now() and product.initial_date > timezone.now():
                     _allocate_boxes_if_needed(product)
                     add_decrease_stock_task(product)
                     product.status = BORROWED
@@ -108,7 +108,7 @@ class ProductActionView(PermissionRequiredMixin, View):
         action = request.POST.get('action')
 
         if action == 'accept' and product.status == REQUESTED:
-            if product.final_date >= timezone.now():
+            if product.final_date >= timezone.now() and product.initial_date > timezone.now():
                 _allocate_boxes_if_needed(product)
                 add_decrease_stock_task(product)
                 product.status = BORROWED
