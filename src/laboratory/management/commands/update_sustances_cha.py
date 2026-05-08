@@ -17,6 +17,11 @@ class Command(BaseCommand):
             type=str,
             help="Ruta al archivo Excel (.xlsx) con los datos a procesar",
         )
+        parser.add_argument(
+            "fds",
+            type=str,
+            help="Ruta al archivo Excel (.xlsx) con los datos a procesar",
+        )
 
     def initial_data(self):
         self.h_codes = {
@@ -121,8 +126,39 @@ class Command(BaseCommand):
             else:
                 print(f"No encontro objeto {fila[0]}")
 
+    def update_sustances_hcoded(self, documento):
+        # documento = "laboratory/management/commands/ajustes_a_hojas.xlsx"
+        try:
+            wb = openpyxl.load_workbook(documento)
+        except FileNotFoundError:
+            raise CommandError(f"Archivo no encontrado: {documento}")
+        except Exception as e:
+            raise CommandError(f"Error al leer el archivo: {e}")
+        ws = wb.active
+        i = 0
+        for fila in ws.iter_rows(min_row=2, values_only=True):
+            obj = Object.objects.filter(name=fila[0])
+            if obj.exists():
+                for obj_susta in obj:
+                    susta = SustanceCharacteristics.objects.filter(
+                        obj=obj_susta
+                    ).first()
+                    if fila[1] != None:
+                        hcode = fila[1].split(",")
+                        susta.h_code.add(*hcode)
+
+                    if fila[2] != None:
+                        hcode = fila[2].split(",")
+                        susta.h_code.remove(*hcode)
+
+                    susta.save()
+
+                i += 1
+
     def handle(self, *args, **options):
         self.initial_data()
         self.create_danger_indication()
         documento = options["documento"]
-        self.read_docs(documento)
+        fds = options["fds"]
+        self.read_docs(fds)
+        self.update_sustances_hcoded(documento)
