@@ -1,3 +1,7 @@
+08/05/2026
+Command to update FDS
+    - python manage.py update_sustances_cha fds.xlsx documento.xlsx
+
 20/03/2026
 Command to merge duplicate Buildings
     - python manage.py merge_duplicates_buildings
