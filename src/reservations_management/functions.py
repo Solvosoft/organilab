@@ -507,29 +507,22 @@ def _increase_box_stock(user, product, organization, boxes_to_return):
         if restore_units > 0:
             old_units = quantity_units.get(code, 0)
             new_units = old_units + restore_units
-            obj_quantity = sum(
-                b.get("quantity", 0)
-                for b in shelf_object.quantity_units
-                if b["code"] == code
-            )
-            obj_units = sum(
-                b.get("units", 0)
-                for b in shelf_object.quantity_units
-                if b["code"] == code
-            )
+            old_quantity = shelf_object.get_box_totals()
             new_quantity = (
                 shelf_object.get_shelfobject_conversion_from_two_units(
                     shelf_object.shelf.measurement_unit, shelf_object.quantity
                 )
                 * new_units
+                if shelf_object.shelf.measurement_unit
+                else shelf_object.quantity * new_units
             )
 
             log_object_change(
                 user,
                 shelf_object.in_where_laboratory_id,
                 shelf_object,
-                shelf_object.get_box_totals(),
-                new_quantity,
+                old_quantity,
+                new_quantity + old_quantity,
                 str(_("Return via reservation #%(pk)d") % {"pk": product.pk}),
                 2,
                 str(_("Return")),
@@ -560,7 +553,7 @@ def _increase_box_stock(user, product, organization, boxes_to_return):
                     "units": units,
                     "quantity": shelf_object.quantity * units,
                 }
-                for code, units, quantity in shelf_object.quantity_units
+                for code, units, quantity in quantity_units
             ]
         shelf_object.save(update_fields=["quantity_units"])
 
