@@ -227,6 +227,21 @@ class SDSTraceabilityAdmin(admin.ModelAdmin):
     search_fields = ["sustance_characteristics__cas_id_number"]
 
 
+class SustanceCharacteristicsAdmin(admin.ModelAdmin):
+    list_display = [
+        "pk",
+        "obj__name",
+        "obj__code",
+        "cas_id_number",
+    ]
+    list_filter = ["obj__name", "cas_id_number", "h_code"]
+    search_fields = [
+        "obj__name",
+        "obj__code",
+        "cas_id_number",
+    ]
+
+
 @admin.register(models.UserOrganization)
 class UserOrganizationAdmin(OrganizationInfoAdminMixin, admin.ModelAdmin):
     list_display = (
@@ -784,4 +799,5 @@ admin.site.register(models.PrecursorReportValues, PrecursorReportValuesAdmin)
 admin.site.register(models.SDSTraceability, SDSTraceabilityAdmin)
 admin.site.register(models.ShelfObjectLimits)
 admin.site.register(models.LabOrgLogEntry)
+admin.site.register(models.SustanceCharacteristics, SustanceCharacteristicsAdmin)
 admin.site.site_header = _("Organilab Administration site")
