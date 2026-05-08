@@ -6122,3 +6122,9 @@ msgstr "Actualizar Incidente"
 
 msgid "Delete Incident"
 msgstr "Eliminar Incidente"
+
+msgid "The reservation start date cannot be later than the current date."
+msgstr "La fecha de inicio de la reserva no puede ser pasada la fecha actual"
+
+msgid "Enter a valid amount."
+msgstr "Valor ingresado invalido"
