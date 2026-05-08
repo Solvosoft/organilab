@@ -545,7 +545,7 @@ class ShelfObject(models.Model):
     @property
     def total_quantity(self):
         if self.is_box and self.quantity_units:
-            return sum(b["units"] for b in self.quantity_units) * self.quantity
+            return sum(b.get("units", 0) for b in self.quantity_units) * self.quantity
         return self.quantity
 
     @property
