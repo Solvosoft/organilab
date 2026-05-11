@@ -1,3 +1,11 @@
+
+11/05/2026
+Command to update Permissions and Create groups
+    - python manage.py create_pendingtasks_group
+    - python manage.py check_roles_permissions
+Command to update FDS
+    - python manage.py sync_sds_from_old_db
+
 08/05/2026
 Command to update FDS
     - python manage.py update_sustances_cha ./laboratory/management/commands/ajustes_a_hojas.xlsx ./laboratory/management/commands/Reporte_Final_Diagnóstico.xlsx
