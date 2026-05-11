@@ -392,6 +392,12 @@ class DecreaseShelfObjectSerializer(serializers.Serializer):
     )
     box_index = serializers.IntegerField(required=False, allow_null=True, min_value=0)
 
+    def to_internal_value(self, data):
+        if data.get("box_index") == "":
+            data = data.copy()
+            data["box_index"] = None
+        return super().to_internal_value(data)
+
     def validate_shelf_object(self, value):
         attr = super().validate(value)
         source_laboratory_id = self.context.get("source_laboratory_id")
