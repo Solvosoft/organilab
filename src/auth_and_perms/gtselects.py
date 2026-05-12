@@ -248,7 +248,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         for org in set(orgs):
             users += list(
                 get_users_from_organization(
-                    org.pk, org=org, userfilters={"users__isnull": False}
+                    org.pk, org=org, userfilters={"user__isnull": False}
                 )
             )
         return self.model.objects.filter(pk__in=set(users)).order_by("pk")
