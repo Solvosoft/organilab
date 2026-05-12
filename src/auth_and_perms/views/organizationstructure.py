@@ -446,11 +446,24 @@ def get_roles_by_organization(request, pk):
 def get_org_administrators(request, pk):
     org = get_object_or_404(OrganizationStructure, pk=pk)
     ct = ContentType.objects.get_for_model(OrganizationStructure)
-    profiles = ProfilePermission.objects.filter(
-        content_type=ct,
-        object_id=org.pk,
-        rol__name="Administrativo superior",
-    ).select_related("profile__user").distinct()
+    active_user_pks = UserOrganization.objects.filter(
+        organization=org,
+        status=True,
+        type_in_organization__in=[
+            UserOrganization.ADMINISTRATOR,
+            UserOrganization.LABORATORY_MANAGER,
+        ],
+    ).values_list("user_id", flat=True)
+    profiles = (
+        ProfilePermission.objects.filter(
+            content_type=ct,
+            object_id=org.pk,
+            rol__name="Administrativo superior",
+            profile__user__in=active_user_pks,
+        )
+        .select_related("profile__user")
+        .distinct()
+    )
     users = [
         {
             "name": pp.profile.user.get_full_name() or pp.profile.user.username,
