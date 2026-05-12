@@ -652,6 +652,9 @@ msgstr "Eliminar"
 msgid "Only rols selected"
 msgstr "Solo usar roles seleccionados"
 
+msgid "Only labs selected"
+msgstr "Solo usar laboratorios seleccionados"
+
 msgid "Manage Users"
 msgstr "Administrar Usuarios"
 
