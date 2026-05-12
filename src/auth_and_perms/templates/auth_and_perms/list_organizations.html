@@ -44,7 +44,8 @@
 									<div class="col-12 col-md-2 d-flex">
 										{% if node.0.active %}
 											<div class="d-flex">
-												<label for="node_{{ node.0.pk }}" class="mx-2 small text-muted" title="{% trans 'Click to manage this organization' %}">{% trans 'Choose' %}</label>
+												<label for="node_{{ node.0.pk }}" class="mx-2 small text-muted"
+																			title="{% trans 'Click to manage this organization' %}">{% trans 'Choose' %}</label>
 												<input id="node_{{ node.0.pk }}" data-widget="CheckboxInput" class="nodeorg" type="radio" name="nodes"
 																			value="{{ node.0.pk }}" {% if not forloop0 %} selected {% endif %}/>
 											</div>
@@ -86,13 +87,14 @@
 														<i class="fa fa-plus"></i> {% trans 'Laboratory' %}</a></li>
 												{% endif %}
 												{% if node.0.parent != None %}
-													<li class="rolcontainer" title="{% trans 'Related Users' %}"><a
+													<li class="rolcontainer" title="{% trans 'Related Laboratory' %}"><a
 														data-href="{% url 'relorgbase-detail' node.0.pk %}"
 														data-org="{{ node.0.pk }}" class="btn btn-sm btn-warning contenttyperelobjbtnadd"
 														type="button" data-id="{{ node.0.pk }}"><i class="fa fa-university"></i> {% trans 'Related Laboratory' %}
 													</a></li>
 												{% endif %}
 											{% endif %}
+
 										</ul>
 									</div>
 								</div>
@@ -128,6 +130,14 @@
 										<li class="list-group-item">
 											<a class="rol_details_btn" data-org="{{ node.0.pk }}" title="{% trans 'Show Roles information' %}"> <i
 												class="fa fa-info-circle"></i></a>
+										</li>
+									{% endif %}
+									{% if perms.auth_and_perms.view_rol %}
+										<li class="list-group-item">
+											<a class="admin_users_btn" data-org="{{ node.0.pk }}" title="{% trans 'View administrators' %}"
+														style="cursor:pointer;">
+												<i class="fa fa-user-circle-o"></i>
+											</a>
 										</li>
 									{% endif %}
 									{% user_has_roles_in_organization node.0.pk as has_roles_in_org %}
@@ -493,6 +503,24 @@
 	{% include 'modal_template_submit_form.html' with form=actionwiform id="actionwimodal" title=action_clone_org form_id="actionwiform" url=action_clone_url %}
 	{% include 'modal_template_submit_form.html' with form=actioncloneform id="actionclonemodal" title=action_clone_org form_id="actioncloneform" url=action_clone_url %}
 
+	<div id="admin_users_modal" class="modal fade" tabindex="-1" aria-labelledby="admin_users_modal_label"
+						aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="admin_users_modal_label">{% trans 'Administrators' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div id="admin_users_container"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 {% endblock %}
 
@@ -507,6 +535,7 @@
 		groups_by_profile = "{% url 'groupsbyprofile-list' %}";
 		inerit_profile_url = "{% url 'auth_and_perms:api-userinorg-inerit-profile' %}";
 		roles_url = "{% url 'auth_and_perms:get_roles_by_organization' 0 %}";
+		org_administrators_url = "{% url 'auth_and_perms:get_org_administrators' 0 %}";
 	</script>
 	<script src="{% static 'js/auth_and_perms/organization_manager.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

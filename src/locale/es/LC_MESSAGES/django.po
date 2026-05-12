@@ -6128,3 +6128,9 @@ msgstr "La fecha de inicio de la reserva no puede ser pasada la fecha actual"
 
 msgid "Enter a valid amount."
 msgstr "Valor ingresado invalido"
+
+msgid "View administrators"
+msgstr "Ver administradores"
+
+msgid "Administrators"
+msgstr "Administradores"

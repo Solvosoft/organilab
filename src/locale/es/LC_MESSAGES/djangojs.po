@@ -1357,3 +1357,6 @@ msgstr "No verificado"
 msgid "Get Substance Information"
 msgstr "Obtener información de la sustancia"
 
+msgid "This organization has no administrators assigned."
+msgstr "Esta organización no tiene administradores asignados."
+

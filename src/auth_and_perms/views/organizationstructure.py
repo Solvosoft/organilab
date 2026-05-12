@@ -442,6 +442,27 @@ def get_roles_by_organization(request, pk):
 
 
 @login_required
+@require_http_methods(["GET"])
+def get_org_administrators(request, pk):
+    org = get_object_or_404(OrganizationStructure, pk=pk)
+    ct = ContentType.objects.get_for_model(OrganizationStructure)
+    profiles = ProfilePermission.objects.filter(
+        content_type=ct,
+        object_id=org.pk,
+        rol__name="Administrativo superior",
+    ).select_related("profile__user").distinct()
+    users = [
+        {
+            "name": pp.profile.user.get_full_name() or pp.profile.user.username,
+            "email": pp.profile.user.email,
+        }
+        for pp in profiles
+        if pp.profile and pp.profile.user
+    ]
+    return JsonResponse({"users": users})
+
+
+@login_required
 @permission_required("auth_and_perms.view_rol", raise_exception=True)
 @require_http_methods(["GET"])
 def get_rol(request, pk):
