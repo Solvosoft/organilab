@@ -145,6 +145,11 @@ urlpatterns = [
         name="get_roles_by_organization",
     ),
     path(
+        "get_org_administrators/<int:pk>/",
+        orgstruct.get_org_administrators,
+        name="get_org_administrators",
+    ),
+    path(
         "update_rol/<int:org_pk>/<int:pk>/",
         orgstruct.update_rol,
         name="update_rol",

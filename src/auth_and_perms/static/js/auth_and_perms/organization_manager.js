@@ -872,3 +872,30 @@ $(".nodeorg").on('ifChecked', function(e){
     let rol_url = roles_url.replace('/0', "/"+$(this).val());
     get_roles_by_organization(rol_url, is_checked=true);
 })
+
+$(".admin_users_btn").on('click', function () {
+    let orgPk = $(this).data('org');
+    let url = org_administrators_url.replace('/0/', '/' + orgPk + '/');
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function (data) {
+            let container = $("#admin_users_container");
+            container.empty();
+            if (data.users.length > 0) {
+                let html = '<ul class="list-group list-group-flush">';
+                data.users.forEach(function (u) {
+                    html += '<li class="list-group-item d-flex justify-content-between align-items-center px-0">' +
+                        '<span>' + u.name + '</span>' +
+                        '<small class="text-muted">' + u.email + '</small>' +
+                        '</li>';
+                });
+                html += '</ul>';
+                container.html(html);
+            } else {
+                container.html('<p class="text-center text-muted mt-3">' + gettext('This organization has no administrators assigned.') + '</p>');
+            }
+            $("#admin_users_modal").modal('show');
+        }
+    });
+});
