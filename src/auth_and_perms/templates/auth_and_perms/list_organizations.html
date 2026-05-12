@@ -342,9 +342,9 @@
 	</div>
 	<div id="relOrganizationmodal" class="modal fade" tabindex="-1" aria-labelledby="relOrganizationmodalLabel"
 						aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<form method="post" action="{% url 'auth_and_perms:add_contenttype_to_org' %}">
+				<form id="relOrganizationform">
 					{% csrf_token %}
 					<div class="modal-header">
 						<h4 class="modal-title"
@@ -352,13 +352,20 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						{{ relorgform.as_p }}
-
+						<select autocomplete="off" name="contentyperelobj" multiple
+										data-url="{% url 'relorgfullbase-detail' 0 %}"></select>
 						<input type="hidden" id="relorg_organization" name="organization" value=""/>
+						<div class="mt-2">
+							<label class="mt-2 mb-2">{% trans 'How to deal with permission merge' %}</label><br>
+							<input type="radio" class="iCheck" name="mergeaction" value="append" checked> {% trans 'Append' %} &nbsp;
+							<input type="radio" class="iCheck" name="mergeaction" value="sustract"> {% trans 'Sustract' %} &nbsp;
+							<input type="radio" class="iCheck" name="mergeaction" value="full"> {% trans 'Only labs selected' %}
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
-						<button type="submit" class="btn btn-primary">{% trans 'Save changes' %}</button>
+						<button type="button" class="btn btn-primary btnsaveorglabs"
+										data-url="{% url 'auth_and_perms:manage_org_labs' 0 %}">{% trans 'Save changes' %}</button>
 					</div>
 				</form>
 			</div>

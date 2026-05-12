@@ -514,12 +514,56 @@ $(".addOrgStructureEmpty").on('click', function(e){
 });
 
 $(".contenttyperelobjbtnadd").on('click', function(e){
-    var url = this.dataset.href;
-    var select = $("#relOrganizationmodal select");
-    var organizationinput = $('#relOrganizationmodal input[name="organization"]');
-    organizationinput.val(this.dataset.org)
-    $(select).val(null).trigger('change');
+    let orgPk = this.dataset.org;
+    let select = $("#relOrganizationmodal select");
+    let organizationinput = $('#relOrganizationmodal input[name="organization"]');
+    let saveBtn = $('#relOrganizationmodal .btnsaveorglabs');
+    let baseUrl = saveBtn.data('url');
+    let fullbaseUrl = $(select).data('url');
+
+    organizationinput.val(orgPk);
+    saveBtn.data('url', baseUrl.replace('/0/', '/' + orgPk + '/'));
+
+    let dataUrl = fullbaseUrl.replace('/0/', '/' + orgPk + '/');
+    $(select).data('url', dataUrl);
+
+    if ($(select).hasClass('select2-hidden-accessible')) {
+        $(select).select2('destroy');
+    }
+    $(select).find('option').remove();
+    $(select).val(null);
+
+    $.ajax({
+        type: "GET",
+        url: dataUrl,
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: add_data_to_select(select),
+        dataType: 'json'
+    });
+
+    $(select).select2({theme: 'bootstrap-5', dropdownParent: $("#relOrganizationmodal")});
     $("#relOrganizationmodal").modal('show');
+});
+
+$(".btnsaveorglabs").on('click', function(e) {
+    let form = $("#relOrganizationform")[0];
+    let url = $(this).data('url');
+    let data = {
+        'labs': $(form).find('select[name="contentyperelobj"]').val(),
+        'mergeaction': $(form).find('input[name="mergeaction"]:checked').val(),
+    };
+    $.ajax({
+        type: "PUT",
+        url: url,
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': getCookie('csrftoken')},
+        success: function(data) {
+            $(".modal").modal('hide');
+        },
+        dataType: 'json'
+    });
 });
 
 $(".rolbtnadd").on('click', function(){
