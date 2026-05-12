@@ -718,3 +718,32 @@ class LaboratoryGeolocationsAPI(APIView):
             except (ValueError, AttributeError):
                 continue
         return JsonResponse({"laboratories": data})
+
+
+class ManageOrgLabsAPI(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        from laboratory.utils import register_laboratory_contenttype
+        org = get_object_or_404(OrganizationStructure, pk=pk)
+        user_is_allowed_on_organization(request.user, org)
+        labs = request.data.get("labs", [])
+        mergeaction = request.data.get("mergeaction", "append")
+        ct = ContentType.objects.get(app_label="laboratory", model="laboratory")
+        if mergeaction == "full":
+            OrganizationStructureRelations.objects.filter(
+                organization=org, content_type=ct
+            ).delete()
+            for lab_pk in labs:
+                register_laboratory_contenttype(org, int(lab_pk))
+        elif mergeaction == "append":
+            for lab_pk in labs:
+                register_laboratory_contenttype(org, int(lab_pk))
+        elif mergeaction == "sustract":
+            OrganizationStructureRelations.objects.filter(
+                organization=org,
+                content_type=ct,
+                object_id__in=[int(p) for p in labs],
+            ).delete()
+        return Response({"ok": True})

@@ -13,6 +13,7 @@ from auth_and_perms.api.viewsets import (
     OrganizationButtons,
     ExternalUserToOrganizationViewSet,
     LaboratoryGeolocationsAPI,
+    ManageOrgLabsAPI,
 )
 from auth_and_perms.views import organizationstructure as orgstruct
 
@@ -148,6 +149,11 @@ urlpatterns = [
         "get_org_administrators/<int:pk>/",
         orgstruct.get_org_administrators,
         name="get_org_administrators",
+    ),
+    path(
+        "api/manage_org_labs/<int:pk>/",
+        ManageOrgLabsAPI.as_view(),
+        name="manage_org_labs",
     ),
     path(
         "update_rol/<int:org_pk>/<int:pk>/",

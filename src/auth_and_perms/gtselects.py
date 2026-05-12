@@ -357,6 +357,64 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
         return super().list(request, *args, **kwargs)
 
 
+@register_lookups(prefix="relorgfullbase", basename="relorgfullbase")
+class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
+    """Like RelOrgBaseS2 but includes already-linked labs and marks them selected."""
+    model = Laboratory
+    fields = ["name"]
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [
+        IsAuthenticated,
+        AllPermissionOrganization(
+            perms=["laboratory.view_laboratory"],
+            lookup_keyword="organization",
+            as_param_method="GET",
+        ),
+    ]
+    pagination_class = GPaginatorMoreElements
+    order_by = ["name"]
+    organization = None
+
+    def get_queryset(self):
+        if self.organization.root.pk == self.organization.pk:
+            labs = OrganizationStructure.os_manager.filter_labs_by_user(
+                self.request.user, ancestors=True, org_pk=self.organization.pk
+            )
+        else:
+            labs = OrganizationStructure.os_manager.filter_labs_by_user(
+                self.request.user,
+                org_pk=self.organization.pk,
+                relate_labs_org_parent=True,
+            )
+        linked = list(
+            OrganizationStructureRelations.objects.filter(
+                organization=self.organization.pk,
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+            ).values_list("object_id", flat=True)
+        )
+        self.selected = [str(pk) for pk in linked]
+        return labs.order_by(*self.order_by)
+
+    def retrieve(self, request, pk, **kwargs):
+        self.organization = get_object_or_404(
+            OrganizationStructure.objects.using(settings.READONLY_DATABASE), pk=pk
+        )
+        return self.list(request, pk, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        if self.organization is None:
+            form = RelOrganizationPKIntForm(self.request.GET)
+            if form.is_valid():
+                self.organization = get_object_or_404(
+                    OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                    pk=form.cleaned_data["organization"],
+                )
+        if self.organization is None:
+            raise Http404("Organization not found")
+        return super().list(request, *args, **kwargs)
+
+
 @register_lookups(prefix="laborgbase", basename="laborgbase")
 class LabOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
     model = Laboratory
