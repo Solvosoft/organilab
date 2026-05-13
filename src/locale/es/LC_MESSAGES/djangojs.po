@@ -1360,3 +1360,5 @@ msgstr "Obtener información de la sustancia"
 msgid "This organization has no administrators assigned."
 msgstr "Esta organización no tiene administradores asignados."
 
+msgid "Only labs selected"
+msgstr "Solo usar laboratorios seleccionados"
