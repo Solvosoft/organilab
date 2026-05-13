@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "documento",
+            "fds",
             type=str,
             help="Ruta al archivo Excel (.xlsx) con los datos a procesar",
         )
