@@ -40,7 +40,7 @@ class SDSTraceabilityViewSet(AuthAllPermBaseObjectManagement):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = SDSTraceabilityFilterSet
-    search_fields = ["sustance_characteristics__substance__name", "source"]
+    search_fields = ["sustance_characteristics__obj__name", "source"]
     ordering_fields = ["source", "is_verified", "creation_date"]
     ordering = ("-creation_date",)
 

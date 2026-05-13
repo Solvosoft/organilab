@@ -13,11 +13,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "documento",
-            type=str,
-            help="Ruta al archivo Excel (.xlsx) con los datos a procesar",
-        )
-        parser.add_argument(
             "fds",
             type=str,
             help="Ruta al archivo Excel (.xlsx) con los datos a procesar",
@@ -122,6 +117,7 @@ class Command(BaseCommand):
 
                 if "Cambiar códigos actuales por 'Ninguno'" in fila[4]:
                     susta.h_code.clear()
+                    susta.h_code.add("Ninguno")
                 susta.save()
             else:
                 print(f"No encontro objeto {fila[0]}")
@@ -158,7 +154,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.initial_data()
         self.create_danger_indication()
-        documento = options["documento"]
-        fds = options["fds"]
-        self.read_docs(fds)
-        self.update_sustances_hcoded(documento)
+        self.read_docs(options["fds"])
