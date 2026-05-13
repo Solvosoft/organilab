@@ -32,7 +32,8 @@ from laboratory.models import (
     Laboratory,
     OrganizationStructure,
     OrganizationStructureRelations,
-    Object, UserOrganization,
+    Object,
+    UserOrganization,
 )
 from laboratory.utils import (
     get_profile_by_organization,
@@ -248,7 +249,7 @@ class UserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
         for org in set(orgs):
             users += list(
                 get_users_from_organization(
-                    org.pk, org=org, userfilters={"users__isnull": False}
+                    org.pk, org=org, userfilters={"user__isnull": False}
                 )
             )
         return self.model.objects.filter(pk__in=set(users)).order_by("pk")
@@ -360,6 +361,7 @@ class RelOrgBaseS2(generics.RetrieveAPIView, BaseSelect2View):
 @register_lookups(prefix="relorgfullbase", basename="relorgfullbase")
 class RelOrgFullS2(generics.RetrieveAPIView, BaseSelect2View):
     """Like RelOrgBaseS2 but includes already-linked labs and marks them selected."""
+
     model = Laboratory
     fields = ["name"]
     authentication_classes = [SessionAuthentication]
@@ -590,16 +592,21 @@ class UsersByOrganization(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-            user_ids = UserOrganization.objects.using(
-                settings.READONLY_DATABASE
-            ).filter(
-                organization=self.organization,
-                user__isnull=False,
-            ).values_list("user", flat=True).distinct()
+            user_ids = (
+                UserOrganization.objects.using(settings.READONLY_DATABASE)
+                .filter(
+                    organization=self.organization,
+                    user__isnull=False,
+                )
+                .values_list("user", flat=True)
+                .distinct()
+            )
 
-            queryset = User.objects.using(settings.READONLY_DATABASE).filter(
-                pk__in=user_ids
-            ).distinct()
+            queryset = (
+                User.objects.using(settings.READONLY_DATABASE)
+                .filter(pk__in=user_ids)
+                .distinct()
+            )
         else:
             queryset = queryset.none()
 
