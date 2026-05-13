@@ -165,6 +165,14 @@ DATABASES = {
             "PORT": os.getenv("DBPORT", "5432"),
         },
     },
+    "oldDB": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DBNAME_OLD", "oldOrganilab"),
+        "USER": os.getenv("DBUSER", "organilab_user"),
+        "PASSWORD": os.getenv("DBPASSWORD", "0rg4n1l4b"),
+        "HOST": os.getenv("DBHOST", "127.0.0.1"),
+        "PORT": os.getenv("DBPORT", "5432"),
+    },
 }
 
 
