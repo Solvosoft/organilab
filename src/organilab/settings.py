@@ -138,6 +138,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.i18n",
                 "django.contrib.messages.context_processors.messages",
+                "authentication.context_processors.oidc_enabled",
             ],
         },
     },
@@ -502,6 +503,9 @@ OIDC_VERIFY_SSL = os.getenv("OIDC_VERIFY_SSL", "True").lower() == "true"
 OIDC_USE_PKCE = os.getenv("OIDC_USE_PKCE", "False").lower() == "true"
 OIDC_PKCE_METHOD = "S256"
 ALLOW_LOGOUT_GET_METHOD = True
+OIDC_STORE_ID_TOKEN = True
+OIDC_OP_LOGOUT_URL_METHOD = "authentication.views.oidc_logout_url"
+OIDC_POST_LOGOUT_REDIRECT_URL = os.getenv("OIDC_POST_LOGOUT_REDIRECT_URL", "")
 
 # Capacitation
 CAPACITATION_URL = os.getenv(

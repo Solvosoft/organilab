@@ -78,11 +78,13 @@ En la pestaña **Protocol**:
 | Campo | Valor |
 |-------|-------|
 | Allowed grant types | ✅ Code, ✅ Refresh Token |
-| Callback URLs | `http://localhost:8001/oidc/callback/` |
+| Callback URLs / Authorized redirect URLs | `http://localhost:8001/oidc/callback/` y `http://localhost:8001/accounts/login/` |
 | Allowed origins | `http://localhost:8001` |
 | Logout URL | `http://localhost:8001/` |
 | Access Token → Token type | `JWT` |
 | ID Token → Response signing algorithm | `SHA256withRSA` |
+
+> **Nota logout:** WSO2 registra las URLs de post-logout bajo el mismo campo **Authorized redirect URLs** (no existe un campo separado "Allowed post-logout redirect URLs"). Agregar `http://localhost:8001/accounts/login/` ahí para que WSO2 acepte el `post_logout_redirect_uri` y redirija de vuelta a Organilab al cerrar sesión.
 
 Click **Update**.
 
@@ -130,6 +132,7 @@ Variables opcionales con sus valores por defecto:
 | `DEFAULT_ROL_NAME` | `Estudiante` | Nombre del rol asignado al nuevo usuario |
 | `OIDC_VERIFY_SSL` | `True` | Verificar SSL al contactar WSO2. Poner `False` en local (cert autofirmado) |
 | `OIDC_USE_PKCE` | `False` | Activar PKCE en el flujo OIDC |
+| `OIDC_POST_LOGOUT_REDIRECT_URL` | `""` | URL a la que WSO2 redirige tras cerrar sesión. Debe estar registrada en WSO2 bajo **Authorized redirect URLs**. Ej: `http://localhost:8001/accounts/login/` |
 
 ### Mapeo de claims WSO2 → Organilab
 
