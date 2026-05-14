@@ -13,7 +13,7 @@
 				<h1 class="error-number">{% trans "Logged out" %}</h1>
 				<h4 class="m-2">{% trans "Are you sure that you want to logout?" %}</h4>
 
-				<form id="logout-form" method="post" action="{% url 'logout' %}">
+				<form id="logout-form" method="post" action="{% if oidc_enabled %}{% url 'oidc_logout' %}{% else %}{% url 'logout' %}{% endif %}">
 					{% csrf_token %}
 					<button type="submit" class="btn btn-danger">{% trans "Log out" %}</button>
 				</form>
