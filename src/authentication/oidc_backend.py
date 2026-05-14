@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
 from auth_and_perms.models import Profile, ProfilePermission, Rol
+from django.contrib.auth.models import User, Group
 
 logger = logging.getLogger(__name__)
 
@@ -22,13 +23,16 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
     def create_user(self, claims):
         email = claims.get("email", "")
         username = self._get_username(claims)
-        user = self.UserModel.objects.create_user(username, email=email)
-        user.first_name = claims.get("given_name", "")
-        user.last_name = claims.get("family_name", "")
-        user.save()
-        profile, _ = Profile.objects.get_or_create(user=user)
-        self._update_profile(profile, claims)
-        self._assign_default_org(profile)
+        user = self.UserModel.objects.filter(username=username, email=email).first()
+        if not user:
+            user = self.UserModel.objects.create_user(username, email=email)
+            user.first_name = claims.get("given_name", "")
+            user.last_name = claims.get("family_name", "")
+            user.save()
+            profile, _ = Profile.objects.get_or_create(user=user)
+            self._update_profile(profile, claims)
+            self._assign_default_org(profile)
+            self._assign_default_groups(user)
         return user
 
     def update_user(self, user, claims):
@@ -89,3 +93,8 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         rol = Rol.objects.filter(name__iexact=rol_name).first()
         if rol and not pp.rol.filter(pk=rol.pk).exists():
             pp.rol.add(rol)
+
+    def _assign_default_groups(self, user):
+        groups = Group.objects.filter(name__in=["Profile", "PendingTasks"])
+        for group in groups:
+            user.groups.add(group)
