@@ -7,6 +7,11 @@ from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from auth_and_perms.models import Profile, ProfilePermission, Rol
 from django.contrib.auth.models import User, Group
 
+from laboratory.models import (
+    UserOrganization,
+    OrganizationStructure,
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -78,6 +83,15 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
 
     def _assign_default_org(self, profile):
         org_pk = getattr(settings, "DEFAULT_ORG_PK", 0)
+        organization = OrganizationStructure.objects.filter(pk=org_pk).first()
+        if organization:
+            UserOrganization.objects.get_or_create(
+                user=profile.user,
+                organization=organization,
+                type_in_organization=UserOrganization.LABORATORY_USER,
+                status=True,
+            )
+
         rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
         if not org_pk:
             return
