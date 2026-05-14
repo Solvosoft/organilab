@@ -1,0 +1,113 @@
+services:
+
+  wso2is:
+    image: wso2/wso2is:7.0.0
+    container_name: wso2is
+    ports:
+      - "9443:9443"
+      - "9763:9763"
+    networks:
+      - apps
+    volumes:
+      - wso2is-data:/home/wso2carbon/wso2is-7.0.0/repository/database
+      - wso2is-tenants:/home/wso2carbon/wso2is-7.0.0/repository/tenants
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fk https://localhost:9443/carbon/ -o /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 120s
+
+  rabbitmq:
+    image: "rabbitmq:3"
+    container_name: "rabbitmq"
+    env_file: organilab.env
+    networks:
+      - apps
+
+  postgresdb:
+    image: postgres:17
+    restart: always
+    container_name: "postgresdb"
+    env_file: organilab.env
+    networks:
+      - apps
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5431:5432
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: "pgadmin"
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - apps
+    ports:
+      - 5050:80
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgresdb
+
+  mail:
+    image: mailhog/mailhog
+    restart: always
+    container_name: "mail"
+    networks:
+      - apps
+    ports:
+      - 1025:1025
+      - 8025:8025
+
+  organilab-web:
+    image: organilab:latest
+    container_name: "organilab-web"
+    environment:
+      - SERVICE_TYPE=web
+    env_file: organilab.env
+    networks:
+      - apps
+    ports:
+      - 8001:80
+    volumes:
+      - vol-organilab:/organilab/media/
+      - ./proxy_params:/etc/nginx/proxy_params:ro
+    depends_on:
+      postgresdb:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+      wso2is:
+        condition: service_healthy
+
+  organilab-celery:
+    image: organilab:latest
+    container_name: "organilab-celery"
+    environment:
+      - SERVICE_TYPE=celery
+      - CELERY_CONCURRENCY=2
+    env_file: organilab.env
+    networks:
+      - apps
+    volumes:
+      - vol-organilab:/organilab/media/
+    depends_on:
+      postgresdb:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+networks:
+  apps:
+    driver: bridge
+
+volumes:
+  db-data:
+  vol-organilab:
+  pgadmin-data:
+  wso2is-data:
+  wso2is-tenants:
