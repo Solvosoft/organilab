@@ -452,6 +452,7 @@ def get_org_administrators(request, pk):
         type_in_organization__in=[
             UserOrganization.ADMINISTRATOR,
             UserOrganization.LABORATORY_MANAGER,
+            UserOrganization.LABORATORY_USER,
         ],
     ).values_list("user_id", flat=True)
     profiles = (
