@@ -124,4 +124,5 @@ coverage.json
 backups
 docs/capacitacion/
 # Claude Code
+.claude/
 CLAUDE.md
