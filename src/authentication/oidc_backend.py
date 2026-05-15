@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.db import IntegrityError
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
 from auth_and_perms.models import Profile, ProfilePermission, Rol
@@ -20,24 +21,34 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
     def _get_username(self, claims):
         return (
             claims.get("username")
-            or claims.get("preferred_username")
             or claims.get("email")
             or claims.get("sub", "")
         )[:150]
 
     def create_user(self, claims):
         email = claims.get("email", "")
+        existing = self.UserModel.objects.filter(email__iexact=email)
+        if existing.count() > 1:
+            logger.error("OIDC: multiple users with email=%s, returning first", email)
+        user = existing.first()
+        if user:
+            return user
         username = self._get_username(claims)
-        user = self.UserModel.objects.filter(username=username, email=email).first()
-        if not user:
+        try:
             user = self.UserModel.objects.create_user(username, email=email)
-            user.first_name = claims.get("given_name", "")
-            user.last_name = claims.get("family_name", "")
-            user.save()
-            profile, _ = Profile.objects.get_or_create(user=user)
-            self._update_profile(profile, claims)
-            self._assign_default_org(profile)
-            self._assign_default_groups(user)
+        except IntegrityError:
+            logger.error("OIDC: username conflict for username=%s email=%s", username, email)
+            user = self.UserModel.objects.filter(email__iexact=email).first()
+            if not user:
+                raise
+            return user
+        user.first_name = claims.get("given_name", "")
+        user.last_name = claims.get("family_name", "")
+        user.save()
+        profile, _ = Profile.objects.get_or_create(user=user)
+        self._update_profile(profile, claims)
+        self._assign_default_org(profile)
+        self._assign_default_groups(user)
         return user
 
     def update_user(self, user, claims):
@@ -46,7 +57,6 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         user.save()
         profile, _ = Profile.objects.get_or_create(user=user)
         self._update_profile(profile, claims)
-        self._assign_default_org(profile)
         return user
 
     def _update_profile(self, profile, claims):
@@ -92,8 +102,8 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
                 status=True,
             )
 
-        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
-        if not org_pk:
+        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "")
+        if not org_pk or not rol_name:
             return
 
         org_ct = ContentType.objects.get(
