@@ -46,7 +46,6 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         user.save()
         profile, _ = Profile.objects.get_or_create(user=user)
         self._update_profile(profile, claims)
-        self._assign_default_org(profile)
         return user
 
     def _update_profile(self, profile, claims):
@@ -92,13 +91,13 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
                 status=True,
             )
 
-        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
         if not org_pk:
             return
 
         org_ct = ContentType.objects.get(
             app_label="laboratory", model="organizationstructure"
         )
+        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
         pp, _ = ProfilePermission.objects.get_or_create(
             profile=profile,
             content_type=org_ct,
