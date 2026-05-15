@@ -32,3 +32,4 @@ setuptools<82
 pdfplumber
 pandas==3.0.0
 curl_cffi>=0.14.0
+mozilla-django-oidc==4.0.1

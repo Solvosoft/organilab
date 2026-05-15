@@ -304,6 +304,7 @@ class OrganizationActionsFormview(FormView):
             type_in_organization__in=[
                 UserOrganization.ADMINISTRATOR,
                 UserOrganization.LABORATORY_MANAGER,
+                UserOrganization.LABORATORY_USER,
             ],
         ):
             user_org = UserOrganization.objects.create(
