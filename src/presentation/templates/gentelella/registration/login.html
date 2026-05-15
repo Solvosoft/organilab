@@ -5,83 +5,93 @@
 {% block content_block_wrap %}{% endblock %}
 {% block body_class %}login{% endblock body_class %}
 {% block css %}
-<style>
-    #login_footer{
-    position: absolute;
-    bottom: 8px;
-    width: 100%;
-    }
-</style>
+	<style>
+		#login_footer {
+			position: absolute;
+			bottom: 8px;
+			width: 100%;
+		}
+	</style>
 {% endblock %}
 
 {% block js %}
-<script>
-$(document).ready(function(){
-    if(document.location.hash){
-        let valnext=$('input[name="next"]').val();
-        $('input[name="next"]').val(
-            valnext+document.location.hash );
-    }
-});
-</script>
+	<script>
+		$(document).ready(function () {
+			if (document.location.hash) {
+				let valnext = $('input[name="next"]').val();
+				$('input[name="next"]').val(
+					valnext + document.location.hash);
+			}
+		});
+	</script>
 
 {% endblock %}
 
 {% block body %}
-<div class="navbar  login_title">
-        <a href="/" class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
-</div>
-<div class="">
-  <div class="row" style="min-height: 300px;">
-   <div class="col-xs-12 col-md-12">
-    <a class="hiddenanchor" id="signup"></a>
-    <a class="hiddenanchor" id="signin"></a>
-    <div class="login_wrapper " >
-            <section class="login_content">
-                <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ next }}">
-                    <h1>{% trans 'Login' %}</h1>
-                <div>
-                    {% if form.errors %}
-                    <p class="text-warning">{% trans "Your username and password didn't match. Please try again." %}</p>
-                    {% endif %}
+	<div class="navbar  login_title">
+		<a href="/" class="site_title"><i class="fa fa-flask"></i> <strong id="brand_id">ORGANILAB</strong></a>
+	</div>
+	<div class="">
+		<div class="row" style="min-height: 300px;">
+			<div class="col-xs-12 col-md-12">
+				<a class="hiddenanchor" id="signup"></a>
+				<a class="hiddenanchor" id="signin"></a>
+				<div class="login_wrapper ">
+					<section class="login_content">
+						<form method="post" action="{% url 'login' %}">
+							{% csrf_token %}
+							<input type="hidden" name="next" value="{{ next }}">
+							<h1>{% trans 'Login' %}</h1>
+							<div>
+								{% if form.errors %}
+									<p class="text-warning">{% trans "Your username and password didn't match. Please try again." %}</p>
+								{% endif %}
 
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                        <p>{% blocktrans %}Your account doesn't have access to this page. To proceed,
-                        please login with an account that has access.{% endblocktrans %}</p>
-                        {% else %}
-                        <p class="text-warning">{% trans "Please login to see this page." %}</p>
-                        {% endif %}
-                    {% endif %}
+								{% if next %}
+									{% if user.is_authenticated %}
+										<p>{% blocktrans %}Your account doesn't have access to this page. To proceed,
+											please login with an account that has access.{% endblocktrans %}</p>
+									{% else %}
+										<p class="text-warning">{% trans "Please login to see this page." %}</p>
+									{% endif %}
+								{% endif %}
 
-                </div>
-                    <div>
-                        <input type="text" class="form-control" name="username" placeholder="{% trans 'Username' %}" required="" />
-                    </div>
-                    <div>
-                        <input type="password" class="form-control" name="password" placeholder="{% trans 'Password' %}" required="" />
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-outline-success submit" >
-                            <i class="fa fa-sign-in" aria-hidden="true"></i> {% trans 'Log in' %}</button>
-                        <a class="reset_pass" href="{% url 'password_reset' %}">{% trans 'Lost your password?' %}</a>
+							</div>
+							<div>
+								<input type="text" class="form-control" name="username" placeholder="{% trans 'Username' %}" required=""/>
+							</div>
+							<div>
+								<input type="password" class="form-control" name="password" placeholder="{% trans 'Password' %}" required=""/>
+							</div>
+							<div class="row justify-content-center m-0 p-0">
+								<div class="col-12 d-flex justify-content-around">
+									<button type="submit" class="btn btn-outline-success submit m-0" style="font-size: 1rem; width: 10rem; ">
+										<i class="fa fa-sign-in" aria-hidden="true"></i>
+										{% trans 'Log in' %}
+									</button>
+
+									{% if oidc_enabled %}
+									<a href="{% url 'oidc_authentication_init' %}" class="btn btn-outline-primary m-0 text-decoration-none" style="font-size: 1rem; width: 10rem; "
+												rel="noopener noreferrer">
+										<i class="fa fa-key" aria-hidden="true"></i>
+										{% trans 'Single Sign-On' %}
+									</a>
+									{% endif %}
+								</div>
+								<a class="reset_pass" href="{% url 'password_reset' %}">{% trans 'Lost your password?' %}</a>
+							</div>
 
 
-                    </div>
+						</form>
+					</section>
+				</div>
 
-
-                </form>
-            </section>
-        </div>
-
-    </div>
-  </div>
-        <div class="clearfix"></div>
-    <footer id="login_footer" class=" footer_nosidebar" >
-          {% include "gentelella/app/footer.html" %}
-    </footer>
-</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<footer id="login_footer" class=" footer_nosidebar">
+			{% include "gentelella/app/footer.html" %}
+		</footer>
+	</div>
 
 {% endblock %}

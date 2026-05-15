@@ -125,3 +125,4 @@ backups
 docs/capacitacion/
 # Claude Code
 CLAUDE.md
+.claude/

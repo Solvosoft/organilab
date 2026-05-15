@@ -32,7 +32,8 @@ from auth_and_perms.api.serializers import (
     ShelfObjectDataTableSerializer,
     ValidateOrganizationSerializer,
     ExternalUserSerializer,
-    AddExternalUserSerializer, ValidateProfileOrganizationSerializer,
+    AddExternalUserSerializer,
+    ValidateProfileOrganizationSerializer,
 )
 from auth_and_perms.forms import (
     LaboratoryAndOrganizationForm,
@@ -48,7 +49,8 @@ from laboratory.models import (
     OrganizationStructure,
     Laboratory,
     UserOrganization,
-    ShelfObject, OrganizationStructureRelations,
+    ShelfObject,
+    OrganizationStructureRelations,
 )
 from laboratory.utils import (
     get_profile_by_organization,
@@ -336,17 +338,24 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering = ("-user",)  # default order
 
     def get_queryset(self):
-        users = UserOrganization.objects.using(settings.READONLY_DATABASE).filter(
-            organization=self.organization,
-            type_in_organization__in=[
-                UserOrganization.ADMINISTRATOR,
-                UserOrganization.LABORATORY_MANAGER,
-            ],
-            user__isnull=False,
-        ).values_list("user", flat=True).distinct()
+        users = (
+            UserOrganization.objects.using(settings.READONLY_DATABASE)
+            .filter(
+                organization=self.organization,
+                type_in_organization__in=[
+                    UserOrganization.ADMINISTRATOR,
+                    UserOrganization.LABORATORY_MANAGER,
+                    UserOrganization.LABORATORY_USER,
+                ],
+                user__isnull=False,
+            )
+            .values_list("user", flat=True)
+            .distinct()
+        )
 
         return Profile.objects.using(settings.READONLY_DATABASE).filter(
-            user__pk__in=users)
+            user__pk__in=users
+        )
 
     def list(self, request, *args, **kwargs):
         form = OrganizationForViewsetForm(request.GET)
@@ -376,36 +385,48 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
     def inerit_profile(self, request):
         serializer = ValidateProfileOrganizationSerializer(data=request.data)
         if serializer.is_valid():
-            organization = serializer.validated_data['organization']
+            organization = serializer.validated_data["organization"]
             user_is_allowed_on_organization(request.user, organization)
-            object_id = serializer.validated_data['object_id']
-            user_pp = ProfilePermission.objects.filter(profile=serializer.validated_data['profile'],
-                                                       content_type=ContentType.objects.filter(
-                                                           app_label=organization._meta.app_label,
-                                                           model=organization._meta.model_name).first(),
-                                                       object_id=organization.pk).first()
+            object_id = serializer.validated_data["object_id"]
+            user_pp = ProfilePermission.objects.filter(
+                profile=serializer.validated_data["profile"],
+                content_type=ContentType.objects.filter(
+                    app_label=organization._meta.app_label,
+                    model=organization._meta.model_name,
+                ).first(),
+                object_id=organization.pk,
+            ).first()
 
-            descendants = serializer.validated_data['organization'].descendants(include_self=False)
-            org_vinculate = UserOrganization.objects.filter(user=serializer.validated_data['profile'].user,
-                                                            organization=serializer.validated_data['organization']).first().type_in_organization
+            descendants = serializer.validated_data["organization"].descendants(
+                include_self=False
+            )
+            org_vinculate = (
+                UserOrganization.objects.filter(
+                    user=serializer.validated_data["profile"].user,
+                    organization=serializer.validated_data["organization"],
+                )
+                .first()
+                .type_in_organization
+            )
 
             for org in descendants:
                 obj, created = ProfilePermission.objects.get_or_create(
-                    profile=serializer.validated_data['profile'],
+                    profile=serializer.validated_data["profile"],
                     content_type=ContentType.objects.filter(
-                        app_label=org._meta.app_label, model=org._meta.model_name).first(),
+                        app_label=org._meta.app_label, model=org._meta.model_name
+                    ).first(),
                     object_id=org.pk,
                 )
-                org.users.add(serializer.validated_data['profile'].user)
+                org.users.add(serializer.validated_data["profile"].user)
                 if user_pp:
                     for rol in user_pp.rol.filter(organizationstructure=organization):
                         org.rol.add(rol)
                         obj.rol.add(rol)
 
                 UserOrganization.objects.get_or_create(
-                    organization=serializer.validated_data['organization'],
-                    user=serializer.validated_data['profile'].user,
-                    type_in_organization=org_vinculate
+                    organization=serializer.validated_data["organization"],
+                    user=serializer.validated_data["profile"].user,
+                    type_in_organization=org_vinculate,
                 )
 
             return Response({"result": "ok"})
@@ -595,7 +616,9 @@ class UpdateGroupsByProfile(APIView):
                         "Removed the groups %(groups)r from the profile %(profile)r"
                     )
                     % {
-                        "groups": ", ".join(list(groups_exclude.values_list("name", flat=True))),
+                        "groups": ", ".join(
+                            list(groups_exclude.values_list("name", flat=True))
+                        ),
                         "profile": str(profile),
                     },
                     relobj=organization,
@@ -704,17 +727,25 @@ class LaboratoryGeolocationsAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        labs = get_user_laboratories(request.user).select_related("organization").exclude(geolocation="")
+        labs = (
+            get_user_laboratories(request.user)
+            .select_related("organization")
+            .exclude(geolocation="")
+        )
         data = []
         for lab in labs:
             try:
                 lat, lng = lab.geolocation.split(",")
-                data.append({
-                    "lat": float(lat),
-                    "lng": float(lng),
-                    "lab": lab.name,
-                    "organization": lab.organization.name if lab.organization else "",
-                })
+                data.append(
+                    {
+                        "lat": float(lat),
+                        "lng": float(lng),
+                        "lab": lab.name,
+                        "organization": (
+                            lab.organization.name if lab.organization else ""
+                        ),
+                    }
+                )
             except (ValueError, AttributeError):
                 continue
         return JsonResponse({"laboratories": data})
@@ -726,6 +757,7 @@ class ManageOrgLabsAPI(APIView):
 
     def put(self, request, pk):
         from laboratory.utils import register_laboratory_contenttype
+
         org = get_object_or_404(OrganizationStructure, pk=pk)
         user_is_allowed_on_organization(request.user, org)
         labs = request.data.get("labs", [])
