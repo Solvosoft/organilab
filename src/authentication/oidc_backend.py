@@ -19,11 +19,9 @@ logger = logging.getLogger(__name__)
 class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
 
     def _get_username(self, claims):
-        return (
-            claims.get("username")
-            or claims.get("email")
-            or claims.get("sub", "")
-        )[:150]
+        return (claims.get("username") or claims.get("email") or claims.get("sub", ""))[
+            :150
+        ]
 
     def create_user(self, claims):
         email = claims.get("email", "")
@@ -37,7 +35,9 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         try:
             user = self.UserModel.objects.create_user(username, email=email)
         except IntegrityError:
-            logger.error("OIDC: username conflict for username=%s email=%s", username, email)
+            logger.error(
+                "OIDC: username conflict for username=%s email=%s", username, email
+            )
             user = self.UserModel.objects.filter(email__iexact=email).first()
             if not user:
                 raise
@@ -109,6 +109,7 @@ class OrganiLabOIDCBackend(OIDCAuthenticationBackend):
         org_ct = ContentType.objects.get(
             app_label="laboratory", model="organizationstructure"
         )
+        rol_name = getattr(settings, "DEFAULT_ROL_NAME", "Estudiante")
         pp, _ = ProfilePermission.objects.get_or_create(
             profile=profile,
             content_type=org_ct,
