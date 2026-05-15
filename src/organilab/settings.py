@@ -114,6 +114,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "mozilla_django_oidc.middleware.SessionRefresh",
     "django_otp.middleware.OTPMiddleware",
     "auth_and_perms.middleware.ImpostorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -364,7 +365,7 @@ GT_GROUP_MODEL = "auth_and_perms.models.Rol"
 DEFAULT_BUSSINESS = int(os.getenv("DEFAULT_BUSSINESS", 1))
 DEFAULT_ENTITY = int(os.getenv("DEFAULT_ENTITY", 1))
 DEFAULT_ORG_PK = int(os.getenv("DEFAULT_ORG_PK", 0))
-DEFAULT_ROL_NAME = os.getenv("DEFAULT_ROL_NAME", "Estudiante")
+DEFAULT_ROL_NAME = os.getenv("DEFAULT_ROL_NAME", "")
 DEFAULT_SUCCESS_BCCR = 0
 
 REST_FRAMEWORK = {
@@ -491,9 +492,7 @@ OIDC_OP_TOKEN_ENDPOINT = os.getenv(
 OIDC_OP_USER_ENDPOINT = os.getenv(
     "OIDC_OP_USER_ENDPOINT", f"{_WSO2_BASE}/oauth2/userinfo"
 )
-OIDC_OP_JWKS_ENDPOINT = os.getenv(
-    "OIDC_OP_JWKS_ENDPOINT", f"{_WSO2_BASE}/oauth2/jwks"
-)
+OIDC_OP_JWKS_ENDPOINT = os.getenv("OIDC_OP_JWKS_ENDPOINT", f"{_WSO2_BASE}/oauth2/jwks")
 OIDC_OP_LOGOUT_ENDPOINT = os.getenv(
     "OIDC_OP_LOGOUT_ENDPOINT", f"{_WSO2_BASE}/oidc/logout"
 )
@@ -504,6 +503,7 @@ OIDC_USE_PKCE = os.getenv("OIDC_USE_PKCE", "False").lower() == "true"
 OIDC_PKCE_METHOD = "S256"
 ALLOW_LOGOUT_GET_METHOD = True
 OIDC_STORE_ID_TOKEN = True
+OIDC_STORE_ACCESS_TOKEN = True
 OIDC_OP_LOGOUT_URL_METHOD = "authentication.views.oidc_logout_url"
 OIDC_POST_LOGOUT_REDIRECT_URL = os.getenv("OIDC_POST_LOGOUT_REDIRECT_URL", "")
 
