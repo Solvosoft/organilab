@@ -1550,6 +1550,7 @@ class ReactiveForm(GTForm, forms.ModelForm):
         required=False,
         label=_("Threshold"),
         help_text=_("It belongs to the regulations of decree 44741"),
+        initial=0.0,
     )
     density = forms.FloatField(
         widget=genwidgets.TextInput,

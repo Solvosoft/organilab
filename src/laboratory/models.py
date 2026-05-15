@@ -122,6 +122,8 @@ class Object(AbstractOrganizationRef):
         default=0.0,
         verbose_name=_("Threshold"),
         help_text=_("It belongs to the regulations of decree 44741"),
+        null=True,
+        blank=True,
     )
     is_pure = models.BooleanField(
         default=False,
