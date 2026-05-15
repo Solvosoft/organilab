@@ -1,3 +1,6 @@
+15/05/2026
+command to update rol permissions
+    - python manage.py update_roles_permissions
 
 11/05/2026
 Command to update FDS
