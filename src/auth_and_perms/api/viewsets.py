@@ -38,6 +38,8 @@ from auth_and_perms.api.serializers import (
     ValidateProfileOrganizationSerializer,
     ListUserSerializer,
     UserListDataTableSerializer,
+    LaboratoryOrganizationDataTableSerializer,
+    OrganizationLaboratoryDataTableSerializer,
 )
 from auth_and_perms.forms import (
     LaboratoryAndOrganizationForm,
@@ -842,3 +844,71 @@ class UserListViewset(AuthAllPermBaseObjectManagement):
             "draw": request.GET.get("draw", 1),
         }
         return Response(response)
+
+
+class OrganizationLaboratoryViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrganizationLaboratoryDataTableSerializer
+    queryset = OrganizationStructure.objects.using(settings.READONLY_DATABASE).filter(
+        active=True
+    )
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name"]  # for the global search
+    ordering_fields = [
+        "pk",
+    ]
+    ordering = ("-pk",)  # default order
+
+    def list(self, request, *args, **kwargs):
+        if self.request.user.has_perm("laboratory.view_organizationstructure"):
+            queryset = self.get_queryset()
+            total = queryset.count()
+            queryset = self.filter_queryset(queryset)
+            data = self.paginate_queryset(queryset)
+            response = {
+                "data": data,
+                "recordsTotal": total,
+                "recordsFiltered": queryset.count(),
+                "draw": self.request.GET.get("draw", 1),
+            }
+            return Response(self.get_serializer(response).data)
+        else:
+            return Response(
+                {"error": _("You don't have permissions to access this section")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class LaboratoryOrganizationViewset(mixins.ListModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = LaboratoryOrganizationDataTableSerializer
+    queryset = Laboratory.objects.using(settings.READONLY_DATABASE).all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name"]  # for the global search
+    ordering_fields = [
+        "pk",
+    ]
+    ordering = ("-pk",)  # default order
+
+    def list(self, request, *args, **kwargs):
+        if self.request.user.has_perm("laboratory.view_laboratory"):
+            queryset = self.get_queryset()
+            total = queryset.count()
+            queryset = self.filter_queryset(queryset)
+            data = self.paginate_queryset(queryset)
+            response = {
+                "data": data,
+                "recordsTotal": total,
+                "recordsFiltered": queryset.count(),
+                "draw": self.request.GET.get("draw", 1),
+            }
+            return Response(self.get_serializer(response).data)
+        else:
+            return Response(
+                {"error": _("You don't have permissions to access this section")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

@@ -1374,3 +1374,9 @@ msgstr "Apellido"
 
 msgid "Organizations"
 msgstr "Organizaciones"
+
+msgid "Associated laboratories"
+msgstr "Laboratorios asociados"
+
+msgid "Partner organizations"
+msgstr "Organizaciones asociadas"

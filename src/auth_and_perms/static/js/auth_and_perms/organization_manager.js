@@ -18,7 +18,6 @@ language: {"url": datatables_lang },
     }
 }
 }, addfilter=false);
-    relateusertoorg
 
 datatableorpermelement=createDataTable('#orpermelement', userinorg_api_url, {
 language: {"url": datatables_lang },

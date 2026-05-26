@@ -502,3 +502,10 @@ def update_rol(request, org_pk, pk):
     return redirect(
         reverse("auth_and_perms:list_rol_by_org", kwargs={"org_pk": org_pk})
     )
+
+
+@login_required
+@permission_required("laboratory.view_organizationstructure", raise_exception=True)
+@require_http_methods(["GET"])
+def get_labs_orgs(request):
+    return render(request, "auth_and_perms/lab_org_list.html")

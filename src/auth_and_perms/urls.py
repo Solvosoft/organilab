@@ -15,6 +15,8 @@ from auth_and_perms.api.viewsets import (
     LaboratoryGeolocationsAPI,
     ManageOrgLabsAPI,
     UserListViewset,
+    LaboratoryOrganizationViewset,
+    OrganizationLaboratoryViewset,
 )
 from auth_and_perms.views import organizationstructure as orgstruct
 
@@ -51,6 +53,8 @@ routes.register(
 )
 
 routes.register("userlist", UserListViewset, "api-userlist")
+routes.register("laborglist", LaboratoryOrganizationViewset, "api-laborglist")
+routes.register("orglablist", OrganizationLaboratoryViewset, "api-orglablist")
 app_name = "auth_and_perms"
 
 urlpatterns = [
@@ -173,4 +177,5 @@ urlpatterns = [
         name="api_laboratory_geolocations",
     ),
     path("get_users/", user_org_creation.get_users, name="get_users"),
+    path("lab_org_list/", orgstruct.get_labs_orgs, name="lab_org_list"),
 ]
