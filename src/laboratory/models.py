@@ -1247,6 +1247,7 @@ class OrganizationStructure(TreeNode):
     active = models.BooleanField(default=True)
     objects = TreeQuerySet.as_manager()
     os_manager = OrganizationStructureManager()
+    enable_child_organizations = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["position"]

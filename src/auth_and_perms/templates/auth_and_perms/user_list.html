@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load urlname_tags %}
+{% load gtsettings %}
+{% block pre_head %}
+	{% define_urlname_action 'objectview_list' %}
+{% endblock %}
+
+{% block title %}{% trans 'User List' %}{% endblock %}
+
+{% block content %}
+	<h1 class="text-center">{% trans 'User List' %}</h1>
+	<div class="row">
+		<table class="table table-striped w-100 table-responsive" id="user_table"></table>
+	</div>
+
+
+{% endblock %}
+{% block js %}
+	{{ block.super }}
+	<script>
+
+
+		var object_urls = {
+			list_url: "{% url 'auth_and_perms:api-userlist-list' %}",
+		}
+
+		datatable_inits = {
+			columns: [
+				{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
+				{data: "username", name: "username", title: gettext("User name"), type: "string", visible: true},
+				{data: "first_name", name: "first_name", title: gettext("First name"), type: "string", visible: true},
+				{data: "last_name", name: "last_name", title: gettext("Last name"), type: "string", visible: true},
+				{data: "email", name: "email", title: gettext("Email"), type: "string", visible: true},
+				{data: "organization", name: "organization", title: gettext("Organization"), type: "readonly", visible: true},
+				{data: "laboratory", name: "laboratory", title: gettext("Laboratories"), type: "string", visible: true},
+				{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: false}
+			],
+			addfilter: true
+		}
+
+		var equipment_actions = {
+			table_actions: [],  //table_actions
+			object_actions: [],
+			title: gettext('Actions'),
+			className: "no-export-col"
+		}
+
+var user_actions = {
+    table_actions: [], // table_actions
+    object_actions: [],
+        title: gettext('Actions'),
+        className: "no-export-col"
+}
+		icons = {
+		clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
+			view_labs: 'fa fa-eye',
+		}
+
+		let objconfig = {
+			urls: object_urls,
+			datatable_element: "#user_table",
+			modal_ids: {},
+			actions: user_actions,
+			datatable_inits: datatable_inits,
+			add_filter: true,
+			relation_render: {'field_autocomplete': 'text'},
+			delete_display: data => data['first_name'],
+			create: "btn-success",
+			icons: icons
+		}
+
+
+		let ocrud = ObjectCRUD("user_crudobj", objconfig)
+		ocrud.view_labs = function(obj, action){
+
+
+		}
+		ocrud.init();
+
+
+	</script>
+{% endblock %}

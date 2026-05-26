@@ -7,6 +7,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
+from djgentelella.objectmanagement import AuthAllPermBaseObjectManagement
 from rest_framework import mixins, viewsets, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
@@ -18,6 +19,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.views import APIView
 
 from api.utils import AllPermissionOrganization
+from auth_and_perms.api import filterset
 from auth_and_perms.api.serializers import (
     RolSerializer,
     ProfilePermissionRolOrganizationSerializer,
@@ -34,6 +36,8 @@ from auth_and_perms.api.serializers import (
     ExternalUserSerializer,
     AddExternalUserSerializer,
     ValidateProfileOrganizationSerializer,
+    ListUserSerializer,
+    UserListDataTableSerializer,
 )
 from auth_and_perms.forms import (
     LaboratoryAndOrganizationForm,
@@ -779,3 +783,62 @@ class ManageOrgLabsAPI(APIView):
                 object_id__in=[int(p) for p in labs],
             ).delete()
         return Response({"ok": True})
+
+
+class UserListViewset(AuthAllPermBaseObjectManagement):
+    perms = {"list": ["auth_and_perms.view_profile"]}
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ListUserSerializer
+    queryset = User.objects.using(settings.READONLY_DATABASE).order_by("pk")
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_class = filterset.UserFilter
+
+    search_fields = [
+        "first_name",
+        "last_name",
+        "username",
+        "email",
+    ]
+    ordering_fields = [
+        "first_name",
+        "last_name",
+        "username",
+        "email",
+    ]
+    ordering = ("-pk",)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        users = (
+            UserOrganization.objects.using(settings.READONLY_DATABASE)
+            .filter(
+                type_in_organization__in=[
+                    UserOrganization.ADMINISTRATOR,
+                    UserOrganization.LABORATORY_MANAGER,
+                    UserOrganization.LABORATORY_USER,
+                ],
+                user__isnull=False,
+            )
+            .values_list("user", flat=True)
+            .distinct()
+        )
+
+        return queryset.filter(pk__in=users)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        total = queryset.count()
+        queryset = self.filter_queryset(queryset)
+        data = self.paginate_queryset(queryset)
+        serialized_data = ListUserSerializer(
+            data, many=True, context={"request": request}
+        ).data
+        response = {
+            "data": serialized_data,
+            "recordsTotal": total,
+            "recordsFiltered": queryset.count(),
+            "draw": request.GET.get("draw", 1),
+        }
+        return Response(response)
