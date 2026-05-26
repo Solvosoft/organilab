@@ -17,6 +17,11 @@
                   <i class='fa fa-university'></i> {% trans 'User List' %}
                 </a>
             </li>
+									<li>
+                <a href="{% url 'auth_and_perms:lab_org_list' %}" title="{% trans 'Laboratory and Organization List' %}">
+                  <i class='fa fa-university'></i> {% trans 'Laboratory and Organization List' %}
+                </a>
+            </li>
         </ul>
 </li>
 {% endif %}

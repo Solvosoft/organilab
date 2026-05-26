@@ -687,3 +687,67 @@ class UserListDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField()
     recordsFiltered = serializers.IntegerField()
     draw = serializers.CharField()
+
+
+class OrganizationLaboratorySerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    laboratories = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        return obj.name if obj.name else ""
+
+    def get_laboratories(self, obj):
+        labs = OrganizationStructureRelations.objects.filter(
+            organization=obj,
+            content_type__app_label="laboratory",
+            content_type__model="laboratory",
+        ).values_list("object_id", flat=True)
+        labs = list(
+            set(Laboratory.objects.filter(pk__in=labs).values_list("name", flat=True))
+        )
+        return ", ".join(labs) if len(labs) > 0 else ""
+
+    class Meta:
+        model = OrganizationStructure
+        fields = ["name", "laboratories"]
+
+
+class LaboratoryOrganizationSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    organizations = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        return obj.name if obj.name else ""
+
+    def get_organizations(self, obj):
+        labs = OrganizationStructureRelations.objects.filter(
+            content_type__app_label="laboratory",
+            content_type__model="laboratory",
+            object_id=obj.pk,
+        ).values_list("organization", flat=True)
+        labs = list(
+            set(
+                OrganizationStructure.objects.filter(pk__in=labs).values_list(
+                    "name", flat=True
+                )
+            )
+        )
+        return ", ".join(labs) if len(labs) > 0 else ""
+
+    class Meta:
+        model = Laboratory
+        fields = ["name", "organizations"]
+
+
+class OrganizationLaboratoryDataTableSerializer(serializers.Serializer):
+    data = OrganizationLaboratorySerializer(many=True)
+    recordsTotal = serializers.IntegerField()
+    recordsFiltered = serializers.IntegerField()
+    draw = serializers.CharField()
+
+
+class LaboratoryOrganizationDataTableSerializer(serializers.Serializer):
+    data = LaboratoryOrganizationSerializer(many=True)
+    recordsTotal = serializers.IntegerField()
+    recordsFiltered = serializers.IntegerField()
+    draw = serializers.CharField()
