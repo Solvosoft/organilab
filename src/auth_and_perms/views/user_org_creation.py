@@ -1,5 +1,7 @@
 from datetime import timedelta
 from functools import partial
+
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.models import User, Group
@@ -103,13 +105,12 @@ def set_rol_administrator_on_org(
     else:
         root_org = organization.root
         rol = Rol.objects.filter(
-            name=_("Organization Management"),
-            organizationstructure=root_org
+            name=_("Organization Management"), organizationstructure=root_org
         ).first()
         if rol:
             ct = ContentType.objects.filter(
                 app_label=organization._meta.app_label,
-                model=organization._meta.model_name
+                model=organization._meta.model_name,
             ).first()
             pp, _created = ProfilePermission.objects.get_or_create(
                 profile=profile, content_type=ct, object_id=organization.pk
@@ -235,3 +236,9 @@ def show_QR_img(request, pk):
     response = HttpResponse(content_type="image/svg+xml")
     img.save(response)
     return response
+
+
+@login_required()
+@permission_required("auth_and_perms.view_profile", raise_exception=True)
+def get_users(request):
+    return render(request, "auth_and_perms/user_list.html")

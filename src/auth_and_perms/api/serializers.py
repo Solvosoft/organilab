@@ -612,3 +612,78 @@ class ValidateProfileOrganizationSerializer(serializers.Serializer):
     app_label = serializers.CharField()
     model = serializers.CharField()
     object_id = serializers.IntegerField()
+
+
+class ListUserSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    last_name = serializers.SerializerMethodField()
+    first_name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
+    laboratory = serializers.SerializerMethodField()
+    organization = serializers.SerializerMethodField()
+    actions = serializers.SerializerMethodField()
+
+    def get_username(self, obj):
+        return obj.username if obj.username else ""
+
+    def get_last_name(self, obj):
+        return obj.last_name if obj.last_name else ""
+
+    def get_first_name(self, obj):
+        return obj.first_name if obj.first_name else ""
+
+    def get_email(self, obj):
+        return obj.email if obj.email else ""
+
+    def get_laboratory(self, obj):
+        labs = ProfilePermission.objects.filter(
+            profile=obj.profile,
+            content_type__app_label="laboratory",
+            content_type__model="laboratory",
+        ).values_list("object_id", flat=True)
+        labs = list(
+            set(Laboratory.objects.filter(pk__in=labs).values_list("name", flat=True))
+        )
+        return ", ".join(labs) if len(labs) > 0 else ""
+
+    def get_organization(self, obj):
+        orgs = ProfilePermission.objects.filter(
+            profile=obj.profile,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+        ).values_list("object_id", flat=True)
+        orgs = list(
+            set(
+                OrganizationStructure.objects.filter(pk__in=orgs).values_list(
+                    "name", flat=True
+                )
+            )
+        )
+        return ", ".join(orgs) if len(orgs) > 0 else ""
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "list": user.has_perm("auth_and_perms.view_profile"),
+        }
+        return action_list
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "laboratory",
+            "organization",
+            "actions",
+        ]
+
+
+class UserListDataTableSerializer(serializers.Serializer):
+    data = ListUserSerializer(many=True)
+    recordsTotal = serializers.IntegerField()
+    recordsFiltered = serializers.IntegerField()
+    draw = serializers.CharField()

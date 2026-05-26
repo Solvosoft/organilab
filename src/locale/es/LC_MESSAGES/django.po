@@ -6138,5 +6138,8 @@ msgstr "Ver administradores"
 msgid "Administrators"
 msgstr "Administradores"
 
- msgid "Single Sign-On"
- msgstr "Inicio Único"
+msgid "Single Sign-On"
+msgstr "Inicio Único"
+
+msgid "User List"
+msgstr "Lista de Usuarios"

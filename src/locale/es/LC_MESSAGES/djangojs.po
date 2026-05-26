@@ -1362,3 +1362,15 @@ msgstr "Esta organización no tiene administradores asignados."
 
 msgid "Only labs selected"
 msgstr "Solo usar laboratorios seleccionados"
+
+msgid "User name"
+msgstr "Nombre de usuario"
+
+msgid "First name"
+msgstr "Nombre"
+
+msgid "Last name"
+msgstr "Apellido"
+
+msgid "Organizations"
+msgstr "Organizaciones"
