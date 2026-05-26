@@ -14,12 +14,18 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phone_number = models.CharField(_("Phone"), default="", max_length=25)
-    id_card = models.CharField(_("Identification"), max_length=100)
+    phone_number = models.CharField(
+        _("Phone"), default="", max_length=25, null=True, blank=True
+    )
+    id_card = models.CharField(
+        _("Identification"), max_length=100, blank=True, null=True
+    )
     laboratories = models.ManyToManyField(
         "laboratory.Laboratory", verbose_name=_("Laboratories"), blank=True
     )
-    job_position = models.CharField(_("Job Position"), max_length=100)
+    job_position = models.CharField(
+        _("Job Position"), max_length=100, blank=True, null=True
+    )
     language = models.CharField(
         max_length=4,
         default=settings.LANGUAGE_CODE,
@@ -32,7 +38,7 @@ class Profile(models.Model):
     show_tutorials = models.BooleanField(
         default=True,
         verbose_name=_("Show tutorials"),
-        help_text=_("Enable automatic tutorial display on page visits")
+        help_text=_("Enable automatic tutorial display on page visits"),
     )
     workplace = models.ManyToManyField(
         "laboratory.OrganizationStructure",
