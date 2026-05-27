@@ -6152,3 +6152,9 @@ msgstr "Lista de Laboratorios"
 
 msgid "Laboratory and Organization List"
 msgstr "Lista de Laboratorios y Organizaciones"
+
+msgid "No roles assigned"
+msgstr "No se asignaron roles"
+
+msgid "User roles list"
+msgstr "Lista de roles por usuario"

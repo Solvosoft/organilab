@@ -41,6 +41,23 @@
 				</div>
 			</div>
 
+	<div id="rol_details"  class="modal fade" tabindex="-1" aria-labelledby="rol_details_label" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="rol_details_label">{% trans 'User roles list' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="userroles">
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+</div>
+
 
 {% endblock %}
 {% block js %}
@@ -48,6 +65,7 @@
 <script>
 	var org_api_url = "{% url 'auth_and_perms:api-orglablist-list' %}";
 	var lab_api_url = "{% url 'auth_and_perms:api-laborglist-list' %}";
+	var roles_api_url = "{% url 'auth_and_perms:api-laborgroles-list' %}";
 	</script>
 	<script src="{% static 'js/auth_and_perms/lab_org_list.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
