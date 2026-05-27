@@ -40,6 +40,7 @@ from auth_and_perms.api.serializers import (
     UserListDataTableSerializer,
     LaboratoryOrganizationDataTableSerializer,
     OrganizationLaboratoryDataTableSerializer,
+    ProfileLaboratoryOrgRoles,
 )
 from auth_and_perms.forms import (
     LaboratoryAndOrganizationForm,
@@ -912,3 +913,37 @@ class LaboratoryOrganizationViewset(mixins.ListModelMixin, viewsets.GenericViewS
                 {"error": _("You don't have permissions to access this section")},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class LaboratoryOrganizationRoles(mixins.ListModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileLaboratoryOrgRoles
+    queryset = Profile.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["user__first_name", "user__last_name"]  # for the global search
+    filterset_class = ProfileFilterSet
+    ordering_fields = [
+        "user",
+    ]
+    ordering = ("-user",)  # default order
+
+    def get_queryset(self):
+        profiles = get_profile_by_organization(self.organization.pk)
+
+        return profiles.filter(
+            profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
+            profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
+            profilepermission__object_id=self.contenttypeobj.pk,
+        )
+
+    def list(self, request, *args, **kwargs):
+        form = LaboratoryAndOrganizationForm(request.GET)
+        if form.is_valid():
+            self.organization = form.cleaned_data["organization"]
+            self.contenttypeobj = form.cleaned_data["laboratory"]
+            user_is_allowed_on_organization(request.user, self.organization)
+            queryset = self.get_queryset()
+            return Response(self.get_serializer(queryset, many=True).data)
+        return Response(self.get_serializer(Profile.objects.none(), many=True).data)

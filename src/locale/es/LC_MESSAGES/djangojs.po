@@ -1380,3 +1380,6 @@ msgstr "Laboratorios asociados"
 
 msgid "Partner organizations"
 msgstr "Organizaciones asociadas"
+
+msgid "No roles assigned"
+msgstr "No se asignaron roles"

@@ -17,6 +17,7 @@ from auth_and_perms.api.viewsets import (
     UserListViewset,
     LaboratoryOrganizationViewset,
     OrganizationLaboratoryViewset,
+    LaboratoryOrganizationRoles,
 )
 from auth_and_perms.views import organizationstructure as orgstruct
 
@@ -55,6 +56,7 @@ routes.register(
 routes.register("userlist", UserListViewset, "api-userlist")
 routes.register("laborglist", LaboratoryOrganizationViewset, "api-laborglist")
 routes.register("orglablist", OrganizationLaboratoryViewset, "api-orglablist")
+routes.register("laborgroles", LaboratoryOrganizationRoles, "api-laborgroles")
 app_name = "auth_and_perms"
 
 urlpatterns = [

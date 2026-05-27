@@ -29,7 +29,10 @@ import logging
 
 from django.conf import settings
 
-from laboratory.utils import check_user_access_kwargs_org_lab
+from laboratory.utils import (
+    check_user_access_kwargs_org_lab,
+    get_profile_by_organization,
+)
 from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger("organilab")
@@ -703,9 +706,23 @@ class OrganizationLaboratorySerializer(serializers.ModelSerializer):
             content_type__model="laboratory",
         ).values_list("object_id", flat=True)
         labs = list(
-            set(Laboratory.objects.filter(pk__in=labs).values_list("name", flat=True))
+            set(Laboratory.objects.filter(pk__in=labs).values_list("name", "id"))
         )
-        return ", ".join(labs) if len(labs) > 0 else ""
+
+        buttons = "<ul class='list-group'>"
+        for l in labs:
+            profile = get_profile_by_organization(obj.pk)
+            users = profile.filter(
+                profilepermission__content_type__app_label="laboratory",
+                profilepermission__content_type__model="laboratory",
+                profilepermission__object_id=l[1],
+            ).values_list("user", flat=True)
+            buttons += (
+                "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
+                % (l[0], _("Users"), obj.pk, l[1], "organization", users.count())
+            )
+        buttons += "</ul>"
+        return buttons
 
     class Meta:
         model = OrganizationStructure
@@ -727,12 +744,26 @@ class LaboratoryOrganizationSerializer(serializers.ModelSerializer):
         ).values_list("organization", flat=True)
         labs = list(
             set(
-                OrganizationStructure.objects.filter(pk__in=labs).values_list(
-                    "name", flat=True
-                )
+                OrganizationStructure.objects.filter(pk__in=labs)
+                .exclude(name="UNA")
+                .values_list("name", "id")
             )
         )
-        return ", ".join(labs) if len(labs) > 0 else ""
+
+        buttons = "<ul class='list-group'>"
+        for l in labs:
+            profile = get_profile_by_organization(l[1])
+            users = profile.filter(
+                profilepermission__content_type__app_label="laboratory",
+                profilepermission__content_type__model="laboratory",
+                profilepermission__object_id=obj.pk,
+            ).values_list("user", flat=True)
+            buttons += (
+                "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
+                % (l[0], _("Users"), l[1], obj.pk, "laboratory", users.count())
+            )
+        buttons += "</ul>"
+        return buttons
 
     class Meta:
         model = Laboratory
@@ -751,3 +782,36 @@ class LaboratoryOrganizationDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField()
     recordsFiltered = serializers.IntegerField()
     draw = serializers.CharField()
+
+
+class ProfileLaboratoryOrgRoles(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+
+    def get_roles(self, obj):
+        contenttypeobj = self.context["view"].contenttypeobj
+        org = self.context["view"].organization.root
+        profile_perm = ProfilePermission.objects.filter(
+            profile_id=obj.pk,
+            content_type__app_label=contenttypeobj._meta.app_label,
+            content_type__model=contenttypeobj._meta.model_name,
+            object_id=contenttypeobj.pk,
+        ).first()
+        if profile_perm:
+            roles = list(
+                set(
+                    profile_perm.rol.filter(organizationstructure=org).values_list(
+                        "name", flat=True
+                    )
+                )
+            )
+            roles = ", ".join(roles)
+            return roles
+        return ""
+
+    def get_user(self, obj):
+        return str(obj)
+
+    class Meta:
+        model = Profile
+        fields = ["user", "roles"]
