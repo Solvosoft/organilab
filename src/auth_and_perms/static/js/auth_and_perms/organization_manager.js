@@ -942,3 +942,22 @@ $(".admin_users_btn").on('click', function () {
         }
     });
 });
+
+$("#enable_button").on('click', function(){
+$("#enable_form").submit();
+});
+
+$(".enable_child_org").on('click', function(){
+    let orgPk = $(this).data('org');
+    let enable = $(this).data('enable');
+    $("#id_organization_enable").val(orgPk);
+    $("#id_enable_field").val(enable);
+    console.log(enable);
+    if (enable == true){
+        $("#enable-msg").text(gettext("Do you want to disable the child organizations filter?"));
+        $("#enable-title").text(gettext("Disable child organizations filter?"));
+    }else{
+        $("#enable-title").text(gettext("Enable child organizations filter?"));
+        $("#enable-msg").text(gettext("Do you want to enable the child organizations filter?"));
+    }
+});

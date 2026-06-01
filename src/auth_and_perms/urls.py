@@ -183,4 +183,9 @@ urlpatterns = [
     ),
     path("get_users/", user_org_creation.get_users, name="get_users"),
     path("lab_org_list/", orgstruct.get_labs_orgs, name="lab_org_list"),
+    path(
+        "enable_child_organizations/",
+        orgstruct.enable_child_organizations,
+        name="enable_child_organizations",
+    ),
 ]

@@ -107,6 +107,20 @@
 									</div>
 									{% if perms.laboratory.change_organizationstructure %}
 										<li class="list-group-item">
+											{% if node.0.enable_child_organizations %}
+																					<a class="enable_child_org" data-bs-toggle="modal" data-bs-target="#enable_filter_modal"
+																								data-org="{{ node.0.pk }}"
+																								data-enable="false"
+															title="{% trans 'Disable child organizations filter' %}"> <i class="fa fa-ban"></i>
+												</a>
+											{% else %}
+																					<a class="enable_child_org" data-bs-toggle="modal" data-bs-target="#enable_filter_modal" data-org="{{ node.0.pk }}"
+																								data-enable="true"
+															title="{% trans 'Enable child organizations filter' %}"> <i class="fa fa-cog"></i>
+												</a>
+											{% endif %}
+										</li>
+										<li class="list-group-item">
 											{% if not node.0.active %}
 												<a class="orgactions" data-modal="#actionclonemodal" data-prefix="clone-" data-org="{{ node.0.pk }}"
 															title="{% trans 'Actions' %}"> <i class="fa fa-wrench"></i>
@@ -504,6 +518,28 @@
 			</div>
 		</div>
 	</div>
+<div id="enable_filter_modal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="enable-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+							<p id="enable-msg">{% trans 'Do you want to enable the child organizations filter?' %}</p>
+							<form id="enable_form" method="post" action="{% url 'auth_and_perms:enable_child_organizations' %}">
+								{% csrf_token %}
+								<input type="hidden" name="organization" value="" id="id_organization_enable">
+								<input type="hidden" name="enable" value="" id="id_enable_field">
+							</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-ban" aria-hidden="true"></i> {% trans 'Close' %}</button>
+        <button id="enable_button" type="button" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> {% trans 'Save changes' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 	{% url 'laboratory:organization_actions' as action_clone_url %}
 	{% trans 'Actions for Organization' as action_clone_org %}
