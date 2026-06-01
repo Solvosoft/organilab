@@ -82,7 +82,7 @@ class Rol(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
 
     def __str__(self):
-        return f"{self.pk} {self.name}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name = _("Rol")
@@ -102,6 +102,14 @@ class ProfilePermission(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
     rol = models.ManyToManyField(Rol, blank=True, verbose_name=_("Rol"))
+    organization = models.ForeignKey(
+        "laboratory.OrganizationStructure",
+        verbose_name=_("Organization"),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="profile_permissions",
+    )
 
     def __str__(self):
         return "%s" % (self.profile,)
