@@ -23,6 +23,7 @@ from laboratory.models import (
     ShelfObject,
     Object,
     OrganizationStructureRelations,
+    UserOrganization,
 )
 from django.utils.translation import gettext_lazy as _
 import logging
@@ -619,8 +620,7 @@ class ValidateProfileOrganizationSerializer(serializers.Serializer):
 
 class ListUserSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
-    last_name = serializers.SerializerMethodField()
-    first_name = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
     email = serializers.SerializerMethodField()
     laboratory = serializers.SerializerMethodField()
     organization = serializers.SerializerMethodField()
@@ -629,40 +629,74 @@ class ListUserSerializer(serializers.ModelSerializer):
     def get_username(self, obj):
         return obj.username if obj.username else ""
 
-    def get_last_name(self, obj):
-        return obj.last_name if obj.last_name else ""
-
-    def get_first_name(self, obj):
-        return obj.first_name if obj.first_name else ""
+    def get_name(self, obj):
+        first_name = obj.first_name if obj.first_name else ""
+        last_name = obj.last_name if obj.last_name else ""
+        return f"{first_name} {last_name}"
 
     def get_email(self, obj):
         return obj.email if obj.email else ""
 
     def get_laboratory(self, obj):
-        labs = ProfilePermission.objects.filter(
-            profile=obj.profile,
+        orgs = UserOrganization.objects.filter(
+            user=obj,
+            organization__isnull=False,
+        ).values_list("organization", flat=True)
+        labs = OrganizationStructureRelations.objects.filter(
+            organization__in=orgs,
             content_type__app_label="laboratory",
             content_type__model="laboratory",
         ).values_list("object_id", flat=True)
         labs = list(
-            set(Laboratory.objects.filter(pk__in=labs).values_list("name", flat=True))
+            set(Laboratory.objects.filter(pk__in=labs).values_list("name", "id"))
         )
-        return ", ".join(labs) if len(labs) > 0 else ""
+
+        buttons = "<ul class='list-group'>"
+        for l in labs:
+            pp = ProfilePermission.objects.filter(
+                profile=obj.profile,
+                content_type__app_label="laboratory",
+                content_type__model="laboratory",
+                object_id=l[1],
+            )
+            if pp.exists():
+                buttons += (
+                    "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-user='%s' data-lab='%s' onclick=get_roles_in_laboratory(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
+                    % (l[0], _("Roles"), obj.pk, l[1], pp.count())
+                )
+
+        buttons += "</ul>"
+
+        return buttons
 
     def get_organization(self, obj):
-        orgs = ProfilePermission.objects.filter(
-            profile=obj.profile,
-            content_type__app_label="laboratory",
-            content_type__model="organizationstructure",
-        ).values_list("object_id", flat=True)
+        orgs = UserOrganization.objects.filter(
+            user=obj,
+            organization__isnull=False,
+        ).values_list("organization", flat=True)
         orgs = list(
             set(
                 OrganizationStructure.objects.filter(pk__in=orgs).values_list(
-                    "name", flat=True
+                    "name", "pk"
                 )
             )
         )
-        return ", ".join(orgs) if len(orgs) > 0 else ""
+
+        buttons = "<ul class='list-group'>"
+        for l in orgs:
+            pp = ProfilePermission.objects.filter(
+                profile=obj.profile,
+                content_type__app_label="laboratory",
+                content_type__model="organizationstructure",
+                object_id=l[1],
+            ).first()
+
+            buttons += (
+                "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-user='%s' data-org='%s' onclick=get_roles_in_organization(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
+                % (l[0], _("Roles"), obj.pk, l[1], pp.rol.count() if pp else 0)
+            )
+        buttons += "</ul>"
+        return buttons
 
     def get_actions(self, obj):
         user = self.context["request"].user
@@ -675,8 +709,7 @@ class ListUserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             "id",
-            "first_name",
-            "last_name",
+            "name",
             "username",
             "email",
             "laboratory",
@@ -815,3 +848,14 @@ class ProfileLaboratoryOrgRoles(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["user", "roles"]
+
+
+class UserRolesInOrganizationSerializer(serializers.Serializer):
+    organization_name = serializers.CharField()
+    roles = serializers.ListField(child=serializers.DictField())
+
+
+class UserRolesInLaboratorySerializer(serializers.Serializer):
+    organization_name = serializers.CharField()
+    laboratory_name = serializers.CharField()
+    roles = serializers.ListField(child=serializers.DictField())

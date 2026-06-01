@@ -6167,3 +6167,9 @@ msgstr "Roles de usuario en laboratorio"
 
 msgid "User roles in organization"
 msgstr "Roles de usuario en organización"
+
+msgid "Clear filters"
+msgstr "Limpiar filtros"
+
+msgid "Filter by organization"
+msgstr "Filtrar por organización"
