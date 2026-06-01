@@ -1383,3 +1383,6 @@ msgstr "Organizaciones asociadas"
 
 msgid "No roles assigned"
 msgstr "No se asignaron roles"
+
+msgid "Organization"
+msgstr "Organización"

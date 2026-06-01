@@ -6158,3 +6158,12 @@ msgstr "No se asignaron roles"
 
 msgid "User roles list"
 msgstr "Lista de roles por usuario"
+
+msgid "Filter by roles"
+msgstr "Filtrar por roles"
+
+msgid "User roles in laboratory"
+msgstr "Roles de usuario en laboratorio"
+
+msgid "User roles in organization"
+msgstr "Roles de usuario en organización"
