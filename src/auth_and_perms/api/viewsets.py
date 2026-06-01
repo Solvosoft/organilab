@@ -162,6 +162,7 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                     model=organization._meta.model_name,
                 ).first(),
                 object_id=organization.pk,
+                organization=organization,
             )
         if (
             "addlaboratories" in serializer.validated_data
@@ -518,6 +519,7 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
                 content_type__app_label="laboratory",
                 content_type__model="laboratory",
                 object_id__in=labs.values_list("pk", flat=True),
+                organization__pḱ=organization.pk,
             )
             for pp in pps:
                 organilab_logentry(
@@ -814,6 +816,9 @@ class UserListViewset(AuthAllPermBaseObjectManagement):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        extra_filter = {"organization__isnull": False}
+        if self.request.GET.get("organization", 0):
+            extra_filter["organization__pk"] = self.request.GET.get("organization")
         users = (
             UserOrganization.objects.using(settings.READONLY_DATABASE)
             .filter(
@@ -823,12 +828,20 @@ class UserListViewset(AuthAllPermBaseObjectManagement):
                     UserOrganization.LABORATORY_USER,
                 ],
                 user__isnull=False,
+                **extra_filter
             )
             .values_list("user", flat=True)
             .distinct()
         )
+        queryset = queryset.filter(pk__in=users)
+        if self.request.GET.getlist("roles[]", []):
+            queryset = queryset.filter(
+                profile__profilepermission__rol__in=self.request.GET.getlist(
+                    "roles[]", []
+                )
+            )
 
-        return queryset.filter(pk__in=users)
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -947,3 +960,101 @@ class LaboratoryOrganizationRoles(mixins.ListModelMixin, viewsets.GenericViewSet
             queryset = self.get_queryset()
             return Response(self.get_serializer(queryset, many=True).data)
         return Response(self.get_serializer(Profile.objects.none(), many=True).data)
+
+
+class UserRoles(viewsets.GenericViewSet):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileLaboratoryOrgRoles
+    queryset = Profile.objects.all()
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["user__first_name", "user__last_name"]  # for the global search
+    filterset_class = ProfileFilterSet
+    ordering_fields = [
+        "user",
+    ]
+    ordering = ("-user",)  # default order
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="roles-in-organization/(?P<user_pk>[^/.]+)",
+    )
+    def roles_in_organization(self, request, user_pk=None):
+        """
+        Devuelve los roles de un usuario en una organización específica.
+        URL: /userroles/roles-in-organization/<user_pk>/?organization=<org_pk>
+        """
+        organization_pk = request.GET.get("organization")
+        if not organization_pk:
+            return Response(
+                {"error": _("Organization parameter is required")},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = get_object_or_404(User, pk=user_pk)
+        organization = get_object_or_404(OrganizationStructure, pk=organization_pk)
+        profile = user.profile
+
+        profile_perm = ProfilePermission.objects.filter(
+            profile=profile,
+            content_type__app_label="laboratory",
+            content_type__model="organizationstructure",
+            object_id=organization.pk,
+        ).first()
+
+        roles_data = []
+        if profile_perm:
+            roles_data = list(
+                set(profile_perm.rol.all().values_list("name", flat=True))
+            )
+        result = {
+            "roles": roles_data,
+        }
+
+        return Response(result)
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="roles-in-laboratory/(?P<user_pk>[^/.]+)",
+    )
+    def roles_in_laboratory(self, request, user_pk=None):
+        """
+        Devuelve los roles de un usuario en un laboratorio,
+        en cada una de las organizaciones vinculadas al laboratorio.
+        URL: /userroles/roles-in-laboratory/<user_pk>/?laboratory=<lab_pk>
+        """
+        user = get_object_or_404(User, pk=user_pk)
+        profile = user.profile
+
+        lab_content_type = ContentType.objects.get_for_model(Laboratory)
+        lab = get_object_or_404(Laboratory, pk=request.GET.get("laboratory", 0))
+
+        # Obtener todos los ProfilePermission del usuario para laboratorios
+        permissions = (
+            ProfilePermission.objects.filter(
+                profile=profile,
+                content_type=lab_content_type,
+                organization__isnull=False,
+                object_id=lab.pk,
+            )
+            .select_related("organization")
+            .prefetch_related("rol")
+        )
+
+        # Agrupar por organización
+        org_data = {}
+        results = []
+        for perm in permissions:
+            org = perm.organization
+
+            results.append(
+                {
+                    "org_name": org.name,
+                    "roles": list(set(perm.rol.all().values_list("name", flat=True))),
+                }
+            )
+
+        return Response({"data": results})

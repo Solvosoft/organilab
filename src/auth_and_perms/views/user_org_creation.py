@@ -17,6 +17,7 @@ from auth_and_perms.forms import (
     CreationUserOrganization,
     AddProfileForm,
     AddProfileDigitalSignatureForm,
+    RolListForm,
 )
 from auth_and_perms.models import (
     RegistrationUser,
@@ -241,4 +242,6 @@ def show_QR_img(request, pk):
 @login_required()
 @permission_required("auth_and_perms.view_profile", raise_exception=True)
 def get_users(request):
-    return render(request, "auth_and_perms/user_list.html")
+    return render(
+        request, "auth_and_perms/user_list.html", context={"form": RolListForm()}
+    )

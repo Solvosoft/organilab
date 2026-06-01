@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load urlname_tags %}
+{% load organilab_tags %}
 {% load gtsettings %}
 {% block pre_head %}
 	{% define_urlname_action 'objectview_list' %}
@@ -11,74 +12,67 @@
 
 {% block content %}
 	<h1 class="text-center">{% trans 'User List' %}</h1>
+<div class="row">
+<div class="offset-md-2 col-md-8">
+<form id="formFiltro" >
+	{{ form }}
+	</form>
+	<button class="btn btn-sm btn-outline-success" id="btn-clear-filters">
+      <i class="fa fa-eraser" aria-hidden="true"></i>
+    {% trans 'Clear filters' %}
+    </button>
+</div>
+</div>
 	<div class="row">
 		<table class="table table-striped w-100 table-responsive" id="user_table"></table>
 	</div>
 
+	<div id="user_org_details"  class="modal fade" tabindex="-1" aria-labelledby="user_org_details_label" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="user_org_details_label">{% trans 'User roles in organization' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="user_org_body">
 
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+</div>
+
+	<div id="user_lab_details"  class="modal fade" tabindex="-1" aria-labelledby="rol_details_label" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">{% trans 'User roles in laboratory' %}</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="user_lab_body">
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+</div>
 {% endblock %}
 {% block js %}
 	{{ block.super }}
 	<script>
 
+		var user_roles_org_url = "{% url 'auth_and_perms:api-userroles-roles-in-organization' user_pk=0 %}";
+		var user_roles_lab_url = "{% url 'auth_and_perms:api-userroles-roles-in-laboratory' user_pk=0 %}";
 
 		var object_urls = {
 			list_url: "{% url 'auth_and_perms:api-userlist-list' %}",
 		}
 
-		datatable_inits = {
-			columns: [
-				{data: "id", name: "id", title: gettext("Id"), type: "string", visible: false},
-				{data: "username", name: "username", title: gettext("User name"), type: "string", visible: true},
-				{data: "first_name", name: "first_name", title: gettext("First name"), type: "string", visible: true},
-				{data: "last_name", name: "last_name", title: gettext("Last name"), type: "string", visible: true},
-				{data: "email", name: "email", title: gettext("Email"), type: "string", visible: true},
-				{data: "organization", name: "organization", title: gettext("Organization"), type: "readonly", visible: true},
-				{data: "laboratory", name: "laboratory", title: gettext("Laboratories"), type: "string", visible: true},
-				{data: "actions", name: "actions", title: gettext("Actions"), type: "string", visible: false}
-			],
-			addfilter: true
-		}
-
-		var equipment_actions = {
-			table_actions: [],  //table_actions
-			object_actions: [],
-			title: gettext('Actions'),
-			className: "no-export-col"
-		}
-
-var user_actions = {
-    table_actions: [], // table_actions
-    object_actions: [],
-        title: gettext('Actions'),
-        className: "no-export-col"
-}
-		icons = {
-		clear: '<i class="fa fa-eraser" aria-hidden="true"></i>',
-			view_labs: 'fa fa-eye',
-		}
-
-		let objconfig = {
-			urls: object_urls,
-			datatable_element: "#user_table",
-			modal_ids: {},
-			actions: user_actions,
-			datatable_inits: datatable_inits,
-			add_filter: true,
-			relation_render: {'field_autocomplete': 'text'},
-			delete_display: data => data['first_name'],
-			create: "btn-success",
-			icons: icons
-		}
-
-
-		let ocrud = ObjectCRUD("user_crudobj", objconfig)
-		ocrud.view_labs = function(obj, action){
-
-
-		}
-		ocrud.init();
-
 
 	</script>
+<script src="{% static 'js/auth_and_perms/user_roles.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}
