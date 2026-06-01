@@ -1386,3 +1386,16 @@ msgstr "No se asignaron roles"
 
 msgid "Organization"
 msgstr "Organización"
+
+msgid "Enable child organizations filter?"
+msgstr "Habilitar filtro de organizaciones hijas"
+
+msgid "Disable child organizations filter?"
+msgstr "Deshabilitar filtro de organizaciones hijas"
+
+msgid "Do you want to enable the child organizations filter?"
+msgstr "¿Desea habilitar el filtro de organizaciones hijas?"
+
+msgid "Do you want to disable the child organizations filter?"
+msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
+

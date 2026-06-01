@@ -509,3 +509,20 @@ def update_rol(request, org_pk, pk):
 @require_http_methods(["GET"])
 def get_labs_orgs(request):
     return render(request, "auth_and_perms/lab_org_list.html")
+
+
+@login_required
+@permission_required("laboratory.change_organizationstructure", raise_exception=True)
+@require_http_methods(["POST"])
+def enable_child_organizations(request):
+    organization = get_object_or_404(
+        OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+        pk=request.POST.get("organization", 0),
+    )
+    enable = request.POST.get("enable", "false")
+    if enable == "true":
+        organization.enable_child_organizations = True
+    else:
+        organization.enable_child_organizations = False
+    organization.save()
+    return redirect(reverse("auth_and_perms:organizationManager"))
