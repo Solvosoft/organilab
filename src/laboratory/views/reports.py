@@ -209,6 +209,7 @@ class ChemicalInventoryReport(ReportListView):
                         "report_name": "chemicalinventory",
                     },
                     org_pk=self.org,
+                    user=self.request.user,
                 ),
             }
         )
