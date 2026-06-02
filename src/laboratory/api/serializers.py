@@ -707,6 +707,86 @@ class EquipmentDataTableSerializer(serializers.Serializer):
     recordsTotal = serializers.IntegerField(required=True)
 
 
+class EquipmentCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    use_manual = serializers.SerializerMethodField()
+    providers = serializers.SerializerMethodField()
+    instrumental_family = serializers.SerializerMethodField()
+    equipment_type = serializers.SerializerMethodField()
+
+    def get_use_manual(self, obj):
+        if obj.use_manual:
+            return ChunkedFileField().to_representation(obj.use_manual)
+        return None
+
+    def get_providers(self, obj):
+        return [{"id": p.pk, "name": p.name} for p in obj.providers.all()]
+
+    def get_instrumental_family(self, obj):
+        if obj.instrumental_family:
+            return {"id": obj.instrumental_family.pk, "description": obj.instrumental_family.description}
+        return None
+
+    def get_equipment_type(self, obj):
+        if obj.equipment_type:
+            return {"id": obj.equipment_type.pk, "name": obj.equipment_type.name}
+        return None
+
+    class Meta:
+        model = EquipmentCharacteristics
+        fields = [
+            "id",
+            "use_manual",
+            "calibration_required",
+            "operation_voltage",
+            "operation_amperage",
+            "providers",
+            "use_specials_conditions",
+            "generate_pathological_waste",
+            "clean_period_according_to_provider",
+            "instrumental_family",
+            "equipment_type",
+        ]
+
+
+class EquipmentDetailSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+    equipment_characteristics = serializers.SerializerMethodField()
+
+    def get_features(self, obj):
+        return [{"id": f.pk, "name": f.name, "description": f.description} for f in obj.features.all()]
+
+    def get_organization_name(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return None
+
+    def get_equipment_characteristics(self, obj):
+        if hasattr(obj, "equipmentcharacteristics") and obj.equipmentcharacteristics:
+            return EquipmentCharacteristicsDetailSerializer(obj.equipmentcharacteristics).data
+        return None
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "type",
+            "is_public",
+            "description",
+            "features",
+            "model",
+            "serie",
+            "plaque",
+            "is_container",
+            "organization",
+            "organization_name",
+            "equipment_characteristics",
+        ]
+
+
 class EquipmentTypeSerializer(serializers.ModelSerializer):
     actions = serializers.SerializerMethodField()
     delete_msg = serializers.SerializerMethodField()

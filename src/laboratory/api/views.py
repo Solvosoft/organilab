@@ -486,12 +486,14 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         "destroy": serializers.EquipmentSerializer,
         "create": serializers.ValidateEquipmentSerializer,
         "update": serializers.ValidateEquipmentSerializer,
+        "retrieve": serializers.EquipmentDetailSerializer,
     }
     perms = {
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object", "laboratory.view_object"],
         "update": ["laboratory.change_object", "laboratory.view_object"],
         "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+        "retrieve": ["laboratory.view_object"],
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
@@ -714,6 +716,12 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        instance = self.get_object()
+        serializer = serializers.EquipmentDetailSerializer(instance)
+        return Response(serializer.data)
 
 
 class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
