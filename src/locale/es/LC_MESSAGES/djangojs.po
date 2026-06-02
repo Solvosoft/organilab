@@ -1434,3 +1434,12 @@ msgstr "Representación de la sustancia"
 
 msgid "View Detail"
 msgstr "Ver detalle"
+
+msgid "Is Container"
+msgstr "Es Contenedor"
+
+msgid "Container Detail"
+msgstr "Detalle del Contenedor"
+
+msgid "No material capacity defined"
+msgstr "No se ha definido la capacidad de material"

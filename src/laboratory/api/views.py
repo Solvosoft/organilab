@@ -1539,6 +1539,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         "destroy": ObjectSerializer,
         "create": ObjectValidateSerializer,
         "update": ObjectValidateSerializer,
+        "retrieve": serializers.ObjectMaterialDetailSerializer,
     }
 
     perms = {
@@ -1546,6 +1547,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         "create": ["laboratory.add_object"],
         "update": ["laboratory.change_object"],
         "destroy": ["laboratory.delete_object"],
+        "retrieve": ["laboratory.view_object"],
     }
 
     queryset = Object.objects.all()
@@ -1649,6 +1651,11 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         )
 
         instance.delete()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = serializers.ObjectMaterialDetailSerializer(instance)
+        return Response(serializer.data)
 
 
 class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
