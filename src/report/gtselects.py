@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 from djgentelella.groute import register_lookups
 from djgentelella.views.select2autocomplete import BaseSelect2View, GPaginator
 from rest_framework import status
@@ -14,13 +15,14 @@ from laboratory.models import (
     Furniture,
     Shelf,
     Laboratory,
+    OrganizationStructure,
 )
 from laboratory.shelfobject.utils import (
     get_lab_room_queryset_by_filters,
     get_furniture_queryset_by_filters,
     get_shelf_queryset_by_filters,
 )
-from laboratory.utils import get_laboratories_from_organization
+from laboratory.utils import get_laboratories_from_organization, get_lab_ids
 from laboratory.utils_base_unit import get_related_units_from_laboratory
 from report.api.serializers import (
     ValidateUserAccessLabRoomSerializer,
@@ -52,7 +54,8 @@ class LabRoomLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.all_labs_org:
-            labs_by_org = get_laboratories_from_organization(self.organization.pk)
+
+            labs_by_org = get_lab_ids(self.organization, self.request.user.profile)
             queryset = LaboratoryRoom.objects.filter(
                 laboratory__in=labs_by_org.filter(
                     profile__user=self.request.user
@@ -152,8 +155,12 @@ class LabsByOrgLookup(BaseSelect2View):
         queryset = super().get_queryset()
 
         if self.organization:
-            lab_ids = get_laboratories_from_organization(self.organization.pk)
-            return queryset.filter(pk__in=lab_ids)
+            lab_ids = get_laboratories_from_organization(
+                self.organization.pk, self.request.user
+            )
+            return queryset.filter(
+                pk__in=get_lab_ids(self.organization, self.request.user.profile)
+            )
 
         return queryset.none()
 
@@ -206,7 +213,14 @@ class LabRoomRefLookup(BaseSelect2View):
 
         if len(self.laboratory_ids) == 0:
             self.laboratory_ids = get_laboratories_from_organization(
-                self.organization_id
+                self.organization_id, self.request.user
+            )
+            self.laboratory_ids = get_lab_ids(
+                get_object_or_404(
+                    OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                    pk=self.organization_id,
+                ),
+                self.request.user.profile,
             )
 
         return super().list(request, *args, **kwargs)
@@ -241,7 +255,14 @@ class FurnitureRefLookup(BaseSelect2View):
 
         if len(self.laboratory_ids) == 0:
             self.laboratory_ids = get_laboratories_from_organization(
-                self.organization_id
+                self.organization_id, self.request.user
+            )
+            self.laboratory_ids = get_lab_ids(
+                get_object_or_404(
+                    OrganizationStructure.objects.using(settings.READONLY_DATABASE),
+                    pk=self.organization_id,
+                ),
+                self.request.user.profile,
             )
 
         return super().list(request, *args, **kwargs)

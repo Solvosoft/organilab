@@ -172,9 +172,8 @@ def create_request_by_report(request, org_pk):
                 import_form = check_import_obj(type_report["form"])
 
                 if import_form:
-                    form = import_form(request.GET, org_pk=org_pk)
+                    form = import_form(request.GET, org_pk=org_pk, user=request.user)
                     status_code = 200
-
                     if form.is_valid():
                         data.update(form.cleaned_data)
 
@@ -386,7 +385,7 @@ def create_organization_request_by_report(request, org_pk):
                 import_form = check_import_obj(type_report["form"])
 
                 if import_form:
-                    form = import_form(request.GET, org_pk=org_pk)
+                    form = import_form(request.GET, org_pk=org_pk, user=request.user)
                     status_code = 200
 
                     if form.is_valid():
@@ -535,6 +534,7 @@ def regency_report(request, org_pk):
         "org_pk": org_pk,
         "form": RegencyReportForm(
             org_pk=org_pk,
+            user=request.user,
             initial={
                 "name": slugify(title + " " + now().strftime("%x").replace("/", "-")),
                 "title": title,
@@ -567,7 +567,7 @@ def create_request_by_report_regency(request, org_pk):
                 import_form = check_import_obj(type_report["form"])
 
                 if import_form:
-                    form = import_form(request.GET, org_pk=org_pk)
+                    form = import_form(request.GET, org_pk=org_pk, user=request.user)
                     status_code = 200
 
                     if form.is_valid():

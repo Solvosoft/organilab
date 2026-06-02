@@ -84,7 +84,8 @@ class ObjectList(ListView):
                         "organization": self.org,
                         "report_name": "report_objects",
                         "object_type": type_id,
-                    }
+                    },
+                    user=self.request.user,
                 ),
             }
         )
@@ -114,7 +115,8 @@ class LimitedShelfObjectList(ListView):
                 "organization": self.org,
                 "report_name": "report_limit_objects",
                 "laboratory": self.lab,
-            }
+            },
+            user=self.request.user,
         )
         return context
 
@@ -145,7 +147,8 @@ class ReactivePrecursorObjectList(ListView):
                         "title": title,
                         "organization": self.org,
                         "report_name": "reactive_precursor",
-                    }
+                    },
+                    user=self.request.user,
                 ),
             }
         )
@@ -194,7 +197,9 @@ class PrecursorsView(ReportListView):
         context = super().get_context_data(**kwargs)
         org_pk = self.kwargs["org_pk"]
 
-        form = PrecursorFilterForm(self.request.GET or None, org_pk=org_pk)
+        form = PrecursorFilterForm(
+            self.request.GET or None, org_pk=org_pk, user=self.request.user
+        )
         qs = PrecursorReport.objects.none()
 
         if not self.request.GET.get("laboratory"):
@@ -326,7 +331,9 @@ class DiscardShelfReportView(ListView):
         context.update(
             {
                 "title_view": title,
-                "form": DiscardShelfForm(initial=initial_data, org_pk=self.org),
+                "form": DiscardShelfForm(
+                    initial=initial_data, org_pk=self.org, user=self.request.user
+                ),
             }
         )
         return context
@@ -355,7 +362,8 @@ class ReactiveReport(ListView):
                         "title": title,
                         "organization": self.org,
                         "report_name": "reactive_report",
-                    }
+                    },
+                    user=self.request.user,
                 ),
             }
         )
@@ -387,6 +395,7 @@ class RiskZoneReport(ListView):
                         "report_name": "risk_zone_report",
                     },
                     org_pk=self.org,
+                    user=self.request.user,
                 ),
             }
         )
@@ -416,7 +425,8 @@ class ReactiveStockReport(ListView):
                         "title": title,
                         "organization": self.org,
                         "report_name": "stock_reactive_report",
-                    }
+                    },
+                    user=self.request.user,
                 ),
             }
         )
@@ -445,13 +455,16 @@ class FurnitureReportView(ListView):
         }
 
         if self.request.method == "GET":
-            furniture_form = ValidateFurnitureForm(self.request.GET, org_pk=self.org)
+            furniture_form = ValidateFurnitureForm(
+                self.request.GET, org_pk=self.org, user=self.request.user
+            )
             if furniture_form.is_valid():
                 furniture = Furniture.objects.get(
                     pk=furniture_form.cleaned_data["furniture"]
                 )
                 initial_data.update(
                     {
+                        "laboratory": furniture.labroom.laboratory,
                         "furniture": furniture,
                         "lab_room": furniture.labroom,
                     }
@@ -461,7 +474,9 @@ class FurnitureReportView(ListView):
             {
                 "title_view": title,
                 "report_urlnames": ["reports_furniture_detail"],
-                "form": LaboratoryRoomReportForm(initial=initial_data, org_pk=self.org),
+                "form": LaboratoryRoomReportForm(
+                    initial=initial_data, org_pk=self.org, user=self.request.user
+                ),
             }
         )
         return context
@@ -523,6 +538,7 @@ class HazardMapReport(ListView):
                         "report_name": "hazard_map_report",
                     },
                     org_pk=self.org,
+                    user=self.request.user,
                 ),
             }
         )
@@ -605,6 +621,7 @@ class DonationReportView(ListView):
                         "report_name": "donations_report",
                     },
                     org_pk=self.org,
+                    user=self.request.user,
                 ),
             }
         )
