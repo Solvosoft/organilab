@@ -1642,6 +1642,7 @@ class ObjectSerializer(serializers.ModelSerializer):
             "update": user.has_perm("laboratory.change_object"),
             "destroy": user.has_perm("laboratory.delete_object"),
             "list": user.has_perm("laboratory.view_object"),
+            "retrieve": user.has_perm("laboratory.view_object"),
         }
 
     class Meta:
@@ -1654,6 +1655,64 @@ class ObjectDataTableSerializer(serializers.Serializer):
     draw = serializers.IntegerField(required=True)
     recordsFiltered = serializers.IntegerField(required=True)
     recordsTotal = serializers.IntegerField(required=True)
+
+
+class MaterialCapacityDetailSerializer(serializers.ModelSerializer):
+    capacity_measurement_unit = serializers.SerializerMethodField()
+
+    def get_capacity_measurement_unit(self, obj):
+        if obj.capacity_measurement_unit:
+            return {
+                "id": obj.capacity_measurement_unit.pk,
+                "description": obj.capacity_measurement_unit.description,
+            }
+        return None
+
+    class Meta:
+        model = MaterialCapacity
+        fields = ["id", "capacity", "capacity_measurement_unit"]
+
+
+class ObjectMaterialDetailSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+    material_capacity = serializers.SerializerMethodField()
+
+    def get_features(self, obj):
+        return [
+            {"id": f.pk, "name": f.name, "description": f.description}
+            for f in obj.features.all()
+        ]
+
+    def get_organization_name(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return None
+
+    def get_material_capacity(self, obj):
+        if hasattr(obj, "materialcapacity") and obj.materialcapacity:
+            return MaterialCapacityDetailSerializer(obj.materialcapacity).data
+        return None
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "type",
+            "is_public",
+            "description",
+            "features",
+            "model",
+            "serie",
+            "plaque",
+            "is_container",
+            "organization",
+            "organization_name",
+            "material_capacity",
+        ]
 
 
 class ObjectValidateSerializer(serializers.ModelSerializer):
