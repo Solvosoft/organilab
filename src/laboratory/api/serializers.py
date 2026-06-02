@@ -1247,6 +1247,141 @@ class ReactiveDataTableSerializer(serializers.Serializer):
         return fields
 
 
+class SustanceCharacteristicsDetailSerializer(serializers.ModelSerializer):
+    iarc = serializers.SerializerMethodField()
+    imdg = serializers.SerializerMethodField()
+    white_organ = serializers.SerializerMethodField()
+    precursor_type = serializers.SerializerMethodField()
+    h_code = serializers.SerializerMethodField()
+    ue_code = serializers.SerializerMethodField()
+    nfpa = serializers.SerializerMethodField()
+    storage_class = serializers.SerializerMethodField()
+    security_sheet = serializers.SerializerMethodField()
+    img_representation = serializers.SerializerMethodField()
+
+    def get_iarc(self, obj):
+        if obj.iarc:
+            return {"id": obj.iarc.pk, "description": obj.iarc.description}
+        return None
+
+    def get_imdg(self, obj):
+        if obj.imdg:
+            return {"id": obj.imdg.pk, "description": obj.imdg.description}
+        return None
+
+    def get_white_organ(self, obj):
+        return [
+            {"id": wo.pk, "description": wo.description} for wo in obj.white_organ.all()
+        ]
+
+    def get_precursor_type(self, obj):
+        if obj.precursor_type:
+            return {
+                "id": obj.precursor_type.pk,
+                "description": obj.precursor_type.description,
+            }
+        return None
+
+    def get_h_code(self, obj):
+        return [
+            {"id": hc.pk, "code": hc.code, "description": hc.description}
+            for hc in obj.h_code.all()
+        ]
+
+    def get_ue_code(self, obj):
+        return [
+            {"id": ue.pk, "description": ue.description} for ue in obj.ue_code.all()
+        ]
+
+    def get_nfpa(self, obj):
+        return [
+            {"id": nfpa.pk, "description": nfpa.description} for nfpa in obj.nfpa.all()
+        ]
+
+    def get_storage_class(self, obj):
+        return [
+            {"id": sc.pk, "description": sc.description}
+            for sc in obj.storage_class.all()
+        ]
+
+    def get_security_sheet(self, obj):
+        if obj.security_sheet:
+            return ChunkedFileField().to_representation(obj.security_sheet)
+        return None
+
+    def get_img_representation(self, obj):
+        if obj.img_representation:
+            return ChunkedFileField().to_representation(obj.img_representation)
+        return None
+
+    class Meta:
+        model = SustanceCharacteristics
+        fields = [
+            "id",
+            "iarc",
+            "imdg",
+            "white_organ",
+            "bioaccumulable",
+            "molecular_formula",
+            "cas_id_number",
+            "security_sheet",
+            "is_precursor",
+            "precursor_type",
+            "h_code",
+            "ue_code",
+            "nfpa",
+            "storage_class",
+            "seveso_list",
+            "img_representation",
+            "density",
+            "valid_molecular_formula",
+        ]
+
+
+class ReactiveDetailSerializer(serializers.ModelSerializer):
+    features = serializers.SerializerMethodField()
+    organization_name = serializers.SerializerMethodField()
+    sustance_characteristics = serializers.SerializerMethodField()
+
+    def get_features(self, obj):
+        return [
+            {"id": f.pk, "name": f.name, "description": f.description}
+            for f in obj.features.all()
+        ]
+
+    def get_organization_name(self, obj):
+        if obj.organization:
+            return obj.organization.name
+        return None
+
+    def get_sustance_characteristics(self, obj):
+        if hasattr(obj, "sustancecharacteristics") and obj.sustancecharacteristics:
+            return SustanceCharacteristicsDetailSerializer(
+                obj.sustancecharacteristics
+            ).data
+        return None
+
+    class Meta:
+        model = Object
+        fields = [
+            "id",
+            "code",
+            "name",
+            "synonym",
+            "type",
+            "is_public",
+            "description",
+            "features",
+            "is_dangerous",
+            "has_threshold",
+            "threshold",
+            "is_pure",
+            "organization",
+            "organization_name",
+            "sustance_characteristics",
+        ]
+
+
 class GetReactiveLimitSerializer(serializers.ModelSerializer):
     maximum_limit = serializers.FloatField(required=False, default=0.0)
     minimum_limit = serializers.FloatField(required=False, default=0.0)
