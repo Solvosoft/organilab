@@ -267,6 +267,7 @@ $(document).ready(function(){
     datatableelement = createDataTable('#shelfobjecttable', document.url_shelfobject, {
         columns: [
             {data: "pk", name: "pk", title: gettext("Id"), type: "string", visible: true},
+            {data: "shelfobject_code", name: "shelfobject_code", title: gettext("Code"), type: "string", visible: true},
             {data: "object_type", name: "object__type", title: gettext("Type"), type: "string", visible: true},
             {data: "object_name", name: "object__name", title: gettext("Name"), type: "string", visible: true},
             {data: "quantity", name: "quantity", title: gettext("Quantity"), type: "string", visible: true},
@@ -796,6 +797,7 @@ function get_shelfobject_data(shelfobject){
             if(data.type_budget){
                 $('#id_edit-type_budget').val(data.type_budget.id).trigger('change');
             }
+            document.querySelector("#id_edit-shelfobject_code").value = data.shelfobject_code;
             $('#id_edit-container_entry_date').val(data.container_entry_date).trigger('change');
             $('#id_edit-container_open_date').val(data.container_open_date).trigger('change');
             if(data.was_donated) {
@@ -867,6 +869,7 @@ function get_material_shelfobject_data(shelfobject){
         document.querySelector("#id_edit_material-maximum_limit").value = data.maximum_limit;
         document.querySelector("#id_edit_material-expiration_date").value = data.expiration_date;
         document.querySelector("#id_edit_material-batch").value = data.batch;
+        document.querySelector("#id_edit_material-shelfobject_code").value = data.shelfobject_code;
         $('#id_edit_material-status').val(data.status).trigger('change');
         if(data.was_donated) {
             if (!$("#id_edit_material-was_donated").parent().hasClass('checked')) {

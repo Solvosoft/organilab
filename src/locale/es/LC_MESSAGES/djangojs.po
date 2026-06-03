@@ -1474,3 +1474,5 @@ msgstr "Período de Limpieza Según Proveedor"
 msgid "Instrumental Family"
 msgstr "Familia Instrumental"
 
+msgid "Unit code"
+msgstr "Código de unidad"

@@ -48,6 +48,10 @@
 							<th class="thead">{{ obj.shelf }}</th>
 						</tr>
 						<tr>
+							<th class="bold">{% trans "Unit code" %}:</th>
+							<th class="thead">{{ obj.shelfobject_code }}</th>
+						</tr>
+						<tr>
 							<th class="bold">{% trans "Quantity" %}:</th>
 							<th class="thead">{{ obj.quantity }} {{ obj.get_measurement_unit_display }}</th>
 						</tr>

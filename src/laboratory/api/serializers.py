@@ -380,6 +380,7 @@ class ShelfObjectLaboratoryViewSerializer(
             "created_by",
             "container",
             "was_donated",
+            "shelfobject_code",
             "actions",
         ]
 
@@ -723,7 +724,10 @@ class EquipmentCharacteristicsDetailSerializer(serializers.ModelSerializer):
 
     def get_instrumental_family(self, obj):
         if obj.instrumental_family:
-            return {"id": obj.instrumental_family.pk, "description": obj.instrumental_family.description}
+            return {
+                "id": obj.instrumental_family.pk,
+                "description": obj.instrumental_family.description,
+            }
         return None
 
     def get_equipment_type(self, obj):
@@ -754,7 +758,10 @@ class EquipmentDetailSerializer(serializers.ModelSerializer):
     equipment_characteristics = serializers.SerializerMethodField()
 
     def get_features(self, obj):
-        return [{"id": f.pk, "name": f.name, "description": f.description} for f in obj.features.all()]
+        return [
+            {"id": f.pk, "name": f.name, "description": f.description}
+            for f in obj.features.all()
+        ]
 
     def get_organization_name(self, obj):
         if obj.organization:
@@ -763,7 +770,9 @@ class EquipmentDetailSerializer(serializers.ModelSerializer):
 
     def get_equipment_characteristics(self, obj):
         if hasattr(obj, "equipmentcharacteristics") and obj.equipmentcharacteristics:
-            return EquipmentCharacteristicsDetailSerializer(obj.equipmentcharacteristics).data
+            return EquipmentCharacteristicsDetailSerializer(
+                obj.equipmentcharacteristics
+            ).data
         return None
 
     class Meta:
