@@ -138,6 +138,7 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = [
+        "shelfobject_code",
         "object__name",
         "object__type",
         "quantity",
@@ -145,6 +146,7 @@ class ShelfObjectTableViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         "container__object__name",
     ]  # for the global search
     ordering_fields = [
+        "shelfobject_code",
         "object__name",
         "object__type",
         "quantity",
@@ -1232,6 +1234,7 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
         )
         qr, url = get_or_create_qr_shelf_object(request, shelfobject, org_pk, lab_pk)
         context = {"object": serializer.data}
+
         if qr:
             image = qr.b64_image
             context["qr"] = image
@@ -1661,7 +1664,6 @@ class ShelfObjectViewSet(viewsets.GenericViewSet):
                 {"detail": _("The item was deleted successfully")},
                 status=status.HTTP_200_OK,
             )
-        print(serializer.errors)
 
         return JsonResponse(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST

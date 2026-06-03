@@ -381,6 +381,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -391,6 +392,7 @@ class ShelfObjectMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "was_donated",
         ]
         widgets = {
+            "shelfobject_code": genwidgets.TextInput,
             "shelf": forms.HiddenInput,
             "quantity": genwidgets.TextInput,
             "limit_quantity": forms.HiddenInput,
@@ -586,6 +588,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "quantity",
@@ -596,6 +599,7 @@ class ShelfObjectRefuseMaterialForm(ShelfObjectExtraFields, GTForm, forms.ModelF
             "was_donated",
         ]
         widgets = {
+            "shelfobject_code": genwidgets.TextInput,
             "shelf": forms.HiddenInput,
             "quantity": genwidgets.TextInput,
             "limit_quantity": forms.HiddenInput,
@@ -718,6 +722,7 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
         model = ShelfObject
         fields = [
             "object",
+            "shelfobject_code",
             "shelf",
             "status",
             "limit_quantity",
@@ -727,6 +732,7 @@ class ShelfObjectEquipmentForm(EquipmentCharacteristicForm, forms.ModelForm, GTF
         ]
         exclude = ["quantity"]
         widgets = {
+            "shelfobject_code": genwidgets.TextInput,
             "shelf": forms.HiddenInput,
             "limit_quantity": forms.HiddenInput,
             "description": genwidgets.Textarea,
@@ -812,6 +818,7 @@ class ShelfObjectRefuseEquipmentForm(
     class Meta:
         model = ShelfObject
         fields = [
+            "shelfobject_code",
             "object",
             "shelf",
             "status",
@@ -827,6 +834,7 @@ class ShelfObjectRefuseEquipmentForm(
             "description": genwidgets.Textarea,
             "marked_as_discard": forms.HiddenInput,
             "was_donated": genwidgets.CheckboxInput,
+            "shelfobject_code": genwidgets.TextInput,
         }
 
 
@@ -1018,6 +1026,7 @@ class ShelfObjectReactiveForm(
             "objecttype",
             "concentration",
             "reactive_expiration_date",
+            "shelfobject_code",
         ]
         exclude = [
             "laboratory_name",
@@ -1043,6 +1052,7 @@ class ShelfObjectReactiveForm(
             "was_donated": genwidgets.CheckboxInput,
             "container_entry_date": genwidgets.DateInput,
             "container_open_date": genwidgets.DateInput,
+            "shelfobject_code": genwidgets.TextInput,
         }
 
 
@@ -1131,6 +1141,7 @@ class ShelfObjectRefuseReactiveForm(
             "type_budget",
             "objecttype",
             "reactive_expiration_date",
+            "shelfobject_code",
         ]
         exclude = [
             "created_by",
@@ -1154,6 +1165,7 @@ class ShelfObjectRefuseReactiveForm(
             "was_donated": genwidgets.CheckboxInput,
             "container_entry_date": genwidgets.DateInput,
             "container_open_date": genwidgets.DateInput,
+            "shelfobject_code": genwidgets.TextInput,
         }
 
 
@@ -1333,6 +1345,9 @@ class ShelfObjectTrainingForm(GTForm, forms.ModelForm):
 
 
 class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
+    shelfobject_code = forms.CharField(
+        widget=genwidgets.TextInput, label=_("Unit code"), required=False
+    )
     description = forms.CharField(widget=genwidgets.Textarea, label=_("Description"))
     status = forms.ModelChoiceField(
         queryset=Catalog.objects.filter(key="shelfobject_status"),
@@ -1373,6 +1388,7 @@ class EditEquimentShelfobjectForm(forms.ModelForm, GTForm):
         "marked_as_discard",
         "description",
         "provider",
+        "shelfobject_code",
         "authorized_roles_to_use_equipment",
         "equipment_price",
         "purchase_equipment_date",
@@ -1425,6 +1441,7 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         fields = [
             "reactive_expiration_date",
             "status",
+            "shelfobject_code",
             "physical_status",
             "description",
             "batch",
@@ -1439,6 +1456,7 @@ class EditReactiveForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         ]
         widgets = {
             "reactive_expiration_date": genwidgets.DateInput,
+            "shelfobject_code": genwidgets.TextInput,
             "status": genwidgets.Select,
             "physical_status": genwidgets.Select,
             "description": genwidgets.Textarea,
@@ -1471,6 +1489,7 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
             "status",
             "description",
             "batch",
+            "shelfobject_code",
             "without_limit",
             "minimum_limit",
             "maximum_limit",
@@ -1479,6 +1498,7 @@ class EditMaterialForm(ShelfObjectExtraFields, forms.ModelForm, GTForm):
         ]
         widgets = {
             "description": genwidgets.Textarea,
+            "shelfobject_code": genwidgets.TextInput,
             "minimum_limit": genwidgets.TextInput,
             "maximum_limit": genwidgets.TextInput,
             "expiration_date": genwidgets.DateInput,
@@ -1499,7 +1519,9 @@ class ShelObjectReactiveForm(GTForm, forms.ModelForm):
         min_value=settings.DEFAULT_MIN_QUANTITY,
         label=_("Amount"),
     )
-    box_index = forms.IntegerField(widget=forms.HiddenInput, required=False, min_value=0)
+    box_index = forms.IntegerField(
+        widget=forms.HiddenInput, required=False, min_value=0
+    )
 
     def __init__(self, *args, **kwargs):
         prefix = kwargs.get("prefix", "")

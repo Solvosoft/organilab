@@ -538,6 +538,10 @@ class ShelfObject(models.Model):
         help_text=_("Original number of units per box at creation time"),
     )
 
+    shelfobject_code = models.CharField(
+        max_length=30, verbose_name=_("Unit code"), null=True, blank=True
+    )
+
     @staticmethod
     def get_units(unit):
         if isinstance(unit, (int, str)):
