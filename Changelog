@@ -1,3 +1,8 @@
+04/06/2026
+    - python manage.py check_security_sheets
+        - python manage.py update_sustances_cha ./laboratory/management/commands/Reporte_Final_Diagnóstico-1.xlsx
+
+
 15/05/2026
 command to update rol permissions
     - python manage.py update_roles_permissions
@@ -8,7 +13,7 @@ Command to update FDS
 
 08/05/2026
 Command to update FDS
-    - python manage.py update_sustances_cha ./laboratory/management/commands/ajustes_a_hojas.xlsx ./laboratory/management/commands/Reporte_Final_Diagnóstico.xlsx
+    - python manage.py update_sustances_cha ./laboratory/management/commands/Reporte_Final_Diagnóstico.xlsx
 
 20/04/2026
 Command to update Permissions and Create groups
