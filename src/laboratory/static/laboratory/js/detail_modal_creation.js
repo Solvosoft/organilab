@@ -45,7 +45,9 @@ function configure_modal(data) {
         was_donated: data.object.was_donated ? gettext('Yes') : gettext('No')
     }, tbody_instance, {
         'was_donated': gettext('Donated income'),
-        'unit': gettext('Unit')
+        'unit': gettext('Unit'),
+        'shelfobject_code': gettext('Unit code'),
+
     });
     if (data.object['object_features']) {
         append_data_lists(data.object, {'object_features': gettext('Features')}, tbody_instance);

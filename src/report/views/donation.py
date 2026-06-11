@@ -41,6 +41,9 @@ def get_dataset(report, column_list=None):
             shelf_unit = shelfobject.get_measurement_unit_display()
             name = shelfobject.object.name
         data_column = {
+            "shelfobject_code": (
+                shelfobject.shelfobject_code if shelfobject.shelfobject_code else ""
+            ),
             "code": shelfobject.object.code,
             "type": str(object_type[shelfobject.object.type]),
             "status": shelfobject.status.description if shelfobject.status else "",
@@ -64,6 +67,7 @@ def report_donations_doc(report):
     builder = ExcelGraphBuilder()
     content = [
         [
+            _("Unit code"),
             _("Code"),
             _("Type"),
             _("Status"),
@@ -94,6 +98,7 @@ def report_donations_doc(report):
 
 def report_donations_html(report):
     columns_fields = [
+        {"name": "shelfobject_code", "title": _("Unit code")},
         {"name": "code", "title": _("Code")},
         {"name": "type", "title": _("Type")},
         {"name": "status", "title": _("Status")},

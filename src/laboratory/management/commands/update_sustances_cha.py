@@ -87,7 +87,7 @@ class Command(BaseCommand):
                 resultado["Agregar"] = codigos
 
             # Detectar si es sección QUITAR
-            elif re.match(r"(?i)Quitar", parte):
+            if re.match(r"(?i)Quitar", parte):
                 contenido = re.sub(r"(?i)^Quitar\s*", "", parte).strip()
                 codigos = re.findall(r"H\d+[A-Za-z]*", contenido)
                 resultado["Quitar"] = codigos
@@ -104,23 +104,25 @@ class Command(BaseCommand):
         ws = wb.active
         i = 0
         for fila in ws.iter_rows(min_row=2, values_only=True):
-            obj = Object.objects.filter(name=fila[0]).first()
+            objs = Object.objects.filter(name=fila[0])
+            h_codes = fila[2].split(",")
             resultado = self.parsear_instruccion(fila[4])
-            susta = SustanceCharacteristics.objects.filter(obj=obj).first()
-            if obj:
-                i += 1
-                if len(resultado["Agregar"]) > 0 or len(resultado["Quitar"]) > 0:
-                    if len(resultado["Quitar"]) > 0:
-                        susta.h_code.remove(*resultado["Quitar"])
-                    if len(resultado["Agregar"]) > 0:
-                        susta.h_code.add(*resultado["Agregar"])
+            h_codes = [h_code.strip() for h_code in h_codes]
+            for obj in objs:
+                susta = SustanceCharacteristics.objects.filter(obj=obj).first()
+                if susta:
 
-                if "Cambiar códigos actuales por 'Ninguno'" in fila[4]:
-                    susta.h_code.clear()
-                    susta.h_code.add("Ninguno")
-                susta.save()
-            else:
-                print(f"No encontro objeto {fila[0]}")
+                    i += 1
+                    if (
+                        len(resultado["Agregar"]) > 0
+                        or len(resultado["Quitar"]) > 0
+                        or fila[3] != "Cambiar por 'Ninguno'"
+                    ):
+                        susta.h_code.clear()
+                        susta.h_code.add(*h_codes)
+                        susta.save()
+                else:
+                    print(f"No encontro objeto {fila[0]}")
 
     def update_sustances_hcoded(self, documento):
         # documento = "laboratory/management/commands/ajustes_a_hojas.xlsx"
@@ -153,5 +155,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.initial_data()
-        self.create_danger_indication()
+        # self.create_danger_indication()
         self.read_docs(options["fds"])

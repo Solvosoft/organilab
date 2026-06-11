@@ -19,8 +19,8 @@ from auth_and_perms.api.serializers import (
 )
 from auth_and_perms.models import Rol, ProfilePermission
 from auth_and_perms.node_tree import (
-    get_tree_organization_pks_by_user,
     get_org_parents_info,
+    get_tree_organization_pks_by_user,
 )
 from auth_and_perms.organization_utils import (
     user_is_allowed_on_organization,
@@ -647,21 +647,31 @@ class OrgTree(BaseSelect2View):
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.user:
-            parents, parents_pks = get_org_parents_info(self.user)
-            pks = []
-            for node in parents:
-                if node.pk not in pks:
-                    print(node.pk)
-                    get_tree_organization_pks_by_user(
-                        node,
-                        self.user,
-                        pks,
-                        parents=parents_pks,
-                        extras={"active": True},
-                    )
-            tree_order = Case(*[When(pk=pk, then=i) for i, pk in enumerate(pks)])
-            queryset = queryset.filter(pk__in=pks).order_by(tree_order)
-            return queryset
+            roles = self.user.profile.profilepermission_set.filter(
+                rol__name="Administrativo superior"
+            )
+            if self.user.is_superuser or roles.exists():
+                parents, parents_pks = get_org_parents_info(self.user)
+                pks = []
+                for node in parents:
+                    if node.pk not in pks:
+                        get_tree_organization_pks_by_user(
+                            node,
+                            self.user,
+                            pks,
+                            parents=parents_pks,
+                            extras={"active": True},
+                        )
+                tree_order = Case(*[When(pk=pk, then=i) for i, pk in enumerate(pks)])
+                queryset = queryset.filter(pk__in=pks).order_by(tree_order)
+                return queryset
+
+            org_ids = UserOrganization.objects.filter(user=self.user).values_list(
+                "organization_id", flat=True
+            )
+            return queryset.filter(pk__in=org_ids, active=True).order_by(
+                "level", "name"
+            )
         return queryset.none()
 
     def list(self, request, *args, **kwargs):
