@@ -40,6 +40,7 @@ class Command(BaseCommand):
         )
 
     def read_docs(self, documento, domain):
+        self.rol = Rol.objects.get(name="Administrador de Laboratorio")
         try:
             wb = openpyxl.load_workbook(documento)
         except FileNotFoundError:
@@ -218,7 +219,6 @@ class Command(BaseCommand):
                         responsible2, lab_content_type, laboratory.pk, org_child
                     )
 
-            rol = Rol.objects.get(name="Administrador de Laboratorio")
             for org in [root, parent, org_child]:
                 if org:
                     self.create_profile_permissions(
@@ -226,7 +226,7 @@ class Command(BaseCommand):
                         lab_content_type,
                         laboratory.pk,
                         org,
-                        rol,
+                        self.rol,
                     )
                     if responsible2:
                         self.create_profile_permissions(
@@ -234,7 +234,7 @@ class Command(BaseCommand):
                             lab_content_type,
                             laboratory.pk,
                             org,
-                            rol,
+                            self.rol,
                         )
                     if original_user:
                         self.create_profile_permissions(
@@ -242,7 +242,7 @@ class Command(BaseCommand):
                             lab_content_type,
                             laboratory.pk,
                             org,
-                            rol,
+                            self.rol,
                         )
 
     def send_new_user_email(self, user, domain):
@@ -289,8 +289,8 @@ class Command(BaseCommand):
             role = Rol.objects.get(name="Solo Lectura")
             pp.rol.add(role)
             pp.save()
-        elif roles:
-            pp.rol.add(roles)
+        elif self.rol:
+            pp.rol.add(self.rol)
             pp.save()
 
     def related_users_in_lab_org(self, users, content_type, object_id, organization):
@@ -323,4 +323,5 @@ class Command(BaseCommand):
             )
 
     def handle(self, *args, **options):
+        self.rol = Rol.objects.get(name="Administrador de Laboratorio")
         self.read_docs(options["doc"], options["domain"])
