@@ -1,7 +1,15 @@
 11/06/2026
-Commad to upload users from excel
+Command to upload users from excel
 
     - python manage.py upload_org_and_users ./laboratory/management/commands/Usuarios_por_laboratorio.xlsx
+
+11/06/2026
+command to update role permissions and add new role
+    - python manage.py add_laboratory_profile_in_org
+    - python manage.py setup_auxiliar_rol
+    - python manage.py cleanup_groups
+    - python manage.py setup_sga_view_group
+
 
 10/06/2026
 command para actualizar la organización de los roles de permisos.
@@ -11,15 +19,6 @@ command para actualizar la organización de los roles de permisos.
 04/06/2026
     - python manage.py check_security_sheets
     - python manage.py update_sustances_cha ./laboratory/management/commands/Reporte_Final_Diagnóstico-1.xlsx
-
-
-15/05/2026
-command to update role permissions and add new role
-    - python manage.py add_laboratory_profile_in_org
-    - python manage.py setup_auxiliar_rol
-    - python manage.py cleanup_groups
-    - python manage.py setup_sga_view_group
-
 
 
 15/05/2026
