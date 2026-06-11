@@ -52,7 +52,7 @@ function get_roles(element){
                 roles = item.roles.split(',');
                 roles_list=""
                 roles.forEach(function(role){
-                    roles_list += '- '+role.length > 0 ? role : '<p>'+gettext('No roles assigned')+'</p>' + '<br>';
+                    roles_list += '- '+role != "" ? role : '<p>'+gettext('No roles assigned')+'</p>' + '<br>';
                 });
                 html += '<div class="col-6">' + roles_list + '</div>';
                             html += '</div>';

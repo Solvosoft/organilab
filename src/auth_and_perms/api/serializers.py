@@ -790,6 +790,7 @@ class LaboratoryOrganizationSerializer(serializers.ModelSerializer):
                 profilepermission__content_type__app_label="laboratory",
                 profilepermission__content_type__model="laboratory",
                 profilepermission__object_id=obj.pk,
+                profilepermission__organization__pk=l[1],
             ).values_list("user", flat=True)
             buttons += (
                 "<li class='list-group-item d-flex justify-content-between align-items-start'><span class='dropdown-item-text small'>%s</span> <button class='btn btn-sm btn-secondary' title='%s' data-org='%s' data-lab='%s' data-content='%s' onclick=get_roles(this)><i class='fa fa-user-md' aria-hidden='true'></i> <span class='badge bg-secondary'>%s</span></button></li>"
@@ -823,21 +824,16 @@ class ProfileLaboratoryOrgRoles(serializers.ModelSerializer):
 
     def get_roles(self, obj):
         contenttypeobj = self.context["view"].contenttypeobj
-        org = self.context["view"].organization.root
+        org = self.context["view"].organization
         profile_perm = ProfilePermission.objects.filter(
             profile_id=obj.pk,
             content_type__app_label=contenttypeobj._meta.app_label,
             content_type__model=contenttypeobj._meta.model_name,
             object_id=contenttypeobj.pk,
+            organization=org,
         ).first()
         if profile_perm:
-            roles = list(
-                set(
-                    profile_perm.rol.filter(organizationstructure=org).values_list(
-                        "name", flat=True
-                    )
-                )
-            )
+            roles = list(set(profile_perm.rol.all().values_list("name", flat=True)))
             roles = ", ".join(roles)
             return roles
         return ""
