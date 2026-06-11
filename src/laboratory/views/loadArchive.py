@@ -231,6 +231,7 @@ def upload_reactives(request, org_pk, lab_pk, key):
             for form in formset:
 
                 obj = get_reactive_by_cas_or_name(
+                    request.user,
                     form.cleaned_data["numero_cas"],
                     form.cleaned_data["nombre_producto"],
                     form.cleaned_data["formula_quimica"],
@@ -244,6 +245,7 @@ def upload_reactives(request, org_pk, lab_pk, key):
                 )
 
                 material = get_or_create_material(
+                    request.user,
                     form.cleaned_data["material_contenedor"],
                     form.cleaned_data["capacidad_envase"],
                     form.cleaned_data["unidades_capacidad"],
