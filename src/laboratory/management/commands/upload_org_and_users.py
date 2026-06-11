@@ -1,7 +1,7 @@
 import openpyxl
 from django.conf import settings
 from django.contrib.admin.models import ADDITION
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
 from django.core.management import CommandError
@@ -17,6 +17,7 @@ from laboratory.models import (
     OrganizationStructureRelations,
 )
 from laboratory.utils import organilab_logentry
+from django.contrib.sites.models import Site
 
 
 class Command(BaseCommand):
@@ -24,6 +25,8 @@ class Command(BaseCommand):
     help = "Actualiza características de sustancias desde un archivo Excel"
 
     def add_arguments(self, parser):
+        site = Site.objects.get_current()
+        url = f"https://{site.domain}"
         parser.add_argument(
             "doc",
             type=str,
@@ -32,7 +35,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--domain",
             type=str,
-            default="https://organilab.org",
+            default=url,
             help="Dominio para los enlaces en el correo (ej: https://organilab.org)",
         )
 
@@ -45,12 +48,35 @@ class Command(BaseCommand):
             raise CommandError(f"Error al leer el archivo: {e}")
         ws = wb.active
         root = OrganizationStructure.objects.get(pk=1)
+        groups = Group.objects.filter(name__in=["Profile", "PendingTasks"])
         for fila in ws.iter_rows(min_row=2, values_only=True):
             if not fila[3] or not fila[5] or not fila[1]:
                 continue
             parent, parent_created = OrganizationStructure.objects.get_or_create(
                 name=fila[3]
             )
+            original_user, created_ori = User.objects.get_or_create(
+                email=fila[0],
+                defaults={"email": fila[0]},
+            )
+            self.create_profile(original_user)
+            original_user.groups.add(*groups)
+            original_user.save()
+            if created_ori:
+                password = get_random_string(12)
+                original_user.first_name = fila[0] or ""
+                original_user.username = fila[0]
+                original_user.set_password(password)
+                original_user.save()
+                self.send_new_user_email(original_user, domain)
+                organilab_logentry(
+                    original_user,
+                    original_user,
+                    ADDITION,
+                    "user",
+                    changed_data=["username", "email", "first_name"],
+                    change_message="User created via upload_org_and_users command",
+                )
 
             org_child = None
             responsible2 = None
@@ -58,6 +84,8 @@ class Command(BaseCommand):
                 email=fila[5],
                 defaults={"email": fila[5], "first_name": fila[4] or ""},
             )
+            responsible1.groups.add(*groups)
+            responsible1.save()
             if created:
                 password = get_random_string(12)
                 responsible1.set_password(password)
@@ -85,6 +113,11 @@ class Command(BaseCommand):
                 )
 
             content_type = ContentType.objects.get_for_model(OrganizationStructure)
+            self.related_users_in_lab_org(original_user, content_type, root.pk, root)
+            self.related_users_in_lab_org(
+                original_user, content_type, parent.pk, parent
+            )
+
             self.related_users_in_lab_org(responsible1, content_type, root.pk, root)
             self.related_users_in_lab_org(responsible1, content_type, parent.pk, parent)
 
@@ -106,6 +139,12 @@ class Command(BaseCommand):
             self.related_lab_in_org(responsible1, lab_content_type, laboratory.pk, root)
             self.related_lab_in_org(
                 responsible1, lab_content_type, laboratory.pk, parent
+            )
+            self.related_lab_in_org(
+                original_user, lab_content_type, laboratory.pk, root
+            )
+            self.related_lab_in_org(
+                original_user, lab_content_type, laboratory.pk, parent
             )
 
             org_child = None
@@ -135,6 +174,8 @@ class Command(BaseCommand):
                     email=fila[7],
                     defaults={"email": fila[7], "first_name": fila[6] or ""},
                 )
+                responsible2.groups.add(*groups)
+                responsible2.save()
                 if created:
                     password = get_random_string(12)
                     responsible2.username = fila[7]
@@ -165,13 +206,18 @@ class Command(BaseCommand):
 
                 if org_child:
                     self.related_users_in_lab_org(
+                        responsible1, content_type, org_child.pk, org_child
+                    )
+                    self.related_users_in_lab_org(
                         responsible2, content_type, org_child.pk, org_child
+                    )
+                    self.related_users_in_lab_org(
+                        original_user, content_type, org_child.pk, org_child
                     )
                     self.related_lab_in_org(
                         responsible2, lab_content_type, laboratory.pk, org_child
                     )
 
-            content_type = ContentType.objects.get_for_model(Laboratory)
             rol = Rol.objects.get(name="Administrador de Laboratorio")
             for org in [root, parent, org_child]:
                 if org:
@@ -185,6 +231,14 @@ class Command(BaseCommand):
                     if responsible2:
                         self.create_profile_permissions(
                             responsible2.profile,
+                            lab_content_type,
+                            laboratory.pk,
+                            org,
+                            rol,
+                        )
+                    if original_user:
+                        self.create_profile_permissions(
+                            original_user.profile,
                             lab_content_type,
                             laboratory.pk,
                             org,
@@ -228,7 +282,14 @@ class Command(BaseCommand):
             object_id=object_id,
             organization=organization,
         )
-        if roles:
+        if profile.user.email in [
+            "alonso.calvo.araya@una.cr",
+            "allan.madrigal.mata@una.cr",
+        ]:
+            role = Rol.objects.get(name="Solo Lectura")
+            pp.rol.add(role)
+            pp.save()
+        elif roles:
             pp.rol.add(roles)
             pp.save()
 
