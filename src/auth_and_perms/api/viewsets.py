@@ -300,6 +300,7 @@ class UserLaboratoryOrganization(mixins.ListModelMixin, viewsets.GenericViewSet)
             profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
             profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
             profilepermission__object_id=self.contenttypeobj.pk,
+            profilepermission__organization=self.organization,
         )  # Is laboratory
 
     def list(self, request, *args, **kwargs):
@@ -949,6 +950,7 @@ class LaboratoryOrganizationRoles(mixins.ListModelMixin, viewsets.GenericViewSet
             profilepermission__content_type__app_label=self.contenttypeobj._meta.app_label,
             profilepermission__content_type__model=self.contenttypeobj._meta.model_name,
             profilepermission__object_id=self.contenttypeobj.pk,
+            profilepermission__organization=self.organization,
         )
 
     def list(self, request, *args, **kwargs):
@@ -956,7 +958,7 @@ class LaboratoryOrganizationRoles(mixins.ListModelMixin, viewsets.GenericViewSet
         if form.is_valid():
             self.organization = form.cleaned_data["organization"]
             self.contenttypeobj = form.cleaned_data["laboratory"]
-            user_is_allowed_on_organization(request.user, self.organization)
+            # user_is_allowed_on_organization(request.user, self.organization)
             queryset = self.get_queryset()
             return Response(self.get_serializer(queryset, many=True).data)
         return Response(self.get_serializer(Profile.objects.none(), many=True).data)
