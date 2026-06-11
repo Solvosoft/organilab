@@ -77,7 +77,13 @@ def get_organization_tree(
 
 
 def get_tree_organization_pks_by_user(node, user, pks, parents=[], extras={}):
+    if node.parent and node.parent.enable_child_organizations:
+        return
+
     descendants = get_descendants_by_org(pks, node, extras, user, parents)
+
+    if node.enable_child_organizations:
+        return
 
     if descendants:
         for child in descendants:

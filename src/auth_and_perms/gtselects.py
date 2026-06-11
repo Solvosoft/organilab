@@ -651,6 +651,7 @@ class OrgTree(BaseSelect2View):
             pks = []
             for node in parents:
                 if node.pk not in pks:
+                    print(node.pk)
                     get_tree_organization_pks_by_user(
                         node,
                         self.user,
