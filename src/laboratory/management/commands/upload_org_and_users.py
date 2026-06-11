@@ -90,13 +90,13 @@ class Command(BaseCommand):
 
             org_child = None
             responsible2 = None
-            responsible1, created = User.objects.get_or_create(
+            responsible1, created_1 = User.objects.get_or_create(
                 email=fila[5],
-                defaults={"email": fila[5], "first_name": fila[4] or ""},
+                defaults={"email": fila[5]},
             )
             responsible1.groups.add(*groups)
             responsible1.save()
-            if created:
+            if created_1:
                 password = get_random_string(12)
                 responsible1.set_password(password)
                 responsible1.username = fila[5]
@@ -180,13 +180,13 @@ class Command(BaseCommand):
                         )
 
             if fila[7]:
-                responsible2, created = User.objects.get_or_create(
+                responsible2, created_2 = User.objects.get_or_create(
                     email=fila[7],
-                    defaults={"email": fila[7], "first_name": fila[6] or ""},
+                    defaults={"email": fila[7]},
                 )
                 responsible2.groups.add(*groups)
                 responsible2.save()
-                if created:
+                if created_2:
                     password = get_random_string(12)
                     responsible2.username = fila[7]
                     responsible2.set_password(password)
