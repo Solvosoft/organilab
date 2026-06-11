@@ -1,5 +1,16 @@
+
+
 15/05/2026
-command to update rol permissions
+command to update role permissions and add new role
+    - python manage.py add_laboratory_profile_in_org
+    - python manage.py setup_auxiliar_rol
+    - python manage.py cleanup_groups
+    - python manage.py setup_sga_view_group
+
+
+
+15/05/2026
+command to update role permissions
     - python manage.py update_roles_permissions
 
 11/05/2026
