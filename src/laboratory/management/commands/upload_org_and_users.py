@@ -49,12 +49,18 @@ class Command(BaseCommand):
             raise CommandError(f"Error al leer el archivo: {e}")
         ws = wb.active
         root = OrganizationStructure.objects.get(pk=1)
-        groups = Group.objects.filter(name__in=["Profile", "PendingTasks"])
+        groups = Group.objects.filter(
+            name__in=[
+                "Profile",
+                "PendingTasks",
+                "SGAView",
+            ]
+        )
         for fila in ws.iter_rows(min_row=2, values_only=True):
             if not fila[3] or not fila[5] or not fila[1]:
                 continue
             parent, parent_created = OrganizationStructure.objects.get_or_create(
-                name=fila[3]
+                name=fila[3].strip()
             )
             if parent_created:
                 parent.parent = root
