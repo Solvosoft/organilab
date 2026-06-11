@@ -41,6 +41,22 @@
 	{% trans 'Delete Object' as delete_obj_tittle %}
 	{% include 'gentelella/blocks/modal_template_delete.html' with form=form_delete form_id="delete_obj_form" id="delete_obj_modal" title=delete_obj_tittle url=detail_obj_url %}
 
+	<!-- Modal de Detalle de Material -->
+	<div class="modal fade" id="object_detail_modal" tabindex="-1" role="dialog" aria-labelledby="object_detail_modalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="object_detail_modalLabel">{% trans 'Material Detail' %}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+				</div>
+				<div class="modal-body" id="object_detail_modal_body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 {% endblock %}
 
@@ -54,8 +70,8 @@
 			create_url: "{% url 'laboratory:api-object-list' org_pk lab_pk %}",
 			destroy_url: "{% url "laboratory:api-object-detail" org_pk lab_pk 0 %}",
 			update_url: "{% url "laboratory:api-object-detail" org_pk lab_pk 0 %}",
+			detail_url: "{% url "laboratory:api-object-detail" org_pk lab_pk 0 %}",
 		}
 	</script>
 	<script src="{% static '/laboratory/js/object_management.js' %}?v={% get_organilab_version %}"></script>
-
 {% endblock %}

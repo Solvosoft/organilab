@@ -486,12 +486,14 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         "destroy": serializers.EquipmentSerializer,
         "create": serializers.ValidateEquipmentSerializer,
         "update": serializers.ValidateEquipmentSerializer,
+        "retrieve": serializers.EquipmentDetailSerializer,
     }
     perms = {
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object", "laboratory.view_object"],
         "update": ["laboratory.change_object", "laboratory.view_object"],
         "destroy": ["laboratory.delete_object", "laboratory.view_object"],
+        "retrieve": ["laboratory.view_object"],
     }
 
     permission_classes = (PermissionByLaboratoryInOrganization,)
@@ -714,6 +716,12 @@ class EquipmentManagementViewset(AuthAllPermBaseObjectManagement):
         self.org_pk = kwargs["org_pk"]
         self.lab_pk = kwargs["lab_pk"]
         return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        instance = self.get_object()
+        serializer = serializers.EquipmentDetailSerializer(instance)
+        return Response(serializer.data)
 
 
 class InstrumentalFamilyManagementViewset(AuthAllPermBaseObjectManagement):
@@ -939,12 +947,14 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         "create": serializers.ValidateReactiveSerializer,
         "update": serializers.ValidateReactiveSerializer,
         "add_limits": serializers.ReactiveLimitSerializer,
+        "retrieve": serializers.ReactiveDetailSerializer,
     }
     perms = {
         "list": ["laboratory.view_object"],
         "create": ["laboratory.add_object", "laboratory.view_object"],
         "update": ["laboratory.change_object", "laboratory.view_object"],
         "detail": ["laboratory.view_object"],
+        "retrieve": ["laboratory.view_object"],
         "destroy": ["laboratory.delete_object", "laboratory.view_object"],
         "add_limits": ["laboratory.add_object", "laboratory.view_object"],
         "get_reactive_limits": ["laboratory.view_object"],
@@ -1020,11 +1030,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
             data=request.data
         )
+        organization = organization.root
 
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
                 instance = reactive_serializer.save()
                 reactive_ch_serializer.save(obj=instance)
+                instance.organization = organization
 
                 response_data, reactive_changed_data, reactive_ch_changed_data = (
                     self.get_response_validate_data(
@@ -1206,6 +1218,12 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, *args, **kwargs):
+        self.org_pk = kwargs["org_pk"]
+        instance = self.get_object()
+        serializer = serializers.ReactiveDetailSerializer(instance)
+        return Response(serializer.data)
 
 
 class LaboratoryProcessViewset(AuthAllPermBaseObjectManagement):
@@ -1531,6 +1549,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         "destroy": ObjectSerializer,
         "create": ObjectValidateSerializer,
         "update": ObjectValidateSerializer,
+        "retrieve": serializers.ObjectMaterialDetailSerializer,
     }
 
     perms = {
@@ -1538,6 +1557,7 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         "create": ["laboratory.add_object"],
         "update": ["laboratory.change_object"],
         "destroy": ["laboratory.delete_object"],
+        "retrieve": ["laboratory.view_object"],
     }
 
     queryset = Object.objects.all()
@@ -1641,6 +1661,11 @@ class ObjectViewSet(AuthAllPermBaseObjectManagement):
         )
 
         instance.delete()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = serializers.ObjectMaterialDetailSerializer(instance)
+        return Response(serializer.data)
 
 
 class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
