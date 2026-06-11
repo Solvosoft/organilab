@@ -13,9 +13,11 @@
 </div>
 
 <h1 class="text-center">{% trans 'Search FDS' %}
+{% if perms.msds.add_msdsobject %}
 <a class="btn btn-success float-end" href="{% url 'msds:sds_create' org_pk %}">
 {% trans 'Upload FDS' %}
 </a>
+{% endif %}
 </h1>
 
 <table id="msdstable" class="display table table-striped w-100"></table>

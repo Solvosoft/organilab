@@ -59,7 +59,10 @@ def has_perm_in_org(context, org_pk, permission):
         permissions__codename=codename,
     )
 
-    return rolsquery.exists()
+    # return rolsquery.exists()
+    if rolsquery.exists():
+        return True
+    return user.has_perm(permission)
 
 
 @register.simple_tag(takes_context=True)

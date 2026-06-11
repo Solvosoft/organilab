@@ -170,6 +170,13 @@ class HandleErrorMiddleware:
             if "application/json" in content_type:
                 return response
 
+            sec_fetch_dest = request.headers.get("Sec-Fetch-Dest", "")
+            if sec_fetch_dest and sec_fetch_dest != "document":
+                return response
+
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return response
+
             error_path = reverse("error_view")
 
             if request.path != error_path:
