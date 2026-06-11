@@ -1,6 +1,7 @@
 import datetime
 import json
 import uuid
+from gc import enable
 from pathlib import Path
 
 from django.conf import settings
@@ -1157,7 +1158,10 @@ class OrganizationStructureManager(models.Manager):
 
         for org in organizations:
             if org.pk in orgs_with_permissions:
-                if descendants:
+                enable_child = (
+                    org.parent.enable_child_organizations if org.parent else False
+                )
+                if descendants and enable_child == False:
                     descendant_pks = org.descendants(include_self=False).values_list(
                         "pk", flat=True
                     )
@@ -1345,8 +1349,9 @@ class OrganizationStructure(TreeNode):
             return OrganizationStructureRelations.objects.filter(
                 organization=self, content_type=lab_content_type
             ).values_list("object_id", flat=True)
-
-        org_ids = list(self.descendants().values_list("pk", flat=True))
+        org_ids = []
+        if not self.enable_child_organizations:
+            org_ids = list(self.descendants().values_list("pk", flat=True))
         org_ids.append(self.pk)
 
         return (

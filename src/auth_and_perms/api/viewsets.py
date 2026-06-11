@@ -513,7 +513,7 @@ class DeleteUserFromContenttypeViewSet(mixins.ListModelMixin, viewsets.GenericVi
             org_ids = [organization.pk]
 
         for org_pk in org_ids:
-            labs = get_laboratories_from_organization(org_pk)
+            labs = get_laboratories_from_organization(org_pk, self.request.user)
             pps = ProfilePermission.objects.filter(
                 profile=user.profile,
                 content_type__app_label="laboratory",

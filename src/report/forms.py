@@ -13,11 +13,14 @@ from laboratory.models import (
     Object,
     ObjectLogChange,
     PrecursorReportValues,
+    OrganizationStructure,
 )
 from laboratory.utils import (
     get_laboratories_from_organization,
     get_users_from_organization,
+    get_lab_ids,
 )
+from pending_tasks.tests import User
 from report.models import TaskReport, DocumentReportStatus
 from risk_management.models import RiskZone, Buildings
 
@@ -85,10 +88,12 @@ class ReportForm(ReportBase):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        self.user = kwargs.pop("user", None)
+        user = self.user
         super(ReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            lab_ids = get_laboratories_from_organization(org_pk)
+            lab_ids = get_laboratories_from_organization(org_pk, user)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
@@ -98,7 +103,7 @@ class ReportForm(ReportBase):
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
-            return list(get_laboratories_from_organization(organization))
+            return list(get_laboratories_from_organization(organization, self.user))
 
         return list(laboratory.values_list("pk", flat=True))
 
@@ -121,10 +126,11 @@ class ReportSimpleForm(ReportBase):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        self.user = kwargs.pop("user", None)
         super(ReportSimpleForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            lab_ids = get_laboratories_from_organization(org_pk)
+            lab_ids = get_laboratories_from_organization(org_pk, self.user)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
@@ -321,13 +327,16 @@ class ValidateFurnitureForm(GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        self.user = kwargs.pop("user", None)
         super(ValidateFurnitureForm, self).__init__(*args, **kwargs)
 
         if org_pk:
             self.fields["organization"].initial = org_pk
-            lab_ids = get_laboratories_from_organization(org_pk)
+            # lab_ids = get_laboratories_from_organization(org_pk, self.user)
+            profile = Profile.objects.filter(user=self.user).first()
+            org = OrganizationStructure.objects.filter(pk=org_pk).first()
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
-                pk__in=lab_ids
+                pk__in=get_lab_ids(org, profile)
             )
 
     def clean_organization(self):
@@ -343,7 +352,7 @@ class ValidateFurnitureForm(GTForm):
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
-            return list(get_laboratories_from_organization(organization))
+            return list(get_laboratories_from_organization(organization, self.user))
 
         return list(laboratory.values_list("pk", flat=True))
 
@@ -446,10 +455,12 @@ class RegencyReportForm(ReportForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        user = kwargs.pop("user", None)
+
         super(RegencyReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            lab_ids = get_laboratories_from_organization(org_pk)
+            lab_ids = get_laboratories_from_organization(org_pk, user)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
@@ -487,6 +498,7 @@ class CompatibilityReportForm(ReportBase):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        user = kwargs.pop("user", None)
         super(CompatibilityReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
@@ -537,10 +549,11 @@ class HazardMapReportForm(ReportBase):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        self.user = kwargs.pop("user", None)
         super(HazardMapReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
-            lab_ids = get_laboratories_from_organization(org_pk)
+            lab_ids = get_laboratories_from_organization(org_pk, self.user)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )
@@ -550,7 +563,7 @@ class HazardMapReportForm(ReportBase):
         laboratory = self.cleaned_data["laboratory"]
 
         if not laboratory:
-            return list(get_laboratories_from_organization(organization))
+            return list(get_laboratories_from_organization(organization, self.user))
 
         return list(laboratory.values_list("pk", flat=True))
 
@@ -578,6 +591,7 @@ class PrecursorFilterForm(GTForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        self.user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
         if not org_pk:
@@ -585,7 +599,7 @@ class PrecursorFilterForm(GTForm):
 
         if org_pk:
             self.fields["organization"].initial = org_pk
-            lab_ids = get_laboratories_from_organization(org_pk)
+            lab_ids = get_laboratories_from_organization(org_pk, self.user)
             self.fields["laboratory"].queryset = Laboratory.objects.filter(
                 pk__in=lab_ids
             )

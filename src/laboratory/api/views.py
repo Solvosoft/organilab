@@ -309,7 +309,7 @@ class LogEntryViewSet(viewsets.ModelViewSet):
 
         if not qr_obj:
             orga = OrganizationStructure.objects.filter(pk=org).first()
-            log_entries = get_logentries_org_management(self, org)
+            log_entries = get_logentries_org_management(self, org, self.request.user)
             logs = set()
             if orga:
                 logs = self.queryset.filter(
