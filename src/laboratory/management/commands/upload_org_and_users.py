@@ -60,7 +60,7 @@ class Command(BaseCommand):
             if not fila[3] or not fila[5] or not fila[1]:
                 continue
             parent, parent_created = OrganizationStructure.objects.get_or_create(
-                name=fila[3].strip()
+                name=fila[3]
             )
             if parent_created:
                 parent.parent = root
