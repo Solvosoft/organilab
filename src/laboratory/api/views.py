@@ -1030,11 +1030,13 @@ class ReactiveManagementViewset(AuthAllPermBaseObjectManagement):
         reactive_ch_serializer = ValidateReactiveCharacteristicsSerializer(
             data=request.data
         )
+        organization = organization.root
 
         if reactive_serializer.is_valid():
             if reactive_ch_serializer.is_valid():
                 instance = reactive_serializer.save()
                 reactive_ch_serializer.save(obj=instance)
+                instance.organization = organization
 
                 response_data, reactive_changed_data, reactive_ch_changed_data = (
                     self.get_response_validate_data(
