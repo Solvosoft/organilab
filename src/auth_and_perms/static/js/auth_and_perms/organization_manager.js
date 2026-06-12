@@ -522,9 +522,7 @@ $(".contenttyperelobjbtnadd").on('click', function(e){
 
     organizationinput.val(orgPk);
     saveBtn.data('url', baseUrl.replace('/0/', '/' + orgPk + '/'));
-
     let dataUrl = fullbaseUrl.replace('/0/', '/' + orgPk + '/');
-    $(select).data('url', dataUrl);
 
     if ($(select).hasClass('select2-hidden-accessible')) {
         $(select).select2('destroy');
