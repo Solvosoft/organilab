@@ -66,8 +66,7 @@ class Command(BaseCommand):
                 parent.parent = root
                 parent.save()
             original_user, created_ori = User.objects.get_or_create(
-                email=fila[0],
-                defaults={"email": fila[0]},
+                email=fila[0].strip()
             )
             self.create_profile(original_user)
             original_user.groups.add(*groups)
@@ -90,10 +89,7 @@ class Command(BaseCommand):
 
             org_child = None
             responsible2 = None
-            responsible1, created_1 = User.objects.get_or_create(
-                email=fila[5],
-                defaults={"email": fila[5]},
-            )
+            responsible1, created_1 = User.objects.get_or_create(email=fila[5].strip())
             responsible1.groups.add(*groups)
             responsible1.save()
             if created_1:
@@ -181,8 +177,7 @@ class Command(BaseCommand):
 
             if fila[7]:
                 responsible2, created_2 = User.objects.get_or_create(
-                    email=fila[7],
-                    defaults={"email": fila[7]},
+                    email=fila[7].strip()
                 )
                 responsible2.groups.add(*groups)
                 responsible2.save()
