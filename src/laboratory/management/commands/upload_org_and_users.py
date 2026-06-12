@@ -1,3 +1,5 @@
+import time
+
 import openpyxl
 from django.conf import settings
 from django.contrib.admin.models import ADDITION
@@ -86,6 +88,7 @@ class Command(BaseCommand):
                     changed_data=["username", "email", "first_name"],
                     change_message="User created via upload_org_and_users command",
                 )
+                time.sleep(30)
 
             org_child = None
             responsible2 = None
@@ -106,6 +109,7 @@ class Command(BaseCommand):
                     changed_data=["username", "email", "first_name"],
                     change_message="User created via upload_org_and_users command",
                 )
+                time.sleep(30)
             self.create_profile(responsible1)
 
             if parent_created:
@@ -195,6 +199,7 @@ class Command(BaseCommand):
                         changed_data=["username", "email", "first_name"],
                         change_message="User created via upload_org_and_users command",
                     )
+                    time.sleep(30)
 
                 self.create_profile(responsible2)
 
@@ -263,6 +268,7 @@ class Command(BaseCommand):
             ),
         )
         self.stdout.write(self.style.SUCCESS(f"Correo enviado a {user.email}"))
+        time.sleep(30)
 
     def create_profile(self, user):
         profile, created = Profile.objects.get_or_create(user=user)

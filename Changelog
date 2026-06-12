@@ -1,6 +1,7 @@
 11/06/2026
 Command to upload users from excel
 
+    - python manage.py upload_org_and_users ./laboratory/management/commands/Usuarios_por_laboratorio_2.xlsx
     - python manage.py upload_org_and_users ./laboratory/management/commands/Usuarios_por_laboratorio.xlsx
 
 11/06/2026
