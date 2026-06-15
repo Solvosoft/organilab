@@ -119,12 +119,13 @@ class ProfileFilterSet(FilterSet):
                 Q(user__first_name__icontains=search)
                 | Q(user__last_name__icontains=search)
                 | Q(user__username__icontains=search)
+                | Q(user__email__icontains=search)
             )
         return queryset
 
     class Meta:
         model = Profile
-        fields = {"user": ["exact"]}
+        fields = {"user": ["exact"], "user__email": ["exact"]}
 
 
 class ProfileSerializer(serializers.ModelSerializer):

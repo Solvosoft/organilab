@@ -151,6 +151,7 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                 model=contenttypeobj._meta.model_name,
             ).first(),
             object_id=contenttypeobj.pk,
+            organization=organization,
         )
 
         if serializer.data["typeofcontenttype"] == "laboratory":
@@ -164,6 +165,7 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                 object_id=organization.pk,
                 organization=organization,
             )
+
         if (
             "addlaboratories" in serializer.validated_data
             and serializer.validated_data["addlaboratories"] is not None
@@ -175,6 +177,7 @@ class ProfileToContenttypeObjectAPI(mixins.CreateModelMixin, viewsets.GenericVie
                         app_label=lab._meta.app_label, model=lab._meta.model_name
                     ).first(),
                     object_id=lab.pk,
+                    organization=organization,
                 )
 
 
@@ -287,7 +290,12 @@ class UserLaboratoryOrganization(mixins.ListModelMixin, viewsets.GenericViewSet)
     queryset = Profile.objects.all()
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    search_fields = ["user__first_name", "user__last_name"]  # for the global search
+    search_fields = [
+        "user__first_name",
+        "user__last_name",
+        "user__email",
+        "user__username",
+    ]  # for the global search
     filterset_class = ProfileFilterSet
     ordering_fields = [
         "user",
