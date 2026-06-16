@@ -8,7 +8,7 @@ GROUPS_TO_DELETE = [
     "Student",
 ]
 PROFILE_GROUP = "Profile"
-PROFILE_PERM = ("auth", "change_user")
+PROFILE_PERM = ("auth_and_perms", "change_own_profile")
 
 
 class Command(BaseCommand):

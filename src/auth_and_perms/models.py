@@ -63,6 +63,10 @@ class Profile(models.Model):
                 "institution_can_access",
                 _("Institution can access"),
             ),
+            (
+                "change_own_profile",
+                _("Can change own user/profile data"),
+            ),
         ]
 
 
