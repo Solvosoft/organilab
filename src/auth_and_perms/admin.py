@@ -46,6 +46,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
 class ProfilePermissionAdmin(admin.ModelAdmin):
     search_fields = ["profile__user__email"]
+    list_display = ["profile", "content_type", "object_id"]
 
 
 class ImpostorAdmin(admin.ModelAdmin):
