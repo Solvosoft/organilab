@@ -346,13 +346,14 @@ function deleteuserlab(elementid, contentTypeobj){
     })
 }
 
-function newuserrol(profile){
-    var element=$("#profile_"+profile)[0]
+function newuserrol(profile,model){
+    var element=$("#profile_"+profile+"_"+model)[0]
 
     document.contextroletable.as_conttentype=false;
     document.contextroletable.as_user=false;
     document.contextroletable.user=null;
     document.contextroletable.as_role=true;
+    document.contextroletable.contenttypeobj = null;
     document.contextroletable.contenttypeobj=Object.assign({}, element.dataset);
     document.contextroletable.profile=profile;
     $("#modal"+element.dataset.org).modal('show');

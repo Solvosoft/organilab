@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
+from djgentelella.decorators.perms import any_permission_required
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -268,7 +269,7 @@ class LaboratoryRoomsList(ListView):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(
-    permission_required("laboratory.add_laboratoryroom", raise_exception=True),
+    any_permission_required(["laboratory.add_laboratoryroom", "laboratory.view_laboratoryroom"], raise_exception=True),
     name="dispatch",
 )
 class LabroomCreate(CreateView):

@@ -1,16 +1,20 @@
-from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
 
 def swap_permission(apps, schema_editor):
-    # The Meta.permissions entry added in the previous migration is only
-    # materialized into the auth_permission table by the post_migrate
-    # signal, which fires after this whole `migrate` run finishes. Force
-    # it now so the lookup below doesn't silently no-op on a fresh install.
-    create_permissions(apps.get_app_config("auth_and_perms"), verbosity=0)
-
     Group = apps.get_model("auth", "Group")
     Permission = apps.get_model("auth", "Permission")
+    ContentType = apps.get_model("contenttypes", "ContentType")
+
+    content_type = ContentType.objects.filter(
+        app_label="auth_and_perms", model="profile"
+    ).first()
+    if content_type:
+        Permission.objects.get_or_create(
+            codename="change_own_profile",
+            content_type=content_type,
+            defaults={"name": "Can change own profile"},
+        )
 
     group = Group.objects.filter(name="Profile").first()
     if not group:

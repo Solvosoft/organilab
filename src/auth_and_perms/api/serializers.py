@@ -169,7 +169,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         return """
         <div class="btn-group p-0 m-0">
-            <button %s class="btn btn-sm border-0 text-secondary p-0 m-0" type="button" onclick="newuserrol(%s)" id="profile_%s" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
+            <button %s class="btn btn-sm border-0 text-secondary p-0 m-0" type="button" onclick="newuserrol(%s, '%s')" id="profile_%s" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
                 <i class="fa fa-user-md" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-sm border-0 text-secondary p-0 m-0 dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="top" title="%s">
@@ -180,7 +180,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         """ % (
             datatext,
             obj.pk,
-            obj.pk,
+            contenttypeobj._meta.model_name,
+            f"{obj.pk}_{contenttypeobj._meta.model_name}",
             str(_("Roles: manage the user's roles within the organization")),
             str(_("List Roles: show user's roles")),
             role_items,

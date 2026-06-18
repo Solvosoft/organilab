@@ -38,7 +38,7 @@
 	{% if perms.academic.view_procedure or perms.laboratory.view_laboratoryroom %}
 		{% include 'gentelella/app/laboratory_menu.html' %}
 	{% endif %}
-	{% if perms.laboratory.add_laboratory or perms.laboratory.change_laboratory or perms.laboratory.add_furniture or perms.laboratory.add_object or perms.laboratory.add_features %}
+	{% if perms.laboratory.view_laboratory or perms.laboratory.view_furniture or perms.laboratory.view_object or perms.laboratory.view_features %}
 		{% include 'gentelella/app/administration_menu.html' %}
 	{% endif %}
 
