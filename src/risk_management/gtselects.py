@@ -62,7 +62,7 @@ class RiskBuildings(BaseSelect2View):
     authentication_classes = [SessionAuthentication]
     pagination_class = GPaginatorMoreElements
     perms = {
-        "list": ["risk_management.view_building"],
+        "list": ["risk_management.view_buildings"],
     }
     permission_classes = (AnyPermissionByAction,)
 

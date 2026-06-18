@@ -180,6 +180,7 @@
 			destroy_url: "{% url 'riskmanagement:api-incident-detail' org_pk object.pk 0 %}",
 			update_url: "{% url 'riskmanagement:api-incident-detail' org_pk object.pk 0 %}",
 		}
+		const has_create_perm = {{ perms.risk_management.add_incidentreport|yesno:"true,false" }};
 	</script>
 	<script src="{% static 'js/incidents.js' %}?v={% get_organilab_version %}"></script>
 {% endblock %}

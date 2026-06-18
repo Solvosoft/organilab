@@ -50,6 +50,10 @@ ADD_PERMISSIONS = [
     "risk_management.view_buildings",
     "laboratory.view_sustancecharacteristics",  # reagent / substance characteristics
     "risk_management.view_structure",
+    "laboratory.view_object",
+    "laboratory.view_laboratoryprocess",
+    "laboratory.view_shelfobjectobservation",
+    "risk_management.view_riskzone",
     "risk_management.view_workday",  # jornada laboral
 ]
 
@@ -84,7 +88,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         rol = Rol.objects.filter(name=ROLE_NAME).first()
         if not rol:
-            self.stdout.write(self.style.ERROR(f"Role '{ROLE_NAME}' does not exist. Aborting."))
+            self.stdout.write(
+                self.style.ERROR(f"Role '{ROLE_NAME}' does not exist. Aborting.")
+            )
             return
 
         self.stdout.write(f"Cleaning role '{rol.name}' (id={rol.pk})...")
@@ -111,9 +117,9 @@ class Command(BaseCommand):
                     )
                 )
 
-        remaining_write_perms = rol.permissions.exclude(codename__startswith="view_").exclude(
-            codename__startswith="can_view"
-        )
+        remaining_write_perms = rol.permissions.exclude(
+            codename__startswith="view_"
+        ).exclude(codename__startswith="can_view")
         if remaining_write_perms.exists():
             self.stdout.write(
                 self.style.WARNING(
