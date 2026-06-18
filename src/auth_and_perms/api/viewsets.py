@@ -371,7 +371,10 @@ class UserInOrganization(mixins.ListModelMixin, viewsets.GenericViewSet):
         )
 
         return Profile.objects.using(settings.READONLY_DATABASE).filter(
-            user__pk__in=users
+            user__pk__in=users,
+            profilepermission__content_type__app_label="laboratory",
+            profilepermission__content_type__model="organizationstructure",
+            profilepermission__object_id=self.organization.pk,
         )
 
     def list(self, request, *args, **kwargs):

@@ -1292,7 +1292,7 @@ class OrganizationStructure(TreeNode):
         if has_direct_permission:
             return self
 
-        for ancestor in reversed(list(self.ancestors())):
+        for ancestor in reversed(list(self.ancestors(include_self=True))):
             has_ancestor_permission = ProfilePermission.objects.filter(
                 profile=profile,
                 object_id=ancestor.pk,
