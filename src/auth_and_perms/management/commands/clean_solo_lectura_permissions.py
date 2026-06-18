@@ -37,6 +37,8 @@ REMOVE_PERMISSIONS = [
     "risk_management.change_incidentreport",
     "sga.add_substanceobservation",
     "sga.change_recipientsize",
+    "laboratory.do_report",
+    "laboratory.view_report",
 ]
 
 # View-only permissions the role is missing and should get.
@@ -54,6 +56,7 @@ ADD_PERMISSIONS = [
     "laboratory.view_laboratoryprocess",
     "laboratory.view_shelfobjectobservation",
     "risk_management.view_riskzone",
+    "risk_management.view_regent",
     "risk_management.view_workday",  # jornada laboral
 ]
 
