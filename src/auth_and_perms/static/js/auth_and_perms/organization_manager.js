@@ -346,8 +346,12 @@ function deleteuserlab(elementid, contentTypeobj){
     })
 }
 
-function newuserrol(profile,model){
-    var element=$("#profile_"+profile+"_"+model)[0]
+function newuserrol(profile, model, objectid){
+    var element=$("#profile_"+profile+"_"+model+"_"+objectid)[0]
+    if (!element) {
+        console.error("Element not found: profile_"+profile+"_"+model+"_"+objectid);
+        return;
+    }
 
     document.contextroletable.as_conttentype=false;
     document.contextroletable.as_user=false;
