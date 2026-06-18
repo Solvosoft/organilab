@@ -92,14 +92,15 @@ def set_rol_administrator_on_org(
 
     if organization.parent is None:
         group, _x = Group.objects.get_or_create(name="RegisterOrganization")
-        rol = Rol.objects.create(name=_("Organization Management"))
+        rol, created = Rol.objects.get_or_create(name=_("Organization Management"))
         ct = ContentType.objects.filter(
             app_label=organization._meta.app_label, model=organization._meta.model_name
         ).first()
+        if created:
+            rol.permissions.add(*[x for x in group.permissions.all()])
         pp, _created = ProfilePermission.objects.get_or_create(
             profile=profile, content_type=ct, object_id=organization.pk
         )
-        rol.permissions.add(*[x for x in group.permissions.all()])
         pp.rol.add(rol)
         organization.rol.add(rol)
         set_profile_administrator(profile, rol)
