@@ -219,41 +219,39 @@ $(document).ready(function(){
 
     searchLaboratory.init();
 
-    var shelfObjectButtons = [
-        {
-            action: tableObject.addObject,
-            text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
-            titleAttr: gettext('Create Equipment'),
-            className: 'btn-sm btn-success ml-4',
-            attr: {
-                'data-type': '2'
+    var shelfObjectButtons = [];
+
+    if (can_add_shelfobject) {
+        shelfObjectButtons.push(
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-desktop" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Equipment'),
+                className: 'btn-sm btn-success ml-4',
+                attr: {'data-type': '2'}
             },
-        },
-        {
-            action: tableObject.addObject,
-            text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
-            titleAttr: gettext('Create Material'),
-            className: 'btn-sm btn-success ml-4',
-            attr: {
-                'data-type': '1'
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-battery-quarter" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Material'),
+                className: 'btn-sm btn-success ml-4',
+                attr: {'data-type': '1'}
+            },
+            {
+                action: tableObject.addObject,
+                text: '<i class="fa fa-flask" aria-hidden="true"></i>',
+                titleAttr: gettext('Create Substance'),
+                className: 'btn-sm btn-success ml-4',
+                attr: {'data-type': '0'}
+            },
+            {
+                action: tableObject.redirectContainer,
+                text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
+                titleAttr: gettext('Containers'),
+                className: 'btn-sm btn-success ml-4'
             }
-        },
-        {
-            action: tableObject.addObject,
-            text: '<i class="fa fa-flask" aria-hidden="true"></i>',
-            titleAttr: gettext('Create Substance'),
-            className: 'btn-sm btn-success ml-4',
-            attr: {
-                'data-type': '0'
-            }
-        },
-        {
-            action: tableObject.redirectContainer,
-            text: '<i class="fa fa-cubes" aria-hidden="true"></i>',
-            titleAttr: gettext('Containers'),
-            className: 'btn-sm btn-success ml-4'
-        },
-    ];
+        );
+    }
 
     if (has_perm) {
         shelfObjectButtons.push({
