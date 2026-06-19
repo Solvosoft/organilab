@@ -103,7 +103,7 @@ urlpatterns = [
         name="organizationManager",
     ),
     path(
-        "organization/map/laboratories/",
+        "<int:org_pk>/organization/map/laboratories/",
         map_of_laboratories_view,
         name="map_of_laboratories",
     ),
