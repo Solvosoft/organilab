@@ -162,12 +162,19 @@ class CreateLaboratoryFormView(FormView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.created_by = self.request.user
+        is_superior = utils.user_is_administrativo_superior(self.request.user)
+        if is_superior:
+            self.object.approval_status = self.object.APPROVED
+            self.object.approved_by = self.request.user
+            self.object.approved_at = now()
+        else:
+            self.object.approval_status = self.object.PENDING
         self.object.save()
         utils.organilab_logentry(
             self.request.user,
             self.object,
             ADDITION,
-            changed_data=form.changed_data,
+            changed_data=form.changed_data + ["approval_status"],
             relobj=self.object,
         )
 
@@ -188,15 +195,9 @@ class CreateLaboratoryFormView(FormView):
             pp.rol.add(rol)
 
         register_laboratory_contenttype(self.object.organization, self.object)
-        #        admins = User.objects.filter(is_superuser=True)
-        # TODO: This is necesary ?  all user has to be profile
         user.profile.laboratories.add(self.object)
-        #        for admin in admins:
-        #            if not hasattr(admin, 'profile'):
-        #                admin.profile = Profile.objects.create(user=admin)
-        #            admin.profile.laboratories.add(self.object)
         response = super(CreateLaboratoryFormView, self).form_valid(form)
-
+        utils.notify_pending_approval(self.object, self.request, auto_approved=is_superior)
         return response
 
     def get_success_url(self):
@@ -251,7 +252,7 @@ class LaboratoryListView(ListView):
         user = self.request.user
         profile = getattr(user, "profile", None)
         lab_ids = get_lab_ids(organization, profile)
-        queryset = self.model.objects.filter(pk__in=lab_ids)
+        queryset = self.model.objects.filter(pk__in=lab_ids, approval_status=self.model.APPROVED)
         q = self.request.GET.get("search_fil", "")
         if q != "":
             queryset = queryset.filter(name__icontains=q)

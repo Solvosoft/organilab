@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+{% load gtsettings %}
+
+{% block pre_head %}
+    {% define_true "use_datatables" %}
+{% endblock %}
+
+{% block title %}{% trans 'Pending Approvals' %}{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <h1>{% trans 'Pending Approvals' %}</h1>
+</div>
+
+<section class="my-3">
+    <ul class="nav nav-tabs" role="tablist">
+        {% if perms.laboratory.view_organizationstructure %}
+        <li role="presentation" class="nav-item">
+            <a class="nav-link active" href="#tab-orgs" aria-controls="tab-orgs" role="tab" data-bs-toggle="tab">
+                <i class="fa fa-university"></i> {% trans 'Organizations' %}
+            </a>
+        </li>
+        {% endif %}
+        {% if perms.laboratory.view_laboratory %}
+        <li role="presentation" class="nav-item">
+            <a class="nav-link {% if not perms.laboratory.view_organizationstructure %}active{% endif %}" href="#tab-labs" aria-controls="tab-labs" role="tab" data-bs-toggle="tab">
+                <i class="fa fa-flask"></i> {% trans 'Laboratories' %}
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="tab-content">
+                {% if perms.laboratory.view_organizationstructure %}
+                <div class="tab-pane fade show active" role="tabpanel" id="tab-orgs">
+                    <table class="table table-hover table-striped w-100" id="org-approval-table"></table>
+                </div>
+                {% endif %}
+                {% if perms.laboratory.view_laboratory %}
+                <div class="tab-pane fade {% if not perms.laboratory.view_organizationstructure %}show active{% endif %}" role="tabpanel" id="tab-labs">
+                    <table class="table table-hover table-striped w-100" id="lab-approval-table"></table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="reject-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans 'Confirm rejection' %}</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans 'Are you sure you want to reject and permanently delete' %} <strong id="reject-obj-name"></strong>?</p>
+                <p class="text-danger">{% trans 'This action cannot be undone.' %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+                <button type="button" class="btn btn-danger" id="reject-confirm-btn">{% trans 'Delete' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script>
+    const URLS = {
+        org_list: "{% url 'laboratory:api-org-approval-list' %}",
+        org_approve: "{% url 'laboratory:api-org-approval-approve' pk=0 %}".replace('/0/', '/{pk}/'),
+        org_reject: "{% url 'laboratory:api-org-approval-reject' pk=0 %}".replace('/0/', '/{pk}/'),
+        lab_list: "{% url 'laboratory:api-lab-approval-list' %}",
+        lab_approve: "{% url 'laboratory:api-lab-approval-approve' pk=0 %}".replace('/0/', '/{pk}/'),
+        lab_reject: "{% url 'laboratory:api-lab-approval-reject' pk=0 %}".replace('/0/', '/{pk}/'),
+    };
+    const csrfToken = '{{ csrf_token }}';
+    const PERMS = {
+        view_org: {{ perms.laboratory.view_organizationstructure|yesno:"true,false" }},
+        view_lab: {{ perms.laboratory.view_laboratory|yesno:"true,false" }},
+    };
+</script>
+<script src="{% static 'laboratory/js/approvals.js' %}"></script>
+{% endblock %}

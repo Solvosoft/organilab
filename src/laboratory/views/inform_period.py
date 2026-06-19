@@ -62,7 +62,7 @@ class InformSchedulerDetail(DetailView):
 @permission_required("laboratory.view_inform", raise_exception=True)
 def get_inform_index(request, org_pk):
     organization = get_object_or_404(OrganizationStructure, pk=org_pk)
-    labs = Laboratory.objects.filter(pk__in=organization.get_my_laboratories)
+    labs = Laboratory.objects.filter(pk__in=organization.get_my_laboratories, approval_status=Laboratory.APPROVED)
     schedulers = InformScheduler.objects.filter(organization__pk=org_pk).order_by(
         "active"
     )

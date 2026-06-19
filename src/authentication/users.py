@@ -66,7 +66,7 @@ class ChangeUser(UpdateView):
         pp = ProfilePermission.objects.filter(
             profile=self.object.profile, content_type=cc
         ).values_list("object_id", flat=True)
-        context["labs"] = Laboratory.objects.filter(pk__in=pp).order_by("name")
+        context["labs"] = Laboratory.objects.filter(pk__in=pp, approval_status=Laboratory.APPROVED).order_by("name")
         return context
 
     def form_valid(self, form):

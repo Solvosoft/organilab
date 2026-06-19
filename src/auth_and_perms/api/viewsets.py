@@ -874,7 +874,7 @@ class OrganizationLaboratoryViewset(mixins.ListModelMixin, viewsets.GenericViewS
     permission_classes = [IsAuthenticated]
     serializer_class = OrganizationLaboratoryDataTableSerializer
     queryset = OrganizationStructure.objects.using(settings.READONLY_DATABASE).filter(
-        active=True
+        active=True, approval_status=OrganizationStructure.APPROVED
     )
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
@@ -908,7 +908,9 @@ class LaboratoryOrganizationViewset(mixins.ListModelMixin, viewsets.GenericViewS
     authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = LaboratoryOrganizationDataTableSerializer
-    queryset = Laboratory.objects.using(settings.READONLY_DATABASE).all()
+    queryset = Laboratory.objects.using(settings.READONLY_DATABASE).filter(
+        approval_status=Laboratory.APPROVED
+    )
     pagination_class = LimitOffsetPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ["name"]  # for the global search

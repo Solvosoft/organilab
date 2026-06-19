@@ -1,3 +1,4 @@
+from django.apps import apps as real_apps
 from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
@@ -7,7 +8,7 @@ def swap_permission(apps, schema_editor):
     # materialized into the auth_permission table by the post_migrate
     # signal, which fires after this whole `migrate` run finishes. Force
     # it now so the lookup below doesn't silently no-op on a fresh install.
-    create_permissions(apps.get_app_config("auth_and_perms"), verbosity=0)
+    create_permissions(real_apps.get_app_config("auth_and_perms"), verbosity=0)
 
     Group = apps.get_model("auth", "Group")
     Permission = apps.get_model("auth", "Permission")

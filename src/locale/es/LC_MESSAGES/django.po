@@ -1865,7 +1865,7 @@ msgid "Thanks,"
 msgstr "Gracias,"
 
 msgid "Organilab system"
-msgstr "Organilab: Reporte de objetos"
+msgstr "Sistema Organilab"
 
 msgid "Inform Management"
 msgstr "Administrar Informes"
@@ -6188,3 +6188,43 @@ msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
 
 msgid "Unit code"
 msgstr "Código de unidad"
+
+msgid "%(creator)s created %(name)s (auto-approved)"
+msgstr "%(creator)s creó %(name)s (auto-aprobado)"
+
+msgid "%(creator)s created %(name)s and it requires approval"
+msgstr "%(creator)s creó %(name)s y requiere aprobación"
+
+msgid "Creation report: %(name)s"
+msgstr "Reporte de creación: %(name)s"
+
+msgid "Go to approval page"
+msgstr "Ir a página de aprobación"
+
+msgid "Go to organization management"
+msgstr "Ir a gestión de organizaciones"
+
+msgid "pending your approval"
+msgstr "pendiente de su aprobación"
+
+msgid "automatically approved"
+msgstr "aprobado automáticamente"
+
+
+msgid "Pending Approvals"
+msgstr "Aprobaciones pendientes"
+
+msgid "Confirm rejection"
+msgstr "Confirmar rechazo"
+
+msgid "Are you sure you want to reject and permanently delete"
+msgstr "¿Está seguro de que desea rechazar y eliminar permanentemente"
+
+msgid "This action cannot be undone."
+msgstr "Esta acción no se puede deshacer."
+
+msgid "<strong>%(creator)s</strong> has created <strong>%(name)s</strong> and it has been automatically approved."
+msgstr "<strong>%(creator)s</strong> ha creado <strong>%(name)s</strong> y ha sido aprobado automáticamente."
+
+msgid "<strong>%(creator)s</strong> has created <strong>%(name)s</strong> and it is pending your approval."
+msgstr "<strong>%(creator)s</strong> ha creado <strong>%(name)s</strong> y está pendiente de su aprobación."

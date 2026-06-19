@@ -1476,3 +1476,12 @@ msgstr "Familia Instrumental"
 
 msgid "Unit code"
 msgstr "Código de unidad"
+
+msgid "Reject"
+msgstr "Rechazar"
+
+msgid "Creation date"
+msgstr "Fecha de creación"
+
+msgid "Level"
+msgstr "Nivel"

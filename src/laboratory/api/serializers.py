@@ -1533,7 +1533,7 @@ class ReactiveLimitsSerializer(serializers.Serializer):
     laboratory = serializers.PrimaryKeyRelatedField(
         many=False,
         required=True,
-        queryset=Laboratory.objects.all(),
+        queryset=Laboratory.objects.filter(approval_status=Laboratory.APPROVED),
     )
     years = serializers.ChoiceField(required=True, choices=[])
 
@@ -2069,3 +2069,53 @@ class LoadArchiveSerializer(serializers.Serializer):
         if not name.lower().endswith(".xlsm"):
             raise serializers.ValidationError(_("Only .xlsm files are allowed."))
         return value
+
+
+# Approval serializers
+
+class OrgApprovalSerializerTable(serializers.ModelSerializer):
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "approve": ["laboratory.change_organizationstructure"],
+            "reject": ["laboratory.delete_organizationstructure"],
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = OrganizationStructure
+        fields = ["id", "name", "level", "actions"]
+
+
+class OrgApprovalDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=OrgApprovalSerializerTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)
+
+
+class LabApprovalSerializerTable(serializers.ModelSerializer):
+    created_by = GTS2SerializerBase(many=False)
+    creation_date = GTDateTimeField(required=False)
+    actions = serializers.SerializerMethodField()
+
+    def get_actions(self, obj):
+        user = self.context["request"].user
+        action_list = {
+            "approve": ["laboratory.change_laboratory"],
+            "reject": ["laboratory.delete_laboratory"],
+        }
+        return get_actions_by_perms(user, action_list)
+
+    class Meta:
+        model = Laboratory
+        fields = ["id", "name", "created_by", "creation_date", "actions"]
+
+
+class LabApprovalDataTableSerializer(serializers.Serializer):
+    data = serializers.ListField(child=LabApprovalSerializerTable(), required=True)
+    draw = serializers.IntegerField(required=True)
+    recordsFiltered = serializers.IntegerField(required=True)
+    recordsTotal = serializers.IntegerField(required=True)

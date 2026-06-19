@@ -1793,3 +1793,89 @@ class ShelObjectReactiveViewset(AuthAllPermBaseObjectManagement):
         return JsonResponse(
             {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class OrgApprovalViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": serializers.OrgApprovalDataTableSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_organizationstructure"],
+        "approve": ["laboratory.change_organizationstructure"],
+        "reject": ["laboratory.delete_organizationstructure"],
+    }
+    queryset = OrganizationStructure.objects.filter(approval_status=OrganizationStructure.PENDING)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name"]
+    ordering_fields = ["pk", "name"]
+    filterset_class = None
+
+    @action(detail=True, methods=["post"])
+    def approve(self, request, pk=None):
+        if not request.user.has_perm("laboratory.change_organizationstructure"):
+            return Response({"detail": _("Permission denied.")}, status=status.HTTP_403_FORBIDDEN)
+        from django.utils.timezone import now as tz_now
+        org = self.get_object()
+        org.approval_status = OrganizationStructure.APPROVED
+        org.approved_by = request.user
+        org.approved_at = tz_now()
+        org.save()
+        organilab_logentry(
+            request.user, org, CHANGE,
+            "approve organization",
+            changed_data=["approval_status", "approved_by", "approved_at"],
+        )
+        return Response({"ok": True})
+
+    @action(detail=True, methods=["post"])
+    def reject(self, request, pk=None):
+        if not request.user.has_perm("laboratory.delete_organizationstructure"):
+            return Response({"detail": _("Permission denied.")}, status=status.HTTP_403_FORBIDDEN)
+        org = self.get_object()
+        organilab_logentry(request.user, org, DELETION, "reject organization")
+        org.delete()
+        return Response({"ok": True})
+
+
+class LabApprovalViewset(AuthAllPermBaseObjectManagement):
+    serializer_class = {
+        "list": serializers.LabApprovalDataTableSerializer,
+    }
+    perms = {
+        "list": ["laboratory.view_laboratory"],
+        "approve": ["laboratory.change_laboratory"],
+        "reject": ["laboratory.delete_laboratory"],
+    }
+    queryset = Laboratory.objects.filter(approval_status=Laboratory.PENDING)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ["name"]
+    ordering_fields = ["pk", "name"]
+    filterset_class = None
+
+    @action(detail=True, methods=["post"])
+    def approve(self, request, pk=None):
+        if not request.user.has_perm("laboratory.change_laboratory"):
+            return Response({"detail": _("Permission denied.")}, status=status.HTTP_403_FORBIDDEN)
+        from django.utils.timezone import now as tz_now
+        lab = self.get_object()
+        lab.approval_status = Laboratory.APPROVED
+        lab.approved_by = request.user
+        lab.approved_at = tz_now()
+        lab.save()
+        organilab_logentry(
+            request.user, lab, CHANGE,
+            "approve laboratory",
+            changed_data=["approval_status", "approved_by", "approved_at"],
+        )
+        return Response({"ok": True})
+
+    @action(detail=True, methods=["post"])
+    def reject(self, request, pk=None):
+        if not request.user.has_perm("laboratory.delete_laboratory"):
+            return Response({"detail": _("Permission denied.")}, status=status.HTTP_403_FORBIDDEN)
+        lab = self.get_object()
+        organilab_logentry(request.user, lab, DELETION, "reject laboratory")
+        lab.delete()
+        return Response({"ok": True})

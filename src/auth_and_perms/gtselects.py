@@ -176,9 +176,9 @@ class LabUserS2OrgManagement(generics.RetrieveAPIView, BaseSelect2View):
                 self.organization.pk
             )
             users = list(
-                OrganizationStructure.objects.filter(pk__in=orgByuser).values_list(
-                    "users", flat=True
-                )
+                OrganizationStructure.objects.filter(
+                    pk__in=orgByuser, approval_status=OrganizationStructure.APPROVED
+                ).values_list("users", flat=True)
             )
             queryset = self.model.objects.filter(
                 Q(userorganization__organization__in=orgByuser) | Q(pk__in=users)
@@ -667,7 +667,7 @@ class OrgTree(BaseSelect2View):
             org_ids = UserOrganization.objects.filter(user=self.user).values_list(
                 "organization_id", flat=True
             )
-            return queryset.filter(pk__in=org_ids, active=True).order_by(
+            return queryset.filter(pk__in=org_ids, active=True, approval_status=1).order_by(
                 "level", "name"
             )
         return queryset.none()
