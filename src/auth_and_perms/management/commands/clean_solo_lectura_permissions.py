@@ -39,6 +39,10 @@ REMOVE_PERMISSIONS = [
     "sga.change_recipientsize",
     "laboratory.do_report",
     "laboratory.view_report",
+    "laboratory.view_organizationstructure",
+    "laboratory.view_organizationstructurerelations",
+    "laboratory.add_registeruserqr",
+    "auth_and_perms.view_profilepermission",
 ]
 
 # View-only permissions the role is missing and should get.
