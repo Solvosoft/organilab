@@ -62,6 +62,7 @@ class ProfileMiddleware:
             view_kwargs.get("org_pk")
             or resolved_kwargs.get("org_pk")
             or request.GET.get("org_pk")
+            or request.GET.get("organization")
         )
         lab_pk = (
             view_kwargs.get("lab_pk")
