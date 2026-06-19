@@ -6188,3 +6188,24 @@ msgstr "¿Desea deshabilitar el filtro de organizaciones hijas?"
 
 msgid "Unit code"
 msgstr "Código de unidad"
+
+msgid "Revision date"
+msgstr "Fecha de revisión"
+
+msgid "EU codes"
+msgstr "Códigos UE"
+
+msgid "Precursor type"
+msgstr "Tipo de precursor"
+
+msgid "Seveso list"
+msgstr "Lista Seveso"
+
+msgid "Target organs"
+msgstr "Órganos afectados"
+
+msgid "Risks"
+msgstr "Riesgos"
+
+msgid "Confirm and create substance"
+msgstr "Confirmar y crear sustancia"

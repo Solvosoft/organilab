@@ -251,6 +251,7 @@ class ValidateLaboratoryRoomReportForm(ReportForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        kwargs.pop("user", None)
         super(ValidateLaboratoryRoomReportForm, self).__init__(*args, **kwargs)
 
 
@@ -277,6 +278,7 @@ class OrganizationReactiveForm(ReportBase):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        kwargs.pop("user", None)
         super(OrganizationReactiveForm, self).__init__(*args, **kwargs)
 
         if org_pk:
@@ -411,6 +413,7 @@ class RiskZoneReportForm(ReportForm):
 
     def __init__(self, *args, **kwargs):
         org_pk = kwargs.pop("org_pk", None)
+        kwargs.pop("user", None)
         super(RiskZoneReportForm, self).__init__(*args, **kwargs)
 
         if org_pk:
