@@ -117,6 +117,7 @@
 {{suggestions_tag|json_script:"suggestions_tag"}}
 <script>
 const has_perm = {{ perms.laboratory.view_tranferobject|yesno:"true,false" }};
+const can_add_shelfobject = {{ perms.laboratory.add_shelfobject|yesno:"true,false" }};
 document.urls = {
     shelfobject_create: "{% url 'laboratory:shelfobject_create' lab_pk=laboratory org_pk=org_pk  %}",
     shelf_availability_information: '{% url "laboratory:api-shelfobject-shelf-availability-information" lab_pk=laboratory org_pk=org_pk %}',
