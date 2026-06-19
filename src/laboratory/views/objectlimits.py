@@ -42,8 +42,10 @@ class ReactiveStockDashboard(TemplateView):
             i += 1
         if i > 0:
             x += "&laboratory=" + str(self.kwargs["lab_pk"])
+            x += "&organization=" + str(self.kwargs["org_pk"])
         else:
             x += "?laboratory=" + str(self.kwargs["lab_pk"])
+            x += "&organization=" + str(self.kwargs["org_pk"])
         urls = {
             "objectlimits_url": reverse(
                 "objectlimitschart-detail", kwargs={"pk": self.kwargs["org_pk"]}
