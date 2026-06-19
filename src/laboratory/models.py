@@ -1336,9 +1336,12 @@ class OrganizationStructure(TreeNode):
 
     @property
     def root(self):
-        ancestors = self.ancestors()
-        if ancestors.exists():
-            return ancestors.first()
+        try:
+            ancestors = self.ancestors()
+            if ancestors.exists():
+                return ancestors.first()
+        except self.__class__.DoesNotExist:
+            pass
         return self
 
     @property
